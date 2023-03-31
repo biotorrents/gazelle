@@ -456,8 +456,8 @@ list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$app->userNew->core['username']." ($LogDetails)"); // TODO: this is probably broken
 Torrents::write_group_log($GroupID, $TorrentID, $app->userNew->core['id'], $LogDetails, 0);
 
-$app->cacheOld->delete_value("torrents_details_$GroupID");
-$app->cacheOld->delete_value("torrent_download_$TorrentID");
+$app->cacheNew->delete("torrents_details_$GroupID");
+$app->cacheNew->delete("torrent_download_$TorrentID");
 
 Torrents::update_hash($GroupID);
 // All done!

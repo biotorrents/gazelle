@@ -53,12 +53,12 @@ if (($ReqCount + $GroupCount) == 0) {
     Artists::delete_artist($ArtistID);
 }
 
-$app->cacheOld->delete_value("torrents_details_$GroupID"); // Delete torrent group cache
-$app->cacheOld->delete_value("groups_artists_$GroupID"); // Delete group artist cache
+$app->cacheNew->delete("torrents_details_$GroupID"); // Delete torrent group cache
+$app->cacheNew->delete("groups_artists_$GroupID"); // Delete group artist cache
 Misc::write_log("Artist $ArtistID ($ArtistName) was removed from the group $GroupID ($GroupName) by user ".$app->userNew->core['id'].' ('.$app->userNew->core['username'].')');
 Torrents::write_group_log($GroupID, 0, $app->userNew->core['id'], "removed artist $ArtistName", 0);
 
 Torrents::update_hash($GroupID);
-$app->cacheOld->delete_value("artist_groups_$ArtistID");
+$app->cacheNew->delete("artist_groups_$ArtistID");
 
 header('Location: '.$_SERVER['HTTP_REFERER']);

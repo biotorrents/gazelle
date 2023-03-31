@@ -183,8 +183,8 @@ class Database extends \PDO
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
-            return $app->cacheOld->get_value($cacheKey);
+        if ($app->cacheNew->get($cacheKey) && !$app->env->dev) {
+            return $app->cacheNew->get($cacheKey);
         }
 
         $statement = $this->do($query, $args);
@@ -192,7 +192,7 @@ class Database extends \PDO
 
         foreach ($ref as $row) {
             foreach ($row as $key => $value) {
-                $app->cacheOld->cache_value($cacheKey, $value, $this->cacheDuration);
+                $app->cacheNew->set($cacheKey, $value, $this->cacheDuration);
                 return $value;
             }
         }
@@ -209,15 +209,15 @@ class Database extends \PDO
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
-            return $app->cacheOld->get_value($cacheKey);
+        if ($app->cacheNew->get($cacheKey) && !$app->env->dev) {
+            return $app->cacheNew->get($cacheKey);
         }
 
         $statement = $this->do($query, $args);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
-            $app->cacheOld->cache_value($cacheKey, $row, $this->cacheDuration);
+            $app->cacheNew->set($cacheKey, $row, $this->cacheDuration);
             return $row;
         }
     }
@@ -233,8 +233,8 @@ class Database extends \PDO
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
-            return $app->cacheOld->get_value($cacheKey);
+        if ($app->cacheNew->get($cacheKey) && !$app->env->dev) {
+            return $app->cacheNew->get($cacheKey);
         }
 
         /*
@@ -245,7 +245,7 @@ class Database extends \PDO
         $ref = $this->multi($query, $args);
         $ref = array_column($ref, $column);
 
-        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
 
@@ -260,14 +260,14 @@ class Database extends \PDO
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
-        if ($app->cacheOld->get_value($cacheKey) && !$app->env->dev) {
-            return $app->cacheOld->get_value($cacheKey);
+        if ($app->cacheNew->get($cacheKey) && !$app->env->dev) {
+            return $app->cacheNew->get($cacheKey);
         }
 
         $statement = $this->do($query, $args);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
 

@@ -75,7 +75,7 @@ $ReportID = $app->dbOld->inserted_id();
 $Channels = [];
 if ($Short === 'request_update') {
     $Channels[] = '#requestedits';
-    $app->cacheOld->increment('num_update_reports');
+    $app->cacheNew->increment('num_update_reports');
 }
 
 if (in_array($Short, array('comment', 'post', 'thread'))) {
@@ -83,5 +83,5 @@ if (in_array($Short, array('comment', 'post', 'thread'))) {
 }
 
 send_irc($Channels, "$ReportID - ".$app->userNew->core['username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
-$app->cacheOld->delete_value('num_other_reports');
+$app->cacheNew->delete('num_other_reports');
 Http::redirect("$Link");

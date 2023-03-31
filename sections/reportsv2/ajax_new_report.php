@@ -89,7 +89,7 @@ $app->dbOld->prepared_query("
           LastChangeTime = NOW(),
           ModComment = 'Report already dealt with (torrent deleted)'
         WHERE ID = $ReportID");
-        $app->cacheOld->decrement('num_torrent_reportsv2'); ?>
+        $app->cacheNew->decrement('num_torrent_reportsv2'); ?>
 <div id="report<?=$ReportID?>" class="report box pad center"
   data-reportid="<?=$ReportID?>">
   <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report

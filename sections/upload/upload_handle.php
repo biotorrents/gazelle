@@ -508,7 +508,7 @@ if (!$groupId) {
         $query = "insert ignore into artists_group (name) values (?)";
         $app->dbNew->do($query, [ $creator["name"] ]);
 
-        $app->cacheOld->increment("stats_artist_count");
+        $app->cacheNew->increment("stats_artist_count");
     }
 }
 
@@ -546,11 +546,11 @@ if (!$groupId) {
         $query = "insert ignore into torrents_artists (groupId, artistId, userId) values (?, ?, ?)";
         $app->dbNew->do($query, [ $groupId, $id, $app->userNew->core["id"] ]);
 
-        $app->cacheOld->increment("stats_album_count");
-        $app->cacheOld->delete_value("artist_groups_{$id}");
+        $app->cacheNew->increment("stats_album_count");
+        $app->cacheNew->delete("artist_groups_{$id}");
     }
 
-    $app->cacheOld->increment("stats_group_count");
+    $app->cacheNew->increment("stats_group_count");
 
     # now add the doi numbers
     # semantic scholar crawls these via cron
@@ -567,9 +567,9 @@ if ($groupId) {
     $query = "update torrents_group set timestamp = now() where id = ?";
     $app->dbNew->do($query, [$groupId]);
 
-    $app->cacheOld->delete_value("torrent_group_{$groupId}");
-    $app->cacheOld->delete_value("torrents_details_{$groupId}");
-    $app->cacheOld->delete_value("detail_files_{$groupId}");
+    $app->cacheNew->delete("torrent_group_{$groupId}");
+    $app->cacheNew->delete("torrents_details_{$groupId}");
+    $app->cacheNew->delete("detail_files_{$groupId}");
 }
 
 # description if not noRevision
@@ -690,7 +690,7 @@ $variables = [
 $app->dbNew->do($query, $variables);
 $torrentId = $app->dbNew->lastInsertId();
 
-$app->cacheOld->increment("stats_torrent_count");
+$app->cacheNew->increment("stats_torrent_count");
 $torrent->Dec["comment"] = "https://{$app->env->siteDomain}/torrents.php?torrentId={$torrentId}";
 
 # http/ftp data mirrors (web seeds)
@@ -753,7 +753,7 @@ Tracker::update_tracker("add_torrent", [
 
 # prevent deletion of this torrent until the rest of the upload process is done
 # (expire the key after 10 minutes to prevent locking it for too long in case there's a fatal error below)
-$app->cacheOld->cache_value("torrent_{$torrentId}_lock", true, 600);
+$app->cacheNew->set("torrent_{$torrentId}_lock", true, 600);
 $app->debug["messages"]->info("ocelot updated");
 
 
@@ -787,7 +787,7 @@ $app->debug["messages"]->info("manticore updated");
  * recent uploads
  */
 if ($data["picture"]) {
-    $recentUploads = $app->cacheOld->get_value("recent_uploads_{$app->userNew->core["id"]}");
+    $recentUploads = $app->cacheNew->get("recent_uploads_{$app->userNew->core["id"]}");
     if (is_array($recentUploads)) {
         do {
             foreach ($recentUploads as $item) {
@@ -807,7 +807,7 @@ if ($data["picture"]) {
                 "Artist" => Artists::display_artists($data["creatorList"], false, true),
                 "WikiImage" => $data["picture"],
             ]);
-            $app->cacheOld->cache_value("recent_uploads_{$app->userNew->core["id"]}", $recentUploads, 0);
+            $app->cacheNew->set("recent_uploads_{$app->userNew->core["id"]}", $recentUploads, 0);
         } while (0);
     }
 }
@@ -1024,7 +1024,7 @@ if ($app->dbOld->has_results()) {
         list($FilterID, $UserID, $Passkey) = $User;
         $Rows[] = "('$UserID', '$GroupID', '$torrentId', '$FilterID')";
         $feed->populate("torrents_notify_$Passkey", $item);
-        $app->cacheOld->delete_value("notifications_new_$UserID");
+        $app->cacheNew->delete("notifications_new_$UserID");
     }
 
     $InsertSQL .= implode(',', $Rows);
@@ -1060,8 +1060,8 @@ $feed->populate('torrents_'.strtolower($Type), $item);
 $app->debug["messages"]->info('notifications handled');
 
 # Clear cache
-$app->cacheOld->delete_value("torrents_details_$GroupID");
-$app->cacheOld->delete_value("contest_scores");
+$app->cacheNew->delete("torrents_details_$GroupID");
+$app->cacheNew->delete("contest_scores");
 
 # Allow deletion of this torrent now
-$app->cacheOld->delete_value("torrent_{$torrentId}_lock");
+$app->cacheNew->delete("torrent_{$torrentId}_lock");

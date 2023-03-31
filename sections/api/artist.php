@@ -38,9 +38,9 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     if (!is_numeric($RevisionID)) {
         error(0);
     }
-    $Data = $app->cacheOld->get_value("artist_$ArtistID"."_revision_$RevisionID");
+    $Data = $app->cacheNew->get("artist_$ArtistID"."_revision_$RevisionID");
 } else { // viewing the live version
-    $Data = $app->cacheOld->get_value("artist_$ArtistID");
+    $Data = $app->cacheNew->get("artist_$ArtistID");
     $RevisionID = false;
 }
 if ($Data) {
@@ -101,7 +101,7 @@ if ($Data) {
 // Requests
 $Requests = [];
 if (empty($app->userNew->extra['DisableRequests'])) {
-    $Requests = $app->cacheOld->get_value("artists_requests_$ArtistID");
+    $Requests = $app->cacheNew->get("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
         $app->dbOld->query("
       SELECT
@@ -125,12 +125,12 @@ if (empty($app->userNew->extra['DisableRequests'])) {
         } else {
             $Requests = [];
         }
-        $app->cacheOld->cache_value("artists_requests_$ArtistID", $Requests);
+        $app->cacheNew->set("artists_requests_$ArtistID", $Requests);
     }
 }
 $NumRequests = count($Requests);
 
-if (($Importances = $app->cacheOld->get_value("artist_groups_$ArtistID")) === false) {
+if (($Importances = $app->cacheNew->get("artist_groups_$ArtistID")) === false) {
     $app->dbOld->query("
     SELECT DISTINCTROW
       ta.`GroupID`,
@@ -151,7 +151,7 @@ if (($Importances = $app->cacheOld->get_value("artist_groups_$ArtistID")) === fa
 
     $GroupIDs = $app->dbOld->collect('GroupID');
     $Importances = $app->dbOld->to_array(false, MYSQLI_BOTH, false);
-    $app->cacheOld->cache_value("artist_groups_$ArtistID", $Importances, 0);
+    $app->cacheNew->set("artist_groups_$ArtistID", $Importances, 0);
 } else {
     $GroupIDs = [];
     foreach ($Importances as $Group) {
@@ -309,7 +309,7 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id'])) === false) {
+    if (($Notify = $app->cacheNew->get('notify_artists_'.$app->userNew->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
@@ -317,7 +317,7 @@ if (check_perms('site_torrents_notify')) {
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
-        $app->cacheOld->cache_value('notify_artists_'.$app->userNew->core['id'], $Notify, 0);
+        $app->cacheNew->set('notify_artists_'.$app->userNew->core['id'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;
@@ -336,7 +336,7 @@ if ($RevisionID) {
 
 $Data = array(array($Name, $Image, $Body));
 
-$app->cacheOld->cache_value($Key, $Data, 3600);
+$app->cacheNew->set($Key, $Data, 3600);
 
 json_die('success', array(
   'id' => (int)$ArtistID,

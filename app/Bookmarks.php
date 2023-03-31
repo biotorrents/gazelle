@@ -88,7 +88,7 @@ class Bookmarks
         }
 
         $cacheKey = "bookmarks_{$contentType}_{$userId}";
-        $bookmarks = $app->cacheOld->get_value($cacheKey);
+        $bookmarks = $app->cacheNew->get($cacheKey);
 
         if (!$bookmarks) {
             list($table, $column) = self::bookmark_schema($contentType);
@@ -98,7 +98,7 @@ class Bookmarks
             $bookmarks = $app->dbOld->collect($column) ?? [];
 
             $app->dbOld->set_query_id($queryId);
-            $app->cacheOld->cache_value($cacheKey, $bookmarks, 0);
+            $app->cacheNew->set($cacheKey, $bookmarks, 0);
         }
 
         return $bookmarks;

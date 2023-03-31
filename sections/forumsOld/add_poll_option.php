@@ -57,6 +57,6 @@ SET
 WHERE
   `TopicID` = $ThreadID
 ");
-$app->cacheOld->delete_value("polls_$ThreadID");
+$app->cacheNew->delete("polls_$ThreadID");
 
 Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");

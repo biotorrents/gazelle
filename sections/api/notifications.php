@@ -40,7 +40,7 @@ if (count($GroupIDs)) {
     UPDATE users_notify_torrents
     SET UnRead = '0'
     WHERE UserID = {$app->userNew->core['id']}");
-    $app->cacheOld->delete_value("notifications_new_{$app->userNew->core['id']}");
+    $app->cacheNew->delete("notifications_new_{$app->userNew->core['id']}");
 }
 
 $app->dbOld->set_query_id($Results);

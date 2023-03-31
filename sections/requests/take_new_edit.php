@@ -204,16 +204,16 @@ if ($NewRequest) {
     WHERE RequestID = $RequestID");
     $RequestArtists = $app->dbOld->to_array();
     foreach ($RequestArtists as $RequestArtist) {
-        $app->cacheOld->delete_value("artists_requests_".$RequestArtist['ArtistID']);
+        $app->cacheNew->delete("artists_requests_".$RequestArtist['ArtistID']);
     }
     $app->dbOld->query("
     DELETE FROM requests_artists
     WHERE RequestID = $RequestID");
-    $app->cacheOld->delete_value("request_artists_$RequestID");
+    $app->cacheNew->delete("request_artists_$RequestID");
 }
 
 if ($GroupID) {
-    $app->cacheOld->delete_value("requests_group_$GroupID");
+    $app->cacheNew->delete("requests_group_$GroupID");
 }
 
 /*
@@ -243,7 +243,7 @@ if (isset($ArtistForm)) {
         VALUES ('".db_string($Artist['name'])."')");
             $ArtistID = $app->dbOld->inserted_id();
 
-            $app->cacheOld->increment('stats_artist_count');
+            $app->cacheNew->increment('stats_artist_count');
 
             $ArtistForm[$Num] = array('id' => $ArtistID, 'name' => $Artist['name']);
         }
@@ -256,7 +256,7 @@ if (isset($ArtistForm)) {
         (RequestID, ArtistID)
       VALUES
         ($RequestID, ".$Artist['id'].")");
-        $app->cacheOld->delete_value('artists_requests_'.$Artist['id']);
+        $app->cacheNew->delete('artists_requests_'.$Artist['id']);
     }
 // End music only
 } else {
@@ -291,13 +291,13 @@ if (isset($ArtistForm)) {
                 Artists::delete_artist($ArtistID);
             } else {
                 // Not the only group, still need to clear cache
-                $app->cacheOld->delete_value("artists_requests_$ArtistID");
+                $app->cacheNew->delete("artists_requests_$ArtistID");
             }
         }
         $app->dbOld->query("
       DELETE FROM requests_artists
       WHERE RequestID = $RequestID");
-        $app->cacheOld->delete_value("request_artists_$RequestID");
+        $app->cacheNew->delete("request_artists_$RequestID");
     }
 }
 
@@ -342,15 +342,15 @@ if ($NewRequest) {
     UPDATE users_main
     SET Uploaded = (Uploaded - $Bytes)
     WHERE ID = ".$app->userNew->core['id']);
-    $app->cacheOld->delete_value('user_stats_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('user_stats_'.$app->userNew->core['id']);
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 
     $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm) ? (' - '.Artists::display_artists($ArtistForm, false, false)) : '').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
     send_irc(REQUEST_CHAN, $Announce);
 } else {
-    $app->cacheOld->delete_value("request_$RequestID");
-    $app->cacheOld->delete_value("request_artists_$RequestID");
+    $app->cacheNew->delete("request_$RequestID");
+    $app->cacheNew->delete("request_artists_$RequestID");
 }
 
 Requests::update_sphinx_requests($RequestID);

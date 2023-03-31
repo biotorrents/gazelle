@@ -284,11 +284,11 @@ continue;
 		        $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
 		        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
 		
-		        if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
+		        if (!($TorrentFileName = $app->cacheNew->get('torrent_file_name_'.$TorrentID))) {
 		            $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
 		            $Tor = new BencodeTorrent($TorrentFile, false, false);
 		            $TorrentFileName = $Tor->Dec['info']['name'];
-		            $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+		            $app->cacheNew->set('torrent_file_name_'.$TorrentID, $TorrentFileName);
 		        } ?>
 		  <tr
 		    class="group_torrent groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->userNew->extra['TorrentGrouping']) && $app->userNew->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
@@ -376,11 +376,11 @@ continue;
 		
 		          /*
 		          # todo: bring this back
-		          if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
+		          if (!($TorrentFileName = $app->cacheNew->get('torrent_file_name_'.$TorrentID))) {
 		              $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
 		              $Tor = new BencodeTorrent($TorrentFile, false, false);
 		              $TorrentFileName = $Tor->Dec['info']['name'];
-		              $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+		              $app->cacheNew->set('torrent_file_name_'.$TorrentID, $TorrentFileName);
 		          }
 		          */ ?>
 		  <tr

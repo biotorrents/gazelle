@@ -144,7 +144,7 @@ if (!$NoPoll) { // god, I hate double negatives...
       (TopicID, Question, Answers)
     VALUES
       ('$TopicID', '".db_string($Question)."', '".db_string(serialize($Answers))."')");
-    $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
+    $app->cacheNew->set("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
         send_irc(STAFF_CHAN, 'Poll created by '.$app->userNew->core['username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
@@ -152,7 +152,7 @@ if (!$NoPoll) { // god, I hate double negatives...
 }
 
 // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
+if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
     list($Forum, , , $Stickies) = $Forum;
 
     // Remove the last thread from the index
@@ -181,7 +181,7 @@ if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
   )); // Bumped
     $Forum = $Part1 + $Part2 + $Part3;
 
-    $app->cacheOld->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+    $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
 
     // Update the forum root
     $app->cacheOld->begin_transaction('forums_list');
@@ -199,7 +199,7 @@ if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
     $app->cacheOld->commit_transaction(0);
 } else {
     // If there's no cache, we have no data, and if there's no data
-    $app->cacheOld->delete_value('forums_list');
+    $app->cacheNew->delete('forums_list');
 }
 
 $app->cacheOld->begin_transaction("thread_$TopicID".'_catalogue_0');

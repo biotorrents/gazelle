@@ -30,9 +30,9 @@ $app->dbOld->query("
   FROM collages_torrents
   WHERE CollageID = '$CollageID'");
 while (list($GroupID) = $app->dbOld->next_record()) {
-    $app->cacheOld->delete_value("torrents_details_$GroupID");
-    $app->cacheOld->delete_value("torrent_collages_$GroupID");
-    $app->cacheOld->delete_value("torrent_collages_personal_$GroupID");
+    $app->cacheNew->delete("torrents_details_$GroupID");
+    $app->cacheNew->delete("torrent_collages_$GroupID");
+    $app->cacheNew->delete("torrent_collages_personal_$GroupID");
 }
 
 //Personal collages have CategoryID 0
@@ -55,5 +55,5 @@ if ($CategoryID == 0) {
 
 Misc::write_log("Collage $CollageID ($Name) was deleted by ".$app->userNew->core['username'].": $Reason");
 
-$app->cacheOld->delete_value("collage_$CollageID");
+$app->cacheNew->delete("collage_$CollageID");
 Http::redirect("collages.php");

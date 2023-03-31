@@ -164,7 +164,7 @@ class Manticore
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -255,7 +255,7 @@ class Manticore
             # end debug
             $app->debug["time"]->stopMeasure("manticore", "manticore search");
 
-            $app->cacheOld->cache_value($cacheKey, $results, $this->cacheDuration);
+            $app->cacheNew->set($cacheKey, $results, $this->cacheDuration);
             return $results;
         } catch (\Throwable $e) {
             $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());

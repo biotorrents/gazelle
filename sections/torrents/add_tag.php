@@ -16,7 +16,7 @@ if (!is_numeric($GroupID) || !$GroupID) {
 
 //Delete cached tag used for undos
 if (isset($_POST['undo'])) {
-    $app->cacheOld->delete_value("deleted_tags_$GroupID".'_'.$app->userNew->core['id']);
+    $app->cacheNew->delete("deleted_tags_$GroupID".'_'.$app->userNew->core['id']);
 }
 
 $Tags = explode(',', $_POST['tagname']);

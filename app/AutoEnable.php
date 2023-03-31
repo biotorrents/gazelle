@@ -121,7 +121,7 @@ EOT;
             $RequestID = $app->dbOld->inserted_id();
 
             // Cache the number of requests for the modbar
-            $app->cacheOld->increment_value(self::CACHE_KEY_NAME);
+            $app->cacheNew->increment(self::CACHE_KEY_NAME);
             Http::deleteCookie('username');
             $Output = self::RECEIVED_MESSAGE;
 
@@ -260,7 +260,7 @@ EOT;
           $StaffID,
           $Status
         ");
-        $app->cacheOld->decrement_value(self::CACHE_KEY_NAME, count($IDs));
+        $app->cacheNew->decrement(self::CACHE_KEY_NAME, count($IDs));
     }
 
     /**
@@ -313,7 +313,7 @@ EOT;
         WHERE
           `ID` = '$ID'
         ");
-        $app->cacheOld->increment_value(self::CACHE_KEY_NAME);
+        $app->cacheNew->increment(self::CACHE_KEY_NAME);
     }
 
     /**
@@ -380,7 +380,7 @@ EOT;
                 $Err = "Token has expired. Please visit ".DISABLED_CHAN." on ".BOT_SERVER." to discuss this with staff.";
             } else {
                 // Good request, decrement cache value and enable account
-                $app->cacheOld->decrement_value(AutoEnable::CACHE_KEY_NAME);
+                $app->cacheNew->decrement(AutoEnable::CACHE_KEY_NAME);
                 $VisibleTrIP = ($Visible && Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
                 Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
@@ -403,7 +403,7 @@ EOT;
                   `UserID` = '$UserID'
                 ");
 
-                $app->cacheOld->delete_value("user_info_$UserID");
+                $app->cacheNew->delete("user_info_$UserID");
                 $Err = "Your account has been enabled. You may now log in.";
             }
         } else {

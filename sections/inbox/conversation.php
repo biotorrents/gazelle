@@ -60,7 +60,7 @@ if ($UnRead == '1') {
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
     // Clear the caches of the inbox and sentbox
-    $app->cacheOld->decrement("inbox_new_$UserID");
+    $app->cacheNew->decrement("inbox_new_$UserID");
 }
 
 View::header(

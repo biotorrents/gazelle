@@ -33,8 +33,8 @@ if (isset($_POST['title'])) {
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);
 
-            $app->cacheOld->delete_value('user_info_'.$UserID);
-            $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
+            $app->cacheNew->delete('user_info_'.$UserID);
+            $app->cacheNew->delete('user_info_heavy_'.$UserID);
         } else {
             error("Not enough points");
         }

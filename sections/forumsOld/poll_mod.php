@@ -13,7 +13,7 @@ if (!isset($_POST['topicid']) || !is_numeric($_POST['topicid'])) {
 $TopicID = $_POST['topicid'];
 
 //Currently serves as a Featured Toggle
-if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheOld->get_value('polls_'.$TopicID)) {
+if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheNew->get('polls_'.$TopicID)) {
     $app->dbOld->query("
     SELECT Question, Answers, Featured, Closed
     FROM forums_polls
@@ -44,7 +44,7 @@ if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheOld->get
 if (isset($_POST['feature'])) {
     if (!$Featured) {
         $Featured = sqltime();
-        $app->cacheOld->cache_value('polls_featured', $TopicID, 0);
+        $app->cacheNew->set('polls_featured', $TopicID, 0);
         $app->dbOld->query('
       UPDATE forums_polls
       SET Featured=\''.sqltime().'\'
@@ -60,7 +60,7 @@ if (isset($_POST['close'])) {
     WHERE TopicID=\''.$TopicID.'\'');
 }
 
-$app->cacheOld->cache_value('polls_'.$TopicID, array($Question,$Answers,$Votes,$Featured,$Closed), 0);
+$app->cacheNew->set('polls_'.$TopicID, array($Question,$Answers,$Votes,$Featured,$Closed), 0);
 
 header('Location: '.$_SERVER['HTTP_REFERER']);
 die();

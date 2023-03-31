@@ -165,10 +165,10 @@ SET `Uploaded` = (`Uploaded` + ".intval($RequestVotes['TotalBounty']*(3/4)).")
 WHERE `ID` = '$UploaderID'
 ");
 
-$app->cacheOld->delete_value("user_stats_$FillerID");
-$app->cacheOld->delete_value("request_$RequestID");
+$app->cacheNew->delete("user_stats_$FillerID");
+$app->cacheNew->delete("request_$RequestID");
 if (isset($GroupID)) {
-    $app->cacheOld->delete_value("requests_group_$GroupID");
+    $app->cacheNew->delete("requests_group_$GroupID");
 }
 
 $app->dbOld->prepared_query("
@@ -182,7 +182,7 @@ WHERE
 
 $ArtistIDs = $app->dbOld->to_array();
 foreach ($ArtistIDs as $ArtistID) {
-    $app->cacheOld->delete_value("artists_requests_".$ArtistID[0]);
+    $app->cacheNew->delete("artists_requests_".$ArtistID[0]);
 }
 
 Requests::update_sphinx_requests($RequestID);

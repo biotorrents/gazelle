@@ -13,4 +13,4 @@ $TTorrents = $SphQL->query()->get_meta('total_found');
 $SphQL->select('groupid')->group_by('groupid')->from('torrents, delta')->limit(0, 0, 10000);
 $TGroups = $SphQL->query()->get_meta('total_found');
 
-$app->cacheOld->cache_value('sphinx_min_max_matches', 2*($TTorrents-$TGroups));
+$app->cacheNew->set('sphinx_min_max_matches', 2*($TTorrents-$TGroups));

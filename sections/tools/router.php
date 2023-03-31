@@ -219,7 +219,7 @@ switch ($_REQUEST['action']) {
                         DisplayStaff = '".db_string($DisplayStaff)."'
                       WHERE ID = '".db_string($_REQUEST['id'])."'");
 
-                        $app->cacheOld->delete_value('perm_'.$_REQUEST['id']);
+                        $app->cacheNew->delete('perm_'.$_REQUEST['id']);
                         if ($Secondary) {
                             $app->dbOld->prepared_query("
                           SELECT DISTINCT UserID
@@ -227,11 +227,11 @@ switch ($_REQUEST['action']) {
                           WHERE PermissionID = ".db_string($_REQUEST['id']));
 
                             while (list($UserID) = $app->dbOld->next_record()) {
-                                $app->cacheOld->delete_value("user_info_heavy_$UserID");
+                                $app->cacheNew->delete("user_info_heavy_$UserID");
                             }
                         }
                     }
-                    $app->cacheOld->delete_value('classes');
+                    $app->cacheNew->delete('classes');
                 } else {
                     error($Err);
                 }
@@ -250,8 +250,8 @@ switch ($_REQUEST['action']) {
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
                 while (list($UserID) = $app->dbOld->next_record()) {
-                    $app->cacheOld->delete_value("user_info_$UserID");
-                    $app->cacheOld->delete_value("user_info_heavy_$UserID");
+                    $app->cacheNew->delete("user_info_$UserID");
+                    $app->cacheNew->delete("user_info_heavy_$UserID");
                 }
                 $app->dbOld->prepared_query("
               DELETE FROM users_levels
@@ -263,8 +263,8 @@ switch ($_REQUEST['action']) {
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
                 while (list($UserID) = $app->dbOld->next_record()) {
-                    $app->cacheOld->delete_value("user_info_$UserID");
-                    $app->cacheOld->delete_value("user_info_heavy_$UserID");
+                    $app->cacheNew->delete("user_info_$UserID");
+                    $app->cacheNew->delete("user_info_heavy_$UserID");
                 }
 
                 $app->dbOld->prepared_query("
@@ -272,7 +272,7 @@ switch ($_REQUEST['action']) {
               SET PermissionID = '".USER."'
               WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
 
-                $app->cacheOld->delete_value('classes');
+                $app->cacheNew->delete('classes');
             }
 
             include serverRoot.'/sections/tools/managers/permissions_list.php';

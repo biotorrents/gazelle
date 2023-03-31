@@ -66,5 +66,5 @@ $app->dbOld->query("
   WHERE ArtistID = '$ArtistID'");
 
 // There we go, all done!
-$app->cacheOld->delete_value("artist_$ArtistID"); // Delete artist cache
+$app->cacheNew->delete("artist_$ArtistID"); // Delete artist cache
 Http::redirect("artist.php?id=$ArtistID");

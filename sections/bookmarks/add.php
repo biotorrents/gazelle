@@ -69,9 +69,9 @@ if (!$app->dbOld->has_results()) {
         ");
     }
 
-    $app->cacheOld->delete_value('bookmarks_'.$Type.'_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('bookmarks_'.$Type.'_'.$app->userNew->core['id']);
     if ($Type === 'torrent') {
-        $app->cacheOld->delete_value("bookmarks_group_ids_$UserID");
+        $app->cacheNew->delete("bookmarks_group_ids_$UserID");
         $app->dbOld->prepared_query("
         SELECT
           `title`,

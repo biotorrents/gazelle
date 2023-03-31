@@ -19,7 +19,7 @@ if (isset($_POST['submit'])) {
             error(0);
         }
         $app->dbOld->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
-        $app->cacheOld->delete_value('ip_bans_'.$IPA);
+        $app->cacheNew->delete('ip_bans_'.$IPA);
     } else { //Edit & Create, Shared Validation
         $Val->SetFields('start', '1', 'regex', 'You must include the starting IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
         $Val->SetFields('end', '1', 'regex', 'You must include the ending IP address.', array('regex'=>'/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
@@ -51,7 +51,7 @@ if (isset($_POST['submit'])) {
         VALUES
           ('$Start','$End', '$Notes')");
         }
-        $app->cacheOld->delete_value('ip_bans_'.$IPA);
+        $app->cacheNew->delete('ip_bans_'.$IPA);
     }
 }
 

@@ -92,7 +92,7 @@ if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
 list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-if (!$Catalogue = $app->cacheOld->get_value("thread_$ThreadID"."_catalogue_$CatalogueID")) {
+if (!$Catalogue = $app->cacheNew->get("thread_$ThreadID"."_catalogue_$CatalogueID")) {
     $app->dbOld->query("
     SELECT
       p.ID,
@@ -107,7 +107,7 @@ if (!$Catalogue = $app->cacheOld->get_value("thread_$ThreadID"."_catalogue_$Cata
     LIMIT $CatalogueLimit");
     $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $app->cacheOld->cache_value("thread_$ThreadID"."_catalogue_$CatalogueID", $Catalogue, 0);
+        $app->cacheNew->set("thread_$ThreadID"."_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
 $Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
@@ -148,12 +148,12 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cacheOld->delete_value('subscriptions_user_new_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('subscriptions_user_new_'.$app->userNew->core['id']);
 }
 
 $JsonPoll = [];
 if ($ThreadInfo['NoPoll'] === 0) {
-    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheOld->get_value("polls_$ThreadID")) {
+    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheNew->get("polls_$ThreadID")) {
         $app->dbOld->query("
         SELECT Question, Answers, Featured, Closed
         FROM forums_polls
@@ -178,7 +178,7 @@ if ($ThreadInfo['NoPoll'] === 0) {
                 $Votes[$i] = 0;
             }
         }
-        $app->cacheOld->cache_value("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+        $app->cacheNew->set("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
     }
 
     if (!empty($Votes)) {

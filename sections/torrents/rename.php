@@ -49,7 +49,7 @@ WHERE
 ");
 
 
-$app->cacheOld->delete_value("torrents_details_$group_id");
+$app->cacheNew->delete("torrents_details_$group_id");
 Torrents::update_hash($group_id);
 
 $app->dbOld->query("

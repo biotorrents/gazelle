@@ -102,7 +102,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -115,7 +115,7 @@ class Stats
             $overview[$k] = $v["value"];
         }
 
-        $app->cacheOld->cache_value($cacheKey, $overview, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $overview, $this->cacheDuration);
         return $overview;
     }
 
@@ -131,7 +131,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -163,7 +163,7 @@ class Stats
 
         $topPages = ["page" => $page, "entry_page" => $entry_page, "exit_page" => $exit_page];
 
-        $app->cacheOld->cache_value($cacheKey, $topPages, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $topPages, $this->cacheDuration);
         return $topPages;
     }
 
@@ -179,7 +179,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -203,7 +203,7 @@ class Stats
 
         $sources = ["source" => $source, "referrer" => $referrer];
 
-        $app->cacheOld->cache_value($cacheKey, $sources, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $sources, $this->cacheDuration);
         return $sources;
     }
 
@@ -218,7 +218,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -257,7 +257,7 @@ class Stats
 
         $overTime = ["visitors" => $visitors, "pageviews" => $pageviews, "bounce_rate" => $bounce_rate, "visit_duration" => $visit_duration];
 
-        $app->cacheOld->cache_value($cacheKey, $overTime, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $overTime, $this->cacheDuration);
         return $overTime;
     }
 
@@ -273,7 +273,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -288,7 +288,7 @@ class Stats
             "visitors"
         );
 
-        $app->cacheOld->cache_value($cacheKey, $locations, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $locations, $this->cacheDuration);
         return $locations;
     }
 
@@ -303,7 +303,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -335,7 +335,7 @@ class Stats
 
         $devices = ["device" => $device, "browser" => $browser, "os" => $os];
 
-        $app->cacheOld->cache_value($cacheKey, $devices, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $devices, $this->cacheDuration);
         return $devices;
     }
 
@@ -419,7 +419,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -499,7 +499,7 @@ class Stats
             "monthly" => $monthly,
         ];
 
-        $app->cacheOld->cache_value($cacheKey, $economyOverTime, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $economyOverTime, $this->cacheDuration);
         return $economyOverTime;
     }
 
@@ -512,7 +512,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -616,7 +616,7 @@ class Stats
             "peers" => $peers,
         ];
 
-        $app->cacheOld->cache_value($cacheKey, $trackerEconomy, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $trackerEconomy, $this->cacheDuration);
         return $trackerEconomy;
 
         /*
@@ -641,7 +641,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -676,7 +676,7 @@ class Stats
 
         $torrentsTimeline = ["uploads" => $uploads, "deletes" => $deletes];
 
-        $app->cacheOld->cache_value($cacheKey, $torrentsTimeline, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $torrentsTimeline, $this->cacheDuration);
         return $torrentsTimeline;
     }
 
@@ -689,7 +689,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -724,7 +724,7 @@ class Stats
 
         $usersTimeline = ["registrations" => $registrations, "disables" => $disables];
 
-        $app->cacheOld->cache_value($cacheKey, $usersTimeline, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $usersTimeline, $this->cacheDuration);
         return $usersTimeline;
     }
 
@@ -737,7 +737,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -761,7 +761,7 @@ class Stats
         $categoryDistribution = array_flip($categoryDistribution);
 
         # [$name => $torrents]
-        $app->cacheOld->cache_value($cacheKey, $categoryDistribution, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $categoryDistribution, $this->cacheDuration);
         return $categoryDistribution;
     }
 
@@ -774,7 +774,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -794,7 +794,7 @@ class Stats
             $classDistribution[$k] = intval($v);
         }
 
-        $app->cacheOld->cache_value($cacheKey, $classDistribution, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $classDistribution, $this->cacheDuration);
         return $classDistribution;
     }
 
@@ -807,7 +807,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -849,7 +849,7 @@ class Stats
         # unset unused
         unset($databaseSpecifics["indexSize"]);
 
-        $app->cacheOld->cache_value($cacheKey, $databaseSpecifics, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $databaseSpecifics, $this->cacheDuration);
         return $databaseSpecifics;
     }
 
@@ -873,7 +873,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -908,7 +908,7 @@ class Stats
         $data["activeMonthlyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 30) ]);
         $data["activeMonthlyPercent"] = $data["activeMonthlyCount"] / ($data["userCount"] * 100);
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 
@@ -924,7 +924,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -959,7 +959,7 @@ class Stats
         # request filled percent
         $data["requestFilledPercent"] = $data["requestFilledCount"] / ($data["requestTotalCount"] * 100);
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 
@@ -977,7 +977,7 @@ class Stats
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -1005,7 +1005,7 @@ class Stats
         $data["peerCount"] = $data["seederCount"] + $data["leecherCount"];
         $data["seederLeecherRatio"] = Format::get_ratio($data["seederCount"], $data["leecherCount"]);
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 } # class

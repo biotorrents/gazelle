@@ -147,7 +147,7 @@ foreach ($Artists as $Artist) {
           `UserID` = '{$app->userNew->core['id']}'
         "); // Why does this even happen
 
-        $app->cacheOld->delete_value('artist_groups_'.$ArtistID);
+        $app->cacheNew->delete('artist_groups_'.$ArtistID);
     }
 }
 
@@ -188,7 +188,7 @@ foreach ($CurrArtists as $CurrArtist) {
             ");
 
 
-            $app->cacheOld->delete_value('artist_groups_'.$ArtistID);
+            $app->cacheNew->delete('artist_groups_'.$ArtistID);
 
             if (!$app->dbOld->has_results()) {
                 $app->dbOld->prepared_query("
@@ -221,9 +221,9 @@ WHERE
 
 
 while (list($TorrentID) = $app->dbOld->next_record()) {
-    $app->cacheOld->delete_value("torrent_download_$TorrentID");
+    $app->cacheNew->delete("torrent_download_$TorrentID");
 }
 
 Torrents::update_hash($group_id);
-$app->cacheOld->delete_value("torrents_details_$group_id");
+$app->cacheNew->delete("torrents_details_$group_id");
 Http::redirect("torrents.php?id=$group_id");

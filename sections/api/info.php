@@ -14,7 +14,7 @@ if ($app->userNew->extra['BytesUploaded'] == 0 && $app->userNew->extra['BytesDow
 }
 
 $MyNews = $app->userNew->extra['LastReadNews'];
-$CurrentNews = $app->cacheOld->get_value('news_latest_id');
+$CurrentNews = $app->cacheNew->get('news_latest_id');
 if ($CurrentNews === false) {
     $app->dbOld->query("
     SELECT ID
@@ -26,10 +26,10 @@ if ($CurrentNews === false) {
     } else {
         $CurrentNews = -1;
     }
-    $app->cacheOld->cache_value('news_latest_id', $CurrentNews, 0);
+    $app->cacheNew->set('news_latest_id', $CurrentNews, 0);
 }
 
-$NewMessages = $app->cacheOld->get_value('inbox_new_' . $app->userNew->core['id']);
+$NewMessages = $app->cacheNew->get('inbox_new_' . $app->userNew->core['id']);
 if ($NewMessages === false) {
     $app->dbOld->query("
     SELECT COUNT(UnRead)
@@ -38,11 +38,11 @@ if ($NewMessages === false) {
       AND UnRead = '1'
       AND InInbox = '1'");
     list($NewMessages) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('inbox_new_' . $app->userNew->core['id'], $NewMessages, 0);
+    $app->cacheNew->set('inbox_new_' . $app->userNew->core['id'], $NewMessages, 0);
 }
 
 if (check_perms('site_torrents_notify')) {
-    $NewNotifications = $app->cacheOld->get_value('notifications_new_' . $app->userNew->core['id']);
+    $NewNotifications = $app->cacheNew->get('notifications_new_' . $app->userNew->core['id']);
     if ($NewNotifications === false) {
         $app->dbOld->query("
       SELECT COUNT(UserID)
@@ -54,13 +54,13 @@ if (check_perms('site_torrents_notify')) {
             $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID='{$app->userNew->core['id']}'");
             $app->dbOld->query("DELETE FROM users_notify_filters WHERE UserID='{$app->userNew->core['id']}'");
         } */
-        $app->cacheOld->cache_value('notifications_new_' . $app->userNew->core['id'], $NewNotifications, 0);
+        $app->cacheNew->set('notifications_new_' . $app->userNew->core['id'], $NewNotifications, 0);
     }
 }
 
 // News
 $MyNews = $app->userNew->extra['LastReadNews'];
-$CurrentNews = $app->cacheOld->get_value('news_latest_id');
+$CurrentNews = $app->cacheNew->get('news_latest_id');
 if ($CurrentNews === false) {
     $app->dbOld->query("
     SELECT ID
@@ -72,12 +72,12 @@ if ($CurrentNews === false) {
     } else {
         $CurrentNews = -1;
     }
-    $app->cacheOld->cache_value('news_latest_id', $CurrentNews, 0);
+    $app->cacheNew->set('news_latest_id', $CurrentNews, 0);
 }
 
 // Blog
 $MyBlog = $app->userNew->extra['LastReadBlog'];
-$CurrentBlog = $app->cacheOld->get_value('blog_latest_id');
+$CurrentBlog = $app->cacheNew->get('blog_latest_id');
 if ($CurrentBlog === false) {
     $app->dbOld->query("
     SELECT ID
@@ -90,7 +90,7 @@ if ($CurrentBlog === false) {
     } else {
         $CurrentBlog = -1;
     }
-    $app->cacheOld->cache_value('blog_latest_id', $CurrentBlog, 0);
+    $app->cacheNew->set('blog_latest_id', $CurrentBlog, 0);
 }
 
 // Subscriptions

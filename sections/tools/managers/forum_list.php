@@ -36,7 +36,7 @@ $ForumArray = $app->dbOld->to_array(); // used for generating the 'parent' drop 
 
 // Replace the old hard-coded forum categories
 unset($ForumCats);
-$ForumCats = $app->cacheOld->get_value('forums_categories');
+$ForumCats = $app->cacheNew->get('forums_categories');
 if ($ForumCats === false) {
     $app->dbOld->query('
     SELECT ID, Name
@@ -45,7 +45,7 @@ if ($ForumCats === false) {
     while (list($ID, $Name) = $app->dbOld->next_record()) {
         $ForumCats[$ID] = $Name;
     }
-    $app->cacheOld->cache_value('forums_categories', $ForumCats, 0); //Inf cache.
+    $app->cacheNew->set('forums_categories', $ForumCats, 0); //Inf cache.
 }
 
 $app->dbOld->query('

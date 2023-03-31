@@ -31,8 +31,8 @@ if (check_perms('admin_manage_blog')) {
             UPDATE blog
             SET ThreadID = NULL
             WHERE ID = ".$_GET['id']);
-                    $app->cacheOld->delete_value('blog');
-                    $app->cacheOld->delete_value('feed_blog');
+                    $app->cacheNew->delete('blog');
+                    $app->cacheNew->delete('feed_blog');
                 }
                 Http::redirect("blog.php");
                 break;
@@ -47,8 +47,8 @@ if (check_perms('admin_manage_blog')) {
               Body = '".db_string($_POST['body'])."',
               ThreadID = ".$_POST['thread']."
             WHERE ID = '".db_string($_POST['blogid'])."'");
-                    $app->cacheOld->delete_value('blog');
-                    $app->cacheOld->delete_value('feed_blog');
+                    $app->cacheNew->delete('blog');
+                    $app->cacheNew->delete('feed_blog');
                 }
                 Http::redirect("blog.php");
                 break;
@@ -70,8 +70,8 @@ if (check_perms('admin_manage_blog')) {
                     $app->dbOld->prepared_query("
             DELETE FROM blog
             WHERE ID = '".db_string($_GET['id'])."'");
-                    $app->cacheOld->delete_value('blog');
-                    $app->cacheOld->delete_value('feed_blog');
+                    $app->cacheNew->delete('blog');
+                    $app->cacheNew->delete('feed_blog');
                 }
                 Http::redirect("blog.php");
                 break;
@@ -107,15 +107,15 @@ if (check_perms('admin_manage_blog')) {
             NOW(),
             $ThreadID,
             '".((isset($_POST['important']) && $_POST['important'] == '1') ? '1' : '0')."')");
-                $app->cacheOld->delete_value('blog');
+                $app->cacheNew->delete('blog');
                 if ($_POST['important'] == '1') {
-                    $app->cacheOld->delete_value('blog_latest_id');
+                    $app->cacheNew->delete('blog_latest_id');
                 }
                 if (isset($_POST['subscribe'])) {
                     $app->dbOld->prepared_query("
             INSERT IGNORE INTO users_subscriptions
             VALUES ('{$app->userNew->core['id']}', $ThreadID)");
-                    $app->cacheOld->delete_value('subscriptions_user_'.$app->userNew->core['id']);
+                    $app->cacheNew->delete('subscriptions_user_'.$app->userNew->core['id']);
                 }
 
                 Http::redirect("blog.php");
@@ -168,7 +168,7 @@ if (check_perms('admin_manage_blog')) {
 ?>
 <div>
     <?php
-if (!$Blog = $app->cacheOld->get_value('blog')) {
+if (!$Blog = $app->cacheNew->get('blog')) {
     $app->dbOld->prepared_query("
     SELECT
       b.ID,
@@ -183,7 +183,7 @@ if (!$Blog = $app->cacheOld->get_value('blog')) {
     ORDER BY Time DESC
     LIMIT 20");
     $Blog = $app->dbOld->to_array();
-    $app->cacheOld->cache_value('blog', $Blog, 1209600);
+    $app->cacheNew->set('blog', $Blog, 1209600);
 }
 
 if ($app->userNew->extra['LastReadBlog'] < $Blog[0][0]) {

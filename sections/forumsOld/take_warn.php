@@ -79,7 +79,7 @@ $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGU
 $app->cacheOld->begin_transaction("thread_$TopicID" . "_catalogue_$CatalogueID");
 if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
     $app->cacheOld->cancel_transaction();
-    $app->cacheOld->delete_value("thread_$TopicID" . "_catalogue_$CatalogueID");
+    $app->cacheNew->delete("thread_$TopicID" . "_catalogue_$CatalogueID");
 //just clear the cache for would be cache-screwer-uppers
 } else {
     $app->cacheOld->update_row($Key, array(
@@ -100,7 +100,7 @@ if ($ThreadInfo['StickyPostID'] == $PostID) {
     $ThreadInfo['StickyPost']['Body'] = $Body;
     $ThreadInfo['StickyPost']['EditedUserID'] = $app->userNew->core['id'];
     $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-    $app->cacheOld->cache_value("thread_$TopicID" . '_info', $ThreadInfo, 0);
+    $app->cacheNew->set("thread_$TopicID" . '_info', $ThreadInfo, 0);
 }
 
 $app->dbOld->prepared_query("
@@ -108,6 +108,6 @@ $app->dbOld->prepared_query("
     (Page, PostID, EditUser, EditTime, Body)
   VALUES
     ('forums', $PostID, $UserID, '$SQLTime', '" . db_string($OldBody) . "')");
-$app->cacheOld->delete_value("forums_edits_$PostID");
+$app->cacheNew->delete("forums_edits_$PostID");
 
 Http::redirect("forums.php?action=viewthread&postid=$PostID#post$PostID");

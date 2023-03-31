@@ -141,31 +141,31 @@ if (isset($_POST['confirm'])) {
     // Cache clearing
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
-            $app->cacheOld->delete_value("groups_artists_$GroupID");
+            $app->cacheNew->delete("groups_artists_$GroupID");
             Torrents::update_hash($GroupID);
         }
     }
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
-            $app->cacheOld->delete_value("request_artists_$RequestID");
+            $app->cacheNew->delete("request_artists_$RequestID");
             Requests::update_sphinx_requests($RequestID);
         }
     }
     if (!empty($BookmarkUsers)) {
         foreach ($BookmarkUsers as $UserID) {
-            $app->cacheOld->delete_value("notify_artists_$UserID");
+            $app->cacheNew->delete("notify_artists_$UserID");
         }
     }
     if (!empty($Collages)) {
         foreach ($Collages as $CollageID) {
-            $app->cacheOld->delete_value("collage_$CollageID");
+            $app->cacheNew->delete("collage_$CollageID");
         }
     }
 
-    $app->cacheOld->delete_value("artist_$ArtistID");
-    $app->cacheOld->delete_value("artist_$NewArtistID");
-    $app->cacheOld->delete_value("artist_groups_$ArtistID");
-    $app->cacheOld->delete_value("artist_groups_$NewArtistID");
+    $app->cacheNew->delete("artist_$ArtistID");
+    $app->cacheNew->delete("artist_$NewArtistID");
+    $app->cacheNew->delete("artist_groups_$ArtistID");
+    $app->cacheNew->delete("artist_groups_$NewArtistID");
 
     // Delete the old artist
     $app->dbOld->query("

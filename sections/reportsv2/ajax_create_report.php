@@ -84,7 +84,7 @@ $app->dbOld->prepared_query("
 
 $ReportID = $app->dbOld->inserted_id();
 
-$app->cacheOld->delete_value("reports_torrent_$TorrentID");
-$app->cacheOld->increment('num_torrent_reportsv2');
+$app->cacheNew->delete("reports_torrent_$TorrentID");
+$app->cacheNew->increment('num_torrent_reportsv2');
 
 echo $ReportID;

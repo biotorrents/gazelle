@@ -21,7 +21,7 @@ $app = \Gazelle\App::go();
 
 enforce_login();
 
-$StaffIDs = $app->cacheOld->get_value('staff_ids');
+$StaffIDs = $app->cacheNew->get('staff_ids');
 if (!is_array($StaffIDs)) {
     $app->dbOld->query("
     SELECT m.ID, m.Username
@@ -32,7 +32,7 @@ if (!is_array($StaffIDs)) {
         $StaffIDs[$StaffID] = $StaffName;
     }
     uasort($StaffIDs, 'strcasecmp');
-    $app->cacheOld->cache_value('staff_ids', $StaffIDs);
+    $app->cacheNew->set('staff_ids', $StaffIDs);
 }
 
 if (!isset($_REQUEST['action'])) {

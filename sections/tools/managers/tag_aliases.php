@@ -36,7 +36,7 @@ if (check_perms('users_mod')) {
         DELETE FROM tag_aliases
         WHERE ID = '$aliasid'");
         }
-        $app->cacheOld->delete_value('tag_aliases_search');
+        $app->cacheNew->delete('tag_aliases_search');
     }
 }
 ?>

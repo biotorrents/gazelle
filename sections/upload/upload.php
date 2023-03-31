@@ -179,7 +179,7 @@ $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 /**
  * Genre tags
  */
-$GenreTags = $app->cacheOld->get_value('genre_tags');
+$GenreTags = $app->cacheNew->get('genre_tags');
 if (!$GenreTags) {
     $app->dbOld->query("
     SELECT
@@ -193,7 +193,7 @@ if (!$GenreTags) {
     ");
 
     $GenreTags = $app->dbOld->collect('Name');
-    $app->cacheOld->cache_value('genre_tags', $GenreTags, 3600 * 6);
+    $app->cacheNew->set('genre_tags', $GenreTags, 3600 * 6);
 }
 
 # Twig based class

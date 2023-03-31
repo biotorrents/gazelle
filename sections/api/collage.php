@@ -12,7 +12,7 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
 
 $CollageID = $_GET['id'];
 $cacheKey = "collage_$CollageID";
-$CollageData = $app->cacheOld->get_value($cacheKey);
+$CollageData = $app->cacheNew->get($cacheKey);
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
@@ -171,7 +171,7 @@ if (isset($SetCache)) {
       $Updated,
       (int) $Subscribers
     );
-    $app->cacheOld->cache_value($cacheKey, $CollageData, 3600);
+    $app->cacheNew->set($cacheKey, $CollageData, 3600);
 }
 
 json_print('success', $JSON);

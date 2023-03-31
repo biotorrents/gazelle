@@ -35,7 +35,7 @@ if (!(preg_match("/{$app->env->regexImage}/i", $URL, $Matches) || preg_match("/$
 */
 
 if (isset($_GET['c'])) {
-    list($Data, $FileType) = $app->cacheOld->get_value('image_cache_'.md5($URL));
+    list($Data, $FileType) = $app->cacheNew->get('image_cache_'.md5($URL));
     $cached = true;
 }
 
@@ -59,7 +59,7 @@ if (!isset($Data) || !$Data) {
     }
 
     if (isset($_GET['c']) && strlen($Data) < 524288 && substr($Data, 0, 1) != '<') {
-        $app->cacheOld->cache_value('image_cache_'.md5($URL), array($Data, $FileType), 3600 * 24 * 7);
+        $app->cacheNew->set('image_cache_'.md5($URL), array($Data, $FileType), 3600 * 24 * 7);
     }
 }
 
@@ -85,7 +85,7 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
         $PMSubject = 'Your donor icon has been automatically reset';
     }
 
-    $UserInfo = $app->cacheOld->get_value($cacheKey, true);
+    $UserInfo = $app->cacheNew->get($cacheKey, true);
     if ($UserInfo !== false) {
         if ($UserInfo[$dbColumn] === '') {
             // This image has already been reset
@@ -93,7 +93,7 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
         }
 
         $UserInfo[$dbColumn] = '';
-        $app->cacheOld->cache_value($cacheKey, $UserInfo, 2592000); // cache for 30 days
+        $app->cacheNew->set($cacheKey, $UserInfo, 2592000); // cache for 30 days
     }
 
     // Reset the avatar or donor icon URL
@@ -109,7 +109,7 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
       WHERE UserID = '$UserID'");
 
     // Clear cache keys
-    $app->cacheOld->delete_value($cacheKey);
+    $app->cacheNew->delete($cacheKey);
     Misc::send_pm($UserID, 0, $PMSubject, $PrivMessage);
 }
 

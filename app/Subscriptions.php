@@ -79,7 +79,7 @@ class Subscriptions
                 $PageID,
                 $PostID
             );
-            $app->cacheOld->delete_value("notify_quoted_$UserID");
+            $app->cacheNew->delete("notify_quoted_$UserID");
             if ($Page == 'forums') {
                 $URL = site_url() . "forums.php?action=viewthread&postid=$PostID";
             } else {
@@ -120,7 +120,7 @@ class Subscriptions
             array_push($UserSubscriptions, $TopicID);
         }
         $app->cacheOld->replace_value("subscriptions_user_$UserID", $UserSubscriptions, 0);
-        $app->cacheOld->delete_value("subscriptions_user_new_$UserID");
+        $app->cacheNew->delete("subscriptions_user_new_$UserID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -159,7 +159,7 @@ class Subscriptions
             array_push($UserCommentSubscriptions, array($Page, $PageID));
         }
         $app->cacheOld->replace_value("subscriptions_comments_user_$UserID", $UserCommentSubscriptions, 0);
-        $app->cacheOld->delete_value("subscriptions_comments_user_new_$UserID");
+        $app->cacheNew->delete("subscriptions_comments_user_new_$UserID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -179,14 +179,14 @@ class Subscriptions
             $UserID = $app->userNew->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
-        $UserSubscriptions = $app->cacheOld->get_value("subscriptions_user_$UserID");
+        $UserSubscriptions = $app->cacheNew->get("subscriptions_user_$UserID");
         if ($UserSubscriptions === false) {
             $app->dbOld->query('
         SELECT TopicID
         FROM users_subscriptions
         WHERE UserID = ' . db_string($UserID));
             $UserSubscriptions = $app->dbOld->collect(0);
-            $app->cacheOld->cache_value("subscriptions_user_$UserID", $UserSubscriptions, 0);
+            $app->cacheNew->set("subscriptions_user_$UserID", $UserSubscriptions, 0);
         }
         $app->dbOld->set_query_id($QueryID);
         return $UserSubscriptions;
@@ -207,14 +207,14 @@ class Subscriptions
             $UserID = $app->userNew->core["id"];
         }
         $QueryID = $app->dbOld->get_query_id();
-        $UserCommentSubscriptions = $app->cacheOld->get_value("subscriptions_comments_user_$UserID");
+        $UserCommentSubscriptions = $app->cacheNew->get("subscriptions_comments_user_$UserID");
         if ($UserCommentSubscriptions === false) {
             $app->dbOld->query('
         SELECT Page, PageID
         FROM users_subscriptions_comments
         WHERE UserID = ' . db_string($UserID));
             $UserCommentSubscriptions = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value("subscriptions_comments_user_$UserID", $UserCommentSubscriptions, 0);
+            $app->cacheNew->set("subscriptions_comments_user_$UserID", $UserCommentSubscriptions, 0);
         }
         $app->dbOld->set_query_id($QueryID);
         return $UserCommentSubscriptions;
@@ -232,7 +232,7 @@ class Subscriptions
 
         $QueryID = $app->dbOld->get_query_id();
 
-        $NewSubscriptions = $app->cacheOld->get_value('subscriptions_user_new_' . $app->userNew->core["id"]);
+        $NewSubscriptions = $app->cacheNew->get('subscriptions_user_new_' . $app->userNew->core["id"]);
         if ($NewSubscriptions === false) {
             // forum subscriptions
             $app->dbOld->query("
@@ -259,7 +259,7 @@ class Subscriptions
             list($NewCommentSubscriptions) = $app->dbOld->next_record();
 
             $NewSubscriptions = $NewForumSubscriptions + $NewCommentSubscriptions;
-            $app->cacheOld->cache_value('subscriptions_user_new_' . $app->userNew->core["id"], $NewSubscriptions, 0);
+            $app->cacheNew->set('subscriptions_user_new_' . $app->userNew->core["id"], $NewSubscriptions, 0);
         }
         $app->dbOld->set_query_id($QueryID);
         return (int)$NewSubscriptions;
@@ -275,7 +275,7 @@ class Subscriptions
     {
         $app = \Gazelle\App::go();
 
-        $QuoteNotificationsCount = $app->cacheOld->get_value('notify_quoted_' . $app->userNew->core["id"]);
+        $QuoteNotificationsCount = $app->cacheNew->get('notify_quoted_' . $app->userNew->core["id"]);
         if ($QuoteNotificationsCount === false) {
             $sql = "
         SELECT COUNT(1)
@@ -291,7 +291,7 @@ class Subscriptions
             $app->dbOld->query($sql);
             list($QuoteNotificationsCount) = $app->dbOld->next_record();
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value('notify_quoted_' . $app->userNew->core["id"], $QuoteNotificationsCount, 0);
+            $app->cacheNew->set('notify_quoted_' . $app->userNew->core["id"], $QuoteNotificationsCount, 0);
         }
         return (int)$QuoteNotificationsCount;
     }
@@ -350,7 +350,7 @@ class Subscriptions
         }
         $Subscribers = $app->dbOld->collect('UserID');
         foreach ($Subscribers as $Subscriber) {
-            $app->cacheOld->delete_value("subscriptions_user_new_$Subscriber");
+            $app->cacheNew->delete("subscriptions_user_new_$Subscriber");
         }
         $app->dbOld->set_query_id($QueryID);
     }
@@ -466,7 +466,7 @@ class Subscriptions
         AND PageID = $PageID");
         $Subscribers = $app->dbOld->collect('UserID');
         foreach ($Subscribers as $Subscriber) {
-            $app->cacheOld->delete_value("notify_quoted_$Subscriber");
+            $app->cacheNew->delete("notify_quoted_$Subscriber");
         }
         $app->dbOld->set_query_id($QueryID);
     }

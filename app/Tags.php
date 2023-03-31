@@ -186,7 +186,7 @@ class Tags
     {
         $app = \Gazelle\App::go();
 
-        $TagAliases = $app->cacheOld->get_value('tag_aliases_search');
+        $TagAliases = $app->cacheNew->get('tag_aliases_search');
         if ($TagAliases === false) {
             $app->dbOld->query('
             SELECT ID, BadTag, AliasTag
@@ -206,7 +206,7 @@ class Tags
                     }
                 }
             }
-            $app->cacheOld->cache_value('tag_aliases_search', $TagAliases, 3600 * 24 * 7); // cache for 7 days
+            $app->cacheNew->set('tag_aliases_search', $TagAliases, 3600 * 24 * 7); // cache for 7 days
         }
         return $TagAliases;
     }

@@ -31,13 +31,13 @@ if (empty($_GET["feed"])
 
 
 $userId = intval($_GET["user"]);
-$enabled = $app->cacheOld->get_value("enabled_{$userId}");
+$enabled = $app->cacheNew->get("enabled_{$userId}");
 
 if (!$enabled) {
     $app->dbOld->query("select enabled from users_main where id = {$userId}");
 
     list($enabled) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value("enabled_{$userId}", $enabled, 0);
+    $app->cacheNew->set("enabled_{$userId}", $enabled, 0);
 }
 
 # check for RSS auth

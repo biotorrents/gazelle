@@ -23,7 +23,7 @@ if (!$AutoSuggest) {
     ORDER BY TagType = 'genre' DESC, Uses DESC
     LIMIT $Limit");
     $AutoSuggest = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-    $app->cacheOld->cache_value("autocomplete_tags_{$KeySize}_$Letters", $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
+    $app->cacheNew->set("autocomplete_tags_{$KeySize}_$Letters", $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
 }
 
 $Matched = 0;

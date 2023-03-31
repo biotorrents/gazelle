@@ -23,6 +23,9 @@ class Cache # extends \Redis
     # default key lifetime (seconds)
     private $cacheDuration = 86400; # one day
 
+    # torrent group cache version
+    public const GROUP_VERSION = 5;
+
 
     /**
      * __functions
@@ -115,17 +118,6 @@ class Cache # extends \Redis
 
 
     /**
-     * get_value
-     *
-     * Wrapper for the old cache class.
-     */
-    public function get_value(string $key): mixed
-    {
-        return $this->get($key);
-    }
-
-
-    /**
      * set
      *
      * @param string $key the cache key
@@ -154,17 +146,6 @@ class Cache # extends \Redis
 
 
     /**
-     * cache_value
-     *
-     * Wrapper for the old cache class.
-     */
-    public function cache_value(string $key, mixed $value, ?int $cacheDuration = null): array
-    {
-        return $this->set($key, $value, $cacheDuration);
-    }
-
-
-    /**
      * delete
      *
      * @param string ...$keys the keys to delete
@@ -177,17 +158,6 @@ class Cache # extends \Redis
         foreach ($keys as $key) {
             self::$redis->unlink($key);
         }
-    }
-
-
-    /**
-     * delete_value
-     *
-     * Wrapper for the old cache class.
-     */
-    public function delete_value(string ...$keys)
-    {
-        return $this->delete($keys);
     }
 
 
@@ -284,5 +254,37 @@ class Cache # extends \Redis
     public function count(): int
     {
         return self::$redis->dbSize();
+    }
+
+
+    /** */
+
+
+    /**
+     * setQueryLock
+     *
+     * Set a query lock.
+     * Expires in an hour.
+     *
+     * @param string $lockName the name on the lock
+     * @return array the key/value pair
+     */
+    public function setQueryLock(string $lockName): array
+    {
+        return $this->set("query_lock_{$lockName}", 1, 3600);
+    }
+
+
+    /**
+     * clearQueryLock
+     *
+     * Remove a query lock.
+     *
+     * @param string $lockName the name on the lock
+     * @return void
+     */
+    public function clearQueryLock(string $lockName): void
+    {
+        $this->delete("query_lock_{$lockName}");
     }
 } # class

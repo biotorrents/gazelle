@@ -32,5 +32,5 @@ $app->dbOld->query("
   ) AS t
   ON DUPLICATE KEY UPDATE
     PostID = LastPostID");
-$app->cacheOld->delete_value('subscriptions_user_new_'.$app->userNew->core['id']);
+$app->cacheNew->delete('subscriptions_user_new_'.$app->userNew->core['id']);
 Http::redirect("userhistory.php?action=subscriptions");

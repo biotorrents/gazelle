@@ -58,12 +58,12 @@ if ($app->userNew->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     SET LastVote = NOW()
     WHERE ID = $RequestID");
 
-    $app->cacheOld->delete_value("request_$RequestID");
-    $app->cacheOld->delete_value("request_votes_$RequestID");
+    $app->cacheNew->delete("request_$RequestID");
+    $app->cacheNew->delete("request_votes_$RequestID");
 
     $ArtistForm = Requests::get_artists($RequestID);
     foreach ($ArtistForm as $Artist) {
-        $app->cacheOld->delete_value('artists_requests_'.$Artist['id']);
+        $app->cacheNew->delete('artists_requests_'.$Artist['id']);
     }
 
     // Subtract amount from user
@@ -71,7 +71,7 @@ if ($app->userNew->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     UPDATE users_main
     SET Uploaded = (Uploaded - $Amount)
     WHERE ID = ".$app->userNew->core['id']);
-    $app->cacheOld->delete_value('user_stats_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('user_stats_'.$app->userNew->core['id']);
 
     Requests::update_sphinx_requests($RequestID);
     echo 'success';

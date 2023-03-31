@@ -39,7 +39,7 @@ class Artists
                 continue;
             }
 
-            $creators = $app->cacheOld->get_value('groups_artists_'.$GroupID);
+            $creators = $app->cacheNew->get('groups_artists_'.$GroupID);
             if (is_array($creators)) {
                 $Results[$GroupID] = $creators;
             } else {
@@ -79,9 +79,9 @@ class Artists
             $app->dbOld->set_query_id($QueryID);
             foreach ($dbs as $GroupID) {
                 if (isset($New[$GroupID])) {
-                    $app->cacheOld->cache_value("groups_artists_$GroupID", $New[$GroupID]);
+                    $app->cacheNew->set("groups_artists_$GroupID", $New[$GroupID]);
                 } else {
-                    $app->cacheOld->cache_value("groups_artists_$GroupID", []);
+                    $app->cacheNew->set("groups_artists_$GroupID", []);
                 }
             }
 
@@ -246,7 +246,7 @@ class Artists
         WHERE
           `ArtistID` = '$creatorID'
         ");
-        $app->cacheOld->decrement('stats_artist_count');
+        $app->cacheNew->decrement('stats_artist_count');
 
         // Delete wiki revisions
         $app->dbOld->prepared_query("
@@ -268,8 +268,8 @@ class Artists
 
         // Delete artist comments, subscriptions and quote notifications
         Comments::delete_page('artist', $creatorID);
-        $app->cacheOld->delete_value("artist_$creatorID");
-        $app->cacheOld->delete_value("artist_groups_$creatorID");
+        $app->cacheNew->delete("artist_$creatorID");
+        $app->cacheNew->delete("artist_groups_$creatorID");
 
         // Record in log
         if (!empty($app->userNew->core['username'])) {

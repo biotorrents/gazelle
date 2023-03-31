@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!$News = $app->cacheOld->get_value('news')) {
+if (!$News = $app->cacheNew->get('news')) {
     $app->dbOld->query("
     SELECT
       ID,
@@ -14,8 +14,8 @@ if (!$News = $app->cacheOld->get_value('news')) {
     ORDER BY Time DESC
     LIMIT 5");
     $News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-    $app->cacheOld->cache_value('news', $News, 3600 * 24 * 30);
-    $app->cacheOld->cache_value('news_latest_id', $News[0][0], 0);
+    $app->cacheNew->set('news', $News, 3600 * 24 * 30);
+    $app->cacheNew->set('news_latest_id', $News[0][0], 0);
 }
 
 if ($app->userNew->extra['LastReadNews'] != $News[0][0]) {
@@ -29,7 +29,7 @@ if ($app->userNew->extra['LastReadNews'] != $News[0][0]) {
     $app->userNew->extra['LastReadNews'] = $News[0][0];
 }
 
-if (($Blog = $app->cacheOld->get_value('blog')) === false) {
+if (($Blog = $app->cacheNew->get('blog')) === false) {
     $app->dbOld->query("
     SELECT
       b.ID,
@@ -44,7 +44,7 @@ if (($Blog = $app->cacheOld->get_value('blog')) === false) {
     ORDER BY Time DESC
     LIMIT 20");
     $Blog = $app->dbOld->to_array();
-    $app->cacheOld->cache_value('blog', $Blog, 1209600);
+    $app->cacheNew->set('blog', $Blog, 1209600);
 }
 $JsonBlog = [];
 for ($i = 0; $i < 5; $i++) {

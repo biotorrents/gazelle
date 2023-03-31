@@ -135,7 +135,7 @@ if ($StickyPostID == $PostID) {
 $ThisCatalogue = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 $LastCatalogue = floor((POSTS_PER_PAGE * $Pages - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 for ($i = $ThisCatalogue; $i <= $LastCatalogue; $i++) {
-    $app->cacheOld->delete_value("thread_$TopicID"."_catalogue_$i");
+    $app->cacheNew->delete("thread_$TopicID"."_catalogue_$i");
 }
 
 $app->cacheOld->begin_transaction("thread_$TopicID".'_info');
@@ -146,7 +146,7 @@ $app->cacheOld->begin_transaction('forums_list');
 $app->cacheOld->update_row($ForumID, $UpdateArrayForums);
 $app->cacheOld->commit_transaction();
 
-$app->cacheOld->delete_value("forums_$ForumID");
+$app->cacheNew->delete("forums_$ForumID");
 
 Subscriptions::flush_subscriptions('forums', $TopicID);
 

@@ -48,7 +48,7 @@ if (count($blog) < 5) {
 
 # get the freeleeches
 # what the fuck
-$freeleeches = $app->cacheOld->get_value("shop_freeleech_list");
+$freeleeches = $app->cacheNew->get("shop_freeleech_list");
 if (!$freeleeches) {
     $query = "
         SELECT `TorrentID`, UNIX_TIMESTAMP(`ExpiryTime`),
@@ -64,7 +64,7 @@ if (!$freeleeches) {
     ";
 
     $freeleeches = $app->dbNew->multi($query);
-    $app->cacheOld->cache_value("shop_freeleech_list", $freeleeches, 3600 * 24 * 30);
+    $app->cacheNew->set("shop_freeleech_list", $freeleeches, 3600 * 24 * 30);
 }
 
 
@@ -112,17 +112,17 @@ exit;
 
   <!-- Polls -->
   <?php /*
-if (($TopicID = $app->cacheOld->get_value('polls_featured')) === false) {
+if (($TopicID = $app->cacheNew->get('polls_featured')) === false) {
     $app->dbOld->query("
     SELECT TopicID
     FROM forums_polls
     ORDER BY Featured DESC
     LIMIT 1");
     list($TopicID) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('polls_featured', $TopicID, 0);
+    $app->cacheNew->set('polls_featured', $TopicID, 0);
 }
 if ($TopicID) {
-    if (($Poll = $app->cacheOld->get_value("polls_$TopicID")) === false) {
+    if (($Poll = $app->cacheNew->get("polls_$TopicID")) === false) {
         $app->dbOld->query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
@@ -148,7 +148,7 @@ if ($TopicID) {
                 $Votes[$i] = 0;
             }
         }
-        $app->cacheOld->cache_value("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+        $app->cacheNew->set("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
     } else {
         list($Question, $Answers, $Votes, $Featured, $Closed) = $Poll;
     }
@@ -230,8 +230,8 @@ if ($TopicID) {
 <div class="main_column two-thirds column">
   <?php
 /*
-$Recommend = $app->cacheOld->get_value('recommend');
-$Recommend_artists = $app->cacheOld->get_value('recommend_artists');
+$Recommend = $app->cacheNew->get('recommend');
+$Recommend_artists = $app->cacheNew->get('recommend_artists');
 
 if (!is_array($Recommend) || !is_array($Recommend_artists)) {
     $app->dbOld->query("
@@ -256,14 +256,14 @@ if (!is_array($Recommend) || !is_array($Recommend_artists)) {
     ");
 
     $Recommend = $app->dbOld->to_array();
-    $app->cacheOld->cache_value('recommend', $Recommend, 1209600);
+    $app->cacheNew->set('recommend', $Recommend, 1209600);
 
     $Recommend_artists = Artists::get_artists($app->dbOld->collect('GroupID'));
-    $app->cacheOld->cache_value('recommend_artists', $Recommend_artists, 1209600);
+    $app->cacheNew->set('recommend_artists', $Recommend_artists, 1209600);
 }
 
 if (count($Recommend) >= 4) {
-    $app->cacheOld->increment('usage_index'); ?>
+    $app->cacheNew->increment('usage_index'); ?>
   <div class="box" id="recommended">
     <div class="head colhead_dark">
       <strong>Latest Vanity House additions</strong>

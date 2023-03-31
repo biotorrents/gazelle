@@ -91,7 +91,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_per
       (Page, PostID, EditUser, EditTime, Body)
     VALUES
       ('forums', ?, ?, ?, ?)", $PostID, $app->userNew->core['id'], $SQLTime, $OldBody);
-    $app->cacheOld->delete_value("forums_edits_$PostID");
+    $app->cacheNew->delete("forums_edits_$PostID");
 
     //Get the catalogue it is in
     $CatalogueID = floor((POSTS_PER_PAGE * ceil($ThreadInfo['Posts'] / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
@@ -106,7 +106,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_per
         $ThreadInfo['StickyPost']['Body'] .= "\n\n".$Body;
         $ThreadInfo['StickyPost']['EditedUserID'] = $app->userNew->core['id'];
         $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-        $app->cacheOld->cache_value("thread_$TopicID".'_info', $ThreadInfo, 0);
+        $app->cacheNew->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
     //Edit the post in the cache
@@ -156,7 +156,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_per
     WHERE ID = ?", $PostID, $app->userNew->core['id'], $SQLTime, $TopicID);
 
     // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-    if ($Forum = $app->cacheOld->get_value("forums_$ForumID")) {
+    if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
         list($Forum, , , $Stickies) = $Forum;
 
         // if the topic is already on this page
@@ -225,7 +225,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_per
         } else {
             $Forum = $Part1 + $Part2 + $Part3; //Merge it
         }
-        $app->cacheOld->cache_value("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
+        $app->cacheNew->set("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
         //Update the forum root
         $app->cacheOld->begin_transaction('forums_list');
@@ -242,7 +242,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->userNew->core['id'] && ((!check_per
         $app->cacheOld->commit_transaction(0);
     } else {
         //If there's no cache, we have no data, and if there's no data
-        $app->cacheOld->delete_value('forums_list');
+        $app->cacheNew->delete('forums_list');
     }
 
 

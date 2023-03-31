@@ -599,7 +599,7 @@ $Index++;
       <div class="head">
         <strong>Tags</strong>
         <?php
-        $DeletedTag = $app->cacheOld->get_value("deleted_tags_$GroupID".'_'.$user['ID']);
+        $DeletedTag = $app->cacheNew->get("deleted_tags_$GroupID".'_'.$user['ID']);
 if (!empty($DeletedTag)) { ?>
         <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag" />
@@ -821,11 +821,11 @@ foreach ($TorrentList as $Torrent) {
         $ExtraInfo .= $AddExtra.Format::torrent_label('Bad File Names', 'important_text');
     }
 
-    if (!($TorrentFileName = $app->cacheOld->get_value('torrent_file_name_'.$TorrentID))) {
+    if (!($TorrentFileName = $app->cacheNew->get('torrent_file_name_'.$TorrentID))) {
         $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
-        $app->cacheOld->cache_value('torrent_file_name_'.$TorrentID, $TorrentFileName);
+        $app->cacheNew->set('torrent_file_name_'.$TorrentID, $TorrentFileName);
     } ?>
 
         <tr
@@ -988,7 +988,7 @@ if (empty($user['DisableRequests']) && count($Requests) > 0) {
     </div>
     <?php
 }
-$Collages = $app->cacheOld->get_value("torrent_collages_$GroupID");
+$Collages = $app->cacheNew->get("torrent_collages_$GroupID");
 if (!is_array($Collages)) {
     $app->dbOld->query("
     SELECT c.Name, c.NumTorrents, c.ID
@@ -998,7 +998,7 @@ if (!is_array($Collages)) {
       AND Deleted = '0'
       AND CategoryID != '0'");
     $Collages = $app->dbOld->to_array();
-    $app->cacheOld->cache_value("torrent_collages_$GroupID", $Collages, 3600 * 6);
+    $app->cacheNew->set("torrent_collages_$GroupID", $Collages, 3600 * 6);
 }
 if (count($Collages) > 0) {
     if (count($Collages) > MAX_COLLAGES) {
@@ -1043,7 +1043,7 @@ if (count($Collages) > 0) {
     <?php
 }
 
-$PersonalCollages = $app->cacheOld->get_value("torrent_collages_personal_$GroupID");
+$PersonalCollages = $app->cacheNew->get("torrent_collages_personal_$GroupID");
 if (!is_array($PersonalCollages)) {
     $app->dbOld->query("
     SELECT c.Name, c.NumTorrents, c.ID
@@ -1053,7 +1053,7 @@ if (!is_array($PersonalCollages)) {
       AND Deleted = '0'
       AND CategoryID = '0'");
     $PersonalCollages = $app->dbOld->to_array(false, MYSQLI_NUM);
-    $app->cacheOld->cache_value("torrent_collages_personal_$GroupID", $PersonalCollages, 3600 * 6);
+    $app->cacheNew->set("torrent_collages_personal_$GroupID", $PersonalCollages, 3600 * 6);
 }
 
 if (count($PersonalCollages) > 0) {

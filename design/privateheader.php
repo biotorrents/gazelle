@@ -158,7 +158,7 @@ HTML;
 
 if (empty($app->userNew->extra['StyleURL'])) {
     /*
-      $StyleColors = $app->cacheOld->get_value('stylesheet_colors') ?? [];
+      $StyleColors = $app->cacheNew->get('stylesheet_colors') ?? [];
       if (empty($StyleColors)) {
           $app->dbOld->query('SELECT LOWER(REPLACE(Name, " ", "_")) AS Name, Color FROM stylesheets WHERE COLOR IS NOT NULL');
 
@@ -167,7 +167,7 @@ if (empty($app->userNew->extra['StyleURL'])) {
               $StyleName = $StyleName ?? "";
               $StyleColors[$StyleName] = $StyleColor ?? null;
           }
-          $app->cacheOld->cache_value('stylesheet_colors', $StyleColors, 0);
+          $app->cacheNew->set('stylesheet_colors', $StyleColors, 0);
       }
 
       if (isset($StyleColors[$app->userNew->extra['StyleName']])) { ?>
@@ -434,7 +434,7 @@ if (check_perms('users_mod')) {
 
 /** Buggy af rn 2022-01-12
 if (check_perms('users_mod')) {
-    $NumStaffPMs = $app->cacheOld->get_value('num_staff_pms_'.$app->userNew->core["id"]);
+    $NumStaffPMs = $app->cacheNew->get('num_staff_pms_'.$app->userNew->core["id"]);
     if ($NumStaffPMs === false) {
         if (check_perms('users_mod')) {
             $LevelCap = 1000;
@@ -457,7 +457,7 @@ if (check_perms('users_mod')) {
         }
 
         list($NumStaffPMs) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value('num_staff_pms_'.$app->userNew->core["id"], $NumStaffPMs, 1000);
+        $app->cacheNew->set('num_staff_pms_'.$app->userNew->core["id"], $NumStaffPMs, 1000);
     }
 
     if ($NumStaffPMs > 0) {
@@ -468,7 +468,7 @@ if (check_perms('users_mod')) {
 
 if (check_perms('admin_reports')) {
     // Torrent reports code
-    $NumTorrentReports = $app->cacheOld->get_value('num_torrent_reportsv2');
+    $NumTorrentReports = $app->cacheNew->get('num_torrent_reportsv2');
     if ($NumTorrentReports === false) {
         $app->dbOld->query("
           SELECT COUNT(ID)
@@ -476,13 +476,13 @@ if (check_perms('admin_reports')) {
           WHERE Status = 'New'");
 
         list($NumTorrentReports) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value('num_torrent_reportsv2', $NumTorrentReports, 0);
+        $app->cacheNew->set('num_torrent_reportsv2', $NumTorrentReports, 0);
     }
 
     $ModBar[] = '<a href="reportsv2.php">'.$NumTorrentReports.(($NumTorrentReports === 1) ? ' Report' : ' Reports').'</a>';
 
     // Other reports code
-    $NumOtherReports = $app->cacheOld->get_value('num_other_reports');
+    $NumOtherReports = $app->cacheNew->get('num_other_reports');
     if ($NumOtherReports === false) {
         $app->dbOld->query("
           SELECT COUNT(ID)
@@ -490,14 +490,14 @@ if (check_perms('admin_reports')) {
           WHERE Status = 'New'");
 
         list($NumOtherReports) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value('num_other_reports', $NumOtherReports, 0);
+        $app->cacheNew->set('num_other_reports', $NumOtherReports, 0);
     }
 
     if ($NumOtherReports > 0) {
         $ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports === 1) ? ' Other report' : ' Other reports').'</a>';
     }
 } elseif (check_perms('project_team')) {
-    $NumUpdateReports = $app->cacheOld->get_value('num_update_reports');
+    $NumUpdateReports = $app->cacheNew->get('num_update_reports');
     if ($NumUpdateReports === false) {
         $app->dbOld->query("
           SELECT COUNT(ID)
@@ -506,14 +506,14 @@ if (check_perms('admin_reports')) {
             AND Type = 'request_update'");
 
         list($NumUpdateReports) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value('num_update_reports', $NumUpdateReports, 0);
+        $app->cacheNew->set('num_update_reports', $NumUpdateReports, 0);
     }
 
     if ($NumUpdateReports > 0) {
         $ModBar[] = '<a href="reports.php">Request update reports</a>';
     }
 } elseif (check_perms('site_moderate_forums')) {
-    $NumForumReports = $app->cacheOld->get_value('num_forum_reports');
+    $NumForumReports = $app->cacheNew->get('num_forum_reports');
     if ($NumForumReports === false) {
         $app->dbOld->query("
           SELECT COUNT(ID)
@@ -522,7 +522,7 @@ if (check_perms('admin_reports')) {
             AND Type IN('artist_comment', 'collages_comment', 'post', 'requests_comment', 'thread', 'torrents_comment')");
 
         list($NumForumReports) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value('num_forum_reports', $NumForumReports, 0);
+        $app->cacheNew->set('num_forum_reports', $NumForumReports, 0);
     }
 
     if ($NumForumReports > 0) {
@@ -531,11 +531,11 @@ if (check_perms('admin_reports')) {
 }
 
 if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
-    $NumEnableRequests = $app->cacheOld->get_value(AutoEnable::CACHE_KEY_NAME);
+    $NumEnableRequests = $app->cacheNew->get(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
         $app->dbOld->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
         list($NumEnableRequests) = $app->dbOld->next_record();
-        $app->cacheOld->cache_value(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
+        $app->cacheNew->set(AutoEnable::CACHE_KEY_NAME, $NumEnableRequests);
     }
 
     if ($NumEnableRequests > 0) {

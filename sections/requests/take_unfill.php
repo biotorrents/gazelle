@@ -127,7 +127,7 @@ if ($UploaderID != $FillerID) {
     Misc::send_pm($UploaderID, 0, 'A request filled with your torrent has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username'].'[/url] for the reason: [quote]'.$_POST['reason']."[/quote]\nIf you feel like this request was unjustly unfilled, please [url=".site_url()."reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
 }
 
-$app->cacheOld->delete_value("user_stats_$FillerID");
+$app->cacheNew->delete("user_stats_$FillerID");
 
 if ($UserID != $app->userNew->core['id']) {
     Misc::send_pm($UserID, 0, 'A request you created has been unfilled', "The request \"[url=".site_url()."requests.php?action=view&amp;id=$RequestID]$FullName"."[/url]\" was unfilled by [url=".site_url().'user.php?id='.$app->userNew->core['id'].']'.$app->userNew->core['username']."[/url] for the reason: [quote]".$_POST['reason'].'[/quote]');
@@ -135,17 +135,17 @@ if ($UserID != $app->userNew->core['id']) {
 
 Misc::write_log("Request $RequestID ($FullName), with a ".Format::get_size($RequestVotes['TotalBounty']).' bounty, was unfilled by user '.$app->userNew->core['id'].' ('.$app->userNew->core['username'].') for the reason: '.$_POST['reason']);
 
-$app->cacheOld->delete_value("request_$RequestID");
-$app->cacheOld->delete_value("request_artists_$RequestID");
+$app->cacheNew->delete("request_$RequestID");
+$app->cacheNew->delete("request_artists_$RequestID");
 if ($GroupID) {
-    $app->cacheOld->delete_value("requests_group_$GroupID");
+    $app->cacheNew->delete("requests_group_$GroupID");
 }
 
 Requests::update_sphinx_requests($RequestID);
 
 if (!empty($ArtistForm)) {
     foreach ($ArtistForm as $Artist) {
-        $app->cacheOld->delete_value('artists_requests_'.$Artist['id']);
+        $app->cacheNew->delete('artists_requests_'.$Artist['id']);
     }
 }
 

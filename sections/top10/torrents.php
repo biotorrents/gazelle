@@ -193,9 +193,9 @@ ON
 ";
 
 if ($Details === 'all' || $Details === 'day') {
-    $TopTorrentsActiveLastDay = $app->cacheOld->get_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastDay = $app->cacheNew->get('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastDay === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             $DayAgo = time_minus(86400);
             $Query = $BaseQuery.' WHERE t.Seeders>0 AND ';
 
@@ -211,8 +211,8 @@ if ($Details === 'all' || $Details === 'day') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastDay = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_day_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastDay, 3600 * 2);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_day_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastDay, 3600 * 2);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastDay = false;
         }
@@ -220,9 +220,9 @@ if ($Details === 'all' || $Details === 'day') {
     generate_torrent_table('Most Active Torrents Uploaded in the Past Day', 'day', $TopTorrentsActiveLastDay, $Limit);
 }
 if ($Details === 'all' || $Details === 'week') {
-    $TopTorrentsActiveLastWeek = $app->cacheOld->get_value('top10tor_week_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastWeek = $app->cacheNew->get('top10tor_week_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastWeek === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             $WeekAgo = time_minus(604800);
             $Query = $BaseQuery.' WHERE ';
 
@@ -238,8 +238,8 @@ if ($Details === 'all' || $Details === 'week') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastWeek = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_week_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastWeek, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_week_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastWeek, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastWeek = false;
         }
@@ -248,9 +248,9 @@ if ($Details === 'all' || $Details === 'week') {
 }
 
 if ($Details === 'all' || $Details === 'month') {
-    $TopTorrentsActiveLastMonth = $app->cacheOld->get_value('top10tor_month_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastMonth = $app->cacheNew->get('top10tor_month_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastMonth === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             $Query = $BaseQuery.' WHERE ';
 
             if (!empty($Where)) {
@@ -265,8 +265,8 @@ if ($Details === 'all' || $Details === 'month') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastMonth = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_month_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastMonth, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_month_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastMonth, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastMonth = false;
         }
@@ -275,9 +275,9 @@ if ($Details === 'all' || $Details === 'month') {
 }
 
 if ($Details === 'all' || $Details === 'year') {
-    $TopTorrentsActiveLastYear = $app->cacheOld->get_value('top10tor_year_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastYear = $app->cacheNew->get('top10tor_year_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveLastYear === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>200 in order to speed up this query. You should remove it!
             $Query = $BaseQuery.' WHERE ';
             if ($Details === 'all' && !$Filtered) {
@@ -297,8 +297,8 @@ if ($Details === 'all' || $Details === 'year') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastYear = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_year_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastYear, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_year_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastYear, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastYear = false;
         }
@@ -307,9 +307,9 @@ if ($Details === 'all' || $Details === 'year') {
 }
 
 if ($Details === 'all' || $Details === 'overall') {
-    $TopTorrentsActiveAllTime = $app->cacheOld->get_value('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveAllTime = $app->cacheNew->get('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsActiveAllTime === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>500 in order to speed up this query. You should remove it!
             $Query = $BaseQuery;
             if ($Details === 'all' && !$Filtered) {
@@ -328,8 +328,8 @@ if ($Details === 'all' || $Details === 'overall') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveAllTime = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveAllTime, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveAllTime, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveAllTime = false;
         }
@@ -338,9 +338,9 @@ if ($Details === 'all' || $Details === 'overall') {
 }
 
 if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
-    $TopTorrentsSnatched = $app->cacheOld->get_value('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsSnatched = $app->cacheNew->get('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsSnatched === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             $Query = $BaseQuery;
 
             if (!empty($Where)) {
@@ -354,8 +354,8 @@ if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsSnatched = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSnatched, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSnatched, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsSnatched = false;
         }
@@ -364,9 +364,9 @@ if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
 }
 
 if (($Details === 'all' || $Details === 'data') && !$Filtered) {
-    $TopTorrentsTransferred = $app->cacheOld->get_value('top10tor_data_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsTransferred = $app->cacheNew->get('top10tor_data_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsTransferred === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Snatched>100 in order to speed up this query. You should remove it!
             $Query = $BaseQuery;
             if ($Details === 'all') {
@@ -383,8 +383,8 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsTransferred = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_data_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsTransferred, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_data_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsTransferred, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsTransferred = false;
         }
@@ -393,9 +393,9 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
 }
 
 if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
-    $TopTorrentsSeeded = $app->cacheOld->get_value('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsSeeded = $app->cacheNew->get('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum);
     if ($TopTorrentsSeeded === false) {
-        if ($app->cacheOld->get_query_lock('top10')) {
+        if ($app->cacheNew->setQueryLock('top10')) {
             $Query = $BaseQuery;
             if (!empty($Where)) {
                 $Query .= ' WHERE '.$Where;
@@ -408,8 +408,8 @@ if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsSeeded = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cacheOld->cache_value('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSeeded, 3600 * 6);
-            $app->cacheOld->clear_query_lock('top10');
+            $app->cacheNew->set('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSeeded, 3600 * 6);
+            $app->cacheNew->clearQueryLock('top10');
         } else {
             $TopTorrentsSeeded = false;
         }

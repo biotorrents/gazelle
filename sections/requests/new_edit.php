@@ -282,7 +282,7 @@ View::header(
 
           <td>
             <?php
-              $GenreTags = $app->cacheOld->get_value('genre_tags');
+              $GenreTags = $app->cacheNew->get('genre_tags');
                 if (!$GenreTags) {
                     $app->dbOld->query('
                     SELECT Name
@@ -290,7 +290,7 @@ View::header(
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
                     $GenreTags = $app->dbOld->collect('Name');
-                    $app->cacheOld->cache_value('genre_tags', $GenreTags, 3600 * 6);
+                    $app->cacheNew->set('genre_tags', $GenreTags, 3600 * 6);
                 }
 
                 if (!empty($Disabled)) { ?>

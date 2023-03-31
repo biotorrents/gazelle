@@ -61,8 +61,8 @@ class Comments
         $PostID = $app->dbOld->inserted_id();
 
         $CatalogueID = floor((TORRENT_COMMENTS_PER_PAGE * $Pages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
-        $app->cacheOld->delete_value($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
-        $app->cacheOld->delete_value($Page.'_comments_'.$PageID);
+        $app->cacheNew->delete($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
+        $app->cacheNew->delete($Page.'_comments_'.$PageID);
 
         Subscriptions::flush_subscriptions($Page, $PageID);
         Subscriptions::quote_notify($Body, $PostID, $Page, $PageID);
@@ -132,11 +132,11 @@ class Comments
 
         // Update the cache
         $CatalogueID = floor((TORRENT_COMMENTS_PER_PAGE * $CommPage - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
-        $app->cacheOld->delete_value($Page . '_comments_' . $PageID . '_catalogue_' . $CatalogueID);
+        $app->cacheNew->delete($Page . '_comments_' . $PageID . '_catalogue_' . $CatalogueID);
 
         if ($Page === 'collages') {
             // On collages, we also need to clear the collage key (collage_$CollageID), because it has the comments in it... (why??)
-            $app->cacheOld->delete_value("collage_$PageID");
+            $app->cacheNew->delete("collage_$PageID");
         }
 
         $app->dbOld->query("
@@ -253,13 +253,13 @@ class Comments
         $LastCatalogue = floor((TORRENT_COMMENTS_PER_PAGE * $CommPages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
 
         for ($i = $ThisCatalogue; $i <= $LastCatalogue; ++$i) {
-            $app->cacheOld->delete_value($Page . '_comments_' . $PageID . '_catalogue_' . $i);
+            $app->cacheNew->delete($Page . '_comments_' . $PageID . '_catalogue_' . $i);
         }
 
-        $app->cacheOld->delete_value($Page . '_comments_' . $PageID);
+        $app->cacheNew->delete($Page . '_comments_' . $PageID);
         if ($Page === 'collages') {
             // On collages, we also need to clear the collage key (collage_$CollageID), because it has the comments in it... (why??)
-            $app->cacheOld->delete_value("collage_$PageID");
+            $app->cacheNew->delete("collage_$PageID");
         }
 
         $app->dbOld->set_query_id($QueryID);
@@ -344,7 +344,7 @@ class Comments
         $QueryID = $app->dbOld->get_query_id();
 
         // Get the total number of comments
-        $NumComments = $app->cacheOld->get_value($Page . "_comments_$PageID");
+        $NumComments = $app->cacheNew->get($Page . "_comments_$PageID");
         if ($NumComments === false) {
             $app->dbOld->query("
             SELECT
@@ -355,7 +355,7 @@ class Comments
               `Page` = '$Page' AND `PageID` = $PageID
             ");
             list($NumComments) = $app->dbOld->next_record();
-            $app->cacheOld->cache_value($Page."_comments_$PageID", $NumComments, 0);
+            $app->cacheNew->set($Page."_comments_$PageID", $NumComments, 0);
         }
 
         // If a postid was passed, we need to determine which page that comment is on.
@@ -380,7 +380,7 @@ class Comments
         $CatalogueID = floor((TORRENT_COMMENTS_PER_PAGE * $CommPage - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
 
         // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-        $Catalogue = $app->cacheOld->get_value($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
+        $Catalogue = $app->cacheNew->get($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
         if ($Catalogue === false) {
             $CatalogueLimit = $CatalogueID * THREAD_CATALOGUE . ', ' . THREAD_CATALOGUE;
             $app->dbOld->query("
@@ -404,7 +404,7 @@ class Comments
             ");
 
             $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
-            $app->cacheOld->cache_value($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID, $Catalogue, 0);
+            $app->cacheNew->set($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID, $Catalogue, 0);
         }
 
         // This is a hybrid to reduce the catalogue down to the page elements: We use the page limit % catalogue
@@ -431,7 +431,7 @@ class Comments
             ");
 
             if ($app->dbOld->affected_rows()) {
-                $app->cacheOld->delete_value('notify_quoted_' . $app->userNew->core["id"]);
+                $app->cacheNew->delete('notify_quoted_' . $app->userNew->core["id"]);
             }
 
             // Last read
@@ -460,7 +460,7 @@ class Comments
                 UPDATE
                   `PostID` = $LastPost
                 ");
-                $app->cacheOld->delete_value('subscriptions_user_new_' . $app->userNew->core["id"]);
+                $app->cacheNew->delete('subscriptions_user_new_' . $app->userNew->core["id"]);
             }
         } else {
             $LastRead = false;
@@ -522,10 +522,10 @@ class Comments
         $LastCatalogue = floor((TORRENT_COMMENTS_PER_PAGE * $CommPages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
 
         for ($i = 0; $i <= $LastCatalogue; ++$i) {
-            $app->cacheOld->delete_value($Page . "_comments_$TargetPageID" . "_catalogue_$i");
+            $app->cacheNew->delete($Page . "_comments_$TargetPageID" . "_catalogue_$i");
         }
 
-        $app->cacheOld->delete_value($Page . "_comments_$TargetPageID");
+        $app->cacheNew->delete($Page . "_comments_$TargetPageID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -585,10 +585,10 @@ class Comments
         // Clear cache
         $LastCatalogue = floor((TORRENT_COMMENTS_PER_PAGE * $CommPages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
         for ($i = 0; $i <= $LastCatalogue; ++$i) {
-            $app->cacheOld->delete_value($Page."_comments_$PageID"."_catalogue_$i");
+            $app->cacheNew->delete($Page."_comments_$PageID"."_catalogue_$i");
         }
 
-        $app->cacheOld->delete_value($Page."_comments_$PageID");
+        $app->cacheNew->delete($Page."_comments_$PageID");
         $app->dbOld->set_query_id($QueryID);
 
         return true;

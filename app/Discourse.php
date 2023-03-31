@@ -67,8 +67,8 @@ class Discourse
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode(["path" => $path, "method" => $method, "options" => $options]));
-        if ($app->cacheOld->get_value($cacheKey)) {
-            return $app->cacheOld->get_value($cacheKey);
+        if ($app->cacheNew->get($cacheKey)) {
+            return $app->cacheNew->get($cacheKey);
         }
 
         # method
@@ -99,7 +99,7 @@ class Discourse
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        $app->cacheOld->cache_value($cacheKey, $response, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 

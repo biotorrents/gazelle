@@ -58,7 +58,7 @@ class Requests
           WHERE ID = $RequestID");
 
         $app->dbOld->set_query_id($QueryID);
-        $app->cacheOld->delete_value("request_$RequestID");
+        $app->cacheNew->delete("request_$RequestID");
     }
 
 
@@ -86,7 +86,7 @@ class Requests
                 continue;
             }
 
-            $Data = $app->cacheOld->get_value("request_$RequestID");
+            $Data = $app->cacheNew->get("request_$RequestID");
             if (!empty($Data)) {
                 unset($NotFound[$RequestID]);
                 $Found[$RequestID] = $Data;
@@ -146,7 +146,7 @@ class Requests
                 unset($NotFound[$Request['ID']]);
                 $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
                 $Found[$Request['ID']] = $Request;
-                $app->cacheOld->cache_value('request_'.$Request['ID'], $Request, 0);
+                $app->cacheNew->set('request_'.$Request['ID'], $Request, 0);
             }
             $app->dbOld->set_query_id($QueryID);
 
@@ -189,7 +189,7 @@ class Requests
     {
         $app = \Gazelle\App::go();
 
-        $Artists = $app->cacheOld->get_value("request_artists_$RequestID");
+        $Artists = $app->cacheNew->get("request_artists_$RequestID");
         if (is_array($Artists)) {
             $Results = $Artists;
         } else {
@@ -211,7 +211,7 @@ class Requests
                 list($ArtistID, $ArtistName) = $ArtistRow;
                 $Results[] = array('id' => $ArtistID, 'name' => $ArtistName);
             }
-            $app->cacheOld->cache_value("request_artists_$RequestID", $Results);
+            $app->cacheNew->set("request_artists_$RequestID", $Results);
         }
         return $Results;
     }
@@ -262,7 +262,7 @@ class Requests
     {
         $app = \Gazelle\App::go();
 
-        $RequestVotes = $app->cacheOld->get_value("request_votes_$RequestID");
+        $RequestVotes = $app->cacheNew->get("request_votes_$RequestID");
         if (!is_array($RequestVotes)) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -292,7 +292,7 @@ class Requests
             }
 
             $RequestVotes['Voters'] = $VotesArray;
-            $app->cacheOld->cache_value("request_votes_$RequestID", $RequestVotes);
+            $app->cacheNew->set("request_votes_$RequestID", $RequestVotes);
             $app->dbOld->set_query_id($QueryID);
         }
         return $RequestVotes;

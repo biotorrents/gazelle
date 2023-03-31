@@ -7,7 +7,7 @@ $app = \Gazelle\App::go();
 $CollageID = (int) $_GET['id'];
 Security::int($CollageID);
 
-$CollageData = $app->cacheOld->get_value("collage_$CollageID");
+$CollageData = $app->cacheNew->get("collage_$CollageID");
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
@@ -45,7 +45,7 @@ if ($Deleted === '1') {
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$app->userNew->core['id'])) === false) {
+if (($CollageSubscriptions = $app->cacheNew->get('collage_subs_user_'.$app->userNew->core['id'])) === false) {
     $app->dbOld->query("
     SELECT
       `CollageID`
@@ -56,7 +56,7 @@ if (($CollageSubscriptions = $app->cacheOld->get_value('collage_subs_user_'.$app
     ");
 
     $CollageSubscriptions = $app->dbOld->collect(0);
-    $app->cacheOld->cache_value('collage_subs_user_'.$app->userNew->core['id'], $CollageSubscriptions, 0);
+    $app->cacheNew->set('collage_subs_user_'.$app->userNew->core['id'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
@@ -69,7 +69,7 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
       `UserID` = ".$app->userNew->core['id']."
       AND `CollageID` = $CollageID
     ");
-    $app->cacheOld->delete_value('collage_subs_user_new_'.$app->userNew->core['id']);
+    $app->cacheNew->delete('collage_subs_user_new_'.$app->userNew->core['id']);
 }
 
 if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
@@ -91,5 +91,5 @@ if (isset($SetCache)) {
     (int) $MaxGroupsPerUser,
     $Updated,
     (int) $Subscribers);
-    $app->cacheOld->cache_value("collage_$CollageID", $CollageData, 3600);
+    $app->cacheNew->set("collage_$CollageID", $CollageData, 3600);
 }

@@ -93,6 +93,6 @@ $app->dbOld->query("
     ('$P[name]', '$P[description]', {$app->userNew->core['id']}, '$TagList', '$P[category]')");
 
 $CollageID = $app->dbOld->inserted_id();
-$app->cacheOld->delete_value("collage_$CollageID");
+$app->cacheNew->delete("collage_$CollageID");
 Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$app->userNew->core['username']);
 Http::redirect("collages.php?id=$CollageID");

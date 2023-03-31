@@ -69,7 +69,7 @@ if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete
     }
 }
 
-$app->cacheOld->delete_value('forums_list'); // Clear cache
+$app->cacheNew->delete('forums_list'); // Clear cache
 
 // Go back
 header('Location: tools.php?action=forum');

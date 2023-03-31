@@ -38,8 +38,8 @@ if ($_POST['submit'] === 'Remove') {
     UPDATE collages
     SET NumTorrents = NumTorrents - $Rows
     WHERE ID = '$CollageID'");
-    $app->cacheOld->delete_value("artists_collages_$ArtistID");
-    $app->cacheOld->delete_value("artists_collages_personal_$ArtistID");
+    $app->cacheNew->delete("artists_collages_$ArtistID");
+    $app->cacheNew->delete("artists_collages_personal_$ArtistID");
 } elseif (isset($_POST['drag_drop_collage_sort_order'])) {
     @parse_str($_POST['drag_drop_collage_sort_order'], $Series);
     $Series = @array_shift($Series);
@@ -74,5 +74,5 @@ if ($_POST['submit'] === 'Remove') {
       AND ArtistID = '$ArtistID'");
 }
 
-$app->cacheOld->delete_value("collage_$CollageID");
+$app->cacheNew->delete("collage_$CollageID");
 Http::redirect("collages.php?action=manage_artists&collageid=$CollageID");

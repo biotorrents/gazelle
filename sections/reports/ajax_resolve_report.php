@@ -38,12 +38,12 @@ $Channels = [];
 
 if ($Type == 'request_update') {
     $Channels[] = '#requestedits';
-    $app->cacheOld->decrement('num_update_reports');
+    $app->cacheNew->decrement('num_update_reports');
 }
 
 if (in_array($Type, array('comment', 'post', 'thread'))) {
     $Channels[] = '#forumreports';
-    $app->cacheOld->decrement('num_forum_reports');
+    $app->cacheNew->decrement('num_forum_reports');
 }
 
 $app->dbOld->query("
@@ -53,7 +53,7 @@ $app->dbOld->query("
 list($Remaining) = $app->dbOld->next_record();
 
 send_irc([$Channels], "Report $ReportID resolved by ".preg_replace('/^(.{2})/', '$1·', $app->userNew->core['username']).' on site ('.(int) $Remaining.' remaining).');
-$app->cacheOld->delete_value('num_other_reports');
+$app->cacheNew->delete('num_other_reports');
 ajax_success();
 
 function ajax_error($Error = 'error')

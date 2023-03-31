@@ -78,9 +78,9 @@ list($torrentId, $groupId, $seeders, $leechers, $snatches) = $app->dbOld->next_r
 # loop torrents
 while ($torrentId) {
     if ($lastGroupId != $groupId) {
-        $cachedData = $app->cacheOld->get_value("torrent_group_$groupId");
+        $cachedData = $app->cacheNew->get("torrent_group_$groupId");
         if ($cachedData !== false) {
-            if (isset($cachedData["ver"]) && $cachedData["ver"] == Cache::GROUP_VERSION) {
+            if (isset($cachedData["ver"]) && $cachedData["ver"] == CacheOld::GROUP_VERSION) {
                 $cachedStats = &$cachedData["d"]["Torrents"];
             }
         } else {
@@ -117,7 +117,7 @@ while ($torrentId) {
 
     $changed ??= null;
     if ($changed) {
-        $app->cacheOld->cache_value("torrent_group_{$lastGroupId}", $cachedData, 0);
+        $app->cacheNew->set("torrent_group_{$lastGroupId}", $cachedData, 0);
         unset($cachedStats);
         $updatedKeys++;
         $changed = false;

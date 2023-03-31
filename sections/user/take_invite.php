@@ -5,13 +5,13 @@
 $app = \Gazelle\App::go();
 $ENV = ENV::go();
 
-if (!$UserCount = $app->cacheOld->get_value('stats_user_count')) {
+if (!$UserCount = $app->cacheNew->get('stats_user_count')) {
     $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
     list($UserCount) = $app->dbOld->next_record();
-    $app->cacheOld->cache_value('stats_user_count', $UserCount, 0);
+    $app->cacheNew->set('stats_user_count', $UserCount, 0);
 }
 
 $UserID = $app->userNew->core['id'];

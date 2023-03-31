@@ -93,8 +93,8 @@ if (empty($_POST['confirm'])) {
       SET PageID = '$GroupID'
       WHERE Page = 'torrents'
         AND PageID = '$OldGroupID'");
-        $app->cacheOld->delete_value("torrent_comments_{$GroupID}_catalogue_0");
-        $app->cacheOld->delete_value("torrent_comments_$GroupID");
+        $app->cacheNew->delete("torrent_comments_{$GroupID}_catalogue_0");
+        $app->cacheNew->delete("torrent_comments_$GroupID");
         Torrents::delete_group($OldGroupID);
     } else {
         Torrents::update_hash($OldGroupID);
@@ -108,8 +108,8 @@ if (empty($_POST['confirm'])) {
     SET GroupID = $GroupID
     WHERE GroupID = $OldGroupID");
 
-    $app->cacheOld->delete_value("torrents_details_$GroupID");
-    $app->cacheOld->delete_value("torrent_download_$TorrentID");
+    $app->cacheNew->delete("torrents_details_$GroupID");
+    $app->cacheNew->delete("torrent_download_$TorrentID");
 
     Http::redirect("torrents.php?id=$GroupID");
 }

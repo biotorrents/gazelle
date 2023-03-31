@@ -72,7 +72,7 @@ class UserRank
         $app->dbOld->set_query_id($queryId);
 
         # Randomize the cache length so all the tables don't expire at the same time
-        $app->cacheOld->cache_value($cacheKey, $table, random_int(43200, 86400)); # 12h => 1d
+        $app->cacheNew->set($cacheKey, $table, random_int(43200, 86400)); # 12h => 1d
 
         return $table;
     }
@@ -219,17 +219,17 @@ class UserRank
             return 0;
         }
 
-        $table = $app->cacheOld->get_value(self::$cachePrefix . $tableName);
+        $table = $app->cacheNew->get(self::$cachePrefix . $tableName);
         if (!$table) {
             # cache lock!
-            $lock = $app->cacheOld->get_value(self::$cachePrefix . "{$tableName}_lock");
+            $lock = $app->cacheNew->get(self::$cachePrefix . "{$tableName}_lock");
 
             if ($lock) {
                 return false;
             } else {
-                $app->cacheOld->cache_value(self::$cachePrefix . "{$tableName}_lock", 1, 300);
+                $app->cacheNew->set(self::$cachePrefix . "{$tableName}_lock", 1, 300);
                 $table = self::build_table(self::$cachePrefix . $tableName, self::table_query($tableName));
-                $app->cacheOld->delete_value(self::$cachePrefix . "{$tableName}_lock");
+                $app->cacheNew->delete(self::$cachePrefix . "{$tableName}_lock");
             }
         }
 

@@ -34,7 +34,7 @@ if (!$AutoSuggest) {
     ORDER BY t.Snatched DESC
     LIMIT $Limit");
     $AutoSuggest = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-    $app->cacheOld->cache_value('autocomplete_artist_'.$KeySize.'_'.$Letters, $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
+    $app->cacheNew->set('autocomplete_artist_'.$KeySize.'_'.$Letters, $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
 }
 
 $Matched = 0;

@@ -39,7 +39,7 @@ if (is_numeric($ThreadID) && is_numeric($NewVote)) {
       AND `UserID` = ".$app->userNew->core['id']
     );
 
-    $app->cacheOld->delete_value("polls_$ThreadID");
+    $app->cacheNew->delete("polls_$ThreadID");
     Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);

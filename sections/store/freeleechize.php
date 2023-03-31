@@ -82,8 +82,8 @@ if (isset($_POST['torrent'])) {
               SET AdminComment = CONCAT('".sqltime()." - Made TorrentID $TorrentID freeleech for 24 more hours via the store\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-            $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
-            $app->cacheOld->delete_value('shop_freeleech_list');
+            $app->cacheNew->delete('user_info_heavy_'.$UserID);
+            $app->cacheNew->delete('shop_freeleech_list');
         } else {
             error("Not enough points");
         }

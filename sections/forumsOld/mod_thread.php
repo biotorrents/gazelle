@@ -126,9 +126,9 @@ if (isset($_POST['delete'])) {
       LastPostAuthorID = '$NewLastAuthorID',
       LastPostTime = '$NewLastAddedTime'
     WHERE ID = '$ForumID'");
-    $app->cacheOld->delete_value("forums_$ForumID");
+    $app->cacheNew->delete("forums_$ForumID");
 
-    $app->cacheOld->delete_value("thread_$TopicID");
+    $app->cacheNew->delete("thread_$TopicID");
 
     $app->cacheOld->begin_transaction('forums_list');
     $UpdateArray = array(
@@ -145,7 +145,7 @@ if (isset($_POST['delete'])) {
 
     $app->cacheOld->update_row($ForumID, $UpdateArray);
     $app->cacheOld->commit_transaction(0);
-    $app->cacheOld->delete_value("thread_{$TopicID}_info");
+    $app->cacheNew->delete("thread_{$TopicID}_info");
 
     // subscriptions
     Subscriptions::move_subscriptions('forums', $TopicID, null);
@@ -190,10 +190,10 @@ if (isset($_POST['delete'])) {
     // always clear cache when editing a thread.
     // if a thread title, etc. is changed, this cache key must be cleared so the thread listing
     //    properly shows the new thread title.
-    $app->cacheOld->delete_value("forums_$ForumID");
+    $app->cacheNew->delete("forums_$ForumID");
 
     if ($ForumID != $OldForumID) { // If we're moving a thread, change the forum stats
-        $app->cacheOld->delete_value("forums_$OldForumID");
+        $app->cacheNew->delete("forums_$OldForumID");
 
         $app->dbOld->query("
       SELECT MinClassRead, MinClassWrite, Name
@@ -338,16 +338,12 @@ if (isset($_POST['delete'])) {
     }
     if ($Locked) {
         $CatalogueID = floor($NumPosts / THREAD_CATALOGUE);
-        for ($i = 0; $i <= $CatalogueID; $i++) {
-            $app->cacheOld->expire_value("thread_{$TopicID}_catalogue_$i", 3600 * 24 * 7); // 7 days
-        }
-        $app->cacheOld->expire_value("thread_{$TopicID}_info", 3600 * 24 * 7); // 7 days
 
         $app->dbOld->query("
       UPDATE forums_polls
       SET Closed = '0'
       WHERE TopicID = '$TopicID'");
-        $app->cacheOld->delete_value("polls_$TopicID");
+        $app->cacheNew->delete("polls_$TopicID");
     }
 
     // topic notes and notifications

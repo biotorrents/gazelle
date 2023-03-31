@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Cache class
  *
@@ -21,6 +22,7 @@ declare(strict_types=1);
  * TCP bind:
  *   memcached -d -m 8192 -l 10.10.0.1 -t8 -C
  */
+
 class CacheOld extends Memcache
 {
     // Torrent Group cache version
@@ -91,20 +93,6 @@ class CacheOld extends Memcache
 
 
     /**
-     * expire_value
-     *
-     * Allows us to set an expiration on otherwise perminantly cached values.
-     * Useful for disabled users, locked threads, basically reducing RAM usage.
-     */
-    public function expire_value($key, $duration = 2592000)
-    {
-        $startTime = microtime(true);
-        $this->set($key, $this->get($key), $duration);
-        $this->time += (microtime(true) - $startTime) * 1000;
-    }
-
-
-    /**
      * cache_value
      *
      * Wrapper for Memcache::set, with the zlib option removed and default duration of 30 days.
@@ -139,20 +127,6 @@ class CacheOld extends Memcache
 
 
     /**
-     * add_value
-     *
-     * Wrapper for Memcache::add, with the zlib option removed and default duration of 30 days.
-     */
-    public function add_value($key, $value, $duration = 2592000)
-    {
-        $startTime = microtime(true);
-        $added = $this->add($key, $value, 0, $duration);
-        $this->time += (microtime(true) - $startTime) * 1000;
-        return $added;
-    }
-
-
-    /**
      * replace_value
      */
     public function replace_value($key, $value, $duration = 2592000)
@@ -168,130 +142,6 @@ class CacheOld extends Memcache
 
         if ($this->internalCache && array_key_exists($key, $this->cacheHits)) {
             $this->cacheHits[$key] = $value;
-        }
-
-        $this->time += (microtime(true) - $startTime) * 1000;
-    }
-
-
-    /**
-     * get_value
-     */
-    public function get_value($key, $noCache = false)
-    {
-        $query = Http::query("get");
-        $clearCache = $query["clearcache"] ?? null;
-
-        if (!$this->internalCache) {
-            $noCache = true;
-        }
-
-        $startTime = microtime(true);
-        if (empty($key)) {
-            trigger_error('Cache retrieval failed for empty key');
-        }
-
-        if (!empty($clearCache) && $this->canClear && !isset($this->clearedKeys[$key]) && !Misc::in_array_partial($key, $this->persistentKeys)) {
-            if (intval($clearCache) === 1) {
-                // Because check_perms() isn't true until LoggedUser is pulled from the cache, we have to remove the entries loaded before the LoggedUser data
-                // Because of this, not user cache data will require a secondary pageload following the clearcache to update
-                if (count($this->cacheHits) > 0) {
-                    foreach (array_keys($this->cacheHits) as $hitKey) {
-                        if (!isset($this->clearedKeys[$hitKey]) && !Misc::in_array_partial($hitKey, $this->persistentKeys)) {
-                            $this->delete($hitKey);
-                            unset($this->cacheHits[$hitKey]);
-                            $this->clearedKeys[$hitKey] = true;
-                        }
-                    }
-                }
-
-                $this->delete($key);
-                $this->time += (microtime(true) - $startTime) * 1000;
-
-                return null;
-            } elseif ($clearCache === $key) {
-                $this->delete($key);
-                $this->time += (microtime(true) - $startTime) * 1000;
-
-                return false;
-            } elseif (substr($clearCache, -1) === '*') {
-                $prefix = substr($clearCache, 0, -1);
-
-                if ($prefix === '' || $prefix === substr($key, 0, strlen($prefix))) {
-                    $this->delete($key);
-                    $this->time += (microtime(true) - $startTime) * 1000;
-
-                    return false;
-                }
-            }
-
-            $this->clearedKeys[$key] = true;
-        }
-
-        // For cases like the forums, if a key is already loaded, grab the existing pointer
-        if (isset($this->cacheHits[$key]) && !$noCache) {
-            $this->time += (microtime(true) - $startTime) * 1000;
-            return $this->cacheHits[$key] ?? false;
-        }
-
-        $return = $this->get($key) ?? false;
-        if ($return !== false) {
-            $this->cacheHits[$key] = $noCache ? null : $return;
-        }
-
-        $this->time += (microtime(true) - $startTime) * 1000;
-        return $return ?? false;
-    }
-
-
-    /**
-     * delete_value
-     *
-     * Wrapper for Memcache::delete.
-     * For a reason, see above.
-     */
-    public function delete_value($key)
-    {
-        $startTime = microtime(true);
-        if (empty($key)) {
-            trigger_error('Cache deletion failed for empty key');
-        }
-
-        if (!$this->delete($key)) {
-            #trigger_error("Cache delete failed for key {$key}");
-        }
-
-        unset($this->cacheHits[$key]);
-        $this->time += (microtime(true) - $startTime) * 1000;
-    }
-
-
-    /**
-     * increment_value
-     */
-    public function increment_value($key, $value = 1)
-    {
-        $startTime = microtime(true);
-        $newVal = $this->increment($key, $value);
-
-        if (isset($this->cacheHits[$key])) {
-            $this->cacheHits[$key] = $newVal;
-        }
-
-        $this->time += (microtime(true) - $startTime) * 1000;
-    }
-
-
-    /**
-     * decrement_value
-     */
-    public function decrement_value($key, $value = 1)
-    {
-        $startTime = microtime(true);
-        $newVal = $this->decrement($key, $value);
-
-        if (isset($this->cacheHits[$key])) {
-            $this->cacheHits[$key] = $newVal;
         }
 
         $this->time += (microtime(true) - $startTime) * 1000;
@@ -428,81 +278,6 @@ class CacheOld extends Memcache
 
 
     /**
-     * increment_row
-     *
-     * Increments multiple values in a single row in an array.
-     * $values must be an associative array with key:value pairs like in the array we're updating.
-     */
-    public function increment_row($row, $values)
-    {
-        if (!$this->InTransaction) {
-            return false;
-        }
-
-        if ($row === false) {
-            $updateArray = $this->memcacheDBArray;
-        } else {
-            $updateArray = $this->memcacheDBArray[$row];
-        }
-
-        foreach ($values as $key => $value) {
-            if (!array_key_exists($key, $updateArray)) {
-                trigger_error("Bad transaction key {$key} for cache {$this->memcacheDBKey}");
-            }
-
-            if (!is_numeric($value)) {
-                trigger_error("Tried to increment with non-number {$key} for cache {$this->memcacheDBKey}");
-            }
-            $updateArray[$key] += $value; // Increment value
-        }
-
-        if ($row === false) {
-            $this->memcacheDBArray = $updateArray;
-        } else {
-            $this->memcacheDBArray[$row] = $updateArray;
-        }
-    }
-
-
-    /**
-     * insert_front
-     *
-     * Insert a value at the beginning of the array.
-     */
-    public function insert_front($key, $value)
-    {
-        if (!$this->inTransaction) {
-            return false;
-        }
-
-        if ($key === '') {
-            array_unshift($this->memcacheDBArray, $value);
-        } else {
-            $this->memcacheDBArray = [$key => $value] + $this->memcacheDBArray;
-        }
-    }
-
-
-    /**
-     * insert_back
-     *
-     * Insert a value at the end of the array.
-     */
-    public function insert_back($key, $value)
-    {
-        if (!$this->inTransaction) {
-            return false;
-        }
-
-        if ($key === '') {
-            array_push($this->memcacheDBArray, $value);
-        } else {
-            $this->memcacheDBArray = $this->memcacheDBArray + [$key => $value];
-        }
-    }
-
-
-    /**
      * insert
      */
     public function insert($key, $value)
@@ -548,56 +323,5 @@ class CacheOld extends Memcache
         } else {
             $this->update_transaction($rows, $values);
         }
-    }
-
-    /**
-     * get_query_lock
-     *
-     * Tries to set a lock.
-     * Expiry time is one hour to avoid indefinite locks.
-     *
-     * @param string $lockName The name on the lock
-     * @return true If the lock was acquired
-     */
-    public function get_query_lock($lockName)
-    {
-        return $this->add_value("query_lock_{$lockName}", 1, 3600);
-    }
-
-    /**
-     * clear_query_lock
-     *
-     * Remove lock.
-     *
-     * @param string $lockName The name on the lock
-     */
-    public function clear_query_lock($lockName)
-    {
-        $this->delete_value("query_lock_{$lockName}");
-    }
-
-    /**
-     * server_status
-     *
-     * Get cache server status.
-     *
-     * @return array [host => int status, ...]
-     */
-    public function server_status()
-    {
-        $status = [];
-        if (is_subclass_of($this, 'Memcached')) {
-            $memcachedStats = $this->getStats();
-        }
-
-        foreach ($this->servers as $server) {
-            if (is_subclass_of($this, 'Memcached')) {
-                $status["{$server['host']}:{$server['port']}"] = gettype($memcachedStats["{$server['host']}:{$server['port']}"]) === 'array' ? 1 : 0;
-            } else {
-                $status["{$server['host']}:{$server['port']}"] = $this->getServerStatus($server['host'], $server['port']);
-            }
-        }
-
-        return $status;
     }
 }

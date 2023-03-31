@@ -96,10 +96,10 @@ foreach ($Criteria as $L) { // $L = Level
             $app->cacheOld->begin_transaction("user_info_$UserID");
             $app->cacheOld->update_row(false, array('PermissionID' => $L['To']));
             $app->cacheOld->commit_transaction(0);
-            $app->cacheOld->delete_value("user_info_$UserID");
-            $app->cacheOld->delete_value("user_info_heavy_$UserID");
-            $app->cacheOld->delete_value("user_stats_$UserID");
-            $app->cacheOld->delete_value("enabled_$UserID");
+            $app->cacheNew->delete("user_info_$UserID");
+            $app->cacheNew->delete("user_info_heavy_$UserID");
+            $app->cacheNew->delete("user_stats_$UserID");
+            $app->cacheNew->delete("enabled_$UserID");
 
             $app->dbOld->query("
               UPDATE users_info
@@ -143,10 +143,10 @@ foreach ($Criteria as $L) { // $L = Level
             $app->cacheOld->begin_transaction("user_info_$UserID");
             $app->cacheOld->update_row(false, array('PermissionID' => $L['From']));
             $app->cacheOld->commit_transaction(0);
-            $app->cacheOld->delete_value("user_info_$UserID");
-            $app->cacheOld->delete_value("user_info_heavy_$UserID");
-            $app->cacheOld->delete_value("user_stats_$UserID");
-            $app->cacheOld->delete_value("enabled_$UserID");
+            $app->cacheNew->delete("user_info_$UserID");
+            $app->cacheNew->delete("user_info_heavy_$UserID");
+            $app->cacheNew->delete("user_stats_$UserID");
+            $app->cacheNew->delete("enabled_$UserID");
 
             $app->dbOld->query("
               UPDATE users_info

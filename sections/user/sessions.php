@@ -20,7 +20,7 @@ if (isset($_POST['all'])) {
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID != '$SessionID'");
-    $app->cacheOld->delete_value("users_sessions_$UserID");
+    $app->cacheNew->delete("users_sessions_$UserID");
 }
 
 if (isset($_POST['session'])) {
@@ -30,14 +30,14 @@ if (isset($_POST['session'])) {
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
       AND SessionID = '".db_string($_POST['session'])."'");
-    $app->cacheOld->delete_value("users_sessions_$UserID");
+    $app->cacheNew->delete("users_sessions_$UserID");
 }
 
-$UserSessions = $app->cacheOld->get_value('users_sessions_'.$UserID);
+$UserSessions = $app->cacheNew->get('users_sessions_'.$UserID);
 if (!is_array($UserSessions)) {
     $app->dbOld->query("select * from users_sessions where userId = {$UserID} order by expires desc");
     $UserSessions = $app->dbOld->to_array('SessionID', MYSQLI_ASSOC);
-    $app->cacheOld->cache_value("users_sessions_$UserID", $UserSessions, 0);
+    $app->cacheNew->set("users_sessions_$UserID", $UserSessions, 0);
 }
 
 list($UserID, $Username) = array_values(User::user_info($UserID));

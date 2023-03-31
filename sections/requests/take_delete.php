@@ -54,12 +54,12 @@ $app->dbOld->query("
   WHERE RequestID = $RequestID");
 $RequestArtists = $app->dbOld->to_array();
 foreach ($RequestArtists as $RequestArtist) {
-    $app->cacheOld->delete_value("artists_requests_$RequestArtist");
+    $app->cacheNew->delete("artists_requests_$RequestArtist");
 }
 $app->dbOld->query("
   DELETE FROM requests_artists
   WHERE RequestID = '$RequestID'");
-$app->cacheOld->delete_value("request_artists_$RequestID");
+$app->cacheNew->delete("request_artists_$RequestID");
 
 $app->dbOld->query("
   REPLACE INTO sphinx_requests_delta
@@ -73,10 +73,10 @@ if ($UserID != $app->userNew->core['id']) {
 
 Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$app->userNew->core['id'].' ('.$app->userNew->core['username'].') for the reason: '.$_POST['reason']);
 
-$app->cacheOld->delete_value("request_$RequestID");
-$app->cacheOld->delete_value("request_votes_$RequestID");
+$app->cacheNew->delete("request_$RequestID");
+$app->cacheNew->delete("request_votes_$RequestID");
 if ($GroupID) {
-    $app->cacheOld->delete_value("requests_group_$GroupID");
+    $app->cacheNew->delete("requests_group_$GroupID");
 }
 
 Http::redirect("requests.php");

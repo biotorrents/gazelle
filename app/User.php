@@ -160,12 +160,12 @@ class User
         /*
         # notifications
         if ($user["Permissions"]["site_torrents_notify"]) {
-            $user["Notify"] = $app->cacheOld->get_value("notify_filters_{$userId}");
+            $user["Notify"] = $app->cacheNew->get("notify_filters_{$userId}");
 
             if (!$user["Notify"]) {
                 $query = "select id, label from users_notify_filters where userId = ?";
                 $user["Notify"] = $app->dbNew->row($query, [$userId]);
-                $app->cacheOld->cache_value("notify_filters_{$userId}", $user["Notify"], $this->cacheDuration);
+                $app->cacheNew->set("notify_filters_{$userId}", $user["Notify"], $this->cacheDuration);
             }
         }
         */
@@ -381,7 +381,7 @@ class User
         $app = \Gazelle\App::go();
 
         global $Classes;
-        $UserInfo = $app->cacheOld->get_value("user_info_".$UserID);
+        $UserInfo = $app->cacheNew->get("user_info_".$UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
         if (empty($UserInfo) || empty($UserInfo['ID']) || empty($UserInfo['Class'])) {
@@ -492,14 +492,14 @@ class User
             }
             $UserInfo['EffectiveClass'] = $EffectiveClass;
 
-            $app->cacheOld->cache_value("user_info_$UserID", $UserInfo, 2592000);
+            $app->cacheNew->set("user_info_$UserID", $UserInfo, 2592000);
             $app->dbOld->set_query_id($OldQueryID);
         }
 
         # Warned?
         if (strtotime($UserInfo['Warned'] ?? "now") < time()) {
             $UserInfo['Warned'] = null;
-            $app->cacheOld->cache_value("user_info_$UserID", $UserInfo, 2592000);
+            $app->cacheNew->set("user_info_$UserID", $UserInfo, 2592000);
         }
 
         return $UserInfo;
@@ -520,7 +520,7 @@ class User
     {
         $app = \Gazelle\App::go();
 
-        $HeavyInfo = $app->cacheOld->get_value("user_info_heavy_$UserID");
+        $HeavyInfo = $app->cacheNew->get("user_info_heavy_$UserID");
         if (empty($HeavyInfo)) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -579,7 +579,7 @@ class User
             unset($HeavyInfo['SiteOptions']);
 
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value("user_info_heavy_$UserID", $HeavyInfo, 0);
+            $app->cacheNew->set("user_info_heavy_$UserID", $HeavyInfo, 0);
         }
 
         return $HeavyInfo;
@@ -700,7 +700,7 @@ class User
 
         $UserID = (int)$UserID;
 
-        if (($Data = $app->cacheOld->get_value("bookmarks_group_ids_$UserID"))) {
+        if (($Data = $app->cacheNew->get("bookmarks_group_ids_$UserID"))) {
             list($GroupIDs, $BookmarkData) = $Data;
         } else {
             $QueryID = $app->dbOld->get_query_id();
@@ -713,7 +713,7 @@ class User
             $GroupIDs = $app->dbOld->collect('GroupID');
             $BookmarkData = $app->dbOld->to_array('GroupID', MYSQLI_ASSOC);
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
+            $app->cacheNew->set("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
         }
 
         $TorrentList = Torrents::get_groups($GroupIDs);
@@ -1422,7 +1422,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -1449,7 +1449,7 @@ class User
             $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
-        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
 
@@ -1464,7 +1464,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -1490,7 +1490,7 @@ class User
             $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
-        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
 
@@ -1508,7 +1508,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -1530,7 +1530,7 @@ class User
             $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
-        $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
     }
 
@@ -1545,7 +1545,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -1598,7 +1598,7 @@ class User
         }
         */
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 
@@ -1617,7 +1617,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -1743,7 +1743,7 @@ class User
         $data["usersInvited"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 
@@ -1764,7 +1764,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -1859,7 +1859,7 @@ class User
         $data["torrentClients"] = array_column($ref, "userAgent");
 
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 
@@ -1877,7 +1877,7 @@ class User
         $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -1930,7 +1930,7 @@ class User
 
         ksort($data);
 
-        $app->cacheOld->cache_value($cacheKey, $data, $this->cacheDuration);
+        $app->cacheNew->set($cacheKey, $data, $this->cacheDuration);
         return $data;
     }
 } # class

@@ -19,15 +19,15 @@ $TorrentIDs = [];
 if ($app->dbOld->has_results()) {
     while (list($GroupID, $TorrentID) = $app->dbOld->next_record()) {
         $TorrentIDs[] = $TorrentID;
-        $app->cacheOld->delete_value("torrents_details_$GroupID");
-        $app->cacheOld->delete_value("torrent_group_$GroupID");
+        $app->cacheNew->delete("torrents_details_$GroupID");
+        $app->cacheNew->delete("torrent_group_$GroupID");
     }
 
     Torrents::freeleech_torrents($TorrentIDs, 0, 0);
     $app->dbOld->query("
       DELETE FROM shop_freeleeches
       WHERE ExpiryTime < '".$date."'");
-    $app->cacheOld->delete_value('shop_freeleech_list');
+    $app->cacheNew->delete('shop_freeleech_list');
 }
 
 // Also clear misc table for expired freeleech

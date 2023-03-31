@@ -23,7 +23,7 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        if ((!$ThreadInfo = $app->cacheOld->get_value('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
+        if ((!$ThreadInfo = $app->cacheNew->get('thread_' . $ThreadID . '_info')) || !isset($ThreadInfo['Ranking'])) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query(
                 "
@@ -87,7 +87,7 @@ class Forums
 
             $app->dbOld->set_query_id($QueryID);
             if (!$SelectiveCache || !$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-                $app->cacheOld->cache_value('thread_'.$ThreadID.'_info', $ThreadInfo, 0);
+                $app->cacheNew->set('thread_'.$ThreadID.'_info', $ThreadInfo, 0);
             }
         }
 
@@ -132,7 +132,7 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        $Forum = $app->cacheOld->get_value("ForumInfo_$ForumID");
+        $Forum = $app->cacheNew->get("ForumInfo_$ForumID");
         if (!$Forum) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query(
@@ -161,7 +161,7 @@ class Forums
             // Makes an array, with $Forum['Name'], etc.
             $Forum = $app->dbOld->next_record(MYSQLI_ASSOC);
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value("ForumInfo_$ForumID", $Forum, 86400);
+            $app->cacheNew->set("ForumInfo_$ForumID", $Forum, 86400);
         }
         return $Forum;
     }
@@ -174,7 +174,7 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        $ForumCats = $app->cacheOld->get_value('forums_categories');
+        $ForumCats = $app->cacheNew->get('forums_categories');
         if ($ForumCats === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -191,7 +191,7 @@ class Forums
             }
 
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheOld->cache_value('forums_categories', $ForumCats, 0);
+            $app->cacheNew->set('forums_categories', $ForumCats, 0);
         }
         return $ForumCats;
     }
@@ -204,7 +204,7 @@ class Forums
     {
         $app = \Gazelle\App::go();
 
-        if (!$Forums = $app->cacheOld->get_value('forums_list')) {
+        if (!$Forums = $app->cacheNew->get('forums_list')) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
             SELECT
@@ -264,7 +264,7 @@ class Forums
                     $Forum['SpecificRules'] = [];
                 }
             }
-            $app->cacheOld->cache_value('forums_list', $Forums, 0);
+            $app->cacheNew->set('forums_list', $Forums, 0);
         }
         return $Forums;
     }

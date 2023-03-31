@@ -69,5 +69,5 @@ foreach ($ENV->AUTOMATED_BADGE_IDS->Tags as $Tag => $Badge) {
 */
 
 foreach (array_unique($ModifiedIDs) as $ID) {
-    $app->cacheOld->delete_value('user_badges_'.$ID);
+    $app->cacheNew->delete('user_badges_'.$ID);
 }

@@ -118,7 +118,7 @@ if (empty($_POST['confirm'])) {
 
     Torrents::update_hash($GroupID);
 
-    $app->cacheOld->delete_value("torrent_download_$TorrentID");
+    $app->cacheNew->delete("torrent_download_$TorrentID");
 
     Misc::write_log("Torrent $TorrentID was edited by " . $app->userNew->core['username']);
 

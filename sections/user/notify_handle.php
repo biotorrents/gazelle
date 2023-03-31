@@ -136,8 +136,8 @@ if ($_POST['id'.$FormID] && is_numeric($_POST['id'.$FormID])) {
       ('{$app->userNew->core['id']}','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$app->cacheOld->delete_value('notify_filters_'.$app->userNew->core['id']);
-if (($Notify = $app->cacheOld->get_value('notify_artists_'.$app->userNew->core['id'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $app->cacheOld->delete_value('notify_artists_'.$app->userNew->core['id']);
+$app->cacheNew->delete('notify_filters_'.$app->userNew->core['id']);
+if (($Notify = $app->cacheNew->get('notify_artists_'.$app->userNew->core['id'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
+    $app->cacheNew->delete('notify_artists_'.$app->userNew->core['id']);
 }
 Http::redirect("user.php?action=notify");

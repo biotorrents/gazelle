@@ -48,7 +48,7 @@ if (isset($_POST['doit'])) {
         }
     }
 
-    $app->cacheOld->delete_value('genre_tags');
+    $app->cacheNew->delete('genre_tags');
 }
 
 View::header('Official Tags Manager');

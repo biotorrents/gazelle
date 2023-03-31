@@ -31,5 +31,5 @@ $app->dbOld->query("
   VALUES
     ('$GroupID', ".$app->userNew->core['id'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
 
-$app->cacheOld->delete_value("torrents_cover_art_$GroupID");
+$app->cacheNew->delete("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);

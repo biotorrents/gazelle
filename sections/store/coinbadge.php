@@ -46,7 +46,7 @@ View::header('Store');
               SET AdminComment = CONCAT('".sqltime()." - Purchased badge 255 from store\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-              $app->cacheOld->delete_value("user_info_heavy_$UserID");
+              $app->cacheNew->delete("user_info_heavy_$UserID");
               // Calculate new badge values
               $Purchases += 1;
               $x = $Purchases;

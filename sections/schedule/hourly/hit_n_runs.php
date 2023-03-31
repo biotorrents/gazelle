@@ -29,7 +29,7 @@ while (list($UserID, $HnR) = $app->dbOld->next_record()) {
       SET HnR = $NewHnR
       WHERE ID = $UserID");
 
-        $app->cacheOld->delete_value('user_info_heavy_'.$UserID);
+        $app->cacheNew->delete('user_info_heavy_'.$UserID);
         $app->dbOld->set_query_id($getUsers);
     }
 }

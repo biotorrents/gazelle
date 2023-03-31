@@ -53,6 +53,6 @@ if (isset($_POST['delete'])) {
     SET Unread = '0'
     WHERE ConvID IN($ConvIDs) AND UserID = $UserID");
 }
-$app->cacheOld->delete_value('inbox_new_'.$UserID);
+$app->cacheNew->delete('inbox_new_'.$UserID);
 
 header('Location: ' . Inbox::get_inbox_link());

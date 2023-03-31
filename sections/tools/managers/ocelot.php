@@ -37,7 +37,7 @@ switch ($Type) {
           WHERE ".implode(" OR ", $Cond);
             $app->dbOld->query($Query);
             foreach ($UserIDs as $UserID) {
-                $app->cacheOld->delete_value("users_tokens_$UserID");
+                $app->cacheNew->delete("users_tokens_$UserID");
             }
         }
     } else {
@@ -51,7 +51,7 @@ switch ($Type) {
         SET Expired = TRUE
         WHERE UserID = $UserID
           AND TorrentID = $TorrentID");
-        $app->cacheOld->delete_value("users_tokens_$UserID");
+        $app->cacheNew->delete("users_tokens_$UserID");
     }
     break;
 }

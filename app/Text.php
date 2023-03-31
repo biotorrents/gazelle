@@ -39,7 +39,7 @@ class Text
 
         # return cached if available
         $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
-        $cacheHit = $app->cacheOld->get_value($cacheKey);
+        $cacheHit = $app->cacheNew->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -60,7 +60,7 @@ class Text
             # replace links to $app->env->siteDomain
             $parsed = self::fixLinks($parsed);
 
-            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheNew->set($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         } else {
             # BBcode (not shitty)
@@ -69,7 +69,7 @@ class Text
             $parsed = $nbbc->parse($string);
             $parsed = self::fixLinks($parsed);
 
-            $app->cacheOld->cache_value($cacheKey, $parsed, self::$cacheDuration);
+            $app->cacheNew->set($cacheKey, $parsed, self::$cacheDuration);
             return $parsed;
         }
     }
