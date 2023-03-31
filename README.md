@@ -36,6 +36,13 @@ and used with the JSON API.
 BioGazelle uses the Flight router to define app routes.
 Features include clean URIs and centralized middleware.
 
+## New database and cache
+
+There's a new database wrapper that's simple and sensible in
+[the database class](app/Database.php).
+Likewise, the cache class is upgraded to
+[Redis](app/Cache.php).
+
 ## OpenAI integration
 
 One of BioGazelle's major goals is to place data in context.
