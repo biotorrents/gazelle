@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Cache # extends Redis
+class Cache # extends \Redis
 {
     # singleton
     private static $instance = null;
@@ -51,8 +51,11 @@ class Cache # extends Redis
 
     /**
      * go
+     *
+     * @param array $options
+     * @return self
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): self
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -65,8 +68,11 @@ class Cache # extends Redis
 
     /**
      * factory
+     *
+     * @param array $options
+     * @return void
      */
-    private function factory(array $options = [])
+    private function factory(array $options = []): void
     {
         $app = \Gazelle\App::go();
 
@@ -81,7 +87,6 @@ class Cache # extends Redis
         }
 
         self::$redis = $redis;
-        return $redis;
     }
 
 
@@ -91,9 +96,12 @@ class Cache # extends Redis
     /**
      * get
      *
+     * @param string $key the cache key
+     * @return mixed the value, or false on failure
+     *
      * @see https://github.com/phpredis/phpredis#get
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         $value = self::$redis->get($key);
 
@@ -109,17 +117,28 @@ class Cache # extends Redis
 
 
     /**
+     * get_value
+     *
+     * Wrapper for the old cache class.
+     */
+    public function get_value(string $key): mixed
+    {
+        return $this->get($key);
+    }
+
+
+    /**
      * set
      *
      * @param string $key the cache key
-     * @param mixed $value anything you wanna store
-     * @param int $cacheDuration how long it should last, in seconds
-     * @return bool true on success, false on failure
+     * @param mixed $value the value to store
+     * @param int $cacheDuration the number of seconds to store the value
+     * @return array the key/value pair
      *
      * @see https://github.com/phpredis/phpredis#set
      * @see https://github.com/phpredis/phpredis#mset-msetnx
      */
-    public function set(string $key, mixed $value, ?int $cacheDuration = null)
+    public function set(string $key, mixed $value, ?int $cacheDuration = null): array
     {
         # default expiration time in seconds
         if (!$cacheDuration) {
@@ -142,11 +161,25 @@ class Cache # extends Redis
 
 
     /**
+     * cache_value
+     *
+     * Wrapper for the old cache class.
+     */
+    public function cache_value(string $key, mixed $value, ?int $cacheDuration = null): array
+    {
+        return $this->set($key, $value, $cacheDuration);
+    }
+
+
+    /**
      * keys
+     *
+     * @param string $pattern the pattern to match
+     * @return array the keys that match the pattern
      *
      * @see https://github.com/phpredis/phpredis#keys-getkeys
      */
-    public function keys(string $pattern = "*")
+    public function keys(string $pattern = "*"): array
     {
         return self::$redis->keys($pattern);
     }
@@ -155,9 +188,11 @@ class Cache # extends Redis
     /**
      * info
      *
+     * @return array the server info
+     *
      * @see https://github.com/phpredis/phpredis#info
      */
-    public function info()
+    public function info(): array
     {
         return self::$redis->info();
     }
@@ -166,9 +201,12 @@ class Cache # extends Redis
     /**
      * ping
      *
+     * @param string $message the message to send
+     * @return string the server response
+     *
      * @see https://github.com/phpredis/phpredis#ping
      */
-    public function ping(string $message = "")
+    public function ping(string $message = ""): string
     {
         return self::$redis->ping($message);
     }
@@ -177,9 +215,11 @@ class Cache # extends Redis
     /**
      * flush
      *
+     * @return bool true on success, false on failure
+     *
      * @see https://github.com/phpredis/phpredis#flushall
      */
-    public function flush()
+    public function flush(): bool
     {
         return self::$redis->flushAll();
     }
@@ -188,13 +228,16 @@ class Cache # extends Redis
     /**
      * delete
      *
-     * ACTUALLY UNLINK: ASYNC DELETION.
+     * @param bool $now whether to delete immediately or wait for the next garbage collection
+     * @param string ...$keys the keys to delete
+     * @return void
+     *
      * @see https://github.com/phpredis/phpredis#del-delete-unlink
      */
-    public function delete(bool $now = false, string ...$keys)
+    public function delete(bool $now = false, string ...$keys): void
     {
         foreach ($keys as $key) {
-            if ($now === false) {
+            if (!$now) {
                 self::$redis->unlink($key);
             } else {
                 self::$redis->del($key);
@@ -206,10 +249,12 @@ class Cache # extends Redis
     /**
      * count
      *
+     * @return int the number of keys in the database
+     *
      * @see https://github.com/phpredis/phpredis#mset-msetnx
      */
-    public function count()
+    public function count(): int
     {
         return self::$redis->dbSize();
     }
-}
+} # class
