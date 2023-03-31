@@ -14,7 +14,9 @@ declare(strict_types=1);
  * @see https://laravel.com/docs/9.x/eloquent
  */
 
-class Database extends PDO
+namespace Gazelle;
+
+class Database extends \PDO
 {
     # instance
     private static $instance;
@@ -91,9 +93,9 @@ class Database extends PDO
 
         # defaults
         $defaultOptions = [
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_EMULATE_PREPARES => false,
+            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ];
 
         # construct
@@ -102,9 +104,9 @@ class Database extends PDO
 
         # do it
         try {
-            $this->pdo = new PDO($dsn, $username, $password, $options);
-        } catch (PDOException $e) {
-            throw new Exception($e->getMessage(), intval($e->getCode()));
+            $this->pdo = new \PDO($dsn, $username, $password, $options);
+        } catch (\Throwable $e) {
+            throw new \Exception($e->getMessage(), intval($e->getCode()));
         }
 
         /*
@@ -163,7 +165,7 @@ class Database extends PDO
         # errors
         $errors = $this->pdo->errorInfo();
         if ($errors[0] !== "00000") {
-            throw new Exception("{$errors[0]}: {$errors[2]}");
+            throw new \Exception("{$errors[0]}: {$errors[2]}");
         }
 
         # good
@@ -186,7 +188,7 @@ class Database extends PDO
         }
 
         $statement = $this->do($query, $args);
-        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
             foreach ($row as $key => $value) {
@@ -212,7 +214,7 @@ class Database extends PDO
         }
 
         $statement = $this->do($query, $args);
-        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
             $app->cacheOld->cache_value($cacheKey, $row, $this->cacheDuration);
@@ -263,7 +265,7 @@ class Database extends PDO
         }
 
         $statement = $this->do($query, $args);
-        $ref = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $app->cacheOld->cache_value($cacheKey, $ref, $this->cacheDuration);
         return $ref;
@@ -317,7 +319,7 @@ class Database extends PDO
      *
      * Gets the query metadata.
      */
-    public function meta(PDOStatement $statement): array
+    public function meta(\PDOStatement $statement): array
     {
         $meta = [ "pdo" => [], "statement" => [] ];
 

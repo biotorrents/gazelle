@@ -91,7 +91,7 @@ class App
         $this->cacheOld = new \CacheOld(); # old
 
         # database
-        $this->dbNew = \Database::go(); # new
+        $this->dbNew = \Gazelle\Database::go(); # new
         $this->dbOld = new \DB(); # old
 
         # debug
