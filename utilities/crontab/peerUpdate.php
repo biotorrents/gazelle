@@ -29,9 +29,6 @@ ignore_user_abort();
 ini_set("max_execution_time", 300);
 gc_enable();
 
-# we don't want PHP to cache all results internally
-$app->cacheOld->InternalCache = false;
-
 # database stuff
 $app->dbOld->query("TRUNCATE TABLE torrents_peerlists_compare");
 
@@ -77,10 +74,10 @@ list($torrentId, $groupId, $seeders, $leechers, $snatches) = $app->dbOld->next_r
 
 # loop torrents
 while ($torrentId) {
-    if ($lastGroupId != $groupId) {
+    if ($lastGroupId !== $groupId) {
         $cachedData = $app->cacheNew->get("torrent_group_$groupId");
         if ($cachedData !== false) {
-            if (isset($cachedData["ver"]) && $cachedData["ver"] == CacheOld::GROUP_VERSION) {
+            if (isset($cachedData["ver"]) && $cachedData["ver"] === $app->cacheNew->groupVersion) {
                 $cachedStats = &$cachedData["d"]["Torrents"];
             }
         } else {
@@ -89,7 +86,7 @@ while ($torrentId) {
         $lastGroupId = $groupId;
     }
 
-    while ($lastGroupId == $groupId) {
+    while ($lastGroupId === $groupId) {
         $row++;
         if (isset($cachedStats) && is_array($cachedStats[$torrentId])) {
             $oldValues = &$cachedStats[$torrentId];

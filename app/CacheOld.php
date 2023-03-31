@@ -25,9 +25,6 @@ declare(strict_types=1);
 
 class CacheOld extends Memcache
 {
-    // Torrent Group cache version
-    public const GROUP_VERSION = 5;
-
     public $cacheHits = [];
     public $canClear = false;
     public $internalCache = true;

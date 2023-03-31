@@ -19,14 +19,14 @@ class Cache # extends \Redis
     private static $instance = null;
 
     # redis
-    private static $redis = null;
+    private $redis = null;
 
     # global default cache settings
     private $cachePrefix = "gazelle:"; # e.g., gazelle:stats:overview
     private $cacheDuration = 3600; # one hour, if not otherwise specified
 
     # torrent group cache version
-    public const GROUP_VERSION = "2023-04-01";
+    public $groupVersion = "2023-04-01";
 
     # are we in a transaction?
     private $transactionMode = false;
@@ -101,7 +101,7 @@ class Cache # extends \Redis
         $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefix);
 
         # done
-        self::$redis = $redis;
+        $this->redis = $redis;
     }
 
 
@@ -113,7 +113,7 @@ class Cache # extends \Redis
      *
      * @param string $key the cache key
      * @param mixed $value the value to store
-     * @param int|string $cacheDuration the number of seconds to store the value
+     * @param int|string $cacheDuration the expiration time
      * @return array the key/value pair
      *
      * @see https://github.com/phpredis/phpredis#set
@@ -140,8 +140,13 @@ class Cache # extends \Redis
         }
 
         # store the value
-        self::$redis->set($key, $value);
-        self::$redis->expireAt($key, $cacheDuration);
+        $this->redis->set($key, $value);
+        $this->redis->expireAt($key, $cacheDuration);
+
+        # if cacheDuration = 0, persist the value
+        if ($cacheDuration === 0) {
+            $this->redis->persist($key);
+        }
 
         return [$key => $value];
     }
@@ -157,7 +162,7 @@ class Cache # extends \Redis
      */
     public function get(string $key): mixed
     {
-        return self::$redis->get($key);
+        return $this->redis->get($key);
     }
 
 
@@ -171,7 +176,7 @@ class Cache # extends \Redis
      */
     public function exists(string $key): bool
     {
-        return self::$redis->exists($key);
+        return $this->redis->exists($key);
     }
 
 
@@ -186,7 +191,7 @@ class Cache # extends \Redis
      */
     public function append(string $key, string $value): int
     {
-        return self::$redis->append($key, $value);
+        return $this->redis->append($key, $value);
     }
 
 
@@ -203,10 +208,10 @@ class Cache # extends \Redis
     public function increment(string $key, int|float $value = 1): int|float
     {
         if (!is_int($value)) {
-            return self::$redis->incrByFloat($key, $value);
+            return $this->redis->incrByFloat($key, $value);
         }
 
-        return self::$redis->incrBy($key, $value);
+        return $this->redis->incrBy($key, $value);
     }
 
 
@@ -221,7 +226,7 @@ class Cache # extends \Redis
      */
     public function decrement(string $key, int $value = 1): int
     {
-        return self::$redis->decrBy($key, $value);
+        return $this->redis->decrBy($key, $value);
     }
 
 
@@ -235,7 +240,7 @@ class Cache # extends \Redis
      */
     public function persist(string $key): bool
     {
-        return self::$redis->persist($key);
+        return $this->redis->persist($key);
     }
 
 
@@ -250,7 +255,7 @@ class Cache # extends \Redis
     public function delete(string ...$keys): void
     {
         foreach ($keys as $key) {
-            self::$redis->unlink($key);
+            $this->redis->unlink($key);
         }
     }
 
@@ -264,7 +269,7 @@ class Cache # extends \Redis
      */
     public function flush(): bool
     {
-        return self::$redis->flushAll();
+        return $this->redis->flushAll();
     }
 
 
@@ -281,7 +286,7 @@ class Cache # extends \Redis
      */
     public function info(string $pattern = ""): array
     {
-        return self::$redis->info($pattern);
+        return $this->redis->info($pattern);
     }
 
 
@@ -294,7 +299,7 @@ class Cache # extends \Redis
      */
     public function error(): ?string
     {
-        return self::$redis->getLastError();
+        return $this->redis->getLastError();
     }
 
 
@@ -308,7 +313,7 @@ class Cache # extends \Redis
      */
     public function slowLog(int $limit = 10): array
     {
-        return self::$redis->slowLog("get", $limit);
+        return $this->redis->slowLog("get", $limit);
     }
 
 
@@ -322,7 +327,7 @@ class Cache # extends \Redis
      */
     public function keys(string $pattern = "*"): array
     {
-        return self::$redis->keys($pattern);
+        return $this->redis->keys($pattern);
     }
 
 
@@ -335,7 +340,7 @@ class Cache # extends \Redis
      */
     public function count(): int
     {
-        return self::$redis->dbSize();
+        return $this->redis->dbSize();
     }
 
 
@@ -349,7 +354,7 @@ class Cache # extends \Redis
      */
     public function ping(string $message = ""): string
     {
-        return self::$redis->ping($message);
+        return $this->redis->ping($message);
     }
 
 
@@ -364,7 +369,7 @@ class Cache # extends \Redis
      */
     public function raw(string $command, array $arguments = []): mixed
     {
-        return self::$redis->rawCommand($command, ...$arguments);
+        return $this->redis->rawCommand($command, ...$arguments);
     }
 
 
@@ -388,7 +393,7 @@ class Cache # extends \Redis
      */
     public function setQueryLock(string $lockName): array
     {
-        return $this->set("query_lock_{$lockName}", 1, 3600);
+        return $this->set("queryLock:{$lockName}", true, $this->cacheDuration);
     }
 
 
@@ -402,6 +407,6 @@ class Cache # extends \Redis
      */
     public function clearQueryLock(string $lockName): void
     {
-        $this->delete("query_lock_{$lockName}");
+        $this->delete("queryLock:{$lockName}");
     }
 } # class
