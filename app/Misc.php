@@ -269,24 +269,19 @@ class Misc
         $app->cacheOld->commit_transaction(0);
 
         $CatalogueID = floor((POSTS_PER_PAGE * ceil($Posts / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-        $app->cacheOld->begin_transaction('thread_'.$TopicID.'_catalogue_'.$CatalogueID);
 
         $Post = array(
-            'ID' => $PostID,
-            'AuthorID' => $app->user->core["id"],
-            'AddedTime' => sqltime(),
-            'Body' => $PostBody,
-            'EditedUserID' => 0,
-            'EditedTime' => null,
-            'Username' => ''
-        );
+          'ID' => $PostID,
+          'AuthorID' => $app->user->core["id"],
+          'AddedTime' => sqltime(),
+          'Body' => $PostBody,
+          'EditedUserID' => 0,
+          'EditedTime' => null,
+          'Username' => ''
+      );
+        $app->cacheNew->set('thread_'.$TopicID.'_catalogue_'.$CatalogueID, $Post, 0);
 
-        $app->cacheOld->insert('', $Post);
-        $app->cacheOld->commit_transaction(0);
-
-        $app->cacheOld->begin_transaction('thread_'.$TopicID.'_info');
-        $app->cacheOld->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID));
-        $app->cacheOld->commit_transaction(0);
+        $app->cacheNew->set('thread_'.$TopicID.'_info', array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID), 0);
 
         $app->dbOld->set_query_id($QueryID);
         return $TopicID;

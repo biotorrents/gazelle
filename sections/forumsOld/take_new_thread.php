@@ -162,7 +162,7 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
 
     if ($Stickies > 0) {
         $Part1 = array_slice($Forum, 0, $Stickies, true); // Stickies
-    $Part3 = array_slice($Forum, $Stickies, TOPICS_PER_PAGE - $Stickies - 1, true); // Rest of page
+        $Part3 = array_slice($Forum, $Stickies, TOPICS_PER_PAGE - $Stickies - 1, true); // Rest of page
     } else {
         $Part1 = [];
         $Part3 = $Forum;
@@ -202,7 +202,6 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
     $app->cacheNew->delete('forums_list');
 }
 
-$app->cacheOld->begin_transaction("thread_$TopicID".'_catalogue_0');
 $Post = array(
   'ID' => $PostID,
   'AuthorID' => $app->user->core['id'],
@@ -211,13 +210,9 @@ $Post = array(
   'EditedUserID' => 0,
   'EditedTime' => null
   );
-$app->cacheOld->insert('', $Post);
-$app->cacheOld->commit_transaction(0);
+$app->cacheNew->set("thread_$TopicID".'_catalogue_0', $Post, 0);
 
-$app->cacheOld->begin_transaction("thread_$TopicID".'_info');
-$app->cacheOld->update_row(false, array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']));
-$app->cacheOld->commit_transaction(0);
-
+$app->cacheNew->set("thread_$TopicID".'_info', array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']), 0);
 
 Http::redirect("forums.php?action=viewthread&threadid=$TopicID");
 die();

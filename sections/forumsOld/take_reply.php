@@ -164,12 +164,12 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
             $Thread = $Forum[$TopicID];
             unset($Forum[$TopicID]);
             $Thread['NumPosts'] = $Thread['NumPosts'] + 1; // Increment post count
-      $Thread['LastPostID'] = $PostID; // Set post ID for read/unread
-      $Thread['LastPostTime'] = $SQLTime; // Time of last post
-      $Thread['LastPostAuthorID'] = $app->user->core['id']; // Last poster ID
-      $Part2 = [$TopicID => $Thread]; // Bumped thread
+            $Thread['LastPostID'] = $PostID; // Set post ID for read/unread
+            $Thread['LastPostTime'] = $SQLTime; // Time of last post
+            $Thread['LastPostAuthorID'] = $app->user->core['id']; // Last poster ID
+            $Part2 = [$TopicID => $Thread]; // Bumped thread
 
-    // if we're bumping from an older page
+        // if we're bumping from an older page
         } else {
             // Remove the last thread from the index
             if (count($Forum) == TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
@@ -209,7 +209,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         }
         if ($Stickies > 0) {
             $Part1 = array_slice($Forum, 0, $Stickies, true); //Stickies
-      $Part3 = array_slice($Forum, $Stickies, TOPICS_PER_PAGE - $Stickies - 1, true); //Rest of page
+            $Part3 = array_slice($Forum, $Stickies, TOPICS_PER_PAGE - $Stickies - 1, true); //Rest of page
         } else {
             $Part1 = [];
             $Part3 = $Forum;
@@ -250,22 +250,19 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
     $CatalogueID = floor((POSTS_PER_PAGE * ceil($ThreadInfo['Posts'] / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 
     //Insert the post into the thread catalogue (block of 500 posts)
-    $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-    $app->cacheOld->insert('', [
-    'ID'           => $PostID,
-    'AuthorID'     => $app->user->core['id'],
-    'AddedTime'    => $SQLTime,
-    'Body'         => $Body,
-    'EditedUserID' => 0,
-    'EditedTime'   => null,
-    'Username'     => $app->user->core['username'] // todo: Remove, it's never used?
-  ]);
-    $app->cacheOld->commit_transaction(0);
+    $trash = [
+        'ID'           => $PostID,
+        'AuthorID'     => $app->user->core['id'],
+        'AddedTime'    => $SQLTime,
+        'Body'         => $Body,
+        'EditedUserID' => 0,
+        'EditedTime'   => null,
+        'Username'     => $app->user->core['username'] // todo: Remove, it's never used?
+    ];
+    $app->cacheNew->set("thread_$TopicID"."_catalogue_$CatalogueID", $trash, 0);
 
     //Update the thread info
-    $app->cacheOld->begin_transaction("thread_$TopicID".'_info');
-    $app->cacheOld->update_row(false, ['Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']]);
-    $app->cacheOld->commit_transaction(0);
+    $app->cacheNew->set("thread_$TopicID".'_info', ['Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']], 0);
 
     //Increment this now to make sure we redirect to the correct page
     $ThreadInfo['Posts']++;

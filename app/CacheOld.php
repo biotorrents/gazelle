@@ -197,21 +197,4 @@ class CacheOld extends Memcache
             $this->memcacheDBArray[$row] = $updateArray;
         }
     }
-
-
-    /**
-     * insert
-     */
-    public function insert($key, $value)
-    {
-        if (!$this->inTransaction) {
-            return false;
-        }
-
-        if ($key === '') {
-            $this->memcacheDBArray[] = $value;
-        } else {
-            $this->memcacheDBArray[$key] = $value;
-        }
-    }
 }

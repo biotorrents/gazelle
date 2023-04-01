@@ -383,28 +383,23 @@ class Cache # extends \Redis
     /**
      * setQueryLock
      *
-     * Set a query lock.
-     * Expires in an hour.
-     *
-     * @param string $lockName the name on the lock
-     * @return array the key/value pair
+     * todo: remove this method
      */
-    public function setQueryLock(string $lockName): array
+    public function setQueryLock(string $lockName): bool
     {
-        return $this->set("queryLock:{$lockName}", true, $this->cacheDuration);
+        return true;
+        #return $this->set("queryLock:{$lockName}", true, $this->cacheDuration);
     }
 
 
     /**
      * clearQueryLock
      *
-     * Remove a query lock.
-     *
-     * @param string $lockName the name on the lock
-     * @return void
+     * todo: remove this method
      */
-    public function clearQueryLock(string $lockName): void
+    public function clearQueryLock(string $lockName): bool
     {
-        $this->delete("queryLock:{$lockName}");
+        return true;
+        #return $this->delete("queryLock:{$lockName}");
     }
 } # class
