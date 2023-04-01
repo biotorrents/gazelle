@@ -6,9 +6,13 @@ declare(strict_types=1);
 /**
  * Gazelle\Cache
  *
- * A wrapper for the PhpRedis extension.
+ * A simple wrapper for the PhpRedis extension.
+ * Uses serialized strings for Memcached compatibility.
+ *
+ * todo: transactions, maybe lists and hashes, etc.
  *
  * @see https://github.com/phpredis/phpredis
+ * @see https://redis.io/docs/
  */
 
 namespace Gazelle;

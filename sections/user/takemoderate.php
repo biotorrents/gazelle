@@ -698,7 +698,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
         $LightUpdates['Enabled'] = 1;
     }
     $EditSummary[] = $EnableStr;
-    $app->cacheOld->replace_value("enabled_$UserID", $EnableUser, 0);
+    $app->cacheNew->set("enabled_$UserID", $EnableUser, 0);
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {

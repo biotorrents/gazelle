@@ -126,28 +126,6 @@ class CacheOld extends Memcache
     }
 
 
-    /**
-     * replace_value
-     */
-    public function replace_value($key, $value, $duration = 2592000)
-    {
-        $startTime = microtime(true);
-        $replaceParams = [$key, $value, false, $duration];
-
-        if (is_subclass_of($this, 'Memcached')) {
-            unset($replaceParams[2]);
-        }
-
-        $this->replace(...$replaceParams);
-
-        if ($this->internalCache && array_key_exists($key, $this->cacheHits)) {
-            $this->cacheHits[$key] = $value;
-        }
-
-        $this->time += (microtime(true) - $startTime) * 1000;
-    }
-
-
     /************************
      * MEMCACHEDB FUNCTIONS *
      ************************/

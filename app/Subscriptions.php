@@ -119,7 +119,7 @@ class Subscriptions
         VALUES ($UserID, " . db_string($TopicID) . ")");
             array_push($UserSubscriptions, $TopicID);
         }
-        $app->cacheOld->replace_value("subscriptions_user_$UserID", $UserSubscriptions, 0);
+        $app->cacheNew->set("subscriptions_user_$UserID", $UserSubscriptions, 0);
         $app->cacheNew->delete("subscriptions_user_new_$UserID");
         $app->dbOld->set_query_id($QueryID);
     }
@@ -158,7 +158,7 @@ class Subscriptions
           ($UserID, '" . db_string($Page) . "', " . db_string($PageID) . ")");
             array_push($UserCommentSubscriptions, array($Page, $PageID));
         }
-        $app->cacheOld->replace_value("subscriptions_comments_user_$UserID", $UserCommentSubscriptions, 0);
+        $app->cacheNew->set("subscriptions_comments_user_$UserID", $UserCommentSubscriptions, 0);
         $app->cacheNew->delete("subscriptions_comments_user_new_$UserID");
         $app->dbOld->set_query_id($QueryID);
     }

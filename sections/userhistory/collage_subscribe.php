@@ -36,6 +36,6 @@ if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
     array_push($UserSubscriptions, $CollageID);
     Collages::addSubscription($CollageID);
 }
-$app->cacheOld->replace_value('collage_subs_user_'.$app->user->core['id'], $UserSubscriptions, 0);
+$app->cacheNew->set('collage_subs_user_'.$app->user->core['id'], $UserSubscriptions, 0);
 $app->cacheNew->delete('collage_subs_user_new_'.$app->user->core['id']);
 $app->cacheNew->delete("collage_$CollageID");

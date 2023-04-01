@@ -33,10 +33,12 @@
 		<form>
 
 			{# edit settings #}
-			<a href="/user/update/{{ userId }}" class="button button-primary">edit settings</a>
+			{# /user/update/{{ userId }} #}
+			<a href="/user.php?action=edit&userid={{ userId }}" class="button button-primary">edit settings</a>
 
 			{# preview as other #}
-			<a href="/user/{{ userId }}/preview" class="button button-orange">preview profile</a>
+			{# /user/{{ userId }}/preview #}
+			<a href="/user.php?id={{ userId }}&previewMode=true" class="button button-orange">preview profile</a>
 
 			{# log out #}
 			<a href="/logout" class="button button-red">log out</a>
@@ -50,8 +52,8 @@
 		<form>
 
 			{# send pm #}
-			{# inbox.php?action=compose&to={{ userId }} #}
-				<a href="/messages/compose/{{ userId }}" class="button button-primary"> send message</a>
+			{# /messages/compose/{{ userId }} #}
+			<a href="/inbox.php?action=compose&to={{ userId }}" class="button button-primary"> send message</a>
 
 			{# add/remove from friends #}
 			{# friends.php?action=add&friendid={{ userId }}&auth={{ user.extra.AuthKey }} #}
@@ -63,8 +65,8 @@
 			{# if not isFriend #}
 
 			{# snitches get stitches #}
-			{# reports.php?action=report&type=user&id={{ userId }} #}
-				<a href="/report/{{ userId }}" class="button button-red"> report user</a>
+			{# /report/{{ userId }} #}
+			<a href="/reports.php?action=report&type=user&id={{ userId }}" class="button button-red"> report user</a>
 
 			<hr/>
 
@@ -83,8 +85,7 @@
 			</a>
 
 		</form>
-	{% endif %}
-	{# if not isOwnProfile #}
+	{% endif %} {# if not isOwnProfile #}
 </section>
 
 
