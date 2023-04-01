@@ -117,9 +117,7 @@ class Session
                 delete from users_sessions where UserID = {$this->userId} and SessionID = '{$this->id}'
             ");
 
-            $app->cacheOld->begin_transaction("users_sessions_{$this->userId}");
-            $app->cacheOld->delete_row($id);
-            $app->cacheOld->commit_transaction(0);
+            $app->cacheNew->delete("users_sessions_{$this->userId}");
         }
 
         $app->cacheNew->delete("user_info_{$this->userId}");

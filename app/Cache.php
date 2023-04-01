@@ -377,12 +377,6 @@ class Cache # extends \Redis
     }
 
 
-    /** transactions */
-
-
-    # todo
-
-
     /** query locks (legacy) */
 
 
