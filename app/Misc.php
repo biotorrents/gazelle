@@ -249,6 +249,7 @@ class Misc
             $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
         }
 
+        /*
         // Update the forum root
         $app->cacheOld->begin_transaction('forums_list');
         $UpdateArray = array(
@@ -267,6 +268,7 @@ class Misc
 
         $app->cacheOld->update_row($ForumID, $UpdateArray);
         $app->cacheOld->commit_transaction(0);
+        */
 
         $CatalogueID = floor((POSTS_PER_PAGE * ceil($Posts / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 

@@ -522,9 +522,12 @@ class NotificationsManager
         }
 
         if ($app->user->extra['LastReadNews'] !== $News[0][0]) {
+            /*
             $app->cacheOld->begin_transaction('user_info_heavy_' . $app->user->core["id"]);
             $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
             $app->cacheOld->commit_transaction(0);
+            */
+
             $app->dbOld->query("
             UPDATE users_info
             SET LastReadNews = '".$News[0][0]."'
@@ -562,9 +565,12 @@ class NotificationsManager
             }
         }
         if ($app->user->extra['LastReadBlog'] < $Blog[0][0]) {
+            /*
             $app->cacheOld->begin_transaction('user_info_heavy_' . $app->user->core["id"]);
             $app->cacheOld->update_row(false, array('LastReadBlog' => $Blog[0][0]));
             $app->cacheOld->commit_transaction(0);
+            */
+
             $app->dbOld->query("
             UPDATE users_info
             SET LastReadBlog = '". $Blog[0][0]."'

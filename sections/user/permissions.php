@@ -40,9 +40,12 @@ if (isset($_POST['action'])) {
     }
     $Delta['MaxCollages'] = $_POST['maxcollages'];
 
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('CustomPermissions' => $Delta));
     $app->cacheOld->commit_transaction(0);
+    */
+
     $app->dbOld->query("
     UPDATE users_main
     SET CustomPermissions = '".db_string(serialize($Delta))."'

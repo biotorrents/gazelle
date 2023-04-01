@@ -108,30 +108,33 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
 </form>
 <?php
 } else {
-        authorize();
-        $Vote = $_POST['vote'];
-        if (!isset($Answers[$Vote]) && $Vote != 0) {
-            error(0, true);
-        }
+    authorize();
+    $Vote = $_POST['vote'];
+    if (!isset($Answers[$Vote]) && $Vote != 0) {
+        error(0, true);
+    }
 
-        //Add our vote
-        $app->dbOld->query("
+    //Add our vote
+    $app->dbOld->query("
     INSERT IGNORE INTO forums_polls_votes
       (TopicID, UserID, Vote)
     VALUES
       ($TopicID, " . $app->user->core['id'] . ", $Vote)");
-        if ($app->dbOld->affected_rows() == 1 && $Vote != 0) {
-            $app->cacheOld->begin_transaction("polls_$TopicID");
-            $app->cacheOld->update_row(2, array($Vote => '+1'));
-            $app->cacheOld->commit_transaction(0);
-            $Votes[$Vote]++;
-            $TotalVotes++;
-            $MaxVotes++;
-        }
+    if ($app->dbOld->affected_rows() == 1 && $Vote != 0) {
+        /*
+        $app->cacheOld->begin_transaction("polls_$TopicID");
+        $app->cacheOld->update_row(2, array($Vote => '+1'));
+        $app->cacheOld->commit_transaction(0);
+        */
 
-        if ($Vote != 0) {
-            $Answers[$Vote] = '=> '.$Answers[$Vote];
-        } ?>
+        $Votes[$Vote]++;
+        $TotalVotes++;
+        $MaxVotes++;
+    }
+
+    if ($Vote != 0) {
+        $Answers[$Vote] = '=> '.$Answers[$Vote];
+    } ?>
 <ul class="poll nobullet">
   <?php
     if ($ForumID != STAFF_FORUM) {
@@ -173,4 +176,4 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
 </ul>
 <br /><strong>Votes:</strong> <?=Text::float($TotalVotes)?>
 <?php
-    }
+}

@@ -35,9 +35,11 @@ $app->dbOld->query("
 $UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, array('Invites' => '+1'));
         $app->cacheOld->commit_transaction(0);
+        */
     }
 
     $app->dbOld->query('
@@ -78,9 +80,11 @@ $app->dbOld->query("
 $UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, array('Invites' => '+1'));
         $app->cacheOld->commit_transaction(0);
+        */
     }
 
     $app->dbOld->query('
@@ -107,9 +111,11 @@ $app->dbOld->query("
 $UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, array('Invites' => '+1'));
         $app->cacheOld->commit_transaction(0);
+        */
     }
 
     $app->dbOld->query('
@@ -133,9 +139,11 @@ $app->dbOld->query("
 $UserIDs = $app->dbOld->collect('ID');
 if (count($UserIDs) > 0) {
     foreach ($UserIDs as $UserID) {
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, array('Invites' => '+1'));
         $app->cacheOld->commit_transaction(0);
+        */
     }
 
     $app->dbOld->query('

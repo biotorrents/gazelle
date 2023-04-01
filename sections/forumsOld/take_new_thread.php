@@ -183,6 +183,7 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
 
     $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
 
+    /*
     // Update the forum root
     $app->cacheOld->begin_transaction('forums_list');
     $app->cacheOld->update_row($ForumID, array(
@@ -197,6 +198,7 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
     'IsSticky' => 0
     ));
     $app->cacheOld->commit_transaction(0);
+    */
 } else {
     // If there's no cache, we have no data, and if there's no data
     $app->cacheNew->delete('forums_list');

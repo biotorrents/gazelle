@@ -93,9 +93,12 @@ foreach ($Criteria as $L) { // $L = Level
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
+            /*
             $app->cacheOld->begin_transaction("user_info_$UserID");
             $app->cacheOld->update_row(false, array('PermissionID' => $L['To']));
             $app->cacheOld->commit_transaction(0);
+            */
+
             $app->cacheNew->delete("user_info_$UserID");
             $app->cacheNew->delete("user_info_heavy_$UserID");
             $app->cacheNew->delete("user_stats_$UserID");
@@ -140,9 +143,12 @@ foreach ($Criteria as $L) { // $L = Level
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
+            /*
             $app->cacheOld->begin_transaction("user_info_$UserID");
             $app->cacheOld->update_row(false, array('PermissionID' => $L['From']));
             $app->cacheOld->commit_transaction(0);
+            */
+
             $app->cacheNew->delete("user_info_$UserID");
             $app->cacheNew->delete("user_info_heavy_$UserID");
             $app->cacheNew->delete("user_stats_$UserID");

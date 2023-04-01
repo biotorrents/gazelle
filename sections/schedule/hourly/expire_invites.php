@@ -25,9 +25,11 @@ foreach ($Users as $UserID) {
           SET Invites = Invites + 1
           WHERE ID = $UserID");
 
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, array('Invites' => '+1'));
         $app->cacheOld->commit_transaction(0);
+        */
     }
 }
 

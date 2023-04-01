@@ -208,9 +208,12 @@ foreach ($user_ids as $user_id) {
             if ($Recent['id'] === $group_id) {
                 if ($Recent['picture'] !== $picture) {
                     $Recent['picture'] = $picture;
+
+                    /*
                     $app->cacheOld->begin_transaction('recent_uploads_'.$user_id);
                     $app->cacheOld->update_row($Key, $Recent);
                     $app->cacheOld->commit_transaction(0);
+                    */
                 }
             }
         }
@@ -246,9 +249,12 @@ if ($app->dbOld->has_results()) {
                 if ($Recent['id'] == $group_id) {
                     if ($Recent['picture'] !== $picture) {
                         $Recent['picture'] = $picture;
+
+                        /*
                         $app->cacheOld->begin_transaction('recent_snatches_'.$user_id);
                         $app->cacheOld->update_row($Key, $Recent);
                         $app->cacheOld->commit_transaction(0);
+                        */
                     }
                 }
             }

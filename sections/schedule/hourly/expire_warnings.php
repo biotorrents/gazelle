@@ -10,9 +10,11 @@ $app->dbOld->query("
   WHERE Warned < '$sqltime'");
 
 while (list($UserID) = $app->dbOld->next_record()) {
+    /*
     $app->cacheOld->begin_transaction("user_info_$UserID");
     $app->cacheOld->update_row(false, array('Warned' => null));
     $app->cacheOld->commit_transaction(2592000);
+    */
 }
 
 $app->dbOld->query("

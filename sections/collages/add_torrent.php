@@ -46,9 +46,12 @@ function add_torrent($CollageID, $GroupID)
       SELECT UserID
       FROM users_collage_subs
       WHERE CollageID = $CollageID");
+
+        /*
         while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
             $app->cacheNew->delete("collage_subs_user_new_$app->cacheOldUserID");
         }
+        */
     }
 }
 

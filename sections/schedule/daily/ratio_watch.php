@@ -32,9 +32,12 @@ if (count($OffRatioWatch) > 0) {
 }
 
 foreach ($OffRatioWatch as $UserID) {
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('RatioWatchEnds' => null, 'RatioWatchDownload' => '0', 'CanLeech' => 1));
     $app->cacheOld->commit_transaction(0);
+    */
+
     Misc::send_pm($UserID, 0, 'You have been taken off Ratio Watch', "Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=".site_url()."/rules/ratio]here[/url].\n");
     echo "Ratio watch off: $UserID\n";
 }
@@ -66,9 +69,12 @@ if (count($OffRatioWatch) > 0) {
 }
 
 foreach ($OffRatioWatch as $UserID) {
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('RatioWatchEnds' => null, 'RatioWatchDownload' => '0', 'CanLeech' => 1));
     $app->cacheOld->commit_transaction(0);
+    */
+
     Misc::send_pm($UserID, 0, "You have been taken off Ratio Watch", "Congratulations! Feel free to begin downloading again.\n To ensure that you do not get put on ratio watch again, please read the rules located [url=".site_url()."/rules/ratio]here[/url].\n");
     echo "Ratio watch off: $UserID\n";
 }
@@ -109,9 +115,12 @@ if (!empty($WatchList)) {
 }
 
 foreach ($WatchList as $UserID) {
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('RatioWatchEnds' => time_plus(60 * 60 * 24 * 14), 'RatioWatchDownload' => 0));
     $app->cacheOld->commit_transaction(0);
+    */
+
     Misc::send_pm($UserID, 0, 'You have been put on Ratio Watch', "This happens when your ratio falls below the requirements we have outlined in the rules located [url=".site_url()."/rules/ratio]here[/url].\n For information about ratio watch, click the link above.");
     echo "Ratio watch on: $UserID\n";
 }
@@ -141,9 +150,12 @@ if (count($UserIDs) > 0) {
 }
 
 foreach ($UserIDs as $UserID) {
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('RatioWatchDownload' => 0, 'CanLeech' => 0));
     $app->cacheOld->commit_transaction(0);
+    */
+
     Misc::send_pm($UserID, 0, 'Your downloading privileges have been disabled', "As you did not raise your ratio in time, your downloading privileges have been revoked. You will not be able to download any torrents until your ratio is above your new required ratio.");
     echo "Ratio watch disabled: $UserID\n";
 }

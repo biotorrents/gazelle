@@ -91,23 +91,26 @@ $app->dbOld->query("
     EditedTime = '$SQLTime'
   WHERE ID = '$PostID'");
 
+/*
 $CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
 $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
 if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
-    $app->cacheOld->cancel_transaction();
-    $app->cacheNew->delete("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
+  $app->cacheOld->cancel_transaction();
+  $app->cacheNew->delete("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
 } else {
-    $app->cacheOld->update_row($Key, array(
-      'ID'=>$app->cacheOld->MemcacheDBArray[$Key]['ID'],
-      'AuthorID'=>$app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
-      'AddedTime'=>$app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
-      'Body'=>$Body, //Don't url decode.
-      'EditedUserID'=>$app->user->core['id'],
-      'EditedTime'=>$SQLTime,
-      'Username'=>$app->user->core['username']
-      ));
-    $app->cacheOld->commit_transaction(3600 * 24 * 5);
+  $app->cacheOld->update_row($Key, array(
+    'ID'=>$app->cacheOld->MemcacheDBArray[$Key]['ID'],
+    'AuthorID'=>$app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
+    'AddedTime'=>$app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
+    'Body'=>$Body, //Don't url decode.
+    'EditedUserID'=>$app->user->core['id'],
+    'EditedTime'=>$SQLTime,
+    'Username'=>$app->user->core['username']
+    ));
+  $app->cacheOld->commit_transaction(3600 * 24 * 5);
 }
+*/
+
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
     error(404);

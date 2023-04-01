@@ -35,9 +35,12 @@ if (!check_perms('site_send_unlimited_invites')) {
       UPDATE users_main
       SET Invites = Invites + 1
       WHERE ID = ?", $UserID);
+
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
         $app->cacheOld->update_row(false, ['Invites' => '+1']);
         $app->cacheOld->commit_transaction(0);
+        */
     }
 }
 Http::redirect("user.php?action=invite");

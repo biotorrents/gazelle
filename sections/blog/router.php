@@ -187,9 +187,12 @@ if (!$Blog = $app->cacheNew->get('blog')) {
 }
 
 if ($app->user->extra['LastReadBlog'] < $Blog[0][0]) {
+    /*
     $app->cacheOld->begin_transaction('user_info_heavy_'.$app->user->core['id']);
     $app->cacheOld->update_row(false, array('LastReadBlog' => $Blog[0][0]));
     $app->cacheOld->commit_transaction(0);
+    */
+
     $app->dbOld->prepared_query("
     UPDATE users_info
     SET LastReadBlog = '".$Blog[0][0]."'

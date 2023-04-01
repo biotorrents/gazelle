@@ -92,7 +92,7 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
         $app->cacheNew->delete("reports_torrent_$TorrentID");
     } else {
         //Someone beat us to it. Inform the staffer.
-?>
+        ?>
   <table class="layout" cellpadding="5">
     <tr>
       <td>
@@ -279,9 +279,11 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
 
     //Warnings / remove upload
     if ($Upload) {
+        /*
         $app->cacheOld->begin_transaction("user_info_heavy_$UploaderID");
         $app->cacheOld->update_row(false, array('DisableUpload' => '1'));
         $app->cacheOld->commit_transaction(0);
+        */
 
         $app->dbOld->prepared_query("
       UPDATE users_info
@@ -373,7 +375,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
     }
 } else {
     // Someone beat us to it. Inform the staffer.
-?>
+    ?>
 <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Somebody has already resolved this report</a>
 <input type="button" value="Clear" onclick="ClearReport(<?=$ReportID?>);" />
 <?php

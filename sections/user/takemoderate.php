@@ -278,7 +278,7 @@ if ($Classes[$Class]['Level'] != $Cur['Class']
       ($Classes[$Class]['Level'] < $app->user->extra['Class'] && check_perms('users_promote_below', $Cur['Class']))
     || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
   )
-  ) {
+) {
     $UpdateSet[] = "PermissionID = '$Class'";
     $EditSummary[] = 'class changed to '.User::make_class_string($Class);
     $LightUpdates['PermissionID'] = $Class;
@@ -795,6 +795,7 @@ if ($DeleteKeys) {
     $app->cacheNew->delete("user_info_$UserID");
     $app->cacheNew->delete("user_info_heavy_$UserID");
 } else {
+    /*
     $app->cacheOld->begin_transaction("user_info_$UserID");
     $app->cacheOld->update_row(false, $LightUpdates);
     $app->cacheOld->commit_transaction(0);
@@ -802,6 +803,7 @@ if ($DeleteKeys) {
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, $HeavyUpdates);
     $app->cacheOld->commit_transaction(0);
+    */
 }
 
 $Summary = '';
@@ -853,25 +855,25 @@ Http::redirect("user.php?id=$UserID");
 function translateUserStatus($Status)
 {
     switch ($Status) {
-    case 0:
-      return 'Unconfirmed';
-    case 1:
-      return 'Enabled';
-    case 2:
-      return 'Disabled';
-    default:
-      return $Status;
-  }
+        case 0:
+            return 'Unconfirmed';
+        case 1:
+            return 'Enabled';
+        case 2:
+            return 'Disabled';
+        default:
+            return $Status;
+    }
 }
 
 function translateLeechStatus($Status)
 {
     switch ($Status) {
-    case 0:
-      return 'Disabled';
-    case 1:
-      return 'Enabled';
-    default:
-      return $Status;
-  }
+        case 0:
+            return 'Disabled';
+        case 1:
+            return 'Enabled';
+        default:
+            return $Status;
+    }
 }

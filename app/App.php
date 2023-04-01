@@ -23,8 +23,7 @@ class App
     public $env = null;
 
     # the rest of the globals
-    public $cacheNew = null; # new
-    public $cacheOld = null; # old
+    public $cacheNew = null;
 
     public $dbNew = null; # new
     public $dbOld = null; # old
@@ -86,8 +85,7 @@ class App
         $this->env = \ENV::go();
 
         # cache
-        $this->cacheNew = \Gazelle\Cache::go(); # new
-        $this->cacheOld = new \CacheOld(); # old
+        $this->cacheNew = \Gazelle\Cache::go();
 
         # database
         $this->dbNew = \Gazelle\Database::go(); # new
@@ -97,7 +95,7 @@ class App
         $this->debug = \Debug::go();
 
         # user
-        $this->user = \User::go(); # new
+        $this->user = \User::go();
 
         # twig: LAST
         $this->twig = \Twig::go();

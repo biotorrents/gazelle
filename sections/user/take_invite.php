@@ -115,9 +115,12 @@ EOT;
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
       WHERE ID = '{$app->user->core['id']}'");
-        $app->cacheOld->begin_transaction('user_info_heavy_'.$app->user->core['id']);
-        $app->cacheOld->update_row(false, array('Invites' => '-1'));
-        $app->cacheOld->commit_transaction(0);
+
+        /*
+          $app->cacheOld->begin_transaction('user_info_heavy_'.$app->user->core['id']);
+          $app->cacheOld->update_row(false, array('Invites' => '-1'));
+          $app->cacheOld->commit_transaction(0);
+          */
     }
 
     \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);

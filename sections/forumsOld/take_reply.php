@@ -109,6 +109,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         $app->cacheNew->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
+    /*
     //Edit the post in the cache
     $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
     $app->cacheOld->update_row($Key, [
@@ -118,6 +119,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
     'Username' => $app->user->core['username']
   ]);
     $app->cacheOld->commit_transaction(0);
+    */
 
 //Now we're dealing with a normal post
 } else {
@@ -227,6 +229,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         }
         $app->cacheNew->set("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
+        /*
         //Update the forum root
         $app->cacheOld->begin_transaction('forums_list');
         $app->cacheOld->update_row($ForumID, [
@@ -240,6 +243,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
       'IsSticky'         => $ThreadInfo['IsSticky']
     ]);
         $app->cacheOld->commit_transaction(0);
+        */
     } else {
         //If there's no cache, we have no data, and if there's no data
         $app->cacheNew->delete('forums_list');

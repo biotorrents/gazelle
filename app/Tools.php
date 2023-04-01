@@ -219,9 +219,11 @@ class Tools
             //Not changing, user was not already warned
             $WarnTime = time_plus($Duration);
 
+            /*
             $app->cacheOld->begin_transaction("user_info_$UserID");
             $app->cacheOld->update_row(false, array('Warned' => $WarnTime));
             $app->cacheOld->commit_transaction(0);
+            */
 
             $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
 

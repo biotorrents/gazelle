@@ -19,9 +19,12 @@ if (!$News = $app->cacheNew->get('news')) {
 }
 
 if ($app->user->extra['LastReadNews'] != $News[0][0]) {
+    /*
     $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
     $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
     $app->cacheOld->commit_transaction(0);
+    */
+
     $app->dbOld->query("
     UPDATE users_info
     SET LastReadNews = '".$News[0][0]."'

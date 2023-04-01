@@ -130,6 +130,7 @@ if (isset($_POST['delete'])) {
 
     $app->cacheNew->delete("thread_$TopicID");
 
+    /*
     $app->cacheOld->begin_transaction('forums_list');
     $UpdateArray = array(
     'NumPosts' => $NumPosts,
@@ -145,6 +146,8 @@ if (isset($_POST['delete'])) {
 
     $app->cacheOld->update_row($ForumID, $UpdateArray);
     $app->cacheOld->commit_transaction(0);
+    */
+
     $app->cacheNew->delete("thread_{$TopicID}_info");
 
     // subscriptions
@@ -166,6 +169,7 @@ if (isset($_POST['delete'])) {
         $Action = 'trashing';
     }
 
+    /*
     $app->cacheOld->begin_transaction("thread_{$TopicID}_info");
     $UpdateArray = array(
     'IsSticky' => $Sticky,
@@ -176,6 +180,7 @@ if (isset($_POST['delete'])) {
     );
     $app->cacheOld->update_row(false, $UpdateArray);
     $app->cacheOld->commit_transaction(0);
+    */
 
     $app->dbOld->query("
     UPDATE forums_topics
@@ -200,6 +205,8 @@ if (isset($_POST['delete'])) {
       FROM forums
       WHERE ID = '$ForumID'");
         list($MinClassRead, $MinClassWrite, $ForumName) = $app->dbOld->next_record(MYSQLI_NUM, false);
+
+        /*
         $app->cacheOld->begin_transaction("thread_{$TopicID}_info");
         $UpdateArray = array(
       'ForumName' => $ForumName,
@@ -210,6 +217,7 @@ if (isset($_POST['delete'])) {
         $app->cacheOld->commit_transaction(3600 * 24 * 5);
 
         $app->cacheOld->begin_transaction('forums_list');
+        */
 
         // Forum we're moving from
         $app->dbOld->query("
@@ -249,21 +257,23 @@ if (isset($_POST['delete'])) {
       WHERE ID = '$OldForumID'");
 
 
-        $UpdateArray = array(
-      'NumPosts' => $NumPosts,
-      'NumTopics' => '-1',
-      'LastPostID' => $NewLastPostID,
-      'LastPostAuthorID' => $NewLastAuthorID,
-      'LastPostTopicID' => $NewLastTopic,
-      'LastPostTime' => $NewLastAddedTime,
-      'Title' => $NewLastTitle,
-      'IsLocked' => $NewLocked,
-      'IsSticky' => $NewSticky,
-      'Ranking' => $NewRanking
-      );
+        /*
+          $UpdateArray = array(
+        'NumPosts' => $NumPosts,
+        'NumTopics' => '-1',
+        'LastPostID' => $NewLastPostID,
+        'LastPostAuthorID' => $NewLastAuthorID,
+        'LastPostTopicID' => $NewLastTopic,
+        'LastPostTime' => $NewLastAddedTime,
+        'Title' => $NewLastTitle,
+        'IsLocked' => $NewLocked,
+        'IsSticky' => $NewSticky,
+        'Ranking' => $NewRanking
+        );
 
 
-        $app->cacheOld->update_row($OldForumID, $UpdateArray);
+          $app->cacheOld->update_row($OldForumID, $UpdateArray);
+          */
 
         // Forum we're moving to
 
@@ -331,9 +341,12 @@ if (isset($_POST['delete'])) {
         'IsSticky' => $Sticky,
         'Ranking' => $Ranking
       );
+
+            /*
             $app->cacheOld->begin_transaction('forums_list');
             $app->cacheOld->update_row($ForumID, $UpdateArray);
             $app->cacheOld->commit_transaction(0);
+            */
         }
     }
     if ($Locked) {
@@ -349,39 +362,39 @@ if (isset($_POST['delete'])) {
     // topic notes and notifications
     $TopicNotes = [];
     switch ($Action) {
-    case 'editing':
-      if ($OldTitle != $RawTitle) {
-          // title edited
-          $TopicNotes[] = "Title edited from \"$OldTitle\" to \"$RawTitle\"";
-      }
-      if ($OldLocked != $Locked) {
-          if (!$OldLocked) {
-              $TopicNotes[] = 'Locked';
-          } else {
-              $TopicNotes[] = 'Unlocked';
-          }
-      }
-      if ($OldSticky != $Sticky) {
-          if (!$OldSticky) {
-              $TopicNotes[] = 'Stickied';
-          } else {
-              $TopicNotes[] = 'Unstickied';
-          }
-      }
-      if ($OldRanking != $Ranking) {
-          $TopicNotes[] = "Ranking changed from \"$OldRanking\" to \"$Ranking\"";
-      }
-      if ($ForumID != $OldForumID) {
-          $TopicNotes[] = "Moved from [url=" . site_url() . "forums.php?action=viewforum&forumid=$OldForumID]{$OldForumName}[/url] to [url=" . site_url() . "forums.php?action=viewforum&forumid=$ForumID]{$ForumName}[/url]";
-      }
-      break;
-    case 'trashing':
-      $TopicNotes[] = "Trashed (moved from [url=" . site_url() . "forums.php?action=viewforum&forumid=$OldForumID]{$OldForumName}[/url] to [url=" . site_url() . "forums.php?action=viewforum&forumid=$ForumID]{$ForumName}[/url])";
-      $Notification = "Your thread \"$NewLastTitle\" has been trashed";
-      break;
-    default:
-      break;
-  }
+        case 'editing':
+            if ($OldTitle != $RawTitle) {
+                // title edited
+                $TopicNotes[] = "Title edited from \"$OldTitle\" to \"$RawTitle\"";
+            }
+            if ($OldLocked != $Locked) {
+                if (!$OldLocked) {
+                    $TopicNotes[] = 'Locked';
+                } else {
+                    $TopicNotes[] = 'Unlocked';
+                }
+            }
+            if ($OldSticky != $Sticky) {
+                if (!$OldSticky) {
+                    $TopicNotes[] = 'Stickied';
+                } else {
+                    $TopicNotes[] = 'Unstickied';
+                }
+            }
+            if ($OldRanking != $Ranking) {
+                $TopicNotes[] = "Ranking changed from \"$OldRanking\" to \"$Ranking\"";
+            }
+            if ($ForumID != $OldForumID) {
+                $TopicNotes[] = "Moved from [url=" . site_url() . "forums.php?action=viewforum&forumid=$OldForumID]{$OldForumName}[/url] to [url=" . site_url() . "forums.php?action=viewforum&forumid=$ForumID]{$ForumName}[/url]";
+            }
+            break;
+        case 'trashing':
+            $TopicNotes[] = "Trashed (moved from [url=" . site_url() . "forums.php?action=viewforum&forumid=$OldForumID]{$OldForumName}[/url] to [url=" . site_url() . "forums.php?action=viewforum&forumid=$ForumID]{$ForumName}[/url])";
+            $Notification = "Your thread \"$NewLastTitle\" has been trashed";
+            break;
+        default:
+            break;
+    }
     if (count($TopicNotes) > 0) {
         Forums::add_topic_note($TopicID, implode("\n", $TopicNotes));
     }
