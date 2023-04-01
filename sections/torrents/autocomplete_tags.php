@@ -10,7 +10,7 @@ $MaxKeySize = 4;
 $KeySize = min($MaxKeySize, max(1, strlen($FullName)));
 
 $Letters = strtolower(substr($FullName, 0, $KeySize));
-$AutoSuggest = $app->cacheOld->get("autocomplete_tags_{$KeySize}_$Letters");
+$AutoSuggest = $app->cacheNew->get("autocomplete_tags_{$KeySize}_$Letters");
 
 if (!$AutoSuggest) {
     $Limit = (($KeySize === $MaxKeySize) ? 250 : 10);

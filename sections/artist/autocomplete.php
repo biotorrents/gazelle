@@ -18,7 +18,7 @@ if (strtolower(substr($FullName, 0, 4)) === 'the ') {
 
 $KeySize = min($MaxKeySize, max(1, strlen($FullName)));
 $Letters = strtolower(substr($FullName, 0, $KeySize));
-$AutoSuggest = $app->cacheOld->get('autocomplete_artist_'.$KeySize.'_'.$Letters);
+$AutoSuggest = $app->cacheNew->get('autocomplete_artist_'.$KeySize.'_'.$Letters);
 
 if (!$AutoSuggest) {
     $Limit = (($KeySize === $MaxKeySize) ? 250 : 10);
