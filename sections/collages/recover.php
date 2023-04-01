@@ -21,7 +21,7 @@ if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
       UPDATE collages
       SET Deleted = '0'
       WHERE ID = $CollageID");
-        $app->cacheNew->delete("collage_$CollageID");
+        $app->cache->delete("collage_$CollageID");
         Misc::write_log("Collage $CollageID was recovered by ".$app->user->core['username']);
         Http::redirect("collages.php?id=$CollageID");
     }

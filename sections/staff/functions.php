@@ -41,7 +41,7 @@ function get_fls()
     if (is_array($FLS)) {
         return $FLS;
     }
-    if (($FLS = $app->cacheNew->get('fls')) === false) {
+    if (($FLS = $app->cache->get('fls')) === false) {
         $app->dbOld->query('
       SELECT
         m.ID,
@@ -57,7 +57,7 @@ function get_fls()
       WHERE l.PermissionID = ' . FLS_TEAM . '
       ORDER BY m.Username');
         $FLS = $app->dbOld->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-        $app->cacheNew->set('fls', $FLS, 180);
+        $app->cache->set('fls', $FLS, 180);
     }
     return $FLS;
 }
@@ -115,16 +115,16 @@ function get_forum_staff()
 
     // sort the lists differently if the viewer is a staff member
     if (!check_perms('users_mod')) {
-        if (($ForumStaff = $app->cacheNew->get('forum_staff')) === false) {
+        if (($ForumStaff = $app->cache->get('forum_staff')) === false) {
             $app->dbOld->query(generate_staff_query('forum_staff'));
             $ForumStaff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-            $app->cacheNew->set('forum_staff', $ForumStaff, 180);
+            $app->cache->set('forum_staff', $ForumStaff, 180);
         }
     } else {
-        if (($ForumStaff = $app->cacheNew->get('forum_staff_mod_view')) === false) {
+        if (($ForumStaff = $app->cache->get('forum_staff_mod_view')) === false) {
             $app->dbOld->query(generate_staff_query('forum_staff'));
             $ForumStaff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
-            $app->cacheNew->set('forum_staff_mod_view', $ForumStaff, 180);
+            $app->cache->set('forum_staff_mod_view', $ForumStaff, 180);
         }
     }
     return $ForumStaff;
@@ -141,16 +141,16 @@ function get_staff()
 
     // sort the lists differently if the viewer is a staff member
     if (!check_perms('users_mod')) {
-        if (($Staff = $app->cacheNew->get('staff')) === false) {
+        if (($Staff = $app->cache->get('staff')) === false) {
             $app->dbOld->query(generate_staff_query('staff'));
             $Staff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
-            $app->cacheNew->set('staff', $Staff, 180);
+            $app->cache->set('staff', $Staff, 180);
         }
     } else {
-        if (($Staff = $app->cacheNew->get('staff_mod_view')) === false) {
+        if (($Staff = $app->cache->get('staff_mod_view')) === false) {
             $app->dbOld->query(generate_staff_query('staff'));
             $Staff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));
-            $app->cacheNew->set('staff_mod_view', $Staff, 180);
+            $app->cache->set('staff_mod_view', $Staff, 180);
         }
     }
     return $Staff;

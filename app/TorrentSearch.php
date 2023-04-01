@@ -255,7 +255,7 @@ class TorrentSearch
 
         # pagination offset
         $offset = ($this->Page - 1) * $resultLimit;
-        $minMax = $app->cacheNew->get("sphinx_min_max_matches");
+        $minMax = $app->cache->get("sphinx_min_max_matches");
         $maxMatches = max($offset + $resultLimit, $minMax ? $minMax : 1000);
 
         # query sphinx

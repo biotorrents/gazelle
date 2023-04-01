@@ -149,7 +149,7 @@ Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string 
     $feed->open();
     $feed->channel('News', 'RSS feed for site news');
 
-    $news = $app->cacheNew->get('news');
+    $news = $app->cache->get('news');
     if (!$news) {
         $app->dbOld->query("
             select ID, Title, Body, Time from news
@@ -157,7 +157,7 @@ Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string 
         ");
 
         $news = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-        $app->cacheNew->set('news', $news, 1209600);
+        $app->cache->set('news', $news, 1209600);
     }
 
     foreach ($news as $item) {
@@ -188,7 +188,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
     $feed->open();
     $feed->channel('Blog', 'RSS feed for site blog.');
 
-    $blog = $app->cacheNew->get('blog');
+    $blog = $app->cache->get('blog');
     if (!$blog) {
         $app->dbOld->query("
             select blog.ID, users_main.Username, blog.UserID, blog.Title, blog.Body, blog.Time, blog.ThreadID from blog
@@ -197,7 +197,7 @@ Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string 
         ");
 
         $blog = $app->dbOld->to_array();
-        $app->cacheNew->set('blog', $blog, 1209600);
+        $app->cache->set('blog', $blog, 1209600);
     }
 
     foreach ($blog as $item) {

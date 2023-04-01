@@ -48,7 +48,7 @@ if (count($CleanArtists) > 0) {
         WHERE GroupID = '$GroupID'
           AND ArtistID = '$ArtistID'
           AND Importance = '$Importance'");
-            $app->cacheNew->delete("artist_groups_$ArtistID");
+            $app->cache->delete("artist_groups_$ArtistID");
         }
         $app->dbOld->query("
       SELECT ArtistID
@@ -70,7 +70,7 @@ if (count($CleanArtists) > 0) {
       WHERE GroupID = '$GroupID'
         AND ArtistID IN ($ArtistsString)");
     }
-    $app->cacheNew->delete("groups_artists_$GroupID");
+    $app->cache->delete("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
     Http::redirect("torrents.php?id=$GroupID");
 }

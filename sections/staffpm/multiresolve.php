@@ -31,8 +31,8 @@ if ($IDs = $_POST['id']) {
         $app->dbOld->query($Query);
     }
     // Clear cache for user
-    $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
-    $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+    $app->cache->delete("staff_pm_new_{$app->user->core['id']}");
+    $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
     // Done! Return to inbox
     Http::redirect("staffpm.php");

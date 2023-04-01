@@ -21,7 +21,7 @@ $IDs = [];
 $Seeds = [];
 
 foreach ($Results as $i) {
-    $GroupCache = $app->cacheNew->get('torrent_group_'.$i['groupid']);
+    $GroupCache = $app->cache->get('torrent_group_'.$i['groupid']);
     if (!$GroupCache) {
         continue;
     }
@@ -39,7 +39,7 @@ $query = 'SELECT GroupID FROM torrents WHERE '.implode(' OR ', $QueryParts);
 $app->dbOld->query($query);
 if ($app->dbOld->has_results()) {
     foreach ($app->dbOld->collect('GroupID') as $GID) {
-        $app->cacheNew->delete('torrent_group_'.$GID);
+        $app->cache->delete('torrent_group_'.$GID);
     }
 }
 */

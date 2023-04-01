@@ -37,7 +37,7 @@ if ($app->dbOld->has_results()) {
 
         if ($Points > 0) {
             $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
-            $app->cacheNew->delete('user_info_heavy_'.$UserID);
+            $app->cache->delete('user_info_heavy_'.$UserID);
         }
     }
 

@@ -987,7 +987,7 @@ HTML;
               <td>
 HTML;
 
-            $GenreTags = $app->cacheNew->get('genre_tags');
+            $GenreTags = $app->cache->get('genre_tags');
             if (!$GenreTags) {
                 $app->dbOld->query("
                 SELECT
@@ -1001,7 +1001,7 @@ HTML;
                 ");
 
                 $GenreTags = $app->dbOld->collect('Name');
-                $app->cacheNew->set('genre_tags', $GenreTags, 3600*6);
+                $app->cache->set('genre_tags', $GenreTags, 3600*6);
             }
 
             # todo: Find a better place for these

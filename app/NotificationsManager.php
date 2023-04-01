@@ -191,7 +191,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $OneReads = $app->cacheNew->get('notifications_one_reads_' . $app->user->core["id"]);
+        $OneReads = $app->cache->get('notifications_one_reads_' . $app->user->core["id"]);
         if (is_array($OneReads)) {
             $this->Notifications = $this->Notifications + $OneReads;
         }
@@ -205,13 +205,13 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $OneReads = $app->cacheNew->get('notifications_one_reads_' . $app->user->core["id"]);
+        $OneReads = $app->cache->get('notifications_one_reads_' . $app->user->core["id"]);
         if ($OneReads) {
             unset($OneReads[$ID]);
             if (count($OneReads) > 0) {
-                $app->cacheNew->set('notifications_one_reads_' . $app->user->core["id"], $OneReads, 0);
+                $app->cache->set('notifications_one_reads_' . $app->user->core["id"], $OneReads, 0);
             } else {
-                $app->cacheNew->delete('notifications_one_reads_' . $app->user->core["id"]);
+                $app->cache->delete('notifications_one_reads_' . $app->user->core["id"]);
             }
         }
     }
@@ -224,9 +224,9 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $GlobalNotification = $app->cacheNew->get('global_notification');
+        $GlobalNotification = $app->cache->get('global_notification');
         if ($GlobalNotification) {
-            $Read = $app->cacheNew->get('user_read_global_' . $app->user->core["id"]);
+            $Read = $app->cache->get('user_read_global_' . $app->user->core["id"]);
             if (!$Read) {
                 $this->create_notification(self::GLOBALNOTICE, 0, $GlobalNotification['Message'], $GlobalNotification['URL'], $GlobalNotification['Importance']);
             }
@@ -241,7 +241,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        return $app->cacheNew->get('global_notification');
+        return $app->cache->get('global_notification');
     }
 
 
@@ -255,7 +255,7 @@ class NotificationsManager
         if (empty($Message) || empty($Expiration)) {
             error('Error setting notification');
         }
-        $app->cacheNew->set('global_notification', array("Message" => $Message, "URL" => $URL, "Importance" => $Importance, "Expiration" => $Expiration), $Expiration);
+        $app->cache->set('global_notification', array("Message" => $Message, "URL" => $URL, "Importance" => $Importance, "Expiration" => $Expiration), $Expiration);
     }
 
 
@@ -266,7 +266,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $app->cacheNew->delete('global_notification');
+        $app->cache->delete('global_notification');
     }
 
 
@@ -277,13 +277,13 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $GlobalNotification = $app->cacheNew->get('global_notification');
+        $GlobalNotification = $app->cache->get('global_notification');
         if ($GlobalNotification) {
             // This is some trickery
             // since we can't know which users have the read cache key set
             // we set the expiration time of their cache key to that of the length of the notification
             // this gaurantees that their cache key will expire after the notification expires
-            $app->cacheNew->set('user_read_global_' . $app->user->core["id"], true, $GlobalNotification['Expiration']);
+            $app->cache->set('user_read_global_' . $app->user->core["id"], true, $GlobalNotification['Expiration']);
         }
     }
 
@@ -296,8 +296,8 @@ class NotificationsManager
         $app = \Gazelle\App::go();
 
         $MyNews = $app->user->extra['LastReadNews'];
-        $CurrentNews = $app->cacheNew->get('news_latest_id');
-        $Title = $app->cacheNew->get('news_latest_title');
+        $CurrentNews = $app->cache->get('news_latest_id');
+        $Title = $app->cache->get('news_latest_title');
         if ($CurrentNews === false || $Title === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query('
@@ -311,8 +311,8 @@ class NotificationsManager
                 $CurrentNews = -1;
             }
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('news_latest_id', $CurrentNews, 0);
-            $app->cacheNew->set('news_latest_title', $Title, 0);
+            $app->cache->set('news_latest_id', $CurrentNews, 0);
+            $app->cache->set('news_latest_title', $Title, 0);
         }
         if ($MyNews < $CurrentNews) {
             $this->create_notification(self::NEWS, $CurrentNews, "Announcement: $Title", "index.php#news$CurrentNews", self::IMPORTANT);
@@ -328,8 +328,8 @@ class NotificationsManager
         $app = \Gazelle\App::go();
 
         $MyBlog = $app->user->extra['LastReadBlog'];
-        $CurrentBlog = $app->cacheNew->get('blog_latest_id');
-        $Title = $app->cacheNew->get('blog_latest_title');
+        $CurrentBlog = $app->cache->get('blog_latest_id');
+        $Title = $app->cache->get('blog_latest_title');
         if ($CurrentBlog === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query('
@@ -344,8 +344,8 @@ class NotificationsManager
                 $CurrentBlog = -1;
             }
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('blog_latest_id', $CurrentBlog, 0);
-            $app->cacheNew->set('blog_latest_title', $Title, 0);
+            $app->cache->set('blog_latest_id', $CurrentBlog, 0);
+            $app->cache->set('blog_latest_title', $Title, 0);
         }
         if ($MyBlog < $CurrentBlog) {
             $this->create_notification(self::BLOG, $CurrentBlog, "Blog: $Title", "blog.php#blog$CurrentBlog", self::IMPORTANT);
@@ -360,7 +360,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $NewStaffPMs = $app->cacheNew->get('staff_pm_new_' . $app->user->core["id"]);
+        $NewStaffPMs = $app->cache->get('staff_pm_new_' . $app->user->core["id"]);
         if ($NewStaffPMs === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -370,7 +370,7 @@ class NotificationsManager
               AND Unread = '1'");
             list($NewStaffPMs) = $app->dbOld->next_record();
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('staff_pm_new_' . $app->user->core["id"], $NewStaffPMs, 0);
+            $app->cache->set('staff_pm_new_' . $app->user->core["id"], $NewStaffPMs, 0);
         }
 
         if ($NewStaffPMs > 0) {
@@ -387,7 +387,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $NewMessages = $app->cacheNew->get('inbox_new_' . $app->user->core["id"]);
+        $NewMessages = $app->cache->get('inbox_new_' . $app->user->core["id"]);
         if ($NewMessages === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -398,7 +398,7 @@ class NotificationsManager
               AND InInbox = '1'");
             list($NewMessages) = $app->dbOld->next_record();
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('inbox_new_' . $app->user->core["id"], $NewMessages, 0);
+            $app->cache->set('inbox_new_' . $app->user->core["id"], $NewMessages, 0);
         }
 
         if ($NewMessages > 0) {
@@ -416,7 +416,7 @@ class NotificationsManager
         $app = \Gazelle\App::go();
 
         if (check_perms('site_torrents_notify')) {
-            $NewNotifications = $app->cacheNew->get('notifications_new_' . $app->user->core["id"]);
+            $NewNotifications = $app->cache->get('notifications_new_' . $app->user->core["id"]);
             if ($NewNotifications === false) {
                 $QueryID = $app->dbOld->get_query_id();
                 $app->dbOld->query("
@@ -426,7 +426,7 @@ class NotificationsManager
                   AND UnRead = '1'");
                 list($NewNotifications) = $app->dbOld->next_record();
                 $app->dbOld->set_query_id($QueryID);
-                $app->cacheNew->set('notifications_new_' . $app->user->core["id"], $NewNotifications, 0);
+                $app->cache->set('notifications_new_' . $app->user->core["id"], $NewNotifications, 0);
             }
         }
         if (isset($NewNotifications) && $NewNotifications > 0) {
@@ -444,7 +444,7 @@ class NotificationsManager
         $app = \Gazelle\App::go();
 
         if (check_perms('site_collages_subscribe')) {
-            $NewCollages = $app->cacheNew->get('collage_subs_user_new_' . $app->user->core["id"]);
+            $NewCollages = $app->cache->get('collage_subs_user_new_' . $app->user->core["id"]);
             if ($NewCollages === false) {
                 $QueryID = $app->dbOld->get_query_id();
                 $app->dbOld->query("
@@ -457,7 +457,7 @@ class NotificationsManager
                   AND c.Deleted = '0'");
                 list($NewCollages) = $app->dbOld->next_record();
                 $app->dbOld->set_query_id($QueryID);
-                $app->cacheNew->set('collage_subs_user_new_' . $app->user->core["id"], $NewCollages, 0);
+                $app->cache->set('collage_subs_user_new_' . $app->user->core["id"], $NewCollages, 0);
             }
             if ($NewCollages > 0) {
                 $Title = 'You have ' . ($NewCollages === 1 ? 'a' : $NewCollages) . ' new collage update' . ($NewCollages > 1 ? 's' : '');
@@ -506,7 +506,7 @@ class NotificationsManager
 
         $QueryID = $app->dbOld->get_query_id();
         if (!$News) {
-            if (!$News = $app->cacheNew->get('news')) {
+            if (!$News = $app->cache->get('news')) {
                 $app->dbOld->query('
                 SELECT
                   ID,
@@ -517,7 +517,7 @@ class NotificationsManager
                   ORDER BY Time DESC
                   LIMIT 1');
                 $News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-                $app->cacheNew->set('news_latest_id', $News[0][0], 0);
+                $app->cache->set('news_latest_id', $News[0][0], 0);
             }
         }
 
@@ -547,7 +547,7 @@ class NotificationsManager
 
         $QueryID = $app->dbOld->get_query_id();
         if (!isset($Blog) || !$Blog) {
-            if (!$Blog = $app->cacheNew->get('blog')) {
+            if (!$Blog = $app->cache->get('blog')) {
                 $app->dbOld->query("
                 SELECT
                   b.ID,
@@ -605,7 +605,7 @@ class NotificationsManager
             SET Unread = false
               WHERE ID IN ($IDs)");
         }
-        $app->cacheNew->delete('staff_pm_new_' . $app->user->core["id"]);
+        $app->cache->delete('staff_pm_new_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -635,7 +635,7 @@ class NotificationsManager
               WHERE ConvID IN ($IDs)
               AND UserID = " . $app->user->core["id"]);
         }
-        $app->cacheNew->delete('inbox_new_' . $app->user->core["id"]);
+        $app->cache->delete('inbox_new_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -665,7 +665,7 @@ class NotificationsManager
               WHERE TorrentID IN ($IDs)
               AND UserID = " . $app->user->core["id"]);
         }
-        $app->cacheNew->delete('notifications_new_' . $app->user->core["id"]);
+        $app->cache->delete('notifications_new_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -682,7 +682,7 @@ class NotificationsManager
         UPDATE users_collage_subs
         SET LastVisit = NOW()
           WHERE UserID = " . $app->user->core["id"]);
-        $app->cacheNew->delete('collage_subs_user_new_' . $app->user->core["id"]);
+        $app->cache->delete('collage_subs_user_new_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -699,7 +699,7 @@ class NotificationsManager
         UPDATE users_notify_quoted
         SET UnRead = '0'
           WHERE UserID = " . $app->user->core["id"]);
-        $app->cacheNew->delete('notify_quoted_' . $app->user->core["id"]);
+        $app->cache->delete('notify_quoted_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -712,13 +712,13 @@ class NotificationsManager
         $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();
-        if (($UserSubscriptions = $app->cacheNew->get('subscriptions_user_' . $app->user->core["id"])) === false) {
+        if (($UserSubscriptions = $app->cache->get('subscriptions_user_' . $app->user->core["id"])) === false) {
             $app->dbOld->query("
             SELECT TopicID
             FROM users_subscriptions
               WHERE UserID = " . $app->user->core["id"]);
             if ($UserSubscriptions = $app->dbOld->collect(0)) {
-                $app->cacheNew->set('subscriptions_user_' . $app->user->core["id"], $UserSubscriptions, 0);
+                $app->cache->set('subscriptions_user_' . $app->user->core["id"], $UserSubscriptions, 0);
             }
         }
         if (!empty($UserSubscriptions)) {
@@ -730,7 +730,7 @@ class NotificationsManager
             ON DUPLICATE KEY UPDATE
               PostID = LastPostID');
         }
-        $app->cacheNew->delete('subscriptions_user_new_' . $app->user->core["id"]);
+        $app->cache->delete('subscriptions_user_new_' . $app->user->core["id"]);
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -742,7 +742,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        $Results = $app->cacheNew->get("users_notifications_settings_$UserID");
+        $Results = $app->cache->get("users_notifications_settings_$UserID");
         if (!$Results) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -751,7 +751,7 @@ class NotificationsManager
               WHERE UserID = ?", $UserID);
             $Results = $app->dbOld->next_record(MYSQLI_ASSOC, false);
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set("users_notifications_settings_$UserID", $Results, 0);
+            $app->cache->set("users_notifications_settings_$UserID", $Results, 0);
         }
         return $Results;
     }
@@ -789,7 +789,7 @@ class NotificationsManager
           WHERE UserID = ?", $UserID);
 
         $app->dbOld->set_query_id($QueryID);
-        $app->cacheNew->delete("users_notifications_settings_$UserID");
+        $app->cache->delete("users_notifications_settings_$UserID");
     }
 
 

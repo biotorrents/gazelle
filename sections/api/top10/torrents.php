@@ -48,7 +48,7 @@ ON
 $OuterResults = [];
 
 if ($Details == 'all' || $Details == 'day') {
-    if (!$TopTorrentsActiveLastDay = $app->cacheNew->get('top10tor_day_'.$Limit.$WhereSum)) {
+    if (!$TopTorrentsActiveLastDay = $app->cache->get('top10tor_day_'.$Limit.$WhereSum)) {
         $DayAgo = time_minus(86400);
         $Query = $BaseQuery.' WHERE t.Seeders>0 AND ';
         if (!empty($Where)) {
@@ -60,12 +60,12 @@ if ($Details == 'all' || $Details == 'day') {
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsActiveLastDay = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set('top10tor_day_'.$Limit.$WhereSum, $TopTorrentsActiveLastDay, 3600 * 2);
+        $app->cache->set('top10tor_day_'.$Limit.$WhereSum, $TopTorrentsActiveLastDay, 3600 * 2);
     }
     $OuterResults[] = generate_torrent_json('Most Active Torrents Uploaded in the Past Day', 'day', $TopTorrentsActiveLastDay, $Limit);
 }
 if ($Details == 'all' || $Details == 'week') {
-    if (!$TopTorrentsActiveLastWeek = $app->cacheNew->get('top10tor_week_'.$Limit.$WhereSum)) {
+    if (!$TopTorrentsActiveLastWeek = $app->cache->get('top10tor_week_'.$Limit.$WhereSum)) {
         $WeekAgo = time_minus(604800);
         $Query = $BaseQuery.' WHERE ';
         if (!empty($Where)) {
@@ -77,13 +77,13 @@ if ($Details == 'all' || $Details == 'week') {
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsActiveLastWeek = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set('top10tor_week_'.$Limit.$WhereSum, $TopTorrentsActiveLastWeek, 3600*6);
+        $app->cache->set('top10tor_week_'.$Limit.$WhereSum, $TopTorrentsActiveLastWeek, 3600*6);
     }
     $OuterResults[] = generate_torrent_json('Most Active Torrents Uploaded in the Past Week', 'week', $TopTorrentsActiveLastWeek, $Limit);
 }
 
 if ($Details == 'all' || $Details == 'overall') {
-    if (!$TopTorrentsActiveAllTime = $app->cacheNew->get("top10tor_overall_$Limit$WhereSum")) {
+    if (!$TopTorrentsActiveAllTime = $app->cache->get("top10tor_overall_$Limit$WhereSum")) {
         $Query = $BaseQuery;
         if (!empty($Where)) {
             $Query .= " WHERE $Where";
@@ -93,45 +93,45 @@ if ($Details == 'all' || $Details == 'overall') {
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsActiveAllTime = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set("top10tor_overall_$Limit$WhereSum", $TopTorrentsActiveAllTime, 3600 * 6);
+        $app->cache->set("top10tor_overall_$Limit$WhereSum", $TopTorrentsActiveAllTime, 3600 * 6);
     }
     $OuterResults[] = generate_torrent_json('Most Active Torrents of All Time', 'overall', $TopTorrentsActiveAllTime, $Limit);
 }
 
 if (($Details == 'all' || $Details == 'snatched') && empty($Where)) {
-    if (!$TopTorrentsSnatched = $app->cacheNew->get("top10tor_snatched_$Limit$WhereSum")) {
+    if (!$TopTorrentsSnatched = $app->cache->get("top10tor_snatched_$Limit$WhereSum")) {
         $Query = $BaseQuery;
         $Query .= "
       ORDER BY t.Snatched DESC
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsSnatched = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set("top10tor_snatched_$Limit$WhereSum", $TopTorrentsSnatched, 3600 * 6);
+        $app->cache->set("top10tor_snatched_$Limit$WhereSum", $TopTorrentsSnatched, 3600 * 6);
     }
     $OuterResults[] = generate_torrent_json('Most Snatched Torrents', 'snatched', $TopTorrentsSnatched, $Limit);
 }
 
 if (($Details == 'all' || $Details == 'data') && empty($Where)) {
-    if (!$TopTorrentsTransferred = $app->cacheNew->get("top10tor_data_$Limit$WhereSum")) {
+    if (!$TopTorrentsTransferred = $app->cache->get("top10tor_data_$Limit$WhereSum")) {
         $Query = $BaseQuery;
         $Query .= "
       ORDER BY Data DESC
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsTransferred = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set("top10tor_data_$Limit$WhereSum", $TopTorrentsTransferred, 3600 * 6);
+        $app->cache->set("top10tor_data_$Limit$WhereSum", $TopTorrentsTransferred, 3600 * 6);
     }
     $OuterResults[] = generate_torrent_json('Most Data Transferred Torrents', 'data', $TopTorrentsTransferred, $Limit);
 }
 
 if (($Details == 'all' || $Details == 'seeded') && empty($Where)) {
-    if (!$TopTorrentsSeeded = $app->cacheNew->get("top10tor_seeded_$Limit$WhereSum")) {
+    if (!$TopTorrentsSeeded = $app->cache->get("top10tor_seeded_$Limit$WhereSum")) {
         $Query = $BaseQuery."
       ORDER BY t.Seeders DESC
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsSeeded = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cacheNew->set("top10tor_seeded_$Limit$WhereSum", $TopTorrentsSeeded, 3600 * 6);
+        $app->cache->set("top10tor_seeded_$Limit$WhereSum", $TopTorrentsSeeded, 3600 * 6);
     }
     $OuterResults[] = generate_torrent_json('Best Seeded Torrents', 'seeded', $TopTorrentsSeeded, $Limit);
 }

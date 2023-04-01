@@ -41,15 +41,15 @@ $userId = $user["ID"];
 
 # enforce rate limiting everywhere
 if (!in_array($userId, $userExceptions)) {
-    if (!$userRequests = $app->cacheNew->get("ajax_requests_{$userId}")) {
+    if (!$userRequests = $app->cache->get("ajax_requests_{$userId}")) {
         $userRequests = 0;
-        $app->cacheNew->set("ajax_requests_{$userId}", 0, $ajaxLimit[1]);
+        $app->cache->set("ajax_requests_{$userId}", 0, $ajaxLimit[1]);
     }
 
     if ($userRequests > $ajaxLimit[0]) {
         $json->failure(400, "rate limit exceeded");
     } else {
-        $app->cacheNew->increment("ajax_requests_{$userId}");
+        $app->cache->increment("ajax_requests_{$userId}");
     }
 }
 */

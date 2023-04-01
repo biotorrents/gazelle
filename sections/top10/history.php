@@ -73,7 +73,7 @@ if (!empty($_GET['date'])) {
         AND Type = 'Weekly'";
     }
 
-    $Details = $app->cacheNew->get("top10_history_$SQLTime");
+    $Details = $app->cache->get("top10_history_$SQLTime");
     if ($Details === false) {
         $app->dbOld->prepared_query("
         SELECT
@@ -113,7 +113,7 @@ if (!empty($_GET['date'])) {
 
         $Details = $app->dbOld->to_array();
 
-        $app->cacheNew->set("top10_history_$SQLTime", $Details, 3600 * 24);
+        $app->cache->set("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
   <br />

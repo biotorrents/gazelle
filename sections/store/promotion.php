@@ -173,8 +173,8 @@ if ($app->dbOld->has_results()) {
               SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-            $app->cacheNew->delete("user_info_$UserID");
-            $app->cacheNew->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
         }
     }
 }

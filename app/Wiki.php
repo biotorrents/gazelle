@@ -46,7 +46,7 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $Aliases = $app->cacheNew->get('wiki_aliases');
+        $Aliases = $app->cache->get('wiki_aliases');
         if (!$Aliases) {
             $QueryID = $app->dbOld->get_query_id();
 
@@ -60,7 +60,7 @@ class Wiki
 
             $Aliases = $app->dbOld->to_pair('Alias', 'ArticleID');
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('wiki_aliases', $Aliases, 3600 * 24 * 14); // 2 weeks
+            $app->cache->set('wiki_aliases', $Aliases, 3600 * 24 * 14); // 2 weeks
         }
 
         return $Aliases;
@@ -75,7 +75,7 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $app->cacheNew->delete('wiki_aliases');
+        $app->cache->delete('wiki_aliases');
     }
 
 
@@ -109,7 +109,7 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $Contents = $app->cacheNew->get('wiki_article_'.$ArticleID);
+        $Contents = $app->cache->get('wiki_article_'.$ArticleID);
         if (!$Contents) {
             $QueryID = $app->dbOld->get_query_id();
 
@@ -149,7 +149,7 @@ class Wiki
 
             $Contents = $app->dbOld->to_array();
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('wiki_article_'.$ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
+            $app->cache->set('wiki_article_'.$ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
         }
 
         return $Contents;
@@ -166,6 +166,6 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $app->cacheNew->delete('wiki_article_'.$ArticleID);
+        $app->cache->delete('wiki_article_'.$ArticleID);
     }
 }

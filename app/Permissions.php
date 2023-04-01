@@ -425,7 +425,7 @@ class Permissions
     {
         $app = \Gazelle\App::go();
 
-        $Permission = $app->cacheNew->get("perm_$PermissionID");
+        $Permission = $app->cache->get("perm_$PermissionID");
         if (empty($Permission)) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -436,7 +436,7 @@ class Permissions
             $Permission = $app->dbOld->next_record(MYSQLI_ASSOC, ['Permissions']);
             $app->dbOld->set_query_id($QueryID);
             $Permission['Permissions'] = unserialize($Permission['Permissions']);
-            $app->cacheNew->set("perm_$PermissionID", $Permission, 2592000);
+            $app->cache->set("perm_$PermissionID", $Permission, 2592000);
         }
         return $Permission;
     }

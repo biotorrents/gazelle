@@ -14,7 +14,7 @@ if (!empty($_POST['large'])) {
     $Size = 140;
 }
 
-if (!$ThreadInfo = $app->cacheNew->get("thread_$TopicID".'_info')) {
+if (!$ThreadInfo = $app->cache->get("thread_$TopicID".'_info')) {
     $app->dbOld->query("
     SELECT
       t.Title,
@@ -34,12 +34,12 @@ if (!$ThreadInfo = $app->cacheNew->get("thread_$TopicID".'_info')) {
     }
     $ThreadInfo = $app->dbOld->next_record(MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $app->cacheNew->set("thread_$TopicID".'_info', $ThreadInfo, 0);
+        $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 }
 $ForumID = $ThreadInfo['ForumID'];
 
-if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheNew->get("polls_$TopicID")) {
+if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cache->get("polls_$TopicID")) {
     $app->dbOld->query("
     SELECT
       Question,
@@ -69,7 +69,7 @@ if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheNew->get
             $Votes[$i] = 0;
         }
     }
-    $app->cacheNew->set("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+    $app->cache->set("polls_$TopicID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
 }
 
 

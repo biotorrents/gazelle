@@ -54,5 +54,5 @@ if ($Count < 1) {
 }
 
 // Cache the deleted tag for 5 minutes
-$app->cacheNew->set('deleted_tags_'.$GroupID.'_'.$app->user->core['id'], $TagName, 300);
+$app->cache->set('deleted_tags_'.$GroupID.'_'.$app->user->core['id'], $TagName, 300);
 header('Location: '.$_SERVER['HTTP_REFERER']);

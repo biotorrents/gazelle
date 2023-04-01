@@ -122,7 +122,7 @@ class OpenAI
 
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_summary_{$groupId}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -155,7 +155,7 @@ class OpenAI
             throw new \Exception($e->getMessage());
         }
 
-        $app->cacheNew->set($cacheKey, $response, $this->cacheDuration);
+        $app->cache->set($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 
@@ -179,7 +179,7 @@ class OpenAI
 
         # return cached if available
         $cacheKey = "{$this->cachePrefix}_keywords_{$groupId}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             return $cacheHit;
@@ -254,7 +254,7 @@ class OpenAI
             $app->dbNew->do($query, [$tagId, $groupId, 0]);
         }
 
-        $app->cacheNew->set($cacheKey, $response, $this->cacheDuration);
+        $app->cache->set($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 

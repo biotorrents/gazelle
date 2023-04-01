@@ -29,9 +29,9 @@ if ($post["formAction"] === "create") {
     $query = "insert into news (userId, title, body, time) values (?, ?, ?, now())";
     $app->dbNew->do($query, [ $app->user->core["id"], $post["subject"], $post["body"] ]);
 
-    $app->cacheNew->delete('news_latest_id');
-    $app->cacheNew->delete('news_latest_title');
-    $app->cacheNew->delete('news');
+    $app->cache->delete('news_latest_id');
+    $app->cache->delete('news_latest_title');
+    $app->cache->delete('news');
 
     Http::redirect();
 }
@@ -53,8 +53,8 @@ if ($get["newsId"] && $post["formAction"] === "update") {
     $query = "update news set title = ?, body = ? where id = ?";
     $app->dbNew->do($query, [ $post["subject"], $post["body"], $get["newsId"] ]);
 
-    $app->cacheNew->delete('news');
-    $app->cacheNew->delete('feed_news');
+    $app->cache->delete('news');
+    $app->cache->delete('feed_news');
 }
 
 # delete
@@ -64,14 +64,14 @@ if ($get["newsId"] && $get["delete"]) {
     $query = "delete from news where id = ?";
     $app->dbNew->do($query, [ $get["newsId"] ]);
 
-    $app->cacheNew->delete('news');
-    $app->cacheNew->delete('feed_news');
+    $app->cache->delete('news');
+    $app->cache->delete('feed_news');
 
     # deleting latest news
-    $latestNews = $app->cacheNew->get('news_latest_id') ?? null;
+    $latestNews = $app->cache->get('news_latest_id') ?? null;
     if ($latestNews === $get["newsId"]) {
-        $app->cacheNew->delete('news_latest_id');
-        $app->cacheNew->delete('news_latest_title');
+        $app->cache->delete('news_latest_id');
+        $app->cache->delete('news_latest_title');
     }
 }
 

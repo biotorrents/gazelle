@@ -23,7 +23,7 @@ if (empty($_GET['type']) || !in_array($_GET['type'], array('forums', 'collages',
 }
 $Type = $_GET['type'];
 
-$Edits = $app->cacheNew->get($Type.'_edits_'.$PostID);
+$Edits = $app->cache->get($Type.'_edits_'.$PostID);
 if (!is_array($Edits)) {
     $app->dbOld->query("
     SELECT EditUser, EditTime, Body
@@ -31,7 +31,7 @@ if (!is_array($Edits)) {
     WHERE Page = '$Type' AND PostID = $PostID
     ORDER BY EditTime DESC");
     $Edits = $app->dbOld->to_array();
-    $app->cacheNew->set($Type.'_edits_'.$PostID, $Edits, 0);
+    $app->cache->set($Type.'_edits_'.$PostID, $Edits, 0);
 }
 
 list($UserID, $Time) = $Edits[$Depth];

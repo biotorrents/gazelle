@@ -15,13 +15,13 @@ if (isset($_GET['perform'])) {
             error(0);
         }
         $app->dbOld->query('DELETE FROM ip_bans WHERE ID='.$_GET['id']);
-        $Bans = $app->cacheNew->delete('ip_bans_'.$IPA);
+        $Bans = $app->cache->delete('ip_bans_'.$IPA);
     } elseif ($_GET['perform'] == 'create') {
         $Notes = db_string($_GET['notes']);
         $IP = Tools::ip_to_unsigned($_GET['ip']); //Sanitized by Validation regex
         $app->dbOld->query("
       INSERT INTO ip_bans (FromIP, ToIP, Reason)
       VALUES ('$IP','$IP', '$Notes')");
-        $app->cacheNew->delete('ip_bans_'.$IPA);
+        $app->cache->delete('ip_bans_'.$IPA);
     }
 }

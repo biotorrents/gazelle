@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-if (($Results = $app->cacheNew->get('better_single_groupids')) === false) {
+if (($Results = $app->cache->get('better_single_groupids')) === false) {
     $app->dbOld->query("
     SELECT
       t.ID AS TorrentID,
@@ -16,7 +16,7 @@ if (($Results = $app->cacheNew->get('better_single_groupids')) === false) {
     LIMIT 30");
 
     $Results = $app->dbOld->to_pair('GroupID', 'TorrentID', false);
-    $app->cacheNew->set('better_single_groupids', $Results, 30 * 60);
+    $app->cache->set('better_single_groupids', $Results, 30 * 60);
 }
 
 $Groups = Torrents::get_groups(array_keys($Results));

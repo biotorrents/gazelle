@@ -46,7 +46,7 @@ for ($i = 0; $i < count($Images); $i++) {
 }
 
 if ($Changed) {
-    $app->cacheNew->delete("torrents_cover_art_$GroupID");
+    $app->cache->delete("torrents_cover_art_$GroupID");
 }
 
 header('Location: '.$_SERVER['HTTP_REFERER']);

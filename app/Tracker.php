@@ -67,9 +67,9 @@ class Tracker
         if (self::send_request($get, $maxAttempts, $err) === false) {
             send_irc(DEBUG_CHAN, "{$maxAttempts} {$err} {$get}");
 
-            if ($app->cacheNew->get('ocelot_error_reported') === false) {
+            if ($app->cache->get('ocelot_error_reported') === false) {
                 send_irc(ADMIN_CHAN, "Failed to update Ocelot: {$err} {$get}");
-                $app->cacheNew->set('ocelot_error_reported', true, 3600);
+                $app->cache->set('ocelot_error_reported', true, 3600);
             }
 
             # this needs to throw
@@ -284,7 +284,7 @@ class Tracker
     {
         $app = \Gazelle\App::go();
 
-        $allowedClients = $app->cacheNew->get(self::$cachePrefix. __FUNCTION__) ?? [];
+        $allowedClients = $app->cache->get(self::$cachePrefix. __FUNCTION__) ?? [];
 
         if (!empty($allowedClients)) {
             return $allowedClients;
@@ -301,7 +301,7 @@ class Tracker
             array_column($allowedClients, 'vstring'),
         );
 
-        $app->cacheNew->set(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
+        $app->cache->set(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);
         return $allowedClients;
     }
 } # class

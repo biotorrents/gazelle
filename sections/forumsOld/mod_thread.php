@@ -126,9 +126,9 @@ if (isset($_POST['delete'])) {
       LastPostAuthorID = '$NewLastAuthorID',
       LastPostTime = '$NewLastAddedTime'
     WHERE ID = '$ForumID'");
-    $app->cacheNew->delete("forums_$ForumID");
+    $app->cache->delete("forums_$ForumID");
 
-    $app->cacheNew->delete("thread_$TopicID");
+    $app->cache->delete("thread_$TopicID");
 
     /*
     $app->cacheOld->begin_transaction('forums_list');
@@ -148,7 +148,7 @@ if (isset($_POST['delete'])) {
     $app->cacheOld->commit_transaction(0);
     */
 
-    $app->cacheNew->delete("thread_{$TopicID}_info");
+    $app->cache->delete("thread_{$TopicID}_info");
 
     // subscriptions
     Subscriptions::move_subscriptions('forums', $TopicID, null);
@@ -195,10 +195,10 @@ if (isset($_POST['delete'])) {
     // always clear cache when editing a thread.
     // if a thread title, etc. is changed, this cache key must be cleared so the thread listing
     //    properly shows the new thread title.
-    $app->cacheNew->delete("forums_$ForumID");
+    $app->cache->delete("forums_$ForumID");
 
     if ($ForumID != $OldForumID) { // If we're moving a thread, change the forum stats
-        $app->cacheNew->delete("forums_$OldForumID");
+        $app->cache->delete("forums_$OldForumID");
 
         $app->dbOld->query("
       SELECT MinClassRead, MinClassWrite, Name
@@ -356,7 +356,7 @@ if (isset($_POST['delete'])) {
       UPDATE forums_polls
       SET Closed = '0'
       WHERE TopicID = '$TopicID'");
-        $app->cacheNew->delete("polls_$TopicID");
+        $app->cache->delete("polls_$TopicID");
     }
 
     // topic notes and notifications

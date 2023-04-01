@@ -60,7 +60,7 @@ switch ($_REQUEST['action']) {
       USING(GroupID)
       WHERE b.UserID = '{$app->user->core['id']}'");
 
-    $app->cacheNew->delete("bookmarks_group_ids_$UserID");
+    $app->cache->delete("bookmarks_group_ids_$UserID");
     Http::redirect("bookmarks.php");
     error();
     break;

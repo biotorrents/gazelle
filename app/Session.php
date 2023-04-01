@@ -117,12 +117,12 @@ class Session
                 delete from users_sessions where UserID = {$this->userId} and SessionID = '{$this->id}'
             ");
 
-            $app->cacheNew->delete("users_sessions_{$this->userId}");
+            $app->cache->delete("users_sessions_{$this->userId}");
         }
 
-        $app->cacheNew->delete("user_info_{$this->userId}");
-        $app->cacheNew->delete("user_stats_{$this->userId}");
-        $app->cacheNew->delete("user_info_heavy_{$this->userId}");
+        $app->cache->delete("user_info_{$this->userId}");
+        $app->cache->delete("user_stats_{$this->userId}");
+        $app->cache->delete("user_info_heavy_{$this->userId}");
 
         # send to login
         #Http::redirect("login");
@@ -145,7 +145,7 @@ class Session
             delete from users_sessions where UserID = '{$this->userId}'
         ");
 
-        $app->cacheNew->delete("users_sessions_{$this->userId}");
+        $app->cache->delete("users_sessions_{$this->userId}");
         $this->logout();
     }
     */
@@ -163,9 +163,9 @@ class Session
         $server = Http::query("server");
 
         $attempts = $this->attempts++;
-        $app->cacheNew->set("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);
+        $app->cache->set("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);
 
-        $allAttempts = $app->cacheNew->get("login_attempts") ?? [];
+        $allAttempts = $app->cache->get("login_attempts") ?? [];
         $allAttempts[$server["REMOTE_ADDR"]] = time() + (60 * 60 * $attempts);
 
         foreach ($allAttempts as $ip => $time) {
@@ -174,6 +174,6 @@ class Session
             }
         }
 
-        $app->cacheNew->set("login_attempts", $allAttempts, 0);
+        $app->cache->set("login_attempts", $allAttempts, 0);
     }
 } # class

@@ -39,7 +39,7 @@ list($Page, $Limit) = Format::page_limit(TOPICS_PER_PAGE);
 // Caching anything beyond the first page of any given forum is just wasting ram
 // users are more likely to search then to browse to page 2
 if ($Page === 1) {
-    list($Forum, , , $Stickies) = $app->cacheNew->get("forums_$ForumID");
+    list($Forum, , , $Stickies) = $app->cache->get("forums_$ForumID");
 }
 if (!isset($Forum) || !is_array($Forum)) {
     $app->dbOld->query("
@@ -65,7 +65,7 @@ if (!isset($Forum) || !is_array($Forum)) {
       WHERE ForumID = '$ForumID'
         AND IsSticky = '1'");
         list($Stickies) = $app->dbOld->next_record();
-        $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+        $app->cache->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
     }
 }
 

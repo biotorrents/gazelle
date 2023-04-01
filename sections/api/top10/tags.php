@@ -24,7 +24,7 @@ $Limit = in_array($Limit, [10, 100, 250]) ? $Limit : 10;
 $OuterResults = [];
 
 if ($Details == 'all' || $Details == 'ut') {
-    if (!$TopUsedTags = $app->cacheNew->get("topusedtag_$Limit")) {
+    if (!$TopUsedTags = $app->cache->get("topusedtag_$Limit")) {
         $app->dbOld->query("
       SELECT
         t.ID,
@@ -36,14 +36,14 @@ if ($Details == 'all' || $Details == 'ut') {
       ORDER BY Uses DESC
       LIMIT $Limit");
         $TopUsedTags = $app->dbOld->to_array();
-        $app->cacheNew->set("topusedtag_$Limit", $TopUsedTags, 3600 * 12);
+        $app->cache->set("topusedtag_$Limit", $TopUsedTags, 3600 * 12);
     }
 
     $OuterResults[] = generate_tag_json('Most Used Torrent Tags', 'ut', $TopUsedTags, $Limit);
 }
 
 if ($Details == 'all' || $Details == 'ur') {
-    if (!$TopRequestTags = $app->cacheNew->get("toprequesttag_$Limit")) {
+    if (!$TopRequestTags = $app->cache->get("toprequesttag_$Limit")) {
         $app->dbOld->query("
       SELECT
         t.ID,
@@ -56,7 +56,7 @@ if ($Details == 'all' || $Details == 'ur') {
       ORDER BY Uses DESC
       LIMIT $Limit");
         $TopRequestTags = $app->dbOld->to_array();
-        $app->cacheNew->set("toprequesttag_$Limit", $TopRequestTags, 3600 * 12);
+        $app->cache->set("toprequesttag_$Limit", $TopRequestTags, 3600 * 12);
     }
 
     $OuterResults[] = generate_tag_json('Most Used Request Tags', 'ur', $TopRequestTags, $Limit);

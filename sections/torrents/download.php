@@ -82,7 +82,7 @@ if ($inArrayPartial) {
 
 /*
 # not entirely sure what this is
-$Info = $app->cacheNew->get("torrent_download_".$torrentId);
+$Info = $app->cache->get("torrent_download_".$torrentId);
 if (!is_array($Info) || !array_key_exists("PlainArtists", $Info) || empty($Info[10])) {
     $app->dbOld->prepared_query("
       SELECT
@@ -110,7 +110,7 @@ if (!is_array($Info) || !array_key_exists("PlainArtists", $Info) || empty($Info[
     $Artists = Artists::get_artist($Info[0][4], false);
     $Info["Artists"] = Artists::display_artists($Artists, false, true);
     $Info["PlainArtists"] = Artists::display_artists($Artists, false, true, false);
-    $app->cacheNew->set("torrent_download_$torrentId", $Info, 0);
+    $app->cache->set("torrent_download_$torrentId", $Info, 0);
 }
 
 if (!is_array($Info[0])) {
@@ -198,7 +198,7 @@ if ($useToken && intval($leechStatus) === 0) {
 # there's gotta be a better way to do this
 // Stupid Recent Snatches On User Page
 if ($Image !== "") {
-    $RecentSnatches = $app->cacheNew->get("recent_snatches_$userId");
+    $RecentSnatches = $app->cache->get("recent_snatches_$userId");
     if (!empty($RecentSnatches)) {
         $Snatch = array(
         "ID" => $GroupID,
@@ -214,7 +214,7 @@ if ($Image !== "") {
         } elseif (!is_array($RecentSnatches)) {
             $RecentSnatches = array($Snatch);
         }
-        $app->cacheNew->set("recent_snatches_$userId", $RecentSnatches, 0);
+        $app->cache->set("recent_snatches_$userId", $RecentSnatches, 0);
     }
 }
 */

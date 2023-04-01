@@ -82,7 +82,7 @@ foreach ($ArtistList as $Artist) {
       <span class="u-pull-right">
         <?php
   if (check_perms('site_torrents_notify')) {
-      if (($Notify = $app->cacheNew->get('notify_artists_'.$app->user->core['id'])) === false) {
+      if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
           $app->dbOld->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
@@ -91,7 +91,7 @@ foreach ($ArtistList as $Artist) {
             LIMIT 1");
 
           $Notify = $app->dbOld->next_record(MYSQLI_ASSOC);
-          $app->cacheNew->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
+          $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
       }
 
       if (stripos($Notify['Artists'], "|$Name|") === false) { ?>
@@ -119,4 +119,4 @@ foreach ($ArtistList as $Artist) {
 
 <?php
 View::footer();
-$app->cacheNew->set('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);
+$app->cache->set('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);

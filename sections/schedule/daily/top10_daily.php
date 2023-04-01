@@ -10,7 +10,7 @@ $app->dbOld->query("
   VALUES ('$sqltime', 'Daily')");
 $HistoryID = $app->dbOld->inserted_id();
 
-$Top10 = $app->cacheNew->get('top10tor_day_10');
+$Top10 = $app->cache->get('top10tor_day_10');
 if ($Top10 === false) {
     $app->dbOld->query("
     SELECT

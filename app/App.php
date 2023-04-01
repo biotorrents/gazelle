@@ -23,7 +23,7 @@ class App
     public $env = null;
 
     # the rest of the globals
-    public $cacheNew = null;
+    public $cache = null;
 
     public $dbNew = null; # new
     public $dbOld = null; # old
@@ -85,7 +85,7 @@ class App
         $this->env = \ENV::go();
 
         # cache
-        $this->cacheNew = \Gazelle\Cache::go();
+        $this->cache = \Gazelle\Cache::go();
 
         # database
         $this->dbNew = \Gazelle\Database::go(); # new

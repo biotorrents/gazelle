@@ -146,7 +146,7 @@ class Feed
     {
         $app = \Gazelle\App::go();
 
-        $entries = $app->cacheNew->get($cacheKey);
+        $entries = $app->cache->get($cacheKey);
         if (!$entries) {
             $entries = [];
         }
@@ -172,7 +172,7 @@ class Feed
     {
         $app = \Gazelle\App::go();
 
-        $entries = $app->cacheNew->get($cacheKey, true);
+        $entries = $app->cache->get($cacheKey, true);
         if (!$entries) {
             $entries = [];
         }
@@ -182,6 +182,6 @@ class Feed
         }
 
         array_unshift($entries, $item);
-        $app->cacheNew->set($cacheKey, $entries, 0);
+        $app->cache->set($cacheKey, $entries, 0);
     }
 } # class

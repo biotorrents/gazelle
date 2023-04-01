@@ -29,8 +29,8 @@ if ($app->dbOld->has_results()) {
           SET AdminComment = CONCAT('".sqltime()." - $Purchase from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $app->cacheNew->delete('user_info_heavy_'.$UserID);
-        $app->cacheNew->delete('user_stats_'.$UserID);
+        $app->cache->delete('user_info_heavy_'.$UserID);
+        $app->cache->delete('user_stats_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

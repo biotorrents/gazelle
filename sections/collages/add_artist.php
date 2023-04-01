@@ -40,9 +40,9 @@ function add_artist($CollageID, $ArtistID)
       SET NumTorrents = NumTorrents + 1, Updated = '" . sqltime() . "'
       WHERE ID = '$CollageID'");
 
-        $app->cacheNew->delete("collage_$CollageID");
-        $app->cacheNew->delete("artists_collages_$ArtistID");
-        $app->cacheNew->delete("artists_collages_personal_$ArtistID");
+        $app->cache->delete("collage_$CollageID");
+        $app->cache->delete("artists_collages_$ArtistID");
+        $app->cache->delete("artists_collages_personal_$ArtistID");
 
         $app->dbOld->query("
       SELECT UserID
@@ -51,7 +51,7 @@ function add_artist($CollageID, $ArtistID)
 
         /*
         while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
-            $app->cacheNew->delete("collage_subs_user_new_$app->cacheOldUserID");
+            $app->cache->delete("collage_subs_user_new_$app->cacheOldUserID");
         }
         */
     }

@@ -54,7 +54,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
                       SET AdminComment = CONCAT('".sqltime()." - Purchased badge $BadgeID from store\n\n', AdminComment)
                       WHERE UserID = $UserID");
 
-                    $app->cacheNew->delete("user_info_heavy_$UserID");
+                    $app->cache->delete("user_info_heavy_$UserID");
                 }
             } else {
                 $Err = 'Not enough '.bonusPoints.'.';

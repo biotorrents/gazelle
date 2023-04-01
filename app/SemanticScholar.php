@@ -78,8 +78,8 @@ class SemanticScholar
             "uri" => $uri, "fields" => $fields, "search" => $search
         ]));
 
-        if ($app->cacheNew->get($cacheKey)) {
-            return $app->cacheNew->get($cacheKey);
+        if ($app->cache->get($cacheKey)) {
+            return $app->cache->get($cacheKey);
         }
 
         # fields
@@ -115,7 +115,7 @@ class SemanticScholar
         $info = curl_getinfo($ch);
         curl_close($ch);
 
-        $app->cacheNew->set($cacheKey, $response, $this->cacheDuration);
+        $app->cache->set($cacheKey, $response, $this->cacheDuration);
         return $response;
     }
 

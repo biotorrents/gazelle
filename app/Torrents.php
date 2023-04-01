@@ -137,8 +137,8 @@ class Torrents
                 continue;
             }
 
-            $Data = $app->cacheNew->get($Key . $GroupID, true);
-            if (!empty($Data) && is_array($Data) && $Data['ver'] === $app->cacheNew->groupVersion) {
+            $Data = $app->cache->get($Key . $GroupID, true);
+            if (!empty($Data) && is_array($Data) && $Data['ver'] === $app->cache->groupVersion) {
                 unset($NotFound[$GroupID]);
                 $Found[$GroupID] = $Data['d'];
             }
@@ -235,7 +235,7 @@ class Torrents
             }
 
             foreach ($NotFound as $GroupID => $GroupInfo) {
-                $app->cacheNew->set($Key . $GroupID, array('ver' => $app->cacheNew->groupVersion, 'd' => $GroupInfo), 0);
+                $app->cache->set($Key . $GroupID, array('ver' => $app->cache->groupVersion, 'd' => $GroupInfo), 0);
             }
 
             $Found = $NotFound + $Found;
@@ -412,11 +412,11 @@ class Torrents
             list($UserID) = $app->dbOld->next_record();
         }
 
-        $RecentUploads = $app->cacheNew->get("recent_uploads_$UserID");
+        $RecentUploads = $app->cache->get("recent_uploads_$UserID");
         if (is_array($RecentUploads)) {
             foreach ($RecentUploads as $Key => $Recent) {
                 if ($Recent['ID'] == $GroupID) {
-                    $app->cacheNew->delete("recent_uploads_$UserID");
+                    $app->cache->delete("recent_uploads_$UserID");
                 }
             }
         }
@@ -431,7 +431,7 @@ class Torrents
           WHERE ID = $ID");
         Tracker::update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID, 'reason' => $OcelotReason));
 
-        $app->cacheNew->decrement('stats_torrent_count');
+        $app->cache->decrement('stats_torrent_count');
 
         $app->dbOld->query("
         SELECT COUNT(ID)
@@ -451,7 +451,7 @@ class Torrents
         FROM users_notify_torrents
           WHERE TorrentID = '$ID'");
         while (list($UserID) = $app->dbOld->next_record()) {
-            $app->cacheNew->delete("notifications_new_$UserID");
+            $app->cache->delete("notifications_new_$UserID");
         }
         $app->dbOld->query("
         DELETE FROM users_notify_torrents
@@ -467,7 +467,7 @@ class Torrents
           AND Status != 'Resolved'", $ID);
         $Reports = $app->dbOld->affected_rows();
         if ($Reports) {
-            $app->cacheNew->decrement('num_torrent_reportsv2', $Reports);
+            $app->cache->decrement('num_torrent_reportsv2', $Reports);
         }
 
         unlink(torrentStore.'/'.$ID.'.torrent');
@@ -486,7 +486,7 @@ class Torrents
           WHERE TorrentID = ?", $ID);
         $FLs = $app->dbOld->affected_rows();
         if ($FLs) {
-            $app->cacheNew->delete('shop_freeleech_list');
+            $app->cache->delete('shop_freeleech_list');
         }
 
         // Tells Sphinx that the group is removed
@@ -494,9 +494,9 @@ class Torrents
         REPLACE INTO sphinx_delta (ID, Time)
         VALUES (?, UNIX_TIMESTAMP())", $ID);
 
-        $app->cacheNew->delete("torrent_download_$ID");
-        $app->cacheNew->delete("torrent_group_$GroupID");
-        $app->cacheNew->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrent_download_$ID");
+        $app->cache->delete("torrent_group_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -530,9 +530,9 @@ class Torrents
 
         # todo: Check strict equality here
         if ($Category === 1) {
-            $app->cacheNew->decrement('stats_album_count');
+            $app->cache->decrement('stats_album_count');
         }
-        $app->cacheNew->decrement('stats_group_count');
+        $app->cache->decrement('stats_group_count');
 
         // Collages
         $app->dbOld->query("
@@ -550,9 +550,9 @@ class Torrents
               WHERE GroupID = ?", $GroupID);
 
             foreach ($CollageIDs as $CollageID) {
-                $app->cacheNew->delete("collage_$CollageID");
+                $app->cache->delete("collage_$CollageID");
             }
-            $app->cacheNew->delete("torrent_collages_$GroupID");
+            $app->cache->delete("torrent_collages_$GroupID");
         }
 
         // Artists
@@ -591,7 +591,7 @@ class Torrents
                 Artists::delete_artist($ArtistID);
             } else {
                 //Not the only group, still need to clear cache
-                $app->cacheNew->delete("artist_groups_$ArtistID");
+                $app->cache->delete("artist_groups_$ArtistID");
             }
         }
 
@@ -606,7 +606,7 @@ class Torrents
         SET GroupID = NULL
           WHERE GroupID = ?", $GroupID);
         foreach ($Requests as $RequestID) {
-            $app->cacheNew->delete("request_$RequestID");
+            $app->cache->delete("request_$RequestID");
         }
 
         // Comments
@@ -648,9 +648,9 @@ class Torrents
         ");
 
 
-        $app->cacheNew->delete("torrents_details_$GroupID");
-        $app->cacheNew->delete("torrent_group_$GroupID");
-        $app->cacheNew->delete("groups_artists_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrent_group_$GroupID");
+        $app->cache->delete("groups_artists_$GroupID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -782,12 +782,12 @@ class Torrents
         ");
 
 
-        $app->cacheNew->delete("torrents_details_$GroupID");
-        $app->cacheNew->delete("torrent_group_$GroupID");
-        $app->cacheNew->delete("torrent_group_light_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrent_group_$GroupID");
+        $app->cache->delete("torrent_group_light_$GroupID");
 
         $ArtistInfo = \Artists::get_artist($GroupID);
-        $app->cacheNew->delete("groups_artists_$GroupID");
+        $app->cache->delete("groups_artists_$GroupID");
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -833,7 +833,7 @@ class Torrents
                 $FileString,
                 $TorrentID
             );
-            $app->cacheNew->delete("torrents_details_$GroupID");
+            $app->cache->delete("torrents_details_$GroupID");
         }
         $app->dbOld->set_query_id($QueryID);
     }
@@ -1062,7 +1062,7 @@ class Torrents
         foreach ($Torrents as $Torrent) {
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
-            $app->cacheNew->delete("torrent_download_$TorrentID");
+            $app->cache->delete("torrent_download_$TorrentID");
             Misc::write_log(($app->user->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
             Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
 
@@ -1128,7 +1128,7 @@ class Torrents
         static $TokenTorrents;
         $UserID = $app->user->core["id"];
         if (!isset($TokenTorrents)) {
-            $TokenTorrents = $app->cacheNew->get("users_tokens_$UserID");
+            $TokenTorrents = $app->cache->get("users_tokens_$UserID");
 
             if ($TokenTorrents === false) {
                 $QueryID = $app->dbOld->get_query_id();
@@ -1141,7 +1141,7 @@ class Torrents
 
                 $TokenTorrents = array_fill_keys($app->dbOld->collect('TorrentID', false), true);
                 $app->dbOld->set_query_id($QueryID);
-                $app->cacheNew->set("users_tokens_$UserID", $TokenTorrents);
+                $app->cache->set("users_tokens_$UserID", $TokenTorrents);
             }
         }
         return isset($TokenTorrents[$TorrentID]);
@@ -1194,7 +1194,7 @@ class Torrents
 
         if (empty($SnatchedTorrents)) {
             $SnatchedTorrents = array_fill(0, $Buckets, false);
-            $UpdateTime = $app->cacheNew->get("users_snatched_{$UserID}_time");
+            $UpdateTime = $app->cache->get("users_snatched_{$UserID}_time");
             if ($UpdateTime === false) {
                 $UpdateTime = array(
           'last' => 0,
@@ -1209,7 +1209,7 @@ class Torrents
         if ($CurSnatchedTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
-            $CurSnatchedTorrents = $app->cacheNew->get("users_snatched_{$UserID}_$BucketID", true);
+            $CurSnatchedTorrents = $app->cache->get("users_snatched_{$UserID}_$BucketID", true);
             if ($CurSnatchedTorrents === false || $CurTime > $UpdateTime['next']) {
                 $Updated = [];
                 $QueryID = $app->dbOld->get_query_id();
@@ -1239,7 +1239,7 @@ class Torrents
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SnatchedTorrents[$CurBucketID] === false) {
-                            $SnatchedTorrents[$CurBucketID] = $app->cacheNew->get("users_snatched_{$UserID}_$CurBucketID", true);
+                            $SnatchedTorrents[$CurBucketID] = $app->cache->get("users_snatched_{$UserID}_$CurBucketID", true);
                             if ($SnatchedTorrents[$CurBucketID] === false) {
                                 $SnatchedTorrents[$CurBucketID] = [];
                             }
@@ -1251,12 +1251,12 @@ class Torrents
                 $app->dbOld->set_query_id($QueryID);
                 for ($i = 0; $i < $Buckets; $i++) {
                     if (isset($Updated[$i])) {
-                        $app->cacheNew->set("users_snatched_{$UserID}_$i", $SnatchedTorrents[$i], 0);
+                        $app->cache->set("users_snatched_{$UserID}_$i", $SnatchedTorrents[$i], 0);
                     }
                 }
                 $UpdateTime['last'] = $CurTime;
                 $UpdateTime['next'] = $CurTime + self::SNATCHED_UPDATE_INTERVAL;
-                $app->cacheNew->set("users_snatched_{$UserID}_time", $UpdateTime, 0);
+                $app->cache->set("users_snatched_{$UserID}_time", $UpdateTime, 0);
             }
         }
         return isset($CurSnatchedTorrents[$TorrentID]);
@@ -1280,7 +1280,7 @@ class Torrents
 
         if (empty($SeedingTorrents)) {
             $SeedingTorrents = array_fill(0, $Buckets, false);
-            $UpdateTime = $app->cacheNew->get("users_seeding_{$UserID}_time");
+            $UpdateTime = $app->cache->get("users_seeding_{$UserID}_time");
             if ($UpdateTime === false) {
                 $UpdateTime = array(
           'last' => 0,
@@ -1295,7 +1295,7 @@ class Torrents
         if ($CurSeedingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
-            $CurSeedingTorrents = $app->cacheNew->get("users_seeding_{$UserID}_$BucketID", true);
+            $CurSeedingTorrents = $app->cache->get("users_seeding_{$UserID}_$BucketID", true);
             if ($CurSeedingTorrents === false || $CurTime > $UpdateTime['next']) {
                 $Updated = [];
                 $QueryID = $app->dbOld->get_query_id();
@@ -1329,7 +1329,7 @@ class Torrents
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SeedingTorrents[$CurBucketID] === false) {
-                            $SeedingTorrents[$CurBucketID] = $app->cacheNew->get("users_seeding_{$UserID}_$CurBucketID", true);
+                            $SeedingTorrents[$CurBucketID] = $app->cache->get("users_seeding_{$UserID}_$CurBucketID", true);
                             if ($SeedingTorrents[$CurBucketID] === false) {
                                 $SeedingTorrents[$CurBucketID] = [];
                             }
@@ -1341,12 +1341,12 @@ class Torrents
                 $app->dbOld->set_query_id($QueryID);
                 for ($i = 0; $i < $Buckets; $i++) {
                     if (isset($Updated[$i])) {
-                        $app->cacheNew->set("users_seeding_{$UserID}_$i", $SeedingTorrents[$i], 3600);
+                        $app->cache->set("users_seeding_{$UserID}_$i", $SeedingTorrents[$i], 3600);
                     }
                 }
                 $UpdateTime['last'] = $CurTime;
                 $UpdateTime['next'] = $CurTime + self::SNATCHED_UPDATE_INTERVAL;
-                $app->cacheNew->set("users_seeding_{$UserID}_time", $UpdateTime, 3600);
+                $app->cache->set("users_seeding_{$UserID}_time", $UpdateTime, 3600);
             }
         }
         return isset($CurSeedingTorrents[$TorrentID]);
@@ -1372,7 +1372,7 @@ class Torrents
 
         if (empty($LeechingTorrents)) {
             $LeechingTorrents = array_fill(0, $Buckets, false);
-            $UpdateTime = $app->cacheNew->get("users_leeching_{$UserID}_time");
+            $UpdateTime = $app->cache->get("users_leeching_{$UserID}_time");
             if ($UpdateTime === false) {
                 $UpdateTime = array(
           'last' => 0,
@@ -1387,7 +1387,7 @@ class Torrents
         if ($CurLeechingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
-            $CurLeechingTorrents = $app->cacheNew->get("users_leeching_{$UserID}_$BucketID", true);
+            $CurLeechingTorrents = $app->cache->get("users_leeching_{$UserID}_$BucketID", true);
             if ($CurLeechingTorrents === false || $CurTime > $UpdateTime['next']) {
                 $Updated = [];
                 $QueryID = $app->dbOld->get_query_id();
@@ -1421,7 +1421,7 @@ class Torrents
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($LeechingTorrents[$CurBucketID] === false) {
-                            $LeechingTorrents[$CurBucketID] = $app->cacheNew->get("users_leeching_{$UserID}_$CurBucketID", true);
+                            $LeechingTorrents[$CurBucketID] = $app->cache->get("users_leeching_{$UserID}_$CurBucketID", true);
                             if ($LeechingTorrents[$CurBucketID] === false) {
                                 $LeechingTorrents[$CurBucketID] = [];
                             }
@@ -1433,12 +1433,12 @@ class Torrents
                 $app->dbOld->set_query_id($QueryID);
                 for ($i = 0; $i < $Buckets; $i++) {
                     if (isset($Updated[$i])) {
-                        $app->cacheNew->set("users_leeching_{$UserID}_$i", $LeechingTorrents[$i], 3600);
+                        $app->cache->set("users_leeching_{$UserID}_$i", $LeechingTorrents[$i], 3600);
                     }
                 }
                 $UpdateTime['last'] = $CurTime;
                 $UpdateTime['next'] = $CurTime + self::SNATCHED_UPDATE_INTERVAL;
-                $app->cacheNew->set("users_leeching_{$UserID}_time", $UpdateTime, 3600);
+                $app->cache->set("users_leeching_{$UserID}_time", $UpdateTime, 3600);
             }
         }
         return isset($CurLeechingTorrents[$TorrentID]);
@@ -1457,14 +1457,14 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
-        if (!$UpdateTime = $app->cacheNew->get("users_snatched_{$UserID}_time")) {
+        if (!$UpdateTime = $app->cache->get("users_snatched_{$UserID}_time")) {
             return;
         }
         $NextTime = time() + $Time;
         if ($Force || $NextTime < $UpdateTime['next']) {
             // Skip if the change would delay the next update
             $UpdateTime['next'] = $NextTime;
-            $app->cacheNew->set("users_snatched_{$UserID}_time", $UpdateTime, 0);
+            $app->cache->set("users_snatched_{$UserID}_time", $UpdateTime, 0);
         }
     }
 
@@ -1520,7 +1520,7 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
-        $Reports = $app->cacheNew->get("reports_torrent_$TorrentID");
+        $Reports = $app->cache->get("reports_torrent_$TorrentID");
         if ($Reports === false) {
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->query("
@@ -1535,7 +1535,7 @@ class Torrents
               AND Status != 'Resolved'", $TorrentID);
             $Reports = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set("reports_torrent_$TorrentID", $Reports, 0);
+            $app->cache->set("reports_torrent_$TorrentID", $Reports, 0);
         }
         if (!check_perms('admin_reports')) {
             $Return = [];

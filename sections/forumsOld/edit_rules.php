@@ -30,7 +30,7 @@ if (!empty($_POST['add']) || (!empty($_POST['del']))) {
               AND ThreadID = ".$_POST['threadid']);
         }
     }
-    $app->cacheNew->delete('forums_list');
+    $app->cache->delete('forums_list');
 }
 
 $app->dbOld->query("

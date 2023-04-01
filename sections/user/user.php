@@ -561,7 +561,7 @@ if (!$Info) {
     <?php
 
 if (check_paranoia_here('snatched')) {
-    $RecentSnatches = $app->cacheNew->get("recent_snatches_$userId");
+    $RecentSnatches = $app->cache->get("recent_snatches_$userId");
     if ($RecentSnatches === false) {
         $app->dbOld->prepared_query("
         SELECT
@@ -596,7 +596,7 @@ if (check_paranoia_here('snatched')) {
             $RecentSnatches[$Key]['Artist'] = Artists::display_artists($Artists[$SnatchInfo['ID']], false, true);
         }
 
-        $app->cacheNew->set("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
+        $app->cache->set("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
     }
 
     if (!empty($RecentSnatches)) {
@@ -630,7 +630,7 @@ if (check_paranoia_here('snatched')) {
 }
 
 if (check_paranoia_here('uploads')) {
-    $RecentUploads = $app->cacheNew->get("recent_uploads_$userId");
+    $RecentUploads = $app->cache->get("recent_uploads_$userId");
     if ($RecentUploads === false) {
         $app->dbOld->prepared_query("
         SELECT
@@ -662,7 +662,7 @@ if (check_paranoia_here('uploads')) {
             $RecentUploads[$Key]['Artist'] = Artists::display_artists($Artists[$UploadInfo['ID']], false, true);
         }
 
-        $app->cacheNew->set("recent_uploads_$userId", $RecentUploads, 0); // inf cache
+        $app->cache->set("recent_uploads_$userId", $RecentUploads, 0); // inf cache
     }
 
     if (!empty($RecentUploads)) {

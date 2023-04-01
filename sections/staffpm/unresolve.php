@@ -25,7 +25,7 @@ if ($ID = (int)($_GET['id'])) {
       SET Status = 'Unanswered'
       WHERE ID = $ID");
         // Clear cache for user
-        $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+        $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
         Http::redirect("staffpm.php");
     } else {

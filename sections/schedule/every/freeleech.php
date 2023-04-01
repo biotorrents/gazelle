@@ -15,8 +15,8 @@ $app->dbOld->query("
     AND Time < '$TimeMinus'");
 
 while (list($GroupID) = $app->dbOld->next_record()) {
-    $app->cacheNew->delete("torrents_details_$GroupID");
-    $app->cacheNew->delete("torrent_group_$GroupID");
+    $app->cache->delete("torrents_details_$GroupID");
+    $app->cache->delete("torrent_group_$GroupID");
 }
 
 $app->dbOld->query("

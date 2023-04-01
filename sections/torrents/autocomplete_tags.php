@@ -10,7 +10,7 @@ $MaxKeySize = 4;
 $KeySize = min($MaxKeySize, max(1, strlen($FullName)));
 
 $Letters = strtolower(substr($FullName, 0, $KeySize));
-$AutoSuggest = $app->cacheNew->get("autocomplete_tags_{$KeySize}_$Letters");
+$AutoSuggest = $app->cache->get("autocomplete_tags_{$KeySize}_$Letters");
 
 if (!$AutoSuggest) {
     $Limit = (($KeySize === $MaxKeySize) ? 250 : 10);
@@ -23,7 +23,7 @@ if (!$AutoSuggest) {
     ORDER BY TagType = 'genre' DESC, Uses DESC
     LIMIT $Limit");
     $AutoSuggest = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-    $app->cacheNew->set("autocomplete_tags_{$KeySize}_$Letters", $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
+    $app->cache->set("autocomplete_tags_{$KeySize}_$Letters", $AutoSuggest, 1800 + 7200 * ($MaxKeySize - $KeySize)); // Can't cache things for too long in case names are edited
 }
 
 $Matched = 0;

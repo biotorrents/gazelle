@@ -266,7 +266,7 @@ if (count($Reports) === 0) {
           `LastChangeTime` = NOW(),
           `ModComment` = 'Report already dealt with (torrent deleted)'
         WHERE `ID` = $ReportID");
-              $app->cacheNew->decrement('num_torrent_reportsv2'); ?>
+              $app->cache->decrement('num_torrent_reportsv2'); ?>
   <div id="report<?=$ReportID?>" class="report box pad center"
     data-load-report="<?=$ReportID?>">
     <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report

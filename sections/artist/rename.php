@@ -95,7 +95,7 @@ if (!$TargetAliasID) {
       WHERE AliasID = '$OldAliasID'");*/
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
-            $app->cacheNew->delete("groups_artists_$GroupID"); // Delete group artist cache
+            $app->cache->delete("groups_artists_$GroupID"); // Delete group artist cache
             Torrents::update_hash($GroupID);
         }
     }
@@ -114,7 +114,7 @@ if (!$TargetAliasID) {
       WHERE AliasID = '$OldAliasID'");*/
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
-            $app->cacheNew->delete("request_artists_$RequestID"); // Delete request artist cache
+            $app->cache->delete("request_artists_$RequestID"); // Delete request artist cache
             Requests::update_sphinx_requests($RequestID);
         }
     }
@@ -157,7 +157,7 @@ if (!$TargetAliasID) {
       WHERE AliasID = '$OldAliasID'");*/
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
-            $app->cacheNew->delete("groups_artists_$GroupID");
+            $app->cache->delete("groups_artists_$GroupID");
             Torrents::update_hash($GroupID);
         }
     }
@@ -176,7 +176,7 @@ if (!$TargetAliasID) {
       WHERE AliasID = '$OldAliasID'");*/
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
-            $app->cacheNew->delete("request_artists_$RequestID");
+            $app->cache->delete("request_artists_$RequestID");
             Requests::update_sphinx_requests($RequestID);
         }
     }
@@ -196,7 +196,7 @@ if (!$TargetAliasID) {
         WHERE ArtistID = '$ArtistID'");
       if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
-          $app->cacheNew->delete("groups_artists_$GroupID");
+          $app->cache->delete("groups_artists_$GroupID");
           Torrents::update_hash($GroupID);
         }
       }
@@ -215,7 +215,7 @@ if (!$TargetAliasID) {
         WHERE ArtistID = '$ArtistID'");
       if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
-          $app->cacheNew->delete("request_artists_$RequestID");
+          $app->cache->delete("request_artists_$RequestID");
           Requests::update_sphinx_requests($RequestID);
         }
       }
@@ -231,12 +231,12 @@ $app->dbOld->query("
   FROM torrents_artists
   WHERE ArtistID = '$ArtistID'");
 while (list($GroupID) = $app->dbOld->next_record()) {
-    $app->cacheNew->delete("torrents_details_$GroupID");
+    $app->cache->delete("torrents_details_$GroupID");
 }
 
-$app->cacheNew->delete("artist_$ArtistID");
-$app->cacheNew->delete("artist_$TargetArtistID");
-$app->cacheNew->delete("artists_requests_$TargetArtistID");
-$app->cacheNew->delete("artists_requests_$ArtistID");
+$app->cache->delete("artist_$ArtistID");
+$app->cache->delete("artist_$TargetArtistID");
+$app->cache->delete("artists_requests_$TargetArtistID");
+$app->cache->delete("artists_requests_$ArtistID");
 
 Http::redirect("artist.php?id=$TargetArtistID");

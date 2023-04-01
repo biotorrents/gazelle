@@ -82,10 +82,10 @@ if ($app->user->extra['DisablePoints']) {
 
                         Misc::send_pm($To, 0, 'You\'ve received a gift!', $PM);
 
-                        $app->cacheNew->delete('user_info_heavy_'.$UserID);
-                        $app->cacheNew->delete('user_stats_'.$UserID);
-                        $app->cacheNew->delete('user_info_heavy_'.$To);
-                        $app->cacheNew->delete('user_stats_'.$To);
+                        $app->cache->delete('user_info_heavy_'.$UserID);
+                        $app->cache->delete('user_stats_'.$UserID);
+                        $app->cache->delete('user_info_heavy_'.$To);
+                        $app->cache->delete('user_stats_'.$To);
                     }
                 } else {
                     $Err = 'An unknown error occurred.';

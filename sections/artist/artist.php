@@ -18,9 +18,9 @@ if (!empty($_GET['revisionid'])) { // If they're viewing an old revision
     if (!is_numeric($RevisionID)) {
         error(0);
     }
-    $Data = $app->cacheNew->get("artist_{$ArtistID}_revision_$RevisionID", true);
+    $Data = $app->cache->get("artist_{$ArtistID}_revision_$RevisionID", true);
 } else { // viewing the live version
-    $Data = $app->cacheNew->get("artist_$ArtistID", true);
+    $Data = $app->cache->get("artist_$ArtistID", true);
     $RevisionID = false;
 }
 
@@ -63,7 +63,7 @@ ob_start();
 
 // Requests
 $Requests = [];
-$Requests = $app->cacheNew->get("artists_requests_$ArtistID");
+$Requests = $app->cache->get("artists_requests_$ArtistID");
 if (!is_array($Requests)) {
     $app->dbOld->query("
       SELECT
@@ -89,18 +89,18 @@ if (!is_array($Requests)) {
     } else {
         $Requests = [];
     }
-    $app->cacheNew->set("artists_requests_$ArtistID", $Requests);
+    $app->cache->set("artists_requests_$ArtistID", $Requests);
 }
 $NumRequests = count($Requests);
 
-if (($GroupIDs = $app->cacheNew->get("artist_groups_$ArtistID")) === false) {
+if (($GroupIDs = $app->cache->get("artist_groups_$ArtistID")) === false) {
     $app->dbOld->query("
     SELECT
       DISTINCTROW ta.GroupID
     FROM torrents_artists AS ta
     WHERE ta.ArtistID = '$ArtistID'");
     $GroupIDs = $app->dbOld->collect('GroupID');
-    $app->cacheNew->set("artist_groups_$ArtistID", $GroupIDs, 0);
+    $app->cache->set("artist_groups_$ArtistID", $GroupIDs, 0);
 }
 
 if (count($GroupIDs) > 0) {
@@ -515,7 +515,7 @@ View::header($Name, 'browse,requests,comments,recommend,subscriptions');
       }
 
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $app->cacheNew->get('notify_artists_'.$app->user->core['id'])) === false) {
+    if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
@@ -523,7 +523,7 @@ if (check_perms('site_torrents_notify')) {
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
-        $app->cacheNew->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
+        $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         ?>
@@ -728,7 +728,7 @@ END THE COLLECTOR
 
 echo $TorrentDisplayList;
 
-$Collages = $app->cacheNew->get("artists_collages_$ArtistID");
+$Collages = $app->cache->get("artists_collages_$ArtistID");
 if (!is_array($Collages)) {
     $app->dbOld->query("
     SELECT c.Name, c.NumTorrents, c.ID
@@ -738,7 +738,7 @@ if (!is_array($Collages)) {
       AND Deleted = '0'
       AND CategoryID = '7'");
     $Collages = $app->dbOld->to_array();
-    $app->cacheNew->set("artists_collages_$ArtistID", $Collages, 3600 * 6);
+    $app->cache->set("artists_collages_$ArtistID", $Collages, 3600 * 6);
 }
 if (count($Collages) > 0) {
     if (count($Collages) > MAX_COLLAGES) {
@@ -888,4 +888,4 @@ if ($RevisionID) {
 }
 
 $Data = array(array($Name, $Image, $Body));
-$app->cacheNew->set($Key, $Data, 3600);
+$app->cache->set($Key, $Data, 3600);

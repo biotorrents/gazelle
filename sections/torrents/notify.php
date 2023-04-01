@@ -160,7 +160,7 @@ if (!empty($GroupIDs)) {
       SET UnRead = '0'
       WHERE UserID = ".$app->user->core['id'].'
         AND TorrentID IN ('.implode(',', $UnReadIDs).')');
-        $app->cacheNew->delete('notifications_new_'.$app->user->core['id']);
+        $app->cache->delete('notifications_new_'.$app->user->core['id']);
     }
 }
 if ($Sneaky) {

@@ -21,11 +21,11 @@ $app->dbOld->query("
   DELETE FROM $Table
   WHERE UserID = {$app->user->core['id']}
     AND $Col = $PageID");
-$app->cacheNew->delete("bookmarks_{$Type}_$UserID");
+$app->cache->delete("bookmarks_{$Type}_$UserID");
 
 if ($app->dbOld->affected_rows()) {
     if ($Type === 'torrent') {
-        $app->cacheNew->delete("bookmarks_group_ids_$UserID");
+        $app->cache->delete("bookmarks_group_ids_$UserID");
     } elseif ($Type === 'request') {
         $app->dbOld->query("
           SELECT UserID

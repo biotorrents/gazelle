@@ -12,7 +12,7 @@ if ($_GET['forumid'] == 'all') {
     UPDATE users_info
     SET CatchupTime = NOW()
     WHERE UserID = {$app->user->core['id']}");
-    $app->cacheNew->delete('user_info_'.$app->user->core['id']);
+    $app->cache->delete('user_info_'.$app->user->core['id']);
     Http::redirect("forums.php");
 } else {
     // Insert a value for each topic

@@ -24,7 +24,7 @@ class Tools
 
         $A = substr($IP, 0, strcspn($IP, '.:'));
         $IPNum = Tools::ip_to_unsigned($IP);
-        $IPBans = $app->cacheNew->get('ip_bans_'.$A);
+        $IPBans = $app->cache->get('ip_bans_'.$A);
 
         if (!is_array($IPBans)) {
             $SQL = sprintf("
@@ -36,7 +36,7 @@ class Tools
             $app->dbOld->query($SQL);
             $IPBans = $app->dbOld->to_array(0, MYSQLI_NUM);
             $app->dbOld->set_query_id($QueryID);
-            $app->cacheNew->set('ip_bans_'.$A, $IPBans, 0);
+            $app->cache->set('ip_bans_'.$A, $IPBans, 0);
         }
 
         #$debug->log_var($IPBans, 'IP bans for class '.$A);
@@ -129,12 +129,12 @@ class Tools
           i.RatioWatchDownload = ".($BanReason == 2 ? 'm.Downloaded' : "'0'")."
         WHERE m.ID IN(".implode(',', $UserIDs).') ');
 
-        $app->cacheNew->decrement('stats_user_count', $app->dbOld->affected_rows());
+        $app->cache->decrement('stats_user_count', $app->dbOld->affected_rows());
         foreach ($UserIDs as $UserID) {
-            $app->cacheNew->delete("enabled_$UserID");
-            $app->cacheNew->delete("user_info_$UserID");
-            $app->cacheNew->delete("user_info_heavy_$UserID");
-            $app->cacheNew->delete("user_stats_$UserID");
+            $app->cache->delete("enabled_$UserID");
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_stats_$UserID");
 
             $app->dbOld->query("
             SELECT SessionID
@@ -143,9 +143,9 @@ class Tools
             ");
 
             while (list($SessionID) = $app->dbOld->next_record()) {
-                $app->cacheNew->delete("session_$UserID"."_$SessionID");
+                $app->cache->delete("session_$UserID"."_$SessionID");
             }
-            $app->cacheNew->delete("users_sessions_$UserID");
+            $app->cache->delete("users_sessions_$UserID");
 
             $app->dbOld->query("
             DELETE FROM users_sessions

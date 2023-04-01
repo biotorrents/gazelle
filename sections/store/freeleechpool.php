@@ -32,7 +32,7 @@ if (isset($_POST['donation'])) {
               UPDATE misc
               SET First = First + $Donation
               WHERE Name = 'FreeleechPool'");
-            $app->cacheNew->delete('user_info_heavy_'.$UserID);
+            $app->cache->delete('user_info_heavy_'.$UserID);
 
             // Check to see if we're now over the target pool size
             $app->dbOld->prepared_query("
@@ -86,7 +86,7 @@ if (isset($_POST['donation'])) {
                       WHERE Name = 'FreeleechPool'");
                 }
             }
-            $app->cacheNew->delete('shop_freeleech_list');
+            $app->cache->delete('shop_freeleech_list');
         } else {
             error("Not enough points to donate");
         }

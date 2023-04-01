@@ -18,12 +18,12 @@ if (!check_perms('site_debug') || !check_perms('admin_clear_cache')) {
 
 if (isset($_POST['global_flush'])) {
     authorize();
-    $app->cacheNew->flush();
+    $app->cache->flush();
 }
 
 $app->dbOld->prepared_query('SHOW GLOBAL STATUS');
 $dbStats = $app->dbOld->to_array('Variable_name');
-$MemStats = $app->cacheNew->info();
+$MemStats = $app->cache->info();
 
 View::header("Service Stats"); ?>
 

@@ -118,5 +118,5 @@ if (!empty($New)) {
     Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->user->core['username']);
 }
 
-$app->cacheNew->delete("torrents_details_".$GroupID);
+$app->cache->delete("torrents_details_".$GroupID);
 Http::redirect("torrents.php?id=$GroupID");

@@ -100,10 +100,10 @@ if (empty($_POST['confirm'])) {
       DELETE FROM collages_torrents
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'");
-      $app->cacheNew->delete("collage_$CollageID");
+      $app->cache->delete("collage_$CollageID");
   }
-    $app->cacheNew->delete("torrent_collages_$NewGroupID");
-    $app->cacheNew->delete("torrent_collages_personal_$NewGroupID");
+    $app->cache->delete("torrent_collages_$NewGroupID");
+    $app->cache->delete("torrent_collages_personal_$NewGroupID");
 
     // Requests
     $app->dbOld->query("
@@ -116,9 +116,9 @@ if (empty($_POST['confirm'])) {
     SET GroupID = '$NewGroupID'
     WHERE GroupID = '$OldGroupID'");
     foreach ($Requests as $RequestID) {
-        $app->cacheNew->delete("request_$RequestID");
+        $app->cache->delete("request_$RequestID");
     }
-    $app->cacheNew->delete('requests_group_'.$NewGroupID);
+    $app->cache->delete('requests_group_'.$NewGroupID);
 
     Torrents::delete_group($GroupID);
 
@@ -135,10 +135,10 @@ if (empty($_POST['confirm'])) {
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
     while (list($TorrentID) = $app->dbOld->next_record()) {
-        $app->cacheNew->delete("torrent_download_$TorrentID");
+        $app->cache->delete("torrent_download_$TorrentID");
     }
-    $app->cacheNew->delete("torrents_details_$GroupID");
-    $app->cacheNew->delete("groups_artists_$GroupID");
+    $app->cache->delete("torrents_details_$GroupID");
+    $app->cache->delete("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
 
     header("Location: torrents.php?id=" . $GroupID);

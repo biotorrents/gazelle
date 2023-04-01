@@ -19,7 +19,7 @@ class TorrentFunctions
         $app = \Gazelle\App::go();
 
         if (!$RevisionID) {
-            $TorrentCache = $app->cacheNew->get("torrents_details_$GroupID");
+            $TorrentCache = $app->cache->get("torrents_details_$GroupID");
         }
 
         if ($RevisionID || !is_array($TorrentCache)) {
@@ -169,8 +169,8 @@ class TorrentFunctions
 
             // Store it all in cache
             if (!$RevisionID) {
-                $app->cacheNew->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), 600);
-                #$app->cacheNew->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $app->cacheOldTime);
+                $app->cache->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), 600);
+                #$app->cache->set("torrents_details_$GroupID", array($TorrentDetails, $TorrentList), $app->cacheOldTime);
             }
         } else { // If we're reading from cache
             $TorrentDetails = $TorrentCache[0];
@@ -325,7 +325,7 @@ class TorrentFunctions
             return [];
         }
 
-        $Requests = $app->cacheNew->get("requests_group_$GroupID");
+        $Requests = $app->cache->get("requests_group_$GroupID");
         if ($Requests === false) {
             $app->dbOld->query("
           SELECT ID
@@ -334,7 +334,7 @@ class TorrentFunctions
             AND TimeFilled IS NULL");
 
             $Requests = $app->dbOld->collect('ID');
-            $app->cacheNew->set("requests_group_$GroupID", $Requests, 0);
+            $app->cache->set("requests_group_$GroupID", $Requests, 0);
         }
         return Requests::get_requests($Requests);
     }

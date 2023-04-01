@@ -44,7 +44,7 @@ if (!$app->dbOld->has_results()) {
     SET ForwardedTo = '$ReceiverID'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
-    $app->cacheNew->delete("inbox_new_$ReceiverID");
+    $app->cache->delete("inbox_new_$ReceiverID");
     header('Location: ' . Inbox::get_inbox_link());
 } else {
     error("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");

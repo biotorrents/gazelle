@@ -45,7 +45,7 @@ if (is_numeric($ThreadID) && is_numeric($PollOption)) {
     WHERE Vote = $PollOption
       AND TopicID = $ThreadID");
 
-    $app->cacheNew->delete("polls_$ThreadID");
+    $app->cache->delete("polls_$ThreadID");
     Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);

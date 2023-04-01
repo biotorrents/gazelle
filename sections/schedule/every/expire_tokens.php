@@ -13,7 +13,7 @@ $app->dbOld->query("
 
 if ($app->dbOld->has_results()) {
     while (list($UserID) = $app->dbOld->next_record()) {
-        $app->cacheNew->delete("users_tokens_$UserID");
+        $app->cache->delete("users_tokens_$UserID");
     }
 
     $app->dbOld->query("

@@ -94,7 +94,7 @@ if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
 list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-if (!$Catalogue = $app->cacheNew->get("thread_{$ThreadID}_catalogue_$CatalogueID")) {
+if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID")) {
     $app->dbOld->prepared_query("
     SELECT
       p.ID,
@@ -111,7 +111,7 @@ if (!$Catalogue = $app->cacheNew->get("thread_{$ThreadID}_catalogue_$CatalogueID
     LIMIT $CatalogueLimit");
     $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $app->cacheNew->set("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
+        $app->cache->set("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
 $Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
@@ -153,11 +153,11 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cacheNew->delete('subscriptions_user_new_'.$app->user->core['id']);
+    $app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
 }
 
 
-$QuoteNotificationsCount = $app->cacheNew->get('notify_quoted_' . $app->user->core['id']);
+$QuoteNotificationsCount = $app->cache->get('notify_quoted_' . $app->user->core['id']);
 if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
     $app->dbOld->prepared_query("
     UPDATE users_notify_quoted
@@ -167,7 +167,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
       AND PageID = '$ThreadID'
       AND PostID >= '$FirstPost'
       AND PostID <= '$LastPost'");
-    $app->cacheNew->delete('notify_quoted_' . $app->user->core['id']);
+    $app->cache->delete('notify_quoted_' . $app->user->core['id']);
 }
 
 // Start printing
@@ -243,7 +243,7 @@ $Pages = Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
 echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
-    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cacheNew->get("polls_$ThreadID")) {
+    if (!list($Question, $Answers, $Votes, $Featured, $Closed) = $app->cache->get("polls_$ThreadID")) {
         $app->dbOld->prepared_query("
       SELECT Question, Answers, Featured, Closed
       FROM forums_polls
@@ -268,7 +268,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                 $Votes[$i] = 0;
             }
         }
-        $app->cacheNew->set("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
+        $app->cache->set("polls_$ThreadID", array($Question, $Answers, $Votes, $Featured, $Closed), 0);
     }
 
     if (!empty($Votes)) {

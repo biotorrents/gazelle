@@ -32,7 +32,7 @@ if (isset($_REQUEST['addtokens'])) {
     }
     $app->dbOld->query($sql);
     while (list($UserID) = $app->dbOld->next_record()) {
-        $app->cacheNew->delete("user_info_heavy_$UserID");
+        $app->cache->delete("user_info_heavy_$UserID");
     }
     $message = '<strong>' . Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
 } elseif (isset($_REQUEST['cleartokens'])) {
@@ -62,7 +62,7 @@ if (isset($_REQUEST['addtokens'])) {
 
     foreach ($Users as $UserID) {
         list($UserID) = $UserID;
-        $app->cacheNew->delete("user_info_heavy_$UserID");
+        $app->cache->delete("user_info_heavy_$UserID");
     }
 
     $where = '';

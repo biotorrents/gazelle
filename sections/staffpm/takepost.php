@@ -62,7 +62,7 @@ if ($Message = db_string($_POST['message'])) {
             Unread = true,
             Status = 'Open'
           WHERE ID = $ConvID");
-                $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+                $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
             } else {
                 // User
                 $app->dbOld->query("
@@ -74,8 +74,8 @@ if ($Message = db_string($_POST['message'])) {
             }
 
             // Clear cache for user
-            $app->cacheNew->delete("staff_pm_new_$UserID");
-            $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
+            $app->cache->delete("staff_pm_new_$UserID");
+            $app->cache->delete("staff_pm_new_{$app->user->core['id']}");
 
             Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
         } else {

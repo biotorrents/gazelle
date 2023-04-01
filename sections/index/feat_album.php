@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-$FeaturedAlbum = $app->cacheNew->get('featured_album');
+$FeaturedAlbum = $app->cache->get('featured_album');
 if ($FeaturedAlbum === false) {
     $app->dbOld->query('
     SELECT
@@ -15,7 +15,7 @@ if ($FeaturedAlbum === false) {
       JOIN torrents_group AS tg ON tg.ID = fa.GroupID
     WHERE Ended = 0');
     $FeaturedAlbum = $app->dbOld->next_record();
-    $app->cacheNew->set('featured_album', $FeaturedAlbum, 0);
+    $app->cache->set('featured_album', $FeaturedAlbum, 0);
 }
 if (is_numeric($FeaturedAlbum['GroupID'])) {
     $Artists = Artists::get_artist($FeaturedAlbum['GroupID']); ?>

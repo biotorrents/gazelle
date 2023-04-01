@@ -13,7 +13,7 @@ if ($_GET['showall'] ?? false) {
 
 if ($_GET['catchup'] ?? false) {
     $app->dbOld->query("UPDATE users_notify_quoted SET UnRead = '0' WHERE UserID = '{$app->user->core['id']}'");
-    $app->cacheNew->delete('notify_quoted_' . $app->user->core['id']);
+    $app->cache->delete('notify_quoted_' . $app->user->core['id']);
     Http::redirect("userhistory.php?action=quote_notifications");
     error();
 }

@@ -37,10 +37,10 @@ function add_torrent($CollageID, $GroupID)
       SET NumTorrents = NumTorrents + 1, Updated = '" . sqltime() . "'
       WHERE ID = '$CollageID'");
 
-        $app->cacheNew->delete("collage_$CollageID");
-        $app->cacheNew->delete("torrents_details_$GroupID");
-        $app->cacheNew->delete("torrent_collages_$GroupID");
-        $app->cacheNew->delete("torrent_collages_personal_$GroupID");
+        $app->cache->delete("collage_$CollageID");
+        $app->cache->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrent_collages_$GroupID");
+        $app->cache->delete("torrent_collages_personal_$GroupID");
 
         $app->dbOld->query("
       SELECT UserID
@@ -49,7 +49,7 @@ function add_torrent($CollageID, $GroupID)
 
         /*
         while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
-            $app->cacheNew->delete("collage_subs_user_new_$app->cacheOldUserID");
+            $app->cache->delete("collage_subs_user_new_$app->cacheOldUserID");
         }
         */
     }

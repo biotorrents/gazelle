@@ -63,17 +63,17 @@ try {
     $app->dbNew->do($query, [Auth::makeHash($passphrase), $userId]);
 
     # log out all of the users current sessions
-    $app->cacheNew->delete("user_info_{$userId}");
-    $app->cacheNew->delete("user_info_heavy_{$userId}");
-    $app->cacheNew->delete("user_stats_{$userId}");
-    $app->cacheNew->delete("enabled_{$userId}");
+    $app->cache->delete("user_info_{$userId}");
+    $app->cache->delete("user_info_heavy_{$userId}");
+    $app->cache->delete("user_stats_{$userId}");
+    $app->cache->delete("enabled_{$userId}");
 
     $query = "select sessionId from users_sessions where userId = ?";
     $ref = $app->dbNew->multi($query, [$userId]);
 
     foreach ($ref as $row) {
         $sessionId = $row["sessionId"] ?? null;
-        $app->cacheNew->delete("session_{$userId}_{$sessionId}");
+        $app->cache->delete("session_{$userId}_{$sessionId}");
     }
 
     # delete all stored sessions

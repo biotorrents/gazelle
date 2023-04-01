@@ -63,7 +63,7 @@ if (isset($_GET['expire'])) {
         ");
 
 
-        $app->cacheNew->delete("users_tokens_$UserID");
+        $app->cache->delete("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
             ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]

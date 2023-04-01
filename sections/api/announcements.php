@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!$News = $app->cacheNew->get('news')) {
+if (!$News = $app->cache->get('news')) {
     $app->dbOld->query("
     SELECT
       ID,
@@ -14,8 +14,8 @@ if (!$News = $app->cacheNew->get('news')) {
     ORDER BY Time DESC
     LIMIT 5");
     $News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
-    $app->cacheNew->set('news', $News, 3600 * 24 * 30);
-    $app->cacheNew->set('news_latest_id', $News[0][0], 0);
+    $app->cache->set('news', $News, 3600 * 24 * 30);
+    $app->cache->set('news_latest_id', $News[0][0], 0);
 }
 
 if ($app->user->extra['LastReadNews'] != $News[0][0]) {
@@ -32,7 +32,7 @@ if ($app->user->extra['LastReadNews'] != $News[0][0]) {
     $app->user->extra['LastReadNews'] = $News[0][0];
 }
 
-if (($Blog = $app->cacheNew->get('blog')) === false) {
+if (($Blog = $app->cache->get('blog')) === false) {
     $app->dbOld->query("
     SELECT
       b.ID,
@@ -47,7 +47,7 @@ if (($Blog = $app->cacheNew->get('blog')) === false) {
     ORDER BY Time DESC
     LIMIT 20");
     $Blog = $app->dbOld->to_array();
-    $app->cacheNew->set('blog', $Blog, 1209600);
+    $app->cache->set('blog', $Blog, 1209600);
 }
 $JsonBlog = [];
 for ($i = 0; $i < 5; $i++) {

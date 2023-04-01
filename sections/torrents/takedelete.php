@@ -10,7 +10,7 @@ if (!$TorrentID || !is_numeric($TorrentID)) {
     error(404);
 }
 
-if ($app->cacheNew->get("torrent_{$TorrentID}_lock")) {
+if ($app->cache->get("torrent_{$TorrentID}_lock")) {
     error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 

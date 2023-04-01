@@ -80,7 +80,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -98,7 +98,7 @@ class Top10
 
         $ref = $app->dbNew->multi($query, [$limit]);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -114,7 +114,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -132,7 +132,7 @@ class Top10
 
         $ref = $app->dbNew->multi($query, [$limit]);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -195,7 +195,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -208,7 +208,7 @@ class Top10
         $query = self::$userQuery . "order by users_main.uploaded desc limit :limit";
         $ref = $app->dbNew->multi($query, $variables);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -224,7 +224,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -237,7 +237,7 @@ class Top10
         $query = self::$userQuery . "order by users_main.downloaded desc limit :limit";
         $ref = $app->dbNew->multi($query, $variables);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -253,7 +253,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -266,7 +266,7 @@ class Top10
         $query = self::$userQuery . "order by uploadCount desc limit :limit";
         $ref = $app->dbNew->multi($query, $variables);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -282,7 +282,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -295,7 +295,7 @@ class Top10
         $query = self::$userQuery . "order by uploadSpeed desc limit :limit";
         $ref = $app->dbNew->multi($query, $variables);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 
@@ -311,7 +311,7 @@ class Top10
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
-        $cacheHit = $app->cacheNew->get($cacheKey);
+        $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
             #return $cacheHit;
@@ -324,7 +324,7 @@ class Top10
         $query = self::$userQuery . "order by downloadSpeed desc limit :limit";
         $ref = $app->dbNew->multi($query, $variables);
 
-        $app->cacheNew->set($cacheKey, $ref, self::$cacheDuration);
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
         return $ref;
     }
 

@@ -42,7 +42,7 @@ if (isset($_POST['delete'])) {
       WHERE ConvID = ?
       AND InInbox = '1'
       AND UserID = ?", $ConvID, $UserID);
-        $app->cacheNew->increment('inbox_new_'.$UserID);
+        $app->cache->increment('inbox_new_'.$UserID);
     }
 }
 header('Location: ' . Inbox::get_inbox_link());

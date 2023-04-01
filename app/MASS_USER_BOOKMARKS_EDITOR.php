@@ -24,7 +24,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
      * query_and_clear_cache
      *
      * Runs a SQL query and clears the cache key.
-     * $app->cacheNew->delete didn't always work,
+     * $app->cache->delete didn't always work,
      * but setting the key to null, did. (?)
      *
      * @param string $sql
@@ -35,7 +35,7 @@ class MASS_USER_BOOKMARKS_EDITOR extends MASS_USER_TORRENTS_EDITOR
 
         $QueryID = $app->dbOld->get_query_id();
         if (is_string($sql) && $app->dbOld->query($sql)) {
-            $app->cacheNew->delete('bookmarks_group_ids_' . $app->user->core["id"]);
+            $app->cache->delete('bookmarks_group_ids_' . $app->user->core["id"]);
         }
         $app->dbOld->set_query_id($QueryID);
     }

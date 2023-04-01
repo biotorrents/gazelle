@@ -99,10 +99,10 @@ foreach ($Criteria as $L) { // $L = Level
             $app->cacheOld->commit_transaction(0);
             */
 
-            $app->cacheNew->delete("user_info_$UserID");
-            $app->cacheNew->delete("user_info_heavy_$UserID");
-            $app->cacheNew->delete("user_stats_$UserID");
-            $app->cacheNew->delete("enabled_$UserID");
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_stats_$UserID");
+            $app->cache->delete("enabled_$UserID");
 
             $app->dbOld->query("
               UPDATE users_info
@@ -149,10 +149,10 @@ foreach ($Criteria as $L) { // $L = Level
             $app->cacheOld->commit_transaction(0);
             */
 
-            $app->cacheNew->delete("user_info_$UserID");
-            $app->cacheNew->delete("user_info_heavy_$UserID");
-            $app->cacheNew->delete("user_stats_$UserID");
-            $app->cacheNew->delete("enabled_$UserID");
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_stats_$UserID");
+            $app->cache->delete("enabled_$UserID");
 
             $app->dbOld->query("
               UPDATE users_info

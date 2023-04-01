@@ -40,13 +40,13 @@ if (!$app->dbOld->has_results()) {
     WHERE Page = 'torrents'
       AND PageID = '$OldGroupID'");
     Torrents::delete_group($OldGroupID);
-    $app->cacheNew->delete("torrent_comments_{$GroupID}_catalogue_0");
+    $app->cache->delete("torrent_comments_{$GroupID}_catalogue_0");
 } else {
     Torrents::update_hash($OldGroupID);
 }
 
 Torrents::update_hash($GroupID);
-$app->cacheNew->delete("torrent_download_$TorrentID");
+$app->cache->delete("torrent_download_$TorrentID");
 
 Misc::write_log("Torrent $TorrentID was edited by $app->user->core[username]");
 Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged from group $OldGroupID", 0);

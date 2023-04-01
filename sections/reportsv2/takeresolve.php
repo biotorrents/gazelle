@@ -61,7 +61,7 @@ if (!isset($CategoryID)) {
 $TorrentID = $Escaped['torrentid'];
 $RawName = $Escaped['raw_name'];
 
-if (isset($Escaped['delete']) && $app->cacheNew->get("torrent_$TorrentID".'_lock')) {
+if (isset($Escaped['delete']) && $app->cache->get("torrent_$TorrentID".'_lock')) {
     echo "You requested to delete the torrent $TorrentID, but this is currently not possible because the upload process is still running. Please try again later.";
     error();
 }
@@ -88,8 +88,8 @@ if (($Escaped['resolve_type'] == 'manual' || $Escaped['resolve_type'] == 'dismis
       AND Status != 'Resolved'");
 
     if ($app->dbOld->affected_rows() > 0) {
-        $app->cacheNew->delete('num_torrent_reportsv2');
-        $app->cacheNew->delete("reports_torrent_$TorrentID");
+        $app->cache->delete('num_torrent_reportsv2');
+        $app->cache->delete("reports_torrent_$TorrentID");
     } else {
         //Someone beat us to it. Inform the staffer.
         ?>
@@ -133,7 +133,7 @@ if (!$TorrentExists) {
       ModComment = 'Report already dealt with (torrent deleted).'
     WHERE ID = $ReportID");
 
-    $app->cacheNew->decrement('num_torrent_reportsv2');
+    $app->cache->decrement('num_torrent_reportsv2');
 }
 
 if ($Report) {
@@ -151,7 +151,7 @@ if ($Report) {
 if ($app->dbOld->affected_rows() > 0 || !$Report) {
     //We did, lets do all our shit
     if ($Report) {
-        $app->cacheNew->decrement('num_torrent_reportsv2');
+        $app->cache->decrement('num_torrent_reportsv2');
     }
 
 
@@ -172,7 +172,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       FROM torrents
       WHERE ID = $TorrentID");
         list($GroupID) = $app->dbOld->next_record();
-        $app->cacheNew->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
         $SendPM = true;
     }
 
@@ -187,7 +187,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       FROM torrents
       WHERE ID = $TorrentID");
         list($GroupID) = $app->dbOld->next_record();
-        $app->cacheNew->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
         $SendPM = true;
     }
     if ($_POST['resolve_type'] == 'filename') {
@@ -201,7 +201,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       FROM torrents
       WHERE ID = $TorrentID");
         list($GroupID) = $app->dbOld->next_record();
-        $app->cacheNew->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
         $SendPM = true;
     }
     if ($_POST['resolve_type'] == 'trump') {
@@ -244,7 +244,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
             Expired = FALSE,
             Uses = Uses");
                 Misc::send_pm($UserID, 0, "Torrent Deleted: ".$RawName, "A torrent you have snatched (or uploaded) has been trumped by a more recent torrent. This new torrent will be freeleech for you for the next 4 days.\r\n\r\nYou can find the new torrent [url=".site_url()."torrents.php?torrentid=$ExtraID]here[/url]");
-                $app->cacheNew->delete("users_tokens_$UserID");
+                $app->cache->delete("users_tokens_$UserID");
             }
         }
     }
@@ -361,7 +361,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
         Misc::send_pm($UploaderID, 0, $Escaped['raw_name'], $PM);
     }
 
-    $app->cacheNew->delete("reports_torrent_$TorrentID");
+    $app->cache->delete("reports_torrent_$TorrentID");
 
     // Now we've done everything, update the DB with values
     if ($Report) {

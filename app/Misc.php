@@ -102,7 +102,7 @@ class Misc
               AND InInbox = '1'");
 
             list($UnRead) = $app->dbOld->next_record();
-            $app->cacheNew->set("inbox_new_$ID", $UnRead);
+            $app->cache->set("inbox_new_$ID", $UnRead);
         }
 
         $app->dbOld->query("
@@ -120,7 +120,7 @@ class Misc
               AND InInbox = '1'");
 
             list($UnRead) = $app->dbOld->next_record();
-            $app->cacheNew->set("inbox_new_$ID", $UnRead);
+            $app->cache->set("inbox_new_$ID", $UnRead);
         }
 
         $app->dbOld->set_query_id($QueryID);
@@ -200,7 +200,7 @@ class Misc
         WHERE ID = '$TopicID'");
 
         // Bump this topic to head of the cache
-        list($Forum, , , $Stickies) = $app->cacheNew->get("forums_$ForumID");
+        list($Forum, , , $Stickies) = $app->cache->get("forums_$ForumID");
         if (!empty($Forum)) {
             if (count($Forum) === TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
                 array_pop($Forum);
@@ -246,7 +246,7 @@ class Misc
             }
 
             $Forum = $Part1 + $Part2 + $Part3;
-            $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+            $app->cache->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
         }
 
         /*
@@ -281,9 +281,9 @@ class Misc
           'EditedTime' => null,
           'Username' => ''
       );
-        $app->cacheNew->set('thread_'.$TopicID.'_catalogue_'.$CatalogueID, $Post, 0);
+        $app->cache->set('thread_'.$TopicID.'_catalogue_'.$CatalogueID, $Post, 0);
 
-        $app->cacheNew->set('thread_'.$TopicID.'_info', array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID), 0);
+        $app->cache->set('thread_'.$TopicID.'_info', array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID), 0);
 
         $app->dbOld->set_query_id($QueryID);
         return $TopicID;
@@ -336,7 +336,7 @@ class Misc
 
         $TagIDs = [];
         foreach ($TagNames as $Index => $TagName) {
-            $Tag = $app->cacheNew->get("tag_id_$TagName");
+            $Tag = $app->cache->get("tag_id_$TagName");
             if (is_array($Tag)) {
                 unset($TagNames[$Index]);
                 $TagIDs[$Tag['ID']] = $Tag['Name'];
@@ -355,7 +355,7 @@ class Misc
 
             foreach ($SQLTagIDs as $Tag) {
                 $TagIDs[$Tag['ID']] = $Tag['Name'];
-                $app->cacheNew->set('tag_id_'.$Tag['Name'], $Tag, 0);
+                $app->cache->set('tag_id_'.$Tag['Name'], $Tag, 0);
             }
         }
         return($TagIDs);

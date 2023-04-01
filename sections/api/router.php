@@ -77,15 +77,15 @@ header('Content-Type: application/json; charset=utf-8');
 
 # Enforce rate limiting everywhere
 if (!in_array($UserID, $UserExceptions) && isset($_GET['action'])) {
-    if (!$UserRequests = $app->cacheNew->get("ajax_requests_$UserID")) {
+    if (!$UserRequests = $app->cache->get("ajax_requests_$UserID")) {
         $UserRequests = 0;
-        $app->cacheNew->set("ajax_requests_$UserID", '0', $AjaxLimit[1]);
+        $app->cache->set("ajax_requests_$UserID", '0', $AjaxLimit[1]);
     }
 
     if ($UserRequests > $AjaxLimit[0]) {
         json_die('failure', 'rate limit exceeded');
     } else {
-        $app->cacheNew->increment("ajax_requests_$UserID");
+        $app->cache->increment("ajax_requests_$UserID");
     }
 }
 

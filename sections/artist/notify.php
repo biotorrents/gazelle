@@ -28,7 +28,7 @@ $app->dbOld->prepared_query("
   WHERE ArtistID = '$ArtistID'");
 list($ArtistAliases) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-$Notify = $app->cacheNew->get('notify_artists_'.$app->user->core['id']);
+$Notify = $app->cache->get('notify_artists_'.$app->user->core['id']);
 if (empty($Notify)) {
     $app->dbOld->prepared_query("
     SELECT ID, Artists
@@ -51,8 +51,8 @@ if (empty($Notify) && !$app->dbOld->has_results()) {
     VALUES
       ('{$app->user->core['id']}', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
     $FilterID = $app->dbOld->inserted_id();
-    $app->cacheNew->delete('notify_filters_'.$app->user->core['id']);
-    $app->cacheNew->delete('notify_artists_'.$app->user->core['id']);
+    $app->cache->delete('notify_filters_'.$app->user->core['id']);
+    $app->cache->delete('notify_artists_'.$app->user->core['id']);
 } else {
     list($ID, $ArtistNames) = $app->dbOld->next_record(MYSQLI_NUM, false);
     if (stripos($ArtistNames, "|$ArtistAliases|") === false) {
@@ -61,8 +61,8 @@ if (empty($Notify) && !$app->dbOld->has_results()) {
       UPDATE users_notify_filters
       SET Artists = '".db_string($ArtistNames)."'
       WHERE ID = '$ID'");
-        $app->cacheNew->delete('notify_filters_'.$app->user->core['id']);
-        $app->cacheNew->delete('notify_artists_'.$app->user->core['id']);
+        $app->cache->delete('notify_filters_'.$app->user->core['id']);
+        $app->cache->delete('notify_artists_'.$app->user->core['id']);
     }
 }
 header('Location: '.$_SERVER['HTTP_REFERER']);

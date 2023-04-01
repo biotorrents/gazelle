@@ -39,11 +39,11 @@ if ($app->dbOld->has_results()) {
       WHERE ID = $ThreadID");
         Forums::add_topic_note($ThreadID, "Post $PostID stickied");
     }
-    $app->cacheNew->delete('thread_'.$ThreadID.'_info');
+    $app->cache->delete('thread_'.$ThreadID.'_info');
     $ThisCatalogue = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
     $LastCatalogue = floor((POSTS_PER_PAGE * $Pages - POSTS_PER_PAGE) / THREAD_CATALOGUE);
     for ($i = $ThisCatalogue; $i <= $LastCatalogue; $i++) {
-        $app->cacheNew->delete('thread_'.$ThreadID.'_catalogue_'.$i);
+        $app->cache->delete('thread_'.$ThreadID.'_catalogue_'.$i);
     }
 }
 

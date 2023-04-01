@@ -16,8 +16,8 @@ if ($ID = (int)($_GET['id'])) {
       UPDATE staff_pm_conversations
       SET Status = 'Resolved', ResolverID = {$app->user->core['id']}
       WHERE ID = $ID");
-        $app->cacheNew->delete("staff_pm_new_{$app->user->core['id']}");
-        $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+        $app->cache->delete("staff_pm_new_{$app->user->core['id']}");
+        $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
         Http::redirect("staffpm.php");
     } else {

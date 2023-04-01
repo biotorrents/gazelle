@@ -12,7 +12,7 @@ if (!check_perms('site_torrents_notify')) {
 $ArtistID = (int) $_GET['artistid'];
 Security::int($ArtistID);
 
-if (($Notify = $app->cacheNew->get('notify_artists_'.$app->user->core['id'])) === false) {
+if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
     $app->dbOld->prepared_query("
     SELECT ID, Artists
     FROM users_notify_filters
@@ -51,6 +51,6 @@ if ($Artists == '|') {
     WHERE ID = '$ID'");
 }
 
-$app->cacheNew->delete('notify_filters_'.$app->user->core['id']);
-$app->cacheNew->delete('notify_artists_'.$app->user->core['id']);
+$app->cache->delete('notify_filters_'.$app->user->core['id']);
+$app->cache->delete('notify_artists_'.$app->user->core['id']);
 header('Location: '.$_SERVER['HTTP_REFERER']);

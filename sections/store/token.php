@@ -28,7 +28,7 @@ if ($app->dbOld->has_results()) {
           SET AdminComment = CONCAT('".sqltime()." - Purchased a freeleech token from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
 
-        $app->cacheNew->delete('user_info_heavy_'.$UserID);
+        $app->cache->delete('user_info_heavy_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;

@@ -25,10 +25,10 @@ $app->dbOld->query("
   WHERE um.LastAccess IS NULL
     AND ui.JoinDate < (NOW() - INTERVAL 7 DAY)
     AND um.Enabled != '2'");
-$app->cacheNew->decrement('stats_user_count', $app->dbOld->affected_rows());
+$app->cache->decrement('stats_user_count', $app->dbOld->affected_rows());
 
 // Clear the appropriate cache keys
 foreach ($UserIDs as $UserID) {
-    $app->cacheNew->delete("user_info_$UserID");
+    $app->cache->delete("user_info_$UserID");
 }
 echo "disabled unconfirmed\n";

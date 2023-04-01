@@ -91,7 +91,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
       (Page, PostID, EditUser, EditTime, Body)
     VALUES
       ('forums', ?, ?, ?, ?)", $PostID, $app->user->core['id'], $SQLTime, $OldBody);
-    $app->cacheNew->delete("forums_edits_$PostID");
+    $app->cache->delete("forums_edits_$PostID");
 
     //Get the catalogue it is in
     $CatalogueID = floor((POSTS_PER_PAGE * ceil($ThreadInfo['Posts'] / POSTS_PER_PAGE) - POSTS_PER_PAGE) / THREAD_CATALOGUE);
@@ -106,7 +106,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         $ThreadInfo['StickyPost']['Body'] .= "\n\n".$Body;
         $ThreadInfo['StickyPost']['EditedUserID'] = $app->user->core['id'];
         $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
-        $app->cacheNew->set("thread_$TopicID".'_info', $ThreadInfo, 0);
+        $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
     /*
@@ -158,7 +158,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
     WHERE ID = ?", $PostID, $app->user->core['id'], $SQLTime, $TopicID);
 
     // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-    if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
+    if ($Forum = $app->cache->get("forums_$ForumID")) {
         list($Forum, , , $Stickies) = $Forum;
 
         // if the topic is already on this page
@@ -227,7 +227,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         } else {
             $Forum = $Part1 + $Part2 + $Part3; //Merge it
         }
-        $app->cacheNew->set("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
+        $app->cache->set("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
         /*
         //Update the forum root
@@ -246,7 +246,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         */
     } else {
         //If there's no cache, we have no data, and if there's no data
-        $app->cacheNew->delete('forums_list');
+        $app->cache->delete('forums_list');
     }
 
 
@@ -263,10 +263,10 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         'EditedTime'   => null,
         'Username'     => $app->user->core['username'] // todo: Remove, it's never used?
     ];
-    $app->cacheNew->set("thread_$TopicID"."_catalogue_$CatalogueID", $trash, 0);
+    $app->cache->set("thread_$TopicID"."_catalogue_$CatalogueID", $trash, 0);
 
     //Update the thread info
-    $app->cacheNew->set("thread_$TopicID".'_info', ['Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']], 0);
+    $app->cache->set("thread_$TopicID".'_info', ['Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']], 0);
 
     //Increment this now to make sure we redirect to the correct page
     $ThreadInfo['Posts']++;

@@ -47,14 +47,14 @@ switch ($_REQUEST['action']) {
     authorize();
     if ($_GET['id'] && is_numeric($_GET['id'])) {
         $app->dbOld->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='{$app->user->core['id']}'");
-        $ArtistNotifications = $app->cacheNew->get('notify_artists_'.$app->user->core['id']);
+        $ArtistNotifications = $app->cache->get('notify_artists_'.$app->user->core['id']);
 
         if (is_array($ArtistNotifications) && $ArtistNotifications['ID'] == $_GET['id']) {
-            $app->cacheNew->delete('notify_artists_'.$app->user->core['id']);
+            $app->cache->delete('notify_artists_'.$app->user->core['id']);
         }
     }
 
-    $app->cacheNew->delete('notify_filters_'.$app->user->core['id']);
+    $app->cache->delete('notify_filters_'.$app->user->core['id']);
     Http::redirect("user.php?action=notify");
     break;
 

@@ -143,7 +143,7 @@ $GroupName = $GroupNameEng ? $GroupNameEng : ($GroupTitle2 ? $GroupTitle2 : $Gro
 
 Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=".site_url()."torrents.php?torrentid=$TorrentID]".$GroupName."[/url]\", was reported for the reason \"".$ReportType['title']."\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
 
-$app->cacheNew->delete("reports_torrent_$TorrentID");
-$app->cacheNew->increment('num_torrent_reportsv2');
+$app->cache->delete("reports_torrent_$TorrentID");
+$app->cache->increment('num_torrent_reportsv2');
 
 Http::redirect("torrents.php?torrentid=$TorrentID");

@@ -111,5 +111,5 @@ if (!empty($Updates)) {
     WHERE ID = $CollageID");
 }
 
-$app->cacheNew->delete('collage_'.$CollageID);
+$app->cache->delete('collage_'.$CollageID);
 header('Location: collages.php?id='.$CollageID);

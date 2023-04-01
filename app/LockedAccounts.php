@@ -36,7 +36,7 @@ class LockedAccounts
           VALUES ('" . $UserID . "', " . $Type . ")");
 
         Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
-        $app->cacheNew->delete("user_info_$UserID");
+        $app->cache->delete("user_info_$UserID");
     }
 
 
@@ -65,7 +65,7 @@ class LockedAccounts
         $app->dbOld->query("DELETE FROM locked_accounts WHERE UserID = '$UserID' AND Type = '". $Type ."'");
 
         if ($app->dbOld->affected_rows() === 1) {
-            $app->cacheNew->delete("user_info_$UserID");
+            $app->cache->delete("user_info_$UserID");
             Tools::update_user_notes($UserID, sqltime() . " - " . db_string($Message) . " by $Username\nReason: " . db_string($Reason) . "\n\n");
         }
     }

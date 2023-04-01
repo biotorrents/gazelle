@@ -36,7 +36,7 @@ if ($ConvID = (int)$_GET['convid']) {
         SET Status = 'Unanswered',
           Level = $Level
         WHERE ID = $ConvID");
-            $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+            $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
             Http::redirect("staffpm.php");
         } else {
             error(404);
@@ -67,7 +67,7 @@ if ($ConvID = (int)$_GET['convid']) {
           Level = $NewLevel,
           AssignedToUser = NULL
         WHERE ID = $ConvID");
-            $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+            $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
         } else {
             $UserInfo = User::user_info($NewLevel);
             $Level = $Classes[$UserInfo['PermissionID']]['Level'];
@@ -82,7 +82,7 @@ if ($ConvID = (int)$_GET['convid']) {
           AssignedToUser = $NewLevel,
           Level = $Level
         WHERE ID = $ConvID");
-            $app->cacheNew->delete("num_staff_pms_{$app->user->core['id']}");
+            $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
         }
         echo '1';
     } else {

@@ -144,7 +144,7 @@ if (!$NoPoll) { // god, I hate double negatives...
       (TopicID, Question, Answers)
     VALUES
       ('$TopicID', '".db_string($Question)."', '".db_string(serialize($Answers))."')");
-    $app->cacheNew->set("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
+    $app->cache->set("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
         send_irc(STAFF_CHAN, 'Poll created by '.$app->user->core['username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
@@ -152,7 +152,7 @@ if (!$NoPoll) { // god, I hate double negatives...
 }
 
 // if cache exists modify it, if not, then it will be correct when selected next, and we can skip this block
-if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
+if ($Forum = $app->cache->get("forums_$ForumID")) {
     list($Forum, , , $Stickies) = $Forum;
 
     // Remove the last thread from the index
@@ -181,7 +181,7 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
   )); // Bumped
     $Forum = $Part1 + $Part2 + $Part3;
 
-    $app->cacheNew->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+    $app->cache->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
 
     /*
     // Update the forum root
@@ -201,7 +201,7 @@ if ($Forum = $app->cacheNew->get("forums_$ForumID")) {
     */
 } else {
     // If there's no cache, we have no data, and if there's no data
-    $app->cacheNew->delete('forums_list');
+    $app->cache->delete('forums_list');
 }
 
 $Post = array(
@@ -212,9 +212,9 @@ $Post = array(
   'EditedUserID' => 0,
   'EditedTime' => null
   );
-$app->cacheNew->set("thread_$TopicID".'_catalogue_0', $Post, 0);
+$app->cache->set("thread_$TopicID".'_catalogue_0', $Post, 0);
 
-$app->cacheNew->set("thread_$TopicID".'_info', array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']), 0);
+$app->cache->set("thread_$TopicID".'_info', array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']), 0);
 
 Http::redirect("forums.php?action=viewthread&threadid=$TopicID");
 die();
