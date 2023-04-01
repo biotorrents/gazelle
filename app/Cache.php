@@ -143,15 +143,22 @@ class Cache # extends \Redis
             $cacheDuration = time() + $this->cacheDuration;
         }
 
+        /** */
+
         # store the value
         $this->redis->set($key, $value);
-        $this->redis->expireAt($key, $cacheDuration);
 
         # if cacheDuration = 0, persist the value
         if ($cacheDuration === 0) {
             $this->redis->persist($key);
         }
 
+        # else, set the expiration time
+        else {
+            $this->redis->expireAt($key, $cacheDuration);
+        }
+
+        # return the input
         return [$key => $value];
     }
 
