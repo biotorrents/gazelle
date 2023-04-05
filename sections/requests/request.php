@@ -5,6 +5,8 @@
  * This is the page that displays the request to the end user after being created.
  */
 
+$app = \Gazelle\App::go();
+
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(0);
 }
@@ -263,38 +265,16 @@ if (!$ViewerVote) {
               }
           }
 
-/*
-            $Worldcat = '';
-            $OCLC = str_replace(' ', '', $Request['OCLC']);
-            if ($OCLC !== '') {
-              $OCLCs = explode(',', $OCLC);
-              for ($i = 0; $i < count($OCLCs); $i++) {
-                if (!empty($Worldcat)) {
-                  $Worldcat .= ', <a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-                } else {
-                  $Worldcat = '<a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-                }
-              }
-            }
-            if (!empty($Worldcat)) {
-          ?>
-                    <tr>
-                      <td class="label">WorldCat (OCLC) ID</td>
-                      <td><?=$Worldcat?>
-                      </td>
-                    </tr>
-                    <?php
-            }
-          */
-  if ($Request['GroupID']) {
-      ?>
+
+          if ($Request['GroupID']) {
+              ?>
           <tr>
             <td class="label">Torrent Group</td>
             <td><a
                 href="torrents.php?id=<?= $Request['GroupID'] ?>">torrents.php?id=<?= $Request['GroupID'] ?></a></td>
           </tr>
           <?php
-  } ?>
+          } ?>
           <tr>
             <td class="label">Votes</td>
             <td>
@@ -313,8 +293,8 @@ if (!$ViewerVote) {
           </tr>
           <?php
           }
-  if ($CanVote) {
-      ?>
+          if ($CanVote) {
+              ?>
           <tr id="voting">
             <td class="label">Custom Vote</td>
             <td>
@@ -345,9 +325,9 @@ if (!$ViewerVote) {
                   value="<?=$app->user->extra['AuthKey']?>" />
                 <input type="hidden" id="amount" name="amount" value="0" />
                 <input type="hidden" id="current_uploaded"
-                  value="<?=$app->user->extra['BytesUploaded']?>" />
+                  value="<?=$app->user->extra['Uploaded']?>" />
                 <input type="hidden" id="current_downloaded"
-                  value="<?=$app->user->extra['BytesDownloaded']?>" />
+                  value="<?=$app->user->extra['Downloaded']?>" />
                 <input type="hidden" id="current_rr"
                   value="<?=(float)$app->user->extra['RequiredRatio']?>" />
                 <input id="total_bounty" type="hidden"
@@ -356,9 +336,9 @@ if (!$ViewerVote) {
                 <ul>
                   <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">0.00 MiB</span></li> -->
-                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($app->user->extra['BytesUploaded']) ?></span>
+                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($app->user->extra['Uploaded']) ?></span>
                   </li>
-                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['BytesUploaded'], $app->user->extra['BytesDownloaded']) ?></span>
+                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded']) ?></span>
                   </li>
                 </ul>
                 <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();" />
@@ -366,15 +346,15 @@ if (!$ViewerVote) {
             </td>
           </tr>
           <?php
-  } ?>
+          } ?>
           <tr id="bounty">
             <td class="label">Bounty</td>
             <td id="formatted_bounty"><?=Format::get_size($RequestVotes['TotalBounty'])?>
             </td>
           </tr>
           <?php
-  if ($IsFilled) {
-      $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
+          if ($IsFilled) {
+              $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
           <tr>
             <td class="label">Filled</td>
             <td>
@@ -390,7 +370,7 @@ if (!$ViewerVote) {
             </td>
           </tr>
           <?php
-  } else { ?>
+          } else { ?>
           <tr>
             <td class="label" valign="top">Fill Request</td>
             <td>

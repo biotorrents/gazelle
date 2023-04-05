@@ -13,7 +13,8 @@ View::header("History for Group $GroupID");
 $Groups = Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
     $Group = $Groups[$GroupID];
-    $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['Name'] ? $Group['Name'] : ($Group['Title2'] ? $Group['Title2'] : $Group['NameJP'])).'</a>';
+    $Group['ExtendedArtists'] ??= null;
+    $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['title'] ? $Group['title'] : ($Group['subject'] ? $Group['subject'] : $Group['object'])).'</a>';
 } else {
     $Title = "Group $GroupID";
 }
@@ -33,39 +34,39 @@ if (!empty($Groups[$GroupID])) {
     </tr>
 <?php
   $app->dbOld->query("SELECT UserID FROM torrents WHERE GroupID = ? AND Anonymous='1'", $GroupID);
-  $AnonUsers = $app->dbOld->collect("UserID");
-  $Log = $app->dbOld->query("
+$AnonUsers = $app->dbOld->collect("UserID");
+$Log = $app->dbOld->query("
       SELECT TorrentID, UserID, Info, Time
       FROM group_log
       WHERE GroupID = ?
       ORDER BY Time DESC", $GroupID);
-  $LogEntries = $app->dbOld->to_array(false, MYSQLI_NUM);
-  foreach ($LogEntries as $LogEntry) {
-      list($TorrentID, $UserID, $Info, $Time) = $LogEntry; ?>
+$LogEntries = $app->dbOld->to_array(false, MYSQLI_NUM);
+foreach ($LogEntries as $LogEntry) {
+    list($TorrentID, $UserID, $Info, $Time) = $LogEntry; ?>
     <tr class="row">
       <td><?=$Time?></td>
 <?php
-      if ($TorrentID != 0) {
-          $app->dbOld->query("
+    if ($TorrentID != 0) {
+        $app->dbOld->query("
           SELECT Container, Version, Media
           FROM torrents
           WHERE ID = $TorrentID");
-          list($Container, $Version, $Media) = $app->dbOld->next_record();
-          if (!$app->dbOld->has_results()) { ?>
+        list($Container, $Version, $Media) = $app->dbOld->next_record();
+        if (!$app->dbOld->has_results()) { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (Deleted)</td><?php
         } elseif ($Media == '') { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td><?php
         } else { ?>
           <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> (<?=$Container?>/<?=$Version?>/<?=$Media?>)</td>
 <?php }
-      } else { ?>
+        } else { ?>
         <td></td>
 <?php } ?>
       <td><?=in_array($UserID, $AnonUsers) ? 'Anonymous' : User::format_username($UserID, false, false, false)?></td>
       <td><?=$Info?></td>
     </tr>
 <?php
-  }
+}
 ?>
   </table>
   </div>

@@ -107,7 +107,7 @@ View::textarea(
     value: Text::esc($Body) ?? '',
 );
 
-  $app->dbOld->query("
+$app->dbOld->query("
   SELECT
     `UserID`
   FROM
@@ -115,7 +115,7 @@ View::textarea(
   WHERE
     `GroupID` = '$group_id'
   ");
-  $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
+$Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 ?>
 
     <h3>
@@ -233,7 +233,7 @@ View::textarea(
 
         <td>
           <input type="text" name="year" size="10"
-            value="<?=$year?>" />
+            value="<?=$year ?? null?>" />
         </td>
       </tr>
 
@@ -268,7 +268,10 @@ View::textarea(
 
           <select name="freeleechtype">
             <?php $FL = array('N/A', 'Staff Pick', 'Perma-FL', 'Freeleechizer', 'Site-Wide FL');
-    foreach ($FL as $Key => $FLType) { ?>
+          foreach ($FL as $Key => $FLType) {
+              $Torrent ??= [];
+              $Torrent['FreeLeechType'] ??= null;
+              ?>
             <option value="<?=$Key?>" <?=($Key == $Torrent['FreeLeechType'] ? ' selected="selected"' : '')?>><?=$FLType?>
             </option>
             <?php } ?>
@@ -330,7 +333,7 @@ View::textarea(
 
         <td>
           <input type="text" name="namejp" size="70"
-            value="<?=$NameJP?>" />
+            value="<?=$object?>" />
         </td>
       </tr>
     </table>
@@ -368,6 +371,6 @@ View::textarea(
   </form>
 </div>
 <?php
-}
+  }
 
 View::footer();

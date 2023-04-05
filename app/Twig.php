@@ -105,6 +105,12 @@ class Twig # extends Twig\Environment
         # site options
         $twig->addGlobal("siteOptions", $app->user->siteOptions ?? []);
 
+        # todo: put these elsewhere later
+        $twig->addGlobal("inbox", Inbox::get_inbox_link());
+        $twig->addGlobal("notify", check_perms("site_torrents_notify"));
+
+        /** */
+
         # body styles
         $bodyStyles = [];
         if (!empty($app->user->extra)) {

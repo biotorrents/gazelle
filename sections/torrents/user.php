@@ -530,7 +530,7 @@ foreach ($Categories as $CatKey => $CatName) {
           list($GroupID, , $Time) = array_values($Info);
           extract(Torrents::array_group($Results[$GroupID]));
           $Torrent = $Torrents[$TorrentID];
-          $TorrentTags = new Tags($TagList);
+          $TorrentTags = new Tags($TagList ?? []);
 
           # This is the torrent list formatting!
           $DisplayName = '';
@@ -538,11 +538,11 @@ foreach ($Categories as $CatKey => $CatName) {
 
           # No cover art
           if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-              $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage, 'thumb').'" ';
+              $DisplayName .= 'data-cover="'.ImageTools::process($WikiImage ?? "", 'thumb').'" ';
           }
 
           # Old concatenated title: EN, JP, RJ
-          #$GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
+          $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
           $DisplayName .= 'dir="ltr">'.$GroupName.'</a>';
 
           # Year

@@ -194,13 +194,13 @@ if (!$NumResults) {
               }
 
               $GroupInfo = $TorrentGroups[$Result['PageID']];
-              $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
+              $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists'] ?? null) . '<a href="torrents.php?id=' . $GroupInfo['id'] . '" dir="ltr">' . $GroupInfo['title'] . '</a>';
 
               if ($GroupInfo['year'] > 0) {
                   $Links .= " [" . $GroupInfo['year'] . "]";
               }
 
-              $JumpLink = 'torrents.php?id=' . $GroupInfo['ID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              $JumpLink = 'torrents.php?id=' . $GroupInfo['id'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
               break;
 
 

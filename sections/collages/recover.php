@@ -6,6 +6,7 @@ if (!check_perms('site_collages_recover')) {
     error(403);
 }
 
+$_POST['collage_id'] ??= null;
 if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
     authorize();
     $CollageID = $_POST['collage_id'];

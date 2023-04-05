@@ -104,9 +104,9 @@ echo $Pages;
       <span class="u-pull-right">
         <?php // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
-    $BaseURL = 'inbox.php';
+      $BaseURL = 'inbox.php';
 
-    if (isset($_GET['sort']) && $_GET['sort'] === 'unread') { ?>
+      if (isset($_GET['sort']) && $_GET['sort'] === 'unread') { ?>
         <a href="<?=$BaseURL?>" class="brackets tooltip"
           title="<?=$ToggleTitle?>">List latest first</a>
         <?php } else { ?>
@@ -145,29 +145,29 @@ echo $Pages;
         <td colspan="5">No results.</td>
       </tr>
       <?php } else {
-      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $app->dbOld->next_record()) {
-          if ($Unread === '1') {
-              $RowClass = 'unreadpm';
-          } else {
-              $RowClass = "row";
-          } ?>
+          while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $app->dbOld->next_record()) {
+              if ($Unread === '1') {
+                  $RowClass = 'unreadpm';
+              } else {
+                  $RowClass = "row";
+              } ?>
       <tr class="<?=$RowClass?>">
         <td class="center"><input type="checkbox" name="messages[]="
             value="<?=$ConvID?>" /></td>
         <td>
           <?php
-          if ($Unread) {
-              echo '<strong>';
-          }
-          if ($Sticky) {
-              echo 'Sticky: ';
-          }
-          echo "\n"; ?>
+              if ($Unread) {
+                  echo '<strong>';
+              }
+              if ($Sticky) {
+                  echo 'Sticky: ';
+              }
+              echo "\n"; ?>
           <a href="inbox.php?action=viewconv&amp;id=<?=$ConvID?>"><?=$Subject?></a>
           <?php
-          if ($Unread) {
-              echo "</strong>\n";
-          } ?>
+              if ($Unread) {
+                  echo "</strong>\n";
+              } ?>
         </td>
         <td><?=User::format_username($SenderID, true, true, true, true)?>
         </td>
@@ -180,12 +180,13 @@ echo $Pages;
       </tr>
       <?php
     $app->dbOld->set_query_id($Results);
-      }
-  } ?>
+          }
+      } ?>
     </table>
     <?php
-    $MsgLimit = ($app->user->extra['PostsPerPage']) ? $app->user->extra['PostsPerPage'] : MESSAGES_PER_PAGE;
-    if ($Count > $MsgLimit) { ?>
+        $app->user->extra['PostsPerPage'] ??= 20;
+      $MsgLimit = ($app->user->extra['PostsPerPage']) ? $app->user->extra['PostsPerPage'] : MESSAGES_PER_PAGE;
+      if ($Count > $MsgLimit) { ?>
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />

@@ -33,16 +33,16 @@ if (!$app->user->extra['DisablePoints']) {
     if ($app->dbOld->has_results()) {
         list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
-        $ENV = ENV::go();
-        $PointsRate = ($ENV->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
+        $PointsRate = ($app->env->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
     }
 
+    $BonusPoints ??= 0;
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::float($PointsRate) . " ".bonusPoints."/hour";
-    $PointsPerDay = Text::float($PointsRate*24) . " ".bonusPoints."/day";
+    $PointsPerHour = Text::float($PointsRate) . " ".$app->env->bonusPoints."/hour";
+    $PointsPerDay = Text::float($PointsRate*24) . " ".$app->env->bonusPoints."/day";
 } else {
-    $PointsPerHour = "0 ".bonusPoints."/hour";
-    $PointsPerDay = bonusPoints." disabled";
+    $PointsPerHour = "0 ".$app->env->bonusPoints."/hour";
+    $PointsPerDay = $app->env->bonusPoints." disabled";
 }
 
 // Include the header
@@ -57,7 +57,7 @@ View::header('Store');
     <h3 id="lists" class="u-pull-left">
       You have
       <?=Text::float($app->user->extra['BonusPoints'])?>
-      <?=bonusPoints?>
+      <?=$app->env->bonusPoints?>
       to spend
     </h3>
 
@@ -76,7 +76,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          15 <?=bonusPoints?>
+          15 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -91,7 +91,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          150 <?=bonusPoints?>
+          150 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -106,7 +106,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          1,500 <?=bonusPoints?>
+          1,500 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -121,7 +121,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          15,000 <?=bonusPoints?>
+          15,000 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -132,7 +132,7 @@ View::header('Store');
       <!-- Bonus Points: 10^1 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_1">10 <?=bonusPoints?></a>
+          <a href="store.php?item=points_1">10 <?=$app->env->bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -140,14 +140,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 10 <?=bonusPoints?>
+          Purchase 10 <?=$app->env->bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^2 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_10">100 <?=bonusPoints?></a>
+          <a href="store.php?item=points_10">100 <?=$app->env->bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -155,14 +155,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 100 <?=bonusPoints?>
+          Purchase 100 <?=$app->env->bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^3 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_100">1,000 <?=bonusPoints?></a>
+          <a href="store.php?item=points_100">1,000 <?=$app->env->bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -170,14 +170,14 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 1,000 <?=bonusPoints?>
+          Purchase 1,000 <?=$app->env->bonusPoints?>
         </td>
       </tr>
 
       <!-- Bonus Points: 10^4 -->
       <tr class="row">
         <td class="nobr">
-          <a href="store.php?item=points_1000">10,000 <?=bonusPoints?></a>
+          <a href="store.php?item=points_1000">10,000 <?=$app->env->bonusPoints?></a>
         </td>
 
         <td class="nobr">
@@ -185,7 +185,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          Purchase 10,000 <?=bonusPoints?>
+          Purchase 10,000 <?=$app->env->bonusPoints?>
         </td>
       </tr>
 
@@ -196,7 +196,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          1,000 <?=bonusPoints?>
+          1,000 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -211,7 +211,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          2,000 <?=bonusPoints?>
+          2,000 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -226,7 +226,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          5,000 <?=bonusPoints?>
+          5,000 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">
@@ -241,7 +241,7 @@ View::header('Store');
         </td>
 
         <td class="nobr">
-          10,000 <?=bonusPoints?>
+          10,000 <?=$app->env->bonusPoints?>
         </td>
 
         <td class="nobr">

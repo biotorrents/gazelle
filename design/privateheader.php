@@ -257,13 +257,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
       <?= $ENV->siteName ?>
     </h1>
 
-    <?= $twig->render(
-    '_base/mainMenu.twig',
-    [
-              'inbox' => Inbox::get_inbox_link(),
-              'notify' => check_perms('site_torrents_notify'),
-            ]
-);
+    <?= $twig->render('_base/mainMenu.twig', []);
 ?>
 
 <?= $twig->render(

@@ -309,10 +309,12 @@ if ($Count > 0) {
                 break;
 
             case 'requests':
+                $Artists[$PageID] ??= null;
                 $Header = ' on ' . Artists::display_artists($Artists[$PageID]) . " <a href=\"requests.php?action=view&id=$PageID\">$Name</a>";
                 break;
 
             case 'torrents':
+                $Artists[$PageID] ??= null;
                 $Header = ' on ' . Artists::display_artists($Artists[$PageID]) . " <a href=\"torrents.php?id=$PageID\">$Name</a>";
                 break;
         }
