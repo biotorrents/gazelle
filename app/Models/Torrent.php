@@ -25,4 +25,16 @@ class Torrent extends Base
 
     # the attributes that aren't mass assignable
     protected $guarded = ["ID", "info_hash"];
+
+
+    /** relationships */
+
+
+    /**
+     * group
+     */
+    public function group()
+    {
+        return $this->belongsTo(Group::class, "id", "groupId");
+    }
 } # class
