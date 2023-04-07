@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * API\Torrent
+ * Gazelle\API\Torrent
  */
 
 namespace Gazelle\API;

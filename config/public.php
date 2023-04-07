@@ -12,7 +12,7 @@ ENV::setPub("dev", true);
 
 # disable kint on production
 if (!$env->dev) {
-    Kint\Kint::$enabled_mode	= false;
+    Kint\Kint::$enabled_mode = false;
 }
 
 # allow the site encryption key to be set without an account

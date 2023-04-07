@@ -316,4 +316,15 @@ class Text
 
         return $string;
     }
+
+
+    /**
+     * uuid
+     *
+     * @return string
+     */
+    public static function uuid(): string
+    {
+        return \Ramsey\Uuid\Uuid::uuid4()->toString();
+    }
 } # class

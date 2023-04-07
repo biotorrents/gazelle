@@ -27,6 +27,9 @@ if (!empty($app->user->extra['DisableForums'])) {
 $Forums = Forums::get_forums();
 $ForumCats = Forums::get_forum_categories();
 
+$_POST['action'] ??= null;
+$_GET['action'] ??= null;
+
 if (!empty($_POST['action'])) {
     switch ($_POST['action']) {
         case 'reply':

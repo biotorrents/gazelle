@@ -128,21 +128,21 @@ if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $Las
 //Why would we skip this on locked or stickied threads?
 //if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
 
-  $app->dbOld->prepared_query("
+$app->dbOld->prepared_query("
     SELECT PostID
     FROM forums_last_read_topics
     WHERE UserID = '{$app->user->core['id']}'
       AND TopicID = '$ThreadID'");
-  list($LastRead) = $app->dbOld->next_record();
-  if ($LastRead < $LastPost) {
-      $app->dbOld->prepared_query("
+list($LastRead) = $app->dbOld->next_record();
+if ($LastRead < $LastPost) {
+    $app->dbOld->prepared_query("
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
         ('{$app->user->core['id']}', '$ThreadID', '".db_string($LastPost)."')
       ON DUPLICATE KEY UPDATE
         PostID = '$LastPost'");
-  }
+}
 //}
 
 //Handle subscriptions
@@ -290,39 +290,39 @@ if ($ThreadInfo['NoPoll'] == 0) {
     list($UserResponse) = $app->dbOld->next_record(); ?>
 <div class="box thin clear">
   <div class="head colhead_dark"><strong>Poll<?php if ($Closed) {
-        echo ' [Closed]';
-    } ?><?php if ($Featured) {
-        echo ' [Featured]';
-    } ?>
+      echo ' [Closed]';
+  } ?><?php if ($Featured) {
+      echo ' [Featured]';
+  } ?>
     </strong>
     <a href="#" onclick="$('#threadpoll').gtoggle(); log_hit(); return false;" class="brackets">View</a>
   </div>
   <div class="pad<?php if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) {
-        echo ' hidden';
-    } ?>" id="threadpoll">
+      echo ' hidden';
+  } ?>" id="threadpoll">
     <p><strong><?=Text::esc($Question)?></strong></p>
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
-      $RevealVoters = null;
-    if (!$RevealVoters) {
-        foreach ($Answers as $i => $Answer) {
-            if (!empty($Votes[$i]) && $TotalVotes > 0) {
-                $Ratio = $Votes[$i] / $MaxVotes;
-                $Percent = $Votes[$i] / $TotalVotes;
-            } else {
-                $Ratio = 0;
-                $Percent = 0;
-            } ?>
+    $RevealVoters = null;
+        if (!$RevealVoters) {
+            foreach ($Answers as $i => $Answer) {
+                if (!empty($Votes[$i]) && $TotalVotes > 0) {
+                    $Ratio = $Votes[$i] / $MaxVotes;
+                    $Percent = $Votes[$i] / $TotalVotes;
+                } else {
+                    $Ratio = 0;
+                    $Percent = 0;
+                } ?>
       <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=Text::esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
         </li>
         <?php
-        }
-        if ($Votes[0] > 0) {
-            ?>
+            }
+            if ($Votes[0] > 0) {
+                ?>
         <li>
           <?= ($UserResponse == '0' ? '&raquo;&nbsp;' : '') ?>
           (Blank)
@@ -335,23 +335,23 @@ if ($ThreadInfo['NoPoll'] == 0) {
           <span class="right_poll"></span>
         </li>
         <?php
-        } ?>
+            } ?>
     </ul>
     <br />
 
     <strong>Votes:</strong> <?=Text::float($TotalVotes)?><br /><br />
     <?php
-    } else {
-        //Staff forum, output voters, not percentages
-        include(serverRoot.'/sections/staff/functions.php');
-        $Staff = get_staff();
+        } else {
+            //Staff forum, output voters, not percentages
+            include(serverRoot.'/sections/staff/functions.php');
+            $Staff = get_staff();
 
-        $StaffNames = [];
-        foreach ($Staff as $Staffer) {
-            $StaffNames[] = $Staffer['Username'];
-        }
+            $StaffNames = [];
+            foreach ($Staff as $Staffer) {
+                $StaffNames[] = $Staffer['Username'];
+            }
 
-        $app->dbOld->prepared_query("
+            $app->dbOld->prepared_query("
         SELECT
           fpv.Vote AS Vote,
           GROUP_CONCAT(um.Username SEPARATOR ', ')
@@ -360,16 +360,16 @@ if ($ThreadInfo['NoPoll'] == 0) {
         WHERE TopicID = $ThreadID
         GROUP BY fpv.Vote");
 
-        $StaffVotesTmp = $app->dbOld->to_array();
-        $StaffCount = count($StaffNames);
+            $StaffVotesTmp = $app->dbOld->to_array();
+            $StaffCount = count($StaffNames);
 
-        $StaffVotes = [];
-        foreach ($StaffVotesTmp as $StaffVote) {
-            list($Vote, $Names) = $StaffVote;
-            $StaffVotes[$Vote] = $Names;
-            $Names = explode(', ', $Names);
-            $StaffNames = array_diff($StaffNames, $Names);
-        } ?>
+            $StaffVotes = [];
+            foreach ($StaffVotesTmp as $StaffVote) {
+                list($Vote, $Names) = $StaffVote;
+                $StaffVotes[$Vote] = $Names;
+                $Names = explode(', ', $Names);
+                $StaffNames = array_diff($StaffNames, $Names);
+            } ?>
     <ul style="list-style: none;" id="poll_options">
       <?php
       foreach ($Answers as $i => $Answer) {
@@ -404,11 +404,10 @@ if ($ThreadInfo['NoPoll'] == 0) {
       onclick="AddPollOption(<?=$ThreadID?>); return false;"
       class="brackets">+</a>
     <?php
-    }
-
-  } else {
-      //User has not voted
-?>
+        }
+    } else {
+        //User has not voted
+        ?>
     <div id="poll_container">
       <form class="vote_form" name="poll" id="poll">
         <input type="hidden" name="action" value="poll" />
@@ -443,11 +442,11 @@ if ($ThreadInfo['NoPoll'] == 0) {
       </form>
     </div>
     <?php
-  }
-    if (check_perms('forums_polls_moderate')) {
-        #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
-        if (!$Featured) {
-            ?>
+    }
+  if (check_perms('forums_polls_moderate')) {
+      #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
+      if (!$Featured) {
+          ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod" />
       <input type="hidden" name="auth"
@@ -457,7 +456,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <input type="submit" onclick="return confirm('Are you sure you want to feature this poll?');" value="Feature" />
     </form>
     <?php
-        } ?>
+      } ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod" />
       <input type="hidden" name="auth"
@@ -468,7 +467,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         value="<?=(!$Closed ? 'Close' : 'Open')?>" />
     </form>
     <?php
-    } ?>
+  } ?>
   </div>
 </div>
 <?php
@@ -489,11 +488,11 @@ foreach ($Thread as $Key => $Post) {
     list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID)); ?>
 <table class="forum_post wrap_overflow box vertical_margin<?php
   if ((
-        (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky'])
+      (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky'])
       && $PostID > $LastRead
       && strtotime($AddedTime) > $app->user->extra['CatchupTime']
-    ) || (isset($RequestKey) && $Key == $RequestKey)
-    ) {
+  ) || (isset($RequestKey) && $Key == $RequestKey)
+  ) {
       echo ' forum_unread';
   }
     if (!User::hasAvatarsEnabled()) {
@@ -530,13 +529,13 @@ foreach ($Thread as $Key => $Post) {
           onclick="Edit_Form('<?=$PostID?>', '<?=$Key?>');"
           class="brackets">Edit</a>
         <?php
-  }
+        }
     if (check_perms('site_admin_forums') && $ThreadInfo['Posts'] > 1) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>
         <?php
-  }
+    }
     if ($PostID == $ThreadInfo['StickyPostID']) { ?>
         <strong><span class="sticky_post_label brackets">Sticky</span></strong>
         <?php if (check_perms('site_moderate_forums')) { ?>
@@ -544,25 +543,25 @@ foreach ($Thread as $Key => $Post) {
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;remove=true&amp;auth=<?=$app->user->extra['AuthKey']?>"
           title="Unsticky this post" class="brackets tooltip">X</a>
         <?php
-    }
-  } else {
-      if (check_perms('site_moderate_forums')) {
-          ?>
+        }
+    } else {
+        if (check_perms('site_moderate_forums')) {
+            ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
           title="Sticky this post" class="brackets tooltip">&#x21d5;</a>
         <?php
-      }
-  } ?>
+        }
+    } ?>
       </div>
       <div id="bar<?=$PostID?>" class="u-pull-right">
         <a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-  if (check_perms('users_warn') && $AuthorID != $app->user->core['id']) {
-      $AuthorInfo = User::user_info($AuthorID);
-      if ($app->user->extra['Class'] >= $AuthorInfo['Class']) {
-          ?>
+    if (check_perms('users_warn') && $AuthorID != $app->user->core['id']) {
+        $AuthorInfo = User::user_info($AuthorID);
+        if ($app->user->extra['Class'] >= $AuthorInfo['Class']) {
+            ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" method="post">
           <input type="hidden" name="action" value="warn" />
@@ -575,8 +574,8 @@ foreach ($Thread as $Key => $Post) {
           onclick="$('#warn<?=$PostID?>').raw().submit(); return false;"
           class="brackets">Warn</a>
         <?php
-      }
-  } ?>
+        }
+    } ?>
       </div>
     </td>
   </tr>
@@ -587,8 +586,8 @@ foreach ($Thread as $Key => $Post) {
     </td>
     <?php } ?>
     <td class="body valign_top" <?php if (!User::hasAvatarsEnabled()) {
-      echo ' colspan="2"';
-  } ?>>
+        echo ' colspan="2"';
+    } ?>>
       <div id="content<?=$PostID?>">
         <?=Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
@@ -626,16 +625,16 @@ foreach ($Thread as $Key => $Post) {
 
 <?php
 if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
-      if (Forums::check_forumperm($ForumID, 'Write') && !$app->user->extra['DisablePosting']) {
-          View::parse('generic/reply/quickreply.php', array(
+    if (Forums::check_forumperm($ForumID, 'Write') && !$app->user->extra['DisablePosting']) {
+        View::parse('generic/reply/quickreply.php', array(
       'InputTitle' => 'Reply',
       'InputName' => 'thread',
       'InputID' => $ThreadID,
       'ForumID' => $ForumID,
       'TextareaCols' => 90
     ));
-      }
-  }
+    }
+}
 
 if (check_perms('site_moderate_forums')) {
     $app->dbOld->prepared_query("
@@ -693,8 +692,8 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="sticky_thread_checkbox">Sticky</label></td>
       <td>
         <input type="checkbox" id="sticky_thread_checkbox" data-toggle-target="#ranking_row" name="sticky" <?php if ($ThreadInfo['IsSticky']) {
-          echo ' checked="checked"';
-      } ?>
+            echo ' checked="checked"';
+        } ?>
         tabindex="2" />
       </td>
     </tr>
@@ -710,8 +709,8 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="locked_thread_checkbox">Locked</label></td>
       <td>
         <input type="checkbox" id="locked_thread_checkbox" name="locked" <?php if ($ThreadInfo['IsLocked']) {
-          echo ' checked="checked"';
-      } ?>
+            echo ' checked="checked"';
+        } ?>
         tabindex="2" />
       </td>
     </tr>
@@ -746,8 +745,8 @@ if (check_perms('site_moderate_forums')) {
             <?php $OpenGroup = true;
         } ?>
             <option value="<?=$Forum['ID']?>" <?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
-            echo ' selected="selected"';
-        } ?>><?=Text::esc($Forum['Name'])?>
+                echo ' selected="selected"';
+            } ?>><?=Text::esc($Forum['Name'])?>
             </option>
             <?php
     } ?>

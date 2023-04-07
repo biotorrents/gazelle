@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Database
+ * Gazelle\Database
  *
  * The blunt singleton, for your procedural code.
  * @see https://phpdelusions.net/pdo/pdo_wrapper
@@ -23,9 +23,6 @@ class Database extends \PDO
 
     # pdo connection
     public $pdo = null;
-
-    # eloquent capsule
-    public $eloquent = null;
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
@@ -106,30 +103,8 @@ class Database extends \PDO
         try {
             $this->pdo = new \PDO($dsn, $username, $password, $options);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage(), intval($e->getCode()));
+            throw new \Exception($e->getMessage());
         }
-
-        /*
-        # eloquent
-        try {
-            $this->eloquent = new Illuminate\Database\Capsule\Manager;
-            $this->eloquent->addConnection([
-                "driver" => "mysql",
-                "host" => $host,
-                "database" => $db,
-                "username" => $username,
-                "password" => $password,
-                "charset" => $charset,
-                "collation" => "utf8_unicode_ci",
-                "prefix" => "",
-            ]);
-
-            $this->eloquent->setAsGlobal();
-            $this->eloquent->bootEloquent();
-        } catch (Throwable $e) {
-            throw new Exception($e->getMessage(), intval($e->getCode()));
-        }
-        */
     }
 
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * API\Friends
+ * Gazelle\API\Friends
  */
 
 namespace Gazelle\API;
@@ -19,7 +19,7 @@ class Friends extends Base
      *   "comment": string
      * }
      */
-    public static function create()
+    public static function create(): void
     {
         $app = \Gazelle\App::go();
 
@@ -70,16 +70,16 @@ class Friends extends Base
     /**
      * update
      */
-    public static function update()
+    public static function update(): void
     {
-        return self::create();
+        self::create();
     }
 
 
     /**
      * delete
      */
-    public static function delete()
+    public static function delete(): void
     {
         $app = \Gazelle\App::go();
 

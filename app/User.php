@@ -264,7 +264,7 @@ class User
      */
     public function can(string $permission): bool
     {
-        return in_array($permission, $this->permissions["values"]);
+        return in_array($permission, $this->permissions["values"] ?? []);
     }
 
 
@@ -275,7 +275,7 @@ class User
      */
     public function cant(string $permission): bool
     {
-        return !in_array($permission, $this->permissions["values"]);
+        return !in_array($permission, $this->permissions["values"] ?? []);
     }
 
 
