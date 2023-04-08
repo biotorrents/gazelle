@@ -49,6 +49,7 @@ class Subscriptions
             }
         }
         // remove any dupes in the array (the fast way)
+        $Usernames ??= [];
         $Usernames = array_flip(array_flip($Usernames));
 
         $app->dbOld->query("

@@ -1,14 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
+
+/**
+ * comment backend
+ */
+
+$app = \Gazelle\App::go();
+
 authorize();
 
-if (!isset($_REQUEST['page']) || !in_array($_REQUEST['page'], array('artist', 'collages', 'requests', 'torrents')) || !isset($_POST['pageid']) || !is_numeric($_POST['pageid']) || !isset($_POST['body']) || trim($_POST['body']) === '') {
+if (!isset($_REQUEST['page'])
+    || !in_array($_REQUEST['page'], array('artist', 'collages', 'requests', 'torrents'))
+    || !isset($_POST['pageid'])
+    || !is_numeric($_POST['pageid'])
+    || !isset($_POST['body'])
+    || trim($_POST['body']) === '') {
     error(0);
 }
 
-if ($app->user->extra['DisablePosting']) {
-    error('Your posting privileges have been removed.');
+/*
+if ($app->user->cant("post comments")) {
+    error("Your posting privileges have been removed.");
 }
+*/
 
 $Page = $_REQUEST['page'];
 $PageID = (int)$_POST['pageid'];

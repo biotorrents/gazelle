@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Phinx config
+ * phinx config
  */
 
 # bootstrap the app
@@ -19,7 +19,7 @@ return
     ],
 
     "environments" => [
-        "default_migration_table" => "phinxlog",
+        "default_migration_table" => "phinxLog",
         "default_environment" => "development",
 
         # production and development are the same in the config
