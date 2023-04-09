@@ -538,7 +538,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage, 'thumb').'" ';
+            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage, 'thumb').'" ';
         }
 
 

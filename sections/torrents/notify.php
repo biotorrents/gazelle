@@ -293,7 +293,7 @@ if (empty($Results)) {
             }
             $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                $DisplayName .= 'data-cover="'.\Gazelle\Image::process($GroupInfo['WikiImage'], 'thumb').'" ';
+                $DisplayName .= 'data-cover="'.\Gazelle\Images::process($GroupInfo['WikiImage'], 'thumb').'" ';
             }
             $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
 

@@ -342,7 +342,7 @@ $app->dbOld->prepared_query("
         foreach ($Images as $Image) {
             ?>
           <img style="max-width: 200px;" class="lightbox-init"
-            src="<?=\Gazelle\Image::process($Image)?>"
+            src="<?=\Gazelle\Images::process($Image)?>"
             alt="Relevant image" />
           <?php
         } ?>

@@ -531,7 +531,7 @@ View::header($Title, 'requests');
                     $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
                     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                        $FullName .= 'data-cover="'.\Gazelle\Image::process($Request['Image']).'" ';
+                        $FullName .= 'data-cover="'.\Gazelle\Images::process($Request['Image']).'" ';
                     }
 
                     $FullName .= "dir='ltr'>$Title</span></a>";

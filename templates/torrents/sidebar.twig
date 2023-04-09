@@ -95,9 +95,9 @@
 					          <div>
 					            <?php
 					          if (empty($user['ShowExtraCovers'])) {
-					              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Image::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Image::process($Image).'"';
+					              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Images::process($Image).'"';
 					          } else {
-					              $Src = 'src="' . \Gazelle\Image::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Image::process($Image).'"';
+					              $Src = 'src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Images::process($Image).'"';
 					          } ?>
 					            <img id="cover_<?=$Index?>" class="lightbox-init"
 					              width="100%" <?=$Src?> alt="<?=$Summary?>" />

@@ -402,7 +402,7 @@ class Top10
     href="<?=$url?><?=$name?>">
     <img class="tooltip large_tile" alt="<?=$name?>"
       title="<?=$name?>"
-      src="<?=\Gazelle\Image::process($image)?>" />
+      src="<?=\Gazelle\Images::process($image)?>" />
   </a>
 </li>
 <?php
@@ -434,7 +434,7 @@ class Top10
     private static function render_list($url, $name, $image)
     {
         if (!empty($image)) {
-            $image = \Gazelle\Image::process($image);
+            $image = \Gazelle\Images::process($image);
             $title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$image&quot; alt=&quot;&quot; /&gt;\"";
             $name = Text::esc($name); ?>
 

@@ -121,7 +121,7 @@ if (!$NumResults) {
             }
             $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage).'" ';
+                $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage).'" ';
             }
             $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
             if ($GroupYear > 0) {
@@ -198,7 +198,7 @@ if (!$NumResults) {
 
                 $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
                 if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                    $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage).'" ';
+                    $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage).'" ';
                 }
 
                 $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";

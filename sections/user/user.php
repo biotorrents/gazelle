@@ -180,7 +180,7 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
     $DisplayCustomTitle = preg_replace_callback(
         '~src=("?)(http.+?)(["\s>])~',
         function ($Matches) {
-            return 'src=' . $Matches[1] . \Gazelle\Image::process($Matches[2]) . $Matches[3];
+            return 'src=' . $Matches[1] . \Gazelle\Images::process($Matches[2]) . $Matches[3];
         },
         $CustomTitle
     );
@@ -616,7 +616,7 @@ if (check_paranoia_here('snatched')) {
             href="torrents.php?id=<?=$RS['ID']?>">
             <img class="tooltip"
               title="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
-              src="<?=\Gazelle\Image::process($RS['WikiImage'], 'thumb')?>"
+              src="<?=\Gazelle\Images::process($RS['WikiImage'], 'thumb')?>"
               alt="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
               width="100%" />
           </a>
@@ -682,7 +682,7 @@ if (check_paranoia_here('uploads')) {
             href="torrents.php?id=<?=$RU['ID']?>">
             <img class="tooltip"
               title="<?=$RU['Artist']?><?=$RUName?>"
-              src="<?=\Gazelle\Image::process($RU['WikiImage'], 'thumb')?>"
+              src="<?=\Gazelle\Images::process($RU['WikiImage'], 'thumb')?>"
               alt="<?=$RU['Artist']?><?=$RUName?>"
               width="100%" />
           </a>
@@ -751,7 +751,7 @@ foreach ($Collages as $CollageInfo) {
         <div class="collage_image">
           <a href="torrents.php?id=<?=$GroupID?>">
             <img class="tooltip" title="<?=$Name?>"
-              src="<?=\Gazelle\Image::process($C['WikiImage'], 'thumb')?>"
+              src="<?=\Gazelle\Images::process($C['WikiImage'], 'thumb')?>"
               alt="<?=$Name?>" width="100%" />
           </a>
         </div>

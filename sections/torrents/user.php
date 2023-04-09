@@ -538,7 +538,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
           # No cover art
           if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-              $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage ?? "", 'thumb').'" ';
+              $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage ?? "", 'thumb').'" ';
           }
 
           # Old concatenated title: EN, JP, RJ

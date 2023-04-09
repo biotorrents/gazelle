@@ -136,8 +136,8 @@ $encoded_artist = urlencode($encoded_artist);
     if (!empty($Request['Image'])) {
         ?>
         <img style="width: 100%;"
-          src="<?=\Gazelle\Image::process($Request['Image'], 'thumb')?>"
-          lightbox-img="<?=\Gazelle\Image::process($Request['Image'])?>"
+          src="<?=\Gazelle\Images::process($Request['Image'], 'thumb')?>"
+          lightbox-img="<?=\Gazelle\Images::process($Request['Image'])?>"
           alt="<?=$Title?>" class="lightbox-init" />
         <?php
     } else { ?>

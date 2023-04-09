@@ -203,7 +203,7 @@ foreach ($TorrentList as $Group) {
               'g' => $Group,
               'url' => Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-              'thumb' => \Gazelle\Image::process($CoverArt, 'thumb'),
+              'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Data, true, true),
@@ -217,7 +217,7 @@ foreach ($TorrentList as $Group) {
 
         $DisplayName .= "<a href='torrents.php?id=$GroupID' class='tooltip' title='View torrent group' ";
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage, 'thumb').'" ';
+            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage, 'thumb').'" ';
         }
 
         $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
@@ -355,7 +355,7 @@ foreach ($TorrentList as $Group) {
               'g' => $Group,
               'url' => Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-              'thumb' => \Gazelle\Image::process(($CoverArt ?? ""), 'thumb'),
+              'thumb' => \Gazelle\Images::process(($CoverArt ?? ""), 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Torrent, true, true),
@@ -378,7 +378,7 @@ foreach ($TorrentList as $Group) {
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID' ";
 
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.\Gazelle\Image::process($WikiImage, 'thumb').'" ';
+            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage, 'thumb').'" ';
         }
 
         $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
@@ -581,7 +581,7 @@ if (check_perms('site_torrents_notify')) {
       <div class="head"><strong><?=$Name?></strong></div>
       <div style="text-align: center; padding: 10px 0px;">
         <img style="max-width: 220px;" class="lightbox-init"
-          src="<?=\Gazelle\Image::process($Image, 'thumb')?>"
+          src="<?=\Gazelle\Images::process($Image, 'thumb')?>"
           alt="<?=$Name?>" />
       </div>
     </div>

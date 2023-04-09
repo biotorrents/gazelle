@@ -79,7 +79,7 @@ foreach ($GroupIDs as $GroupID) {
           'g' => $Group,
           'url' => Format::get_url($_GET),
           'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-          'thumb' => \Gazelle\Image::process(($CoverArt), 'thumb'),
+          'thumb' => \Gazelle\Images::process(($CoverArt), 'thumb'),
           'artists' => Artists::display_artists($Artists),
           'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
           'extra_info' => false,
@@ -189,7 +189,7 @@ foreach ($GroupIDs as $GroupID) {
               'g' => $Group,
               'url' => Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-              'thumb' => \Gazelle\Image::process($CoverArt, 'thumb'),
+              'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Data, true, true),
@@ -297,7 +297,7 @@ foreach ($GroupIDs as $GroupID) {
         $picture = staticServer.'common/noartwork.png';
     } ?>
     <img class="tooltip_interactive"
-      src="<?=\Gazelle\Image::process($picture, 'thumb')?>"
+      src="<?=\Gazelle\Images::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?="$DisplayName ($PlainTags)"?>"

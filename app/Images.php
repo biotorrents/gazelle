@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 
 /**
- * Image
+ * Images
  *
  * Thumbnail aide, mostly.
  */
 
 namespace Gazelle;
 
-class Image
+class Images
 {
     # hmac hash algorithm to use with the image proxy
     private static $algorithm = "sha3-512";

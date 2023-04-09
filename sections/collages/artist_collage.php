@@ -52,7 +52,7 @@ foreach ($Artists as $Artist) {
     href="artist.php?id=<?=$Artist['ArtistID']?>">
     <?php if ($Artist['Image']) { ?>
     <img class="tooltip"
-      src="<?=\Gazelle\Image::process($Artist['Image'], 'thumb')?>"
+      src="<?=\Gazelle\Images::process($Artist['Image'], 'thumb')?>"
       alt="<?=$Artist['Name']?>"
       title="<?=$Artist['Name']?>" width="118" />
     <?php } else { ?>
