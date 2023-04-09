@@ -234,8 +234,8 @@ ENV::setPriv(
     [
         "consumerKey" => "",
         "consumerSecret" => "",
-        "bearerToken" => "%2BeLgdhjbVIy4%3DG2o7b8QZVM7Gf3dDc8I1GyXz3yqyxqS3Z4GuiPU6TkDTJFBt4l",
-        "accessToken" => "-ohWcO8RRRUxXXakx05Il4tKWt6t6vB",
+        "bearerToken" => "",
+        "accessToken" => "",
         "accessTokenSecret" => "",
     ]
 );
