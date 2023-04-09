@@ -184,7 +184,7 @@ $DisplayName = $twig->render(
       #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
       'url' => Format::get_url($_GET),
       'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-      'thumb' => ImageTools::process($CoverArt, 'thumb'),
+      'thumb' => \Gazelle\Image::process($CoverArt, 'thumb'),
       'artists' => Artists::display_artists($Artists),
     ]
 );
@@ -299,8 +299,8 @@ View::header(
         <div id="cover_div_<?=$Index?>">
           <?php if ($WikiImage !== '') { ?>
           <div><img width="100%" class="lightbox-init"
-              src="<?=ImageTools::process($WikiImage, 'thumb')?>"
-              lightbox-img="<?=ImageTools::process($WikiImage)?>"
+              src="<?=\Gazelle\Image::process($WikiImage, 'thumb')?>"
+              lightbox-img="<?=\Gazelle\Image::process($WikiImage)?>"
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
@@ -321,9 +321,9 @@ $Index++;
           <div>
             <?php
           if (empty($app->user->extra['ShowExtraCovers'])) {
-              $Src = 'src="" data-gazelle-temp-src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
+              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Image::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Image::process($Image).'"';
           } else {
-              $Src = 'src="' . ImageTools::process($Image, 'thumb') . '" lightbox-img="'.ImageTools::process($Image).'"';
+              $Src = 'src="' . \Gazelle\Image::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Image::process($Image).'"';
           } ?>
             <img id="cover_<?=$Index?>" class="lightbox-init"
               width="100%" <?=$Src?> alt="<?=$Summary?>" />
@@ -1070,8 +1070,8 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
                 echo '<li><a href="https://sci-hub.'.SCI_HUB.'/'.$Screenshot['Image'].'" target="_blank">'.$Screenshot['Image'].'</a></li>';
 
                 /* Image proxy integration
-                $SSURL = ImageTools::process($Screenshot['Image']);
-                $ThumbURL = ImageTools::process($Screenshot['Image'], 'thumb');
+                $SSURL = \Gazelle\Image::process($Screenshot['Image']);
+                $ThumbURL = \Gazelle\Image::process($Screenshot['Image'], 'thumb');
                 */
 
                 /* todo: Bring this back

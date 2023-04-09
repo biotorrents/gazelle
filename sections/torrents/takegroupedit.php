@@ -87,7 +87,6 @@ else {
         $picture = '';
     }
 
-    ImageTools::blacklisted($picture);
     $Summary = db_string($_POST['summary']);
 }
 

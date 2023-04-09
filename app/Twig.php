@@ -202,10 +202,10 @@ class Twig # extends Twig\Environment
             return $app->user->cant($permission);
         }));
 
-        # ImageTools::process
+        # \Gazelle\Image::process
         $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
             return new Twig\Markup(
-                ImageTools::process($uri, $thumbnail),
+                \Gazelle\Image::process($uri, $thumbnail),
                 "UTF-8"
             );
         }));
@@ -423,7 +423,7 @@ class Twig # extends Twig\Environment
         $twig->addFilter(new Twig\TwigFilter(
             "image",
             function ($i) {
-                return new Twig\Markup(ImageTools::process($i, true), "UTF-8");
+                return new Twig\Markup(\Gazelle\Image::process($i, true), "UTF-8");
             }
         ));
 
@@ -483,7 +483,7 @@ class Twig # extends Twig\Environment
 
         $twig->addFunction(new Twig\TwigFunction("donor_icon", function ($icon, $userId) {
             return new Twig\Markup(
-                ImageTools::process($icon, false, "donoricon", $userId),
+                \Gazelle\Image::process($icon, false, "donoricon", $userId),
                 "UTF-8"
             );
         }));

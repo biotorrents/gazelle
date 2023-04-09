@@ -67,7 +67,7 @@ foreach ($GroupIDs as $GroupID) {
 
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.\Gazelle\Image::process($picture, 'thumb').'" ';
     }
 
     $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
@@ -158,7 +158,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
 
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+            $DisplayName .= 'data-cover="'.\Gazelle\Image::process($picture, 'thumb').'" ';
         }
 
         $DisplayName .=' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
@@ -249,7 +249,7 @@ foreach ($GroupIDs as $GroupID) {
     } ?>
 
     <img class="tooltip"
-      src="<?=ImageTools::process($picture, 'thumb')?>"
+      src="<?=\Gazelle\Image::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?=$DisplayName?>" width="100%" />

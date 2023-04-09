@@ -96,7 +96,6 @@ if ($NewRequest) {
 if (empty($_POST['image'])) {
     $Image = '';
 } else {
-    ImageTools::blacklisted($_POST['image']);
     if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {

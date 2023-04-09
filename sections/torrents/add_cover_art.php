@@ -27,7 +27,7 @@ for ($i = 0; $i < count($Images); $i++) {
     $Image = $Images[$i];
     $Summary = $Summaries[$i];
 
-    if (ImageTools::blacklisted($Image) || !preg_match("/{$app->env->regexImage}/i", $Image)) {
+    if (!preg_match("/{$app->env->regexImage}/i", $Image)) {
         continue;
     }
 

@@ -320,7 +320,6 @@ $validate->allFields($data);
 #!d($validate->errors);exit;
 
 # image trickery
-ImageTools::blacklisted($data["picture"]);
 if (!preg_match("/{$app->env->regexImage}/i", $data["picture"])) {
     $data["picture"] = null;
 }

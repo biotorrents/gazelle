@@ -325,6 +325,6 @@ class Text
      */
     public static function uuid(): string
     {
-        return \Ramsey\Uuid\Uuid::uuid4()->toString();
+        return \Illuminate\Support\Str::uuid()->toString();
     }
 } # class

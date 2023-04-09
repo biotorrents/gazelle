@@ -658,7 +658,7 @@ class User
                 $UserInfo['Title'] = preg_replace_callback(
                     '~src=("?)(http.+?)(["\s>])~',
                     function ($Matches) {
-                        return 'src=' . $Matches[1] . ImageTools::process($Matches[2]) . $Matches[3];
+                        return 'src=' . $Matches[1] . \Gazelle\Image::process($Matches[2]) . $Matches[3];
                     },
                     $UserInfo['Title']
                 );
@@ -738,8 +738,8 @@ class User
         # workaround for null avatars
         $uri = strval($uri);
 
-        # ImageTools::process
-        $uri = ImageTools::process($uri, "avatar");
+        # \Gazelle\Image::process
+        $uri = \Gazelle\Image::process($uri, "avatar");
 
         # disabled or missing: show default
         if (empty($uri)) {

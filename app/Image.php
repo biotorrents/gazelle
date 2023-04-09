@@ -4,18 +4,23 @@ declare(strict_types=1);
 
 
 /**
- * ImageTools
+ * Image
  *
  * Thumbnail aide, mostly.
  */
 
-class ImageTools
+namespace Gazelle;
+
+class Image
 {
+    # hmac hash algorithm to use with the image proxy
+    private static $algorithm = "sha3-512";
+
+
     /**
      * process
      *
      * Determine the image URL.
-     * This takes care of the image proxy and thumbnailing.
      *
      * @param string $uri
      * @param string $thumbnail image proxy scale profile to use
@@ -43,37 +48,8 @@ class ImageTools
             . $app->env->imageDomain
             . ($thumbnail ? "/{$thumbnail}/" : "/")
             . "?h="
-            . rawurlencode(base64_encode(hash_hmac("sha256", $uri, $presharedKey, true)))
+            . rawurlencode(base64_encode(hash_hmac(self::$algorithm, $uri, $presharedKey, true)))
             . "&i="
             . urlencode($uri);
     }
-
-
-    /**
-     * blacklisted
-     *
-     * Checks if a link's host is (not) good.
-     *
-     * @param string $uri link to an image
-     * @return boolean
-     */
-    public static function blacklisted(string $uri, bool $showError = true): bool|string
-    {
-        $blacklist = ["tinypic.com"];
-
-        foreach ($blacklist as $item) {
-            if (stripos($uri, $item)) {
-                # show an error page
-                if ($showError) {
-                    error("{$item} isn't an allowed image host. Please use a different host.");
-                }
-
-                # it IS blacklisted
-                return true;
-            }
-        } # foreach
-
-        # it's NOT blacklisted
-        return false;
-    }
-}
+} # class

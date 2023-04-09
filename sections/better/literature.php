@@ -94,7 +94,7 @@ foreach ($Results as $Result) {
 
     $DisplayName = "<a href='torrents.php?id=$id' ";
     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.\Gazelle\Image::process($picture, 'thumb').'" ';
     }
     $DisplayName .= ">$LangName</a>";
 

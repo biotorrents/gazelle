@@ -44,7 +44,7 @@ View::header('Snatch List');
 foreach ($Torrents as $Torrent) {
     $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
+        $DisplayName .= 'data-cover="'.\Gazelle\Image::process($Torrent['WikiImage'], 'thumb').'" ';
     }
     $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
 

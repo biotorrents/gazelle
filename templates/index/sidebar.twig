@@ -226,7 +226,7 @@
 								      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
 								      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
 								      if (!isset($user['CoverArt']) || $user['CoverArt']) {
-								          $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
+								          $DisplayName .= ' data-cover="'.\Gazelle\Image::process($Image, 'thumb').'"';
 								      }
 								      $DisplayName .= '>'.$Name.'</a>'; ?>
 								    <li>
@@ -258,7 +258,7 @@
 								      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
 								      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
 								      if (!isset($user['CoverArt']) || $user['CoverArt']) {
-								          $DisplayName .= ' data-cover="'.ImageTools::process($Image, 'thumb').'"';
+								          $DisplayName .= ' data-cover="'.\Gazelle\Image::process($Image, 'thumb').'"';
 								      }
 								      $DisplayName .= '>'.$Name.'</a>'; ?>
 								        <li>

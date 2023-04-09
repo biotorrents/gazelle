@@ -34,7 +34,6 @@ if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
     $Body = db_string($_POST['body']);
     $Summary = db_string($_POST['summary']);
     $Image = db_string($_POST['image']);
-    ImageTools::blacklisted($Image);
     // Trickery
     if (!preg_match("/{$app->env->regexImage}/i", $Image)) {
         $Image = '';
