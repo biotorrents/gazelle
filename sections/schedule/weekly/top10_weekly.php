@@ -46,8 +46,8 @@ if ($Top10 === false) {
 $i = 1;
 foreach ($Top10 as $Torrent) {
     list($TorrentID, $GroupID, $GroupName, $GroupCategoryID,
-    $WikiImage, $TorrentTags, $Media, $Year, $GroupYear,
-    $Snatched, $Seeders, $Leechers, $Data) = $Torrent;
+        $WikiImage, $TorrentTags, $Media, $Year, $GroupYear,
+        $Snatched, $Seeders, $Leechers, $Data) = $Torrent;
 
     $DisplayName = '';
     $Artists = Artists::get_artist($GroupID);

@@ -2,6 +2,7 @@
 
 #declare(strict_types=1);
 
+/*
 $app = \Gazelle\App::go();
 
 $SphQL = new SphinxqlQuery();
@@ -14,3 +15,4 @@ $SphQL->select('groupid')->group_by('groupid')->from('torrents, delta')->limit(0
 $TGroups = $SphQL->query()->get_meta('total_found');
 
 $app->cache->set('sphinx_min_max_matches', 2*($TTorrents-$TGroups));
+*/

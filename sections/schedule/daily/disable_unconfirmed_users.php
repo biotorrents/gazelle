@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 
 // Get a list of user IDs for clearing cache keys
 $app->dbOld->query("
-  SELECT UserID
+  SELECT ui.UserID
   FROM users_info AS ui
     JOIN users_main AS um ON um.ID = ui.UserID
   WHERE um.LastAccess IS NULL

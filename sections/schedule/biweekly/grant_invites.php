@@ -24,7 +24,6 @@ $app->dbOld->query("
   FROM users_main AS um
     JOIN users_info AS ui ON ui.UserID = um.ID
   WHERE um.Enabled = '1'
-    AND ui.DisableInvites = '0'
     AND ((um.PermissionID = ".POWER."
         AND um.Invites < 2)
       OR (um.PermissionID = ".ELITE."
@@ -69,7 +68,6 @@ $app->dbOld->query("
   WHERE u.Upload > 0.75
     AND u.Upload / u.Download > ".(2*1024*1024*1024)."
     AND um.Enabled = '1'
-    AND ui.DisableInvites = '0'
     AND ((um.PermissionID = ".POWER."
         AND um.Invites < 2)
        OR (um.PermissionID = ".ELITE."
@@ -101,7 +99,6 @@ $app->dbOld->query("
   WHERE u.Upload > 2.0
     AND u.Upload / u.Download > ".(10*1024*1024*1024)."
     AND um.Enabled = '1'
-    AND ui.DisableInvites = '0'
     AND ((um.PermissionID = ".ELITE."
         AND um.Invites < 3)
       OR (um.PermissionID = ".TORRENT_MASTER."
@@ -132,7 +129,6 @@ $app->dbOld->query("
   WHERE u.Upload > 3.0
     AND u.Upload / u.Download > ".(20*1024*1024*1024)."
     AND um.Enabled = '1'
-    AND ui.DisableInvites = '0'
     AND (um.PermissionID = ".TORRENT_MASTER."
         AND um.Invites < 4)");
 
