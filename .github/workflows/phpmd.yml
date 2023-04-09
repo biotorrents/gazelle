@@ -55,3 +55,6 @@ jobs:
         with:
           sarif_file: phpmd-results.sarif
           wait-for-processing: true
+
+- name: Cache
+  uses: actions/cache@v2.1.8
