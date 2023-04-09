@@ -18,11 +18,11 @@ $auth = new Auth();
 $post = Http::query("post");
 $server = Http::query("server");
 
-$email = Esc::email($post["email"]) ?? null;
-$ip = Esc::ip($server["REMOTE_ADDR"]) ?? null;
+$email = \Gazelle\Esc::email($post["email"]) ?? null;
+$ip = \Gazelle\Esc::ip($server["REMOTE_ADDR"]) ?? null;
 
-$passphrase = Esc::string($post["passphrase"]) ?? null;
-$confirmPassphrase = Esc::string($post["confirmPassphrase"]) ?? null;
+$passphrase = \Gazelle\Esc::string($post["passphrase"]) ?? null;
+$confirmPassphrase = \Gazelle\Esc::string($post["confirmPassphrase"]) ?? null;
 
 
 # step one: send recover email

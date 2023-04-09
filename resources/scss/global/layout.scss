@@ -5,7 +5,7 @@
 
 /**
  * override main skeleton resolution
- * taken from twitter tbh
+ * viewport taken from twitter tbh
  */
 .container {
   max-width: 1280px !important;
@@ -41,26 +41,15 @@ section {
   justify-content: space-between;
 }
 
-.flex {
-  display: flex;
-}
-
-/* grow and shrink */
-.flex > .grow {
-  flex-grow: 1;
-}
-
-.flex > .shrink {
-  flex-shrink: 1;
-}
-
 /**
  * aside elements
  */
+
 aside {
+
   /**
    * "Please consult the Upload Rules"
-   * admonishment on torrent_form.class.php.
+   * admonishment in the torrentForm templates.
    */
   &.upload_notice {
     @include transparent-border($c: red, $a: 0.5);
@@ -215,8 +204,7 @@ img {
 
   &:before {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1)
-      infinite;
+    -webkit-animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
     background-color: #9ae6b4;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
@@ -233,8 +221,7 @@ img {
 
   &:after {
     --tw-bg-opacity: 1;
-    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s
-      infinite;
+    -webkit-animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
     animation: pulse-dot 3s cubic-bezier(0.455, 0.03, 0.515, 0.955) -0.4s infinite;
     background-color: #fff;
     background-color: rgba(16, 185, 129, var(--tw-bg-opacity));

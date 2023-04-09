@@ -7,6 +7,8 @@
 
 /**
  * Torrent class that contains some convenient functions related to torrent meta data
+ *
+ * THIS IS GOING AWAY
  */
 class BencodeTorrent extends BencodeDecode
 {
@@ -129,7 +131,7 @@ class BencodeTorrent extends BencodeDecode
 
     /**
      * make_sourced
-     * 
+     *
      * Add the "source" field to the torrent.
      * This is used to make a unique info hash.
      *

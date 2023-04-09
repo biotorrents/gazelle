@@ -5,6 +5,8 @@
 /**
  * If we're running a 32bit PHP version, we use small objects to store ints.
  * Overhead from the function calls is small enough to not worry about
+ *
+ * THIS IS GOING AWAY
  */
 class Int64
 {

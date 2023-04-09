@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Esc
+ * Gazelle\Esc
  *
  * Simple static class for UGC validation.
  * Mostly a filter_var wrapper class.
@@ -13,11 +13,10 @@ declare(strict_types=1);
  * @see https://www.php.net/manual/en/filter.filters.sanitize.php
  */
 
+namespace Gazelle;
+
 class Esc
 {
-    /** FILTER_SANITIZE */
-
-
     /**
      * email
      */
@@ -76,9 +75,6 @@ class Esc
     }
 
 
-    /** FILTER_VALIDATE */
-
-
     /**
      * bool
      */
@@ -129,7 +125,7 @@ class Esc
     }
 
 
-    /** CUSTOM FILTERS */
+    /** custom filters */
 
 
     /**

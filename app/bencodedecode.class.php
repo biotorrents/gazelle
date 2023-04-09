@@ -8,6 +8,8 @@ ini_set('memory_limit', '256M');
 /**
  * The decode class is simple and straightforward. The only thing to
  * note is that empty dictionaries are represented by boolean trues
+ *
+ * THIS IS GOING AWAY
  */
 class BencodeDecode extends Bencode
 {

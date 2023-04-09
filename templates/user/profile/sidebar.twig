@@ -52,7 +52,7 @@
 		<form>
 
 			{# send pm #}
-			{# /messages/compose/{{ userId }} #}
+			{# /messages/compose/{{ data.core.id }} #}
 			<a href="/inbox.php?action=compose&to={{ data.core.id }}" class="button button-primary"> send message</a>
 
 			{# add/remove from friends #}
@@ -65,7 +65,7 @@
 			{# if not isFriend #}
 
 			{# snitches get stitches #}
-			{# /report/{{ userId }} #}
+			{# /report/{{ data.core.id }} #}
 			<a href="/reports.php?action=report&type=user&id={{ data.core.id }}" class="button button-red"> report user</a>
 
 			<hr/>

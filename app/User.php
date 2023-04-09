@@ -881,7 +881,7 @@ class User
         $app = \Gazelle\App::go();
 
         # nested but much easier to read
-        $publicKey = Esc::string($publicKey);
+        $publicKey = \Gazelle\Esc::string($publicKey);
         if (!empty($publicKey)) {
             if (!str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
                 throw new Exception("invalid pgp key format");
@@ -1110,7 +1110,7 @@ class User
             # validate the passphrase
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $currentPassphrase = Esc::passphrase($data["currentPassphrase"]);
+                $currentPassphrase = \Gazelle\Esc::passphrase($data["currentPassphrase"]);
 
                 # Delight\Auth\NotLoggedInException workaround
                 #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
@@ -1128,7 +1128,7 @@ class User
             # validate the authKey
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $authKey = Esc::string($data["authKey"]);
+                $authKey = \Gazelle\Esc::string($data["authKey"]);
                 if ($authKey !== $this->extra["AuthKey"]) {
                     throw new Exception("authKey doesn't match");
                 }
@@ -1136,8 +1136,8 @@ class User
 
 
             # update the passphrase
-            $newPassphrase1 = Esc::passphrase($data["newPassphrase1"]);
-            $newPassphrase2 = Esc::passphrase($data["newPassphrase2"]);
+            $newPassphrase1 = \Gazelle\Esc::passphrase($data["newPassphrase1"]);
+            $newPassphrase2 = \Gazelle\Esc::passphrase($data["newPassphrase2"]);
 
             if (!empty($newPassphrase1) && !empty($newPassphrase2)) {
                 # do they match?
@@ -1163,7 +1163,7 @@ class User
 
             # todo: update the email
             # maybe admins can't change it?
-            $email = Esc::email($data["email"]);
+            $email = \Gazelle\Esc::email($data["email"]);
             if (empty($email)) {
                 throw new Exception("invalid email address");
             }
@@ -1185,7 +1185,7 @@ class User
 
 
             # avatar
-            $avatar = Esc::url($data["avatar"]);
+            $avatar = \Gazelle\Esc::url($data["avatar"]);
             $good = preg_match("/{$app->env->regexImage}/i", $avatar);
 
             if (!$good && !empty($avatar)) {
@@ -1206,7 +1206,7 @@ class User
 
 
             # ircKey
-            $ircKey = Esc::string($data["ircKey"]);
+            $ircKey = \Gazelle\Esc::string($data["ircKey"]);
 
             if (!empty($ircKey)) {
                 if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
@@ -1226,20 +1226,20 @@ class User
 
 
             # profileTitle
-            $profileTitle = Esc::string($data["profileTitle"]);
+            $profileTitle = \Gazelle\Esc::string($data["profileTitle"]);
             $query = "update users_info set infoTitle = ? where userId = ?";
             $app->dbNew->do($query, [$profileTitle, $userId]);
 
 
             # profileContent
-            $profileContent = Esc::string($data["profileContent"]);
+            $profileContent = \Gazelle\Esc::string($data["profileContent"]);
             $query = "update users_info set info = ? where userId = ?";
             $app->dbNew->do($query, [$profileContent, $userId]);
 
 
             # publicKey
             try {
-                $publicKey = Esc::string($data["publicKey"]);
+                $publicKey = \Gazelle\Esc::string($data["publicKey"]);
                 $this->updatePGP($publicKey);
             } catch (Throwable $e) {
                 throw new Exception($e->getMessage());
@@ -1249,7 +1249,7 @@ class User
             # resetPassKey: very important to only update if requested
             # or everyone will get locked out of the tracker all the time
             $data["resetPassKey"] ??= null;
-            $resetPassKey = Esc::bool($data["resetPassKey"]);
+            $resetPassKey = \Gazelle\Esc::bool($data["resetPassKey"]);
 
             if ($resetPassKey) {
                 $oldPassKey = $this->extra["torrent_pass"];
@@ -1269,7 +1269,7 @@ class User
 
             # stylesheet
             $data["stylesheet"] ??= null;
-            $stylesheet = Esc::int($data["stylesheet"]);
+            $stylesheet = \Gazelle\Esc::int($data["stylesheet"]);
 
             $query = "update users_info set styleId = ? where userId = ?";
             $app->dbNew->do($query, [$stylesheet, $userId]);
@@ -1277,7 +1277,7 @@ class User
 
             # styleSheetUri
             $data["styleSheetUri"] ??= null;
-            $styleSheetUri = Esc::url($data["styleSheetUri"]);
+            $styleSheetUri = \Gazelle\Esc::url($data["styleSheetUri"]);
             $good = preg_match("/{$app->env->regexCss}/i", $styleSheetUri);
 
             if (!$good && !empty($styleSheetUri)) {
@@ -1289,42 +1289,42 @@ class User
 
 
             # torrentGrouping
-            $torrentGrouping = Esc::int($data["torrentGrouping"]);
+            $torrentGrouping = \Gazelle\Esc::int($data["torrentGrouping"]);
             $query = "update users_info set torrentGrouping = ? where userId = ?";
             $app->dbNew->do($query, [$torrentGrouping, $userId]);
 
 
             # siteOptions
             $siteOptions = [
-                "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
-                "calmMode" => Esc::bool($data["calmMode"] ?? null),
-                "communityStats" => Esc::bool($data["communityStats"] ?? null),
-                "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
-                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
-                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
-                "darkMode" => Esc::bool($data["darkMode"] ?? null),
-                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
-                "font" => Esc::string($data["font"] ?? null),
-                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
-                "openaiContent" => Esc::bool($data["openaiContent"] ?? null),
-                "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
-                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
-                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
-                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
-                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
-                "requestStats" => Esc::bool($data["requestStats"] ?? null),
-                "searchPagination" => Esc::int($data["searchPagination"] ?? null),
-                "searchType" => Esc::string($data["searchType"] ?? null),
-                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
-                "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
-                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
-                "styleId" => Esc::int($data["styleId"] ?? null),
-                "styleUri" => Esc::url($data["styleUri"] ?? null),
-                "torrentGrouping" => Esc::bool($data["torrentGrouping"] ?? null),
-                "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
-                "torrentStats" => Esc::bool($data["torrentStats"] ?? null),
-                "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
-                "userAvatars" => Esc::bool($data["userAvatars"] ?? null),
+                "autoSubscribe" => \Gazelle\Esc::bool($data["autoSubscribe"] ?? null),
+                "calmMode" => \Gazelle\Esc::bool($data["calmMode"] ?? null),
+                "communityStats" => \Gazelle\Esc::bool($data["communityStats"] ?? null),
+                "coverArtCollections" => \Gazelle\Esc::int($data["coverArtCollections"] ?? null),
+                "coverArtTorrents" => \Gazelle\Esc::bool($data["coverArtTorrents"] ?? null),
+                "coverArtTorrentsExtra" => \Gazelle\Esc::bool($data["coverArtTorrentsExtra"] ?? null),
+                "darkMode" => \Gazelle\Esc::bool($data["darkMode"] ?? null),
+                "donorIcon" => \Gazelle\Esc::bool($data["donorIcon"] ?? null),
+                "font" => \Gazelle\Esc::string($data["font"] ?? null),
+                "listUnreadsFirst" => \Gazelle\Esc::bool($data["listUnreadsFirst"] ?? null),
+                "openaiContent" => \Gazelle\Esc::bool($data["openaiContent"] ?? null),
+                "percentileStats" => \Gazelle\Esc::bool($data["percentileStats"] ?? null),
+                "recentCollages" => \Gazelle\Esc::bool($data["recentCollages"] ?? null),
+                "recentRequests" => \Gazelle\Esc::bool($data["recentRequests"] ?? null),
+                "recentSnatches" => \Gazelle\Esc::bool($data["recentSnatches"] ?? null),
+                "recentUploads" => \Gazelle\Esc::bool($data["recentUploads"] ?? null),
+                "requestStats" => \Gazelle\Esc::bool($data["requestStats"] ?? null),
+                "searchPagination" => \Gazelle\Esc::int($data["searchPagination"] ?? null),
+                "searchType" => \Gazelle\Esc::string($data["searchType"] ?? null),
+                "showSnatched" => \Gazelle\Esc::bool($data["showSnatched"] ?? null),
+                "showTagFilter" => \Gazelle\Esc::bool($data["showTagFilter"] ?? null),
+                "showTorrentFilter" => \Gazelle\Esc::bool($data["showTorrentFilter"] ?? null),
+                "styleId" => \Gazelle\Esc::int($data["styleId"] ?? null),
+                "styleUri" => \Gazelle\Esc::url($data["styleUri"] ?? null),
+                "torrentGrouping" => \Gazelle\Esc::bool($data["torrentGrouping"] ?? null),
+                "torrentGrouping" => \Gazelle\Esc::string($data["torrentGrouping"] ?? null),
+                "torrentStats" => \Gazelle\Esc::bool($data["torrentStats"] ?? null),
+                "unseededAlerts" => \Gazelle\Esc::bool($data["unseededAlerts"] ?? null),
+                "userAvatars" => \Gazelle\Esc::bool($data["userAvatars"] ?? null),
             ];
 
             # this shouldn't be possible with normal ui usage
@@ -1712,7 +1712,7 @@ class User
         $data["requestsVotedBounty"] = $row["sum(bounty)"] ?? 0;
 
         # typing fix
-        $data["requestsVotedBounty"] = Esc::int($data["requestsVotedBounty"]);
+        $data["requestsVotedBounty"] = \Gazelle\Esc::int($data["requestsVotedBounty"]);
 
 
         # requests: created and the bounty
@@ -1829,7 +1829,7 @@ class User
         #$data["seedingPercent"] = 100 * min(1, round($data["seedingCount"] / $data["uniqueSnatches"], 2)) ?? 0;
 
         # typing fix
-        #$data["seedingPercent"] = Esc::float($data["seedingPercent"]);
+        #$data["seedingPercent"] = \Gazelle\Esc::float($data["seedingPercent"]);
 
 
         # downloads
