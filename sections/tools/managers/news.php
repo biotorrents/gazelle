@@ -3,11 +3,15 @@
 declare(strict_types=1);
 
 
+/**
+ * site news
+ */
+
 $app = \Gazelle\App::go();
 
 #Http::csrf();
 
-if (!check_perms('admin_manage_news')) {
+if (!check_perms("admin_manage_news")) {
     error(403);
 }
 
@@ -17,6 +21,7 @@ $get["newsId"] ??= null;
 $get["delete"] ??= null;
 
 $post = Http::query("post");
+$post["newsId"] ??= null;
 $post["formAction"] ??= null;
 $post["subject"] ??= null;
 $post["body"] ??= null;
@@ -29,9 +34,9 @@ if ($post["formAction"] === "create") {
     $query = "insert into news (userId, title, body, time) values (?, ?, ?, now())";
     $app->dbNew->do($query, [ $app->user->core["id"], $post["subject"], $post["body"] ]);
 
-    $app->cache->delete('news_latest_id');
-    $app->cache->delete('news_latest_title');
-    $app->cache->delete('news');
+    $app->cache->delete("news_latest_id");
+    $app->cache->delete("news_latest_title");
+    $app->cache->delete("news");
 
     Http::redirect();
 }
@@ -49,12 +54,12 @@ if ($get["newsId"]) {
 }
 
 # update
-if ($get["newsId"] && $post["formAction"] === "update") {
+if ($post["newsId"] && $post["formAction"] === "update") {
     $query = "update news set title = ?, body = ? where id = ?";
-    $app->dbNew->do($query, [ $post["subject"], $post["body"], $get["newsId"] ]);
+    $app->dbNew->do($query, [ $post["subject"], $post["body"], $post["newsId"] ]);
 
-    $app->cache->delete('news');
-    $app->cache->delete('feed_news');
+    $app->cache->delete("news");
+    $app->cache->delete("feed_news");
 }
 
 # delete
@@ -64,14 +69,14 @@ if ($get["newsId"] && $get["delete"]) {
     $query = "delete from news where id = ?";
     $app->dbNew->do($query, [ $get["newsId"] ]);
 
-    $app->cache->delete('news');
-    $app->cache->delete('feed_news');
+    $app->cache->delete("news");
+    $app->cache->delete("feed_news");
 
     # deleting latest news
-    $latestNews = $app->cache->get('news_latest_id') ?? null;
+    $latestNews = $app->cache->get("news_latest_id") ?? null;
     if ($latestNews === $get["newsId"]) {
-        $app->cache->delete('news_latest_id');
-        $app->cache->delete('news_latest_title');
+        $app->cache->delete("news_latest_id");
+        $app->cache->delete("news_latest_title");
     }
 }
 
