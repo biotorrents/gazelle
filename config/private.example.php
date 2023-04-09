@@ -14,7 +14,7 @@ declare(strict_types=1);
 ENV::setPriv("imagePsk", "");
 
 # production
-if (!$env->dev) {
+if (!$app->env->dev) {
     # currently used for API token auth
     ENV::setPriv("siteCryptoKey", "");
 
@@ -25,7 +25,7 @@ if (!$env->dev) {
     ENV::setPriv("rssHash", "");
 
     # hashed with the sessionId for internal api calls
-    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
+    ENV::setPriv("siteApiSecret", file_get_contents("{$app->env->webRoot}/siteApiSecret.txt"));
 }
 
 # development
@@ -33,13 +33,17 @@ else {
     ENV::setPriv("siteCryptoKey", "");
     ENV::setPriv("scheduleKey", "");
     ENV::setPriv("rssHash", "");
-    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
+    ENV::setPriv("siteApiSecret", file_get_contents("{$app->env->webRoot}/siteApiSecret.txt"));
 }
 
 
 /**
  * database
  */
+
+# enable or disable eloquent support
+# https://laravel.com/docs/9.x/eloquent
+#ENV::setPub("enableEloquent", true);
 
 # common info
 ENV::setPriv("sqlHost", "");
@@ -69,6 +73,14 @@ else {
 
 
 /**
+ * cache
+ */
+
+ENV::setPriv("redisHost", "localhost");
+ENV::setPriv("redisPort", 6379);
+
+
+/**
  * tracker
  */
 
@@ -76,7 +88,7 @@ else {
 ENV::setPriv("trackerHost", "");
 
 # production
-if (!$env->dev) {
+if (!$app->env->dev) {
     ENV::setPriv("trackerPort", 34000);
 
     # must be 32 alphanumeric characters and match site_password in ocelot.conf
@@ -95,6 +107,16 @@ else {
 
 
 /**
+ * manticore search engine
+ */
+
+ENV::setPriv("manticoreHost", "");
+ENV::setPriv("manticorePort", 9306);
+ENV::setPriv("manticoreSocket", null);
+ENV::setPriv("manticoreMaxMatches", 1000); # must be <= server max_matches (default 1000)
+
+
+/**
  * Plausible Stats API
  * @see https://plausible.io/docs/stats-api
  */
@@ -106,7 +128,7 @@ ENV::setPub("enablePlausible", true);
 ENV::setPub("plausibleUri", "");
 
 # production
-if (!$env->dev) {
+if (!$app->env->dev) {
     ENV::setPriv("plausibleKey", "");
 }
 
@@ -161,14 +183,14 @@ $discourseCategories = [
 ];
 ENV::setPub(
     "discourseCategories",
-    $env->convert($discourseCategories)
+    $app->env->convert($discourseCategories)
 );
 
 # base URI for API calls
 ENV::setPub("discourseUri", "");
 
 # production
-if (!$env->dev) {
+if (!$app->env->dev) {
     ENV::setPriv("discourseKey", "");
 }
 
@@ -195,5 +217,25 @@ ENV::setPriv(
     [
         "secretKey" => "",
         "organizationId" => "",
+    ]
+);
+
+
+/**
+ * Twitter API
+ */
+
+# enable or disable the integration
+ENV::setPub("enableTwitter", true);
+
+# secret key and organization id
+ENV::setPriv(
+    "twitterApi",
+    [
+        "consumerKey" => "",
+        "consumerSecret" => "",
+        "bearerToken" => "%2BeLgdhjbVIy4%3DG2o7b8QZVM7Gf3dDc8I1GyXz3yqyxqS3Z4GuiPU6TkDTJFBt4l",
+        "accessToken" => "-ohWcO8RRRUxXXakx05Il4tKWt6t6vB",
+        "accessTokenSecret" => "",
     ]
 );
