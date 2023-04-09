@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 
 /**
- * Images
+ * \Gazelle\Images
  *
  * Thumbnail aide, mostly.
+ *
+ * @see https://github.com/biotorrents/image-host
  */
 
 namespace Gazelle;

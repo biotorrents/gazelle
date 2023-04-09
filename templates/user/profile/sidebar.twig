@@ -53,20 +53,20 @@
 
 			{# send pm #}
 			{# /messages/compose/{{ userId }} #}
-			<a href="/inbox.php?action=compose&to={{ userId }}" class="button button-primary"> send message</a>
+			<a href="/inbox.php?action=compose&to={{ data.core.id }}" class="button button-primary"> send message</a>
 
 			{# add/remove from friends #}
-			{# friends.php?action=add&friendid={{ userId }}&auth={{ user.extra.AuthKey }} #}
+			{# friends.php?action=add&friendid={{ data.core.id }}&auth={{ user.extra.AuthKey }} #}
 			{% if not isFriend %}
-				<a href="/friends/create/{{ userId }}" class="button button-orange">add friend</a>
+				<a href="/friends/create/{{ data.core.id }}" class="button button-orange">add friend</a>
 			{% else %}
-				<a href="/friends/create/{{ userId }}" class="button button-orange">remove friend</a>
+				<a href="/friends/create/{{ data.core.id }}" class="button button-orange">remove friend</a>
 			{% endif %}
 			{# if not isFriend #}
 
 			{# snitches get stitches #}
 			{# /report/{{ userId }} #}
-			<a href="/reports.php?action=report&type=user&id={{ userId }}" class="button button-red"> report user</a>
+			<a href="/reports.php?action=report&type=user&id={{ data.core.id }}" class="button button-red"> report user</a>
 
 			<hr/>
 
