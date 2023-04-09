@@ -14,7 +14,7 @@ declare(strict_types=1);
 ENV::setPriv("imagePsk", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     # currently used for API token auth
     ENV::setPriv("siteCryptoKey", "");
 
@@ -25,7 +25,7 @@ if (!$app->env->dev) {
     ENV::setPriv("rssHash", "");
 
     # hashed with the sessionId for internal api calls
-    ENV::setPriv("siteApiSecret", file_get_contents("{$app->env->webRoot}/siteApiSecret.txt"));
+    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
 }
 
 # development
@@ -33,7 +33,7 @@ else {
     ENV::setPriv("siteCryptoKey", "");
     ENV::setPriv("scheduleKey", "");
     ENV::setPriv("rssHash", "");
-    ENV::setPriv("siteApiSecret", file_get_contents("{$app->env->webRoot}/siteApiSecret.txt"));
+    ENV::setPriv("siteApiSecret", file_get_contents("{$env->webRoot}/siteApiSecret.txt"));
 }
 
 
@@ -58,7 +58,7 @@ ENV::setPriv("sqlKey", "");
 ENV::setPriv("sqlCertAuthority", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("sqlDatabase", "");
     ENV::setPriv("sqlUsername", "");
     ENV::setPriv("sqlPassphrase", "");
@@ -88,7 +88,7 @@ ENV::setPriv("redisPort", 6379);
 ENV::setPriv("trackerHost", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("trackerPort", 34000);
 
     # must be 32 alphanumeric characters and match site_password in ocelot.conf
@@ -128,7 +128,7 @@ ENV::setPub("enablePlausible", true);
 ENV::setPub("plausibleUri", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("plausibleKey", "");
 }
 
@@ -183,14 +183,14 @@ $discourseCategories = [
 ];
 ENV::setPub(
     "discourseCategories",
-    $app->env->convert($discourseCategories)
+    $env->convert($discourseCategories)
 );
 
 # base URI for API calls
 ENV::setPub("discourseUri", "");
 
 # production
-if (!$app->env->dev) {
+if (!$env->dev) {
     ENV::setPriv("discourseKey", "");
 }
 
