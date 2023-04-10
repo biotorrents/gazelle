@@ -190,8 +190,8 @@ HTML;
 
         if (!$this->NewTorrent) {
             # Edit form hidden fields
-            $TorrentID = Text::esc($this->TorrentID);
-            $CategoryID = Text::esc($this->Torrent['CategoryID'] - 1);
+            $TorrentID = \Gazelle\Text::esc($this->TorrentID);
+            $CategoryID = \Gazelle\Text::esc($this->Torrent['CategoryID'] - 1);
 
             $HTML .= <<<HTML
             <input type="hidden" name="action" value="takeedit" />
@@ -202,8 +202,8 @@ HTML;
         else {
             # Torrent upload hidden fields
             if ($this->Torrent && $this->Torrent['GroupID']) {
-                $GroupID = Text::esc($this->Torrent['GroupID']);
-                $CategoryID = Text::esc($this->Torrent['CategoryID'] - 1);
+                $GroupID = \Gazelle\Text::esc($this->Torrent['GroupID']);
+                $CategoryID = \Gazelle\Text::esc($this->Torrent['CategoryID'] - 1);
 
                 $HTML .= <<<HTML
                 <input type="hidden" name="groupid" value="$GroupID" />
@@ -213,7 +213,7 @@ HTML;
 
             # Request hidden fields (new or edit?)
             if ($this->Torrent && ($this->Torrent['RequestID'] ?? false)) {
-                $RequestID = Text::esc($this->Torrent['RequestID']);
+                $RequestID = \Gazelle\Text::esc($this->Torrent['RequestID']);
                 $HTML .=  <<<HTML
                 <input type="hidden" name="requestid"value="$RequestID" />
 HTML;
@@ -434,7 +434,7 @@ HTML;
         /**
          * Accession Number
          */
-        $CatalogueNumber = Text::esc($Torrent['CatalogueNumber']);
+        $CatalogueNumber = \Gazelle\Text::esc($Torrent['CatalogueNumber']);
         $Disabled = $this->Disabled;
 
         echo $twig->render(
@@ -450,7 +450,7 @@ HTML;
          * Version
          */
 
-        $Version = Text::esc($Torrent['Version']);
+        $Version = \Gazelle\Text::esc($Torrent['Version']);
 
         echo $twig->render(
             'torrent_form/version.html',
@@ -467,9 +467,9 @@ HTML;
 
         # New torrent upload
         if ($this->NewTorrent) {
-            $Title1 = Text::esc($Torrent['Title']);
-            $Title2 = Text::esc($Torrent['Title2']);
-            $Title3 = Text::esc($Torrent['TitleJP']);
+            $Title1 = \Gazelle\Text::esc($Torrent['Title']);
+            $Title2 = \Gazelle\Text::esc($Torrent['Title2']);
+            $Title3 = \Gazelle\Text::esc($Torrent['TitleJP']);
             #$Disabled = $this->Disabled;
 
             echo $twig->render(
@@ -520,7 +520,7 @@ HTML;
             # If there are already creators listed
             if (!empty($Torrent['Artists'])) {
                 foreach ($Torrent['Artists'] as $Num => $Artist) {
-                    $ArtistName = Text::esc($Artist['name']);
+                    $ArtistName = \Gazelle\Text::esc($Artist['name']);
                     $AddRemoveBrackets = ($Num === 0) ?: null;
 
                     echo <<<HTML
@@ -545,7 +545,7 @@ HTML;
          * Workgroup
          */
         if ($this->NewTorrent) {
-            $Affiliation = Text::esc($Torrent['Studio']);
+            $Affiliation = \Gazelle\Text::esc($Torrent['Studio']);
 
             echo $twig->render(
                 'torrent_form/workgroup.html',
@@ -564,7 +564,7 @@ HTML;
          * Currently not sanitized to a standard format.
          */
         if ($this->NewTorrent) {
-            $TorrentLocation = Text::esc($Torrent['Series']);
+            $TorrentLocation = \Gazelle\Text::esc($Torrent['Series']);
             echo $twig->render(
                 'torrent_form/location.html',
                 [
@@ -585,7 +585,7 @@ HTML;
         /**
          * Year
          */
-        $TorrentYear = Text::esc($Torrent['Year']);
+        $TorrentYear = \Gazelle\Text::esc($Torrent['Year']);
 
         echo $twig->render(
             'torrent_form/year.html',
@@ -1006,7 +1006,7 @@ HTML;
 
             # todo: Find a better place for these
             $Disabled = ($this->DisabledFlag) ? ' disabled="disabled"' : null;
-            $TorrentTagList = Text::esc(implode(', ', explode(',', $Torrent['TagList'])));
+            $TorrentTagList = \Gazelle\Text::esc(implode(', ', explode(',', $Torrent['TagList'])));
 
             echo <<<HTML
             <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" $Disabled>
@@ -1038,7 +1038,7 @@ HTML;
          * Another obvious field.
          */
         if ($this->NewTorrent) {
-            $TorrentImage = Text::esc($Torrent['Image']);
+            $TorrentImage = \Gazelle\Text::esc($Torrent['Image']);
             $Disabled = $this->Disabled;
 
             echo $twig->render(
@@ -1058,7 +1058,7 @@ HTML;
          * The intended use is for web seeds, Dat mirrors, etc.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentMirrors = Text::esc($Torrent['Mirrors']);
+            $TorrentMirrors = \Gazelle\Text::esc($Torrent['Mirrors']);
             echo $twig->render(
                 'torrent_form/mirrors.html',
                 [
@@ -1078,7 +1078,7 @@ HTML;
          * pulling info from DOI to populate the schema.
          */
         if (!$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentSamples = Text::esc($Torrent['Screenshots']);
+            $TorrentSamples = \Gazelle\Text::esc($Torrent['Screenshots']);
 
             echo <<<HTML
             <tr id="screenshots_tr">
@@ -1103,7 +1103,7 @@ HTML;
          */
 
         if ($ENV->enableBioPhp && !$this->DisabledFlag && $this->NewTorrent) {
-            $TorrentSeqhash = Text::esc($Torrent['Seqhash']);
+            $TorrentSeqhash = \Gazelle\Text::esc($Torrent['Seqhash']);
             echo $twig->render(
                 'torrent_form/seqhash.html',
                 [
@@ -1135,7 +1135,7 @@ HTML;
             View::textarea(
                 id: 'album_desc',
                 placeholder: "General info about the torrent subject's function or significance",
-                value: Text::esc($Torrent['GroupDescription']) ?? ''
+                value: \Gazelle\Text::esc($Torrent['GroupDescription']) ?? ''
             );
 
             echo '</td></tr>';
@@ -1168,7 +1168,7 @@ HTML;
         View::textarea(
             id: 'release_desc',
             placeholder: 'Specific info about the protocols and equipment used to produce the data',
-            value: Text::esc($Torrent['TorrentDescription'] ?? ''),
+            value: \Gazelle\Text::esc($Torrent['TorrentDescription'] ?? ''),
         );
 
         echo '</td></tr>';

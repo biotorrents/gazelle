@@ -99,7 +99,7 @@ if (empty($_POST['image'])) {
     if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
-        $Err = Text::esc($_POST['image']).' does not appear to be a valid link to an image.';
+        $Err = \Gazelle\Text::esc($_POST['image']).' does not appear to be a valid link to an image.';
     }
 }
 

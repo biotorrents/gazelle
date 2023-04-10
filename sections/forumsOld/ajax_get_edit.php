@@ -61,7 +61,7 @@ if ($Depth != 0) {
   }
 }
 ?>
-<?=Text::parse($Body)?>
+<?=\Gazelle\Text::parse($Body)?>
 <br />
 <br />
 

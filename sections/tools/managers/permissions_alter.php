@@ -20,7 +20,7 @@ View::header('Manage Permissions', 'validate');
   <input type="hidden" name="auth"
     value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" name="id"
-    value="<?=Text::esc($_REQUEST['id']); ?>" />
+    value="<?=\Gazelle\Text::esc($_REQUEST['id']); ?>" />
   <div class="linkbox">
     <a href="tools.php?action=permissions" class="brackets">Back to permission list</a>
     <a href="tools.php" class="brackets">Back to tools</a>
@@ -29,19 +29,19 @@ View::header('Manage Permissions', 'validate');
     <tr>
       <td class="label">Permission name</td>
       <td><input type="text" name="name" id="name"
-          value="<?=!empty($Name) ? Text::esc($Name) : ''?>" />
+          value="<?=!empty($Name) ? \Gazelle\Text::esc($Name) : ''?>" />
       </td>
     </tr>
     <tr>
       <td class="label">Abbreviation</td>
       <td><input type="text" name="abbreviation" id="abbreviation"
-          value="<?=!empty($Abbreviation) ? Text::esc($Abbreviation) : ''?>" />
+          value="<?=!empty($Abbreviation) ? \Gazelle\Text::esc($Abbreviation) : ''?>" />
       </td>
     </tr>
     <tr>
       <td class="label">Class level</td>
       <td><input type="text" name="level" id="level"
-          value="<?=!empty($Level) ? Text::esc($Level) : ''?>" />
+          value="<?=!empty($Level) ? \Gazelle\Text::esc($Level) : ''?>" />
       </td>
     </tr>
     <tr>
@@ -63,12 +63,12 @@ View::header('Manage Permissions', 'validate');
     <tr>
       <td class="label">Additional forums</td>
       <td><input type="text" size="30" name="forums"
-          value="<?=Text::esc($Forums)?>" /></td>
+          value="<?=\Gazelle\Text::esc($Forums)?>" /></td>
     </tr>
     <?php if (is_numeric($_REQUEST['id'])) { ?>
     <tr>
       <td class="label">Current users in this class</td>
-      <td><?=Text::float($UserCount)?>
+      <td><?=\Gazelle\Text::float($UserCount)?>
       </td>
     </tr>
     <?php } ?>

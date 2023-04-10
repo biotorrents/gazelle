@@ -219,7 +219,7 @@ class OpenAI
         }
 
         # process response into an array
-        $keywords = json_decode(\Text::oneLine($response["choices"][0]["text"]), true);
+        $keywords = json_decode(\Gazelle\Text::oneLine($response["choices"][0]["text"]), true);
         if (!$keywords || !is_array($keywords)) {
             throw new \Exception("openai fucked up jobId {$response["id"]}");
         }
@@ -269,9 +269,9 @@ class OpenAI
      */
     private function processDescription(string $description): string
     {
-        $description = \Text::parse($description);
+        $description = \Gazelle\Text::parse($description);
         $description = strip_tags($description);
-        $description = \Text::oneLine($description);
+        $description = \Gazelle\Text::oneLine($description);
 
         return $description;
     }
@@ -303,7 +303,7 @@ class OpenAI
             "object" => $response["object"],
             "created" => \Carbon\Carbon::createFromTimestamp($response["created"])->toDateTimeString(),
             "model" => $response["model"],
-            "text" => \Text::oneLine($response["choices"][0]["text"]),
+            "text" => \Gazelle\Text::oneLine($response["choices"][0]["text"]),
             "index" => $response["choices"][0]["index"],
             "logprobs" => $response["choices"][0]["logprobs"],
             "finishReason" => $response["choices"][0]["finish_reason"],

@@ -22,7 +22,7 @@ $app->dbOld->prepared_query("
   ORDER BY ID ASC
   LIMIT 1");
 list($OwnerID, $Owner) = $app->dbOld->next_record();
-$Owner = Text::esc($Owner);
+$Owner = \Gazelle\Text::esc($Owner);
 
 ?>
 <div class="header">
@@ -60,7 +60,7 @@ foreach ($Results as $Result) {
     } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -95,7 +95,7 @@ foreach ($Results as $Result) {
     } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -130,7 +130,7 @@ foreach ($Results as $Result) {
     } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -164,7 +164,7 @@ foreach ($Results as $Result) {
     } ?>
       <tr<?=$RowClass?>>
         <td><a href="reportsv2.php?view=resolver&amp;id=<?=$UserID?>"><?=$Username?></a></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
 }
@@ -258,9 +258,9 @@ foreach ($Results as $Result) {
       } ?>
       <tr<?=$RowClass?>>
         <td>
-          <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=Text::esc($Array['Username'])?>'s reports</a>
+          <a href="reportsv2.php?view=staff&amp;id=<?=$Array['ResolverID']?>"><?=\Gazelle\Text::esc($Array['Username'])?>'s reports</a>
         </td>
-        <td class="number_column"><?=Text::float($Array['Count'])?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Array['Count'])?></td>
       </tr>
 <?php
   } ?>
@@ -293,10 +293,10 @@ foreach ($Results as $Result) {
         } ?>
       <tr<?=$Title === 'Urgent' ? ' class="highlight" style="font-weight: bold;"' : ''?>>
         <td>
-          <a href="reportsv2.php?view=type&amp;id=<?=Text::esc($Array['Type'])?>"><?=Text::esc($Title)?></a>
+          <a href="reportsv2.php?view=type&amp;id=<?=\Gazelle\Text::esc($Array['Type'])?>"><?=\Gazelle\Text::esc($Title)?></a>
         </td>
         <td class="number_column">
-          <?=Text::float($Array['Count'])?>
+          <?=\Gazelle\Text::float($Array['Count'])?>
         </td>
       </tr>
 <?php

@@ -97,7 +97,7 @@ $JsonTorrentDetails = [
     'mirrors'       => ($TorrentDetails['Mirrors']) ?: false,
 
     'description'   => $TorrentDetails['description'],
-   #'description'   => Text::parse($TorrentDetails['description']),
+   #'description'   => \Gazelle\Text::parse($TorrentDetails['description']),
     'picture'       => $TorrentDetails['picture'],
     'tagList'      => $TagList,
 

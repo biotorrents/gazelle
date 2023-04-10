@@ -202,7 +202,7 @@ class DatabaseOld
         }
 
         if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
-            echo '<pre>'.Text::esc($dbError).'</pre>';
+            echo '<pre>'.\Gazelle\Text::esc($dbError).'</pre>';
             if ($ENV->dev || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
@@ -495,8 +495,8 @@ class DatabaseOld
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
             if ($Escape) {
-                $Key = Text::esc($Row[$KeyField]);
-                $Val = Text::esc($Row[$ValField]);
+                $Key = \Gazelle\Text::esc($Row[$KeyField]);
+                $Val = \Gazelle\Text::esc($Row[$ValField]);
             } else {
                 $Key = $Row[$KeyField];
                 $Val = $Row[$ValField];
@@ -514,7 +514,7 @@ class DatabaseOld
     {
         $Return = [];
         while ($Row = mysqli_fetch_array($this->QueryID)) {
-            $Return[] = $Escape ? Text::esc($Row[$Key]) : $Row[$Key];
+            $Return[] = $Escape ? \Gazelle\Text::esc($Row[$Key]) : $Row[$Key];
         }
 
         mysqli_data_seek($this->QueryID, 0);

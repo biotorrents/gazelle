@@ -253,12 +253,12 @@ function user_dupes_table($UserID)
         <td colspan="5" align="left">
           <div id="dupecomments"
             class="<?=($DupeCount ? '' : 'hidden')?>">
-            <?=Text::parse($Comments); ?>
+            <?=\Gazelle\Text::parse($Comments); ?>
           </div>
           <div id="editdupecomments"
             class="<?=($DupeCount ? 'hidden' : '')?>">
             <textarea name="dupecomments" onkeyup="resize('dupecommentsbox');" id="dupecommentsbox" cols="65" rows="5"
-              style="width: 98%;"><?=Text::esc($Comments)?></textarea>
+              style="width: 98%;"><?=\Gazelle\Text::esc($Comments)?></textarea>
           </div>
           <span class="u-pull-right"><a href="#"
               onclick="$('#dupecomments').gtoggle(); $('#editdupecomments').gtoggle(); resize('dupecommentsbox'); return false;"

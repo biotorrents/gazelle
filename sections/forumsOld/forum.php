@@ -78,7 +78,7 @@ if (!check_perms('site_moderate_forums')) {
     }
 }
 
-$ForumName = Text::esc($Forums[$ForumID]['Name']);
+$ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
 if (!Forums::check_forumperm($ForumID)) {
     #error(403);
 }
@@ -174,7 +174,7 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
     <br />
 
     <a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"
-      class="brackets"><?=Text::esc($Thread['Title'])?></a>
+      class="brackets"><?=\Gazelle\Text::esc($Thread['Title'])?></a>
     <?php
 } ?>
   </div>
@@ -277,7 +277,7 @@ if (count($Forum) === 0) {
         <?php
     $TopicLength = 75 - (2 * count($PageLinks));
             unset($PageLinks);
-            $Title = Text::esc($Title);
+            $Title = \Gazelle\Text::esc($Title);
             $DisplayTitle = $Title; ?>
         <strong>
           <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>"
@@ -300,7 +300,7 @@ if (count($Forum) === 0) {
         <?=time_diff($LastTime, 1)?>
       </span>
     </td>
-    <td class="number_column"><?=Text::float($PostCount - 1)?>
+    <td class="number_column"><?=\Gazelle\Text::float($PostCount - 1)?>
     </td>
     <td><?=User::format_username($AuthorID, false, false, false, false, false)?>
     </td>

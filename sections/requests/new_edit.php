@@ -234,7 +234,7 @@ View::header(
     if (!empty($ArtistForm)) {
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
-            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=\Gazelle\Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
 
             <?php
             if (empty($Disabled)) {
@@ -306,7 +306,7 @@ View::header(
               </select>
 
               <input type="text" id="tags" name="tags" size="45"
-                value="<?= (!empty($Tags) ? Text::esc($Tags) : '') ?>" <?= $Disabled ?> />
+                value="<?= (!empty($Tags) ? \Gazelle\Text::esc($Tags) : '') ?>" <?= $Disabled ?> />
           </td>
         </tr>
 

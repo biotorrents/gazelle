@@ -44,7 +44,7 @@ function display_array($array, $escape = []): array
 {
     foreach ($array as $key => $Val) {
         if ((!is_array($escape) && $escape === true) || !in_array($key, $escape)) {
-            $array[$key] = Text::esc($Val);
+            $array[$key] = \Gazelle\Text::esc($Val);
         }
     }
 

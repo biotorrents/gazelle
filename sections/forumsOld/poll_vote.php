@@ -93,12 +93,12 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
   <input type="hidden" name="auth"
     value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" name="large"
-    value="<?=Text::esc($_POST['large'])?>" />
+    value="<?=\Gazelle\Text::esc($_POST['large'])?>" />
   <input type="hidden" name="topicid" value="<?=$TopicID?>" />
   <?php for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
   <input type="radio" name="vote" id="answer_<?=$i?>"
     value="<?=$i?>" />
-  <label for="answer_<?=$i?>"><?=Text::esc($Answers[$i])?></label><br />
+  <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br />
   <?php } ?>
   <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show
     the results!</label><br /><br />
@@ -146,7 +146,7 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
                 $Ratio = 0;
                 $Percent = 0;
             } ?>
-  <li><?=Text::esc($Answers[$i])?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+  <li><?=\Gazelle\Text::esc($Answers[$i])?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
   <li class="graph">
     <span class="center_poll"
       style="width: <?=round($Ratio * $Size)?>px;"></span>
@@ -167,13 +167,13 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
         foreach ($StaffVotes as $StaffVote) {
             list($StaffString, $StaffVoted) = $StaffVote; ?>
   <li><a
-      href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=Text::esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a>
+      href="forums.php?action=change_vote&amp;threadid=<?=$TopicID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$StaffVoted?>"><?=\Gazelle\Text::esc(empty($Answers[$StaffVoted]) ? 'Blank' : $Answers[$StaffVoted])?></a>
     - <?=$StaffString?>
   </li>
   <?php
         }
     } ?>
 </ul>
-<br /><strong>Votes:</strong> <?=Text::float($TotalVotes)?>
+<br /><strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?>
 <?php
 }

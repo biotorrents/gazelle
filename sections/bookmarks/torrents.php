@@ -136,13 +136,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=Text::float($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php
@@ -212,13 +212,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=Text::float($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php
@@ -237,7 +237,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName = "$DisplayName [$year]";
     }
 
-    $Tags = Text::esc($TorrentTags->format());
+    $Tags = \Gazelle\Text::esc($TorrentTags->format());
     $PlainTags = implode(', ', $TorrentTags->get_tags()); ?>
 
 <div class='collage_image image_group_<?=$GroupID?>'>
@@ -341,7 +341,7 @@ View::header($Title, 'browse,collage,wall');
           if ($i > 10) {
               break;
           } ?>
-      <li><a href="artist.php?id=<?=$ID?>"><?=Text::esc($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
+      <li><a href="artist.php?id=<?=$ID?>"><?=\Gazelle\Text::esc($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
       <?php
       }
       echo "$Indent</ol>\n";

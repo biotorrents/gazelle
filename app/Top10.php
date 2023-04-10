@@ -396,7 +396,7 @@ class Top10
     private static function render_tile($url, $name, $image)
     {
         if (!empty($image)) {
-            $name = Text::esc($name); ?>
+            $name = \Gazelle\Text::esc($name); ?>
 <li>
   <a
     href="<?=$url?><?=$name?>">
@@ -436,7 +436,7 @@ class Top10
         if (!empty($image)) {
             $image = \Gazelle\Images::process($image);
             $title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$image&quot; alt=&quot;&quot; /&gt;\"";
-            $name = Text::esc($name); ?>
+            $name = \Gazelle\Text::esc($name); ?>
 
 <li>
   <a class="tooltip_image" data-title-plain="<?=$name?>" <?=$title?> href="<?=$url?><?=$name?>"><?=$name?></a>

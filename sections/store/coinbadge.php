@@ -83,8 +83,8 @@ View::header('Store');
   <h2>Purchase Successful</h2>
   <div class="box pad">
     <p>You bought the Oppaicoin badge</p>
-    <p>This badge has been purchased <?=Text::float($Purchases)?>
-      times and now costs <?=Text::float($Price)?> <?=bonusPoints?>.</p>
+    <p>This badge has been purchased <?=\Gazelle\Text::float($Purchases)?>
+      times and now costs <?=\Gazelle\Text::float($Price)?> <?=bonusPoints?>.</p>
   </div>
   <?php } ?>
   <?php
@@ -99,9 +99,9 @@ View::header('Store');
   <?php
       } ?>
   <div class="box pad">
-    <p><?=Text::float($Purchases)?> people have bought this badge
+    <p><?=\Gazelle\Text::float($Purchases)?> people have bought this badge
     </p>
-    <p>Current cost: <?=Text::float($Price)?> <?=bonusPoints?>
+    <p>Current cost: <?=\Gazelle\Text::float($Price)?> <?=bonusPoints?>
     </p>
     <?php if (Badges::hasBadge($UserID, 255)) { ?>
     <p>You already own this badge</p>

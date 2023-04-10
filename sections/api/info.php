@@ -10,7 +10,7 @@ if ($app->user->extra['BytesUploaded'] == 0 && $app->user->extra['BytesDownloade
 } elseif ($app->user->extra['BytesDownloaded'] == 0) {
     $Ratio = -1;
 } else {
-    $Ratio = Text::float(max($app->user->extra['BytesUploaded'] / $app->user->extra['BytesDownloaded'] - 0.005, 0), 2); //Subtract .005 to floor to 2 decimals
+    $Ratio = \Gazelle\Text::float(max($app->user->extra['BytesUploaded'] / $app->user->extra['BytesDownloaded'] - 0.005, 0), 2); //Subtract .005 to floor to 2 decimals
 }
 
 $MyNews = $app->user->extra['LastReadNews'];

@@ -101,7 +101,7 @@ class CommentsView
     <?php } ?>
     <td class="body" valign="top">
       <div id="content<?=$PostID?>">
-        <?=Text::parse($Body)?>
+        <?=\Gazelle\Text::parse($Body)?>
         <?php if ($EditedUserID) { ?>
         <br />
         <br />

@@ -60,7 +60,7 @@ foreach ($Forums as $Forum) {
   ) {
         continue;
     }
-    $ForumDescription = Text::esc($ForumDescription);
+    $ForumDescription = \Gazelle\Text::esc($ForumDescription);
 
     if ($CategoryID != $LastCategoryID) {
         if (!empty($JsonForums) && !empty($JsonCategory)) {
@@ -98,7 +98,7 @@ foreach ($Forums as $Forum) {
     'lastTopicId' => (float)$LastTopicID,
     'lastTime' => $LastTime,
     'specificRules' => $SpecificRules,
-    'lastTopic' => Text::esc($LastTopic),
+    'lastTopic' => \Gazelle\Text::esc($LastTopic),
     'read' => $Read === 1,
     'locked' => $Locked === 1,
     'sticky' => $Sticky === 1

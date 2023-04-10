@@ -259,13 +259,13 @@ continue;
 		    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
 		
 		    <!-- Snatches, seeders, and leechers -->
-		    <td class="number_column"><?=Text::float($TotalSnatched)?>
+		    <td class="number_column"><?=\Gazelle\Text::float($TotalSnatched)?>
 		    </td>
 		    <td
 		      class="number_column<?=($TotalSeeders === 0 ? ' r00' : '')?>">
-		      <?=Text::float($TotalSeeders)?>
+		      <?=\Gazelle\Text::float($TotalSeeders)?>
 		    </td>
-		    <td class="number_column"><?=Text::float($TotalLeechers)?>
+		    <td class="number_column"><?=\Gazelle\Text::float($TotalLeechers)?>
 		    </td>
 		  </tr>
 		
@@ -321,13 +321,13 @@ continue;
 		    </td>
 		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
 		    </td>
-		    <td class="number_column"><?=Text::float($Data['Snatched'])?>
+		    <td class="number_column"><?=\Gazelle\Text::float($Data['Snatched'])?>
 		    </td>
 		    <td
 		      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-		      <?=Text::float($Data['Seeders'])?>
+		      <?=\Gazelle\Text::float($Data['Seeders'])?>
 		    </td>
-		    <td class="number_column"><?=Text::float($Data['Leechers'])?>
+		    <td class="number_column"><?=\Gazelle\Text::float($Data['Leechers'])?>
 		    </td>
 		  </tr>
 		  <?php
@@ -446,13 +446,13 @@ continue;
 		    </td>
 		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
 		    </td>
-		    <td class="number_column"><?=Text::float($Data['Snatched'])?>
+		    <td class="number_column"><?=\Gazelle\Text::float($Data['Snatched'])?>
 		    </td>
 		    <td
 		      class="number_column<?=($Data['Seeders'] === 0) ? ' r00' : ''?>">
-		      <?=Text::float($Data['Seeders'])?>
+		      <?=\Gazelle\Text::float($Data['Seeders'])?>
 		    </td>
-		    <td class="number_column"><?=Text::float($Data['Leechers'])?>
+		    <td class="number_column"><?=\Gazelle\Text::float($Data['Leechers'])?>
 		    </td>
 		  </tr>
 		  <?php

@@ -45,7 +45,7 @@ class Announce
     public static function all(string $message)
     {
         # escape it (shouldn't be UGC anyway)
-        $message = Text::esc($message);
+        $message = \Gazelle\Text::esc($message);
 
         /*
         # send it places
@@ -100,7 +100,7 @@ class Announce
             fwrite($socket, $command);
             fclose($socket);
         } catch (Throwable $e) {
-            Text::figlet("irc failure", "red");
+            \Gazelle\Text::figlet("irc failure", "red");
             !d($e->getMessage());
         }
     }
@@ -123,7 +123,7 @@ class Announce
         try {
             # todo
         } catch (Throwable $e) {
-            Text::figlet("rss failure", "red");
+            \Gazelle\Text::figlet("rss failure", "red");
             !d($e->getMessage());
         }
     }
@@ -165,7 +165,7 @@ class Announce
                 curl_exec($curl);
                 curl_close($curl);
             } catch (TypeError $e) {
-                Text::figlet("slack failure", "red");
+                \Gazelle\Text::figlet("slack failure", "red");
                 !d($e->getMessage());
             }
         }
@@ -217,7 +217,7 @@ class Announce
 
             return $content = $connection->get("account/verify_credentials");
         } catch (Throwable $e) {
-            Text::figlet("twitter failure", "red");
+            \Gazelle\Text::figlet("twitter failure", "red");
             !d($e->getMessage());
         }
     }
@@ -244,7 +244,7 @@ class Announce
 
             $mastodon->postStatus($message);
         } catch (Throwable $e) {
-            Text::figlet("mastodon failure", "red");
+            \Gazelle\Text::figlet("mastodon failure", "red");
             !d($e->getMessage());
         }
     }

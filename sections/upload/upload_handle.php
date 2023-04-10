@@ -404,7 +404,7 @@ if (empty($data['GroupID']) && empty($ArtistForm)) {
 
     $ArtistForm = [];
     while (list($ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
-        array_push($ArtistForm, array('id' => $ArtistID, 'name' => Text::esc($ArtistName)));
+        array_push($ArtistForm, array('id' => $ArtistID, 'name' => \Gazelle\Text::esc($ArtistName)));
         array_push($ArtistsUnescaped, array('name' => $ArtistName));
     }
     $LogName .= Artists::display_artists($ArtistsUnescaped, false, true, false);
@@ -770,11 +770,11 @@ chmod($fileName, 0400);
 
 # update site logs
 $torrentLogMessage = "Torrent {$torrentId} - {$data["title"]} - "
-    . Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
+    . \Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
     ." MB - uploaded by {$app->user->core["username"]}";
 Misc::write_log($torrentLogMessage);
 
-$groupLogMessage = "uploaded " . Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
+$groupLogMessage = "uploaded " . \Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
 Torrents::write_group_log($groupId, $torrentId, $app->user->core["id"], $groupLogMessage, 0);
 
 # update hash

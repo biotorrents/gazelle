@@ -740,10 +740,10 @@ class Torrents
             $Contents = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
-                $FilePath = (isset($Tor->Dec['info']['files']) ? Text::utf8($Tor->get_name()) : '');
+                $FilePath = (isset($Tor->Dec['info']['files']) ? \Gazelle\Text::utf8($Tor->get_name()) : '');
             } else {
                 $Tor = new \TORRENT(unserialize(base64_decode($Contents)), true);
-                $FilePath = (isset($Tor->Val['info']->Val['files']) ? Text::utf8($Tor->get_name()) : '');
+                $FilePath = (isset($Tor->Val['info']->Val['files']) ? \Gazelle\Text::utf8($Tor->get_name()) : '');
             }
             list($TotalSize, $FileList) = $Tor->file_list();
             foreach ($FileList as $File) {
@@ -792,7 +792,7 @@ class Torrents
     public static function filelist_format_file($File)
     {
         list($Size, $Name) = $File;
-        $Name = Text::utf8(strtr($Name, "\n\r\t", '   '));
+        $Name = \Gazelle\Text::utf8(strtr($Name, "\n\r\t", '   '));
         $ExtPos = strrpos($Name, '.');
         // Should not be $ExtPos !== false. Extensionless files that start with a . should not get extensions
         $Ext = ($ExtPos ? trim(substr($Name, $ExtPos + 1)) : '');
@@ -825,8 +825,8 @@ class Torrents
      */
     public static function filelist_get_file($File)
     {
-        // Need this hack because filelists are always Text::esc()ed
-        $DelimLen = strlen(Text::esc(self::filelist_delim())) + 1;
+        // Need this hack because filelists are always \Gazelle\Text::esc()ed
+        $DelimLen = strlen(\Gazelle\Text::esc(self::filelist_delim())) + 1;
         list($FileExt, $Size, $Name) = explode(' ', $File, 3);
         if ($Spaces = strspn($Name, ' ')) {
             $Name = str_replace(' ', '&nbsp;', substr($Name, 0, $Spaces)) . substr($Name, $Spaces);
@@ -858,50 +858,50 @@ class Torrents
         if ($ShowMedia && !empty($Data['Media'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&media='
-                    . Text::esc($Data['Media'])
+                    . \Gazelle\Text::esc($Data['Media'])
                     . '">'
-                    . Text::esc($Data['Media'])
+                    . \Gazelle\Text::esc($Data['Media'])
                     . '</a>'
-                : Text::esc($Data['Media']);
+                : \Gazelle\Text::esc($Data['Media']);
         }
 
         # Format
         if (!empty($Data['Container'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&container='
-                    . Text::esc($Data['Container'])
+                    . \Gazelle\Text::esc($Data['Container'])
                     . '">'
-                    . Text::esc($Data['Container'])
+                    . \Gazelle\Text::esc($Data['Container'])
                     . '</a>'
-                : Text::esc($Data['Container']);
+                : \Gazelle\Text::esc($Data['Container']);
         }
 
         # Archive
         if (!empty($Data['Archive'])) {
             # todo: Search on archives, lowest priority
-            $Info[] = Text::esc($Data['Archive']);
+            $Info[] = \Gazelle\Text::esc($Data['Archive']);
         }
 
         # Resolution
         if (!empty($Data['Resolution'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&resolution='
-                    . Text::esc($Data['Resolution'])
+                    . \Gazelle\Text::esc($Data['Resolution'])
                     . '">'
-                    . Text::esc($Data['Resolution'])
+                    . \Gazelle\Text::esc($Data['Resolution'])
                     . '</a>'
-                : Text::esc($Data['Resolution']);
+                : \Gazelle\Text::esc($Data['Resolution']);
         }
 
         # License
         if (!empty($Data['Codec'])) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&codec='
-                    . Text::esc($Data['Codec'])
+                    . \Gazelle\Text::esc($Data['Codec'])
                     . '">'
-                    . Text::esc($Data['Codec'])
+                    . \Gazelle\Text::esc($Data['Codec'])
                     . '</a>'
-                : Text::esc($Data['Codec']);
+                : \Gazelle\Text::esc($Data['Codec']);
         }
 
         # Alignned/Annotated

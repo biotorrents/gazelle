@@ -54,7 +54,7 @@ class Esc
      */
     public static function string(mixed $unsafe): string
     {
-        $safe = Text::esc($unsafe);
+        $safe = \Gazelle\Text::esc($unsafe);
         return strval($safe);
 
         /*

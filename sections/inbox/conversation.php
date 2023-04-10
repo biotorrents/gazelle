@@ -98,7 +98,7 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record(
       <div class="u-pull-right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
     </div>
     <div class="body" id="message<?=$MessageID?>">
-      <?=Text::parse($Body)?>
+      <?=\Gazelle\Text::parse($Body)?>
     </div>
   </div>
   <?php

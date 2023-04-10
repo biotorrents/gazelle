@@ -151,7 +151,7 @@ View::header('Report a '.$Type['title']);
 switch ($Short) {
   case 'user':
 ?>
-  <p>You are reporting the user <strong><?=Text::esc($Username)?></strong></p>
+  <p>You are reporting the user <strong><?=\Gazelle\Text::esc($Username)?></strong></p>
   <?php
     break;
   case 'request_update':
@@ -164,9 +164,9 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::parse($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -226,9 +226,9 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::parse($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -245,9 +245,9 @@ switch ($Short) {
       <td>Description</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::parse($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
     </tr>
   </table>
@@ -262,9 +262,9 @@ switch ($Short) {
       <td>Title</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=Text::esc($Title)?>
+      <td><?=\Gazelle\Text::esc($Title)?>
       </td>
     </tr>
   </table>
@@ -279,9 +279,9 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=Text::parse($Body)?>
+      <td><?=\Gazelle\Text::parse($Body)?>
       </td>
     </tr>
   </table>
@@ -296,9 +296,9 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=Text::esc($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=Text::parse($Body)?>
+      <td><?=\Gazelle\Text::parse($Body)?>
       </td>
     </tr>
   </table>

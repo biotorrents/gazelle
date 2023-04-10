@@ -32,9 +32,9 @@ foreach ($News as $NewsItem) {
         $NewsResponse,
         array(
       $NewsID,
-      Text::parse($Title),
+      \Gazelle\Text::parse($Title),
       time_diff($NewsTime),
-      Text::parse($Body)
+      \Gazelle\Text::parse($Body)
     )
     );
 }

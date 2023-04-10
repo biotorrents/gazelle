@@ -138,16 +138,16 @@ if (check_perms('admin_manage_blog')) {
                 value="<?=$BlogID; ?>" />
             <?php } ?>
             <h3>Title</h3>
-            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.Text::esc($Title).'"' : ''; ?>
+            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>
             /><br />
             <h3>Body</h3>
             <textarea name="body" cols="95"
-                rows="15"><?=!empty($Body) ? Text::esc($Body) : ''; ?></textarea>
+                rows="15"><?=!empty($Body) ? \Gazelle\Text::esc($Body) : ''; ?></textarea>
             <br />
             <input type="checkbox" value="1" name="important" id="important" checked="checked" /><label
                 for="important">Important</label><br />
             <h3>Thread ID</h3>
-            <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.Text::esc($ThreadID).'"' : ''; ?>
+            <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.\Gazelle\Text::esc($ThreadID).'"' : ''; ?>
             />
             (Leave blank to create thread automatically)
             <br /><br />
@@ -214,7 +214,7 @@ foreach ($Blog as $BlogItem) {
             <?php } ?>
         </div>
         <div class="pad">
-            <?=Text::parse($Body)?>
+            <?=\Gazelle\Text::parse($Body)?>
             <?php if ($ThreadID) { ?>
             <br /><br />
             <em><a

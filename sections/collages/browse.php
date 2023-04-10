@@ -187,7 +187,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="search" name="search" size="60" placeholder="Search terms"
-              value="<?=(!empty($_GET['search']) ? Text::esc($_GET['search']) : '')?>" />
+              value="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : '')?>" />
           </td>
         </tr>
 
@@ -195,7 +195,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? Text::esc($_GET['tags']) : '')?>" />
+              value="<?=(!empty($_GET['tags']) ? \Gazelle\Text::esc($_GET['tags']) : '')?>" />
             &ensp;
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
     'tags_type',
@@ -379,9 +379,9 @@ foreach ($Collages as $Collage) {
       <div class="tags"><?=$TorrentTags->format('collages.php?action=search&amp;tags=')?>
       </div>
     </td>
-    <td class="number_column"><?=Text::float((int)$NumTorrents)?>
+    <td class="number_column"><?=\Gazelle\Text::float((int)$NumTorrents)?>
     </td>
-    <td class="number_column"><?=Text::float((int)$Subscribers)?>
+    <td class="number_column"><?=\Gazelle\Text::float((int)$Subscribers)?>
     </td>
     <td class="nobr"><?=time_diff(intval($Updated))?>
     </td>

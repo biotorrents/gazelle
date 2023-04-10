@@ -47,7 +47,7 @@ if (check_perms('admin_reports')) {
       } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
   } ?>
@@ -79,7 +79,7 @@ $app->dbOld->query("
       } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
   } ?>
@@ -111,7 +111,7 @@ $app->dbOld->query("
       } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
   } ?>
@@ -141,7 +141,7 @@ $app->dbOld->query("
       } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::float($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
 <?php
   } ?>
@@ -184,7 +184,7 @@ $app->dbOld->query("
       <tr<?=$RowClass?>>
         <td class="number_column"><?=$i?></td>
         <td><?=$Username?></td>
-        <td class="number_column"><?=Text::float($Trashed)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Trashed)?></td>
       </tr>
 <?php
     $i++;

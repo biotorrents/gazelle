@@ -227,10 +227,10 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        # Text::parse
+        # \Gazelle\Text::parse
         $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
             return new Twig\Markup(
-                Text::parse($string),
+                \Gazelle\Text::parse($string),
                 "UTF-8"
             );
         }));
@@ -303,9 +303,9 @@ class Twig # extends Twig\Environment
             return Format::get_size($size, $levels);
         }));
 
-        # Text::float
+        # \Gazelle\Text::float
         $twig->addFilter(new Twig\TwigFilter("float", function ($number, $decimals = 2) {
-            return Text::float($number, $decimals);
+            return \Gazelle\Text::float($number, $decimals);
         }));
 
         # Illuminate\Support\Str::camel

@@ -175,7 +175,7 @@ if ($TopicID) {
           </strong>
         </div>
         <div class="pad">
-          <p><strong><?=Text::esc($Question)?></strong></p>
+          <p><strong><?=\Gazelle\Text::esc($Question)?></strong></p>
           <?php if ($UserResponse !== null || $Closed) { ?>
           <ul class="poll nobullet">
             <?php foreach ($Answers as $i => $Answer) {
@@ -186,7 +186,7 @@ if ($TopicID) {
             $Ratio = 0;
             $Percent = 0;
         } ?>
-            <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=Text::esc($Answers[$i])?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+            <li<?=((!empty($UserResponse) && ($UserResponse == $i))?' class="poll_your_answer"':'')?>><?=\Gazelle\Text::esc($Answers[$i])?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
               <li class="graph">
                 <span class="center_poll"
                   style="width: <?=round($Ratio * 140)?>px;"></span>
@@ -195,7 +195,7 @@ if ($TopicID) {
               <?php
     } ?>
           </ul>
-          <strong>Votes:</strong> <?=Text::float($TotalVotes)?><br />
+          <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br />
           <?php } else { ?>
           <div id="poll_container">
             <form class="vote_form" name="poll" id="poll" action="">
@@ -207,7 +207,7 @@ if ($TopicID) {
               <?php foreach ($Answers as $i => $Answer) { ?>
               <input type="radio" name="vote" id="answer_<?=$i?>"
                 value="<?=$i?>" />
-              <label for="answer_<?=$i?>"><?=Text::esc($Answers[$i])?></label><br />
+              <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br />
               <?php } ?>
               <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
                 for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />

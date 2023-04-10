@@ -80,7 +80,7 @@ if (check_perms('site_advanced_top10')) {
                     <td class="label">Tags (comma-separated)</td>
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
-                            echo Text::esc($_GET['tags']);
+                            echo \Gazelle\Text::esc($_GET['tags']);
                         } ?>" />&nbsp;
                         <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>
                         /><label for="rdoAll"> All</label>&nbsp;&nbsp;
@@ -95,8 +95,8 @@ if (check_perms('site_advanced_top10')) {
                             <option value="">Any</option>
                             <?php foreach ($Categories as $CategoryName) { ?>
                             <option
-                                value="<?=Text::esc($CategoryName)?>"
-                                <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=Text::esc($CategoryName)?>
+                                value="<?=\Gazelle\Text::esc($CategoryName)?>"
+                                <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=\Gazelle\Text::esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>
@@ -654,13 +654,13 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     </td>
     <td class="number_column nobr"><?=Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=Text::float((float)$Snatched)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float)$Snatched)?>
     </td>
-    <td class="number_column"><?=Text::float((float)$Seeders)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float)$Seeders)?>
     </td>
-    <td class="number_column"><?=Text::float((float)$Leechers)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float)$Leechers)?>
     </td>
-    <td class="number_column"><?=Text::float($Seeders + $Leechers)?>
+    <td class="number_column"><?=\Gazelle\Text::float($Seeders + $Leechers)?>
     </td>
 </tr>
 <?php

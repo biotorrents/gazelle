@@ -191,7 +191,7 @@ switch ($CategoryName) {
             $Split = Tags::get_name_and_class($TagName); ?>
         <li>
           <a class="<?= $Split['class']?>"
-            href="torrents.php?taglist=<?=$TagName?>"><?=Text::esc($Split['name']) ?></a>
+            href="torrents.php?taglist=<?=$TagName?>"><?=\Gazelle\Text::esc($Split['name']) ?></a>
           <br style="clear: both;" />
         </li>
         <?php
@@ -214,7 +214,7 @@ for ($i = 0; $i < $VoteMax; $i++) {
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . Text::esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . \Gazelle\Text::esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
           </td>
           <td class="number_column">
             <?= ($Boldify ? '<strong>' : '') . Format::get_size($User['Bounty']) . ($Boldify ? "</strong>\n" : "\n") ?>
@@ -229,7 +229,7 @@ if (!$ViewerVote) {
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= Text::esc($User['Username']) ?></strong></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= \Gazelle\Text::esc($User['Username']) ?></strong></a>
           </td>
           <td class="number_column">
             <strong><?= Format::get_size($User['Bounty']) ?></strong>
@@ -278,7 +278,7 @@ if (!$ViewerVote) {
           <tr>
             <td class="label">Votes</td>
             <td>
-              <span id="votecount"><?= Text::float($VoteCount) ?></span>
+              <span id="votecount"><?= \Gazelle\Text::float($VoteCount) ?></span>
               <?php if ($CanVote) { ?>
               &nbsp;&nbsp;<a href="javascript:Vote(0)" class="brackets"><strong>+</strong></a>
               <strong>Costs <?= Format::get_size($MinimumVote, 0) ?></strong>
@@ -405,7 +405,7 @@ if (!$ViewerVote) {
     <div class="box box_request_desc">
       <div class="head"><strong>Description</strong></div>
       <div class="pad">
-        <?=       Text::parse($Request['Description']);?>
+        <?=       \Gazelle\Text::parse($Request['Description']);?>
       </div>
     </div>
     <div id="request_comments">

@@ -5,7 +5,7 @@ $app = \Gazelle\App::go();
 
 View::header('Staff Inbox');
 
-$View = (isset($_GET['view'])) ? Text::esc($_GET['view']) : '';
+$View = (isset($_GET['view'])) ? \Gazelle\Text::esc($_GET['view']) : '';
 $UserLevel = 0;
 #$UserLevel = $app->user->extra['EffectiveClass'];
 
@@ -186,7 +186,7 @@ if (!$app->dbOld->has_results()) {
               value="<?=$ID?>" /></td>
           <?php } ?>
           <td><a
-              href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=Text::esc($Subject)?></a></td>
+              href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=\Gazelle\Text::esc($Subject)?></a></td>
           <td><?=$UserStr?>
           </td>
           <td><?=time_diff($Date, 2, true)?>

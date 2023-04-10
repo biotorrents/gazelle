@@ -775,7 +775,7 @@ class User
     {
         $app = \Gazelle\App::go();
 
-        $ResetKey = Text::random();
+        $ResetKey = \Gazelle\Text::random();
         $app->dbOld->query("
         UPDATE users_info
         SET
@@ -808,7 +808,7 @@ class User
     {
         $app = \Gazelle\App::go();
 
-        return "{$app->env->siteName}-" . Text::random(16);
+        return "{$app->env->siteName}-" . \Gazelle\Text::random(16);
     }
 
 
@@ -1253,7 +1253,7 @@ class User
 
             if ($resetPassKey) {
                 $oldPassKey = $this->extra["torrent_pass"];
-                $newPassKey = Text::random(32);
+                $newPassKey = \Gazelle\Text::random(32);
 
                 # update the tracker
                 Tracker::update_tracker(

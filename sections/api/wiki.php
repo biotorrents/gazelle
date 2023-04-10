@@ -27,7 +27,7 @@ if ($Read > $app->user->extra['EffectiveClass']) {
     json_die('failure', 'higher user class required to view article');
 }
 
-$TextBody = Text::parse($Body, false);
+$TextBody = \Gazelle\Text::parse($Body, false);
 
 json_die('success', array(
   'title'      => $Title,

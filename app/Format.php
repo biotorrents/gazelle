@@ -191,7 +191,7 @@ class Format
             return '∞';
         }
 
-        return Text::float(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
+        return \Gazelle\Text::float(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
     }
 
 
@@ -220,7 +220,7 @@ class Format
 
             return http_build_query($QueryItems, '', $Separator);
         } else {
-            return $Escape ? Text::esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
+            return $Escape ? \Gazelle\Text::esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
         }
     }
 
@@ -408,7 +408,7 @@ class Format
         if (func_num_args() === 1 && $steps >= 4) {
             $levels++;
         }
-        return Text::float($size, $levels) . ' ' . $units[$steps];
+        return \Gazelle\Text::float($size, $levels) . ' ' . $units[$steps];
     }
 
 
@@ -448,9 +448,9 @@ class Format
     {
         if (!empty($_GET[$Index])) {
             if ($Return) {
-                return Text::esc($_GET[$Index]);
+                return \Gazelle\Text::esc($_GET[$Index]);
             } else {
-                echo Text::esc($_GET[$Index]);
+                echo \Gazelle\Text::esc($_GET[$Index]);
             }
         }
     }
@@ -516,8 +516,8 @@ class Format
 
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
-            Text::esc($Class),
-            Text::esc($Text)
+            \Gazelle\Text::esc($Class),
+            \Gazelle\Text::esc($Text)
         );
     }
 

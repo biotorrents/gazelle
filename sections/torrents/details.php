@@ -24,7 +24,7 @@ $torrentDetails = $torrentCache[1];
 #!d($groupDetails, $torrentDetails);
 
 # description and creators
-$description = Text::parse($groupDetails["description"]);
+$description = \Gazelle\Text::parse($groupDetails["description"]);
 $creatorList = Artists::get_artist($groupId);
 #!d($creatorList);
 
@@ -136,7 +136,7 @@ list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $G
 # Make the main headings
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
-$WikiBody = Text::parse($WikiBody);
+$WikiBody = \Gazelle\Text::parse($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
 
@@ -415,7 +415,7 @@ if (!empty($DeletedTag)) { ?>
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
-            class="<?=Text::esc($Tag['class'])?>"><?=Text::esc($Tag['display'])?></a>
+            class="<?=\Gazelle\Text::esc($Tag['class'])?>"><?=\Gazelle\Text::esc($Tag['display'])?></a>
           <div class="edit_tags_votes u-pull-right">
             <?php if (check_perms('users_warn')) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
@@ -506,7 +506,7 @@ foreach ($TorrentList as $Torrent) {
             $ReportInfo .= "
       <tr>
         <td>$ReportLinks ".Format::relativeTime($Report['ReportedTime']).' for the reason "'.$ReportType['title'].'":
-          <blockquote>'.Text::parse($Report['UserComment']).'</blockquote>
+          <blockquote>'.\Gazelle\Text::parse($Report['UserComment']).'</blockquote>
         </td>
       </tr>';
         }
@@ -553,29 +553,29 @@ foreach ($TorrentList as $Torrent) {
 
     // Similar to Torrents::torrent_info()
     if ($Media) {
-        $ExtraInfo .= '<x style="tooltip" title="Platform">'.Text::esc($Media).'</x>';
+        $ExtraInfo .= '<x style="tooltip" title="Platform">'.\Gazelle\Text::esc($Media).'</x>';
     }
 
     if ($Container) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.Text::esc($Container).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.\Gazelle\Text::esc($Container).'</x>';
     }
 
     if ($Archive) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.Text::esc($Archive).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.\Gazelle\Text::esc($Archive).'</x>';
     }
 
     if ($Codec) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.Text::esc($Codec).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.\Gazelle\Text::esc($Codec).'</x>';
     }
 
     if ($Resolution) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.Text::esc($Resolution).'</x>';
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.\Gazelle\Text::esc($Resolution).'</x>';
     }
 
     /*
     if ($Version) {
-        $ExtraInfo.=$AddExtra.Text::esc($Version);
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.Text::esc($Version).'</x>';
+        $ExtraInfo.=$AddExtra.\Gazelle\Text::esc($Version);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.\Gazelle\Text::esc($Version).'</x>';
     }
     */
 
@@ -682,11 +682,11 @@ foreach ($TorrentList as $Torrent) {
           </td>
           <td class="number_column nobr"><?=Format::get_size($Size)?>
           </td>
-          <td class="number_column"><?=Text::float($Snatched)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Snatched)?>
           </td>
-          <td class="number_column"><?=Text::float($Seeders)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Seeders)?>
           </td>
-          <td class="number_column"><?=Text::float($Leechers)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Leechers)?>
           </td>
         </tr>
         <tr
@@ -759,7 +759,7 @@ foreach ($TorrentList as $Torrent) {
             <?php
             }
                   if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
+                      echo '<blockquote class="torrent_description">'.\Gazelle\Text::parse($Description).'</blockquote>';
                   }
 
                   echo "\n<blockquote>"; ?>
@@ -835,7 +835,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">
       <div class="head">
-        <span style="font-weight: bold;">Requests (<?=Text::float(count($Requests))?>)</span>
+        <span style="font-weight: bold;">Requests (<?=\Gazelle\Text::float(count($Requests))?>)</span>
         <a data-toggle-target="#requests" data-toggle-replace="Hide" class="u-pull-right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
@@ -898,7 +898,7 @@ if (count($Collages) > 0) {
     <div class="box">
       <table class="collage_table" id="collages">
         <tr class="colhead">
-          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
           </td>
           <td># torrents</td>
         </tr>
@@ -907,7 +907,7 @@ if (count($Collages) > 0) {
             unset($Collages[$i]); ?>
         <tr>
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=Text::float($CollageTorrents)?>
+          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -916,7 +916,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
         <tr class="collage_rows hidden">
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=Text::float($CollageTorrents)?>
+          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -953,7 +953,7 @@ if (count($PersonalCollages) > 0) {
     } ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::float(count($PersonalCollages))?> personal
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($PersonalCollages))?> personal
           collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># torrents</td>
@@ -963,7 +963,7 @@ if (count($PersonalCollages) > 0) {
           unset($PersonalCollages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=Text::float($CollageTorrents)?>
+        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php
@@ -972,7 +972,7 @@ if (count($PersonalCollages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="personal_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=Text::float($CollageTorrents)?>
+        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php

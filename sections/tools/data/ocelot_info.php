@@ -68,8 +68,8 @@ View::header('Tracker info');
 if (!empty($UserPeerStats)) {
     ?>
         User ID: <?=$_GET['userid']?><br />
-        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : Text::float($UserPeerStats[0])?><br />
-        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : Text::float($UserPeerStats[1])?><br />
+        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br />
+        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br />
         <?php
 } elseif (!empty($MainStats)) {
         foreach ($MainStats as $Key => $Value) {
@@ -78,7 +78,7 @@ if (!empty($UserPeerStats)) {
                     $Value = Format::get_size($Value);
                     $Key = substr($Key, 6);
                 } else {
-                    $Value = Text::float($Value);
+                    $Value = \Gazelle\Text::float($Value);
                 }
             } ?>
         <?="$Value $Key<br />\n"?>
@@ -90,7 +90,7 @@ if (!empty($UserPeerStats)) {
         <?php
     } elseif (isset($_GET['userid'])) {
         ?>
-        User <?=Text::esc($_GET['userid'])?>
+        User <?=\Gazelle\Text::esc($_GET['userid'])?>
         doesn't exist
         <?php
     } else {

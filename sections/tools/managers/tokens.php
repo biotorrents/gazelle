@@ -34,7 +34,7 @@ if (isset($_REQUEST['addtokens'])) {
     while (list($UserID) = $app->dbOld->next_record()) {
         $app->cache->delete("user_info_heavy_$UserID");
     }
-    $message = '<strong>' . Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
+    $message = '<strong>' . \Gazelle\Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
 } elseif (isset($_REQUEST['cleartokens'])) {
     authorize();
     $Tokens = $_REQUEST['numtokens'];

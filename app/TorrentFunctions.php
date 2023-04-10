@@ -398,7 +398,7 @@ class TorrentFunctions
                     $ReportInfo .= "
                 <tr>
                   <td>$ReportLinks ".time_diff($Report['ReportedTime'], 2, true, true).' for the reason "'.$ReportType['title'].'":
-                    <blockquote>'.Text::parse($Report['UserComment']).'</blockquote>
+                    <blockquote>'.\Gazelle\Text::parse($Report['UserComment']).'</blockquote>
                   </td>
                 </tr>';
                 }
@@ -518,11 +518,11 @@ class TorrentFunctions
 
     <td class="number_column nobr"><?=(Format::get_size($Size))?>
     </td>
-    <td class="number_column"><?=(Text::float($Snatched))?>
+    <td class="number_column"><?=(\Gazelle\Text::float($Snatched))?>
     </td>
-    <td class="number_column"><?=(Text::float($Seeders))?>
+    <td class="number_column"><?=(\Gazelle\Text::float($Seeders))?>
     </td>
-    <td class="number_column"><?=(Text::float($Leechers))?>
+    <td class="number_column"><?=(\Gazelle\Text::float($Leechers))?>
     </td>
 </tr>
 
@@ -591,7 +591,7 @@ class TorrentFunctions
         </div>
         <?php }
         if (!empty($Description)) {
-            echo "<blockquote>" . Text::parse($Description) . '</blockquote>';
+            echo "<blockquote>" . \Gazelle\Text::parse($Description) . '</blockquote>';
         } ?>
     </td>
 </tr>

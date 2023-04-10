@@ -115,7 +115,7 @@ class Debug # extends DebugBar\StandardDebugBar
     {
         /*
           $BackTrace = debug_backtrace();
-          $ID = Text::random(5);
+          $ID = \Gazelle\Text::random(5);
 
           if (!$VarName) {
               $VarName = $ID;
@@ -193,7 +193,7 @@ class Debug # extends DebugBar\StandardDebugBar
     <td>
         <strong>
           <a data-toggle-target="#debug_ocelot" class="brackets">View</a>
-          <?=Text::float(count($OcelotRequests))?>
+          <?=\Gazelle\Text::float(count($OcelotRequests))?>
           Ocelot requests:
         </strong>
     </td>
@@ -204,16 +204,16 @@ class Debug # extends DebugBar\StandardDebugBar
   <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
-        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=Text::esc($Request["path"])?></a>
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=\Gazelle\Text::esc($Request["path"])?></a>
         <pre id="debug_ocelot_<?=$i?>"
-          class="hidden"><?=Text::esc($Request["response"])?></pre>
+          class="hidden"><?=\Gazelle\Text::esc($Request["response"])?></pre>
     </td>
 
     <td class="debug_info" style="width: 100px;">
-        <?=Text::esc($Request["status"])?>
+        <?=\Gazelle\Text::esc($Request["status"])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
-        <?=Text::float($Request["time"], 5)?> ms
+        <?=\Gazelle\Text::float($Request["time"], 5)?> ms
     </td>
   </tr>
   <?php } ?>
@@ -242,7 +242,7 @@ class Debug # extends DebugBar\StandardDebugBar
         <strong>
           <a href="#" onclick="$(this).parents(".layout").next("#debug_error").gtoggle(); return false;"
             class="brackets">View</a>
-          <?=Text::float(count($Errors))?>
+          <?=\Gazelle\Text::float(count($Errors))?>
           Errors:
         </strong>
     </td>
@@ -254,13 +254,13 @@ class Debug # extends DebugBar\StandardDebugBar
           list($Error, $Location, $Call, $Args) = $Error; ?>
   <tr class="valign_top">
     <td class="debug_info debug_error_call">
-        <?=Text::esc($Call)?>(<?=Text::esc($Args)?>)
+        <?=\Gazelle\Text::esc($Call)?>(<?=\Gazelle\Text::esc($Args)?>)
     </td>
     <td class="debug_data debug_error_data">
-        <?=Text::esc($Error)?>
+        <?=\Gazelle\Text::esc($Error)?>
     </td>
     <td>
-        <?=Text::esc($Location)?>
+        <?=\Gazelle\Text::esc($Location)?>
     </td>
   </tr>
   <?php
@@ -279,13 +279,13 @@ class Debug # extends DebugBar\StandardDebugBar
           $Header = "Searches";
           if (!is_array($Queries)) {
               $Queries = $this->get_sphinxql_queries();
-              $Header .= " (".Text::float($this->get_sphinxql_time(), 5)." ms)";
+              $Header .= " (".\Gazelle\Text::float($this->get_sphinxql_time(), 5)." ms)";
           }
 
           if (empty($Queries)) {
               return;
           }
-          $Header = " ".Text::float(count($Queries))." $Header:"; ?>
+          $Header = " ".\Gazelle\Text::float(count($Queries))." $Header:"; ?>
 
 <table class="layout">
   <tr>
@@ -306,7 +306,7 @@ class Debug # extends DebugBar\StandardDebugBar
     <td class="debug_data debug_sphinx_data">
         <pre><?=str_replace("\t", "  ", $Params)?></pre>
     </td>
-    <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=Text::float($Time, 5)?> ms</td>
+    <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=\Gazelle\Text::float($Time, 5)?> ms</td>
   </tr>
   <?php
     } ?>

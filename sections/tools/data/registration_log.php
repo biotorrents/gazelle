@@ -125,22 +125,22 @@ if ($app->dbOld->has_results()) {
 
     <td>
       <span class="u-pull-left">
-        <?=Text::esc($Email)?>
+        <?=\Gazelle\Text::esc($Email)?>
       </span>
 
       <span class="u-pull-left">
-        <?=Text::esc($InviterEmail)?>
+        <?=\Gazelle\Text::esc($InviterEmail)?>
       </span>
 
     </td>
 
     <td>
       <span class="u-pull-left">
-        <?=Text::esc($IP)?>
+        <?=\Gazelle\Text::esc($IP)?>
       </span>
 
       <span class="u-pull-left">
-        <?=Text::esc($InviterIP)?>
+        <?=\Gazelle\Text::esc($InviterIP)?>
       </span>
     </td>
 

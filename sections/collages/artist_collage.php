@@ -152,18 +152,18 @@ View::header($Name, 'browse,collage,recommend');
 
     <div class="box box_description">
       <div class="head"><strong>Description</strong></div>
-      <div class="pad"><?=Text::parse($Description)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Description)?>
       </div>
     </div>
 
     <div class="box box_info box_statistics_collage_torrents">
       <div class="head"><strong>Statistics</strong></div>
       <ul class="stats nobullet">
-        <li>Artists: <?=Text::float($NumGroups)?>
+        <li>Artists: <?=\Gazelle\Text::float($NumGroups)?>
         </li>
-        <li>Subscribers: <?=Text::float((int)$Subscribers)?>
+        <li>Subscribers: <?=\Gazelle\Text::float((int)$Subscribers)?>
         </li>
-        <li>Built by <?=Text::float(count($UserAdditions))?>
+        <li>Built by <?=\Gazelle\Text::float(count($UserAdditions))?>
           user<?=(count($UserAdditions) > 1 ? 's' : '')?>
         </li>
         <li>Last updated: <?=time_diff($Updated)?>
@@ -184,7 +184,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         break;
     } ?>
           <li><?=User::format_username($UserID, false, false, false)?>
-            (<?=Text::float($Additions)?>)</li>
+            (<?=\Gazelle\Text::float($Additions)?>)</li>
           <?php
 }
 ?>
@@ -262,7 +262,7 @@ foreach ($CommentList as $Comment) {
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>
-      <div class="pad"><?=Text::parse($Body)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Body)?>
       </div>
     </div>
     <?php

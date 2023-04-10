@@ -211,7 +211,7 @@ if (!empty($Pending)) {
       list($InviteKey, $Email, $Expires) = $Invite;
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
-        <td><?=Text::esc($Email)?>
+        <td><?=\Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($Expires)?>
         </td>
@@ -261,7 +261,7 @@ if (!empty($Pending)) {
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>
         </td>
-        <td><?=Text::esc($Email)?>
+        <td><?=\Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($JoinDate, 1)?>
         </td>

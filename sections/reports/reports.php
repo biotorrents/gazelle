@@ -116,7 +116,7 @@ $app->dbOld->set_query_id($Reports);
                       echo 'No user with the reported ID found';
                   } else {
                       list($Username) = $app->dbOld->next_record();
-                      echo "<a href=\"user.php?id=$ThingID\">" . Text::esc($Username) . '</a>';
+                      echo "<a href=\"user.php?id=$ThingID\">" . \Gazelle\Text::esc($Username) . '</a>';
                   }
                   break;
                 case 'request':
@@ -129,7 +129,7 @@ $app->dbOld->set_query_id($Reports);
                       echo 'No request with the reported ID found';
                   } else {
                       list($Name) = $app->dbOld->next_record();
-                      echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . Text::esc($Name) . '</a>';
+                      echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
                   }
                   break;
                 case 'collage':
@@ -141,7 +141,7 @@ $app->dbOld->set_query_id($Reports);
                       echo 'No collage with the reported ID found';
                   } else {
                       list($Name) = $app->dbOld->next_record();
-                      echo "<a href=\"collages.php?id=$ThingID\">" . Text::esc($Name) . '</a>';
+                      echo "<a href=\"collages.php?id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
                   }
                   break;
                 case 'thread':
@@ -153,7 +153,7 @@ $app->dbOld->set_query_id($Reports);
                       echo 'No forum thread with the reported ID found';
                   } else {
                       list($Title) = $app->dbOld->next_record();
-                      echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . Text::esc($Title) . '</a>';
+                      echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . \Gazelle\Text::esc($Title) . '</a>';
                   }
                   break;
                 case 'post':
@@ -198,7 +198,7 @@ $app->dbOld->set_query_id($Reports);
           </td>
         </tr>
         <tr>
-          <td colspan="2"><?=Text::parse($Reason)?></td>
+          <td colspan="2"><?=\Gazelle\Text::parse($Reason)?></td>
         </tr>
         <tr>
           <td colspan="2">

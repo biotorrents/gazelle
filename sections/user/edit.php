@@ -184,7 +184,7 @@ $app->twig->display("user/settings/settings.twig", [
 
  # random placeholders
  "twoFactorPlaceHolder" => random_int(100000, 999999),
- "ircKeyPlaceholder" => Text::random(32),
+ "ircKeyPlaceholder" => \Gazelle\Text::random(32),
 
  # notifications manager (legacy)
  #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->user->core["id"])),

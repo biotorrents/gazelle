@@ -82,7 +82,7 @@ $Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="box pad">
   <h3>
-    There are <?=Text::float($NumResults)?> groups remaining
+    There are <?=\Gazelle\Text::float($NumResults)?> groups remaining
   </h3>
 
   <table class="torrent_table">

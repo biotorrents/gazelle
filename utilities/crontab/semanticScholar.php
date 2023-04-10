@@ -38,7 +38,7 @@ $ref = $app->dbNew->multi($query, []);
 foreach ($ref as $row) {
     try {
         # update torrents
-        Text::figlet("scraping paper", "green");
+        \Gazelle\Text::figlet("scraping paper", "green");
         !d($row["URI"]);
 
         $semanticScholar = new SemanticScholar(["paperId" => $row["URI"]]);
@@ -49,7 +49,7 @@ foreach ($ref as $row) {
         $semanticScholar = null;
         unset($semanticScholar);
     } catch (Throwable $e) {
-        Text::figlet("failure!", "red");
+        \Gazelle\Text::figlet("failure!", "red");
         !d($e);
         continue;
     }

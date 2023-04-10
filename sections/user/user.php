@@ -227,7 +227,7 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
       ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=Text::float((float)$RequiredRatio, 5)?>"><?=Text::float((float)$RequiredRatio, 2)?></span></li>
+                title="<?=\Gazelle\Text::float((float)$RequiredRatio, 5)?>"><?=\Gazelle\Text::float((float)$RequiredRatio, 2)?></span></li>
               <?php
   }
   if (($Override = check_paranoia_here('downloaded'))) {
@@ -242,7 +242,7 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
       ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$userId?>">Tokens</a>:
-                    <?=Text::float($FLTokens)?>
+                    <?=\Gazelle\Text::float($FLTokens)?>
                     </li>
                     <?php
   }
@@ -332,7 +332,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Uploaded)?>">Data uploaded:
-          <?=$UploadedRank === false ? 'Server busy' : Text::float($UploadedRank)?>
+          <?=$UploadedRank === false ? 'Server busy' : \Gazelle\Text::float($UploadedRank)?>
         </li>
         <?php
         }
@@ -340,23 +340,23 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Downloaded)?>">Data downloaded:
-          <?=$DownloadedRank === false ? 'Server busy' : Text::float($DownloadedRank)?>
+          <?=$DownloadedRank === false ? 'Server busy' : \Gazelle\Text::float($DownloadedRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('uploads+'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($Uploads)?>">Torrents uploaded:
-          <?=$UploadsRank === false ? 'Server busy' : Text::float($UploadsRank)?>
+          title="<?=\Gazelle\Text::float($Uploads)?>">Torrents uploaded:
+          <?=$UploadsRank === false ? 'Server busy' : \Gazelle\Text::float($UploadsRank)?>
         </li>
         <?php
   }
   if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($RequestsFilled)?>">Requests
-          filled: <?=$RequestRank === false ? 'Server busy' : Text::float($RequestRank)?>
+          title="<?=\Gazelle\Text::float($RequestsFilled)?>">Requests
+          filled: <?=$RequestRank === false ? 'Server busy' : \Gazelle\Text::float($RequestRank)?>
         </li>
         <?php
   }
@@ -364,22 +364,22 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
-          <?=$BountyRank === false ? 'Server busy' : Text::float($BountyRank)?>
+          <?=$BountyRank === false ? 'Server busy' : \Gazelle\Text::float($BountyRank)?>
         </li>
         <?php } ?>
-        <li class="tooltip" title="<?=Text::float($ForumPosts)?>">
-          Posts made: <?=$PostRank === false ? 'Server busy' : Text::float($PostRank)?>
+        <li class="tooltip" title="<?=\Gazelle\Text::float($ForumPosts)?>">
+          Posts made: <?=$PostRank === false ? 'Server busy' : \Gazelle\Text::float($PostRank)?>
         </li>
         <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Text::float($ArtistsAdded)?>">Artists added:
-          <?=$ArtistsRank === false ? 'Server busy' : Text::float($ArtistsRank)?>
+          title="<?=\Gazelle\Text::float($ArtistsAdded)?>">Artists added:
+          <?=$ArtistsRank === false ? 'Server busy' : \Gazelle\Text::float($ArtistsRank)?>
         </li>
         <?php
         }
   if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Text::float($OverallRank)?></strong>
+        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : \Gazelle\Text::float($OverallRank)?></strong>
         </li>
         <?php } ?>
       </ul>
@@ -401,7 +401,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
 if (check_perms('users_view_ips', $Class)) {
     ?>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
-        <li>Tracker IPs: <?=Text::float($TrackerIPs)?> <a
+        <li>Tracker IPs: <?=\Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$userId?>"
             class="brackets">View</a></li>
         <?php
@@ -455,13 +455,13 @@ if ($ParanoiaLevel == 0) {
         <li>Paranoia level: <span class="tooltip"
             title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
         <?php if (check_perms('users_view_email', $Class) || $isOwnProfile) { ?>
-        <li>Email: <a href="mailto:<?=Text::esc($Email)?>"><?=Text::esc($Email)?></a>
+        <li>Email: <a href="mailto:<?=\Gazelle\Text::esc($Email)?>"><?=\Gazelle\Text::esc($Email)?></a>
         </li>
         <?php }
 
         if (check_perms('users_view_ips', $Class)) {
             $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
-        <li>IP: <?=Text::esc($IP)?>
+        <li>IP: <?=\Gazelle\Text::esc($IP)?>
         </li>
         <?php
         }
@@ -469,7 +469,7 @@ if ($ParanoiaLevel == 0) {
 if (check_perms('users_view_keys', $Class) || $isOwnProfile) {
     ?>
         <li>Passkey: <a href="#" id="passkey"
-            onclick="togglePassKey('<?=Text::esc($torrent_pass)?>'); return false;"
+            onclick="togglePassKey('<?=\Gazelle\Text::esc($torrent_pass)?>'); return false;"
             class="brackets">View</a></li>
         <?php
 }
@@ -491,7 +491,7 @@ if (check_perms('users_view_invites')) {
     if ($DisableInvites) {
         echo 'X';
     } else {
-        echo Text::float($Invites);
+        echo \Gazelle\Text::float($Invites);
     }
     echo " ($Pending)"
     ?>
@@ -553,7 +553,7 @@ if (!$Info) {
         This profile is currently empty.
         <?php
 } else {
-    echo Text::parse($Info);
+    echo \Gazelle\Text::parse($Info);
 }
 ?>
       </div>
@@ -615,9 +615,9 @@ if (check_paranoia_here('snatched')) {
           <a
             href="torrents.php?id=<?=$RS['ID']?>">
             <img class="tooltip"
-              title="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
+              title="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
               src="<?=\Gazelle\Images::process($RS['WikiImage'], 'thumb')?>"
-              alt="<?=Text::esc($RS['Artist'])?><?=Text::esc($RSName)?>"
+              alt="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
               width="100%" />
           </a>
         </div>
@@ -728,7 +728,7 @@ foreach ($Collages as $CollageInfo) {
     $Collage = $app->dbOld->to_array(false, MYSQLI_ASSOC, false); ?>
     <div class="box" id="collage<?=$CollageID?>_box">
       <div class="head">
-        <?=Text::esc($CName)?> - <a
+        <?=\Gazelle\Text::esc($CName)?> - <a
           href="collages.php?id=<?=$CollageID?>" class="brackets">See
           full</a>
         <span class="u-pull-right">
@@ -852,7 +852,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
       $Tags = $Request['Tags'];
             $TagList = [];
             foreach ($Tags as $TagID => $TagName) {
-                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".Text::esc($TagName).'</a>';
+                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".\Gazelle\Text::esc($TagName).'</a>';
             }
             $TagList = implode(', ', $TagList); ?>
               <?=$TagList?>
@@ -935,7 +935,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
         } ?>
       <tr>
         <td><a
-            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=Text::esc($Subject)?></a></td>
+            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=\Gazelle\Text::esc($Subject)?></a></td>
         <td><?=time_diff($Date, 2, true)?>
         </td>
         <td><?=$Assigned?>
@@ -963,7 +963,7 @@ if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
   <div class="box">
     <div class="head">Forum warnings</div>
     <div class="pad">
-      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=Text::parse($ForumWarnings)?>
+      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($ForumWarnings)?>
       </div>
     </div>
   </div>
@@ -988,11 +988,11 @@ if (check_perms('users_mod', $Class)) { ?>
       <div id="staffnotes" class="pad">
         <input type="hidden" name="comment_hash"
           value="<?=$CommentHash?>" />
-        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=Text::parse($AdminComment)?>
+        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($AdminComment)?>
         </div>
         <textarea id="admincomment" onkeyup="resize('admincomment');" class="AdminComment hidden" name="AdminComment"
           cols="65" rows="26"
-          style="width: 98%;"><?=Text::esc($AdminComment)?></textarea>
+          style="width: 98%;"><?=\Gazelle\Text::esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
         <script type="text/javascript">
@@ -1011,7 +1011,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
-            value="<?=Text::esc($Username)?>" /></td>
+            value="<?=\Gazelle\Text::esc($Username)?>" /></td>
       </tr>
       <?php
       }
@@ -1020,7 +1020,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Custom title:</td>
         <td><input type="text" class="wide_input_text" name="Title"
-            value="<?=Text::esc($CustomTitle)?>" /></td>
+            value="<?=\Gazelle\Text::esc($CustomTitle)?>" /></td>
       </tr>
       <?php
   }
@@ -1168,8 +1168,8 @@ if (!$DisablePoints) {
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::float($PointsRate)." ".bonusPoints."/hour";
-    $PointsPerDay = Text::float($PointsRate*24)." ".bonusPoints."/day";
+    $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
+    $PointsPerDay = \Gazelle\Text::float($PointsRate*24)." ".bonusPoints."/day";
 } else {
     $PointsPerHour = "0 ".bonusPoints."/hour";
     $PointsPerDay = bonusPoints." disabled";
@@ -1209,7 +1209,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
           remark:</td>
         <td><input type="text" class="wide_input_text" name="SupportFor"
-            value="<?=Text::esc($SupportFor)?>" /></td>
+            value="<?=\Gazelle\Text::esc($SupportFor)?>" /></td>
       </tr>
       <?php
   }
@@ -1467,14 +1467,14 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Restricted forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="RestrictedForums"
-            value="<?=Text::esc($RestrictedForums)?>" />
+            value="<?=\Gazelle\Text::esc($RestrictedForums)?>" />
         </td>
       </tr>
       <tr>
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Extra forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="PermittedForums"
-            value="<?=Text::esc($PermittedForums)?>" />
+            value="<?=\Gazelle\Text::esc($PermittedForums)?>" />
         </td>
       </tr>
 

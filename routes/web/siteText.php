@@ -11,7 +11,7 @@ declare(strict_types=1);
 Flight::route("/about", function () {
     $app = \Gazelle\App::go();
 
-    $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/about.md"));
+    $content = \Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/about.md"));
     $app->twig->display("siteText/tldr.twig", ["title" => "About", "content" => $content]);
 });
 
@@ -29,7 +29,7 @@ Flight::route("/canary", function () {
 Flight::route("/donate", function () {
     $app = \Gazelle\App::go();
 
-    $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/donate/donate.md"));
+    $content = \Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/donate/donate.md"));
     $app->twig->display("siteText/tldr.twig", ["title" => "Donate", "content" => $content]);
 });
 
@@ -38,7 +38,7 @@ Flight::route("/donate", function () {
 Flight::route("/dmca", function () {
     $app = \Gazelle\App::go();
 
-    $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/dmca.md"));
+    $content = \Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/dmca.md"));
     $app->twig->display("siteText/tldr.twig", ["title" => "DMCA", "content" => $content]);
 });
 
@@ -54,7 +54,7 @@ Flight::route("/manifest", function () {
 Flight::route("/privacy", function () {
     $app = \Gazelle\App::go();
 
-    $content = Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/privacy.md"));
+    $content = \Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/legal/privacy.md"));
     $app->twig->display("siteText/tldr.twig", ["title" => "Privacy", "content" => $content]);
 });
 

@@ -109,14 +109,14 @@ View::header('Forums &gt; Search', 'forum_search');
         <td><strong>Search Terms</strong></td>
         <td>
           <input type="search" name="search" size="70"
-            value="<?=Text::esc($Search)?>" />
+            value="<?=\Gazelle\Text::esc($Search)?>" />
         </td>
       </tr>
       <tr>
         <td><strong>Posted By</strong></td>
         <td>
           <input type="search" name="user" placeholder="Username" size="70"
-            value="<?=Text::esc($User)?>" />
+            value="<?=\Gazelle\Text::esc($User)?>" />
         </td>
       </tr>
       <tr>
@@ -383,7 +383,7 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
     </tr>
     <?php if ($Type == 'body') { ?>
     <tr class="row hidden" id="post_<?=$PostID?>_text">
-      <td colspan="4"><?=Text::parse($Body)?>
+      <td colspan="4"><?=\Gazelle\Text::parse($Body)?>
       </td>
     </tr>
     <?php }

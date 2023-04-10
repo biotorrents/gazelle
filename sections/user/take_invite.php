@@ -82,7 +82,7 @@ foreach ($Emails as $CurEmail) {
             }
         }
     }
-    $InviteKey = db_string(Text::random());
+    $InviteKey = db_string(\Gazelle\Text::random());
 
     $DisabledChan = DISABLED_CHAN;
     $IRCServer = BOT_SERVER;

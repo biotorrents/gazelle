@@ -315,7 +315,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($TorrentCount) = $app->dbOld->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
-$Action = Text::esc($_GET['type']);
+$Action = \Gazelle\Text::esc($_GET['type']);
 $User = User::user_info($UserID);
 
 View::header($User['Username']."'s $Action torrents", 'browse');
@@ -357,7 +357,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="container" name="container" class="ft_container">
               <option value="">Format</option>
               <?php foreach ($Containers as $Key => $ContainerName) { ?>
-              <option value="<?= Text::esc($Key); ?>" <?php Format::selected('container', $Key) ?>><?= Text::esc($Key); ?>
+              <option value="<?= \Gazelle\Text::esc($Key); ?>" <?php Format::selected('container', $Key) ?>><?= \Gazelle\Text::esc($Key); ?>
               </option>
               <?php } ?>
             </select>
@@ -365,7 +365,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
               <?php foreach ($ENV->META->Licenses as $License) { ?>
-              <option value="<?= Text::esc($License); ?>" <?php Format::selected('codec', $License) ?>><?= Text::esc($License); ?>
+              <option value="<?= \Gazelle\Text::esc($License); ?>" <?php Format::selected('codec', $License) ?>><?= \Gazelle\Text::esc($License); ?>
               </option>
               <?php } ?>
             </select>
@@ -373,8 +373,8 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="resolution" name="resolution" class="ft_resolution">
               <option value="">Scope</option>
               <?php foreach ($Resolutions as $ResolutionName) { ?>
-              <option value="<?= Text::esc($ResolutionName); ?>"
-                <?php Format::selected('resolution', $ResolutionName) ?>><?= Text::esc($ResolutionName); ?>
+              <option value="<?= \Gazelle\Text::esc($ResolutionName); ?>"
+                <?php Format::selected('resolution', $ResolutionName) ?>><?= \Gazelle\Text::esc($ResolutionName); ?>
               </option>
               <?php } ?>
             </select>
@@ -382,7 +382,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select name="media" class="ft_media">
               <option value="">Platform</option>
               <?php foreach ($Media as $MediaName) { ?>
-              <option value="<?= Text::esc($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= Text::esc($MediaName); ?>
+              <option value="<?= \Gazelle\Text::esc($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= \Gazelle\Text::esc($MediaName); ?>
               </option>
               <?php } ?>
             </select>
@@ -469,7 +469,7 @@ foreach ($Categories as $CatKey => $CatName) {
       <!-- Submit -->
       <div class="submit">
         <span class="u-pull-left">
-          <?= Text::float($TorrentCount) ?>
+          <?= \Gazelle\Text::float($TorrentCount) ?>
           Results
         </span>
         <input type="submit" class="button-primary" value="Search" />
@@ -616,13 +616,13 @@ foreach ($Categories as $CatKey => $CatName) {
         </td>
         <td class="number_column nobr"><?= Format::get_size($Torrent['Size']) ?>
         </td>
-        <td class="number_column"><?= Text::float($Torrent['Snatched']) ?>
+        <td class="number_column"><?= \Gazelle\Text::float($Torrent['Snatched']) ?>
         </td>
         <td
           class="number_column<?= (($Torrent['Seeders'] === 0) ? ' r00' : '') ?>">
-          <?= Text::float($Torrent['Seeders']) ?>
+          <?= \Gazelle\Text::float($Torrent['Seeders']) ?>
         </td>
-        <td class="number_column"><?= Text::float($Torrent['Leechers']) ?>
+        <td class="number_column"><?= \Gazelle\Text::float($Torrent['Leechers']) ?>
         </td>
       </tr>
       <?php

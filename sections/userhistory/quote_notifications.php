@@ -101,14 +101,14 @@ View::header('Quote Notifications');
 <?php
 foreach ($Results as $Result) {
           if ($Result['Page'] == 'forums') {
-              $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . Text::esc($Result['ForumName']) . '</a> &gt; ';
-              $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '" class="tooltip" title="' . Text::esc($Result['ForumTitle']) . '">' . Format::cut_string($Result['ForumTitle'], 75) . '</a> &gt; ';
+              $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . \Gazelle\Text::esc($Result['ForumName']) . '</a> &gt; ';
+              $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '" class="tooltip" title="' . \Gazelle\Text::esc($Result['ForumTitle']) . '">' . Format::cut_string($Result['ForumTitle'], 75) . '</a> &gt; ';
               $Links .= '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">' . 'Post #' . $Result['PostID'] . '</a>';
           } elseif ($Result['Page'] == 'artist') {
-              $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['ArtistName']) . '</a> &gt; ';
+              $Links = 'Artist: <a href="artist.php?id=' . $Result['PageID'] . '">' . \Gazelle\Text::esc($Result['ArtistName']) . '</a> &gt; ';
               $Links .= '<a href="artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
           } elseif ($Result['Page'] == 'collages') {
-              $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . Text::esc($Result['CollageName']) . '</a> &gt; ';
+              $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . \Gazelle\Text::esc($Result['CollageName']) . '</a> &gt; ';
               $Links .= '<a href="collages.php?action=comments&amp;collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
           } elseif ($Result['Page'] == 'requests') {
               if (!isset($Requests[$Result['PageID']])) {

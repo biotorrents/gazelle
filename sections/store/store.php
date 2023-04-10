@@ -38,8 +38,8 @@ if (!$app->user->extra['DisablePoints']) {
 
     $BonusPoints ??= 0;
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = Text::float($PointsRate) . " ".$app->env->bonusPoints."/hour";
-    $PointsPerDay = Text::float($PointsRate*24) . " ".$app->env->bonusPoints."/day";
+    $PointsPerHour = \Gazelle\Text::float($PointsRate) . " ".$app->env->bonusPoints."/hour";
+    $PointsPerDay = \Gazelle\Text::float($PointsRate*24) . " ".$app->env->bonusPoints."/day";
 } else {
     $PointsPerHour = "0 ".$app->env->bonusPoints."/hour";
     $PointsPerDay = $app->env->bonusPoints." disabled";
@@ -56,7 +56,7 @@ View::header('Store');
   <div class="box">
     <h3 id="lists" class="u-pull-left">
       You have
-      <?=Text::float($app->user->extra['BonusPoints'])?>
+      <?=\Gazelle\Text::float($app->user->extra['BonusPoints'])?>
       <?=$app->env->bonusPoints?>
       to spend
     </h3>

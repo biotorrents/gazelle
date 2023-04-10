@@ -99,13 +99,13 @@ class Http
         # cookie
         $safe["cookie"] = $_COOKIE;
         array_walk_recursive($safe["cookie"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
         foreach ($_COOKIE as $key => $value) {
-            $key = Text::esc($key);
-            $value = Text::esc($value);
+            $key = \Gazelle\Text::esc($key);
+            $value = \Gazelle\Text::esc($value);
             $safe["cookie"][$key] = $value;
         }
         */
@@ -113,7 +113,7 @@ class Http
         # files
         $safe["files"] = $_FILES;
         array_walk_recursive($safe["files"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
@@ -121,8 +121,8 @@ class Http
             # not recursive
             if (is_array($value)) {
                 foreach ($value as $k => $v) {
-                    $k = Text::esc($k);
-                    $v = Text::esc($v);
+                    $k = \Gazelle\Text::esc($k);
+                    $v = \Gazelle\Text::esc($v);
                     $safe["files"][$key][$v] = $v;
                 }
             }
@@ -132,7 +132,7 @@ class Http
         # get
         $safe["get"] = $_GET;
         array_walk_recursive($safe["get"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
@@ -140,16 +140,16 @@ class Http
             # not recursive
             if (is_array($value)) {
                 foreach ($value as $k => $v) {
-                    $k = Text::esc($k);
-                    $v = Text::esc($v);
+                    $k = \Gazelle\Text::esc($k);
+                    $v = \Gazelle\Text::esc($v);
                     $safe["get"][$key][$v] = $v;
                 }
             }
 
             # normal key => value
             else {
-                $key = Text::esc($key);
-                $value = Text::esc($value);
+                $key = \Gazelle\Text::esc($key);
+                $value = \Gazelle\Text::esc($value);
                 $safe["get"][$key] = $value;
             }
         }
@@ -158,7 +158,7 @@ class Http
         # post
         $safe["post"] = $_POST;
         array_walk_recursive($safe["post"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
@@ -166,16 +166,16 @@ class Http
             # not recursive
             if (is_array($value)) {
                 foreach ($value as $k => $v) {
-                    $k = Text::esc($k);
-                    $v = Text::esc($v);
+                    $k = \Gazelle\Text::esc($k);
+                    $v = \Gazelle\Text::esc($v);
                     $safe["post"][$key][$v] = $v;
                 }
             }
 
             # normal key => value
             else {
-                $key = Text::esc($key);
-                $value = Text::esc($value);
+                $key = \Gazelle\Text::esc($key);
+                $value = \Gazelle\Text::esc($value);
                 $safe["post"][$key] = $value;
             }
         }
@@ -184,7 +184,7 @@ class Http
         # request
         $safe["request"] = $_REQUEST;
         array_walk_recursive($safe["request"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
@@ -192,16 +192,16 @@ class Http
             # not recursive
             if (is_array($value)) {
                 foreach ($value as $k => $v) {
-                    $k = Text::esc($k);
-                    $v = Text::esc($v);
+                    $k = \Gazelle\Text::esc($k);
+                    $v = \Gazelle\Text::esc($v);
                     $safe["request"][$key][$v] = $v;
                 }
             }
 
             # normal key => value
             else {
-                $key = Text::esc($key);
-                $value = Text::esc($value);
+                $key = \Gazelle\Text::esc($key);
+                $value = \Gazelle\Text::esc($value);
                 $safe["request"][$key] = $value;
             }
         }
@@ -210,15 +210,15 @@ class Http
         # server
         $safe["server"] = $_SERVER;
         array_walk_recursive($safe["server"], function ($value) {
-            return Text::esc($value);
+            return \Gazelle\Text::esc($value);
         });
 
         /*
         foreach ($_SERVER as $key => $value) {
             # sanitize client spoofed keys
             if (str_starts_with($key, "HTTP_") || str_starts_with($key, "REMOTE_")) {
-                $key = Text::esc($key);
-                $value = Text::esc($value);
+                $key = \Gazelle\Text::esc($key);
+                $value = \Gazelle\Text::esc($value);
                 $safe["server"][$key] = $value;
             }
 
@@ -440,7 +440,7 @@ class Http
 
             setcookie(
                 self::$cookiePrefix.$key,
-                Text::esc($value),
+                \Gazelle\Text::esc($value),
                 [
                     "expires" => $time,
                     "path" => "/",

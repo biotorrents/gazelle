@@ -14,7 +14,7 @@ require_once __DIR__."/../../bootstrap/cli.php";
 # ensure only one is running
 $currentWorkers = intval(system("ps ax | grep openAi.php | grep -v grep | wc -l"));
 if ($currentWorkers > 1) {
-    Text::figlet("too many workers", "red");
+    \Gazelle\Text::figlet("too many workers", "red");
     exit;
 }
 
@@ -44,7 +44,7 @@ foreach ($ref as $row) {
     $failCount = 0;
     while ($failCount < 3) {
         try {
-            Text::figlet("summary: groupId {$row["id"]}", "green");
+            \Gazelle\Text::figlet("summary: groupId {$row["id"]}", "green");
             $openai->summarize($row["id"]);
 
             echo "\n\n sleeping 10s \n\n";
@@ -52,7 +52,7 @@ foreach ($ref as $row) {
 
             break;
         } catch (Throwable $e) {
-            Text::figlet("error", "red");
+            \Gazelle\Text::figlet("error", "red");
             ~d($e->getMessage());
 
             # update failCount
@@ -67,7 +67,7 @@ foreach ($ref as $row) {
     $failCount = 0;
     while ($failCount < 3) {
         try {
-            Text::figlet("keywords: groupId {$row["id"]}", "green");
+            \Gazelle\Text::figlet("keywords: groupId {$row["id"]}", "green");
             $openai->keywords($row["id"]);
 
             echo "\n\n sleeping 10s \n\n";
@@ -75,7 +75,7 @@ foreach ($ref as $row) {
 
             break;
         } catch (Throwable $e) {
-            Text::figlet("error", "red");
+            \Gazelle\Text::figlet("error", "red");
             ~d($e->getMessage());
 
             # update failCount
@@ -95,7 +95,7 @@ $ref = $app->dbNew->do($query, []);
 
 foreach ($ref as $row) {
     if (empty($row["text"]) || $row["finishReason"] !== "stop") {
-        Text::figlet("deleting empty row", "blue");
+        \Gazelle\Text::figlet("deleting empty row", "blue");
         !d($row["jobId"]);
 
         $query = "delete from openai where jobId = ?";

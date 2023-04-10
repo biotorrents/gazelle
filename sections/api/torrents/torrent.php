@@ -47,7 +47,7 @@ if ($TorrentDetails['category_id'] === 0) {
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
 
 $JsonTorrentDetails = [
-  'description'  => Text::parse($TorrentDetails['description']),
+  'description'  => \Gazelle\Text::parse($TorrentDetails['description']),
   'picture'      => $TorrentDetails['picture'],
   'id'           => (int) $TorrentDetails['id'],
   'title'         => $TorrentDetails['title'],

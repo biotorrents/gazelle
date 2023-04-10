@@ -23,47 +23,45 @@ $app = \Gazelle\App::go();
 $startTime = microtime(true);
 
 # start debug info
-if ($app->env->dev) {
-    $server = Http::query("server");
-    Text::figlet($server["SCRIPT_FILENAME"], "green");
+$server = Http::query("server");
+\Gazelle\Text::figlet($server["SCRIPT_FILENAME"], "green");
 
-    # basic info
-    echo "\n" . php_uname();
-    echo "\n" . date("r");
-    echo "\n\n"; # clear
+# basic info
+echo "\n" . php_uname();
+echo "\n" . date("r");
+echo "\n\n"; # clear
 
-    # https://github.com/phplucidframe/console-table
-    $table = new LucidFrame\Console\ConsoleTable();
-    $table
-        ->addHeader("php -v")
-        ->addHeader("zend -v")
-        ->addHeader("user")
-        ->addHeader("pid")
+# https://github.com/phplucidframe/console-table
+$table = new LucidFrame\Console\ConsoleTable();
+$table
+    ->addHeader("php -v")
+    ->addHeader("zend -v")
+    ->addHeader("user")
+    ->addHeader("pid")
 
-        ->addRow()
-            ->addColumn(phpversion())
-            ->addColumn(zend_version())
-            ->addColumn(get_current_user())
-            ->addColumn(getmypid())
+    ->addRow()
+        ->addColumn(phpversion())
+        ->addColumn(zend_version())
+        ->addColumn(get_current_user())
+        ->addColumn(getmypid())
 
-        ->display()
-    ;
+    ->display()
+;
 
-    # includes
-    echo "\n"; # clear
-    Text::figlet("includes", "light_gray");
+# includes
+echo "\n"; # clear
+\Gazelle\Text::figlet("includes", "light_gray");
 
-    $includes = get_included_files();
-    foreach ($includes as $include) {
-        if (!str_starts_with($include, "{$app->env->serverRoot}/vendor")) {
-            echo "\n" . $include;
-        }
+$includes = get_included_files();
+foreach ($includes as $include) {
+    if (!str_starts_with($include, "{$app->env->serverRoot}/vendor")) {
+        echo "\n" . $include;
     }
+}
 
-    # done
-    echo "\n\n"; # clear
-    foreach (range(1, 80) as $foo) {
-        echo "=";
-    }
-    echo "\n\n"; # clear
-} # if dev
+# done
+echo "\n\n"; # clear
+foreach (range(1, 80) as $foo) {
+    echo "=";
+}
+echo "\n\n"; # clear

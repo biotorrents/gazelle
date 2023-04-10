@@ -433,7 +433,7 @@ json_print('success', [
   'username'    => $Username,
   'avatar'      => $Avatar,
   'isFriend'    => (bool) $Friend,
-  'profileText' => Text::parse($Info),
+  'profileText' => \Gazelle\Text::parse($Info),
 
   'stats' => [
     'joinedDate'    => $JoinDate,

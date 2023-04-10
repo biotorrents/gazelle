@@ -19,7 +19,7 @@ foreach ($Forums as $Forum) {
         #continue;
     }
 
-    $ForumDescription = Text::esc($ForumDescription);
+    $ForumDescription = \Gazelle\Text::esc($ForumDescription);
 
     if ($CategoryID != $LastCategoryID) {
         $LastCategoryID = $CategoryID;
@@ -54,7 +54,7 @@ foreach ($Forums as $Forum) {
         <h4>
           <a class="tooltip"
             href="forums.php?action=viewforum&amp;forumid=<?=$ForumID?>"
-            title="<?=Text::esc($ForumDescription)?>"><?=Text::esc($ForumName)?></a>
+            title="<?=\Gazelle\Text::esc($ForumDescription)?>"><?=\Gazelle\Text::esc($ForumName)?></a>
         </h4>
       </td>
 
@@ -73,7 +73,7 @@ foreach ($Forums as $Forum) {
         <span class="u-pull-left last_topic">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>"
             class="tooltip"
-            data-title-plain="<?=Text::esc($LastTopic)?>"><?=Text::esc(Format::cut_string($LastTopic, 50, 1))?></a>
+            data-title-plain="<?=\Gazelle\Text::esc($LastTopic)?>"><?=\Gazelle\Text::esc(Format::cut_string($LastTopic, 50, 1))?></a>
         </span>
 
         <?php if (!empty($LastRead[$LastTopicID])) { ?>
@@ -90,11 +90,11 @@ foreach ($Forums as $Forum) {
       </td>
 
       <td class="number_column">
-        <?=Text::float($NumTopics)?>
+        <?=\Gazelle\Text::float($NumTopics)?>
       </td>
 
       <td class="number_column">
-        <?=Text::float($NumPosts)?>
+        <?=\Gazelle\Text::float($NumPosts)?>
       </td>
       <?php } ?>
     </tr>

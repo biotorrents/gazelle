@@ -380,7 +380,7 @@ class Manticore
             if ($this->rawSearchTerms["tagsType"] === "excludeTags") {
                 foreach ($value as $k => $v) {
                     # raw expression passed below
-                    $value[$k] = \Text::esc("-{$v}");
+                    $value[$k] = \Gazelle\Text::esc("-{$v}");
                 }
 
                 $value = implode(" or ", $value);

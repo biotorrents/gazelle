@@ -104,7 +104,7 @@ View::header(
     <?php
 View::textarea(
     id: 'body',
-    value: Text::esc($Body) ?? '',
+    value: \Gazelle\Text::esc($Body) ?? '',
 );
 
 $app->dbOld->query("

@@ -58,7 +58,7 @@ class SemanticScholar
         # e.g., accidentally unescaped form
         foreach ($params as $key => $value) {
             if (in_array($key, $allowedKeys)) {
-                $this->params[$key] = Text::esc($value);
+                $this->params[$key] = \Gazelle\Text::esc($value);
             }
         }
 

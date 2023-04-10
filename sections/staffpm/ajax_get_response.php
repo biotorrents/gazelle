@@ -31,7 +31,7 @@ if ($ID = (int)$_GET['id']) {
     if ($_GET['plain'] == 1) {
         echo $Message;
     } else {
-        echo Text::parse($Message);
+        echo \Gazelle\Text::parse($Message);
     }
 } else {
     // No ID

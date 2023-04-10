@@ -193,7 +193,7 @@ EOT;
 
                 if ($Status === self::APPROVED) {
                     // Generate token
-                    $Token = db_string(Text::random());
+                    $Token = db_string(\Gazelle\Text::random());
                     $app->dbOld->query("
                     UPDATE
                       `users_enable_requests`

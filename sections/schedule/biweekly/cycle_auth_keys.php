@@ -11,10 +11,10 @@ SET
   `AuthKey` =
     MD5(
       CONCAT(
-        `AuthKey`, RAND(), '".Text::random()."',
+        `AuthKey`, RAND(), '".\Gazelle\Text::random()."',
         SHA1(
           CONCAT(
-            RAND(), RAND(), '".Text::random()."'
+            RAND(), RAND(), '".\Gazelle\Text::random()."'
           )
         )
       )

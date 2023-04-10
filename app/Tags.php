@@ -172,7 +172,7 @@ class Tags
             $Class = $Split['class']; ?>
 
 <li><a class="<?=$Class?>"
-        href="<?=$Link . Text::esc($Name) . $ArtistName?>"><?=Text::esc($Name)?></a> (<?=$Total?>)</li>
+        href="<?=$Link . \Gazelle\Text::esc($Name) . $ArtistName?>"><?=\Gazelle\Text::esc($Name)?></a> (<?=$Total?>)</li>
 <?php
         }
     }
@@ -316,7 +316,7 @@ class Tags
             $Class = "tag_" . $Split[1];
         }
         */
-        return array("name" => Text::esc($Name), "class" => Text::esc($Class));
+        return array("name" => \Gazelle\Text::esc($Name), "class" => \Gazelle\Text::esc($Class));
     }
 
 

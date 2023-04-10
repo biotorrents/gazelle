@@ -103,7 +103,7 @@ function send_irc($Channels = null, $Message = '')
     implode('-', $Dest)
     . '|%|'
     . html_entity_decode(
-        Text::esc($Message),
+        \Gazelle\Text::esc($Message),
         ENT_QUOTES
     );
 

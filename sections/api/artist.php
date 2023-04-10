@@ -344,7 +344,7 @@ json_die('success', array(
   'notificationsEnabled' => $notificationsEnabled,
   'hasBookmarked' => Bookmarks::isBookmarked('artist', $ArtistID),
   'image' => $Image,
-  'body' => Text::parse($Body),
+  'body' => \Gazelle\Text::parse($Body),
   'vanityHouse' => $VanityHouseArtist == 1,
   'tags' => array_values($Tags),
   'statistics' => array(

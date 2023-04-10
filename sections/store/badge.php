@@ -85,7 +85,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     <div class='box pad'>
         <p>
             Badge cost:
-            <?=Text::float($Prices[$BadgeID])?>
+            <?=\Gazelle\Text::float($Prices[$BadgeID])?>
             <?=bonusPoints?>
         </p>
 

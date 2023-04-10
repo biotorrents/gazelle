@@ -45,9 +45,9 @@ if ($app->dbOld->has_results()) {
     </tr>
 <?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $app->dbOld->next_record()) { ?>
     <tr>
-      <td><?=Text::esc($Name); ?></td>
+      <td><?=\Gazelle\Text::esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>
-      <td><?=Text::float($UserCount); ?></td>
+      <td><?=\Gazelle\Text::float($UserCount); ?></td>
       <td class="center">
         <a href="tools.php?action=permissions&amp;id=<?=$ID ?>" class="brackets">Edit</a>
         <a href="#" onclick="return confirmDelete(<?=$ID?>);" class="brackets">Remove</a>

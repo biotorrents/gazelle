@@ -287,11 +287,11 @@ if (count($Reports) === 0) {
                       $ReportType = $Types['master']['other'];
                   }
               }
-              $RawName = "$ArtistName - $GroupName".($Year ? " ($Year)" : '')." [$Media] (".Text::float($Size / (1024 * 1024), 2).' MB)';
+              $RawName = "$ArtistName - $GroupName".($Year ? " ($Year)" : '')." [$Media] (".\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
 
-              $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Media]</a> (".Text::float($Size / (1024 * 1024), 2).' MB)';
+              $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Media]</a> (".\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
 
-              $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Media][/url] ".' ('.Text::float($Size / (1024 * 1024), 2).' MB)';
+              $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Media][/url] ".' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
 //      }?>
   <div id="report<?=$ReportID?>"
     data-load-report="<?=$ReportID?>">
@@ -474,11 +474,11 @@ if (count($Reports) === 0) {
             $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
             if ($ExtraGroupName) {
                 if ($ArtistID == 0 && empty($ArtistName)) {
-                    $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> ".' ('.Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+                    $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> ".' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
                 } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
-                    $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> (".Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+                    $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> (".\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
                 } else {
-                    $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [//$ExtraMedia]</a>  (".Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+                    $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [//$ExtraMedia]</a>  (".\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
                 } ?>
               <?=($First ? '' : '<br />')?>
               <?=$ExtraLinkName?>
@@ -518,7 +518,7 @@ if (count($Reports) === 0) {
               } ?>
           <tr>
             <td class="label">User comment:</td>
-            <td colspan="3" class="wrap_overflow"><?=Text::parse($UserComment)?>
+            <td colspan="3" class="wrap_overflow"><?=\Gazelle\Text::parse($UserComment)?>
             </td>
           </tr>
           <?php // END REPORTED STUFF :|: BEGIN MOD STUFF

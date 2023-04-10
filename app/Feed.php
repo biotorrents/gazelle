@@ -154,7 +154,7 @@ class Feed
         foreach ($entries as $item) {
             echo str_replace(
                 ["[[PASSKEY]]", "[[AUTHKEY]]"],
-                [Text::esc($passKey), Text::esc($authKey)],
+                [\Gazelle\Text::esc($passKey), \Gazelle\Text::esc($authKey)],
                 $item
             );
         }

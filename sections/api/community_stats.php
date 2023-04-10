@@ -38,10 +38,10 @@ if (check_paranoia_here('seeding+') || check_paranoia_here('leeching+')) {
     $PeerCount = $app->dbOld->to_array(0, MYSQLI_NUM, false);
     if (check_paranoia('seeding+')) {
         $Seeding = isset($PeerCount['Seeding']) ? $PeerCount['Seeding'][1] : 0;
-        $CommStats['seeding'] = Text::float($Seeding);
+        $CommStats['seeding'] = \Gazelle\Text::float($Seeding);
     }
     if (check_paranoia('leeching+')) {
-        $CommStats['leeching'] = isset($PeerCount['Leeching']) ? Text::float($PeerCount['Leeching'][1]) : 0;
+        $CommStats['leeching'] = isset($PeerCount['Leeching']) ? \Gazelle\Text::float($PeerCount['Leeching'][1]) : 0;
     }
 }
 if (check_paranoia_here('snatched+')) {
@@ -51,9 +51,9 @@ if (check_paranoia_here('snatched+')) {
       INNER JOIN torrents AS t ON t.ID = x.fid
     WHERE x.uid = '$UserID'");
     list($Snatched, $UniqueSnatched) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    $CommStats['snatched'] = Text::float($Snatched);
+    $CommStats['snatched'] = \Gazelle\Text::float($Snatched);
     if (check_perms('site_view_torrent_snatchlist', $User['Class'])) {
-        $CommStats['usnatched'] = Text::float($UniqueSnatched);
+        $CommStats['usnatched'] = \Gazelle\Text::float($UniqueSnatched);
     }
     if (check_paranoia_here('seeding+') && check_paranoia_here('snatched+') && $UniqueSnatched > 0) {
         $CommStats['seedingperc'] = 100 * min(1, round($Seeding / $UniqueSnatched, 2));
@@ -66,8 +66,8 @@ if (check_perms('site_view_torrent_snatchlist', $Class)) {
       JOIN torrents AS t ON t.ID = ud.TorrentID
     WHERE ud.UserID = '$UserID'");
     list($NumDownloads, $UniqueDownloads) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    $CommStats['downloaded'] = Text::float($NumDownloads);
-    $CommStats['udownloaded'] = Text::float($UniqueDownloads);
+    $CommStats['downloaded'] = \Gazelle\Text::float($NumDownloads);
+    $CommStats['udownloaded'] = \Gazelle\Text::float($UniqueDownloads);
 }
 
 json_die('success', $CommStats);

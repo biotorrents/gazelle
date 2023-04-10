@@ -38,7 +38,7 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=Text::esc($Name)?>" />
+            value="<?=\Gazelle\Text::esc($Name)?>" />
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
@@ -112,7 +112,7 @@ if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_p
 View::textarea(
     id: 'description',
     placeholder: "Detailed description of the collection's purpose",
-    value: Text::esc($Description) ?? '',
+    value: \Gazelle\Text::esc($Description) ?? '',
 ); ?>
           </td>
         </tr>
@@ -122,7 +122,7 @@ View::textarea(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=Text::esc($Tags)?>" />
+              value="<?=\Gazelle\Text::esc($Tags)?>" />
           </td>
         </tr>
 

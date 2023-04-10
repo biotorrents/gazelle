@@ -27,7 +27,7 @@ function make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark = '', $Hidd
     }
     echo "\n\t\t\t\t</td>
         <td class=\"nobr\">"
-          . Text::parse($Remark) .
+          . \Gazelle\Text::parse($Remark) .
         "</td>
       </tr>\n"; // the "\n" is needed for pretty HTML
   // the foreach loop that calls this function needs to know the new value of $Row

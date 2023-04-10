@@ -75,7 +75,7 @@ if ($OrderTbl === 'tg') {
       : ''));
     list($TorrentCount) = $app->dbOld->next_record();
     if ($TorrentCount > NOTIFICATIONS_MAX_SLOWSORT) {
-        error('Due to performance issues, torrent lists with more than '.Text::float(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
+        error('Due to performance issues, torrent lists with more than '.\Gazelle\Text::float(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
     }
 
     $app->dbOld->query("
@@ -322,7 +322,7 @@ if (empty($Results)) {
 
             // echo row?>
       <tr
-        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.Text::esc($MatchingArtistsText) : '')?>"
+        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.\Gazelle\Text::esc($MatchingArtistsText) : '')?>"
         id="torrent<?=$TorrentID?>">
         <td style="text-align: center;">
           <input type="checkbox"
@@ -382,11 +382,11 @@ if (empty($Results)) {
         </td>
         <td class="number_column nobr"><?=Format::get_size($TorrentInfo['Size'])?>
         </td>
-        <td class="number_column"><?=Text::float($TorrentInfo['Snatched'])?>
+        <td class="number_column"><?=\Gazelle\Text::float($TorrentInfo['Snatched'])?>
         </td>
-        <td class="number_column"><?=Text::float($TorrentInfo['Seeders'])?>
+        <td class="number_column"><?=\Gazelle\Text::float($TorrentInfo['Seeders'])?>
         </td>
-        <td class="number_column"><?=Text::float($TorrentInfo['Leechers'])?>
+        <td class="number_column"><?=\Gazelle\Text::float($TorrentInfo['Leechers'])?>
         </td>
       </tr>
       <?php

@@ -338,7 +338,7 @@
 
 {#}
                   if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.Text::parse($Description).'</blockquote>';
+                      echo '<blockquote class="torrent_description">'.\Gazelle\Text::parse($Description).'</blockquote>';
                   }
 
                   echo "\n<blockquote>"; ?>
@@ -624,7 +624,7 @@ if (!empty($DeletedTag)) { ?>
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
-            class="<?=Text::esc($Tag['class'])?>"><?=Text::esc($Tag['display'])?></a>
+            class="<?=\Gazelle\Text::esc($Tag['class'])?>"><?=\Gazelle\Text::esc($Tag['display'])?></a>
           <div class="edit_tags_votes u-pull-right">
             <?php if (check_perms('users_warn')) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
@@ -716,7 +716,7 @@ foreach ($TorrentList as $Torrent) {
             $ReportInfo .= "
       <tr>
         <td>$ReportLinks ".Format::relativeTime($Report['ReportedTime']).' for the reason "'.$ReportType['title'].'":
-          <blockquote>'.Text::parse($Report['UserComment']).'</blockquote>
+          <blockquote>'.\Gazelle\Text::parse($Report['UserComment']).'</blockquote>
         </td>
       </tr>';
         }
@@ -849,11 +849,11 @@ foreach ($TorrentList as $Torrent) {
           </td>
           <td class="number_column nobr"><?=Format::get_size($Size)?>
           </td>
-          <td class="number_column"><?=Text::float($Snatched)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Snatched)?>
           </td>
-          <td class="number_column"><?=Text::float($Seeders)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Seeders)?>
           </td>
-          <td class="number_column"><?=Text::float($Leechers)?>
+          <td class="number_column"><?=\Gazelle\Text::float($Leechers)?>
           </td>
         </tr>
         <tr
@@ -951,7 +951,7 @@ if (empty($user['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">
       <div class="head">
-        <span style="font-weight: bold;">Requests (<?=Text::float(count($Requests))?>)</span>
+        <span style="font-weight: bold;">Requests (<?=\Gazelle\Text::float(count($Requests))?>)</span>
         <a data-toggle-target="#requests" data-toggle-replace="Hide" class="u-pull-right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
@@ -1014,7 +1014,7 @@ if (count($Collages) > 0) {
     <div class="box">
       <table class="collage_table" id="collages">
         <tr class="colhead">
-          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
           </td>
           <td># torrents</td>
         </tr>
@@ -1023,7 +1023,7 @@ if (count($Collages) > 0) {
             unset($Collages[$i]); ?>
         <tr>
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=Text::float($CollageTorrents)?>
+          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -1032,7 +1032,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
         <tr class="collage_rows hidden">
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=Text::float($CollageTorrents)?>
+          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -1069,7 +1069,7 @@ if (count($PersonalCollages) > 0) {
     } ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Text::float(count($PersonalCollages))?> personal
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($PersonalCollages))?> personal
           collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># torrents</td>
@@ -1079,7 +1079,7 @@ if (count($PersonalCollages) > 0) {
           unset($PersonalCollages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=Text::float($CollageTorrents)?>
+        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php
@@ -1088,7 +1088,7 @@ if (count($PersonalCollages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="personal_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=Text::float($CollageTorrents)?>
+        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php

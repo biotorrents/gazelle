@@ -54,8 +54,8 @@ $app->dbOld->set_query_id($RS);
 if ($app->dbOld->has_results()) {
     ?>
 <div class="box pad">
-  <p>There are currently <?=Text::float($Results)?> enabled users
-    on Ratio Watch and <?=Text::float($TotalDisabled)?> already
+  <p>There are currently <?=\Gazelle\Text::float($Results)?> enabled users
+    on Ratio Watch and <?=\Gazelle\Text::float($TotalDisabled)?> already
     disabled.</p>
 </div>
 
@@ -100,7 +100,7 @@ if ($app->dbOld->has_results()) {
     </td>
 
     <td class="number_column">
-      <?=Text::float($RequiredRatio, 2)?>
+      <?=\Gazelle\Text::float($RequiredRatio, 2)?>
     </td>
 
     <td class="number_column">

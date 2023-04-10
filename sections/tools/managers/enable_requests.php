@@ -444,15 +444,15 @@ if ($NumResults > 0) { ?>
         </td>
 
         <td>
-            <?=Text::esc(Crypto::decrypt($Email))?>
+            <?=\Gazelle\Text::esc(Crypto::decrypt($Email))?>
         </td>
 
         <td>
-            <?=Text::esc(Crypto::decrypt($IP))?>
+            <?=\Gazelle\Text::esc(Crypto::decrypt($IP))?>
         </td>
 
         <td>
-            <?=Text::esc($UserAgent)?>
+            <?=\Gazelle\Text::esc($UserAgent)?>
         </td>
 
         <td>

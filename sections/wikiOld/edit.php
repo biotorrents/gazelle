@@ -38,7 +38,7 @@ View::header(
         <?php
 $ReplyText = View::textarea(
     id: 'body',
-    value: Text::esc($Body) ?? '',
+    value: \Gazelle\Text::esc($Body) ?? '',
 );
 
   if (check_perms('admin_manage_wiki')) { ?>

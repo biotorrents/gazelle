@@ -31,7 +31,7 @@ if (!empty($Err)) {
     if (isset($ErrNoEscape)) {
         echo '<div class="box save_message error">'.$Err.'</div>';
     } else {
-        echo '<div class="box save_message error">'.Text::esc($Err).'</div>';
+        echo '<div class="box save_message error">'.\Gazelle\Text::esc($Err).'</div>';
     }
 }
 ?>
@@ -80,7 +80,7 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
             <?php
       View::textarea(
           id: 'description',
-          value: Text::esc($Description) ?? '',
+          value: \Gazelle\Text::esc($Description) ?? '',
       ); ?>
           </td>
         </tr>

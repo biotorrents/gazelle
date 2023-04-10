@@ -124,7 +124,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE t.TagID = ?", $TagID);
             while (list($TorrentID, $ArtistID, $ArtistName, $TorrentName) = $app->dbOld->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".Text::esc($TorrentName).'</a>';
+                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".\Gazelle\Text::esc($TorrentName).'</a>';
                 $AffectedTorrents[] = $Row;
             }
 
@@ -142,7 +142,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE t.TagID = ?", $TagID);
             while (list($RequestID, $ArtistID, $ArtistName, $RequestName) = $app->dbOld->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".Text::esc($RequestName).'</a>';
+                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".\Gazelle\Text::esc($RequestName).'</a>';
                 $AffectedRequests[] = $Row;
             }
         }
@@ -297,7 +297,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
             }
         }
 
-        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.Text::float($TotalAffected).'</div>';
+        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.\Gazelle\Text::float($TotalAffected).'</div>';
 
         if ($_GET['list']) {
             ?>

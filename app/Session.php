@@ -36,7 +36,7 @@ class Session
         # generate new session key
         if ($this->id === null) {
             # users_sessions.SessionID char(64)
-            $this->id = Text::random(64);
+            $this->id = \Gazelle\Text::random(64);
         }
 
         # try to get a userId

@@ -64,7 +64,7 @@ View::header('User search');
       <tr>
         <td class="label nobr">Username:</td>
         <td>
-          <input type="text" name="username" size="60" value="<?=Text::esc($_GET['username'])?>" />
+          <input type="text" name="username" size="60" value="<?=\Gazelle\Text::esc($_GET['username'])?>" />
           &nbsp;
           <input type="submit" value="Search users" />
         </td>

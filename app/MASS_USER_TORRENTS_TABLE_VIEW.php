@@ -105,7 +105,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
         if ($this->HasTorrents) { ?>
 <div>
   <div class="header">
-    <h2><?=Text::esc($this->Heading)?>
+    <h2><?=\Gazelle\Text::esc($this->Heading)?>
     </h2>
   </div>
 
@@ -163,7 +163,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
     <div>
       <input type="hidden" name="action" value="mass_edit" />
       <input type="hidden" name="type"
-        value="<?=Text::esc($this->EditType)?>" />
+        value="<?=\Gazelle\Text::esc($this->EditType)?>" />
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>" />
     </div>

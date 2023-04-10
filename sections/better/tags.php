@@ -92,7 +92,7 @@ $Results = Torrents::get_groups($GroupIDs);
 
 <div class="box pad">
   <h3>
-    There are <?=Text::float(count($TorrentsInfo))?> torrents
+    There are <?=\Gazelle\Text::float(count($TorrentsInfo))?> torrents
     remaining
   </h3>
 

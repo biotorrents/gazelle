@@ -163,15 +163,15 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="number_column">
-    <?=Text::float($Torrent['Snatched'])?>
+    <?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
 
   <td
     class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-    <?=Text::float($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
 
-  <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 
@@ -257,16 +257,16 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="number_column">
-    <?=Text::float($Torrent['Snatched'])?>
+    <?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
 
   <td
     class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-    <?=Text::float($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
 
   <td class="number_column">
-    <?=Text::float($Torrent['Leechers'])?>
+    <?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 
@@ -288,7 +288,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName = "$DisplayName [$GroupYear]";
     }
 
-    $Tags = Text::esc($TorrentTags->format());
+    $Tags = \Gazelle\Text::esc($TorrentTags->format());
     $PlainTags = implode(', ', $TorrentTags->get_tags()); ?>
 
 <div class="collage_image image_group_<?=$GroupID?>">
@@ -407,7 +407,7 @@ View::header(
     </div>
     <div class="box box_description">
       <div class="head"><strong>Description</strong></div>
-      <div class="pad"><?=Text::parse($Description)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Description)?>
       </div>
     </div>
     <?php
@@ -485,21 +485,21 @@ foreach ($ZIPOptions as $Option) {
 
       <ul class="stats nobullet">
         <li>
-          Torrents: <?=Text::float($NumGroups)?>
+          Torrents: <?=\Gazelle\Text::float($NumGroups)?>
         </li>
 
         <?php if (!empty($TopArtists)) { ?>
         <li>
-          Artists: <?=Text::float(count($TopArtists))?>
+          Artists: <?=\Gazelle\Text::float(count($TopArtists))?>
         </li>
         <?php } ?>
 
         <li>
-          Subscribers: <?=Text::float((int)$Subscribers)?>
+          Subscribers: <?=\Gazelle\Text::float((int)$Subscribers)?>
         </li>
 
         <li>
-          Built by <?=Text::float(count($UserAdditions))?>
+          Built by <?=\Gazelle\Text::float(count($UserAdditions))?>
           user<?=(count($UserAdditions) > 1 ? 's' : '')?>
         </li>
 
@@ -538,7 +538,7 @@ foreach ($ZIPOptions as $Option) {
             } ?>
 
           <li>
-            <a href="artist.php?id=<?=$ID?>"><?=$Artist['name']?></a> (<?=Text::float($Artist['count'])?>)
+            <a href="artist.php?id=<?=$ID?>"><?=$Artist['name']?></a> (<?=\Gazelle\Text::float($Artist['count'])?>)
           </li>
           <?php
         } ?>
@@ -561,7 +561,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     } ?>
           <li>
             <?=User::format_username($UserID, false, false, false)?>
-            (<?=Text::float($Additions)?>)
+            (<?=\Gazelle\Text::float($Additions)?>)
           </li>
           <?php
 } ?>
@@ -639,7 +639,7 @@ foreach ($CommentList as $Comment) {
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>
-      <div class="pad"><?=Text::parse($Body)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Body)?>
       </div>
     </div>
     <?php

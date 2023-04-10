@@ -89,7 +89,7 @@ while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record(
     'sentDate' => $SentDate,
     'avatar' => $Users[(int)$SenderID]['Avatar'],
     'bbBody' => $Body,
-    'body' => Text::parse($Body)
+    'body' => \Gazelle\Text::parse($Body)
   );
     $JsonMessages[] = $JsonMessage;
 }

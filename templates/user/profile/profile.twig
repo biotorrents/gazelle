@@ -164,7 +164,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
       $Tags = $Request['Tags'];
             $TagList = [];
             foreach ($Tags as $TagID => $TagName) {
-                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".Text::esc($TagName).'</a>';
+                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".\Gazelle\Text::esc($TagName).'</a>';
             }
             $TagList = implode(', ', $TagList); ?>
               <?=$TagList?>
@@ -372,7 +372,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$UserID?>">Tokens</a>:
-                    <?=Text::float($FLTokens)?>
+                    <?=\Gazelle\Text::float($FLTokens)?>
                     </li>
 
 
@@ -402,7 +402,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
       if (check_perms('users_view_ips', $Class)) {
           ?>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
-        <li>Tracker IPs: <?=Text::float($TrackerIPs)?> <a
+        <li>Tracker IPs: <?=\Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
         <?php
@@ -456,7 +456,7 @@ if (check_perms('users_view_invites')) {
     if ($DisableInvites) {
         echo 'X';
     } else {
-        echo Text::float($Invites);
+        echo \Gazelle\Text::float($Invites);
     }
     echo " ($Pending)"
         ?>
@@ -561,7 +561,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
         } ?>
       <tr>
         <td><a
-            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=Text::esc($Subject)?></a></td>
+            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=\Gazelle\Text::esc($Subject)?></a></td>
         <td><?=time_diff($Date, 2, true)?>
         </td>
         <td><?=$Assigned?>
@@ -589,7 +589,7 @@ if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
   <div class="box">
     <div class="head">Forum warnings</div>
     <div class="pad">
-      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=Text::parse($ForumWarnings)?>
+      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($ForumWarnings)?>
       </div>
     </div>
   </div>
@@ -614,11 +614,11 @@ if (check_perms('users_mod', $Class)) { ?>
       <div id="staffnotes" class="pad">
         <input type="hidden" name="comment_hash"
           value="<?=$CommentHash?>" />
-        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=Text::parse($AdminComment)?>
+        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($AdminComment)?>
         </div>
         <textarea id="admincomment" onkeyup="resize('admincomment');" class="AdminComment hidden" name="AdminComment"
           cols="65" rows="26"
-          style="width: 98%;"><?=Text::esc($AdminComment)?></textarea>
+          style="width: 98%;"><?=\Gazelle\Text::esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
         <script type="text/javascript">
@@ -637,7 +637,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
-            value="<?=Text::esc($Username)?>" /></td>
+            value="<?=\Gazelle\Text::esc($Username)?>" /></td>
       </tr>
       <?php
   }
@@ -646,7 +646,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Custom title:</td>
         <td><input type="text" class="wide_input_text" name="Title"
-            value="<?=Text::esc($CustomTitle)?>" /></td>
+            value="<?=\Gazelle\Text::esc($CustomTitle)?>" /></td>
       </tr>
       <?php
   }
@@ -794,8 +794,8 @@ if (!$DisablePoints) {
           }
 
           $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-          $PointsPerHour = Text::float($PointsRate)." ".bonusPoints."/hour";
-          $PointsPerDay = Text::float($PointsRate*24)." ".bonusPoints."/day";
+          $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
+          $PointsPerDay = \Gazelle\Text::float($PointsRate*24)." ".bonusPoints."/day";
       } else {
           $PointsPerHour = "0 ".bonusPoints."/hour";
           $PointsPerDay = bonusPoints." disabled";
@@ -835,7 +835,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
           remark:</td>
         <td><input type="text" class="wide_input_text" name="SupportFor"
-            value="<?=Text::esc($SupportFor)?>" /></td>
+            value="<?=\Gazelle\Text::esc($SupportFor)?>" /></td>
       </tr>
       <?php
   }

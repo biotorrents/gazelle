@@ -46,7 +46,7 @@ if ($ConvID = (int)$_GET['id']) {
     $OwnerName = $UserInfo['Username']; ?>
 <div>
   <div class="header">
-    <h2>Staff PM - <?=Text::esc($Subject)?>
+    <h2>Staff PM - <?=\Gazelle\Text::esc($Subject)?>
     </h2>
     <div class="linkbox">
       <?php
@@ -108,7 +108,7 @@ if ($ConvID = (int)$_GET['id']) {
           class="brackets">Quote</a>
         <?php } ?>
       </div>
-      <div class="body"><?=Text::parse($Message)?>
+      <div class="body"><?=\Gazelle\Text::parse($Message)?>
       </div>
     </div>
     <div align="center" style="display: none;"></div>

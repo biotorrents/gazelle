@@ -63,8 +63,8 @@ if (!Forums::check_forumperm($ForumID)) {
     #error(403);
 }
 //Escape strings for later display
-$ThreadTitle = Text::esc($ThreadInfo['Title']);
-$ForumName = Text::esc($Forums[$ForumID]['Name']);
+$ThreadTitle = \Gazelle\Text::esc($ThreadInfo['Title']);
+$ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page
 if ($ThreadInfo['Posts'] > $PerPage) {
@@ -300,7 +300,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
   <div class="pad<?php if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) {
       echo ' hidden';
   } ?>" id="threadpoll">
-    <p><strong><?=Text::esc($Question)?></strong></p>
+    <p><strong><?=\Gazelle\Text::esc($Question)?></strong></p>
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
@@ -314,7 +314,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                     $Ratio = 0;
                     $Percent = 0;
                 } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=Text::esc($Answer)?> (<?=Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=\Gazelle\Text::esc($Answer)?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -326,7 +326,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <li>
           <?= ($UserResponse == '0' ? '&raquo;&nbsp;' : '') ?>
           (Blank)
-          (<?= Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
+          (<?= \Gazelle\Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
         </li>
 
         <li class="graph">
@@ -339,7 +339,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </ul>
     <br />
 
-    <strong>Votes:</strong> <?=Text::float($TotalVotes)?><br /><br />
+    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br /><br />
     <?php
         } else {
             //Staff forum, output voters, not percentages
@@ -376,8 +376,8 @@ if ($ThreadInfo['NoPoll'] == 0) {
           ?>
       <li>
         <a
-          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
-        - <?=$StaffVotes[$i]?>&nbsp;(<?=Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
+          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=\Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
+        - <?=$StaffVotes[$i]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
         <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
       </li>
@@ -386,14 +386,14 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=0"><?=($UserResponse == '0' ? '&raquo;&nbsp;' : '')?>Blank</a>
-        - <?=$StaffVotes[0]?>&nbsp;(<?=Text::float(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[0]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
       </li>
     </ul>
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
     <br />
-    <strong>Votes:</strong> <?=Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=Text::float($TotalVotes)?> total
+    <strong>Votes:</strong> <?=\Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=\Gazelle\Text::float($TotalVotes)?> total
     <br />
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>
@@ -420,7 +420,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
           <li>
             <input type="radio" name="vote" id="answer_<?=$i?>"
               value="<?=$i?>" />
-            <label for="answer_<?=$i?>"><?=Text::esc($Answer)?></label>
+            <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answer)?></label>
           </li>
           <?php } ?>
           <li>
@@ -589,7 +589,7 @@ foreach ($Thread as $Key => $Post) {
         echo ' colspan="2"';
     } ?>>
       <div id="content<?=$PostID?>">
-        <?=Text::parse($Body) ?>
+        <?=\Gazelle\Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
         <br />
         <br />
@@ -658,7 +658,7 @@ if (check_perms('site_moderate_forums')) {
       <td><?=User::format_username($Note['AuthorID'])?>
         (<?=time_diff($Note['AddedTime'], 2, true, true)?>)
       </td>
-      <td><?=Text::parse($Note['Body'])?>
+      <td><?=\Gazelle\Text::parse($Note['Body'])?>
       </td>
     </tr>
     <?php
@@ -718,7 +718,7 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="thread_title_textbox">Title</label></td>
       <td>
         <input type="text" id="thread_title_textbox" name="title" style="width: 75%;"
-          value="<?=Text::esc($ThreadInfo['Title'])?>"
+          value="<?=\Gazelle\Text::esc($ThreadInfo['Title'])?>"
           tabindex="2" />
       </td>
     </tr>
@@ -746,7 +746,7 @@ if (check_perms('site_moderate_forums')) {
         } ?>
             <option value="<?=$Forum['ID']?>" <?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
                 echo ' selected="selected"';
-            } ?>><?=Text::esc($Forum['Name'])?>
+            } ?>><?=\Gazelle\Text::esc($Forum['Name'])?>
             </option>
             <?php
     } ?>

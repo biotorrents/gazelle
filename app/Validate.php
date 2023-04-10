@@ -349,7 +349,7 @@ class Validate
         }
 
         # unsafe filename
-        if (Text::esc($data["name"]) !== $data["name"]) {
+        if (\Gazelle\Text::esc($data["name"]) !== $data["name"]) {
             $this->errors[$key][] = "unsafe filename";
         }
 
@@ -397,7 +397,7 @@ class Validate
         }
 
         # unsafe temporary filename
-        if (Text::esc($data["tmp_name"]) !== $data["tmp_name"]) {
+        if (\Gazelle\Text::esc($data["tmp_name"]) !== $data["tmp_name"]) {
             $this->errors[$key][] = "unsafe temporary filename";
         }
 
@@ -623,7 +623,7 @@ class Validate
         $tooLongPaths = [];
 
         $directoryName = (isset($torrent->Dec["info"]["files"]))
-            ? Text::utf8($torrent->get_name())
+            ? \Gazelle\Text::utf8($torrent->get_name())
             : "";
         $data["directoryName"] = $directoryName;
 

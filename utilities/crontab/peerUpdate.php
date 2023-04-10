@@ -15,12 +15,12 @@ declare(strict_types=1);
 require_once __DIR__."/../../bootstrap/cli.php";
 
 # strictly cli now
-Text::figlet("starting peerUpdate", "blue");
+\Gazelle\Text::figlet("starting peerUpdate", "blue");
 
 # kill on bad auth
 $argv[1] ??= null;
 if (empty($argv[1]) || $argv[1] !== $app->env->getPriv("scheduleKey")) {
-    Text::figlet("bad key", "red");
+    \Gazelle\Text::figlet("bad key", "red");
     exit;
 }
 

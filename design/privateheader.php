@@ -28,7 +28,7 @@ if ($ENV->dev) {
   } ?>
 
   <title>
-    <?= Text::esc($PageTitle) ?>
+    <?= \Gazelle\Text::esc($PageTitle) ?>
   </title>
   <script defer data-domain="<?= $ENV->siteDomain ?>"
     src="https://stats.torrents.bio/js/plausible.js"></script>
@@ -37,7 +37,7 @@ if ($ENV->dev) {
       $twig->render(
           '_base/metaTags.twig',
           [
-          'title' => Text::esc($PageTitle)
+          'title' => \Gazelle\Text::esc($PageTitle)
       ]
       );
 ?>
@@ -114,7 +114,7 @@ $AuthKey = $app->user->extra['AuthKey'] ?? "";
 if (isset($app->user->extra['Notify'])) {
     foreach ($app->user->extra['Notify'] as $Filter) {
         list($FilterID, $FilterName) = $Filter;
-        $NameEsc = Text::esc($FilterName);
+        $NameEsc = \Gazelle\Text::esc($FilterName);
 
         /* @todo temporary, fix
         echo $HTML = <<<HTML
@@ -340,7 +340,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="stats_required">
           <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
-            title="<?=null#Text::float($app->user->extra['RequiredRatio'], 5)?>"><?=null#Text::float($app->user->extra['RequiredRatio'], 2)?></span>
+            title="<?=null#\Gazelle\Text::float($app->user->extra['RequiredRatio'], 5)?>"><?=null#\Gazelle\Text::float($app->user->extra['RequiredRatio'], 2)?></span>
         </li>
         <?php } ?>
       </ul>
@@ -363,7 +363,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=null#Text::float($app->user->extra['BonusPoints'])?></a>
+            <a href="store.php"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
           </span>
         </li>
 

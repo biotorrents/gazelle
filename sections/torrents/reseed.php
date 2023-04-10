@@ -142,7 +142,7 @@ View::header();
     <p>
       Successfully sent re-seed request for torrent
       <a
-        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Text::esc($Name)?></a>
+        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=\Gazelle\Text::esc($Name)?></a>
       to <?=$NumUsers?> user<?=$NumUsers === 1 ? '' : 's';?>.
     </p>
   </div>

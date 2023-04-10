@@ -137,7 +137,7 @@ class App
         # https://www.php.net/manual/en/function.mail.php
         #$body = wordwrap($body, 70, "\r\n");
 
-        $secret = Text::random();
+        $secret = \Gazelle\Text::random();
         $headers = [
             "Content-Language" => "en-US",
             "Content-Transfer-Encoding" => "7bit",

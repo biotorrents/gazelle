@@ -684,7 +684,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
             $UpdateSet[] = "m.can_leech = '1'";
             $UpdateSet[] = "i.RatioWatchDownload = '0'";
         } else {
-            $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.Text::float($Cur['RequiredRatio'], 2).')';
+            $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.\Gazelle\Text::float($Cur['RequiredRatio'], 2).')';
             if ($Cur['RatioWatchEnds']) {
                 $UpdateSet[] = "i.RatioWatchEnds = NOW()";
                 $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
@@ -702,7 +702,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
-    $Passkey = db_string(Text::random());
+    $Passkey = db_string(\Gazelle\Text::random());
     $UpdateSet[] = "torrent_pass = '$Passkey'";
     $EditSummary[] = 'passkey reset';
     $HeavyUpdates['torrent_pass'] = $Passkey;
@@ -713,7 +713,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
-    $Authkey = db_string(Text::random());
+    $Authkey = db_string(\Gazelle\Text::random());
     $UpdateSet[] = "AuthKey = '$Authkey'";
     $EditSummary[] = 'authkey reset';
     $HeavyUpdates['AuthKey'] = $Authkey;

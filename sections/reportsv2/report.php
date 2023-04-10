@@ -46,13 +46,13 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $DisplayName = $GroupName;
     $AltName = $GroupName; // Goes in the alt text of the image
     $Title = $GroupName; // Goes in <title>
-    $WikiBody = Text::parse($WikiBody);
+    $WikiBody = \Gazelle\Text::parse($WikiBody);
 
     // Get the artist name, group name etc.
     $Artists = Artists::get_artist($GroupID);
     if ($Artists) {
         $DisplayName = '<span dir="ltr">' . Artists::display_artists($Artists, true) . "<a href=\"torrents.php?torrentid=$TorrentID\">$DisplayName</a></span>";
-        $AltName = Text::esc(Artists::display_artists($Artists, false)) . $AltName;
+        $AltName = \Gazelle\Text::esc(Artists::display_artists($Artists, false)) . $AltName;
         $Title = $AltName;
     }
     if ($GroupYear > 0) {
@@ -145,11 +145,11 @@ TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCa
    * The following malarky is needed so that if you get sent back here, the fields are filled in.
    */
 ?>
-        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? Text::esc($_POST['sitelink']) : '')?>" />
-        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? Text::esc($_POST['image']) : '')?>" />
-        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? Text::esc($_POST['track']) : '')?>" />
-        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? Text::esc($_POST['link']) : '')?>" />
-        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? Text::esc($_POST['extra']) : '')?>" />
+        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>" />
+        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>" />
+        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>" />
+        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>" />
+        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? \Gazelle\Text::esc($_POST['extra']) : '')?>" />
       </div>
     </div>
   <input type="submit" class="button-primary" value="Report" />

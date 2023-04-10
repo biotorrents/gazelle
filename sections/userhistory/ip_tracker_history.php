@@ -89,7 +89,7 @@ foreach ($Results as $Index => $Result) {
     <tr class="row">
       <td>
         <?=$IP?>
-        <a href="http://whatismyipaddress.com/ip/<?=Text::esc($IP)?>"
+        <a href="http://whatismyipaddress.com/ip/<?=\Gazelle\Text::esc($IP)?>"
           class="brackets tooltip" title="Search WIMIA.com">WI</a>
       </td>
       <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>

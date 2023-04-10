@@ -187,9 +187,9 @@ class Auth # extends Delight\Auth\Auth
         $invite = \Gazelle\Esc::string($data["invite"] ?? null);
 
         # generate keys
-        $torrent_pass = Text::random(32);
-        $authKey = Text::random(32);
-        $resetKey = Text::random(32);
+        $torrent_pass = \Gazelle\Text::random(32);
+        $authKey = \Gazelle\Text::random(32);
+        $resetKey = \Gazelle\Text::random(32);
 
         try {
             # users_main
@@ -887,7 +887,7 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $data = [
             "userId" => $userId,
-            "sessionId" => Text::random(128),
+            "sessionId" => \Gazelle\Text::random(128),
             "expires" => $expires,
             "ipAddress" => $server["REMOTE_ADDR"] ?? null,
             "userAgent" => $server["HTTP_USER_AGENT"] ?? null,
@@ -955,8 +955,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $token = Text::random(128);
-        $name ??= Text::random(16);
+        $token = \Gazelle\Text::random(128);
+        $name ??= \Gazelle\Text::random(16);
         #$name ??= "Token from " . \Carbon\Carbon::now()->toDateTimeString();
 
         $query = "

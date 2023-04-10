@@ -46,7 +46,7 @@ function run_all_in($Dir)
         include($Dir.'/'.$Task);
 
         if ($ScheduleDebug) {
-            echo $Dir.'/'.$Task.': '.Text::float(microtime(true)-$TimeStart, 3).($AS ? "<br>" : "\n");
+            echo $Dir.'/'.$Task.': '.\Gazelle\Text::float(microtime(true)-$TimeStart, 3).($AS ? "<br>" : "\n");
         }
     }
 }

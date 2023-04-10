@@ -60,7 +60,7 @@ $app->dbOld->set_query_id($RS);
 
 <div class="box pad">
   <p>
-    <?=Text::float($Results)?> unused invites have been sent.
+    <?=\Gazelle\Text::float($Results)?> unused invites have been sent.
   </p>
 </div>
 <br />
@@ -76,7 +76,7 @@ $app->dbOld->set_query_id($RS);
         <td>
           <input type="hidden" name="action" value="invite_pool" />
           <input type="email" name="search" size="60"
-            value="<?=Text::esc($Search)?>" />
+            value="<?=\Gazelle\Text::esc($Search)?>" />
           &nbsp;
           <input type="submit" class="button-primary" value="Search log" />
         </td>
@@ -114,15 +114,15 @@ $app->dbOld->set_query_id($RS);
     </td>
 
     <td>
-      <?=Text::esc($Email)?>
+      <?=\Gazelle\Text::esc($Email)?>
     </td>
 
     <td>
-      <?=Text::esc($IP)?>
+      <?=\Gazelle\Text::esc($IP)?>
     </td>
 
     <td>
-      <?=Text::esc($InviteKey)?>
+      <?=\Gazelle\Text::esc($InviteKey)?>
     </td>
 
     <td>
@@ -136,7 +136,7 @@ $app->dbOld->set_query_id($RS);
         <input type="hidden" name="auth"
           value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="invitekey"
-          value="<?=Text::esc($InviteKey)?>" />
+          value="<?=\Gazelle\Text::esc($InviteKey)?>" />
         <input type="submit" value="Delete" />
       </form>
     </td>

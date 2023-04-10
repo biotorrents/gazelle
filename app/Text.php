@@ -4,11 +4,16 @@ declare(strict_types=1);
 
 
 /**
- * Text parsing and escaping
+ *
+ * \Gazelle\Text
+ *
+ * Text parsing and escaping.
  *
  * @see https://github.com/erusev/parsedown-extra
  * @see https://github.com/vanilla/nbbc
  */
+
+namespace Gazelle;
 
 class Text
 {

@@ -327,13 +327,13 @@ foreach ($TorrentList as $Group) {
       </td>
       <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
       </td>
-      <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
+      <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
       <td
         class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-        <?=Text::float($Torrent['Seeders'])?>
+        <?=\Gazelle\Text::float($Torrent['Seeders'])?>
       </td>
-      <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
+      <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
       </td>
     </tr>
 
@@ -477,13 +477,13 @@ foreach ($TorrentList as $Group) {
       </td>
       <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
       </td>
-      <td class="number_column"><?=Text::float($Torrent['Snatched'])?>
+      <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
       <td
         class="number_column<?=(($Torrent['Seeders'] === 0) ? ' r00' : '')?>">
-        <?=Text::float($Torrent['Seeders'])?>
+        <?=\Gazelle\Text::float($Torrent['Seeders'])?>
       </td>
-      <td class="number_column"><?=Text::float($Torrent['Leechers'])?>
+      <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
       </td>
     </tr>
     <?php
@@ -505,7 +505,7 @@ View::header($Name, 'browse,requests,comments,recommend,subscriptions');
 ?>
 <div>
   <div class="header">
-    <h2><?=Text::esc($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
+    <h2><?=\Gazelle\Text::esc($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
     </h2>
     <div class="linkbox">
       <?php if (check_perms('site_submit_requests')) { ?>
@@ -701,15 +701,15 @@ END THE COLLECTOR
     <div class="box box_info box_statistics_artist">
       <div class="head"><strong>Statistics</strong></div>
       <ul class="stats nobullet">
-        <li>Torrents: <?=Text::float($NumTorrents)?>
+        <li>Torrents: <?=\Gazelle\Text::float($NumTorrents)?>
         </li>
-        <li>Torrent Groups: <?=Text::float($NumGroups)?>
+        <li>Torrent Groups: <?=\Gazelle\Text::float($NumGroups)?>
         </li>
-        <li>Snatches: <?=Text::float($NumSnatches)?>
+        <li>Snatches: <?=\Gazelle\Text::float($NumSnatches)?>
         </li>
-        <li>Seeders: <?=Text::float($NumSeeders)?>
+        <li>Seeders: <?=\Gazelle\Text::float($NumSeeders)?>
         </li>
-        <li>Leechers: <?=Text::float($NumLeechers)?>
+        <li>Leechers: <?=\Gazelle\Text::float($NumLeechers)?>
         </li>
       </ul>
     </div>
@@ -721,7 +721,7 @@ END THE COLLECTOR
         <strong>Information</strong>
         <a class="brackets" data-toggle-target="#body">Toggle</a>
       </div>
-      <div id="body" class="body"><?=Text::parse($Body)?>
+      <div id="body" class="body"><?=\Gazelle\Text::parse($Body)?>
       </div>
     </div>
     <?php
@@ -753,7 +753,7 @@ if (count($Collages) > 0) {
     } ?>
     <table class="collage_table" id="collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This artist is in <?=Text::float(count($Collages))?> collage<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This artist is in <?=\Gazelle\Text::float(count($Collages))?> collage<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># artists</td>
       </tr>
@@ -763,7 +763,7 @@ if (count($Collages) > 0) {
           unset($Collages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td><?=Text::float($CollageArtists)?>
+        <td><?=\Gazelle\Text::float($CollageArtists)?>
         </td>
       </tr>
       <?php
@@ -772,7 +772,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageArtists, $CollageID) = $Collage; ?>
       <tr class="collage_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td><?=Text::float($CollageArtists)?>
+        <td><?=\Gazelle\Text::float($CollageArtists)?>
         </td>
       </tr>
       <?php
@@ -803,7 +803,7 @@ if ($NumRequests > 0) {
   $Tags = Requests::get_tags(array_keys($Requests));
     foreach ($Requests as $RequestID => $Request) {
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
-        $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? Text::esc($Request['TitleJP']) : Text::esc($Request['Title2'])) : Text::esc($Request['Title']);
+        $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? \Gazelle\Text::esc($Request['TitleJP']) : \Gazelle\Text::esc($Request['Title2'])) : \Gazelle\Text::esc($Request['Title']);
         $ArtistForm = Requests::get_artists($RequestID);
         $ArtistLink = Artists::display_artists($ArtistForm, true, true);
         $FullName = $ArtistLink."<a href='requests.php?action=view&amp;id=$RequestID'><span dir='ltr'>$Title</span></a>";
@@ -815,7 +815,7 @@ if ($NumRequests > 0) {
         if (!empty($Tags[$RequestID])) {
             $ReqTagList = [];
             foreach ($Tags[$RequestID] as $TagID => $TagName) {
-                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>".Text::esc($TagName).'</a>';
+                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>".\Gazelle\Text::esc($TagName).'</a>';
             }
             $ReqTagList = implode(', ', $ReqTagList);
         } else {
