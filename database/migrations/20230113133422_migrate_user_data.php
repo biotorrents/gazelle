@@ -70,6 +70,11 @@ SQL;
                 continue;
             }
 
+            # unique key constraint fix: bad data?
+            if ($data["email"] === "1lRGF3uHJpoeyXfdAKYn8ImanBOQoWcWmdQECE/wmCBvvXK0IMHyprawlMk7XELu") {
+                $data["email"] = \Gazelle\Text::random();
+            }
+
             # insert the "new" user
             $query = "
                 insert into users (email, password, username, verified, registered, last_login)
