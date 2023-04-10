@@ -51,7 +51,7 @@ class Debug # extends DebugBar\StandardDebugBar
     public static function go(array $options = [])
     {
         return (self::$instance === null)
-            ? self::$instance = self::factory()
+            ? self::$instance = self::factory($options)
             : self::$instance;
 
         /*
@@ -72,15 +72,7 @@ class Debug # extends DebugBar\StandardDebugBar
     {
         $app = \Gazelle\App::go();
 
-        # https://stackify.com/display-php-errors/
-        if ($app->env->dev) {
-            /*
-            ini_set("display_errors", 1);
-            ini_set("display_startup_errors", 1);
-            error_reporting(E_ALL);
-            */
-        }
-
+        # load debugbar
         $debugBar = new DebugBar\StandardDebugBar();
 
         # custom collectors

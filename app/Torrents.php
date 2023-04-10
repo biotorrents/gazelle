@@ -905,6 +905,7 @@ class Torrents
         }
 
         # Alignned/Annotated
+        $Data["Censored"] ??= 0;
         if ($Data['Censored'] === 1) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&censored=1">Aligned</a>'
@@ -920,6 +921,11 @@ class Torrents
           $Info[] = $Data['Version'];
         }
         */
+
+        $Data['IsLeeching'] ??= 0;
+        $Data['IsSeeding'] ??= 0;
+        $Data['IsSnatched'] ??= 0;
+        $Data['FreeTorrent'] ??= '0';
 
         if ($Data['IsLeeching']) {
             $Info[] = $HTMLy ? Format::torrent_label('Leeching', 'important_text_semi') : 'Leeching';
@@ -945,6 +951,7 @@ class Torrents
             $Info[] = $HTMLy ? Format::torrent_label('Neutral Leech', 'bold') : 'Neutral Leech';
         }
 
+        $Data['PersonalFL'] ??= null;
         if ($Data['PersonalFL']) {
             $Info[] = $HTMLy ? Format::torrent_label('Personal Freeleech', 'important_text_alt') : 'Personal Freeleech';
         }

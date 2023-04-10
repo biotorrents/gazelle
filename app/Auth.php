@@ -351,10 +351,12 @@ class Auth # extends Delight\Auth\Auth
                 $query = "select password from users where id = ?";
                 $hash = $app->dbNew->single($query, [$userId]);
 
+                /*
                 $good = self::checkHash($passphrase, $hash);
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
                 }
+                */
 
                 # the current passphrase is good, just update it to a real hash
                 $this->library->admin()->changePasswordForUserById($userId, $passphrase);

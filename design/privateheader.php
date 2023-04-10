@@ -302,13 +302,13 @@ if (check_perms('site_send_unlimited_invites')) {
           <a href="user.php?action=invite">Invite<?=null#$Invites?></a>
         </li>
 -->
-        <?php if ($ENV->enableDonations) { ?>
+        <?php #if ($ENV->enableDonations) {?>
 <!-- OLD USER INFO
         <li id="nav_donate">
           <a href="donate.php">Donate</a>
         </li>
 -->
-        <?php } ?>
+        <?php #}?>
 
 <!-- OLD USER INFO
         <li id="nav_staff">
@@ -335,14 +335,14 @@ if (check_perms('site_send_unlimited_invites')) {
           Ratio: <span class="stat"><?=null#Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded'])?></span>
         </li>
 -->
-        <?php if (!empty($app->user->extra['RequiredRatio']) && $app->user->extra['RequiredRatio'] > 0) { ?>
+        <?php #if (!empty($app->user->extra['RequiredRatio']) && $app->user->extra['RequiredRatio'] > 0) {?>
 <!-- OLD USER INFO
         <li id="stats_required">
           <a href="/rules/ratio">Required</a>:
           <span class="stat tooltip"
             title="<?=null#\Gazelle\Text::float($app->user->extra['RequiredRatio'], 5)?>"><?=null#\Gazelle\Text::float($app->user->extra['RequiredRatio'], 2)?></span>
         </li>
-        <?php } ?>
+        <?php #}?>
       </ul>
 -->
 
@@ -350,7 +350,7 @@ if (check_perms('site_send_unlimited_invites')) {
 <!-- OLD USER INFO
       <ul id="userinfo_extra">
 
-        <?php if ($app->user->extra['FLTokens'] > 0) { ?>
+        <?php #if ($app->user->extra['FLTokens'] > 0) {?>
         <li id="fl_tokens">
           <a href="wiki.php?action=article&amp;name=tokens">Tokens</a>:
           <span class="stat">
@@ -358,7 +358,7 @@ if (check_perms('site_send_unlimited_invites')) {
               href="userhistory.php?action=token_history&amp;userid=<?=null#$app->user->core["id"]?>"><?=null#$app->user->extra['FLTokens']?></a>
           </span>
         </li>
-        <?php } ?>
+        <?php #}?>
 
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
@@ -367,14 +367,14 @@ if (check_perms('site_send_unlimited_invites')) {
           </span>
         </li>
 
-        <?php if ($app->user->extra['HnR'] > 0) { ?>
+        <?php #if ($app->user->extra['HnR'] > 0) {?>
         <li id="hnr">
           <a href="snatchlist.php">HnRs</a>:
           <span class="stat">
             <a><?=null#$app->user->extra['HnR']?></a>
           </span>
         </li>
-        <?php } ?>
+        <?php #}?>
       </ul>
     </div>
 -->

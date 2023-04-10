@@ -885,7 +885,8 @@ class Stats
         $data["userLimit"] = $app->env->userLimit;
 
         # enabled user count
-        $query = "select count(id) from users_main where enabled = 1";
+        $query = "select count(id) from users where status = 0";
+        #$query = "select count(id) from users_main where enabled = 1";
         $data["userCount"] = $app->dbNew->single($query, []);
 
         # division by zero fix
@@ -894,18 +895,24 @@ class Stats
         }
 
         # daily active users
-        $query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeDailyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24) ]);
+        $query = "select count(id) from users where status = 0 and last_login > ?";
+        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeDailyCount"] = $app->dbNew->single($query, [ 3600 * 24 ]);
+        #$data["activeDailyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24) ]);
         $data["activeDailyPercent"] = $data["activeDailyCount"] / ($data["userCount"] * 100);
 
         # weekly active users
-        $query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeWeeklyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 7) ]);
+        $query = "select count(id) from users where status = 0 and last_login > ?";
+        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeWeeklyCount"] = $app->dbNew->single($query, [ 3600 * 24 * 7 ]);
+        #$data["activeWeeklyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 7) ]);
         $data["activeWeeklyPercent"] = $data["activeWeeklyCount"] / ($data["userCount"] * 100);
 
         # monthly active users
-        $query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeMonthlyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 30) ]);
+        $query = "select count(id) from users where status = 0 and last_login > ?";
+        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
+        $data["activeMonthlyCount"] = $app->dbNew->single($query, [ 3600 * 24 * 30 ]);
+        #$data["activeMonthlyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 30) ]);
         $data["activeMonthlyPercent"] = $data["activeMonthlyCount"] / ($data["userCount"] * 100);
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);

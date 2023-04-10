@@ -15,6 +15,13 @@ if (!$env->dev) {
     Kint\Kint::$enabled_mode = false;
 }
 
+# https://stackify.com/display-php-errors/
+if ($env->dev) {
+    ini_set("display_errors", 1);
+    ini_set("display_startup_errors", 1);
+    error_reporting(E_ALL);
+}
+
 # allow the site encryption key to be set without an account
 # (should only be used for initial setup)
 ENV::setPub("enablePublicEncryptionKey", false);

@@ -435,7 +435,8 @@ class Permissions
 
             $Permission = $app->dbOld->next_record(MYSQLI_ASSOC, ['Permissions']);
             $app->dbOld->set_query_id($QueryID);
-            $Permission['Permissions'] = unserialize($Permission['Permissions']);
+            $Permission['Permissions'] = json_decode($Permission['Permissions'], true);
+            #$Permission['Permissions'] = unserialize($Permission['Permissions']);
             $app->cache->set("perm_$PermissionID", $Permission, 2592000);
         }
         return $Permission;
