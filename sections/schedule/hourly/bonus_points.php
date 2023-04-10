@@ -34,10 +34,10 @@ if ($app->dbOld->has_results()) {
             $Points = 0;
         }
 
-        if ($Points > 0) {
-            $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
-            $app->cache->delete('user_info_heavy_'.$UserID);
-        }
+        #if ($Points > 0) {
+        $QueryPart .= "WHEN $UserID THEN BonusPoints+$Points ";
+        $app->cache->delete('user_info_heavy_'.$UserID);
+        #}
     }
 
     $app->dbOld->query("

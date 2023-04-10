@@ -351,12 +351,10 @@ class Auth # extends Delight\Auth\Auth
                 $query = "select password from users where id = ?";
                 $hash = $app->dbNew->single($query, [$userId]);
 
-                /*
                 $good = self::checkHash($passphrase, $hash);
                 if (!$good) {
                     throw new Exception("current passphrase doesn't match");
                 }
-                */
 
                 # the current passphrase is good, just update it to a real hash
                 $this->library->admin()->changePasswordForUserById($userId, $passphrase);
@@ -386,7 +384,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            #!d($e);exit;
+            !d($e);exit;
             return $message;
         }
 
@@ -395,7 +393,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                !d($e);exit;
                 return $message;
             }
         }
@@ -405,7 +403,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verifyU2F($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                !d($e);exit;
                 return $message;
             }
         }
@@ -414,7 +412,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            #!d($e);exit;
+            !d($e);exit;
             return $message;
         }
     } # login
