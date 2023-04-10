@@ -56,7 +56,7 @@ class Text
         # here's the magic pattern:
         if (!preg_match("/{$app->env->regexBBCode}/s", $string)) {
             # markdown
-            $parsedown = new ParsedownExtra();
+            $parsedown = new \ParsedownExtra();
             $safe ?? $parsedown->setSafeMode(true);
 
             # parse early and post-process
@@ -69,7 +69,7 @@ class Text
             return $parsed;
         } else {
             # BBcode (not shitty)
-            $nbbc = new Nbbc\BBCode();
+            $nbbc = new \Nbbc\BBCode();
 
             $parsed = $nbbc->parse($string);
             $parsed = self::fixLinks($parsed);
@@ -142,7 +142,7 @@ class Text
         $string = self::esc($message);
 
         # object and options
-        $figlet = new Povils\Figlet\Figlet();
+        $figlet = new \Povils\Figlet\Figlet();
         $figlet->setFont($font)->setFontColor($color);
 
         # okay done
