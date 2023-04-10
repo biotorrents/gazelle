@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 # todo: Go through line by line
 
@@ -21,8 +24,8 @@ $Limit = in_array($Limit, [10, 100, 250]) ? $Limit : 10;
 $OuterResults = [];
 
 if ($Details == 'all' || $Details == 'ut') {
-    if (!$TopUsedTags = $Cache->get_value("topusedtag_$Limit")) {
-        $DB->query("
+    if (!$TopUsedTags = $app->cache->get("topusedtag_$Limit")) {
+        $app->dbOld->query("
       SELECT
         t.ID,
         t.Name,
@@ -32,16 +35,16 @@ if ($Details == 'all' || $Details == 'ut') {
       GROUP BY tt.TagID
       ORDER BY Uses DESC
       LIMIT $Limit");
-        $TopUsedTags = $DB->to_array();
-        $Cache->cache_value("topusedtag_$Limit", $TopUsedTags, 3600 * 12);
+        $TopUsedTags = $app->dbOld->to_array();
+        $app->cache->set("topusedtag_$Limit", $TopUsedTags, 3600 * 12);
     }
 
     $OuterResults[] = generate_tag_json('Most Used Torrent Tags', 'ut', $TopUsedTags, $Limit);
 }
 
 if ($Details == 'all' || $Details == 'ur') {
-    if (!$TopRequestTags = $Cache->get_value("toprequesttag_$Limit")) {
-        $DB->query("
+    if (!$TopRequestTags = $app->cache->get("toprequesttag_$Limit")) {
+        $app->dbOld->query("
       SELECT
         t.ID,
         t.Name,
@@ -52,8 +55,8 @@ if ($Details == 'all' || $Details == 'ur') {
       GROUP BY r.TagID
       ORDER BY Uses DESC
       LIMIT $Limit");
-        $TopRequestTags = $DB->to_array();
-        $Cache->cache_value("toprequesttag_$Limit", $TopRequestTags, 3600 * 12);
+        $TopRequestTags = $app->dbOld->to_array();
+        $app->cache->set("toprequesttag_$Limit", $TopRequestTags, 3600 * 12);
     }
 
     $OuterResults[] = generate_tag_json('Most Used Request Tags', 'ur', $TopRequestTags, $Limit);

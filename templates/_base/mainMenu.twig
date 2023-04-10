@@ -1,0 +1,103 @@
+{##
+ # main menu
+ #}
+
+<nav id="mainMenu">
+
+	{# logo #}
+	<div id="logo">
+		<a href="/" aria-label="Home"></a>
+	</div>
+
+	{# spacer #}
+	{# <div class="spacer" /> #}
+
+	{# search #}
+	<div id="searchForm">
+		<form id="universalSearch" name="universalSearch" method="get" action="torrents.php">
+
+			{# workaround for some endpoints that need &action=search #}
+			<input type="hidden" name="action" value="search"/>
+
+			{# the universal search bar itself #}
+			<input type="text" id="search" name="search" size="50" placeholder="Search the site for anything"/>
+
+			{# select which site area to search #}
+			<select id="searchWhat" name="searchWhat" {# class="select" #}>
+				<option value="torrents" selected>Torrents</option>
+				{# <option value="artist">Creators</option> #}
+				<option value="requests">Requests</option>
+				<option value="forums">Forums</option>
+				<option value="wiki">Wiki</option>
+				<option value="log">Log</option>
+				<option value="user">Users</option>
+			</select>
+
+			{# submit button, maybe unnecessary #}
+			<input type="submit" class="button-primary" value="go">
+		</form>
+	</div>
+
+	{# hamburger icon #}
+	<div id="hamburger">
+		<a id="toggleIcon">
+			<i class="fal fa-bars"></i>
+		</a>
+	</div>
+
+</nav> {# mainMenu #}
+
+
+{# submenu #}
+<nav id="subMenu">
+
+	{# torrents #}
+	<div id="torrents">
+		<h3 id="torrentsHeader">Torrents</h3>
+		<ul>
+			<li><a href="/torrents.php">Browse</a></li>
+			<li><a href="/collages.php">Collections</a></li>
+			<li><a href="/requests.php">Requests</a></li>
+			<li><a href="/top10">Top 10</a></li>
+			<li><a href="/better">Better</a></li>
+		</ul>
+	</div>
+
+	{# more #}
+	<div id="more">
+		<h3 id="moreHeader">More</h3>
+		<ul>
+			<li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li>
+			<li><a href="/bookmarks.php?type=torrents">Bookmarks</a></li>
+			<li><a href="/user.php?action=notify">Notifications</a></li>
+			<li><a href="/userhistory.php?action=subscriptions">Subscriptions</a></li>
+		</ul>
+	</div>
+
+	{# community #}
+	<div id="community">
+		<h3 id="communityHeader">Community</h3>
+		<ul>
+			<li><a href="/forums.php">Forums</a></li>
+			<li><a href="/rules">Rules</a></li>
+			<li><a href="/wiki.php">Wiki</a></li>
+			<li><a href="/comments.php">Comments</a></li>
+			<li><a href="/friends">Friends</a></li>
+			<li><a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a></li>
+		</ul>
+	</div>
+
+	{# user #}
+	<div id="user">
+		<h3 id="userHeader">User</h3>
+		<ul>
+			<li><a href="/user.php?id={{ user.core.id }}">Profile</a></li>
+			{# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}
+			<li><a href="/user.php?action=edit&amp;userid={{ user.core.id }}">Settings</a></li>
+			<li><a href="/{{ inbox }}">Inbox</a></li>
+			<li><a href="/staffpm.php">Staff&nbsp;Inbox</a></li>
+			<li><a href="/logout">Logout</a></li>
+		</ul>
+	</div>
+
+</nav> {# subMenu #}

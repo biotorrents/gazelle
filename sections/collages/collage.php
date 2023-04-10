@@ -1,15 +1,18 @@
 <?php
+
 #declare(strict_types=1);
 
-$CollageID = (int) $_GET['id'];
-Security::checkInt($CollageID);
+$app = \Gazelle\App::go();
 
-$CollageData = $Cache->get_value("collage_$CollageID");
+$CollageID = (int) $_GET['id'];
+Security::int($CollageID);
+
+$CollageData = $app->cache->get("collage_$CollageID");
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
 } else {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `Name`,
       `Description`,
@@ -27,8 +30,8 @@ if ($CollageData) {
       `ID` = '$CollageID'
     ");
 
-    if ($DB->has_results()) {
-        list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $DB->next_record(MYSQLI_NUM);
+    if ($app->dbOld->has_results()) {
+        list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $app->dbOld->next_record(MYSQLI_NUM);
         $CommentList = null;
     } else {
         $Deleted = '1';
@@ -37,42 +40,42 @@ if ($CollageData) {
 }
 
 if ($Deleted === '1') {
-    header("Location: log.php?search=Collage+$CollageID");
+    Http::redirect("log.php?search=Collage+$CollageID");
     error(404);
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $Cache->get_value('collage_subs_user_'.$LoggedUser['ID'])) === false) {
-    $DB->query("
+if (($CollageSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->core['id'])) === false) {
+    $app->dbOld->query("
     SELECT
       `CollageID`
     FROM
       `users_collage_subs`
     WHERE
-      `UserID` = '$LoggedUser[ID]'
+      `UserID` = '{$app->user->core['id']}'
     ");
 
-    $CollageSubscriptions = $DB->collect(0);
-    $Cache->cache_value('collage_subs_user_'.$LoggedUser['ID'], $CollageSubscriptions, 0);
+    $CollageSubscriptions = $app->dbOld->collect(0);
+    $app->cache->set('collage_subs_user_'.$app->user->core['id'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
-    $DB->query("
+    $app->dbOld->query("
     UPDATE
       `users_collage_subs`
     SET
       `LastVisit` = NOW()
     WHERE
-      `UserID` = ".$LoggedUser['ID']."
+      `UserID` = ".$app->user->core['id']."
       AND `CollageID` = $CollageID
     ");
-    $Cache->delete_value('collage_subs_user_new_'.$LoggedUser['ID']);
+    $app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
 }
 
 if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    include SERVER_ROOT.'/sections/collages/artist_collage.php';
+    include serverRoot.'/sections/collages/artist_collage.php';
 } else {
-    include SERVER_ROOT.'/sections/collages/torrent_collage.php';
+    include serverRoot.'/sections/collages/torrent_collage.php';
 }
 
 if (isset($SetCache)) {
@@ -88,5 +91,5 @@ if (isset($SetCache)) {
     (int) $MaxGroupsPerUser,
     $Updated,
     (int) $Subscribers);
-    $Cache->cache_value("collage_$CollageID", $CollageData, 3600);
+    $app->cache->set("collage_$CollageID", $CollageData, 3600);
 }

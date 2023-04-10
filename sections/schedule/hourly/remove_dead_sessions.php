@@ -1,24 +1,15 @@
 <?php
-#declare(strict_types=1);
 
-$AgoMins = time_minus(60 * 30);
-$AgoDays = time_minus(3600 * 24 * 30);
+declare(strict_types=1);
 
-$SessionQuery = $DB->query("
-  SELECT UserID, SessionID
-  FROM users_sessions
-  WHERE (LastUpdate < '$AgoDays' AND KeepLogged = '1')
-    OR (LastUpdate < '$AgoMins' AND KeepLogged = '0')");
 
-$DB->query("
-  DELETE FROM users_sessions
-  WHERE (LastUpdate < '$AgoDays' AND KeepLogged = '1')
-    OR (LastUpdate < '$AgoMins' AND KeepLogged = '0')");
+/**
+ * remove dead sessions
+ */
 
-$DB->set_query_id($SessionQuery);
+$app = \Gazelle\App::go();
 
-while (list($UserID, $SessionID) = $DB->next_record()) {
-    $Cache->begin_transaction("users_sessions_$UserID");
-    $Cache->delete_row($SessionID);
-    $Cache->commit_transaction(0);
-}
+$now = Carbon\Carbon::now()->toDateTimeString();
+
+$query = "delete from users_sessions where expires < ?";
+$app->dbNew->do($query, [$now]);

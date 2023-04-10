@@ -1,7 +1,9 @@
 <?php
 #declare(strict_types=1);
 
-$UserID = $LoggedUser['ID'];
+$app = \Gazelle\App::go();
+
+$UserID = $app->user->core['id'];
 
 if (empty($_GET['action'])) {
     $Section = 'inbox';
@@ -14,7 +16,7 @@ if (!in_array($Section, array('inbox', 'sentbox'))) {
 }
 
 list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
-View::show_header('Inbox');
+View::header('Inbox');
 ?>
 
 <h2 class="header">
@@ -72,11 +74,11 @@ $sql .= "
   GROUP BY c.ID
   ORDER BY cu.Sticky, $Sort
   LIMIT $Limit";
-$Results = $DB->query($sql);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($Results);
-$Count = $DB->record_count();
+$Results = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Results);
+$Count = $app->dbOld->record_count();
 
 $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 echo $Pages;
@@ -99,12 +101,12 @@ echo $Pages;
       /> Subject
       <input type="radio" name="searchtype" value="message" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?>
       /> Message
-      <span class="float_right">
+      <span class="u-pull-right">
         <?php // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
-    $BaseURL = 'inbox.php';
+      $BaseURL = 'inbox.php';
 
-    if (isset($_GET['sort']) && $_GET['sort'] === 'unread') { ?>
+      if (isset($_GET['sort']) && $_GET['sort'] === 'unread') { ?>
         <a href="<?=$BaseURL?>" class="brackets tooltip"
           title="<?=$ToggleTitle?>">List latest first</a>
         <?php } else { ?>
@@ -115,13 +117,13 @@ echo $Pages;
       </span>
       <br />
       <input type="search" name="search"
-        placeholder="<?=(!empty($_GET['search']) ? display_str($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
+        placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
     </div>
   </form>
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">
     <input type="hidden" name="action" value="masschange" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
@@ -143,47 +145,48 @@ echo $Pages;
         <td colspan="5">No results.</td>
       </tr>
       <?php } else {
-      while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $DB->next_record()) {
-          if ($Unread === '1') {
-              $RowClass = 'unreadpm';
-          } else {
-              $RowClass = "row";
-          } ?>
+          while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $SenderID, $Date) = $app->dbOld->next_record()) {
+              if ($Unread === '1') {
+                  $RowClass = 'unreadpm';
+              } else {
+                  $RowClass = "row";
+              } ?>
       <tr class="<?=$RowClass?>">
         <td class="center"><input type="checkbox" name="messages[]="
             value="<?=$ConvID?>" /></td>
         <td>
           <?php
-          if ($Unread) {
-              echo '<strong>';
-          }
-          if ($Sticky) {
-              echo 'Sticky: ';
-          }
-          echo "\n"; ?>
+              if ($Unread) {
+                  echo '<strong>';
+              }
+              if ($Sticky) {
+                  echo 'Sticky: ';
+              }
+              echo "\n"; ?>
           <a href="inbox.php?action=viewconv&amp;id=<?=$ConvID?>"><?=$Subject?></a>
           <?php
-          if ($Unread) {
-              echo "</strong>\n";
-          } ?>
+              if ($Unread) {
+                  echo "</strong>\n";
+              } ?>
         </td>
-        <td><?=Users::format_username($SenderID, true, true, true, true)?>
+        <td><?=User::format_username($SenderID, true, true, true, true)?>
         </td>
         <td><?=time_diff($Date)?>
         </td>
         <?php if (check_perms('users_mod')) { ?>
-        <td><?=(($ForwardedID && $ForwardedID != $LoggedUser['ID']) ? Users::format_username($ForwardedID, false, false, false) : '')?>
+        <td><?=(($ForwardedID && $ForwardedID != $app->user->core['id']) ? User::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>
       </tr>
       <?php
-    $DB->set_query_id($Results);
-      }
-  } ?>
+    $app->dbOld->set_query_id($Results);
+          }
+      } ?>
     </table>
     <?php
-    $MsgLimit = ($LoggedUser['PostsPerPage']) ? $LoggedUser['PostsPerPage'] : MESSAGES_PER_PAGE;
-    if ($Count > $MsgLimit) { ?>
+        $app->user->extra['PostsPerPage'] ??= 20;
+      $MsgLimit = ($app->user->extra['PostsPerPage']) ? $app->user->extra['PostsPerPage'] : MESSAGES_PER_PAGE;
+      if ($Count > $MsgLimit) { ?>
     <input type="submit" name="read" class="button-primary" value="Mark as read" />
     <input type="submit" name="unread" value="Mark as unread" />
     <input type="submit" name="delete" value="Delete message(s)" />
@@ -195,4 +198,4 @@ echo $Pages;
 <div class="linkbox">
   <?= $Pages ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

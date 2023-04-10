@@ -1,7 +1,13 @@
 <?php
+
 #declare(strict_types=1);
 
-include SERVER_ROOT.'/sections/torrents/functions.php';
+$app = \Gazelle\App::go();
+
+$get = Http::request("get");
+$post = Http::request("post");
+$server = Http::request("server");
+
 
 if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
     $OrderWay = 'asc';
@@ -9,7 +15,7 @@ if (!empty($_GET['order_way']) && $_GET['order_way'] === 'asc') {
     $OrderWay = 'desc';
 }
 
-if (empty($_GET['order_by']) || !isset(TorrentSearch::$SortOrders[$_GET['order_by']])) {
+if (empty($_GET['order_by']) || !isset(TorrentSearch::$sortOrders[$_GET['order_by']])) {
     $OrderBy = 'time';
 } else {
     $OrderBy = $_GET['order_by'];

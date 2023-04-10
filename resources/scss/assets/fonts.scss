@@ -1,0 +1,410 @@
+/**
+ * fonts
+ *
+ * enables sitewide access to the font engine
+ * all themes can use the font toggle options
+ */
+
+/* font path */
+$fontPath: "/fonts/";
+
+/**
+ * font variants
+ */
+/*
+body {
+  font-variant: oldstyle-nums;
+}
+
+code,
+pre,
+tt {
+  font-variant: normal;
+}
+*/
+
+/**
+ * font awesome
+ */
+
+@import url($fontPath + "fa/css/all.min.css");
+$fontAwesome: "FontAwesome";
+
+i.fa-thin {
+  font-weight: 300;
+}
+
+/**
+ * noto sans
+ */
+
+$notoSans: "NotoSans-SemiCondensed";
+$notoSansBold: "NotoSans-SemiCondensedBold";
+$notoSansItalic: "NotoSans-SemiCondensedItalic";
+
+@font-face {
+  font-family: "NotoSans-SemiCondensed";
+  src: url($fontPath + "noto/NotoSans-SemiCondensed.woff2");
+}
+
+@font-face {
+  font-family: "NotoSans-SemiCondensedBold";
+  src: url($fontPath + "noto/NotoSans-SemiCondensedBold.woff2");
+}
+
+@font-face {
+  font-family: "NotoSans-SemiCondensedItalic";
+  src: url($fontPath + "noto/NotoSans-SemiCondensedItalic.woff2");
+}
+
+/**
+ * noto serif
+ */
+
+$notoSerif: "NotoSerif-SemiCondensed";
+$notoSerifBold: "NotoSerif-SemiCondensedBold";
+$notoSerifItalic: "NotoSerif-SemiCondensedItalic";
+
+@font-face {
+  font-family: "NotoSerif-SemiCondensed";
+  src: url($fontPath + "noto/NotoSerif-SemiCondensed.woff2");
+}
+
+@font-face {
+  font-family: "NotoSerif-SemiCondensedBold";
+  src: url($fontPath + "noto/NotoSerif-SemiCondensedBold.woff2");
+}
+
+@font-face {
+  font-family: "NotoSerif-SemiCondensedItalic";
+  src: url($fontPath + "noto/NotoSerif-SemiCondensedItalic.woff2");
+}
+
+/**
+ * noto mono
+ */
+
+$notoMono: "NotoSansMono-SemiCondensed";
+$notoMonoBold: "NotoSansMono-SemiCondensedBold";
+
+@font-face {
+  font-family: "NotoSansMono-SemiCondensed";
+  src: url($fontPath + "noto/NotoSansMono-SemiCondensed.woff2");
+}
+
+@font-face {
+  font-family: "NotoSansMono-SemiCondensedBold";
+  src: url($fontPath + "noto/NotoSansMono-SemiCondensedBold.woff2");
+}
+
+/**
+ * luxi sans
+ */
+
+$luxiSans: "LuxiSans";
+$luxiSansBold: "LuxiSans-Bold";
+$luxiSansItalic: "LuxiSans-Italic";
+
+@font-face {
+  font-family: "LuxiSans";
+  src: url($fontPath + "luxi/LuxiSans.woff2");
+}
+
+@font-face {
+  font-family: "LuxiSans-Bold";
+  src: url($fontPath + "luxi/LuxiSans-Bold.woff2");
+}
+
+@font-face {
+  font-family: "LuxiSans-Italic";
+  src: url($fontPath + "luxi/LuxiSans-Italic.woff2");
+}
+
+/**
+ * luxi serif
+ */
+
+$luxiSerif: "LuxiSerif";
+$luxiSerifBold: "LuxiSerif-Bold";
+$luxiSerifItalic: "LuxiSerif-Italic";
+
+@font-face {
+  font-family: "LuxiSerif";
+  src: url($fontPath + "luxi/LuxiSerif.woff2");
+}
+
+@font-face {
+  font-family: "LuxiSerif-Bold";
+  src: url($fontPath + "luxi/LuxiSerif-Bold.woff2");
+}
+
+@font-face {
+  font-family: "LuxiSerif-Italic";
+  src: url($fontPath + "luxi/LuxiSerif-Italic.woff2");
+}
+
+/**
+ * luxi mono
+ */
+
+$luxiMono: "LuxiMono";
+$luxiMonoBold: "LuxiMono-Bold";
+$luxiMonoItalic: "LuxiMono-Italic";
+
+@font-face {
+  font-family: "LuxiMono";
+  src: url($fontPath + "luxi/LuxiMono.woff2");
+}
+
+@font-face {
+  font-family: "LuxiMono-Bold";
+  src: url($fontPath + "luxi/LuxiMono-Bold.woff2");
+}
+
+@font-face {
+  font-family: "LuxiMono-Italic";
+  src: url($fontPath + "luxi/LuxiMono-Italic.woff2");
+}
+
+/**
+ * comic neue
+ */
+
+$comicNeue: "ComicNeue-Regular";
+$comicNeueBold: "ComicNeue-Bold";
+$comicNeueItalic: "ComicNeue-Italic";
+
+@font-face {
+  font-family: "ComicNeue-Regular";
+  src: url($fontPath + "comic/ComicNeue-Regular.woff2");
+}
+
+@font-face {
+  font-family: "ComicNeue-Bold";
+  src: url($fontPath + "comic/ComicNeue-Bold.woff2");
+}
+
+@font-face {
+  font-family: "ComicNeue-Italic";
+  src: url($fontPath + "comic/ComicNeue-Italic.woff2");
+}
+
+/**
+ * OpenDyslexic
+ */
+
+$openDyslexic: "OpenDyslexic-Regular";
+$openDyslexicBold: "OpenDyslexic-Bold";
+$openDyslexicItalic: "OpenDyslexic-Italic";
+
+@font-face {
+  font-family: "OpenDyslexic-Regular";
+  src: url($fontPath + "dyslex/OpenDyslexic-Regular.woff2");
+}
+
+@font-face {
+  font-family: "OpenDyslexic-Bold";
+  src: url($fontPath + "dyslex/OpenDyslexic-Bold.woff2");
+}
+
+@font-face {
+  font-family: "OpenDyslexic-Italic";
+  src: url($fontPath + "dyslex/OpenDyslexic-Italic.woff2");
+}
+
+/*
+ * theme options
+ */
+
+@mixin fontStyles($bold, $italic, $monospace, $monoBold, $monoItalic: null) {
+  b,
+  strong {
+    font-family: $bold;
+    font-weight: normal;
+  }
+
+  em {
+    font-family: $italic;
+    font-style: normal;
+  }
+
+  code,
+  pre,
+  tt {
+    font-family: $monospace;
+    margin-bottom: 1rem;
+    word-wrap: break-word;
+
+    b,
+    strong {
+      font-family: $monoBold;
+      font-weight: normal;
+    }
+
+    i,
+    em {
+      /* noto mono workaround: no italics */
+      @if ($monoItalic) {
+        font-family: $monoItalic;
+        font-style: normal;
+      }
+    }
+  }
+}
+
+/* noto sans */
+body.notoSans {
+  font-family: $notoSans, sans-serif;
+  @include fontStyles($notoSansBold, $notoSansItalic, $notoMono, $notoMonoBold);
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $notoSerif, serif;
+  }
+}
+
+/* noto serif */
+body.notoSerif {
+  font-family: $notoSerif, serif;
+  @include fontStyles(
+    $notoSerifBold,
+    $notoSerifItalic,
+    $notoMono,
+    $notoMonoBold
+  );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $notoSans, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $notoSans, sans-serif;
+  }
+}
+
+/* luxi sans */
+body.luxiSans {
+  font-family: $luxiSans, sans-serif;
+  @include fontStyles(
+    $luxiSansBold,
+    $luxiSansItalic,
+    $luxiMono,
+    $luxiMonoBold,
+    $luxiMonoItalic
+  );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $luxiSerif, serif;
+  }
+}
+
+/* luxi serif */
+body.luxiSerif {
+  font-family: $luxiSerif, serif;
+  @include fontStyles(
+    $luxiSerifBold,
+    $luxiSerifItalic,
+    $luxiMono,
+    $luxiMonoBold,
+    $luxiMonoItalic
+  );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $luxiSans, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $luxiSans, sans-serif;
+  }
+}
+
+/* OpenDyslexic */
+body.openDyslexic {
+  font-family: $openDyslexic, sans-serif;
+  @include fontStyles(
+    $openDyslexicBold,
+    $openDyslexicItalic,
+    $notoMono,
+    $notoMonoBold
+  );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $openDyslexic, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $openDyslexic, sans-serif;
+  }
+}
+
+/* comic neue */
+body.comicNeue {
+  font-family: $comicNeue, sans-serif;
+  @include fontStyles(
+    $comicNeueBold,
+    $comicNeueItalic,
+    $notoMono,
+    $notoMonoBold
+  );
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $comicNeue, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $comicNeue, sans-serif;
+  }
+}

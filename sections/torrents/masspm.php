@@ -1,11 +1,13 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
-Security::checkInt($GroupID, $TorrentID);
+Security::int($GroupID, $TorrentID);
 
-$DB->prepare_query("
+$app->dbOld->prepared_query("
 SELECT
   t.`Media`,
   t.`FreeTorrent`,
@@ -28,14 +30,14 @@ ON
 WHERE
   t.`ID` = '$TorrentID'
 ");
-$DB->exec_prepared_query();
 
-list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+
+list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }
 
-View::show_header('Edit torrent', 'upload');
+View::header('Edit torrent', 'upload');
 
 if (!check_perms('site_moderate_requests')) {
     error(403);
@@ -53,7 +55,7 @@ if (!check_perms('site_moderate_requests')) {
   <form class="send_form" name="mass_message" action="torrents.php" method="post">
     <input type="hidden" name="action" value="takemasspm" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="groupid" value="<?=$GroupID?>" />
 
@@ -87,4 +89,4 @@ if (!check_perms('site_moderate_requests')) {
   </form>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

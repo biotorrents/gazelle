@@ -5,13 +5,13 @@ if (!check_perms('users_mod')) {
     error(403);
 }
 
-if (isset($_GET['userid']) && is_number($_GET['userid'])) {
-    $UserHeavyInfo = Users::user_heavy_info($_GET['userid']);
+if (isset($_GET['userid']) && is_numeric($_GET['userid'])) {
+    $UserHeavyInfo = User::user_heavy_info($_GET['userid']);
 
     if (isset($UserHeavyInfo['torrent_pass'])) {
         $TorrentPass = $UserHeavyInfo['torrent_pass'];
         $UserPeerStats = Tracker::user_peer_count($TorrentPass);
-        $UserInfo = Users::user_info($_GET['userid']);
+        $UserInfo = User::user_info($_GET['userid']);
         $UserLevel = $Classes[$UserInfo['PermissionID']]['Level'];
 
         if (!check_paranoia('leeching+', $UserInfo['Paranoia'], $UserLevel, $_GET['userid'])) {
@@ -28,7 +28,7 @@ if (isset($_GET['userid']) && is_number($_GET['userid'])) {
     $MainStats = Tracker::info();
 }
 
-View::show_header('Tracker info');
+View::header('Tracker info');
 ?>
 <div>
   <div class="header">
@@ -40,7 +40,7 @@ View::show_header('Tracker info');
       class="brackets" />Main stats</a>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box">
       <div class="head">
         <strong>User stats</strong>
@@ -57,7 +57,7 @@ View::show_header('Tracker info');
     </div>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box">
       <div class="head">
         <strong>Numbers and such</strong>
@@ -68,8 +68,8 @@ View::show_header('Tracker info');
 if (!empty($UserPeerStats)) {
     ?>
         User ID: <?=$_GET['userid']?><br />
-        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : number_format($UserPeerStats[0])?><br />
-        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : number_format($UserPeerStats[1])?><br />
+        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br />
+        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br />
         <?php
 } elseif (!empty($MainStats)) {
         foreach ($MainStats as $Key => $Value) {
@@ -78,7 +78,7 @@ if (!empty($UserPeerStats)) {
                     $Value = Format::get_size($Value);
                     $Key = substr($Key, 6);
                 } else {
-                    $Value = number_format($Value);
+                    $Value = \Gazelle\Text::float($Value);
                 }
             } ?>
         <?="$Value $Key<br />\n"?>
@@ -90,7 +90,7 @@ if (!empty($UserPeerStats)) {
         <?php
     } elseif (isset($_GET['userid'])) {
         ?>
-        User <?=display_str($_GET['userid'])?>
+        User <?=\Gazelle\Text::esc($_GET['userid'])?>
         doesn't exist
         <?php
     } else {
@@ -104,4 +104,4 @@ if (!empty($UserPeerStats)) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

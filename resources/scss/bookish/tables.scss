@@ -1,0 +1,95 @@
+/**
+ * tables
+ */
+
+@mixin alternatingRows {
+  tr:nth-child(2n) {
+    background: whitesmoke;
+  }
+
+  tr:nth-child(2n-1) {
+    background: white;
+  }
+}
+
+/* special tables */
+.torrent_table,
+.collage_table,
+.request_table,
+.top10_table {
+  @include alternatingRows;
+
+  th,
+  td {
+    border-bottom: 1px solid #e1e1e1;
+  }
+}
+
+/* torrent and collage tables */
+.torrent_table .group_torrent .torrent span {
+  font-weight: normal;
+  float: right;
+}
+
+/**
+ * forums
+ */
+
+@mixin forum-post($color) {
+  background-color: $color;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.forum_post .colhead_dark {
+  @include forum-post(white);
+}
+
+.forum_post.staff_post .colhead_dark {
+  @include forum-post(whitesmoke);
+}
+
+.forum_post.sticky_post {
+  border: 2px solid change-color(gold, $alpha: 0.5);
+}
+
+/*
+td.label {
+  font-weight: bold;
+  text-align: right;
+  width: 180px;
+}
+*/
+
+table.slice {
+  margin-top: -1px;
+}
+
+/* get rid of extra padding in the top contributors box */
+#request_top_contrib {
+  border: none;
+
+  tr:first-child th {
+    border-top: 0;
+  }
+
+  tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tr td:first-child,
+  tr th:first-child,
+  tr td:nth-child(2),
+  tr th:nth-child(2) {
+    border-left: 0;
+    border-top: 0;
+  }
+
+  tr td:last-child,
+  tr th:last-child {
+    border-right: 0;
+  }
+}
+
+#request_table {
+  margin-bottom: 0.5rem;
+}

@@ -1,4 +1,5 @@
 <?php
+
 #declare(strict_types=1);
 
 # todo: Go through line by line
@@ -38,10 +39,10 @@ $Submitted = !empty($_GET['submit']);
 
 //Paranoia
 if (!empty($_GET['userid'])) {
-    if (!is_number($_GET['userid'])) {
+    if (!is_numeric($_GET['userid'])) {
         json_die("failure");
     }
-    $UserInfo = Users::user_info($_GET['userid']);
+    $UserInfo = User::user_info($_GET['userid']);
     if (empty($UserInfo)) {
         json_die("failure");
     }
@@ -66,7 +67,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('userid', $UserInfo['ID']);
       } else {
           $Title = 'My requests';
-          $SphQL->where('userid', $LoggedUser['ID']);
+          $SphQL->where('userid', $app->user->core['id']);
       }
       break;
     case 'voted':
@@ -78,7 +79,7 @@ if (empty($_GET['type'])) {
           $SphQL->where('voter', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have voted on';
-          $SphQL->where('voter', $LoggedUser['ID']);
+          $SphQL->where('voter', $app->user->core['id']);
       }
       break;
     case 'filled':
@@ -90,13 +91,13 @@ if (empty($_GET['type'])) {
           $SphQL->where('fillerid', $UserInfo['ID']);
       } else {
           $Title = 'Requests I have filled';
-          $SphQL->where('fillerid', $LoggedUser['ID']);
+          $SphQL->where('fillerid', $app->user->core['id']);
       }
       break;
     case 'bookmarks':
       $Title = 'Your bookmarked requests';
       $BookmarkView = true;
-      $SphQL->where('bookmarker', $LoggedUser['ID']);
+      $SphQL->where('bookmarker', $app->user->core['id']);
       break;
     default:
       json_die("failure");
@@ -272,7 +273,7 @@ if (!empty($_GET['releases'])) {
 }
 
 if (!empty($_GET['requestor'])) {
-    if (is_number($_GET['requestor'])) {
+    if (is_numeric($_GET['requestor'])) {
         $SphQL->where('userid', $_GET['requestor']);
     } else {
         error(404);
@@ -280,14 +281,14 @@ if (!empty($_GET['requestor'])) {
 }
 
 if (isset($_GET['year'])) {
-    if (is_number($_GET['year']) || $_GET['year'] === '0') {
+    if (is_numeric($_GET['year']) || $_GET['year'] === '0') {
         $SphQL->where('year', $_GET['year']);
     } else {
         error(404);
     }
 }
 
-if (!empty($_GET['page']) && is_number($_GET['page']) && $_GET['page'] > 0) {
+if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $Page = $_GET['page'];
     $Offset = ($Page - 1) * REQUESTS_PER_PAGE;
     $SphQL->limit($Offset, REQUESTS_PER_PAGE, $Offset + REQUESTS_PER_PAGE);
@@ -323,8 +324,8 @@ if ($NumResults == 0) {
         $Request = $Requests[$RequestID];
         $VoteCount = $SphRequest['votes'];
         $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
-        $Requestor = Users::user_info($Request['UserID']);
-        $Filler = $Request['FillerID'] ? Users::user_info($Request['FillerID']) : null;
+        $Requestor = User::user_info($Request['UserID']);
+        $Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 
         if ($Request['CategoryID'] == 0) {
             $CategoryName = 'Unknown';

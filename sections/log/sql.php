@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 list($Page, $Limit) = Format::page_limit(LOG_ENTRIES_PER_PAGE);
 
@@ -42,8 +45,8 @@ DESC
 LIMIT $Limit
 ";
 
-$Log = $DB->query($SQL);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$Log = $app->dbOld->query($SQL);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $TotalMatches = $NumResults;
-$DB->set_query_id($Log);
+$app->dbOld->set_query_id($Log);

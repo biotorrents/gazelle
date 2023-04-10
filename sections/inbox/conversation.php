@@ -1,28 +1,30 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 $ConvID = $_GET['id'];
-if (!$ConvID || !is_number($ConvID)) {
+if (!$ConvID || !is_numeric($ConvID)) {
     error(404);
 }
 
-$UserID = $LoggedUser['ID'];
-$DB->query("
+$UserID = $app->user->core['id'];
+$app->dbOld->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
-if (!$DB->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(403);
 }
-list($InInbox, $InSentbox) = $DB->next_record();
+list($InInbox, $InSentbox) = $app->dbOld->next_record();
 
 if (!$InInbox && !$InSentbox) {
     error(404);
 }
 
 // Get information on the conversation
-$DB->query("
+$app->dbOld->query("
   SELECT
     c.Subject,
     cu.Sticky,
@@ -32,19 +34,19 @@ $DB->query("
     JOIN pm_conversations_users AS cu ON c.ID = cu.ConvID
   WHERE c.ID = '$ConvID'
     AND UserID = '$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedID) = $DB->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID) = $app->dbOld->next_record();
 
-$DB->query("
+$app->dbOld->query("
   SELECT um.ID, Username
   FROM pm_messages AS pm
     JOIN users_main AS um ON um.ID = pm.SenderID
   WHERE pm.ConvID = '$ConvID'");
 
-$ConverstionParticipants = $DB->to_array();
+$ConverstionParticipants = $app->dbOld->to_array();
 
 foreach ($ConverstionParticipants as $Participant) {
     $PMUserID = (int)$Participant['ID'];
-    $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
     $Users[$PMUserID]['Username'] = $Participant['Username'];
 }
 
@@ -52,23 +54,23 @@ $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
 
 if ($UnRead == '1') {
-    $DB->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
     // Clear the caches of the inbox and sentbox
-    $Cache->decrement("inbox_new_$UserID");
+    $app->cache->decrement("inbox_new_$UserID");
 }
 
-View::show_header(
+View::header(
     "View conversation $Subject",
-    'comments,inbox,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
+    'comments,inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 
 // Get messages
-$DB->query("
+$app->dbOld->query("
   SELECT SentDate, SenderID, Body, ID
   FROM pm_messages
   WHERE ConvID = '$ConvID'
@@ -83,49 +85,48 @@ $DB->query("
   </div>
   <?php
 
-while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
-    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.SITE_DOMAIN.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
+while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record()) {
+    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.siteDomain.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
-      <div class="float_left">
+      <div class="u-pull-left">
         <strong><?=$Users[(int)$SenderID]['UserStr']?></strong>
         <?=time_diff($SentDate)?> - <a href="#quickpost"
           onclick="Quote('<?=$MessageID?>','<?=$Users[(int)$SenderID]['Username']?>');"
           class="brackets">Quote</a>
       </div>
-      <div class="float_right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
+      <div class="u-pull-right"><a href="#">&uarr;</a> <a href="#messageform">&darr;</a></div>
     </div>
     <div class="body" id="message<?=$MessageID?>">
-      <?=Text::full_format($Body)?>
+      <?=\Gazelle\Text::parse($Body)?>
     </div>
   </div>
   <?php
 }
-$DB->query("
+$app->dbOld->query("
   SELECT UserID
   FROM pm_conversations_users
-  WHERE UserID != '$LoggedUser[ID]'
+  WHERE UserID != '{$app->user->core['id']}'
     AND ConvID = '$ConvID'
     AND (ForwardedTo = 0 OR ForwardedTo = UserID)");
-$ReceiverIDs = $DB->collect('UserID');
+$ReceiverIDs = $app->dbOld->collect('UserID');
 
 
-if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
+if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_intersect($ReceiverIDs, array_keys($StaffIDs)))) {
     ?>
   <h3>Reply</h3>
   <form class="send_form" name="reply" action="inbox.php" method="post" id="messageform">
     <div class="box pad">
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="toid"
         value="<?=implode(',', $ReceiverIDs)?>" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <?php
-    $Reply = new TEXTAREA_PREVIEW(
-        $Name = 'body',
-        $ID = 'quickpost',
-        $Value = '',
+    $Reply = View::textarea(
+        id: 'quickpost',
+        name: 'body',
     ); ?>
       <div id="buttons" class="center">
         <input type="button" value="Preview"
@@ -143,7 +144,7 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
       <input type="hidden" name="action" value="takeedit" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <table class="layout" width="100%">
         <tr>
@@ -170,12 +171,12 @@ if (!empty($ReceiverIDs) && (empty($LoggedUser['DisablePM']) || array_intersect(
     </div>
   </form>
   <?php
-$DB->query("
+$app->dbOld->query("
   SELECT SupportFor
   FROM users_info
-  WHERE UserID = ".$LoggedUser['ID']);
-list($FLS) = $DB->next_record();
-if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $LoggedUser['ID'])) {
+  WHERE UserID = ".$app->user->core['id']);
+list($FLS) = $app->dbOld->next_record();
+if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->user->core['id'])) {
     ?>
   <h3>Forward conversation</h3>
   <form class="send_form" name="forward" action="inbox.php" method="post">
@@ -183,12 +184,12 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
       <input type="hidden" name="action" value="forward" />
       <input type="hidden" name="convid" value="<?=$ConvID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <label for="receiverid">Forward to</label>
       <select id="receiverid" name="receiverid">
         <?php
   foreach ($StaffIDs as $StaffID => $StaffName) {
-      if ($StaffID == $LoggedUser['ID'] || in_array($StaffID, $ReceiverIDs)) {
+      if ($StaffID == $app->user->core['id'] || in_array($StaffID, $ReceiverIDs)) {
           continue;
       } ?>
         <option value="<?=$StaffID?>"><?=$StaffName?>
@@ -205,4 +206,4 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
 //And we're done!
 ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

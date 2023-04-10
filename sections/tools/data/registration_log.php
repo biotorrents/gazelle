@@ -1,11 +1,13 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('users_view_ips') || !check_perms('users_view_email')) {
     error(403);
 }
 
-View::show_header('Registration log');
+View::header('Registration log');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
@@ -69,11 +71,11 @@ if ($DateSearch) {
 $RS .= "
   ORDER BY i.Joindate DESC
   LIMIT $Limit";
-  
-$QueryID = $DB->query($RS);
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
-$DB->set_query_id($QueryID);
+
+$QueryID = $app->dbOld->query($RS);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($QueryID);
 ?>
 
 <form action="" method="post" class="box pad">
@@ -84,7 +86,7 @@ $DB->set_query_id($QueryID);
 </form>
 
 <?php
-if ($DB->has_results()) {
+if ($app->dbOld->has_results()) {
     ?>
 <div class="linkbox">
   <?php
@@ -99,12 +101,11 @@ if ($DB->has_results()) {
     <td>Email</td>
     <td>IP address</td>
     <td>Country</td>
-    <td>Host</td>
     <td>Registered</td>
   </tr>
 
   <?php
-  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $DB->next_record()) {
+  while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $app->dbOld->next_record()) {
       $RowClass = $IP === $InviterIP ? 'warning' : '';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
@@ -113,8 +114,8 @@ if ($DB->has_results()) {
 
   <tr class="<?=$RowClass?>">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?><br />
-      <?=Users::format_username($InviterID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?><br />
+      <?=User::format_username($InviterID, true, true, true, true)?>
     </td>
 
     <td>
@@ -123,29 +124,24 @@ if ($DB->has_results()) {
     </td>
 
     <td>
-      <span class="float_left">
-        <?=display_str($Email)?>
+      <span class="u-pull-left">
+        <?=\Gazelle\Text::esc($Email)?>
       </span>
 
-      <span class="float_left">
-        <?=display_str($InviterEmail)?>
+      <span class="u-pull-left">
+        <?=\Gazelle\Text::esc($InviterEmail)?>
       </span>
 
     </td>
 
     <td>
-      <span class="float_left">
-        <?=display_str($IP)?>
+      <span class="u-pull-left">
+        <?=\Gazelle\Text::esc($IP)?>
       </span>
 
-      <span class="float_left">
-        <?=display_str($InviterIP)?>
+      <span class="u-pull-left">
+        <?=\Gazelle\Text::esc($InviterIP)?>
       </span>
-    </td>
-
-    <td>
-      <?=Tools::get_host_by_ajax($IP)?><br />
-      <?=Tools::get_host_by_ajax($InviterIP)?>
     </td>
 
     <td>
@@ -165,4 +161,4 @@ if ($DB->has_results()) {
 <h2>There have been no new registrations in the past 72 hours.</h2>
 <?php
 }
-View::show_footer();
+View::footer();

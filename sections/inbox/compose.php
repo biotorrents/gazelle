@@ -1,35 +1,37 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 if (empty($Return)) {
     $ToID = $_GET['to'];
     /*
-      if ($ToID == $LoggedUser['ID']) {
+      if ($ToID == $app->user->core['id']) {
         error('You cannot start a conversation with yourself!');
         header('Location: ' . Inbox::get_inbox_link());
       }
     */
 }
 
-if (!$ToID || !is_number($ToID)) {
+if (!$ToID || !is_numeric($ToID)) {
     error(404);
 }
 
-if (!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
+if (!empty($app->user->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
     error(403);
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT Username
   FROM users_main
   WHERE ID='$ToID'");
-list($Username) = $DB->next_record();
+list($Username) = $app->dbOld->next_record();
 if (!$Username) {
     error(404);
 }
-View::show_header(
+View::header(
     'Compose',
-    'inbox,vendor/jquery.validate.min,form_validate,vendor/easymde.min',
+    'inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -42,7 +44,7 @@ View::show_header(
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
 
       <div id="quickpost">
         <h3>Subject</h3>
@@ -50,10 +52,9 @@ View::show_header(
           value="<?=(!empty($Subject) ? $Subject : '')?>" /><br />
         <h3>Body</h3>
         <?php
-new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = 'body',
-    $Value = (!empty($Body) ? $Body : '')
+View::textarea(
+    id: 'body',
+    value: \Gazelle\Text::esc($Body) ?? '',
 ); ?>
       </div>
 
@@ -65,4 +66,4 @@ new TEXTAREA_PREVIEW(
     </div>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

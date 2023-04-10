@@ -1,10 +1,11 @@
 <?php
+
 #declare(strict_types=1);
 
 // Already done in /sections/ajax/index.php
 //enforce_login();
 
-if (!empty($LoggedUser['DisableForums'])) {
+if (!empty($app->user->extra['DisableForums'])) {
     echo json_encode(array('status' => 'failure'));
     error();
 } else {
@@ -15,15 +16,15 @@ if (!empty($LoggedUser['DisableForums'])) {
     $Forums = Forums::get_forums();
 
     if (empty($_GET['type']) || $_GET['type'] === 'main') {
-        include SERVER_ROOT.'/sections/ajax/forum/main.php';
+        include serverRoot.'/sections/ajax/forum/main.php';
     } else {
         switch ($_GET['type']) {
         case 'viewforum':
-          include SERVER_ROOT.'/sections/ajax/forum/forum.php';
+          include serverRoot.'/sections/ajax/forum/forum.php';
           break;
 
         case 'viewthread':
-          include SERVER_ROOT.'/sections/ajax/forum/thread.php';
+          include serverRoot.'/sections/ajax/forum/thread.php';
           break;
 
         default:

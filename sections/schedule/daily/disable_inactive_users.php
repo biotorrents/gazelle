@@ -1,5 +1,8 @@
 <?php
+
 declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 /*
 $ENV = ENV::go();
@@ -10,7 +13,7 @@ $ENV = ENV::go();
 
 if (apcu_exists('DBKEY')) {
     # Send email
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       um.`Username`,
       um.`Email`
@@ -34,15 +37,15 @@ if (apcu_exists('DBKEY')) {
       um.`ID`
     ");
 
-    while (list($Username, $Email) = $DB->next_record()) {
+    while (list($Username, $Email) = $app->dbOld->next_record()) {
         $Email = Crypto::decrypt($Email);
         $Body = "Hi $Username,\n\nIt has been almost a year since you used your account at ".site_url().". This is an automated email to inform you that your account will be disabled in 10 days if you do not sign in.";
-        Misc::send_email($Email, "Your $ENV->SITE_NAME account is about to be disabled", $Body);
+        \Gazelle\App::email($Email, "Your $ENV->siteName account is about to be disabled", $Body);
     }
 
     # The actual deletion clock
     #   AND um.LastAccess < (NOW() - INTERVAL 120 DAY)
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       um.`ID`
     FROM
@@ -64,8 +67,8 @@ if (apcu_exists('DBKEY')) {
       um.`ID`
     ");
 
-    if ($DB->has_results()) {
-        Tools::disable_users($DB->collect('ID'), 'Disabled for inactivity.', 3);
+    if ($app->dbOld->has_results()) {
+        Tools::disable_users($app->dbOld->collect('ID'), 'Disabled for inactivity.', 3);
     }
 }
 */

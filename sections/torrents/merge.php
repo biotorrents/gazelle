@@ -1,49 +1,50 @@
-<?
+<?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('torrents_edit')) {
-  error(403);
+    error(403);
 }
 
 $GroupID = $_POST['groupid'];
 $OldGroupID = $GroupID;
 $NewGroupID = db_string($_POST['targetgroupid']);
 
-if (!$GroupID || !is_number($GroupID)) {
-  error(404);
+if (!$GroupID || !is_numeric($GroupID)) {
+    error(404);
 }
-if (!$NewGroupID || !is_number($NewGroupID)) {
-  error(404);
+if (!$NewGroupID || !is_numeric($NewGroupID)) {
+    error(404);
 }
 if ($NewGroupID == $GroupID) {
-  error('Old group ID is the same as new group ID!');
+    error('Old group ID is the same as new group ID!');
 }
-$DB->query("
+$app->dbOld->query("
   SELECT CategoryID, Name
   FROM torrents_group
   WHERE ID = '$NewGroupID'");
-if (!$DB->has_results()) {
-  error('Target group does not exist.');
+if (!$app->dbOld->has_results()) {
+    error('Target group does not exist.');
 }
-list($CategoryID, $NewName) = $DB->next_record();
+list($CategoryID, $NewName) = $app->dbOld->next_record();
 /*
 if ($Categories[$CategoryID - 1] != 'Music') {
   error('Only music groups can be merged.');
 }
 */
 
-$DB->query("
-  SELECT Name
-  FROM torrents_group
-  WHERE ID = $GroupID");
-list($Name) = $DB->next_record();
+$app->dbOld->query("
+  SELECT `title`
+  FROM `torrents_group`
+  WHERE `id` = $GroupID");
+list($Name) = $app->dbOld->next_record();
 
 // Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-  $Artists = Artists::get_artists(array($GroupID, $NewGroupID));
+    $Artists = Artists::get_artists(array($GroupID, $NewGroupID));
 
-  View::show_header();
-?>
+    View::header(); ?>
   <div class="center">
   <div class="header">
     <h2>Merge Confirm!</h2>
@@ -51,7 +52,7 @@ if (empty($_POST['confirm'])) {
   <div class="box pad">
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
       <input type="hidden" name="action" value="merge" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="groupid" value="<?=$GroupID?>" />
       <input type="hidden" name="targetgroupid" value="<?=$NewGroupID?>" />
@@ -67,79 +68,79 @@ if (empty($_POST['confirm'])) {
     </form>
   </div>
   </div>
-<?
-  View::show_footer();
+<?php
+  View::footer();
 } else {
-  authorize();
+    authorize();
 
-  $DB->query("
+    $app->dbOld->query("
     UPDATE torrents
     SET GroupID = '$NewGroupID'
     WHERE GroupID = '$GroupID'");
-  $DB->query("
+    $app->dbOld->query("
     UPDATE wiki_torrents
     SET PageID = '$NewGroupID'
     WHERE PageID = '$GroupID'");
 
-  //Comments
-  Comments::merge('torrents', $OldGroupID, $NewGroupID);
+    //Comments
+    Comments::merge('torrents', $OldGroupID, $NewGroupID);
 
-  //Collages
-  $DB->query("
+    //Collages
+  $app->dbOld->query("
     SELECT CollageID
     FROM collages_torrents
     WHERE GroupID = '$OldGroupID'"); // Select all collages that contain edited group
-  while (list($CollageID) = $DB->next_record()) {
-    $DB->query("
+  while (list($CollageID) = $app->dbOld->next_record()) {
+      $app->dbOld->query("
       UPDATE IGNORE collages_torrents
       SET GroupID = '$NewGroupID'
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'"); // Change collage group ID to new ID
-    $DB->query("
+      $app->dbOld->query("
       DELETE FROM collages_torrents
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'");
-    $Cache->delete_value("collage_$CollageID");
+      $app->cache->delete("collage_$CollageID");
   }
-  $Cache->delete_value("torrent_collages_$NewGroupID");
-  $Cache->delete_value("torrent_collages_personal_$NewGroupID");
+    $app->cache->delete("torrent_collages_$NewGroupID");
+    $app->cache->delete("torrent_collages_personal_$NewGroupID");
 
-  // Requests
-  $DB->query("
+    // Requests
+    $app->dbOld->query("
     SELECT ID
     FROM requests
     WHERE GroupID = '$OldGroupID'");
-  $Requests = $DB->collect('ID');
-  $DB->query("
+    $Requests = $app->dbOld->collect('ID');
+    $app->dbOld->query("
     UPDATE requests
     SET GroupID = '$NewGroupID'
     WHERE GroupID = '$OldGroupID'");
-  foreach ($Requests as $RequestID) {
-    $Cache->delete_value("request_$RequestID");
-  }
-  $Cache->delete_value('requests_group_'.$NewGroupID);
+    foreach ($Requests as $RequestID) {
+        $app->cache->delete("request_$RequestID");
+    }
+    $app->cache->delete('requests_group_'.$NewGroupID);
 
-  Torrents::delete_group($GroupID);
+    Torrents::delete_group($GroupID);
 
-  Torrents::write_group_log($NewGroupID, 0, $LoggedUser['ID'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
-  $DB->query("
+    Torrents::write_group_log($NewGroupID, 0, $app->user->core['id'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
+    $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $NewGroupID
     WHERE GroupID = $GroupID");
 
-  $GroupID = $NewGroupID;
+    $GroupID = $NewGroupID;
 
-  $DB->query("
+    $app->dbOld->query("
     SELECT ID
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
-  while (list($TorrentID) = $DB->next_record()) {
-    $Cache->delete_value("torrent_download_$TorrentID");
-  }
-  $Cache->delete_value("torrents_details_$GroupID");
-  $Cache->delete_value("groups_artists_$GroupID");
-  Torrents::update_hash($GroupID);
+    while (list($TorrentID) = $app->dbOld->next_record()) {
+        $app->cache->delete("torrent_download_$TorrentID");
+    }
+    $app->cache->delete("torrents_details_$GroupID");
+    $app->cache->delete("groups_artists_$GroupID");
+    Torrents::update_hash($GroupID);
 
-  header("Location: torrents.php?id=" . $GroupID);
+    header("Location: torrents.php?id=" . $GroupID);
 }
 ?>

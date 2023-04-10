@@ -1,0 +1,73 @@
+<?php
+
+$app = \Gazelle\App::go();
+
+if (!check_perms('users_warn')) {
+    error(404);
+}
+Http::assertRequest($_POST, array('postid'));
+
+$PostID = (int)$_POST['postid'];
+$app->dbOld->query("
+  SELECT Body, AuthorID
+  FROM comments
+  WHERE ID = $PostID");
+if (!$app->dbOld->has_results()) {
+    error(404);
+}
+list($PostBody, $AuthorID) = $app->dbOld->next_record();
+$UserInfo = User::user_info($AuthorID);
+
+View::header('Warn User');
+?>
+
+<div>
+  <div class="header">
+    <h2>Warning <a href="user.php?id=<?=$AuthorID?>"><?=$UserInfo['Username']?></a></h2>
+  </div>
+  <div class="box pad">
+    <form name="warning" action="" onsubmit="quickpostform.submit_button.disabled=true;" method="post">
+      <input type="hidden" name="postid" value="<?=$PostID?>" />
+      <input type="hidden" name="action" value="take_warn" />
+      <table class="layout" align="center">
+        <tr>
+          <td class="label">Reason:</td>
+          <td>
+            <input type="text" name="reason" size="30" />
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Length:</td>
+          <td>
+            <select name="length">
+              <option value="verbal">Verbal</option>
+              <option value="1">1 week</option>
+              <option value="2">2 weeks</option>
+              <option value="4">4 weeks</option>
+              <?php if (check_perms('users_mod')) { ?>
+              <option value="8">8 weeks</option>
+              <?php } ?>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Private message:</td>
+          <td>
+            <textarea id="message" style="width: 95%;" tabindex="1" onkeyup="resize('message');" name="privatemessage"
+              cols="90" rows="4"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td class="label">Edit post:</td>
+          <td>
+            <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90"
+              rows="8"><?=$PostBody?></textarea>
+            <br />
+            <input type="submit" id="submit_button" value="Warn user" tabindex="1" />
+          </td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+<?php View::footer();

@@ -1,0 +1,319 @@
+/**
+ * icons
+ *
+ * all default sitewide icons:
+ *  - category icons,
+ *  - forum icons, and
+ *  - badge styles
+ */
+
+$posts: "/images/forums/";
+$nrcc: no-repeat center center;
+
+@mixin bioIcons($emoji) {
+  content: $emoji;
+  font-size: xx-large;
+}
+
+/**
+ * category icons
+ */
+
+.cats_sequences::before {
+  @include bioIcons("🧬");
+}
+
+.cats_graphs::before {
+  @include bioIcons("📈");
+}
+
+.cats_systems::before {
+  @include bioIcons("🌐");
+}
+
+.cats_geometric::before {
+  @include bioIcons("💠");
+}
+
+.cats_scalars\/vectors::before {
+  @include bioIcons("⏱️");
+}
+
+.cats_patterns::before {
+  @include bioIcons("❄️");
+}
+
+.cats_constraints::before {
+  @include bioIcons("⚙️");
+}
+
+.cats_images::before {
+  @include bioIcons("🔬");
+}
+
+.cats_spatial::before {
+  @include bioIcons("🗺️");
+}
+
+.cats_models::before {
+  @include bioIcons("🏗️");
+}
+
+.cats_documents::before {
+  @include bioIcons("📓");
+}
+
+.cats_machinedata::before {
+  @include bioIcons("📡");
+}
+
+/* related to browse page? */
+#cat-selector ul {
+  width: 100%;
+}
+
+#cat-selector ul li {
+  display: inline;
+}
+
+/* shown on torrent details header table */
+img.torrent_header {
+  width: 1.2rem;
+  height: 1.2rem;
+  background-size: 1.2rem 1.2rem;
+  display: inline-block;
+}
+
+/**
+ * forum icons
+ */
+
+.unread {
+  background: url($posts + "unread.png") $nrcc;
+}
+
+.read {
+  background: url($posts + "read.png") $nrcc;
+}
+
+.unread_locked {
+  background: url($posts + "locked_unread.png") $nrcc;
+}
+
+.read_locked {
+  background: url($posts + "locked_read.png") $nrcc;
+}
+
+.read_sticky {
+  background: url($posts + "sticky_read.png") $nrcc;
+}
+
+.unread_sticky {
+  background: url($posts + "sticky_unread.png") $nrcc;
+}
+
+.unread_locked_sticky {
+  background: url($posts + "locked_sticky_unread.png") $nrcc;
+}
+
+.read_locked_sticky {
+  background: url($posts + "locked_sticky_read.png") $nrcc;
+}
+
+/**
+ * torrent table icons
+ */
+
+/* torrentGroup icons */
+.subjectObject {
+  &:before {
+    content: "🦠";
+    margin-right: 0.5rem;
+  }
+}
+
+.year {
+  &:before {
+    content: "📅";
+    margin-right: 0.5rem;
+  }
+}
+
+.identifier {
+  &:before {
+    content: "🔑";
+    margin-right: 0.5rem;
+  }
+}
+
+.workgroup {
+  &:before {
+    content: "🏫";
+    margin-right: 0.5rem;
+  }
+}
+
+.location {
+  &:before {
+    content: "📍";
+    margin-right: 0.5rem;
+  }
+}
+
+.tagList {
+  &:before {
+    content: "#️";
+    margin-right: 0.5rem;
+  }
+}
+
+.creatorList {
+  &:before {
+    content: "🧑‍🔬";
+    margin-right: 0.5rem;
+  }
+}
+
+/* torrent icons */
+.platform {
+  &:before {
+    content: "📦";
+    margin-right: 0.5rem;
+  }
+}
+
+.format {
+  &:before {
+    content: "💾";
+    margin-right: 0.5rem;
+  }
+}
+
+.version {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/icons/version.png");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.scope {
+  &:before {
+    content: "🔎";
+    margin-right: 0.5rem;
+  }
+}
+
+.archive {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/icons/archive.png");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.license {
+  &:before {
+    content: "📜";
+    margin-right: 0.5rem;
+  }
+}
+
+/**
+ * badges
+ */
+
+span.badges {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1.5rem;
+}
+
+img.badge,
+img.icon {
+  max-width: 1.5rem;
+  max-height: 1.5rem;
+}
+
+/**
+ * loading spinner element
+ * https://css-tricks.com/single-element-loaders-the-spinner/
+ */
+
+/* dark */
+.loaderDark {
+  width: 1rem; /* control the size */
+  aspect-ratio: 1;
+  display: inline-grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003, #000);
+  mask: conic-gradient(from 22deg, #0003, #000);
+  animation: load 1s steps(8) infinite;
+  margin: 0 0.5rem;
+}
+
+.loaderDark,
+.loaderDark:before {
+  --_g: linear-gradient(#222 0 0) 50%; /* update the color here */
+  background: var(--_g) / 34% 8% space no-repeat,
+    var(--_g) / 8% 34% no-repeat space;
+}
+
+.loaderDark:before {
+  content: "";
+  transform: rotate(45deg);
+}
+
+@keyframes load {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* light */
+.loaderLight {
+  width: 1rem; /* control the size */
+  aspect-ratio: 1;
+  display: inline-grid;
+  -webkit-mask: conic-gradient(from 22deg, #0003, #000);
+  mask: conic-gradient(from 22deg, #0003, #000);
+  animation: load 1s steps(8) infinite;
+  margin: 0 0.5rem;
+}
+
+.loaderLight,
+.loaderLight:before {
+  --_g: linear-gradient(white 0 0) 50%; /* update the color here */
+  background: var(--_g) / 34% 8% space no-repeat,
+    var(--_g) / 8% 34% no-repeat space;
+}
+
+.loaderLight:before {
+  content: "";
+  transform: rotate(45deg);
+}
+
+@keyframes load {
+  from {
+    transform: rotate(0turn);
+  }
+
+  to {
+    transform: rotate(1turn);
+  }
+}

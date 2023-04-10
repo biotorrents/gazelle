@@ -1,18 +1,21 @@
 <?php
-if (!isset($_GET['torrentid']) || !is_number($_GET['torrentid'])) {
-  error(404);
+
+$app = \Gazelle\App::go();
+
+if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid'])) {
+    error(404);
 }
 $TorrentID = $_GET['torrentid'];
 
-if (!empty($_GET['page']) && is_number($_GET['page'])) {
-  $Page = $_GET['page'];
-  $Limit = (string)(($Page - 1) * 100) .', 100';
+if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
+    $Page = $_GET['page'];
+    $Limit = (string)(($Page - 1) * 100) .', 100';
 } else {
-  $Page = 1;
-  $Limit = 100;
+    $Page = 1;
+    $Limit = 100;
 }
 
-$Result = $DB->query("
+$Result = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     xu.uid,
@@ -27,17 +30,17 @@ $Result = $DB->query("
     JOIN torrents AS t ON t.ID = xu.fid
   WHERE xu.fid = '$TorrentID'
     AND um.Visible = '1'
-  ORDER BY xu.uid = '$LoggedUser[ID]' DESC, xu.uploaded DESC
+  ORDER BY xu.uid = '{$app->user->core['id']}' DESC, xu.uploaded DESC
   LIMIT $Limit");
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($Result);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Result);
 
 ?>
 <h4>Peer List</h4>
-<? if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
-<? } ?>
+<?php if ($NumResults > 100) { ?>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<?php } ?>
 
 <table>
   <tr class="colhead_dark" style="font-weight: bold;">
@@ -48,29 +51,30 @@ $DB->set_query_id($Result);
     <td class="number_column">%</td>
     <td>Client</td>
   </tr>
-<?
-while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $DB->next_record()) {
-?>
+<?php
+while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $UserAgent) = $app->dbOld->next_record()) {
+    ?>
   <tr class="row">
-<?
+<?php
   if (check_perms('users_mod')) {
-?>
-    <td><?=Users::format_username($PeerUserID, false, false, false)?></td>
-<?php } else {
-?>
+      ?>
+    <td><?=User::format_username($PeerUserID, false, false, false)?></td>
+<?php
+  } else {
+      ?>
     <td>Peer</td>
-<?php }
-?>
+<?php
+  } ?>
     <td><?=($Active) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td><?= ($Connectable) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td class="number_column"><?=Format::get_size($Uploaded) ?></td>
-    <td class="number_column"><?=number_format(($Size - $Remaining) / $Size * 100, 2)?></td>
-    <td><?=display_str($UserAgent)?></td>
+    <td class="number_column"><?=\Gazelle\Text::float(($Size - $Remaining) / $Size * 100, 2)?></td>
+    <td><?=\Gazelle\Text::esc($UserAgent)?></td>
   </tr>
-<?
+<?php
 }
 ?>
 </table>
-<? if ($NumResults > 100) { ?>
-<div class="linkbox"><?=js_pages('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
-<? } ?>
+<?php if ($NumResults > 100) { ?>
+<div class="linkbox"><?=\Gazelle\App::ajaxPagination('show_peers', $_GET['torrentid'], $NumResults, $Page)?></div>
+<?php } ?>

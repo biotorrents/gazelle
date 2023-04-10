@@ -1,36 +1,48 @@
-# https://github.com/OPSnet/Gazelle/blob/master/.gitignore
+##
+# https://tighten.co/blog/converting-a-legacy-app-to-laravel/
+#
 
-# backup files
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/.idea
+/.vscode
+
+
+##
+# https://github.com/OPSnet/Gazelle/blob/master/.gitignore
+#
+
+# backups
+*.*~
 *.bak
 *.sw*
-*~
 
-# home folder
-.DS_Store
-.bash_history
-.cache/
-.config/
-.histfile
-.lesshst
-.local/
-.npm-global/
-.npm/
-.npmrc
-.php_history
-.pki/
-.profile
-.wget-hsts
-.zsh*
-__MACOSX/
+# assets
+/public/css/*
+!/public/css/vendor/
+/public/fonts.tgz
+/public/fonts/*
+/public/images/badges/*
+/public/js/*
+!/public/js/vendor/
+/resources/closureCompiler.jar
 
-# app files
-/cache
-/classes/config.php
-/node_modules
-/vendor
+/vendor/**
+/public/vendor/**
 
-# heavy assets
-/static/common/badges/**
-/static/styles/**/*.css
-/static/styles/assets/fonts/**
-fonts.tgz
+# config
+/config/private.php
+
+# https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
+*.session.sql

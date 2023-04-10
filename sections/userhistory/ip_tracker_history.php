@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
 
@@ -19,17 +21,17 @@ if (!check_perms('users_mod')) {
 }
 
 $UserID = $_GET['userid'];
-if (!is_number($UserID)) {
+if (!is_numeric($UserID)) {
     error(404);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT um.Username,
     p.Level AS Class
   FROM users_main AS um
     LEFT JOIN permissions AS p ON p.ID = um.PermissionID
   WHERE um.ID = $UserID");
-list($Username, $Class) = $DB->next_record();
+list($Username, $Class) = $app->dbOld->next_record();
 
 if (!check_perms('users_view_ips', $Class)) {
     error(403);
@@ -37,7 +39,7 @@ if (!check_perms('users_view_ips', $Class)) {
 
 $UsersOnly = $_GET['usersonly'];
 
-View::show_header("Tracker IP address history for $Username");
+View::header("Tracker IP address history for $Username");
 ?>
 <script type="text/javascript">
   function ShowIPs(rowname) {
@@ -47,12 +49,12 @@ View::show_header("Tracker IP address history for $Username");
 <?php
 list($Page, $Limit) = Format::page_limit(IPS_PER_PAGE);
 
-$Perms = get_permissions_for_user($UserID);
+$Perms = \Permissions::get_permissions_for_user($UserID);
 if ($Perms['site_disable_ip_history']) {
     $Limit = 0;
 }
 
-$TrackerIps = $DB->query("
+$TrackerIps = $app->dbOld->query("
   SELECT IP, fid, tstamp
   FROM xbt_snatched
   WHERE uid = $UserID
@@ -60,9 +62,9 @@ $TrackerIps = $DB->query("
   ORDER BY tstamp DESC
   LIMIT $Limit");
 
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($TrackerIps);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($TrackerIps);
 
 $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 
@@ -81,13 +83,13 @@ $Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
       <td>Time</td>
     </tr>
     <?php
-$Results = $DB->to_array();
+$Results = $app->dbOld->to_array();
 foreach ($Results as $Index => $Result) {
     list($IP, $TorrentID, $Time) = $Result; ?>
     <tr class="row">
       <td>
-        <?=$IP?><br /><?=Tools::get_host_by_ajax($IP)?>
-        <a href="http://whatismyipaddress.com/ip/<?=display_str($IP)?>"
+        <?=$IP?>
+        <a href="http://whatismyipaddress.com/ip/<?=\Gazelle\Text::esc($IP)?>"
           class="brackets tooltip" title="Search WIMIA.com">WI</a>
       </td>
       <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>
@@ -103,4 +105,4 @@ foreach ($Results as $Index => $Result) {
   </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

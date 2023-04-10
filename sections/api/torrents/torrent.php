@@ -1,7 +1,7 @@
 <?php
+
 #declare(strict_types=1);
 
-require_once SERVER_ROOT.'/sections/torrents/functions.php';
 
 $TorrentID = (int) $_GET['id'];
 $TorrentHash = (string) $_GET['hash'];
@@ -11,10 +11,10 @@ if ($TorrentID && $TorrentHash) {
 }
 
 if ($TorrentHash) {
-    if (!is_valid_torrenthash($TorrentHash)) {
+    if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
         json_die('failure', 'bad hash parameter');
     } else {
-        $TorrentID = (int) torrenthash_to_torrentid($TorrentHash);
+        $TorrentID = (int) TorrentFunctions::torrenthash_to_torrentid($TorrentHash);
         if (!$TorrentID) {
             json_die('failure', 'bad hash parameter');
         }
@@ -25,7 +25,7 @@ if ($TorrentID <= 0) {
     json_die('failure', 'bad id parameter');
 }
 
-$TorrentCache = get_torrent_info($TorrentID, true, 0, true, true);
+$TorrentCache = TorrentFunctions::get_torrent_info($TorrentID, true, 0, true, true);
 if (!$TorrentCache) {
     json_die('failure', 'bad id parameter');
 }
@@ -47,7 +47,7 @@ if ($TorrentDetails['category_id'] === 0) {
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
 
 $JsonTorrentDetails = [
-  'description'  => Text::full_format($TorrentDetails['description']),
+  'description'  => \Gazelle\Text::parse($TorrentDetails['description']),
   'picture'      => $TorrentDetails['picture'],
   'id'           => (int) $TorrentDetails['id'],
   'title'         => $TorrentDetails['title'],
@@ -59,7 +59,7 @@ $JsonTorrentDetails = [
   'categoryId'   => (int) $TorrentDetails['category_id'],
   'icategoryName' => $CategoryName,
   'timestamp'         => $TorrentDetails['timestamp'],
-  'bookmarked' => Bookmarks::has_bookmarked('torrent', $GroupID),
+  'bookmarked' => Bookmarks::isBookmarked('torrent', $GroupID),
   'tagList'         => $TagList
 ];
 
@@ -76,7 +76,7 @@ foreach ($FileList as &$File) {
 
 unset($File);
 $FileList = implode('|||', $FileList);
-$Userinfo = Users::user_info($Torrent['UserID']);
+$Userinfo = User::user_info($Torrent['UserID']);
 
 $JsonTorrentList[] = [
   'id'          => (int) $Torrent['ID'],

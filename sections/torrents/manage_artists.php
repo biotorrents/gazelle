@@ -1,7 +1,10 @@
 <?php
+
 #declare(strict_types = 1);
 
-if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_number($_POST['importance']) || !is_number($_POST['groupid'])) {
+$app = \Gazelle\App::go();
+
+if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_numeric($_POST['importance']) || !is_numeric($_POST['groupid'])) {
     error(0);
 }
 if (!check_perms('torrents_edit')) {
@@ -17,7 +20,7 @@ $ArtistsString = '0';
 
 foreach ($Artists as $i => $Artist) {
     list($Importance, $ArtistID) = explode(';', $Artist);
-    if (is_number($ArtistID) && is_number($Importance)) {
+    if (is_numeric($ArtistID) && is_numeric($Importance)) {
         $CleanArtists[] = array($Importance, $ArtistID);
         $ArtistIDs[] = $ArtistID;
     }
@@ -26,28 +29,28 @@ foreach ($Artists as $i => $Artist) {
 if (count($CleanArtists) > 0) {
     $ArtistsString = implode(',', $ArtistIDs);
     if ($_POST['manager_action'] == 'delete') {
-        $DB->query("
+        $app->dbOld->query("
       SELECT Name
       FROM torrents_group
       WHERE ID = '".$_POST['groupid']."'");
-        list($GroupName) = $DB->next_record();
-        $DB->query("
+        list($GroupName) = $app->dbOld->next_record();
+        $app->dbOld->query("
       SELECT ArtistID, Name
       FROM artists_group
       WHERE ArtistID IN ($ArtistsString)");
-        $ArtistNames = $DB->to_array('ArtistID', MYSQLI_ASSOC, false);
+        $ArtistNames = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC, false);
         foreach ($CleanArtists as $Artist) {
             list($Importance, $ArtistID) = $Artist;
-            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$LoggedUser['ID'].' ('.$LoggedUser['Username'].')');
-            Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
-            $DB->query("
+            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$app->user->core['id'].' ('.$app->user->core['username'].')');
+            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
+            $app->dbOld->query("
         DELETE FROM torrents_artists
         WHERE GroupID = '$GroupID'
           AND ArtistID = '$ArtistID'
           AND Importance = '$Importance'");
-            $Cache->delete_value("artist_groups_$ArtistID");
+            $app->cache->delete("artist_groups_$ArtistID");
         }
-        $DB->query("
+        $app->dbOld->query("
       SELECT ArtistID
         FROM requests_artists
         WHERE ArtistID IN ($ArtistsString)
@@ -55,19 +58,19 @@ if (count($CleanArtists) > 0) {
       SELECT ArtistID
         FROM torrents_artists
         WHERE ArtistID IN ($ArtistsString)");
-        $Items = $DB->collect('ArtistID');
+        $Items = $app->dbOld->collect('ArtistID');
         $EmptyArtists = array_diff($ArtistIDs, $Items);
         foreach ($EmptyArtists as $ArtistID) {
             Artists::delete_artist($ArtistID);
         }
     } else {
-        $DB->query("
+        $app->dbOld->query("
       UPDATE IGNORE torrents_artists
       SET Importance = '".$_POST['importance']."'
       WHERE GroupID = '$GroupID'
         AND ArtistID IN ($ArtistsString)");
     }
-    $Cache->delete_value("groups_artists_$GroupID");
+    $app->cache->delete("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
-    header("Location: torrents.php?id=$GroupID");
+    Http::redirect("torrents.php?id=$GroupID");
 }

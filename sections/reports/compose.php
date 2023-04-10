@@ -1,104 +1,107 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 if (empty($Return)) {
-  $ToID = $_GET['to'];
-  if ($ToID == $LoggedUser['ID']) {
-    error("You cannot start a conversation with yourself!");
-    header('Location: inbox.php');
-  }
+    $ToID = $_GET['to'];
+    if ($ToID == $app->user->core['id']) {
+        error("You cannot start a conversation with yourself!");
+        Http::redirect("inbox.php");
+    }
 }
 
-if (!$ToID || !is_number($ToID)) {
-  error(404);
+if (!$ToID || !is_numeric($ToID)) {
+    error(404);
 }
 
 $ReportID = $_GET['reportid'];
 $Type = $_GET['type'];
 $ThingID = $_GET['thingid'];
 
-if (!$ReportID || !is_number($ReportID) || !$ThingID || !is_number($ThingID) || !$Type) {
-  error(403);
+if (!$ReportID || !is_numeric($ReportID) || !$ThingID || !is_numeric($ThingID) || !$Type) {
+    error(403);
 }
 
-if (!empty($LoggedUser['DisablePM']) && !isset($StaffIDs[$ToID])) {
-  error(403);
+if (!empty($app->user->extra['DisablePM']) && !isset($StaffIDs[$ToID])) {
+    error(403);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT Username
   FROM users_main
   WHERE ID = ?", $ToID);
-list($ComposeToUsername) = $DB->next_record();
+list($ComposeToUsername) = $app->dbOld->next_record();
 if (!$ComposeToUsername) {
-  error(404);
+    error(404);
 }
-View::show_header('Compose', 'inbox');
+View::header('Compose', 'inbox');
 
 // $TypeLink is placed directly in the <textarea> when composing a PM
 switch ($Type) {
   case 'user':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No user with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No user with the reported ID found';
     } else {
-      list($Username) = $DB->next_record();
-      $TypeLink = "the user [user]{$Username}[/user]";
-      $Subject = 'User Report: '.display_str($Username);
+        list($Username) = $app->dbOld->next_record();
+        $TypeLink = "the user [user]{$Username}[/user]";
+        $Subject = 'User Report: '.\Gazelle\Text::esc($Username);
     }
     break;
   case 'request':
   case 'request_update':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Title
       FROM requests
       WHERE ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No request with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No request with the reported ID found';
     } else {
-      list($Name) = $DB->next_record();
-      $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".display_str($Name).'[/url]';
-      $Subject = 'Request Report: '.display_str($Name);
+        list($Name) = $app->dbOld->next_record();
+        $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
+        $Subject = 'Request Report: '.\Gazelle\Text::esc($Name);
     }
     break;
   case 'collage':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Name
       FROM collages
       WHERE ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No collage with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No collage with the reported ID found';
     } else {
-      list($Name) = $DB->next_record();
-      $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".display_str($Name).'[/url]';
-      $Subject = 'Collage Report: '.display_str($Name);
+        list($Name) = $app->dbOld->next_record();
+        $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
+        $Subject = 'Collage Report: '.\Gazelle\Text::esc($Name);
     }
     break;
   case 'thread':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Title
       FROM forums_topics
       WHERE ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No forum thread with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No forum thread with the reported ID found';
     } else {
-      list($Title) = $DB->next_record();
-      $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".display_str($Title).'[/url]';
-      $Subject = 'Forum Thread Report: '.display_str($Title);
+        list($Title) = $app->dbOld->next_record();
+        $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".\Gazelle\Text::esc($Title).'[/url]';
+        $Subject = 'Forum Thread Report: '.\Gazelle\Text::esc($Title);
     }
     break;
   case 'post':
-    if (isset($LoggedUser['PostsPerPage'])) {
-      $PerPage = $LoggedUser['PostsPerPage'];
+    if (isset($app->user->extra['PostsPerPage'])) {
+        $PerPage = $app->user->extra['PostsPerPage'];
     } else {
-      $PerPage = POSTS_PER_PAGE;
+        $PerPage = POSTS_PER_PAGE;
     }
-    $DB->query("
+    $app->dbOld->query("
       SELECT
         p.ID,
         p.Body,
@@ -111,24 +114,24 @@ switch ($Type) {
         ) AS PostNum
       FROM forums_posts AS p
       WHERE p.ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No forum post with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No forum post with the reported ID found';
     } else {
-      list($PostID, $Body, $TopicID, $PostNum) = $DB->next_record();
-      $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
-      $Subject = 'Forum Post Report: Post ID #'.display_str($PostID);
+        list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
+        $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
+        $Subject = 'Forum Post Report: Post ID #'.\Gazelle\Text::esc($PostID);
     }
     break;
   case 'comment':
-    $DB->query("
+    $app->dbOld->query("
       SELECT 1
       FROM comments
       WHERE ID = ?", $ThingID);
-    if (!$DB->has_results()) {
-      $Error = 'No comment with the reported ID found';
+    if (!$app->dbOld->has_results()) {
+        $Error = 'No comment with the reported ID found';
     } else {
-      $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
-      $Subject = 'Comment Report: ID #'.display_str($ThingID);
+        $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
+        $Subject = 'Comment Report: ID #'.\Gazelle\Text::esc($ThingID);
     }
     break;
   default:
@@ -136,14 +139,14 @@ switch ($Type) {
     break;
 }
 if (isset($Error)) {
-  error($Error);
+    error($Error);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT Reason
   FROM reports
   WHERE ID = ?", $ReportID);
-list($Reason) = $DB->next_record();
+list($Reason) = $app->dbOld->next_record();
 
 $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
 
@@ -158,7 +161,7 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
     <div class="box pad">
       <input type="hidden" name="action" value="takecompose" />
       <input type="hidden" name="toid" value="<?=$ToID?>" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <div id="quickpost">
         <h3>Subject</h3>
         <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>" />
@@ -174,6 +177,6 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
     </div>
   </form>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();
 ?>

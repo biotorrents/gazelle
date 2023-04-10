@@ -7,26 +7,28 @@ declare(strict_types=1);
  * It gets called if $_GET['action'] === 'token_history.'
  *
  * Using $_GET['userid'] allows a mod to see any user's token history.
- * Non-mods and empty userid show $LoggedUser['ID']'s history.
+ * Non-mods and empty userid show $app->user->core['id']'s history.
  */
+
+$app = \Gazelle\App::go();
 
 # Validate user ID
 if (isset($_GET['userid'])) {
     $UserID = (int) $_GET['userid'];
 } else {
-    $UserID = (int) $LoggedUser['ID'];
+    $UserID = (int) $app->user->core['id'];
 }
 
-Security::checkInt($UserID);
+Security::int($UserID);
 
 # Get user info
-$UserInfo = Users::user_info($UserID);
+$UserInfo = User::user_info($UserID);
 $Perms = Permissions::get_permissions($UserInfo['PermissionID']);
 $UserClass = $Perms['Class'];
 
 # Validate mod permissions
 if (!check_perms('users_mod')) {
-    if ($LoggedUser['ID'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
+    if ($app->user->core['id'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
 }
@@ -38,9 +40,9 @@ if (isset($_GET['expire'])) {
 
     $UserID = (int) $_GET['userid'];
     $TorrentID = (int) $_GET['torrentid'];
-    Security::checkInt($UserID, $TorrentID);
+    Security::int($UserID, $TorrentID);
 
-    $DB->prepare_query("
+    $app->dbOld->prepared_query("
     SELECT
       HEX(`info_hash`)
     FROM
@@ -48,10 +50,10 @@ if (isset($_GET['expire'])) {
     WHERE
       `ID` = '$TorrentID'
     ");
-    $DB->exec_prepared_query();
 
-    if (list($InfoHash) = $DB->next_record(MYSQLI_NUM, false)) {
-        $DB->prepare_query("
+
+    if (list($InfoHash) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
+        $app->dbOld->prepared_query("
         UPDATE
           `users_freeleeches`
         SET
@@ -59,22 +61,22 @@ if (isset($_GET['expire'])) {
         WHERE
           `UserID` = '$UserID' AND `TorrentID` = '$TorrentID'
         ");
-        $DB->exec_prepared_query();
 
-        $Cache->delete_value("users_tokens_$UserID");
+
+        $app->cache->delete("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
             ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
         );
     }
-    header("Location: userhistory.php?action=token_history&userid=$UserID");
+    Http::redirect("userhistory.php?action=token_history&userid=$UserID");
 }
 
 # Render HTML
-View::show_header('Freeleech token history');
+View::header('Freeleech token history');
 list($Page, $Limit) = Format::page_limit(25);
 
-$DB->prepare_query("
+$app->dbOld->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
   f.`TorrentID`,
   t.`GroupID`,
@@ -98,18 +100,18 @@ ORDER BY
 DESC
 LIMIT $Limit
 ");
-$DB->exec_prepared_query();
 
-$Tokens = $DB->to_array();
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+
+$Tokens = $app->dbOld->to_array();
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $Pages = Format::get_pages($Page, $NumResults, 25);
 ?>
 
 <div class="header">
   <h2>
     Freeleech token history for
-    <?= Users::format_username($UserID, false, false, false) ?>
+    <?= User::format_username($UserID, false, false, false) ?>
   </h2>
 </div>
 
@@ -185,4 +187,4 @@ foreach ($Tokens as $Token) {
   <?= $Pages ?>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

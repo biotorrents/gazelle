@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 # todo: Not working since 2020-04-24
 if (isset($_POST['donation'])) {
     $Donation = $_POST['donation'];
@@ -9,37 +11,37 @@ if (isset($_POST['donation'])) {
         error('Invalid donation');
     }
 
-    $UserID = $LoggedUser['ID'];
-    $DB->prepared_query("
+    $UserID = $app->user->core['id'];
+    $app->dbOld->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($DB->has_results()) {
-        list($Points) = $DB->next_record();
+    if ($app->dbOld->has_results()) {
+        list($Points) = $app->dbOld->next_record();
 
         if ($Points >= $Donation) {
             $PoolTipped = false;
 
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Donation
               WHERE ID = $UserID");
 
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE misc
               SET First = First + $Donation
               WHERE Name = 'FreeleechPool'");
-            $Cache->delete_value('user_info_heavy_'.$UserID);
+            $app->cache->delete('user_info_heavy_'.$UserID);
 
             // Check to see if we're now over the target pool size
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT First, Second
               FROM misc
               WHERE Name = 'FreeleechPool'");
 
-            if ($DB->has_results()) {
-                list($Pool, $Target) = $DB->next_record();
+            if ($app->dbOld->has_results()) {
+                list($Pool, $Target) = $app->dbOld->next_record();
 
                 if ($Pool > $Target) {
                     $PoolTipped = true;
@@ -47,8 +49,8 @@ if (isset($_POST['donation'])) {
                     $Torrents = [];
 
                     for ($i = 0; $i < $NumTorrents; $i++) {
-                        $TorrentSize = intval($Pool * (($i===$NumTorrents-1)?1:(rand(10, 80)/100)) * 100000); # todo
-                        $DB->prepared_query("
+                        $TorrentSize = intval($Pool * (($i===$NumTorrents-1) ? 1 : (rand(10, 80)/100)) * 100000); # todo
+                        $app->dbOld->prepared_query("
                           SELECT ID, Size
                           FROM torrents
                           WHERE Size < $TorrentSize
@@ -58,10 +60,10 @@ if (isset($_POST['donation'])) {
                           ORDER BY Seeders ASC, Size DESC
                           LIMIT 1");
 
-                        if ($DB->has_results()) {
-                            list($TorrentID, $Size) = $DB->next_record();
+                        if ($app->dbOld->has_results()) {
+                            list($TorrentID, $Size) = $app->dbOld->next_record();
 
-                            $DB->prepared_query("
+                            $app->dbOld->prepared_query("
                               INSERT INTO shop_freeleeches
                                 (TorrentID, ExpiryTime)
                               VALUES($TorrentID, NOW() + INTERVAL 2 DAY)");
@@ -77,27 +79,27 @@ if (isset($_POST['donation'])) {
                     }
 
                     $Target = rand(10000, 100000);
-                    $DB->prepared_query("
+                    $app->dbOld->prepared_query("
                       UPDATE misc
                       SET First = 0,
                         Second = $Target
                       WHERE Name = 'FreeleechPool'");
                 }
             }
-            $Cache->delete_value('shop_freeleech_list');
+            $app->cache->delete('shop_freeleech_list');
         } else {
             error("Not enough points to donate");
         }
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <h2>Donation Successful</h2>
     <div class="box">
         <p>
             You donated
-            <?=number_format($Donation)?>
-            <?=BONUS_POINTS?>
+            <?=\Gazelle\Text::float($Donation)?>
+            <?=bonusPoints?>
             to the Freeleech Pool
         </p>
 
@@ -114,28 +116,28 @@ if (isset($_POST['donation'])) {
     </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 } else {
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT First
       FROM misc
       WHERE Name = 'FreeleechPool'");
 
-    if ($DB->has_results()) {
-        list($Pool) = $DB->next_record();
+    if ($app->dbOld->has_results()) {
+        list($Pool) = $app->dbOld->next_record();
     } else {
         $Pool = 0;
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <div class="box text-align: center;">
         <form action="store.php" method="POST">
             <input type="hidden" name="item" value="freeleechpool">
             <strong>
                 There are currently
-                <?=number_format($Pool)?>
-                <?=BONUS_POINTS?>
+                <?=\Gazelle\Text::float($Pool)?>
+                <?=bonusPoints?>
                 in the Freeleech Pool
             </strong>
             <br /><br />
@@ -145,5 +147,5 @@ View::show_footer();
         <p><a href="/store.php">Back to Store</a></p>
     </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();
 }

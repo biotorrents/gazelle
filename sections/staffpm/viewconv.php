@@ -1,50 +1,52 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 if ($ConvID = (int)$_GET['id']) {
     // Get conversation info
-    $DB->query("
+    $app->dbOld->query("
     SELECT Subject, UserID, Level, AssignedToUser, Unread, Status
     FROM staff_pm_conversations
     WHERE ID = $ConvID");
-    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $DB->next_record();
+    list($Subject, $UserID, $Level, $AssignedToUser, $Unread, $Status) = $app->dbOld->next_record();
 
     $LevelCap = 1000;
     $PMLevel = $Level;
     $Level = min($Level, $LevelCap);
 
     if (!(
-        ($UserID == $LoggedUser['ID'])
-      || ($AssignedToUser == $LoggedUser['ID'])
-      || (($Level > 0 && $Level <= $LoggedUser['EffectiveClass']) || ($Level == 0 && $IsFLS))
+        ($UserID == $app->user->core['id'])
+      || ($AssignedToUser == $app->user->core['id'])
+      || (($Level > 0 && $Level <= $app->user->extra['EffectiveClass']) || ($Level == 0 && $IsFLS))
     )) {
         // User is trying to view someone else's conversation
         error(403);
     }
     // User is trying to view their own unread conversation, set it to read
-    if ($UserID == $LoggedUser['ID'] && $Unread) {
-        $DB->query("
+    if ($UserID == $app->user->core['id'] && $Unread) {
+        $app->dbOld->query("
       UPDATE staff_pm_conversations
       SET Unread = false
       WHERE ID = $ConvID");
         // Clear cache for user
-        $Cache->delete_value("staff_pm_new_$LoggedUser[ID]");
+        $app->cache->delete("staff_pm_new_{$app->user->core['id']}");
     }
 
-    View::show_header(
+    View::header(
         'Staff PM',
         'staffpm,vendor/easymde.min',
         'vendor/easymde.min'
     );
 
-    $UserInfo = Users::user_info($UserID);
-    $UserStr = Users::format_username($UserID, true, true, true, true);
+    $UserInfo = User::user_info($UserID);
+    $UserStr = User::format_username($UserID, true, true, true, true);
 
     $OwnerID = $UserID;
     $OwnerName = $UserInfo['Username']; ?>
 <div>
   <div class="header">
-    <h2>Staff PM - <?=display_str($Subject)?>
+    <h2>Staff PM - <?=\Gazelle\Text::esc($Subject)?>
     </h2>
     <div class="linkbox">
       <?php
@@ -75,12 +77,12 @@ if ($ConvID = (int)$_GET['id']) {
   <div id="inbox">
     <?php
   // Get messages
-  $StaffPMs = $DB->query("
+  $StaffPMs = $app->dbOld->query("
     SELECT UserID, SentDate, Message, ID
     FROM staff_pm_messages
     WHERE ConvID = $ConvID");
 
-    while (list($UserID, $SentDate, $Message, $MessageID) = $DB->next_record()) {
+    while (list($UserID, $SentDate, $Message, $MessageID) = $app->dbOld->next_record()) {
         // Set user string
         if ($UserID == $OwnerID) {
             // User, use prepared string
@@ -88,8 +90,8 @@ if ($ConvID = (int)$_GET['id']) {
             $Username = $OwnerName;
         } else {
             // Staff/FLS
-            $UserInfo = Users::user_info($UserID);
-            $UserString = Users::format_username($UserID, true, true, true, true);
+            $UserInfo = User::user_info($UserID);
+            $UserString = User::format_username($UserID, true, true, true, true);
             $Username = $UserInfo['Username'];
         } ?>
     <div class="box vertical_space" id="post<?=$MessageID?>">
@@ -106,12 +108,12 @@ if ($ConvID = (int)$_GET['id']) {
           class="brackets">Quote</a>
         <?php } ?>
       </div>
-      <div class="body"><?=Text::full_format($Message)?>
+      <div class="body"><?=\Gazelle\Text::parse($Message)?>
       </div>
     </div>
     <div align="center" style="display: none;"></div>
     <?php
-    $DB->set_query_id($StaffPMs);
+    $app->dbOld->set_query_id($StaffPMs);
     }
 
     // Common responses
@@ -130,10 +132,10 @@ if ($ConvID = (int)$_GET['id']) {
           <option id="first_common_response">Select a message</option>
           <?php
     // List common responses
-    $DB->query("
+    $app->dbOld->query("
       SELECT ID, Name
       FROM staff_pm_responses");
-        while (list($ID, $Name) = $DB->next_record()) {
+        while (list($ID, $Name) = $app->dbOld->next_record()) {
             ?>
           <option value="<?=$ID?>"><?=$Name?>
           </option>
@@ -165,10 +167,9 @@ if ($ConvID = (int)$_GET['id']) {
             id="convid" />
           <?php
           if ($Status != 'Resolved') {
-              $TextPrev = new TEXTAREA_PREVIEW(
-                  $Name = 'message',
-                  $ID = 'quickpost',
-                  $Value = '',
+              $TextPrev = View::textarea(
+                  id: 'quickpost',
+                  name: 'message',
               );
           } ?>
           <br />
@@ -198,7 +199,7 @@ if ($ConvID = (int)$_GET['id']) {
             </optgroup>
             <optgroup label="Staff">
               <?php // Staff members
-    $DB->query(
+    $app->dbOld->query(
         "
       SELECT
         m.ID,
@@ -208,7 +209,7 @@ if ($ConvID = (int)$_GET['id']) {
       WHERE p.DisplayStaff = '1'
       ORDER BY p.Level DESC, m.Username ASC"
     );
-      while (list($ID, $Name) = $DB->next_record()) {
+      while (list($ID, $Name) = $app->dbOld->next_record()) {
           // Create one <option> for each staff member
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>
@@ -219,7 +220,7 @@ if ($ConvID = (int)$_GET['id']) {
             <optgroup label="First Line Support">
               <?php
     // FLS users
-    $DB->query("
+    $app->dbOld->query("
       SELECT
         m.ID,
         m.Username
@@ -230,7 +231,7 @@ if ($ConvID = (int)$_GET['id']) {
         AND i.SupportFor != ''
       ORDER BY m.Username ASC
     ");
-      while (list($ID, $Name) = $DB->next_record()) {
+      while (list($ID, $Name) = $app->dbOld->next_record()) {
           // Create one <option> for each FLS user
       $Selected = (($AssignedToUser == $ID) ? ' selected="selected"' : ''); ?>
               <option value="user_<?=$ID?>" <?=$Selected?>><?=$Name?>
@@ -273,7 +274,7 @@ if ($ConvID = (int)$_GET['id']) {
           <form action="staffpm.php" method="post">
             <input type="hidden" name="action" value="make_donor" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>" />
             <input type="hidden" name="id" value="<?=$ConvID?>" />
             <strong>Amount: </strong>
             <input type="text" name="donation_amount" onkeypress="return isNumberKey(event);" />
@@ -297,8 +298,8 @@ if ($ConvID = (int)$_GET['id']) {
 </div>
 <?php
 
-  View::show_footer();
+  View::footer();
 } else {
     // No ID
-    header('Location: staffpm.php');
+    Http::redirect("staffpm.php");
 }

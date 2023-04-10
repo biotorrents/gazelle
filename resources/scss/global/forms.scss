@@ -1,0 +1,86 @@
+/**
+ * sidebar actions
+ */
+#sidebar {
+  form {
+    display: flex;
+    flex-flow: column wrap;
+    gap: 2rem;
+
+    a.button {
+      margin-bottom: 0;
+    }
+
+    ul {
+      list-style: none;
+    }
+  }
+}
+
+/**
+ * upload form
+ */
+
+.torrentForm {
+  input[type="text"],
+  textarea {
+    width: 100%;
+  }
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin: 0.5rem;
+    margin-left: 0;
+  }
+
+  #creatorList,
+  #literature,
+  #seqhash {
+    width: 100%;
+    height: 20rem;
+  }
+
+  label:not(.seqhash):not(.boolean) {
+    float: right;
+  }
+
+  tr {
+    vertical-align: top;
+  }
+
+  th {
+    width: 33%;
+  }
+
+  .required {
+    &:after {
+      color: red;
+      content: " *";
+    }
+  }
+
+  /* extra info */
+  aside {
+    margin-top: 1rem;
+  }
+
+  /* seqhash mini form */
+  .flexRow {
+    margin-top: 1rem;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+  }
+
+  #seqhashTable {
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+}
+
+#formControls {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  justify-content: center;
+}

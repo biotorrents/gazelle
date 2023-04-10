@@ -1,0 +1,61 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+{% if latestUploads is defined %}
+<h3>Latest uploads</h3>
+
+{#
+<div id="last_uploads" class="box news_post">
+    <div class="head">
+        <strong>Latest Uploads</strong>
+    </div>
+    <div class="head">
+        <ul class="collage_images" id="collage_page0">
+            {% for upload in latest %}
+            {% set title = upload.name ~ '<br />(' ~ upload.tags ~ ')<br />uploaded by ' ~ upload.username ~ ' ' ~
+            upload.uploadDate|time_diff %}
+            {% set alt = title|replace({'<br />': ' '}) %}
+            <li class="image_group_{{ upload.groupId }}">
+                <a
+                    href="torrents.php?id={{ upload.groupId }}&amp;torrentid={{ upload.torrentId }}>#torrent{{ upload.torrentId }}">
+                    <img class="tooltip_interactive" src="{{ upload.imageUrl|image }}" alt="{{ alt }}"
+                        title="{{ title }}" data-title-plain="{{ alt }}" width="118" /></a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+#}
+{% endif %}
+
+{% if news is defined %}
+<section>
+    <div class="flexHeader">
+        <h3>{{ news.Title }}</h3>
+        <p>{{ news.Time|relativeTime }}</p>
+    </div>
+
+    {{ news.Body|parse }}
+</section>
+
+<section id="more_news">
+    <h3>More news</h3>
+
+    <p>
+        To browse past site news, please
+        <a href="/forums.php?action=viewforum&forumid=1">visit the news archive</a>.
+        {# <a href="/boards/news">visit the news archive</a>. #}
+    </p>
+</section>
+{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("index/sidebar.twig") }}
+
+{% endblock %}

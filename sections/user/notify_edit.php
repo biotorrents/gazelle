@@ -1,14 +1,13 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
 
-View::show_header(
-    'Manage notifications',
-    'vendor/jquery.validate.min,form_validate'
-); ?>
+View::header('Manage notifications'); ?>
 
 <div>
   <h2 class="header">
@@ -20,7 +19,7 @@ View::show_header(
   </div>
 
   <?php
-$DB->query("
+$app->dbOld->query("
   SELECT
     `ID`,
     `Label`,
@@ -37,12 +36,12 @@ $DB->query("
     `ToYear`,
     `Users`
   FROM `users_notify_filters`
-  WHERE `UserID` = $LoggedUser[ID]
+  WHERE `UserID` = {$app->user->core['id']}
 ");
 
-$NumFilters = $DB->record_count();
+$NumFilters = $app->dbOld->record_count();
 
-$Notifications = $DB->to_array();
+$Notifications = $app->dbOld->to_array();
 $Notifications[] = array(
   'ID' => false,
   'Label' => '',
@@ -76,7 +75,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
 
     $Usernames = '';
     foreach ($N['Users'] as $UserID) {
-        $UserInfo = Users::user_info($UserID);
+        $UserInfo = User::user_info($UserID);
         $Usernames .= $UserInfo['Username'] . ', ';
     }
     $Usernames = rtrim($Usernames, ', ');
@@ -97,24 +96,24 @@ foreach ($Notifications as $N) { // $N stands for Notifications
     } elseif ($NumFilters > 0) { ?>
   <h3>
     <a
-      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
-        src="<?=STATIC_SERVER?>/common/symbols/rss.png"
+      href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
+        src="<?=staticServer?>/images/symbols/rss.png"
         alt="RSS feed"></a>
-    <?=display_str($N['Label'])?>
-    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+    <?=\Gazelle\Text::esc($N['Label'])?>
+    <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       onclick="return confirm('Are you sure you want to delete this notification filter?')" class="brackets">Delete</a>
     <a data-toggle-target="#filter_<?=$N['ID']?>"
       class="brackets">Show</a>
   </h3>
   <?php } ?>
   <form
-    class="box pad slight_margin <?=($NewFilter ? 'create_form' : 'edit_form')?>"
+    class="box pad slight_margin"
     id="<?=($NewFilter ? 'filter_form' : '')?>"
     name="notification" action="user.php" method="post">
     <input type="hidden" name="formid" value="<?=$i?>">
     <input type="hidden" name="action" value="notify_handle">
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>">
+      value="<?=$app->user->extra['AuthKey']?>">
     <?php if (!$NewFilter) { ?>
     <input type="hidden" name="id<?=$i?>"
       value="<?=$N['ID']?>">
@@ -148,7 +147,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>One of these artists</strong></td>
         <td>
           <textarea name="artists<?=$i?>" style="width: 100%;"
-            rows="5"><?=display_str($N['Artists'])?></textarea>
+            rows="5"><?=\Gazelle\Text::esc($N['Artists'])?></textarea>
           Comma-separated list, e.g., Yumeno Aika, Pink Pineapple
         </td>
       </tr>
@@ -157,7 +156,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>One of these users</strong></td>
         <td>
           <textarea name="users<?=$i?>" style="width: 100%;"
-            rows="5"><?=display_str($Usernames)?></textarea>
+            rows="5"><?=\Gazelle\Text::esc($Usernames)?></textarea>
           Comma-separated list of usernames
         </td>
       </tr>
@@ -166,7 +165,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>At least one of these tags</strong></td>
         <td>
           <textarea name="tags<?=$i?>" style="width: 100%;"
-            rows="2"><?=display_str($N['Tags'])?></textarea>
+            rows="2"><?=\Gazelle\Text::esc($N['Tags'])?></textarea>
           Comma-separated list, e.g., paizuri, nakadashi
         </td>
       </tr>
@@ -175,7 +174,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         <td class="label"><strong>None of these tags</strong></td>
         <td>
           <textarea name="nottags<?=$i?>" style="width: 100%;"
-            rows="2"><?=display_str($N['NotTags'])?></textarea>
+            rows="2"><?=\Gazelle\Text::esc($N['NotTags'])?></textarea>
           Comma-separated list, e.g., paizuri, nakadashi
         </td>
       </tr>
@@ -220,4 +219,4 @@ foreach ($Notifications as $N) { // $N stands for Notifications
   <?php
 } ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

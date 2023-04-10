@@ -1,12 +1,8 @@
 <?php
+
 #declare(strict_types=1);
 
-ini_set('memory_limit', -1);
-
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
+$app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
@@ -14,11 +10,11 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
 
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `Username`
     FROM
@@ -26,15 +22,15 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $DB->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
 }
 
-$Sneaky = ($UserID !== $LoggedUser['ID']);
+$Sneaky = ($UserID !== $app->user->core['id']);
 $JsonBookmarks = [];
 
-list($GroupIDs, $CollageDataList, $GroupList) = Users::get_bookmarks($UserID);
+list($GroupIDs, $CollageDataList, $GroupList) = User::get_bookmarks($UserID);
 foreach ($GroupIDs as $GroupID) {
     if (!isset($GroupList[$GroupID])) {
         continue;

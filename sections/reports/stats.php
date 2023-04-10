@@ -1,10 +1,12 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('admin_reports') && !check_perms('site_moderate_forums')) {
-  error(403);
+    error(403);
 }
-View::show_header('Other reports stats');
+View::header('Other reports stats');
 
 ?>
 <div class="header">
@@ -15,11 +17,11 @@ View::show_header('Other reports stats');
     <a href="reports.php?action=stats">Stats</a>
   </div>
 </div>
-<div class="thin float_clear">
+<div class="thin u-cf">
   <div class="two_columns pad">
-<?
+<?php
 if (check_perms('admin_reports')) {
-$DB->query("
+    $app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -28,31 +30,30 @@ $DB->query("
     AND r.ReportedTime > NOW() - INTERVAL 24 HOUR
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
-?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last 24 hours</strong></h3>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Username</td>
         <td class="colhead_dark number_column">Reports</td>
       </tr>
-<?
+<?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $LoggedUser['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $app->user->core['username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=number_format($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
-<?  } ?>
+<?php
+  } ?>
     </table>
-<?
-$DB->query("
+<?php
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -61,31 +62,30 @@ $DB->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 WEEK
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
-?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last week</strong></h3>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Username</td>
         <td class="colhead_dark number_column">Reports</td>
       </tr>
-<?
+<?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $LoggedUser['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $app->user->core['username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=number_format($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
-<?  } ?>
+<?php
+  } ?>
     </table>
-<?
-$DB->query("
+<?php
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
@@ -94,69 +94,67 @@ $DB->query("
     AND r.ReportedTime > NOW() - INTERVAL 1 MONTH
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
-?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved in the last month</strong></h3>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Username</td>
         <td class="colhead_dark number_column">Reports</td>
       </tr>
-<?
+<?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $LoggedUser['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $app->user->core['username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=number_format($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
-<?  } ?>
+<?php
+  } ?>
     </table>
-<?
-$DB->query("
+<?php
+$app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
   FROM reports AS r
     JOIN users_main AS um ON um.ID = r.ResolverID
   GROUP BY r.ResolverID
   ORDER BY Reports DESC");
-$Results = $DB->to_array();
-?>
+    $Results = $app->dbOld->to_array(); ?>
     <h3><strong>Reports resolved since "other" reports (2009-08-21)</strong></h3>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Username</td>
         <td class="colhead_dark number_column">Reports</td>
       </tr>
-<?
+<?php
   foreach ($Results as $Result) {
-    list($Username, $Reports) = $Result;
-    if ($Username == $LoggedUser['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Reports) = $Result;
+      if ($Username == $app->user->core['username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td><?=$Username?></td>
-        <td class="number_column"><?=number_format($Reports)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Reports)?></td>
       </tr>
-<?  } ?>
+<?php
+  } ?>
     </table>
-<?
-} //if (check_perms('admin_reports')) ?>
+<?php
+} //if (check_perms('admin_reports'))?>
   </div>
   <div class="two_columns pad">
-<?
+<?php
 
   $TrashForumIDs = '12';
 
-  $DB->query("
+  $app->dbOld->query("
     SELECT u.Username,
       COUNT(f.LastPostAuthorID) as Trashed
     FROM forums_topics AS f
@@ -165,7 +163,7 @@ $Results = $DB->to_array();
     GROUP BY f.LastPostAuthorID
     ORDER BY Trashed DESC
     LIMIT 30");
-  $Results = $DB->to_array();
+  $Results = $app->dbOld->to_array();
 ?>
     <h3><strong>Threads trashed since the beginning of time</strong></h3>
     <table class="box border">
@@ -174,28 +172,27 @@ $Results = $DB->to_array();
         <td class="colhead_dark">Username</td>
         <td class="colhead_dark number_column">Trashed</td>
       </tr>
-<?
+<?php
   $i = 1;
   foreach ($Results as $Result) {
-    list($Username, $Trashed) = $Result;
-    if ($Username == $LoggedUser['Username']) {
-      $RowClass = ' class="highlight"';
-    } else {
-      $RowClass = '';
-    }
-?>
+      list($Username, $Trashed) = $Result;
+      if ($Username == $app->user->core['username']) {
+          $RowClass = ' class="highlight"';
+      } else {
+          $RowClass = '';
+      } ?>
       <tr<?=$RowClass?>>
         <td class="number_column"><?=$i?></td>
         <td><?=$Username?></td>
-        <td class="number_column"><?=number_format($Trashed)?></td>
+        <td class="number_column"><?=\Gazelle\Text::float($Trashed)?></td>
       </tr>
-<?
+<?php
     $i++;
   }
 ?>
     </table>
   </div>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();
 ?>

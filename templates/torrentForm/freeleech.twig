@@ -1,0 +1,26 @@
+{# freeleech #}
+{% if not newTorrent and can("torrents_freeleech") %}
+	<tr>
+		<th>
+			<label for="freeleechType">Freeleech</label>
+		</th>
+
+		<td>
+			<select id="freeleechType" name="freeleechType" class="select">
+				<option value="0">Normal</option>
+				<option value="1">Freeleech</option>
+				<option value="2">Neutral leech</option>
+			</select>
+
+			<aside style="margin-bottom: 1rem">for the reason</aside>
+
+			<select id="freeleechReason" name="freeleechReason" class="select">
+				<option value="0">Not applicable</option>
+				<option value="1">Staff pick</option>
+				<option value="2">Permanent freeleech</option>
+				<option value="3">Freeleechizer</option>
+				<option value="4">Sitewide freeleech</option>
+			</select>
+		</td>
+	</tr>
+{% endif %}

@@ -1,7 +1,9 @@
 <?php
 declare(strict_types=1);
 
-View::show_header('Ratio requirements');
+$app = \Gazelle\App::go();
+
+View::header('Ratio requirements');
 ?>
 
 <div>
@@ -85,7 +87,7 @@ View::show_header('Ratio requirements');
       </tr>
 
       <?php
-$DL = $LoggedUser['BytesDownloaded'];
+$DL = $app->user->extra['Downloaded'];
 $GB = 1024*1024*1024;
 ?>
 
@@ -183,7 +185,7 @@ $GB = 1024*1024*1024;
         <br /><br />
         <div style="text-align: center;">
           <img style="vertical-align: middle;" class="tex_img"
-            src="<?=ImageTools::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>"
+            src="<?=\Gazelle\Images::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>"
             alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))" />
         </div>
         <br /><br />
@@ -340,6 +342,5 @@ $GB = 1024*1024*1024;
     </ul>
   </div>
 
-  <?php include('jump.php'); ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

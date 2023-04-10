@@ -1,0 +1,58 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Torrent client whitelist</h2>
+
+	<section>
+		<table>
+
+			<tr>
+				<th>Client</th>
+				<th>Peer ID</th>
+				<th>Actions</th>
+			</tr>
+
+			<form method="post">
+
+				{{ form_token(query.server.REQUEST_URI) }}
+
+				<tr>
+					<td><input type="text" name="clientName" placeholder="Client name" required/></td>
+					<td><input type="text" name="peerId" class="monospace" placeholder="Peer ID" required/></td>
+					<td><input type="submit" name="create" class="button-primary" value="create"/></td>
+				</tr>
+
+			</form>
+
+			{% for item in clients %}
+				<form method="post">
+
+					{{ form_token(query.server.REQUEST_URI) }}
+
+					<input type="hidden" name="id" value="{{ item.id }}"/>
+
+					<tr>
+						<td><input type="text" name="clientName" value="{{ item.vstring }}" required/></td>
+						<td><input type="text" name="peerId" class="monospace" value="{{ item.peer_id }}" required/></td>
+						<td>
+							<input type="submit" name="update" class="button-orange" value="update"/>
+							<input type="submit" name="delete" class="button-red" value="delete"/>
+						</td>
+					</tr>
+
+				</form>
+
+			{% endfor %}
+
+		</table>
+	</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}

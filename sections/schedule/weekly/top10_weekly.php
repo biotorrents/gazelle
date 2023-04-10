@@ -1,14 +1,17 @@
 <?php
+
 #declare(strict_types=1);
 
-$DB->query("
+$app = \Gazelle\App::go();
+
+$app->dbOld->query("
   INSERT INTO top10_history (Date, Type)
   VALUES ('$sqltime', 'Weekly')");
-$HistoryID = $DB->inserted_id();
+$HistoryID = $app->dbOld->inserted_id();
 
-$Top10 = $Cache->get_value('top10tor_week_10');
+$Top10 = $app->cache->get('top10tor_week_10');
 if ($Top10 === false) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       t.`ID`,
       g.`id`,
@@ -37,14 +40,14 @@ if ($Top10 === false) {
     LIMIT 10;
     ");
 
-    $Top10 = $DB->to_array();
+    $Top10 = $app->dbOld->to_array();
 }
 
 $i = 1;
 foreach ($Top10 as $Torrent) {
     list($TorrentID, $GroupID, $GroupName, $GroupCategoryID,
-    $WikiImage, $TorrentTags, $Media, $Year, $GroupYear,
-    $Snatched, $Seeders, $Leechers, $Data) = $Torrent;
+        $WikiImage, $TorrentTags, $Media, $Year, $GroupYear,
+        $Snatched, $Seeders, $Leechers, $Data) = $Torrent;
 
     $DisplayName = '';
     $Artists = Artists::get_artist($GroupID);
@@ -54,7 +57,7 @@ foreach ($Top10 as $Torrent) {
     }
 
     $DisplayName .= $GroupName;
-  
+
     /*
     if ($GroupCategoryID === 1 && $GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";
@@ -80,7 +83,7 @@ foreach ($Top10 as $Torrent) {
     $TitleString = "$DisplayName $ExtraInfo";
     $TagString = str_replace('|', ' ', $TorrentTags);
 
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO top10_history_torrents(
       `HistoryID`,
       `Rank`,

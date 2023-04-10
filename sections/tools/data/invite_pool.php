@@ -1,19 +1,21 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('users_view_invites')) {
     error(403);
 }
 
 $Title = 'Invite Pool';
-View::show_header($Title);
+View::header($Title);
 define('INVITES_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(INVITES_PER_PAGE);
 
 if (!empty($_POST['invitekey']) && check_perms('users_edit_invites')) {
     authorize();
 
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM invites
       WHERE InviteKey = '".db_string($_POST['invitekey'])."'");
 }
@@ -43,11 +45,11 @@ if ($Search) {
 $sql .= "
   ORDER BY i.Expires DESC
   LIMIT $Limit";
-$RS = $DB->query($sql);
+$RS = $app->dbOld->query($sql);
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
-$DB->set_query_id($RS);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -58,7 +60,7 @@ $DB->set_query_id($RS);
 
 <div class="box pad">
   <p>
-    <?=number_format($Results)?> unused invites have been sent.
+    <?=\Gazelle\Text::float($Results)?> unused invites have been sent.
   </p>
 </div>
 <br />
@@ -74,7 +76,7 @@ $DB->set_query_id($RS);
         <td>
           <input type="hidden" name="action" value="invite_pool" />
           <input type="email" name="search" size="60"
-            value="<?=display_str($Search)?>" />
+            value="<?=\Gazelle\Text::esc($Search)?>" />
           &nbsp;
           <input type="submit" class="button-primary" value="Search log" />
         </td>
@@ -103,24 +105,24 @@ $DB->set_query_id($RS);
   </tr>
 
   <?php
-  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $DB->next_record()) {
+  while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $app->dbOld->next_record()) {
       $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
   <tr class="row">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?>
     </td>
 
     <td>
-      <?=display_str($Email)?>
+      <?=\Gazelle\Text::esc($Email)?>
     </td>
 
     <td>
-      <?=display_str($IP)?>
+      <?=\Gazelle\Text::esc($IP)?>
     </td>
 
     <td>
-      <?=display_str($InviteKey)?>
+      <?=\Gazelle\Text::esc($InviteKey)?>
     </td>
 
     <td>
@@ -132,9 +134,9 @@ $DB->set_query_id($RS);
       <form class="delete_form" name="invite" action="" method="post">
         <input type="hidden" name="action" value="invite_pool" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="invitekey"
-          value="<?=display_str($InviteKey)?>" />
+          value="<?=\Gazelle\Text::esc($InviteKey)?>" />
         <input type="submit" value="Delete" />
       </form>
     </td>
@@ -148,4 +150,4 @@ $DB->set_query_id($RS);
 <div class="linkbox pager"><?=($Pages)?>
 </div>
 <?php }
-View::show_footer();
+View::footer();

@@ -1,0 +1,208 @@
+/**
+ * main body css filters for sitewide coloring
+ * default: 25% grayscale, to mute the rather bright pastel colors
+ */
+body {
+  filter: grayscale(25%);
+
+  /**
+   * calm mode: desaturate the site and add a touch of sepia and contrast
+   */
+  &.calmMode {
+    filter: grayscale(100%) sepia(10%) contrast(110%) !important;
+  }
+
+  /**
+   * dark mode: invert almost all the way and slightly drop contrast
+   * https://gist.github.com/aaronice/5c083b9a8a3cbee29c7cd6bf3c708233
+   */
+  &.darkMode {
+    background-color: #222 !important;
+    filter: contrast(90%) invert(90%) hue-rotate(180deg) !important;
+
+    img,
+    video,
+    iframe,
+    canvas,
+    svg,
+    embed[type="application/x-shockwave-flash"],
+    object[type="application/x-shockwave-flash"],
+    *[style*="url("] {
+      filter: invert(110%) hue-rotate(-180deg) !important;
+    }
+  }
+}
+
+/**
+ * api responses and general notice text
+ * essential colors in the design language
+ * also includes torrentLeech, wiki, etc.
+ */
+
+.black,
+.normal,
+.tl_notice,
+.tl_snatched {
+  color: #222;
+}
+
+.blue,
+.create,
+.goodish,
+.line_moved {
+  color: $skeletonDefault;
+}
+
+.good,
+.green,
+.hnr-no,
+.important_text_alt,
+.info,
+.line_new,
+.new,
+.read,
+.success,
+.tl_approved,
+.tl_free,
+.tl_seeding {
+  color: green;
+}
+
+.badish,
+.important_text_semi,
+.orange,
+.tl_leeching,
+.update,
+.warning {
+  color: orange;
+}
+
+.bad,
+.delete,
+.error,
+.failure,
+.hnr-yes,
+.important_text,
+.invalid,
+.line_deleted,
+.red,
+.tl_reported {
+  color: red;
+}
+
+.purple,
+.royal,
+.staff,
+.violet {
+  color: purple;
+}
+
+.dead,
+.faded {
+  opacity: 0.75;
+}
+
+.infoBorder {
+  border: 1px solid green !important;
+}
+
+.errorBorder {
+  border: 1px solid red !important;
+}
+
+/**
+ * ratio redness intensity
+ */
+@mixin ratioRedness($amount) {
+  color: scale-color(red, $lightness: $amount);
+}
+
+.r00 {
+  color: red;
+}
+
+.r01 {
+  @include ratioRedness(10%);
+}
+
+.r02 {
+  @include ratioRedness(20%);
+}
+
+.r03 {
+  @include ratioRedness(30%);
+}
+
+.r04 {
+  @include ratioRedness(40%);
+}
+
+.r05 {
+  @include ratioRedness(50%);
+}
+
+.r06 {
+  @include ratioRedness(60%);
+}
+
+.r07 {
+  @include ratioRedness(70%);
+}
+
+.r08 {
+  @include ratioRedness(80%);
+}
+
+.r09 {
+  @include ratioRedness(90%);
+}
+
+/* the shadow under floating elements */
+$shadow: 2px 2px 10px -2px slategray;
+
+/**
+ * rgb color intensity border
+ *
+ * for semi-transparent elements,
+ * e.g., unread forum post borders
+ */
+
+@mixin transparent-border($c, $a) {
+  border: 2px solid change-color($color: $c, $alpha: $a);
+}
+
+/*
+ * noty button fix
+ */
+.noty_buttons {
+  button {
+    background: none;
+    border: none;
+    box-shadow: none;
+    margin: 0.5rem;
+    padding: 0;
+  }
+}
+
+/**
+ * database key warning
+ */
+#dbcrypt {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+
+  &:after {
+    content: "!";
+    display: block;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #222;
+    background: red;
+    border-radius: 100px;
+  }
+}

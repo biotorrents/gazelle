@@ -1,5 +1,9 @@
 <?php
+
 #declare(strict_types=1);
+
+
+$app = \Gazelle\App::go();
 
 //******************************************************************************//
 //----------------- Take request -----------------------------------------------//
@@ -16,12 +20,12 @@ if (!$NewRequest) {
 }
 
 if ($NewRequest) {
-    if (!check_perms('site_submit_requests') || $LoggedUser['BytesUploaded'] < 250 * 1024 * 1024) {
+    if (!check_perms('site_submit_requests') || $app->user->extra['BytesUploaded'] < 250 * 1024 * 1024) {
         error(403);
     }
 } else {
     $RequestID = $_POST['requestid'];
-    if (!is_number($RequestID)) {
+    if (!is_numeric($RequestID)) {
         error(0);
     }
 
@@ -34,7 +38,7 @@ if ($NewRequest) {
     $IsFilled = !empty($Request['TorrentID']);
     $CategoryName = $Categories[$Request['CategoryID'] - 1];
     $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Year === '0')));
-    $CanEdit = ((!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+    $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
     if (!$CanEdit) {
         error(403);
@@ -80,7 +84,7 @@ if ($NewRequest) {
         $Err = 'You forgot to enter any bounty!';
     } else {
         $Bounty = trim($_POST['amount']);
-        if (!is_number($Bounty)) {
+        if (!is_numeric($Bounty)) {
             $Err = 'Your entered bounty is not a number';
         } elseif ($Bounty < 100 * 1024 * 1024) {
             $Err = 'Minimum bounty is 100 MB.';
@@ -92,11 +96,10 @@ if ($NewRequest) {
 if (empty($_POST['image'])) {
     $Image = '';
 } else {
-    ImageTools::blacklisted($_POST['image']);
-    if (preg_match('/'.IMAGE_REGEX.'/', trim($_POST['image'])) > 0) {
+    if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
-        $Err = display_str($_POST['image']).' does not appear to be a valid link to an image.';
+        $Err = \Gazelle\Text::esc($_POST['image']).' does not appear to be a valid link to an image.';
     }
 }
 
@@ -124,15 +127,15 @@ if (!empty($_POST['cataloguenumber']) && $CategoryName === 'Movies') {
 // GroupID
 if (!empty($_POST['groupid'])) {
     $GroupID = $_POST['groupid'];
-    if (is_number($GroupID)) {
-        $DB->query("
+    if (is_numeric($GroupID)) {
+        $app->dbOld->query("
       SELECT CategoryID
       FROM torrents_group
       WHERE ID = '$GroupID'");
-        if (!$DB->has_results()) {
+        if (!$app->dbOld->has_results()) {
             $Err = 'The torrent group, if entered, must correspond to a torrent group on the site.';
         } else {
-            if ($CategoryID !== $DB->to_array()[0]['CategoryID']) {
+            if ($CategoryID !== $app->dbOld->to_array()[0]['CategoryID']) {
                 $Err = 'The category of the specified torrent group does not match the category of your request.';
             }
         }
@@ -162,7 +165,7 @@ if (!empty($Err)) {
     error($Err);
     $Div = $_POST['unit'] === 'mb' ? 1024 * 1024 : 1024 * 1024 * 1024;
     $Bounty /= $Div;
-    include(SERVER_ROOT.'/sections/requests/new_edit.php');
+    include(serverRoot.'/sections/requests/new_edit.php');
     #error();
 }
 
@@ -172,17 +175,17 @@ if (!isset($GroupID)) {
 
 // Query time!
 if ($NewRequest) {
-    $DB->query('
+    $app->dbOld->query('
     INSERT INTO requests (
       UserID, TimeAdded, LastVote, CategoryID, Title, Title2, TitleJP, Image, Description,
       CatalogueNumber, Visible, GroupID)
     VALUES
-      ('.$LoggedUser['ID'].", NOW(), NOW(), $CategoryID, '".db_string($Title)."', '".db_string($Title2)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
+      ('.$app->user->core['id'].", NOW(), NOW(), $CategoryID, '".db_string($Title)."', '".db_string($Title2)."', '".db_string($TitleJP)."', '".db_string($Image)."', '".db_string($Description)."',
           '".db_string($CatalogueNumber)."', '1', '$GroupID')");
 
-    $RequestID = $DB->inserted_id();
+    $RequestID = $app->dbOld->inserted_id();
 } else {
-    $DB->query("
+    $app->dbOld->query("
     UPDATE requests
     SET CategoryID = $CategoryID,
       Title = '".db_string($Title)."',
@@ -194,22 +197,22 @@ if ($NewRequest) {
     WHERE ID = $RequestID");
 
     // We need to be able to delete artists/tags
-    $DB->query("
+    $app->dbOld->query("
     SELECT ArtistID
     FROM requests_artists
     WHERE RequestID = $RequestID");
-    $RequestArtists = $DB->to_array();
+    $RequestArtists = $app->dbOld->to_array();
     foreach ($RequestArtists as $RequestArtist) {
-        $Cache->delete_value("artists_requests_".$RequestArtist['ArtistID']);
+        $app->cache->delete("artists_requests_".$RequestArtist['ArtistID']);
     }
-    $DB->query("
+    $app->dbOld->query("
     DELETE FROM requests_artists
     WHERE RequestID = $RequestID");
-    $Cache->delete_value("request_artists_$RequestID");
+    $app->cache->delete("request_artists_$RequestID");
 }
 
 if ($GroupID) {
-    $Cache->delete_value("requests_group_$GroupID");
+    $app->cache->delete("requests_group_$GroupID");
 }
 
 /*
@@ -222,24 +225,24 @@ if ($GroupID) {
 if (isset($ArtistForm)) {
     foreach ($ArtistForm as $Num => $Artist) {
         // 1. See if each artist given already exists and if it does, grab the ID.
-        $DB->query("
+        $app->dbOld->query("
       SELECT
         ArtistID,
         Name
       FROM artists_group
       WHERE Name = '".db_string($Artist['name'])."'");
 
-        list($ArtistID, $ArtistName) = $DB->next_record(MYSQLI_NUM, false);
+        list($ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_NUM, false);
         $ArtistForm[$Num] = array('name' => $ArtistName, 'id' => $ArtistID);
 
         if (!$ArtistID) {
             // 2. For each artist that didn't exist, create an artist.
-            $DB->query("
+            $app->dbOld->query("
         INSERT INTO artists_group (Name)
         VALUES ('".db_string($Artist['name'])."')");
-            $ArtistID = $DB->inserted_id();
+            $ArtistID = $app->dbOld->inserted_id();
 
-            $Cache->increment('stats_artist_count');
+            $app->cache->increment('stats_artist_count');
 
             $ArtistForm[$Num] = array('id' => $ArtistID, 'name' => $Artist['name']);
         }
@@ -247,59 +250,59 @@ if (isset($ArtistForm)) {
 
     // 3. Create a row in the requests_artists table for each artist, based on the ID.
     foreach ($ArtistForm as $Num => $Artist) {
-        $DB->query("
+        $app->dbOld->query("
       INSERT IGNORE INTO requests_artists
         (RequestID, ArtistID)
       VALUES
         ($RequestID, ".$Artist['id'].")");
-        $Cache->delete_value('artists_requests_'.$Artist['id']);
+        $app->cache->delete('artists_requests_'.$Artist['id']);
     }
-    // End music only
+// End music only
 } else {
     // Not a music request anymore, delete music only fields.
     if (!$NewRequest) {
-        $DB->query("
+        $app->dbOld->query("
       SELECT ArtistID
       FROM requests_artists
       WHERE RequestID = $RequestID");
-        $OldArtists = $DB->collect('ArtistID');
+        $OldArtists = $app->dbOld->collect('ArtistID');
         foreach ($OldArtists as $ArtistID) {
             if (empty($ArtistID)) {
                 continue;
             }
             // Get a count of how many groups or requests use the artist ID
-            $DB->query("
+            $app->dbOld->query("
         SELECT COUNT(ag.ArtistID)
         FROM artists_group AS ag
           LEFT JOIN requests_artists AS ra ON ag.ArtistID = ra.ArtistID
         WHERE ra.ArtistID IS NOT NULL
           AND ag.ArtistID = '$ArtistID'");
-            list($ReqCount) = $DB->next_record();
-            $DB->query("
+            list($ReqCount) = $app->dbOld->next_record();
+            $app->dbOld->query("
         SELECT COUNT(ag.ArtistID)
         FROM artists_group AS ag
           LEFT JOIN torrents_artists AS ta ON ag.ArtistID = ta.ArtistID
         WHERE ta.ArtistID IS NOT NULL
           AND ag.ArtistID = '$ArtistID'");
-            list($GroupCount) = $DB->next_record();
+            list($GroupCount) = $app->dbOld->next_record();
             if (($ReqCount + $GroupCount) === 0) {
                 // The only group to use this artist
                 Artists::delete_artist($ArtistID);
             } else {
                 // Not the only group, still need to clear cache
-                $Cache->delete_value("artists_requests_$ArtistID");
+                $app->cache->delete("artists_requests_$ArtistID");
             }
         }
-        $DB->query("
+        $app->dbOld->query("
       DELETE FROM requests_artists
       WHERE RequestID = $RequestID");
-        $Cache->delete_value("request_artists_$RequestID");
+        $app->cache->delete("request_artists_$RequestID");
     }
 }
 
 // Tags
 if (!$NewRequest) {
-    $DB->query("
+    $app->dbOld->query("
     DELETE FROM requests_tags
     WHERE RequestID = $RequestID");
 }
@@ -309,17 +312,17 @@ foreach ($Tags as $Index => $Tag) {
     $Tag = Misc::sanitize_tag($Tag);
     $Tag = Misc::get_alias_tag($Tag);
     $Tags[$Index] = $Tag; // For announce
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO tags
       (Name, UserID)
     VALUES
-      ('$Tag', ".$LoggedUser['ID'].")
+      ('$Tag', ".$app->user->core['id'].")
     ON DUPLICATE KEY UPDATE
       Uses = Uses + 1");
 
-    $TagID = $DB->inserted_id();
+    $TagID = $app->dbOld->inserted_id();
 
-    $DB->query("
+    $app->dbOld->query("
     INSERT IGNORE INTO requests_tags
       (TagID, RequestID)
     VALUES
@@ -328,27 +331,27 @@ foreach ($Tags as $Index => $Tag) {
 
 if ($NewRequest) {
     // Remove the bounty and create the vote
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$LoggedUser['ID'].', '.($Bytes * (1 - $RequestTax)).')');
+      ($RequestID, ".$app->user->core['id'].', '.($Bytes * (1 - $RequestTax)).')');
 
-    $DB->query("
+    $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Bytes)
-    WHERE ID = ".$LoggedUser['ID']);
-    $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+    WHERE ID = ".$app->user->core['id']);
+    $app->cache->delete('user_stats_'.$app->user->core['id']);
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 
-    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm)?(' - '.Artists::display_artists($ArtistForm, false, false)):'').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\"".(isset($ArtistForm) ? (' - '.Artists::display_artists($ArtistForm, false, false)) : '').' '.site_url()."requests.php?action=view&id=$RequestID - ".implode(' ', $Tags);
     send_irc(REQUEST_CHAN, $Announce);
 } else {
-    $Cache->delete_value("request_$RequestID");
-    $Cache->delete_value("request_artists_$RequestID");
+    $app->cache->delete("request_$RequestID");
+    $app->cache->delete("request_artists_$RequestID");
 }
 
 Requests::update_sphinx_requests($RequestID);
 
-header("Location: requests.php?action=view&id=$RequestID");
+Http::redirect("requests.php?action=view&id=$RequestID");

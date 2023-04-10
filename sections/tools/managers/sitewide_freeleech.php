@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (isset($_POST['type'])) {
     if ($_POST['type'] === 'tag') {
         authorize();
@@ -10,15 +12,15 @@ if (isset($_POST['type'])) {
         }
 
         $Tag = db_string($_POST['tag']);
-        $DB->query("
+        $app->dbOld->query("
         SELECT `ID`
         FROM `tags`
         WHERE `Name` = '$Tag'
         ");
 
-        if ($DB->has_results()) {
+        if ($app->dbOld->has_results()) {
             $Tag = str_replace('.', '_', $Tag);
-            $DB->query("
+            $app->dbOld->query("
             SELECT t.`ID`
             FROM `torrents` AS t
             JOIN `torrents_group` AS tg ON t.`GroupID` = tg.`id`
@@ -27,8 +29,8 @@ if (isset($_POST['type'])) {
             AND tg.`tag_list` LIKE '%$Tag%'
             ");
 
-            if ($DB->has_results()) {
-                $IDs = $DB->collect('ID');
+            if ($app->dbOld->has_results()) {
+                $IDs = $app->dbOld->collect('ID');
                 $Duration = db_string($_POST['duration']);
                 $Query = "INSERT IGNORE INTO `shop_freeleeches` (TorrentID, ExpiryTime) VALUES ";
 
@@ -38,9 +40,9 @@ if (isset($_POST['type'])) {
 
                 $Query = substr($Query, 0, strlen($Query) - 2);
                 $Query .= " ON DUPLICATE KEY UPDATE ExpiryTime = ExpiryTime + INTERVAL " . $Duration . " HOUR";
-                $DB->query($Query);
+                $app->dbOld->query($Query);
 
-                $DB->query(
+                $app->dbOld->query(
                     "
                 INSERT INTO `misc`
                   (Name, First, Second)
@@ -61,7 +63,7 @@ if (isset($_POST['type'])) {
     } elseif ($_POST['type'] === 'global') {
         authorize();
 
-        $DB->query("
+        $app->dbOld->query("
         SELECT t.`ID`
         FROM `torrents` AS t
         JOIN `torrents_group` AS tg ON t.`GroupID` = tg.`id`
@@ -69,8 +71,8 @@ if (isset($_POST['type'])) {
         AND (t.`FreeLeechType` = '0' OR t.`FreeLeechType` = '3')
         ");
 
-        if ($DB->has_results()) {
-            $IDs = $DB->collect('ID');
+        if ($app->dbOld->has_results()) {
+            $IDs = $app->dbOld->collect('ID');
             $Duration = db_string($_POST['duration']);
             $Query = "INSERT IGNORE INTO shop_freeleeches (TorrentID, ExpiryTime) VALUES ";
 
@@ -80,9 +82,9 @@ if (isset($_POST['type'])) {
 
             $Query = substr($Query, 0, strlen($Query) - 2);
             $Query .= " ON DUPLICATE KEY UPDATE ExpiryTime = ExpiryTime + INTERVAL " . $Duration . " HOUR";
-            $DB->query($Query);
+            $app->dbOld->query($Query);
 
-            $DB->query(
+            $app->dbOld->query(
                 "
         INSERT INTO `misc`
           (`Name`, `First`, `Second`)
@@ -91,7 +93,7 @@ if (isset($_POST['type'])) {
         ON DUPLICATE KEY UPDATE
           `First` = CONVERT(`First`, UNSIGNED INTEGER) + " . (60 * 60 * $Duration)
             );
-        
+
             Torrents::freeleech_torrents($IDs, 1, 3, false);
             echo("Success! Now run the indexer.");
         } else {
@@ -99,7 +101,7 @@ if (isset($_POST['type'])) {
         }
     }
 } else {
-    View::show_header('Site-Wide Freeleech'); ?>
+    View::header('Site-Wide Freeleech'); ?>
 <div>
   <div class="box text-align: center;">
     <strong>Make sure you run the indexer after using either of these tools, or torrents may disappear from search until
@@ -110,7 +112,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="tag">
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <strong>Single Tag Freeleech</strong>
       <br />
       <input id="tag_name" type="text" name="tag" placeholder="Tag" value="" />
@@ -125,7 +127,7 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="action" value="freeleech" />
       <input type="hidden" name="type" value="global" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <strong>Global Freeleech</strong>
       <br />
       <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />
@@ -133,5 +135,5 @@ if (isset($_POST['type'])) {
       <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();
 }

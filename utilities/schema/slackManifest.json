@@ -1,0 +1,25 @@
+{
+    "display_information": {
+        "name": "ebooks",
+        "description": "BioTorrents.de announce bot",
+        "background_color": "#2c2d30"
+    },
+    "features": {
+        "bot_user": {
+            "display_name": "ebooks",
+            "always_online": false
+        }
+    },
+    "oauth_config": {
+        "scopes": {
+            "bot": [
+                "incoming-webhook"
+            ]
+        }
+    },
+    "settings": {
+        "org_deploy_enabled": false,
+        "socket_mode_enabled": false,
+        "token_rotation_enabled": false
+    }
+}

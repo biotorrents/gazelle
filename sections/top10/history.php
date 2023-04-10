@@ -1,21 +1,34 @@
 <?php
-#declare(strict_types=1);
 
+declare(strict_types=1);
+
+
+/**
+ * top10 history
+ */
+
+$app = \Gazelle\App::go();
+
+enforce_login();
 if (!check_perms('users_mod')) {
     error(404);
+}
+
+if (!check_perms('site_top10')) {
+    error(403);
 }
 
 // if (!check_perms('site_top10_history')) {
 //   error(403);
 // }
 
-View::show_header('Top 10 Torrents history!');
+View::header('Top 10 Torrents history!');
 ?>
 
 <div>
   <div class="header">
     <h2>Top 10 Torrents</h2>
-    <?php Top10View::render_linkbox(); ?>
+    <?php Top10::render_linkbox(); ?>
   </div>
   <div class="pad box">
     <form class="search_form" name="top10" method="get" action="">
@@ -25,7 +38,7 @@ View::show_header('Top 10 Torrents history!');
         <tr>
           <td class="label">Date</td>
           <td><input type="text" id="date" name="date"
-              value="<?=!empty($_GET['date']) ? display_str($_GET['date']) : 'YYYY-MM-DD'?>"
+              value="<?=!empty($_GET['date']) ? \Gazelle\Text::esc($_GET['date']) : 'YYYY-MM-DD'?>"
               onfocus="if ($('#date').raw().value == 'YYYY-MM-DD') { $('#date').raw().value = ''; }" /></td>
         </tr>
         <tr>
@@ -48,10 +61,6 @@ View::show_header('Top 10 Torrents history!');
 if (!empty($_GET['date'])) {
     $Date = $_GET['date'];
     $SQLTime = $Date.' 00:00:00';
-    if (!validDate($SQLTime)) {
-        error('Something is wrong with the date you provided');
-    }
-
     if (empty($_GET['datetype']) || $_GET['datetype'] == 'day') {
         $Type = 'day';
         $Where = "
@@ -64,9 +73,9 @@ if (!empty($_GET['date'])) {
         AND Type = 'Weekly'";
     }
 
-    $Details = $Cache->get_value("top10_history_$SQLTime");
+    $Details = $app->cache->get("top10_history_$SQLTime");
     if ($Details === false) {
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           tht.`Rank`,
           tht.`TitleString`,
@@ -102,9 +111,9 @@ if (!empty($_GET['date'])) {
           tht.`Rank` ASC
         ");
 
-        $Details = $DB->to_array();
+        $Details = $app->dbOld->to_array();
 
-        $Cache->cache_value("top10_history_$SQLTime", $Details, 3600 * 24);
+        $app->cache->set("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
   <br />
@@ -121,8 +130,8 @@ if (!empty($_GET['date'])) {
       <?php
   foreach ($Details as $Detail) {
       list($Rank, $TitleString, $TagString, $TorrentID, $GroupID, $GroupName, $GroupCategoryID, $TorrentTags,
-      $Format, $Encoding, $Media, $Scene, $HasLog, $HasCue, $LogScore, $Year, $GroupYear,
-      $RemasterTitle, $Snatched, $Seeders, $Leechers, $Data) = $Detail;
+          $Format, $Encoding, $Media, $Scene, $HasLog, $HasCue, $LogScore, $Year, $GroupYear,
+          $RemasterTitle, $Snatched, $Seeders, $Leechers, $Data) = $Detail;
 
       if ($GroupID) {
           // Group still exists
@@ -187,16 +196,13 @@ if (!empty($_GET['date'])) {
           $TorrentTags = new Tags($TagString);
       } // if ($GroupID)
 
-?>
+      ?>
       <tr class="group_torrent row">
         <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
-        <td class="center cats_col">
-          <div title="<?=$TorrentTags->title()?>"
-            class="tooltip <?=Format::css_category($GroupCategoryID)?> <?=$TorrentTags->css_name()?>">
-          </div>
+        <td class="center categoryColumn">
         </td>
         <td>
-          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$LoggedUser['AuthKey'].'&amp;torrent_pass='.$LoggedUser['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
+          <span><?=($GroupID ? '<a href="torrents.php?action=download&amp;id='.$TorrentID.'&amp;authkey='.$app->user->extra['AuthKey'].'&amp;torrent_pass='.$app->user->extra['torrent_pass'].' title="Download" class="brackets tooltip">DL</a>' : '(Deleted)')?></span>
           <?=$DisplayName?>
           <div class="tags"><?=$TorrentTags->format()?>
           </div>
@@ -204,10 +210,10 @@ if (!empty($_GET['date'])) {
       </tr>
       <?php
   } // foreach ($Details as $Detail)
-?>
+    ?>
     </table><br />
   </div>
 </div>
 <?php
 }
-View::show_footer();
+View::footer();

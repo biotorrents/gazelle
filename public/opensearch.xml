@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- https://github.com/dewitt/opensearch/blob/master/opensearch-1-1-draft-6.md -->
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+  <ShortName>torrents.bio</ShortName>
+  <Description>An open platform for libre biology data</Description>
+  <Tags>api biological-data biological-sequences biology bittorrent bittorrent-tracker website</Tags>
+  <Contact>hello@torrents.bio</Contact>
+  <Url type="text/html"
+       template="https://torrents.bio/torrents.php?search={searchTerms}" />
+  <LongName>Search torrents.bio for BitTorrent biology data</LongName>
+  <Image height="1024" width="1024" type="image/png">https://torrents.bio/images/favicon.png</Image>
+  <Query role="example" searchTerms="saccharomyces cerevisiae" />
+  <Developer>Omics Tools LLC</Developer>
+  <Attribution>
+    Copyright (c) 2021 Omics Tools LLC
+  </Attribution>
+  <SyndicationRight>open</SyndicationRight>
+  <AdultContent>false</AdultContent>
+  <Language>en-us</Language>
+  <OutputEncoding>UTF-8</OutputEncoding>
+  <InputEncoding>UTF-8</InputEncoding>
+</OpenSearchDescription>

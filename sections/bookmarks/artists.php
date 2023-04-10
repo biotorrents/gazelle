@@ -1,40 +1,42 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         error(403);
     }
 
     $UserID = $_GET['userid'];
-    $Sneaky = $UserID !== $LoggedUser['ID'];
+    $Sneaky = $UserID !== $app->user->core['id'];
 
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
 
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
-    list($Username) = $DB->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
 }
 
-$Sneaky = $UserID !== $LoggedUser['ID'];
+$Sneaky = $UserID !== $app->user->core['id'];
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ag.ArtistID, ag.Name
   FROM bookmarks_artists AS ba
     INNER JOIN artists_group AS ag ON ba.ArtistID = ag.ArtistID
   WHERE ba.UserID = $UserID
   ORDER BY ag.Name");
-$ArtistList = $DB->to_array();
+$ArtistList = $app->dbOld->to_array();
 
 $Title = $Sneaky ? "$Username's bookmarked artists" : 'Your bookmarked artists';
-View::show_header($Title, 'browse');
+View::header($Title, 'browse');
 ?>
 
 <div>
@@ -61,7 +63,7 @@ View::show_header($Title, 'browse');
 
 <!--content-->
 <?php
-  View::show_footer();
+  View::footer();
   error();
 } ?>
 
@@ -77,27 +79,27 @@ foreach ($ArtistList as $Artist) {
   <tr class="row bookmark_<?=$ArtistID?>">
     <td>
       <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a>
-      <span class="float_right">
+      <span class="u-pull-right">
         <?php
   if (check_perms('site_torrents_notify')) {
-      if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-          $DB->prepared_query("
+      if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
+          $app->dbOld->prepared_query("
             SELECT ID, Artists
             FROM users_notify_filters
-            WHERE UserID = '$LoggedUser[ID]'
+            WHERE UserID = '{$app->user->core['id']}'
               AND Label = 'Artist notifications'
             LIMIT 1");
 
-          $Notify = $DB->next_record(MYSQLI_ASSOC);
-          $Cache->cache_value('notify_artists_'.$LoggedUser['ID'], $Notify, 0);
+          $Notify = $app->dbOld->next_record(MYSQLI_ASSOC);
+          $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
       }
 
       if (stripos($Notify['Artists'], "|$Name|") === false) { ?>
-        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
           class="brackets">Notify of new uploads</a>
         <?php
       } else { ?>
-        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+        <a href="artist.php?action=notifyremove&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
           class="brackets">Do not notify of new uploads</a>
         <?php
       }
@@ -116,5 +118,5 @@ foreach ($ArtistList as $Artist) {
 </div>
 
 <?php
-View::show_footer();
-$Cache->cache_value('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);
+View::footer();
+$app->cache->set('bookmarks_'.$UserID, serialize(array(array($Username, $TorrentList, $CollageDataList))), 3600);

@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 //******************************************************************************//
 //--------------- Take mass PM -------------------------------------------------//
@@ -11,8 +14,7 @@
 authorize();
 enforce_login();
 
-require_once SERVER_ROOT.'/classes/validate.class.php';
-$Validate = new Validate;
+$Validate = new Validate();
 
 $TorrentID = (int)$_POST['torrentid'];
 $GroupID = (int)$_POST['groupid'];
@@ -42,18 +44,18 @@ if ($Err) {
 //******************************************************************************//
 //--------------- Send PMs to users --------------------------------------------//
 
-$DB->query("
+$app->dbOld->query("
   SELECT uid
   FROM xbt_snatched
   WHERE fid = $TorrentID");
 
-if ($DB->has_results()) {
-    // Save this because send_pm uses $DB to run its own query... Oops...
-    $Snatchers = $DB->to_array();
+if ($app->dbOld->has_results()) {
+    // Save this because send_pm uses $db to run its own query... Oops...
+    $Snatchers = $app->dbOld->to_array();
     foreach ($Snatchers as $UserID) {
         Misc::send_pm($UserID[0], 0, $Subject, $Message);
     }
 }
 
-Misc::write_log($LoggedUser['Username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
-header("Location: torrents.php?id=$GroupID");
+Misc::write_log($app->user->core['username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
+Http::redirect("torrents.php?id=$GroupID");

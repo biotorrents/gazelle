@@ -1,37 +1,39 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 $ENV = ENV::go();
 
 if (isset($_GET['userid']) && check_perms('users_view_invites')) {
-    if (!is_number($_GET['userid'])) {
+    if (!is_numeric($_GET['userid'])) {
         error(403);
     }
 
     $UserID=$_GET['userid'];
     $Sneaky = true;
 } else {
-    if (!$UserCount = $Cache->get_value('stats_user_count')) {
-        $DB->query("
+    if (!$UserCount = $app->cache->get('stats_user_count')) {
+        $app->dbOld->query("
       SELECT COUNT(ID)
       FROM users_main
       WHERE Enabled = '1'");
-        list($UserCount) = $DB->next_record();
-        $Cache->cache_value('stats_user_count', $UserCount, 0);
+        list($UserCount) = $app->dbOld->next_record();
+        $app->cache->set('stats_user_count', $UserCount, 0);
     }
 
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
     $Sneaky = false;
 }
 
-list($UserID, $Username, $PermissionID) = array_values(Users::user_info($UserID));
+list($UserID, $Username, $PermissionID) = array_values(User::user_info($UserID));
 
-$DB->query("
+$app->dbOld->query("
   SELECT InviteKey, Email, Expires
   FROM invites
   WHERE InviterID = '$UserID'
   ORDER BY Expires");
-$Pending = $DB->to_array();
+$Pending = $app->dbOld->to_array();
 
 $OrderWays = array('username', 'email', 'joined', 'lastseen', 'uploaded', 'downloaded', 'ratio');
 
@@ -54,35 +56,35 @@ if (empty($_GET['order'])) {
 }
 
 switch ($CurrentOrder) {
-  case 'username':
-    $OrderBy = "um.Username";
-    break;
-  case 'email':
-    $OrderBy = "um.Email";
-    break;
-  case 'joined':
-    $OrderBy = "ui.JoinDate";
-    break;
-  case 'lastseen':
-    $OrderBy = "um.LastAccess";
-    break;
-  case 'uploaded':
-    $OrderBy = "um.Uploaded";
-    break;
-  case 'downloaded':
-    $OrderBy = "um.Downloaded";
-    break;
-  case 'ratio':
-    $OrderBy = "(um.Uploaded / um.Downloaded)";
-    break;
-  default:
-    $OrderBy = "um.ID";
-    break;
+    case 'username':
+        $OrderBy = "um.Username";
+        break;
+    case 'email':
+        $OrderBy = "um.Email";
+        break;
+    case 'joined':
+        $OrderBy = "ui.JoinDate";
+        break;
+    case 'lastseen':
+        $OrderBy = "um.LastAccess";
+        break;
+    case 'uploaded':
+        $OrderBy = "um.Uploaded";
+        break;
+    case 'downloaded':
+        $OrderBy = "um.Downloaded";
+        break;
+    case 'ratio':
+        $OrderBy = "(um.Uploaded / um.Downloaded)";
+        break;
+    default:
+        $OrderBy = "um.ID";
+        break;
 }
 
 $CurrentURL = Format::get_url(array('action', 'order', 'sort'));
 
-$DB->query("
+$app->dbOld->query("
   SELECT
     ID,
     Email,
@@ -95,57 +97,53 @@ $DB->query("
   WHERE ui.Inviter = '$UserID'
   ORDER BY $OrderBy $CurrentSort");
 
-$Invited = $DB->to_array();
+$Invited = $app->dbOld->to_array();
 
-$JSIncludes = '';
-if (check_perms('users_mod') || check_perms('admin_advanced_user_search')) {
-    $JSIncludes = 'invites';
-}
-
-View::show_header('Invites', $JSIncludes);
+View::header('Invites');
 ?>
 <div>
   <div class="header">
-    <h2><?=Users::format_username($UserID, false, false, false)?>
+    <h2><?=User::format_username($UserID, false, false, false)?>
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
-    echo '&amp;userid='.$UserID;
-} ?>" class="brackets">Invite tree</a>
+          echo '&amp;userid='.$UserID;
+      } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
-  <?php if ($UserCount >= USER_LIMIT && !check_perms('site_can_invite_always')) { ?>
+  <?php if ($UserCount >= userLimit && !check_perms('site_can_invite_always')) { ?>
   <div class="box pad notice">
     <p>Because the user limit has been reached you are unable to send invites at this time.</p>
   </div>
   <?php }
 
-/*
-  Users cannot send invites if they:
-    - Are on ratio watch
-    - Have disabled leeching
-    - Have disabled invites
-    - Have no invites (Unless have unlimited)
-    - Cannot 'invite always' and the user limit is reached
-*/
+  /*
+    Users cannot send invites if they:
+      - Are on ratio watch
+      - Have disabled leeching
+      - Have disabled invites
+      - Have no invites (Unless have unlimited)
+      - Cannot 'invite always' and the user limit is reached
+  */
 
-$DB->query("
+      $app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $DB->next_record();
+list($CanLeech) = $app->dbOld->next_record();
 
+$app->user->extra['RatioWatch'] ??= null;
 if (!$Sneaky
-  && !$LoggedUser['RatioWatch']
+  && !$app->user->extra['RatioWatch']
   && $CanLeech
-  && empty($LoggedUser['DisableInvites'])
-  && ($LoggedUser['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
-  && ($UserCount <= USER_LIMIT || USER_LIMIT === 0 || check_perms('site_can_invite_always'))
-  ) { ?>
+  && empty($app->user->extra['DisableInvites'])
+  && ($app->user->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
+  && ($UserCount <= userLimit || userLimit === 0 || check_perms('site_can_invite_always'))
+) { ?>
   <div class="box pad">
     <p>
       Do not trade or sell invites under any circumstances.
-      Do not send an invite to anyone who has previously had a <?= $ENV->SITE_NAME ?> account.
+      Do not send an invite to anyone who has previously had a <?= $ENV->siteName ?> account.
       Please direct them to <code>#disabled</code> on Slack if they wish to reactivate their account.
     </p>
 
@@ -163,7 +161,7 @@ if (!$Sneaky
     <form class="send_form pad" name="invite" action="user.php" method="post">
       <input type="hidden" name="action" value="take_invite" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <div>
         <div class="label"><strong>Email Address</strong></div>
         <div class="input">
@@ -183,13 +181,13 @@ if (!$Sneaky
   </div>
 
   <?php
-} elseif (!empty($LoggedUser['DisableInvites'])) { ?>
+} elseif (!empty($app->user->extra['DisableInvites'])) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">Your invites have been disabled. Please read <a
         href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more information.</strong>
   </div>
   <?php
-} elseif ($LoggedUser['RatioWatch'] || !$CanLeech) { ?>
+} elseif ($app->user->extra['RatioWatch'] || !$CanLeech) { ?>
   <div class="box pad" style="text-align: center;">
     <strong class="important_text">You may not send invites while on Ratio Watch or while your leeching privileges are
       disabled. Please read <a href="wiki.php?action=article&amp;name=cantinvite">this article</a> for more
@@ -213,12 +211,12 @@ if (!empty($Pending)) {
       list($InviteKey, $Email, $Expires) = $Invite;
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
-        <td><?=display_str($Email)?>
+        <td><?=\Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($Expires)?>
         </td>
         <td><a
-            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+            href="user.php?action=delete_invite&amp;invite=<?=$InviteKey?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
             onclick="return confirm('Are you sure you want to delete this invite?');">Delete invite</a></td>
       </tr>
       <?php
@@ -259,11 +257,11 @@ if (!empty($Pending)) {
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
       $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
-?>
+      ?>
       <tr class="row">
-        <td><?=Users::format_username($ID, true, true, true, true)?>
+        <td><?=User::format_username($ID, true, true, true, true)?>
         </td>
-        <td><?=display_str($Email)?>
+        <td><?=\Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($JoinDate, 1)?>
         </td>
@@ -281,4 +279,4 @@ if (!empty($Pending)) {
     </table>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -1,18 +1,12 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 # todo: Go through line by line
 $ENV = ENV::go();
 
-ini_set('max_execution_time', 600);
-set_time_limit(0);
-
 //~~~~~~~~~~~ Main bookmarks page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
@@ -20,20 +14,20 @@ if (!empty($_GET['userid'])) {
     }
 
     $UserID = $_GET['userid'];
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
 
-    $DB->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = '$UserID'");
-    list($Username) = $DB->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
 }
 
-$Sneaky = $UserID != $LoggedUser['ID'];
+$Sneaky = $UserID != $app->user->core['id'];
 $Title = $Sneaky ? "$Username's bookmarked torrent groups" : 'Your bookmarked torrent groups';
 
 // Loop through the result set, building up $Collage and $TorrentTable
@@ -44,7 +38,7 @@ $TorrentTable = '';
 $NumGroups = 0;
 $ArtistCount = [];
 
-list($GroupIDs, $CollageDataList, $TorrentList) = Users::get_bookmarks($UserID);
+list($GroupIDs, $CollageDataList, $TorrentList) = User::get_bookmarks($UserID);
 foreach ($GroupIDs as $GroupID) {
     if (!isset($TorrentList[$GroupID])) {
         continue;
@@ -70,10 +64,10 @@ foreach ($GroupIDs as $GroupID) {
     $DisplayName = '';
     #$DisplayName = Artists::display_artists($Artists);
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
-    
+
     $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
-    if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
+        $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
     }
 
     $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
@@ -86,7 +80,7 @@ foreach ($GroupIDs as $GroupID) {
     ob_start();
     if (count($Torrents) > 1) {
         // Grouped torrents
-        $ShowGroups = !(!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1); ?>
+        $ShowGroups = !(!empty($app->user->extra['TorrentGrouping']) && $app->user->extra['TorrentGrouping'] === 1); ?>
 
 <tr class="group" id="group_<?=$GroupID?>">
   <td class="center">
@@ -99,14 +93,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+    <div class="tooltip <?=Format::css_category($GroupCategoryID)?>">
     </div>
   </td>
 
   <td colspan="5">
     <?=$DisplayName?>
-    <span style="text-align: right;" class="float_right">
+    <span style="text-align: right;" class="u-pull-right">
       <?=time_diff($AddedTime); ?>
       <?php if (!$Sneaky) { ?>
       <br />
@@ -124,14 +117,14 @@ foreach ($GroupIDs as $GroupID) {
     foreach ($Torrents as $TorrentID => $Torrent) {
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
 <tr
-  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($LoggedUser['TorrentGrouping']) && $LoggedUser['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
+  class="group_torrent torrent_row groupid_<?=$GroupID?> <?=$SnatchedTorrentClass . $SnatchedGroupClass . (!empty($app->user->extra['TorrentGrouping']) && $app->user->extra['TorrentGrouping'] === 1 ? ' hidden' : '')?>">
   <td colspan="3">
     <span>[ <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
@@ -143,13 +136,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Snatched'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Leechers'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php
@@ -164,8 +157,8 @@ foreach ($GroupIDs as $GroupID) {
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
         $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
 
-        if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-            $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+        if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
+            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
         }
 
         $DisplayName .=' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
@@ -189,28 +182,25 @@ foreach ($GroupIDs as $GroupID) {
   id="group_<?=$GroupID?>">
   <td></td>
   <td class="center">
-    <div title="<?=$TorrentTags->title()?>"
-      class="tooltip <?=Format::css_category($GroupCategoryID)?>">
-    </div>
   </td>
 
   <td>
     <span>
       [ <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
         class="tooltip" title="Download">DL</a>
       <?php if (Torrents::can_use_token($Torrent)) { ?>
       | <a
-        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>&amp;usetoken=1"
+        href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
         class="tooltip" title="Use a FL Token"
         onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
       <?php } ?>
       | <a href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
         class="tooltip" title="Report">RP</a> ]
     </span>
-    <span class="float_right float_clear"><?=time_diff($AddedTime); ?></span>
+    <span class="u-pull-right u-cf"><?=time_diff($AddedTime); ?></span>
     <?php if (!$Sneaky) { ?>
-    <span class="float_right float_clear"><a
+    <span class="u-pull-right u-cf"><a
         href="#group_<?=$GroupID?>" class="brackets remove_bookmark"
         onclick="Unbookmark('torrent', <?=$GroupID?>, ''); return false;">Remove
         bookmark</a></span>
@@ -222,13 +212,13 @@ foreach ($GroupIDs as $GroupID) {
   </td>
   <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Snatched'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
   <td
     class="number_column<?=(($Torrent['Seeders'] == 0) ? ' r00' : '')?>">
-    <?=number_format($Torrent['Seeders'])?>
+    <?=\Gazelle\Text::float($Torrent['Seeders'])?>
   </td>
-  <td class="number_column"><?=number_format($Torrent['Leechers'])?>
+  <td class="number_column"><?=\Gazelle\Text::float($Torrent['Leechers'])?>
   </td>
 </tr>
 <?php
@@ -247,7 +237,7 @@ foreach ($GroupIDs as $GroupID) {
         $DisplayName = "$DisplayName [$year]";
     }
 
-    $Tags = display_str($TorrentTags->format());
+    $Tags = \Gazelle\Text::esc($TorrentTags->format());
     $PlainTags = implode(', ', $TorrentTags->get_tags()); ?>
 
 <div class='collage_image image_group_<?=$GroupID?>'>
@@ -255,11 +245,11 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = STATIC_SERVER.'common/noartwork/music.png';
+        $picture = staticServer.'common/noartwork.png';
     } ?>
 
     <img class="tooltip"
-      src="<?=ImageTools::process($picture, 'thumb')?>"
+      src="<?=\Gazelle\Images::process($picture, 'thumb')?>"
       alt="<?=$DisplayName?>"
       title="<?=$DisplayName?>"
       data-title-plain="<?=$DisplayName?>" width="100%" />
@@ -270,7 +260,7 @@ foreach ($GroupIDs as $GroupID) {
   $Collage[] = ob_get_clean();
 }
 
-$CollageCovers = isset($LoggedUser['CollageCovers']) ? (int)$LoggedUser['CollageCovers'] : 10;
+$CollageCovers = isset($app->user->extra['CollageCovers']) ? (int)$app->user->extra['CollageCovers'] : 10;
 $CollagePages = [];
 
 if ($CollageCovers > 0) {
@@ -285,14 +275,14 @@ if ($CollageCovers > 0) {
     }
 }
 
-View::show_header($Title, 'browse,collage,wall');
+View::header($Title, 'browse,collage,wall');
 ?>
 
 <div>
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
-        href="feeds.php?feed=torrents_bookmarks_t_<?=$LoggedUser['torrent_pass']?>&amp;user=<?=$LoggedUser['ID']?>&amp;auth=<?=$LoggedUser['RSS_Auth']?>&amp;passkey=<?=$LoggedUser['torrent_pass']?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;name=<?=urlencode($ENV->SITE_NAME.': Bookmarked Torrents')?>"><img
-          src="<?=STATIC_SERVER?>/common/symbols/rss.png"
+        href="feeds.php?feed=torrents_bookmarks_t_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
+          src="<?=staticServer?>/images/symbols/rss.png"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
     <div class="linkbox">
@@ -302,7 +292,7 @@ View::show_header($Title, 'browse,collage,wall');
       <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
       <?php if (count($TorrentList) > 0) { ?>
       <br /><br />
-      <a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets"
         onclick="return confirm('Are you sure you want to remove the bookmarks for all items you\'ve snatched?');">Remove
         snatched</a>
@@ -317,10 +307,10 @@ View::show_header($Title, 'browse,collage,wall');
 </div>
 <!--content-->
 <?php
-  View::show_footer();
+  View::footer();
 } ?>
 
-<div class="sidebar">
+<div class="sidebar one-third column">
   <div class="box box_info box_statistics_bookmarked_torrents">
     <div class="head"><strong>Stats</strong></div>
     <ul class="stats nobullet">
@@ -345,14 +335,13 @@ View::show_header($Title, 'browse,collage,wall');
   $Indent = "\t\t\t\t";
   if (count($ArtistCount) > 0) {
       echo "$Indent<ol style=\"padding-left: 5px;\">\n";
-      uasort($ArtistCount, 'compare');
       $i = 0;
       foreach ($ArtistCount as $ID => $Artist) {
           $i++;
           if ($i > 10) {
               break;
           } ?>
-      <li><a href="artist.php?id=<?=$ID?>"><?=display_str($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
+      <li><a href="artist.php?id=<?=$ID?>"><?=\Gazelle\Text::esc($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
       <?php
       }
       echo "$Indent</ol>\n";
@@ -365,7 +354,7 @@ View::show_header($Title, 'browse,collage,wall');
     </div>
   </div>
 </div>
-<div class="main_column">
+<div class="main_column two-thirds column">
   <?php
 if ($CollageCovers !== 0) { ?>
   <div id="coverart" class="box">
@@ -444,4 +433,4 @@ if ($CollageCovers !== 0) { ?>
 </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

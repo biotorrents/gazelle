@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 /**********|| Page to show individual threads || ********************************\
 
@@ -13,21 +15,21 @@ Things to expect in $_GET:
 //---------- Things to sort out before it can start printing/generating content
 
 // Check for lame SQL injection attempts
-if (!is_number($_GET['collageid'])) {
+if (!is_numeric($_GET['collageid'])) {
     error(0);
 }
 $CollageID = (int)$_GET['collageid'];
 
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('collages', $CollageID);
 
-$DB->query("
+$app->dbOld->query("
   SELECT Name
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name) = $DB->next_record();
+list($Name) = $app->dbOld->next_record();
 
 // Start printing
-View::show_header(
+View::header(
     "Comments for collage $Name",
     'comments,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
@@ -58,7 +60,7 @@ if ($Pages) {
 //---------- Begin printing
 CommentsView::render_comments($Thread, $LastRead, "collages.php?action=comments&amp;collageid=$CollageID");
 if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
-    if ($ThreadInfo['MinClassWrite'] <= $LoggedUser['Class'] && !$LoggedUser['DisablePosting']) {
+    if ($ThreadInfo['MinClassWrite'] <= $app->user->extra['Class'] && !$app->user->extra['DisablePosting']) {
         View::parse('generic/reply/quickreply.php', array(
       'InputName' => 'pageid',
       'InputID' => $CollageID,
@@ -76,4 +78,4 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
   </div>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

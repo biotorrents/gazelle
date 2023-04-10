@@ -1,0 +1,44 @@
+/**
+ * Alerts, Toolbox, etc.
+ * Needs one unified error display
+ * (torrent form, API keys use their own)
+ */
+@mixin alertbar($bg) {
+  background: $bg;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  /* width: 33%; */
+  margin: 2em auto;
+  padding: 1rem;
+
+  /* postmod.scss */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.alertbar {
+  @include alertbar(transparent url($images + "content.png"));
+
+  .warning {
+    background: #ffe0b2;
+  }
+
+  .error {
+    background: #ffcdd2;
+  }
+}
+
+.token_error {
+  @include alertbar(#ffcdd2);
+}
+
+.modbar a {
+  margin: 0 0.5rem;
+}
+
+/* Torrent titles */
+.torrentTitle {
+  font-size: larger;
+}

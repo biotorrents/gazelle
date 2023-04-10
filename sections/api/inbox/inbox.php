@@ -1,22 +1,25 @@
 <?php
+
 #declare(strict_types=1);
 
-$UserID = $LoggedUser['ID'];
+$app = \Gazelle\App::go();
+
+$UserID = $app->user->core['id'];
 
 
 if (empty($_GET['type'])) {
-  $Section = 'inbox';
+    $Section = 'inbox';
 } else {
-  $Section = $_GET['type']; // either 'inbox' or 'sentbox'
+    $Section = $_GET['type']; // either 'inbox' or 'sentbox'
 }
 if (!in_array($Section, array('inbox', 'sentbox'))) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'failure'
       )
     );
-  error();
+    error();
 }
 
 list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
@@ -48,20 +51,20 @@ $sql .= "AS Date
     LEFT JOIN users_main AS um2 ON um2.ID = cu.ForwardedTo";
 
 if (!empty($_GET['search']) && $_GET['searchtype'] === 'message') {
-  $sql .= ' JOIN pm_messages AS m ON c.ID = m.ConvID';
+    $sql .= ' JOIN pm_messages AS m ON c.ID = m.ConvID';
 }
 $sql .= " WHERE ";
 if (!empty($_GET['search'])) {
-  $Search = db_string($_GET['search']);
-  if ($_GET['searchtype'] === 'user') {
-    $sql .= "um.Username LIKE '$Search' AND ";
-  } elseif ($_GET['searchtype'] === 'subject') {
-    $Words = explode(' ', $Search);
-    $sql .= "c.Subject LIKE '%".implode("%' AND c.Subject LIKE '%", $Words)."%' AND ";
-  } elseif ($_GET['searchtype'] === 'message') {
-    $Words = explode(' ', $Search);
-    $sql .= "m.Body LIKE '%".implode("%' AND m.Body LIKE '%", $Words)."%' AND ";
-  }
+    $Search = db_string($_GET['search']);
+    if ($_GET['searchtype'] === 'user') {
+        $sql .= "um.Username LIKE '$Search' AND ";
+    } elseif ($_GET['searchtype'] === 'subject') {
+        $Words = explode(' ', $Search);
+        $sql .= "c.Subject LIKE '%".implode("%' AND c.Subject LIKE '%", $Words)."%' AND ";
+    } elseif ($_GET['searchtype'] === 'message') {
+        $Words = explode(' ', $Search);
+        $sql .= "m.Body LIKE '%".implode("%' AND m.Body LIKE '%", $Words)."%' AND ";
+    }
 }
 $sql .= $Section === 'sentbox' ? ' cu.InSentbox' : ' cu.InInbox';
 $sql .= " = '1'";
@@ -70,23 +73,23 @@ $sql .= "
   GROUP BY c.ID
   ORDER BY cu.Sticky, $Sort
   LIMIT $Limit";
-$Results = $DB->query($sql);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($Results);
+$Results = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($Results);
 
 $CurURL = Format::get_url(array('sort'));
 if (empty($CurURL)) {
-  $CurURL = "inbox.php?";
+    $CurURL = "inbox.php?";
 } else {
-  $CurURL = "inbox.php?".$CurURL."&";
+    $CurURL = "inbox.php?".$CurURL."&";
 }
 
 $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 
 $JsonMessages = [];
-while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Avatar, $Date) = $DB->next_record()) {
-  $JsonMessage = array(
+while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Avatar, $Date) = $app->dbOld->next_record()) {
+    $JsonMessage = array(
     'convId' => (int)$ConvID,
     'subject' => $Subject,
     'unread' => $Unread == 1,
@@ -101,12 +104,12 @@ while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $
     'enabled' => $Enabled == 2 ? false : true,
     'date' => $Date
   );
-  $JsonMessages[] = $JsonMessage;
+    $JsonMessages[] = $JsonMessage;
 }
 
 print
   json_encode(
-    array(
+      array(
       'status' => 'success',
       'response' => array(
         'currentPage' => (int)$Page,
@@ -115,4 +118,3 @@ print
       )
     )
   );
-?>

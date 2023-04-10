@@ -1,9 +1,12 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if (!check_perms('users_mod')) {
     error(403);
 }
 
-View::show_header('Multiple freeleech');
+View::header('Multiple freeleech');
 
 if (isset($_POST['torrents'])) {
     $GroupIDs = [];
@@ -15,15 +18,15 @@ if (isset($_POST['torrents'])) {
             if (!empty($Data[1])) {
                 $GroupIDs[] = (int) $Data[1];
             }
-        } else if (strpos($Element, "collages.php") !== false) {
+        } elseif (strpos($Element, "collages.php") !== false) {
             $Data = explode("id=", $Element);
             if (!empty($Data[1])) {
                 $CollageID = (int) $Data[1];
-                $DB->query("
+                $app->dbOld->query("
                     SELECT GroupID
                     FROM collages_torrents
                     WHERE CollageID = '$CollageID'");
-                while (list($GroupID) = $DB->next_record()) {
+                while (list($GroupID) = $app->dbOld->next_record()) {
                     $GroupIDs[] = (int) $GroupID;
                 }
             }
@@ -40,11 +43,11 @@ if (isset($_POST['torrents'])) {
             $Err = 'Invalid freeleech type or freeleech reason';
         } else {
             // Get the torrent IDs
-            $DB->query("
+            $app->dbOld->query("
                 SELECT ID
                 FROM torrents
                 WHERE GroupID IN (".implode(', ', $GroupIDs).")");
-            $TorrentIDs = $DB->collect('ID');
+            $TorrentIDs = $app->dbOld->collect('ID');
 
             if (sizeof($TorrentIDs) == 0) {
                 $Err = 'Invalid group IDs';
@@ -59,12 +62,12 @@ if (isset($_POST['torrents'])) {
                     } else {
                         $Bytes = Format::get_bytes($Size . $Units);
 
-                        $DB->query("
+                        $app->dbOld->query("
                             SELECT ID
                             FROM torrents
                             WHERE ID IN (".implode(', ', $TorrentIDs).")
                               AND Size > '$Bytes'");
-                        $LargeTorrents = $DB->collect('ID');
+                        $LargeTorrents = $app->dbOld->collect('ID');
                         $TorrentIDs = array_diff($TorrentIDs, $LargeTorrents);
                     }
                 }
@@ -92,7 +95,7 @@ if (isset($_POST['torrents'])) {
     </div>
     <div class="box pad">
         <form class="send_form" action="" method="post">
-            <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
             <textarea name="torrents" style="width: 95%; height: 200px;"><?=$_POST['torrents']?></textarea><br /><br />
             Mark torrents as:&nbsp;
             <select name="freeleechtype">
@@ -116,5 +119,5 @@ if (isset($_POST['torrents'])) {
         </form>
     </div>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();

@@ -1,0 +1,152 @@
+/* Logo */
+/*
+.logo {
+  background: url("/images/logos/liquidrop-bookish-1k.png");
+  background-size: contain;
+  width: 50px;
+  min-width: 50px;
+  height: 100%;
+  min-height: 100%;
+  margin-left: 1rem;
+
+  a {
+    display: block;
+    height: 50px;
+  }
+}
+*/
+
+/* Links */
+.linkbox {
+  text-align: center;
+  padding: 1rem;
+}
+
+.vertical_space {
+  margin-bottom: 1rem;
+}
+
+/* Textarea preview button */
+.preview_button {
+  margin-top: 1rem;
+}
+
+/**
+ * Torrents page
+ */
+
+.show_torrents {
+  width: 21px;
+  height: 28px;
+  background: url("/images/symbols/show.png") no-repeat center center;
+}
+
+.hide_torrents {
+  width: 21px;
+  height: 28px;
+  background: url("/images/symbols/hide.png") no-repeat center center;
+}
+
+.show_torrents_link {
+  border: none;
+  width: 28px;
+  height: 28px;
+  display: block;
+  cursor: pointer;
+}
+
+/* torrent search/reset/make default buttons */
+/*
+.ft_submit {
+  text-align: center;
+}
+
+.cat_list tr td {
+  border: none;
+}
+
+.torrent_table .number_column {
+  text-align: center;
+}
+*/
+
+/**
+ * text elements
+ */
+
+/* Permissions page */
+.permissions {
+  width: 90%;
+  margin: 1em auto;
+}
+
+.permission_head {
+  width: 50%;
+  margin: auto;
+}
+
+.permission_container {
+  margin: auto;
+  float: left;
+  max-width: 33%;
+  padding: 1rem;
+
+  input {
+    margin: 0px 3px 5px 0px;
+    vertical-align: top;
+  }
+}
+
+/* Invite tree */
+ul .invitetree {
+  margin: 0px 0px 0px 25px;
+}
+
+.invitetree li {
+  list-style: none;
+  margin: 10px 2px;
+}
+
+/* User options */
+.user_options .options_list li {
+  margin: 0;
+}
+
+/* Store, badges, and BP */
+.point_gift_box p {
+  margin: 7px 2px 0px;
+}
+
+.point_gift_box input[type="text"],
+.point_gift_box textarea {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Polls */
+.left_poll {
+  display: none;
+  width: 2px;
+  height: 9px;
+  float: left;
+  margin: 0px;
+  padding: 0px;
+}
+
+.center_poll {
+  height: 0.75rem;
+  background: change-color(green, $alpha: 0.25);
+  border-radius: 0;
+  float: left;
+  margin: 0.25rem 0;
+  padding: 0;
+}
+
+.right_poll {
+  display: none;
+  width: 2px;
+  height: 9px;
+  float: left;
+  margin: 0px;
+  padding: 0px;
+}

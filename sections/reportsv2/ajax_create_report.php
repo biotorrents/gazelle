@@ -1,4 +1,7 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 /*
  * This page is for creating a report using AJAX.
  * It should have the following posted fields:
@@ -11,78 +14,77 @@
  */
 
 if (!check_perms('admin_reports')) {
-  error(403);
+    error(403);
 }
 
 authorize();
 
-if (!is_number($_POST['torrentid'])) {
-  echo 'No Torrent ID';
-  error();
+if (!is_numeric($_POST['torrentid'])) {
+    echo 'No Torrent ID';
+    error();
 } else {
-  $TorrentID = $_POST['torrentid'];
+    $TorrentID = $_POST['torrentid'];
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT tg.CategoryID
   FROM torrents_group AS tg
     JOIN torrents AS t ON t.GroupID = tg.ID
   WHERE t.ID = $TorrentID");
-if (!$DB->has_results()) {
-  $Err = 'No torrent with that ID exists!';
+if (!$app->dbOld->has_results()) {
+    $Err = 'No torrent with that ID exists!';
 } else {
-  list($CategoryID) = $DB->next_record();
+    list($CategoryID) = $app->dbOld->next_record();
 }
 
 if (!isset($_POST['type'])) {
-  echo 'Missing Type';
-  error();
+    echo 'Missing Type';
+    error();
 } elseif (array_key_exists($_POST['type'], $Types[$CategoryID])) {
-  $Type = $_POST['type'];
-  $ReportType = $Types[$CategoryID][$Type];
+    $Type = $_POST['type'];
+    $ReportType = $Types[$CategoryID][$Type];
 } elseif (array_key_exists($_POST['type'], $Types['master'])) {
-  $Type = $_POST['type'];
-  $ReportType = $Types['master'][$Type];
+    $Type = $_POST['type'];
+    $ReportType = $Types['master'][$Type];
 } else {
-  //There was a type but it wasn't an option!
-  echo 'Wrong type';
-  error();
+    //There was a type but it wasn't an option!
+    echo 'Wrong type';
+    error();
 }
 
 
 $ExtraID = (int) $_POST['otherid'];
 
 if (!empty($_POST['extra'])) {
-  $Extra = db_string($_POST['extra']);
+    $Extra = db_string($_POST['extra']);
 } else {
-  $Extra = '';
+    $Extra = '';
 }
 
 if (!empty($Err)) {
-  echo $Err;
-  error();
+    echo $Err;
+    error();
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT ID
   FROM reportsv2
   WHERE TorrentID = $TorrentID
-    AND ReporterID = ".db_string($LoggedUser['ID'])."
+    AND ReporterID = ".db_string($app->user->core['id'])."
     AND ReportedTime > '".time_minus(3)."'");
-if ($DB->has_results()) {
-  error();
+if ($app->dbOld->has_results()) {
+    error();
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO reportsv2
     (ReporterID, TorrentID, Type, UserComment, Status, ReportedTime, ExtraID)
   VALUES
-    (".db_string($LoggedUser['ID']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
+    (".db_string($app->user->core['id']).", $TorrentID, '$Type', '$Extra', 'New', NOW(), '$ExtraID')");
 
-$ReportID = $DB->inserted_id();
+$ReportID = $app->dbOld->inserted_id();
 
-$Cache->delete_value("reports_torrent_$TorrentID");
-$Cache->increment('num_torrent_reportsv2');
+$app->cache->delete("reports_torrent_$TorrentID");
+$app->cache->increment('num_torrent_reportsv2');
 
 echo $ReportID;
-?>

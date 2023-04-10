@@ -1,15 +1,17 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('site_view_flow')) {
     error(403);
 }
 
-View::show_header('Upscale Pool');
+View::header('Upscale Pool');
 define('USERS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
 
-$RS = $DB->query("
+$RS = $app->dbOld->query("
   SELECT
     SQL_CALC_FOUND_ROWS
     m.ID,
@@ -31,17 +33,17 @@ $RS = $DB->query("
   ORDER BY i.RatioWatchEnds ASC
   LIMIT $Limit");
 
-$DB->query('SELECT FOUND_ROWS()');
-list($Results) = $DB->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($Results) = $app->dbOld->next_record();
 
-$DB->query("
+$app->dbOld->query("
   SELECT COUNT(UserID)
   FROM users_info
   WHERE BanDate IS NOT NULL
     AND BanReason = '2'");
 
-list($TotalDisabled) = $DB->next_record();
-$DB->set_query_id($RS);
+list($TotalDisabled) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($RS);
 ?>
 
 <div class="header">
@@ -49,11 +51,11 @@ $DB->set_query_id($RS);
 </div>
 
 <?php
-if ($DB->has_results()) {
+if ($app->dbOld->has_results()) {
     ?>
 <div class="box pad">
-  <p>There are currently <?=number_format($Results)?> enabled users
-    on Ratio Watch and <?=number_format($TotalDisabled)?> already
+  <p>There are currently <?=\Gazelle\Text::float($Results)?> enabled users
+    on Ratio Watch and <?=\Gazelle\Text::float($TotalDisabled)?> already
     disabled.</p>
 </div>
 
@@ -78,11 +80,11 @@ if ($DB->has_results()) {
   </tr>
 
   <?php
-  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $DB->next_record()) {
+  while (list($UserID, $Username, $Uploaded, $Downloaded, $PermissionID, $Enabled, $Donor, $Warned, $Joined, $RatioWatchEnds, $RatioWatchDownload, $RequiredRatio) = $app->dbOld->next_record()) {
       ?>
   <tr class="row">
     <td>
-      <?=Users::format_username($UserID, true, true, true, true)?>
+      <?=User::format_username($UserID, true, true, true, true)?>
     </td>
 
     <td class="number_column">
@@ -98,7 +100,7 @@ if ($DB->has_results()) {
     </td>
 
     <td class="number_column">
-      <?=number_format($RequiredRatio, 2)?>
+      <?=\Gazelle\Text::float($RequiredRatio, 2)?>
     </td>
 
     <td class="number_column">
@@ -135,4 +137,4 @@ if ($DB->has_results()) {
 <h2>There are currently no users on ratio watch.</h2>
 <?php
 }
-View::show_footer();
+View::footer();

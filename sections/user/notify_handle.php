@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 if (!check_perms('site_torrents_notify')) {
     error(403);
@@ -15,7 +18,7 @@ $MediaList = '';
 $Users = '';
 $HasFilter = false;
 
-if ($_POST['formid'] && is_number($_POST['formid'])) {
+if ($_POST['formid'] && is_numeric($_POST['formid'])) {
     $FormID = $_POST['formid'];
 }
 
@@ -81,12 +84,12 @@ if ($_POST['users'.$FormID]) {
         $EscapedUsernames[] = db_string(trim($Username));
     }
 
-    $DB->query("
+    $app->dbOld->query("
     SELECT ID, Paranoia
     FROM users_main
     WHERE Username IN ('" . implode("', '", $EscapedUsernames) . "')
-      AND ID != $LoggedUser[ID]");
-    while (list($UserID, $Paranoia) = $DB->next_record()) {
+      AND ID != {$app->user->core['id']}");
+    while (list($UserID, $Paranoia) = $app->dbOld->next_record()) {
         $Paranoia = unserialize($Paranoia);
         if (!in_array('notifications', $Paranoia)) {
             $Users .= '|' . $UserID . '|';
@@ -103,7 +106,7 @@ if (!$HasFilter) {
 
 if ($Err) {
     error($Err);
-    header('Location: user.php?action=notify');
+    Http::redirect("user.php?action=notify");
     error();
 }
 
@@ -112,8 +115,8 @@ $TagList = str_replace('||', '|', $TagList);
 $NotTagList = str_replace('||', '|', $NotTagList);
 $Users = str_replace('||', '|', $Users);
 
-if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
-    $DB->query("
+if ($_POST['id'.$FormID] && is_numeric($_POST['id'.$FormID])) {
+    $app->dbOld->query("
     UPDATE users_notify_filters
     SET
       Artists='$ArtistList',
@@ -124,17 +127,17 @@ if ($_POST['id'.$FormID] && is_number($_POST['id'.$FormID])) {
       Media='$MediaList',
       Users ='$Users'
     WHERE ID='".$_POST['id'.$FormID]."'
-      AND UserID='$LoggedUser[ID]'");
+      AND UserID='{$app->user->core['id']}'");
 } else {
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('$LoggedUser[ID]','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
+      ('{$app->user->core['id']}','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
-if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $Cache->delete_value('notify_artists_'.$LoggedUser['ID']);
+$app->cache->delete('notify_filters_'.$app->user->core['id']);
+if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
+    $app->cache->delete('notify_artists_'.$app->user->core['id']);
 }
-header('Location: user.php?action=notify');
+Http::redirect("user.php?action=notify");

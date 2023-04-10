@@ -1,0 +1,42 @@
+{# user settings actions #}
+<section>
+<h3>Actions</h3>
+
+<form method="post">
+	<input type="password" form="userSettingsForm" id="currentPassphrase" name="currentPassphrase" placeholder="Current passphrase" required />
+
+	<label for="currentPassphrase">Please enter your current passphrase to update any of your settings</label>
+
+	<input type="submit" form="userSettingsForm" id="save" name="save" value="save settings" class="button-primary" />
+
+	{# /user/{{ user.core.id }}/preview #}
+	<a href="/user.php?id={{ user.core.id }}&previewMode=true" target="_blank" class="button button-orange">preview profile</a>
+
+{#
+    {% if env.enableDonations %}
+    <input type="button" id="donate" name="donate" value="donate" class="button-green" />
+    {% endif %}
+
+    <input type="button" id="staff" name="staff" value="staff" class="button-purple" />
+    #}
+</form>
+</section>
+
+{# go to section #}
+<section>
+	<h3>Go to section</h3>
+
+<form>
+	<a href="#siteAppearanceSettings" class="button">site appearence</a>
+
+	<a href="#torrentSettings" class="button">torrents</a>
+
+	<a href="#communitySettings" class="button">community</a>
+
+	<a href="#notificationSettings" class="button">notifications</a>
+
+	<a href="#profileSettings" class="button">profile</a>
+
+	<a href="#securitySettings" class="button">security</a>
+</form>
+</section>

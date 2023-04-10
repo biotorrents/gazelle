@@ -1,36 +1,38 @@
 <?php
 declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 $ENV = ENV::go();
 
-$UserID = $LoggedUser['ID'];
-$Purchase = "10,000 $ENV->BONUS_POINTS";
+$UserID = $app->user->core['id'];
+$Purchase = "10,000 $ENV->bonusPoints";
 
 $GiB = 1024*1024*1024;
 $Cost = 150.0 * $GiB;
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT Uploaded
   FROM users_main
   WHERE ID = $UserID");
-  
-if ($DB->has_results()) {
-    list($Upload) = $DB->next_record();
+
+if ($app->dbOld->has_results()) {
+    list($Upload) = $app->dbOld->next_record();
 
     if ($Upload >= $Cost) {
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_main
           SET BonusPoints = BonusPoints + 10000,
             Uploaded = Uploaded - $Cost
           WHERE ID = $UserID");
 
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
           UPDATE users_info
           SET AdminComment = CONCAT('".sqltime()." - $Purchase from the store\n\n', AdminComment)
           WHERE UserID = $UserID");
-          
-        $Cache->delete_value('user_info_heavy_'.$UserID);
-        $Cache->delete_value('user_stats_'.$UserID);
+
+        $app->cache->delete('user_info_heavy_'.$UserID);
+        $app->cache->delete('user_stats_'.$UserID);
         $Worked = true;
     } else {
         $Worked = false;
@@ -38,18 +40,18 @@ if ($DB->has_results()) {
     }
 }
 
-View::show_header('Store'); ?>
+View::header('Store'); ?>
 <div>
   <h2>Purchase
-    <?echo $Worked?"Successful":"Failed"?>
+    <?echo $Worked ? "Successful" : "Failed"?>
   </h2>
   <div class="box">
     <p>
-      <?echo $Worked?("You purchased ".$Purchase):("Error: ".$ErrMessage)?>
+      <?echo $Worked ? ("You purchased ".$Purchase) : ("Error: ".$ErrMessage)?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>
     </p>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

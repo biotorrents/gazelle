@@ -1,0 +1,50 @@
+/**
+ * set development mode in comic neue
+ * the silly willies are an environment hint
+ */
+
+body.development {
+  /*
+  font-family: $comicNeue, sans-serif !important;
+
+  b,
+  strong {
+    font-family: $comicNeueBold, sans-serif !important;
+    font-weight: normal !important;
+  }
+
+  em {
+    font-family: $comicNeueItalic, sans-serif !important;
+    font-style: normal !important;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $comicNeue, sans-serif;
+  }
+
+  .menu,
+  .button,
+  .button-primary,
+  .button-red,
+  .button-green,
+  .button-orange,
+  .button-purple {
+    font-family: $comicNeue, sans-serif;
+  }
+  */
+
+  /* DebugBar icon fix */
+  a.phpdebugbar-tab i {
+    display: inline;
+
+    /* &nbsp; */
+    &:after {
+      content: "\00A0";
+    }
+  }
+}

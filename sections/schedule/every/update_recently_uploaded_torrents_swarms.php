@@ -1,5 +1,8 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 // peerupdate.php is apparently shit so this is a crappy bandaid to fix the problem of
 // all the cached "0 seeds" on the first search page from peerupdate missing the changes.
@@ -18,7 +21,7 @@ $IDs = [];
 $Seeds = [];
 
 foreach ($Results as $i) {
-    $GroupCache = $Cache->get_value('torrent_group_'.$i['groupid']);
+    $GroupCache = $app->cache->get('torrent_group_'.$i['groupid']);
     if (!$GroupCache) {
         continue;
     }
@@ -33,10 +36,10 @@ for ($i = 0; $i < sizeof($IDs); $i++) {
 }
 
 $query = 'SELECT GroupID FROM torrents WHERE '.implode(' OR ', $QueryParts);
-$DB->query($query);
-if ($DB->has_results()) {
-    foreach ($DB->collect('GroupID') as $GID) {
-        $Cache->delete_value('torrent_group_'.$GID);
+$app->dbOld->query($query);
+if ($app->dbOld->has_results()) {
+    foreach ($app->dbOld->collect('GroupID') as $GID) {
+        $app->cache->delete('torrent_group_'.$GID);
     }
 }
 */

@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 $Cost = 5000;
 
 if (isset($_POST['title'])) {
@@ -9,36 +11,36 @@ if (isset($_POST['title'])) {
     }
 
     $Title = htmlspecialchars($_POST['title'], ENT_QUOTES);
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
 
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
       SELECT BonusPoints
       FROM users_main
       WHERE ID = $UserID");
 
-    if ($DB->has_results()) {
-        list($Points) = $DB->next_record();
+    if ($app->dbOld->has_results()) {
+        list($Points) = $app->dbOld->next_record();
 
         if ($Points >= $Cost) {
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET BonusPoints = BonusPoints - $Cost,
                 Title = ?
               WHERE ID = ?", $Title, $UserID);
 
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_info
               SET AdminComment = CONCAT(NOW(), ' - Changed title to ', ?, ' via the store\n\n', AdminComment)
               WHERE UserID = ?", $Title, $UserID);
-              
-            $Cache->delete_value('user_info_'.$UserID);
-            $Cache->delete_value('user_info_heavy_'.$UserID);
+
+            $app->cache->delete('user_info_'.$UserID);
+            $app->cache->delete('user_info_heavy_'.$UserID);
         } else {
             error("Not enough points");
         }
     }
 
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
   <h2>Purchase Successful</h2>
   <div class="box">
@@ -51,9 +53,9 @@ if (isset($_POST['title'])) {
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 } else {
-    View::show_header('Store'); ?>
+    View::header('Store'); ?>
 <div>
   <div class="box text-align: center;">
     <form action="store.php" method="POST">
@@ -71,5 +73,5 @@ View::show_footer();
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();
 }

@@ -1,164 +1,174 @@
-<?
+<?php
+
+declare(strict_types=1);
+
+
+$app = \Gazelle\App::go();
+
 //NumTorrents is actually the number of things in the collage, the name just isn't generic.
 
 authorize();
 
-include(SERVER_ROOT.'/classes/validate.class.php');
-$Val = new Validate;
+$Val = new Validate();
 
-function add_artist($CollageID, $ArtistID) {
-  global $Cache, $LoggedUser, $DB;
+function add_artist($CollageID, $ArtistID)
+{
+    $app = \Gazelle\App::go();
 
-  $DB->query("
+
+    $app->dbOld->query("
     SELECT MAX(Sort)
     FROM collages_artists
     WHERE CollageID = '$CollageID'");
-  list($Sort) = $DB->next_record();
-  $Sort += 10;
+    list($Sort) = $app->dbOld->next_record();
+    $Sort += 10;
 
-  $DB->query("
+    $app->dbOld->query("
     SELECT ArtistID
     FROM collages_artists
     WHERE CollageID = '$CollageID'
       AND ArtistID = '$ArtistID'");
-  if (!$DB->has_results()) {
-    $DB->query("
+    if (!$app->dbOld->has_results()) {
+        $app->dbOld->query("
       INSERT IGNORE INTO collages_artists
         (CollageID, ArtistID, UserID, Sort, AddedOn)
       VALUES
-        ('$CollageID', '$ArtistID', '$LoggedUser[ID]', '$Sort', '" . sqltime() . "')");
+        ('$CollageID', '$ArtistID', '{$app->user->core['id']}', '$Sort', '" . sqltime() . "')");
 
-    $DB->query("
+        $app->dbOld->query("
       UPDATE collages
       SET NumTorrents = NumTorrents + 1, Updated = '" . sqltime() . "'
       WHERE ID = '$CollageID'");
 
-    $Cache->delete_value("collage_$CollageID");
-    $Cache->delete_value("artists_collages_$ArtistID");
-    $Cache->delete_value("artists_collages_personal_$ArtistID");
+        $app->cache->delete("collage_$CollageID");
+        $app->cache->delete("artists_collages_$ArtistID");
+        $app->cache->delete("artists_collages_personal_$ArtistID");
 
-    $DB->query("
+        $app->dbOld->query("
       SELECT UserID
       FROM users_collage_subs
       WHERE CollageID = $CollageID");
-    while (list($CacheUserID) = $DB->next_record()) {
-      $Cache->delete_value("collage_subs_user_new_$CacheUserID");
+
+        /*
+        while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
+            $app->cache->delete("collage_subs_user_new_$app->cacheOldUserID");
+        }
+        */
     }
-  }
 }
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
-  error(404);
+if (!is_numeric($CollageID)) {
+    error(404);
 }
-$DB->query("
+$app->dbOld->query("
   SELECT UserID, CategoryID, Locked, NumTorrents, MaxGroups, MaxGroupsPerUser
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID, $Locked, $NumTorrents, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
+list($UserID, $CategoryID, $Locked, $NumTorrents, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld->next_record();
 
 if (!check_perms('site_collages_delete')) {
-  if ($Locked) {
-    $Err = 'This collage is locked';
-  }
-  if ($CategoryID == 0 && $UserID != $LoggedUser['ID']) {
-    $Err = 'You cannot edit someone else\'s personal collage.';
-  }
-  if ($MaxGroups > 0 && $NumTorrents >= $MaxGroups) {
-    $Err = 'This collage already holds its maximum allowed number of artists.';
-  }
+    if ($Locked) {
+        $Err = 'This collage is locked';
+    }
+    if ($CategoryID == 0 && $UserID != $app->user->core['id']) {
+        $Err = 'You cannot edit someone else\'s personal collage.';
+    }
+    if ($MaxGroups > 0 && $NumTorrents >= $MaxGroups) {
+        $Err = 'This collage already holds its maximum allowed number of artists.';
+    }
 
-  if (isset($Err)) {
-    error($Err);
-  }
+    if (isset($Err)) {
+        error($Err);
+    }
 }
 
 if ($MaxGroupsPerUser > 0) {
-  $DB->query("
+    $app->dbOld->query("
     SELECT COUNT(*)
     FROM collages_artists
     WHERE CollageID = '$CollageID'
-      AND UserID = '$LoggedUser[ID]'");
-  list($GroupsForUser) = $DB->next_record();
-  if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
-    error(403);
-  }
+      AND UserID = '{$app->user->core['id']}'");
+    list($GroupsForUser) = $app->dbOld->next_record();
+    if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
+        error(403);
+    }
 }
 
 if ($_REQUEST['action'] == 'add_artist') {
-  $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => '/^'.ARTIST_REGEX.'/i'));
-  $Err = $Val->ValidateForm($_POST);
+    $Val->SetFields('url', '1', 'regex', 'The URL must be a link to a artist on the site.', array('regex' => "/{$app->env->regexCreator}/i"));
+    $Err = $Val->ValidateForm($_POST);
 
-  if ($Err) {
-    error($Err);
-  }
+    if ($Err) {
+        error($Err);
+    }
 
-  $URL = $_POST['url'];
+    $URL = $_POST['url'];
 
-  // Get artist ID
-  preg_match('/^'.ARTIST_REGEX.'/i', $URL, $Matches);
-  $ArtistID = $Matches[4];
-  if (!$ArtistID || (int)$ArtistID === 0) {
-    error(404);
-  }
+    // Get artist ID
+    preg_match("/{$app->env->regexCreator}/i", $URL, $Matches);
+    $ArtistID = $Matches[4];
+    if (!$ArtistID || (int)$ArtistID === 0) {
+        error(404);
+    }
 
-  $DB->query("
+    $app->dbOld->query("
     SELECT ArtistID
     FROM artists_group
     WHERE ArtistID = '$ArtistID'");
-  list($ArtistID) = $DB->next_record();
-  if (!$ArtistID) {
-    error('The artist was not found in the database.');
-  }
+    list($ArtistID) = $app->dbOld->next_record();
+    if (!$ArtistID) {
+        error('The artist was not found in the database.');
+    }
 
-  add_artist($CollageID, $ArtistID);
+    add_artist($CollageID, $ArtistID);
 } else {
-  $URLs = explode("\n", $_REQUEST['urls']);
-  $ArtistIDs = [];
-  $Err = '';
-  foreach ($URLs as $Key => &$URL) {
-    $URL = trim($URL);
-    if ($URL == '') {
-      unset($URLs[$Key]);
+    $URLs = explode("\n", $_REQUEST['urls']);
+    $ArtistIDs = [];
+    $Err = '';
+    foreach ($URLs as $Key => &$URL) {
+        $URL = trim($URL);
+        if ($URL == '') {
+            unset($URLs[$Key]);
+        }
     }
-  }
-  unset($URL);
+    unset($URL);
 
-  if (!check_perms('site_collages_delete')) {
-    if ($MaxGroups > 0 && ($NumTorrents + count($URLs) > $MaxGroups)) {
-      $Err = "This collage can only hold $MaxGroups artists.";
-    }
-    if ($MaxGroupsPerUser > 0 && ($GroupsForUser + count($URLs) > $MaxGroupsPerUser)) {
-      $Err = "You may only have $MaxGroupsPerUser artists in this collage.";
-    }
-  }
-
-  foreach ($URLs as $URL) {
-    $Matches = [];
-    if (preg_match('/^'.ARTIST_REGEX.'/i', $URL, $Matches)) {
-      $ArtistIDs[] = $Matches[4];
-      $ArtistID = $Matches[4];
-    } else {
-      $Err = "One of the entered URLs ($URL) does not correspond to an artist on the site.";
-      break;
+    if (!check_perms('site_collages_delete')) {
+        if ($MaxGroups > 0 && ($NumTorrents + count($URLs) > $MaxGroups)) {
+            $Err = "This collage can only hold $MaxGroups artists.";
+        }
+        if ($MaxGroupsPerUser > 0 && ($GroupsForUser + count($URLs) > $MaxGroupsPerUser)) {
+            $Err = "You may only have $MaxGroupsPerUser artists in this collage.";
+        }
     }
 
-    $DB->query("
+    foreach ($URLs as $URL) {
+        $Matches = [];
+        if (preg_match("/{$app->env->regexCreator}/i", $URL, $Matches)) {
+            $ArtistIDs[] = $Matches[4];
+            $ArtistID = $Matches[4];
+        } else {
+            $Err = "One of the entered URLs ($URL) does not correspond to an artist on the site.";
+            break;
+        }
+
+        $app->dbOld->query("
       SELECT ArtistID
       FROM artists_group
       WHERE ArtistID = '$ArtistID'");
-    if (!$DB->has_results()) {
-      $Err = "One of the entered URLs ($URL) does not correspond to an artist on the site.";
-      break;
+        if (!$app->dbOld->has_results()) {
+            $Err = "One of the entered URLs ($URL) does not correspond to an artist on the site.";
+            break;
+        }
     }
-  }
 
-  if ($Err) {
-    error($Err);
-  }
+    if ($Err) {
+        error($Err);
+    }
 
-  foreach ($ArtistIDs as $ArtistID) {
-    add_artist($CollageID, $ArtistID);
-  }
+    foreach ($ArtistIDs as $ArtistID) {
+        add_artist($CollageID, $ArtistID);
+    }
 }
-header("Location: collages.php?id=$CollageID");
+Http::redirect("collages.php?id=$CollageID");

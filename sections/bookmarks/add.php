@@ -1,75 +1,78 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 authorize();
 
-if (!Bookmarks::can_bookmark($_GET['type'])) {
+if (!Bookmarks::validateType($_GET['type'])) {
     error(404);
 }
 
-include SERVER_ROOT.'/classes/feed.class.php'; // RSS feeds
-$Feed = new Feed;
+include serverRoot.'/classes/feed.class.php'; // RSS feeds
+$Feed = new Feed();
 
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);
 
-if (!is_number($_GET['id'])) {
+if (!is_numeric($_GET['id'])) {
     error(0);
 }
 
 $PageID = $_GET['id'];
-$DB->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   `UserID`
 FROM
   $Table
 WHERE
-  `UserID` = '$LoggedUser[ID]' AND $Col = $PageID
+  `UserID` = '{$app->user->core['id']}' AND $Col = $PageID
 ");
 
-if (!$DB->has_results()) {
+if (!$app->dbOld->has_results()) {
     if ($Type === 'torrent') {
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           MAX(`Sort`)
         FROM
           `bookmarks_torrents`
         WHERE
-          `UserID` = $LoggedUser[ID]
+          `UserID` = {$app->user->core['id']}
         ");
 
-        list($Sort) = $DB->next_record();
+        list($Sort) = $app->dbOld->next_record();
         if (!$Sort) {
             $Sort = 0;
         }
 
         $Sort += 1;
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`, `Sort`)
         VALUES(
-          '$LoggedUser[ID]',
+          '{$app->user->core['id']}',
           $PageID,
           NOW(),
           $Sort
         )
         ");
     } else {
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
         INSERT IGNORE
         INTO $Table(`UserID`, $Col, `Time`)
         VALUES(
-          '$LoggedUser[ID]',
+          '{$app->user->core['id']}',
           $PageID,
           NOW()
         )
         ");
     }
 
-    $Cache->delete_value('bookmarks_'.$Type.'_'.$LoggedUser['ID']);
+    $app->cache->delete('bookmarks_'.$Type.'_'.$app->user->core['id']);
     if ($Type === 'torrent') {
-        $Cache->delete_value("bookmarks_group_ids_$UserID");
-        $DB->prepared_query("
+        $app->cache->delete("bookmarks_group_ids_$UserID");
+        $app->dbOld->prepared_query("
         SELECT
           `title`,
           `year`,
@@ -81,10 +84,10 @@ if (!$DB->has_results()) {
           `id` = $PageID
         ");
 
-        list($GroupTitle, $Year, $Body, $TagList) = $DB->next_record();
+        list($GroupTitle, $Year, $Body, $TagList) = $app->dbOld->next_record();
         $TagList = str_replace('_', '.', $TagList);
 
-        $DB->prepare_query("
+        $app->dbOld->prepared_query("
         SELECT
           `ID`,
           `Media`,
@@ -96,26 +99,26 @@ if (!$DB->has_results()) {
         WHERE
           `GroupID` = '$PageID'
         ");
-        $DB->exec_prepared_query();
+
 
         // RSS feed stuff
-        while ($Torrent = $DB->next_record()) {
+        while ($Torrent = $app->dbOld->next_record()) {
             $Title = $GroupTitle;
             list($TorrentID, $Media, $Freeleech, $UploaderID, $Anonymous) = $Torrent;
-            $UploaderInfo = Users::user_info($UploaderID);
+            $UploaderInfo = User::user_info($UploaderID);
 
             $Item = $Feed->item(
                 $Title,
-                Text::strip_bbcode($Body),
+                $Body,
                 'torrents.php?action=download&amp;authkey=[[AUTHKEY]]&amp;torrent_pass=[[PASSKEY]]&amp;id='.$TorrentID,
                 ($Anonymous === 0 ? $UploaderInfo['Username'] : 'Anonymous'),
                 "torrents.php?id=$PageID",
                 trim($TagList)
             );
-            $Feed->populate('torrents_bookmarks_t_'.$LoggedUser['torrent_pass'], $Item);
+            $Feed->populate('torrents_bookmarks_t_'.$app->user->extra['torrent_pass'], $Item);
         }
     } elseif ($Type === 'request') {
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
         SELECT
           `UserID`
         FROM
@@ -124,10 +127,10 @@ if (!$DB->has_results()) {
           $Col = '".db_string($PageID)."'
         ");
 
-        if ($DB->record_count() < 100) {
+        if ($app->dbOld->record_count() < 100) {
             // Sphinx doesn't like huge MVA updates. Update sphinx_requests_delta
             // and live with the <= 1 minute delay if we have more than 100 bookmarkers
-            $Bookmarkers = implode(',', $DB->collect('UserID'));
+            $Bookmarkers = implode(',', $app->dbOld->collect('UserID'));
             $SphQL = new SphinxqlQuery();
             $SphQL->raw_query("
             UPDATE

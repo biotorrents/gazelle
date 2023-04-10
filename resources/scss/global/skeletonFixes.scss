@@ -1,0 +1,279 @@
+/**
+ * fixes needed to use skeleton.css
+ * to its best no-fuss advantage
+ */
+
+/**
+ * set heading font size
+ * here are the (huge) defaults
+ *
+ * h1 { font-size: 5.0rem; }
+ * h2 { font-size: 4.2rem; }
+ * h3 { font-size: 3.6rem; }
+ * h4 { font-size: 3.0rem; }
+ * h5 { font-size: 2.4rem; }
+ * h6 { font-size: 1.5rem; }
+ */
+
+@mixin headingAttributes($size) {
+  font-size: $size !important;
+  letter-spacing: 0 !important;
+}
+
+h1:not(#logo) {
+  @include headingAttributes(3.5rem);
+  /* @include headingAttributes(2.5rem); */
+}
+
+h2 {
+  @include headingAttributes(3rem);
+  /* @include headingAttributes(2.1rem); */
+}
+
+h3 {
+  @include headingAttributes(2.5rem);
+  /* @include headingAttributes(1.8rem); */
+}
+
+h4 {
+  @include headingAttributes(2rem);
+  /* @include headingAttributes(1.5rem); */
+}
+
+h5 {
+  @include headingAttributes(1.5rem);
+  /* @include headingAttributes(1.2rem); */
+}
+
+h6 {
+  @include headingAttributes(1rem);
+  /* @include headingAttributes(0.75rem); */
+}
+
+/* correct content/sidebar overflow */
+@media (min-width: 550px) {
+  .column,
+  .columns {
+    margin-left: 0 !important;
+  }
+}
+
+/* forum list headings */
+table.forum_index {
+  h4 {
+    margin: 0.25rem !important;
+  }
+}
+
+/* checkbox and radio labels */
+label,
+legend {
+  display: inline !important;
+  font-weight: normal !important;
+}
+
+/* tables usually containing forms */
+table {
+  tr {
+    &:last-child > * {
+      border: none;
+    }
+  }
+}
+
+table.skeletonFix {
+  /*
+  td {
+    border-bottom: 0 !important;
+    padding: 0.5rem !important;
+  }
+  */
+}
+
+/*
+input,
+textarea,
+select,
+fieldset {
+  margin-bottom: 0 !important;
+}
+*/
+
+/* easymde button fix */
+div.editor-toolbar {
+  button {
+    font-size: revert;
+    line-height: revert;
+  }
+}
+
+/* block elements */
+/*
+pre,
+blockquote,
+dl,
+figure,
+table,
+ul,
+ol,
+form {
+  margin-bottom: 0 !important;
+}
+*/
+
+/* inline code */
+code {
+  padding: 0 !important;
+}
+
+/* poll options */
+ul#poll_options {
+  list-style: none !important;
+  margin-left: 0 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+/* nested lists */
+ul ul,
+ul ol,
+ol ol,
+ol ul {
+  margin: 0 !important;
+  font-size: 100% !important;
+}
+
+/* ul fix */
+ul {
+  list-style: square !important;
+
+  li {
+    margin-left: 2rem !important;
+  }
+}
+
+/* bold buttons */
+.button,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  font-weight: normal !important;
+}
+
+/**
+ * extra button colors
+ */
+
+/* red button */
+.button.button-red,
+button.button-red,
+input[type="submit"].button-red,
+input[type="reset"].button-red,
+input[type="button"].button-red {
+  color: #fff;
+  background-color: rgba(red, 0.5);
+  border-color: rgba(red, 0.5);
+}
+
+.button.button-red:hover,
+button.button-red:hover,
+input[type="submit"].button-red:hover,
+input[type="reset"].button-red:hover,
+input[type="button"].button-red:hover,
+.button.button-red:focus,
+button.button-red:focus,
+input[type="submit"].button-red:focus,
+input[type="reset"].button-red:focus,
+input[type="button"].button-red:focus {
+  color: #fff;
+  background-color: rgba(red, 0.75);
+  border-color: rgba(red, 0.75);
+}
+
+/* green button */
+.button.button-green,
+button.button-green,
+input[type="submit"].button-green,
+input[type="reset"].button-green,
+input[type="button"].button-green {
+  color: #fff;
+  background-color: rgba(green, 0.5);
+  border-color: rgba(green, 0.5);
+}
+
+.button.button-green:hover,
+button.button-green:hover,
+input[type="submit"].button-green:hover,
+input[type="reset"].button-green:hover,
+input[type="button"].button-green:hover,
+.button.button-green:focus,
+button.button-green:focus,
+input[type="submit"].button-green:focus,
+input[type="reset"].button-green:focus,
+input[type="button"].button-green:focus {
+  color: #fff;
+  background-color: rgba(green, 0.75);
+  border-color: rgba(green, 0.75);
+}
+
+/* orange button */
+.button.button-orange,
+button.button-orange,
+input[type="submit"].button-orange,
+input[type="reset"].button-orange,
+input[type="button"].button-orange {
+  color: #555;
+  background-color: rgba(orange, 0.5);
+  border-color: rgba(orange, 0.5);
+}
+
+.button.button-orange:hover,
+button.button-orange:hover,
+input[type="submit"].button-orange:hover,
+input[type="reset"].button-orange:hover,
+input[type="button"].button-orange:hover,
+.button.button-orange:focus,
+button.button-orange:focus,
+input[type="submit"].button-orange:focus,
+input[type="reset"].button-orange:focus,
+input[type="button"].button-orange:focus {
+  color: #333;
+  background-color: rgba(orange, 0.75);
+  border-color: rgba(orange, 0.75);
+}
+
+/* purple button */
+.button.button-purple,
+button.button-purple,
+input[type="submit"].button-purple,
+input[type="reset"].button-purple,
+input[type="button"].button-purple {
+  color: #fff;
+  background-color: rgba(purple, 0.5);
+  border-color: rgba(purple, 0.5);
+}
+
+.button.button-purple:hover,
+button.button-purple:hover,
+input[type="submit"].button-purple:hover,
+input[type="reset"].button-purple:hover,
+input[type="button"].button-purple:hover,
+.button.button-purple:focus,
+button.button-purple:focus,
+input[type="submit"].button-purple:focus,
+input[type="reset"].button-purple:focus,
+input[type="button"].button-purple:focus {
+  color: #fff;
+  background-color: rgba(purple, 0.75);
+  border-color: rgba(purple, 0.75);
+}
+
+/**
+ * not technically skeleton
+ * fixes for other weird library stuff
+ */
+
+/* tom select */
+.ts-dropdown .optgroup-header {
+  font-size: inherit !important;
+}

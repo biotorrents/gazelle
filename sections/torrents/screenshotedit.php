@@ -1,15 +1,19 @@
 <?php
+
 declare(strict_types=1);
+
+
+$app = \Gazelle\App::go();
 
 authorize();
 
 $GroupID = $_POST['groupid'];
-if (!$GroupID || !is_number($GroupID)) {
+if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
 
 if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_perms('screenshots_delete')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `UserID`
     FROM
@@ -18,7 +22,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
       `GroupID` = '$GroupID'
     ")
     ;
-    if (!in_array($LoggedUser['ID'], $DB->collect('UserID'))) {
+    if (!in_array($app->user->core['id'], $app->dbOld->collect('UserID'))) {
         error(403);
     }
 }
@@ -26,7 +30,7 @@ if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_p
 $Screenshots = $_POST['screenshots'] ?? [];
 $Screenshots = array_map("trim", $Screenshots);
 $Screenshots = array_filter($Screenshots, function ($s) {
-    return preg_match('/^'.DOI_REGEX.'$/i', $s);
+    return preg_match("/{$app->env->regexDoi}/i", $s);
 });
 $Screenshots = array_unique($Screenshots);
 
@@ -34,7 +38,7 @@ if (count($Screenshots) > 10) {
     error("You cannot add more than 10 publications to a group");
 }
 
-$DB->query("
+$app->dbOld->query("
 SELECT
   `user_id`,
   `doi`
@@ -46,8 +50,8 @@ WHERE
 
 // $Old is an array of the form URL => UserID where UserID is the ID of the User who originally uploaded that image.
 $Old = [];
-if ($DB->has_results()) {
-    while ($S = $DB->next_record(MYSQLI_ASSOC)) {
+if ($app->dbOld->has_results()) {
+    while ($S = $app->dbOld->next_record(MYSQLI_ASSOC)) {
         $Old[$S['Image']] = $S['UserID'];
     }
 }
@@ -66,9 +70,8 @@ if (!empty($Deleted)) {
     } else {
         $DeleteList = [];
         foreach ($Deleted as $S) {
-
             // If the user who submitted this request uploaded the image, add the image to the list.
-            if ($Old[$S] === $LoggedUser['ID']) {
+            if ($Old[$S] === $app->user->core['id']) {
                 $DeleteList[] = $S;
             } else {
                 error(403);
@@ -78,7 +81,7 @@ if (!empty($Deleted)) {
 
     if (!empty($DeleteList)) {
         $ScreenDel = '';
-        $DB->prepare_query("
+        $app->dbOld->prepared_query("
         DELETE
         FROM
           `literature`
@@ -87,35 +90,33 @@ if (!empty($Deleted)) {
         ");
 
         foreach ($DeleteList as $ScreenDel) {
-            $DB->exec_prepared_query();
         }
 
-        Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
-        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$LoggedUser['Username']);
+        Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
+        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$app->user->core['username']);
     }
 }
 
 // New screenshots
 if (!empty($New)) {
     $Screenshot = '';
-    $DB->prepare_query(
+    $app->dbOld->prepared_query(
         "
     INSERT INTO `literature`
       (`group_id`, `user_id`, `timestamp`, `doi`)
     VALUES
       (?, ?, NOW(), ?)",
         $GroupID,
-        $LoggedUser['ID'],
+        $app->user->core['id'],
         $Screenshot
     );
 
     foreach ($New as $Screenshot) {
-        $DB->exec_prepared_query();
     }
 
-    Torrents::write_group_log($GroupID, 0, $LoggedUser['ID'], "Added screenshot(s) ".implode(' , ', $New), 0);
-    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$LoggedUser['Username']);
+    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) ".implode(' , ', $New), 0);
+    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->user->core['username']);
 }
 
-$Cache->delete_value("torrents_details_".$GroupID);
-header("Location: torrents.php?id=$GroupID");
+$app->cache->delete("torrents_details_".$GroupID);
+Http::redirect("torrents.php?id=$GroupID");

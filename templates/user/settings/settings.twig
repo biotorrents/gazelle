@@ -1,0 +1,1105 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<div class="header">
+  <h2>User settings for {{ user.core.username }}</h2>
+</div>
+
+{% if error %}
+<div class="alertbar error">
+{{ error }}
+</div>
+{% endif %}
+
+<form method="post" id="userSettingsForm" name="userSettingsForm">
+
+  {# hidden fields #}
+  	{{ form_token(query.server.REQUEST_URI) }}
+  <input type="hidden" name="userId" value="{{ user.core.id }}" />
+  <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}" />
+
+  {# site appearance settings #}
+  <section id="siteAppearanceSettings">
+  <h3>Site appearance settings</h3>
+  <table class="userSettings">
+
+    {# stylesheet #}
+    <tr>
+      <th>Stylesheet</th>
+
+      <td>
+        <select id="styleId" name="styleId">
+          {% for stylesheet in stylesheets %}
+            <option value="{{ stylesheet.id }}" {{ (stylesheet.id == siteOptions.styleId) ? "selected" : "" }}>
+              {{ stylesheet.properName }}
+            </option>
+          {% endfor %} {# for stylesheet in stylesheets #}
+        </select>
+
+            {#
+            &ensp;
+            <a data-toggle-target="#css_gallery" class="brackets">Show gallery</a>
+            <div id="css_gallery" class="hidden">
+              <?php foreach ($Stylesheets as $Style) { ?>
+              <div class="preview_wrapper">
+                <div class="preview_image"
+                  name="<?=($Style['Name'])?>">
+                  <img
+                    src="<?=staticServer.'css/preview/thumb_'.$Style['Name'].'.png'?>"
+                    alt="<?=$Style['Name']?>" />
+                  <p class="preview_name">
+                    <label><input type="radio" name="stylesheet_gallery"
+                        value="<?=($Style['ID'])?>" />
+                      <?=($Style['ProperName'])?></label>
+                  </p>
+                </div>
+              </div>
+              <?php } ?>
+            </div>
+            #}
+          </td>
+        </tr>
+
+        {# external stylesheet uri #}
+        <tr>
+          <th>External stylesheet URI</th>
+
+          <td>
+            <input type="text" id="styleUri" name="styleUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ siteOptions.styleUri }}" />
+          </td>
+        </tr>
+
+        {# site font #}
+        <tr>
+          <th>Site font</th>
+
+          <td>
+
+            <select id="font" name="font">
+
+              <option value="" {{ (siteOptions.font == "") ? "selected" : "" }}>
+              Default
+              </option>
+
+              <option value="notoSans" {{ (siteOptions.font == "notoSans") ? "selected" : "" }}>
+              Noto Sans
+              </option>
+
+              <option value="notoSerif" {{ (siteOptions.font == "notoSerif") ? "selected" : "" }}>
+              Noto Serif
+              </option>
+
+{#
+              <option value="luxiSans" {{ (siteOptions.font == "luxiSans") ? "selected" : "" }}>
+              Luxi Sans
+              </option>
+
+              <option value="luxiSerif" {{ (siteOptions.font == "luxiSerif") ? "selected" : "" }}>
+              Luxi Serif
+              </option>
+#}
+              <option value="openDyslexic" {{ (siteOptions.font == "openDyslexic") ? "selected" : "" }}>
+              OpenDyslexic
+              </option>
+
+              <option value="comicNeue" {{ (siteOptions.font == "comicNeue") ? "selected" : "" }}>
+              Comic Neue
+              </option>
+
+            </select>
+
+         </td>
+        </tr>
+
+
+        {# calm mode #}
+        <tr>
+          <th>Calm mode</th>
+
+          <td>
+                <input type="checkbox" id="calmMode" name="calmMode" value="true" {{ (siteOptions.calmMode) ? "checked" : "" }} />
+                <label for="calmMode">Use a warm, higher contrast grayscale</label>
+         </td>
+        </tr>
+
+        {# dark mode #}
+        <tr>
+          <th>Dark mode</th>
+
+          <td>
+                <input type="checkbox" id="darkMode" name="darkMode" value="true" {{ (siteOptions.darkMode) ? "checked" : "" }} />
+                <label for="darkMode">Use inverted, lower contrast colors</label>
+         </td>
+        </tr>
+ 
+
+ 
+
+      </table>
+      </section> {# siteAppearanceSettings #}
+
+
+{# torrent settings #}
+<section id="torrentSettings">
+<h3>Torrent settings</h3>
+      <table class="userSettings">
+
+        {# default search type #}
+        <tr>
+          <th>Default search type</th>
+
+          <td>
+                <input type="radio" id="searchTypeSimple" name="searchType" value="simple" {{ (siteOptions.searchType == "simple") ? "checked" : "" }} />
+                <label for="searchTypeSimple">Simple</label>
+
+                &emsp;
+
+                <input type="radio" id="searchTypeComplex" name="searchType" value="complex" {{ (siteOptions.searchType == "complex") ? "checked" : "" }} />
+                <label for="searchTypeComplex">Complex</label>
+          </td>
+        </tr>
+
+        {# torrent grouping #}
+        <tr>
+          <th>Torrent grouping</th>
+
+          <td>
+              <input type="checkbox" id="torrentGrouping" name="torrentGrouping" {{ (siteOptions.torrentGrouping == true) ? "checked" : "" }} />
+              <label for="torrentGrouping">Enable torrent grouping</label>
+          </td>
+        </tr>
+
+        {# torrent group display #}
+        <tr>
+          <th>Torrent group display</th>
+
+          <td>
+            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="open" {{ (siteOptions.torrentGrouping == "open") ? "checked" : "" }} />
+            <label for="torrent_grouping_open">Open</label>
+
+            &emsp;
+
+             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="closed" {{ (siteOptions.torrentGrouping == "closed") ? "checked" : "" }} />
+             <label for="torrent_grouping_closed">Closed</label>
+          </td>
+        </tr>
+
+        {# snatched torrents indicator #}
+        <tr>
+          <th>Snatched torrents indicator</th>
+
+          <td>
+            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.showSnatched == true) ? "checked" : "" }} />
+            <label for="showSnatched">Enable snatched torrents indicator</label>
+          </td>
+        </tr>
+
+        {# cover art (torrents) #}
+        <tr>
+          <th>Cover art (torrents)</th>
+
+          <td>
+             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.coverArtTorrents == true) ? "checked" : "" }} />
+            <label for="coverArtTorrents">Enable cover artwork</label>
+
+            <br />
+
+            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.coverArtTorrentsExtra == true) ? "checked" : "" }} />
+            <label for="coverArtTorrentsExtra">Enable additional cover artwork</label>
+          </td>
+        </tr>
+
+        {# cover art (collections) #}
+        <tr>
+          <th>Cover art (collections)</th>
+
+          <td>
+            <select id="coverArtCollections" name="coverArtCollections">
+
+              <option value="10" {{ (siteOptions.coverArtCollections == 10) ? "selected" : "" }}>
+              10
+              </option>
+
+              <option value="20" {{ (siteOptions.coverArtCollections == 20) ? "selected" : "" }}>
+              20 (default)
+              </option>
+
+              <option value="50" {{ (siteOptions.coverArtCollections == 50) ? "selected" : "" }}>
+              50
+              </option>
+
+              <option value="100" {{ (siteOptions.coverArtCollections == 100) ? "selected" : "" }}>
+              100
+              </option>
+
+              <option value="1000000" {{ (siteOptions.coverArtCollections == 1000000) ? "selected" : "" }}>
+              all
+              </option>
+
+              <option value="0" {{ (siteOptions.coverArtCollections == 0) ? "selected" : "" }}>
+              no
+              </option>
+
+            </select>
+
+            covers per page
+          </td>
+        </tr>
+
+        {# search pagination #}
+        <tr>
+          <th>Search pagination</th>
+
+          <td>
+            <select id="searchPagination" name="searchPagination">
+
+              <option value="10" {{ (siteOptions.searchPagination == 10) ? "selected" : "" }}>
+              10
+              </option>
+
+              <option value="20" {{ (siteOptions.searchPagination == 20) ? "selected" : "" }}>
+              20 (default)
+              </option>
+
+              <option value="50" {{ (siteOptions.searchPagination == 50) ? "selected" : "" }}>
+              50
+              </option>
+
+              <option value="100" {{ (siteOptions.searchPagination == 100) ? "selected" : "" }}>
+              100
+              </option>
+
+            </select>
+
+            search results per page
+          </td>
+        </tr>
+
+        {# openai content #}
+        <tr>
+          <th>OpenAI content</th>
+
+          <td>
+              <input type="checkbox" id="openaiContent" name="openaiContent" {{ (siteOptions.openaiContent == true) ? "checked" : "" }} />
+              <label for="openaiContent">Enable OpenAI content in search and display</label>
+          </td>
+        </tr>
+
+{# torrent text files #}
+{#
+          <tr id="tor_dltext_tr">
+        <td class="label tooltip" title="Some ISPs block the downloading of torrent files. Enable this option if you wish to download torrent files with a &quot;.txt&quot; file extension.">
+            <strong>Text file downloads</strong>
+        </td>
+        <td>
+            <input type="checkbox" name="downloadalt" id="downloadalt"{{ checked(download_text) }} />
+            <label for="downloadalt">Enable downloading torrent files as text files</label>
+        </td>
+    </tr>
+#}
+
+      </table>
+      </section> {# torrentSettings #}
+
+
+
+      {# community settings #}
+      <section id="communitySettings">
+      <h3>Community settings</h3>
+      <table class="userSettings">
+
+{#
+        <!-- Posts per page (forums) -->
+        <tr id="comm_ppp_tr">
+          <td class="label">
+            <strong>Posts per page (forums)</strong>
+          </td>
+
+          <td>
+            <select name="postsperpage" id="postsperpage">
+              <option value="25" <?=$SiteOptions['PostsPerPage'] === 25 ? ' selected="selected"' : ''?>>25
+                (default)</option>
+
+              <option value="50" <?=$SiteOptions['PostsPerPage'] === 50 ? ' selected="selected"' : ''?>>50
+              </option>
+
+              <option value="100" <?=$SiteOptions['PostsPerPage'] === 100 ? ' selected="selected"' : ''?>>100
+              </option>
+            </select>
+            posts per page
+          </td>
+        </tr>
+#}
+
+        {# inbox sorting #}
+        <tr>
+          <th>Inbox sorting</th>
+
+          <td>
+            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.listUnreadsFirst == true) ? "checked" : "" }} />
+            <label for="listUnreadsFirst">List unread private messages first</label>
+          </td>
+        </tr>
+
+        {# avatar display (posts) #}
+        <tr>
+          <th>Avatar display (posts)</th>
+
+          <td>
+            <input type="checkbox" id="userAvatars" name="userAvatars" {{ (siteOptions.userAvatars == true) ? "checked" : "" }} />
+            <label for="userAvatars">Enable custom user avatars</label>
+          </td>
+        </tr>
+
+
+
+        {# displayed badges #}
+        <tr>
+          <th>Displayed badges</th>
+
+          <td class="badgesFlex">
+          {# no badges #}
+          {% if badges is empty %}
+          You have no badges. :(
+
+            {# yes badges #}
+            {% else %}
+
+
+            {% for badgeId, displayed in badges %}
+
+          <span class="flexItem">
+            <input type="checkbox" name="badges[]" value="{{ badgeId }}" {{ (displayed) ? "checked" : "" }} />
+            &nbsp;
+            <label>{{ displayBadge(badgeId) }}</label>
+          </span>
+
+            {% endfor %}
+
+            {% endif %} {# if badges is empty #}
+          </td>
+        </tr>
+
+        {# donor icon #}
+        {% if user.extra.Donor is not empty %}
+        <tr>
+          <th>Donor icon</th>
+
+          <td>
+            <input type="checkbox" id="donorIcon" name="donorIcon" {{ (siteOptions.donorIcon == true) ? "checked" : "" }} />
+            <label for="donorIcon">
+            Show a donor icon ❤️ next to your name
+            </label>
+          </td>
+        </tr>
+        {% endif %}
+      </table>
+      </section> {# communitySettings #}
+
+
+      {# notification settings #}
+      <section id="notificationSettings">
+      <h3>Notification settings</h3>
+      <table class="userSettings">
+
+        {# automatic thread subscriptions #}
+        <tr>
+          <th>Automatic thread subscriptions</th>
+
+          <td>
+            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.autoSubscribe == true) ? "checked" : "" }} />
+            <label for="autoSubscribe">Enable automatic thread subscriptions</label>
+          </td>
+        </tr>
+
+        {# unseeded torrent alerts #}
+        <tr>
+          <th>Unseeded torrent alerts</th>
+
+          <td>
+            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (siteOptions.unseededAlerts == true) ? "checked" : "" }} />
+            <label for="unseededAlerts">Enable unseeded torrent alerts</label>
+          </td>
+        </tr>
+
+        {# legacy call to NotificationsManagerView::render_settings #}
+        {# {{ notificationsManagerSettings|raw }} #}
+      </table>
+      </section> {# notificationSettings #}
+
+
+      {# profile settings #}
+      <section id="profileSettings">
+      <h3>Profile settings</h3>
+      <table class="userSettings">
+
+        {# avatar uri #}
+        <tr>
+          <th>Avatar URI</th>
+
+          <td>
+            <input type="text" id="avatar" name="avatar" placeholder="e.g., https://i.imgur.com/wJgDWzd.png" value="{{ user.extra.Avatar }}" />
+          </td>
+        </tr>
+
+        {# profile title #}
+        <tr>
+          <th>Profile title</th>
+
+          <td>
+            <input type="text" id="profileTitle" name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}" />
+          </td>
+        </tr>
+
+        {# profile content #}
+        <tr>
+          <th>Profile content</th>
+          </td>
+
+          <td>
+          {% set variables = {"id": "profileContent", "name": "profileContent", "placeholder": "What are you passionate about?", "value": user.extra.Info} %}
+            {% include "_base/textarea.twig" with variables %}
+          </td>
+        </tr>
+
+        {# recent torrent activity #}
+        <tr>
+          <th>Recent torrent activity</th>
+
+          <td>
+            {# recent snatches #}
+            <input type="checkbox" id="recentSnatches" name="recentSnatches" {{ (siteOptions.recentSnatches == true) ? "checked" : "" }} />
+            <label for="recentSnatches">Show snatches</label>
+
+            <br />
+
+        {# recent uploads #}
+            <input type="checkbox" id="recentUploads" name="recentUploads" {{ (siteOptions.recentUploads == true) ? "checked" : "" }} />
+            <label for="recentUploads">Show uploads</label>
+
+            <br />
+
+             {# recent requests #}
+            <input type="checkbox" id="recentRequests" name="recentRequests" {{ (siteOptions.recentRequests == true) ? "checked" : "" }} />
+            <label for="recentRequests">Show requests</label>
+
+            <br />
+
+        {# recent collages #}
+            <input type="checkbox" id="recentCollages" name="recentCollages" {{ (siteOptions.recentCollages == true) ? "checked" : "" }} />
+            <label for="recentCollages">Show collages</label>
+
+          </td>
+        </tr>
+
+
+                {# user profile stats #}
+        <tr>
+          <th>User profile stats</th>
+
+          <td>
+            {# community stats #}
+            <input type="checkbox" id="communityStats" name="communityStats" {{ (siteOptions.communityStats == true) ? "checked" : "" }} />
+            <label for="communityStats">Show community stats</label>
+
+            <br />
+
+        {# torrent stats #}
+            <input type="checkbox" id="torrentStats" name="torrentStats" {{ (siteOptions.torrentStats == true) ? "checked" : "" }} />
+            <label for="torrentStats">Show torrent stats</label>
+
+            <br />
+
+             {# percentile rankings #}
+            <input type="checkbox" id="percentileStats" name="percentileStats" {{ (siteOptions.percentileStats == true) ? "checked" : "" }} />
+            <label for="percentileStats">Show percentile rankings</label>
+
+            <br />
+
+        {# request stats #}
+            <input type="checkbox" id="requestStats" name="requestStats" {{ (siteOptions.requestStats == true) ? "checked" : "" }} />
+            <label for="requestStats">Show request stats</label>
+
+          </td>
+        </tr>
+
+      </table>
+      </section> {# profileSettings #}
+
+
+{# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
+        <!-- Recent activity -->
+          <td>
+            <label>
+              <input type="checkbox" name="p_lastseen" <?=checked(!in_array('lastseen', $Paranoia))?>
+              />
+              Last seen
+            </label>
+          </td>
+
+        <!-- Statistics -->
+          <td>
+            <?php
+$UploadChecked = checked(!in_array('uploaded', $Paranoia));
+$DownloadChecked = checked(!in_array('downloaded', $Paranoia));
+$RatioChecked = checked(!in_array('ratio', $Paranoia));
+?>
+
+            <label><input type="checkbox" name="p_uploaded" onchange="AlterParanoia();" <?=$UploadChecked?> /> Uploaded</label>&ensp;
+            <label><input type="checkbox" name="p_downloaded" onchange="AlterParanoia();" <?=$DownloadChecked?> /> Downloaded</label>&ensp;
+            <label><input type="checkbox" name="p_ratio" onchange="AlterParanoia();" <?=$RatioChecked?> /> Ratio</label>
+          </td>
+
+        <!-- Required Ratio -->
+          <td>
+            <label>
+              <input type="checkbox" name="p_requiredratio" <?=checked(!in_array('requiredratio', $Paranoia))?>
+              /> Required Ratio
+            </label>
+          </td>
+
+        <!-- Comments (torrents) -->
+        <tr id="para_comments_tr">
+          <td class="label">
+            <strong>Comments (torrents)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('torrentcomments'); ?>
+          </td>
+        </tr>
+
+        <!-- Collections (started) -->
+        <tr id="para_collstart_tr">
+          <td class="label">
+            <strong>Collections (started)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('collages'); ?>
+          </td>
+        </tr>
+
+        <!-- Collections (contributed to) -->
+        <tr id="para_collcontr_tr">
+          <td class="label">
+            <strong>Collections (contributed to)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('collagecontribs'); ?>
+          </td>
+        </tr>
+
+        <!-- Requests (filled) -->
+        <tr id="para_reqfill_tr">
+          <td class="label">
+            <strong>Requests (filled)</strong>
+          </td>
+
+          <td>
+
+            <label><input type="checkbox" name="p_requestsfilled_count" onchange="AlterParanoia();" <?=$RequestsFilledCountChecked?> /> Show
+              count</label>&nbsp;
+            <label><input type="checkbox" name="p_requestsfilled_bounty" onchange="AlterParanoia();" <?=$RequestsFilledBountyChecked?> /> Show
+              bounty</label>&nbsp;
+            <label><input type="checkbox" name="p_requestsfilled_list" onchange="AlterParanoia();" <?=$RequestsFilledListChecked?> /> Show list</label>
+          </td>
+        </tr>
+
+        <!-- Requests (voted for) -->
+        <tr id="para_reqvote_tr">
+          <td class="label">
+            <strong>Requests (voted for)</strong>
+          </td>
+
+          <td>
+
+            <label><input type="checkbox" name="p_requestsvoted_count" onchange="AlterParanoia();" <?=$RequestsVotedCountChecked?> /> Show
+              count</label>&nbsp;
+            <label><input type="checkbox" name="p_requestsvoted_bounty" onchange="AlterParanoia();" <?=$RequestsVotedBountyChecked?> /> Show
+              bounty</label>&nbsp;
+            <label><input type="checkbox" name="p_requestsvoted_list" onchange="AlterParanoia();" <?=$RequestsVotedListChecked?> /> Show list</label>
+          </td>
+        </tr>
+
+        <!-- Uploaded torrents -->
+        <tr id="para_upltor_tr">
+          <td class="label">
+            <strong>Uploaded torrents</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('uploads'); ?>
+          </td>
+        </tr>
+
+        <!-- Uploaded torrents (unique groups) -->
+        <tr id="para_uplunique_tr">
+          <td class="label">
+            <strong>Uploaded torrents (unique groups)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('uniquegroups'); ?>
+          </td>
+        </tr>
+
+        <!-- Torrents (seeding) -->
+        <tr id="para_torseed_tr">
+          <td class="label">
+            <strong>Torrents (seeding)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('seeding'); ?>
+          </td>
+        </tr>
+
+        <!-- Torrents (leeching) -->
+        <tr id="para_torleech_tr">
+          <td class="label">
+            <strong>Torrents (leeching)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('leeching'); ?>
+          </td>
+        </tr>
+
+        <!-- Torrents (snatched) -->
+        <tr id="para_torsnatch_tr">
+          <td class="label">
+            <strong>Torrents (snatched)</strong>
+          </td>
+
+          <td>
+            <?php display_paranoia('snatched'); ?>
+          </td>
+        </tr>
+
+        <!-- Torrents (upload subscriptions) -->
+        <tr id="para_torsubscr_tr">
+          <td class="label tooltip" title="Can others subscribe to your uploads?">
+            <strong>Torrents (upload subscriptions)</strong>
+          </td>
+
+          <td>
+            <label>
+              <input type="checkbox" name="p_notifications" <?=checked(!in_array('notifications', $Paranoia))?>
+              /> Allow torrent upload subscriptions
+            </label>
+          </td>
+        </tr>
+
+        <?php
+$app->dbOld->query("
+  SELECT COUNT(UserID)
+  FROM users_info
+  WHERE Inviter = ?", $UserID);
+list($Invited) = $app->dbOld->next_record();
+?>
+
+        <!-- Invitees -->
+        <tr id="para_invited_tr">
+          <td class="label">
+            <strong>Invitees</strong>
+          </td>
+
+          <td>
+            <label>
+              <input type="checkbox" name="p_invitedcount" <?=checked(!in_array('invitedcount', $Paranoia))?>
+              /> Show count
+            </label>
+          </td>
+        </tr>
+
+        <?php
+$app->dbOld->query("
+  SELECT COUNT(ArtistID)
+  FROM torrents_artists
+  WHERE UserID = ?", $UserID);
+list($ArtistsAdded) = $app->dbOld->next_record();
+?>
+
+        <!-- Artists added -->
+        <tr id="para_artistsadded_tr">
+          <td class="label">
+            <strong>Artists added</strong>
+          </td>
+
+          <td>
+            <label>
+              <input type="checkbox" name="p_artistsadded" <?=checked(!in_array('artistsadded', $Paranoia))?>
+              /> Show count
+            </label>
+          </td>
+        </tr>
+END PARANOIA CLUSTERFUCK #}
+
+
+{# security settings #}
+<section id="securitySettings">
+<h3>Security settings</h3>
+      <table class="userSettings">
+      
+
+        {# 2fa (totp) #}
+        <tr>
+          <th>Two factor authentication (TOTP)</th>
+
+          <td>
+           {# api output #}
+         <p id="twoFactorResponse"></p>
+
+          {# no 2fa settings yet #}
+          {% if user.extra.TwoFactor is empty %}
+          <div id="twoFactorDisabled">
+          <p>
+          <span class="warning">Two factor authentication isn't enabled on your account!</span>
+          Please scan the QR code in your authenticator app, enter the six-digit number, and click "Enable 2FA."
+          <a href="https://apps.apple.com/us/app/authenticator/id766157276" class="external" target="_blank">Matt Rubin's Authenticator</a>
+          is one secure recommended app.
+         </p>
+
+        <p>
+          <img src="{{ twoFactorImage }}" />
+        </p>
+
+        <p>
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+        </p>
+
+          <p>
+          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
+          </p>
+
+          <p>
+        <a id="createTwoFactor" class="button button-primary">enable 2fa</a>
+        </p>
+        </div>
+
+{# 2fa settings exist #}
+        {% else %}
+        <div id="twoFactorEnabled">
+        <p>
+          Note that TOTP (authenticator app) and U2F (hardware key) are mutually exclusive!
+          Two factor authentication is enabled for your account, with this secret:
+        </p>
+
+        <p>
+          <img src="{{ twoFactorImage }}" />
+        </p>
+
+        <p>
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+        </p>
+
+
+        <p>
+        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
+        <a id="deleteTwoFactor" class="button button-primary">disable 2fa</a>
+        </p>
+        </div>
+
+         {% endif %} {# if user.extra.TwoFactor is empty #}
+
+          </td>
+        </tr>
+
+
+        {# u2f #}
+        <tr>
+          <th>Universal two factor (U2F)</th>
+
+          {# this is a mess: just open a popup #}
+          <td>
+          <a href="/user/settings/u2f" class="button button-primary" target="_blank">manage u2f settings</a>
+          {#
+    <div class="pad">
+      <?php if (sizeof($U2FRegs) === 0) { ?>
+      <?php if (empty($TwoFactor)) { ?>
+      <form method="post" id="u2f_register_form">
+        <input type="hidden" name="u2f-request"
+          value='<?=json_encode($U2FRequest)?>' />
+
+        <input type="hidden" name="u2f-sigs"
+          value='<?=json_encode($U2FSigs)?>' />
+
+        <input type="hidden" name="u2f-response" />
+
+        <input type="hidden" value="U2F-E" />
+      </form>
+
+      <p>
+        Universal Two Factor is not currently enabled for this account.
+        To enable Universal Two Factor, plug in your U2F token and press the button on it.
+      </p>
+
+      <?php } else { ?>
+      <p>
+        Universal Two Factor is not currently enabled for this account.
+        To enable Universal Two Factor, you must first disable normal 2FA above.
+      </p>
+      <?php } ?>
+
+      <?php } else { ?>
+      <form method="post" id="u2f_register_form">
+        <input type="hidden" name="u2f-request"
+          value='<?=json_encode($U2FRequest)?>' />
+
+        <input type="hidden" name="u2f-sigs"
+          value='<?=json_encode($U2FSigs)?>' />
+
+        <input type="hidden" name="u2f-response" />
+
+        <input type="hidden" value="U2F-E" />
+
+        <p>
+          Universal Two Factor is enabled.
+          To add an additional U2F token, plug it in and press the button on it.
+          To disable U2F completely and deregister all tokens, press the button below.
+        </p>
+        <button type="submit" name="type" value="U2F-D">Disable U2F</button>
+      </form>
+      <?php } ?>
+    </div>
+    #}
+          </td>
+        </tr>
+
+
+        {# pgp #}
+        <tr>
+          <th>PGP public key</th>
+
+          <td>
+
+{# no pgp/yes 2fa warning #}
+          {% if user.extra.TwoFactor is not empty %}
+                <p>
+        You have a form of 2FA enabled but no PGP key associated with your account.
+        If you lose access to your 2FA device, you will permanently lose access to your account.
+      </p>
+          {% endif %} {# if user.extra.TwoFactor is not empty #}
+
+{# no public key #}
+          {% if user.extra.PublicKey is empty %}
+                <p>
+        When setting up any form of second factor authentication, it is strongly recommended that you add your PGP
+        public key as a form of secure recovery in the event that you lose access to your second factor device.
+      </p>
+
+      <p>
+        After adding a PGP public key to your account, you will be able to disable your account's second factor
+        protection by solving a challenge that only someone with your private key could solve.
+      </p>
+
+      <p>
+        Additionally, being able to solve such a challenge when given manually by staff will suffice to provide proof of
+        ownership of your account, provided no revocation certificate has been published for your key.
+      </p>
+
+      <p>
+        Before adding your PGP public key, please make sure that you have taken the necessary precautions to protect it
+        from loss (backup) or theft (revocation certificate).
+      </p>
+
+      {# yes public key #}
+      {% else %}
+      <p>
+        The PGP public key associated with your account is shown below.
+        This key helps create challenges that are only solvable by you, to verify account ownership.
+      </p>
+
+          {% endif %} {# if user.extra.PublicKey is empty #}
+
+        <textarea id="publicKey" name="publicKey" spellcheck="false">{{ user.extra.PublicKey }}</textarea>
+
+          </td>
+        </tr>
+
+{# reset passkey #}
+        <tr>
+          <th>Reset tracker passkey</th>
+
+          <td>
+          <p>
+          If you believe your tracker connection is compromised,
+          e.g., you shared a <code>.torrent</code> file from the site,
+          please generate a new passkey to authenticate with the tracker.
+          You must remove and add fresh copies of torrents to your client.
+          </p>
+
+           <input type="checkbox" id="resetPassKey" name="resetPassKey" />
+          <label for="resetPassKey">Generate a new passkey for tracker authentication?</label>
+
+          </td>
+        </tr>
+
+        {# ircKey #}
+        <tr>
+          <th>IRC key</th>
+
+          <td>
+          <p>
+          Please use this key to autenticate with <code>{{ env.ircBotNick }}</code> on <code>{{ env.ircHostname }}</code>.
+          {# todo: link to irc wiki page again #}
+          </p>
+
+          <p class="important_text">
+          IRC keys are stored in plaintext and must not be your password!
+          They must be between 8 and 32 characters long.
+          </p>
+
+          <input type="text" id="ircKey" name="ircKey" minlength="8" maxlength="32" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}" />
+
+          </td>
+        </tr>
+
+        {# api bearer tokens #}
+        <tr>
+          <th>API bearer tokens</th>
+
+          <td>
+            <p>
+              Please generate API bearer tokens to access our
+              <a href="{{ env.docsDomain }}" class="external" target="_blank">JSON API</a>.
+              Rememeber to revoke tokens you no longer use.
+            </p>
+
+            <p class="important_text">
+                Treat your tokens like passphrases and keep them secret.
+                Functionally, they are identical to your passphrase.
+            </p>
+
+            {# no tokens #}
+            {% if bearerTokens is empty %}
+            <p id="emptyTokenMessage">
+            You have no API bearer tokens. :(
+            </p>
+
+            {# yes tokens #}
+            {% else %}
+            <table id="bearerTokens">
+            <tr>
+                <th>Name</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+
+            {% for item in bearerTokens %}
+            <tr id="tokenId-{{ item.ID }}">
+              <td>{{ item.name }}</td>
+              <td><span class="tooltip" title="{{ item.Created }}">{{ item.Created|relativeTime }}</span></td>
+              <td><a class="button deleteBearerToken" data-tokenId="{{ item.ID }}">revoke</a></td>
+            </tr>
+            {% endfor %}
+
+            </table>
+
+            {% endif %} {# if bearerTokens is empty #}
+
+            {# bearer token creation controls #}
+            <p><strong>Create a new token</strong></p>
+
+            <p>
+            <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token" />
+            </p>
+
+            <p>
+            <a id="createBearerToken" class="button button-primary">create new token</a>
+            </p>
+
+            {# the new token appears here #}
+            <p>
+            Your new token will appear here.
+            <span class="warning">Please store it securely, because it'll only be shown once!</span>
+            </p>
+            
+            <textarea id="newTokenMessage"></textarea>
+
+          </td>
+        </tr>
+
+        {# email address #}
+        <tr>
+          <th>Email address</th>
+
+          <td>
+              <input type="email" id="email" name="email" placeholder="foo@bar.com" value="{{ user.core.email }}" />
+          </td>
+        </tr>
+
+       {# passphrase #}
+        <tr>
+          <th>Passphrase</th>
+
+          <td>
+          <p>
+          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" placeholder="Enter a new passphrase" />
+           <strong id="passphraseStrength"></strong>
+           </p>
+
+<p>
+          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" placeholder="Confirm the new passphrase" />
+           <strong id="passphraseMatch"></strong>
+</p>
+
+<p>
+           <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly />
+</p>
+
+<p>
+            <a id="createPassphrase" class="button button-orange">suggest a secure passphrase</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      </section> {# securitySettings #}
+
+  </form>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("user/settings/sidebar.twig") }}
+
+{% endblock %}
+
+
+{# U2F STUFF HERE
+    if ($Type === 'U2F-E') {
+        try {
+            $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
+            $app->dbOld->query("
+              INSERT INTO u2f
+                (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
+              Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
+            $Message = "U2F token registered";
+        } catch (Throwable $e) {
+            $Error = "Failed to register U2F token";
+        }
+    }
+
+    if ($Type === 'U2F-D') {
+        $app->dbOld->query("
+          DELETE FROM u2f
+          WHERE UserID = $UserID");
+        $Message = 'U2F tokens deregistered';
+    }
+
+$U2FRegs = [];
+$app->dbOld->query("
+  SELECT KeyHandle, PublicKey, Certificate, Counter
+  FROM u2f
+  WHERE UserID = $UserID");
+
+// Needs to be an array of objects, so we can't use to_array()
+while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $app->dbOld->next_record()) {
+    $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
+}
+#}

@@ -1,0 +1,62 @@
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="text" id="search" name="search" placeholder="Search the forums" />
+</form>
+
+
+<h3>Actions</h3>
+
+<form method="post">
+    {{ form_token(query.server.REQUEST_URI) }}
+
+    <input type="button" id="create" name="create" value="new thread" class="button-primary" />
+
+    <input type="button" id="unread" name="unread" value="unread" class="button-orange" />
+
+    <input type="button" id="subscribe" name="subscribe" value="subscribe" />
+</form>
+
+
+{% if latestTopics is defined %}
+<h3>Latest</h3>
+
+<ul>
+
+    {% for topic in latestTopics %}
+    <li>
+        <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+
+{% if topic.suggested_topics is defined %}
+<h3>Suggested</h3>
+
+<ul>
+
+    {% for topic in topic.suggested_topics %}
+    <li>
+        <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
+        <br />
+        {{ topic.last_posted_at|relativeTime }}
+    </li>
+    {% endfor %}
+
+</ul>
+{% endif %}
+
+
+<h3>Rules</h3>
+
+<p>
+    Please consider reading through the
+    <a href="/rules/chat">social norms</a>
+    before participating in the boards.
+    Thanks!
+</p>

@@ -1,8 +1,11 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 // Are they being tricky blighters?
-if (!$_POST['userid'] || !is_number($_POST['userid'])) {
+if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
     error(404);
 } elseif (!check_perms('users_mod')) {
     error(403);
@@ -28,7 +31,7 @@ $Artist = isset($_POST['Artist']) ? 1 : 0;
 
 $SecondaryClasses = isset($_POST['secondary_classes']) ? $_POST['secondary_classes'] : [];
 foreach ($SecondaryClasses as $i => $Val) {
-    if (!is_number($Val)) {
+    if (!is_numeric($Val)) {
         unset($SecondaryClasses[$i]);
     }
 }
@@ -50,18 +53,18 @@ if (isset($_POST['Uploaded']) && isset($_POST['Downloaded'])) {
         $Downloaded += max(-$Downloaded, Format::get_bytes($Arithmetic));
     }
 
-    if (!is_number($Uploaded) || !is_number($Downloaded)) {
+    if (!is_numeric($Uploaded) || !is_numeric($Downloaded)) {
         error(0);
     }
 }
 
 $BonusPoints = isset($_POST['BonusPoints']) ? $_POST['BonusPoints'] : 0;
-if (!is_number($BonusPoints)) {
+if (!is_numeric($BonusPoints)) {
     error(0);
 }
 
 $FLTokens = isset($_POST['FLTokens']) ? $_POST['FLTokens'] : 0;
-if (!is_number($FLTokens)) {
+if (!is_numeric($FLTokens)) {
     error(0);
 }
 
@@ -110,7 +113,7 @@ $HeavyUpdates = [];
 $LightUpdates = [];
 
 // Get user info from the database
-$DB->query("
+$app->dbOld->query("
   SELECT
     m.Username,
     m.IP,
@@ -159,11 +162,11 @@ $DB->query("
   WHERE m.ID = $UserID
   GROUP BY m.ID");
 
-if (!$DB->has_results()) { // If user doesn't exist
-    header("Location: log.php?search=User+$UserID");
+if (!$app->dbOld->has_results()) { // If user doesn't exist
+    Http::redirect("log.php?search=User+$UserID");
 }
 
-$Cur = $DB->next_record(MYSQLI_ASSOC, false);
+$Cur = $app->dbOld->next_record(MYSQLI_ASSOC, false);
 if ($_POST['comment_hash'] != $Cur['CommentHash']) {
     error("Somebody else has moderated this user since you loaded it. Please go back and refresh the page.");
 }
@@ -175,28 +178,22 @@ if (!check_perms('users_mod', $Cur['Class'])) {
     error();
 }
 
-if (!empty($_POST['donor_points_submit']) && !empty($_POST['donation_value']) && is_numeric($_POST['donation_value'])) {
-    Donations::regular_donate($UserID, $_POST['donation_value'], "Add Points", $_POST['donation_reason'], $_POST['donation_currency']);
-} elseif (!empty($_POST['donor_values_submit'])) {
-    Donations::update_rank($UserID, $_POST['donor_rank'], $_POST['total_donor_rank'], $_POST['reason']);
-}
-
 // If we're deleting the user, we can ignore all the other crap
 if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
-    Misc::write_log("User account $UserID (".$Cur['Username'].") was deleted by ".$LoggedUser['Username']);
+    Misc::write_log("User account $UserID (".$Cur['Username'].") was deleted by ".$app->user->core['username']);
 
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM users_main
       WHERE id = $UserID");
 
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM users_info
       WHERE UserID = $UserID");
 
-    $Cache->delete_value("user_info_$UserID");
+    $app->cache->delete("user_info_$UserID");
     Tracker::update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
 
-    header("Location: log.php?search=User+$UserID");
+    Http::redirect("log.php?search=User+$UserID");
     error();
 }
 
@@ -205,19 +202,19 @@ $UpdateSet = [];
 $EditSummary = [];
 $TrackerUserUpdates = array('passkey' => $Cur['torrent_pass']);
 
-$QueryID = G::$DB->get_query_id();
+$QueryID = $app->dbOld->get_query_id();
 
 if ($LockType == '---' || $LockedAccount == 0) {
     if ($Cur['Type']) {
-        $DB->query("DELETE FROM locked_accounts WHERE UserID = '" . $UserID . "'");
+        $app->dbOld->query("DELETE FROM locked_accounts WHERE UserID = '" . $UserID . "'");
         $EditSummary[] = 'Account unlocked';
-        $Cache->delete_value('user_' . $Cur['torrent_pass']);
+        $app->cache->delete('user_' . $Cur['torrent_pass']);
     }
 } elseif (!$Cur['Type'] || $Cur['Type'] != $LockType) {
-    $DB->query("INSERT INTO locked_accounts (UserID, Type)
+    $app->dbOld->query("INSERT INTO locked_accounts (UserID, Type)
                 VALUES ('" . $UserID . "', '" . $LockType . "')
                 ON DUPLICATE KEY UPDATE Type = '" . $LockType . "'");
-    $Cache->delete_value('user_' . $Cur['torrent_pass']);
+    $app->cache->delete('user_' . $Cur['torrent_pass']);
 
     if ($Cur['Type'] != $LockType) {
         $EditSummary[] = 'Account lock reason changed to ' . $LockType;
@@ -226,11 +223,11 @@ if ($LockType == '---' || $LockedAccount == 0) {
     }
 }
 
-$Cache->delete_value("user_info_" . $UserID);
-$DB->set_query_id($QueryID);
+$app->cache->delete("user_info_" . $UserID);
+$app->dbOld->set_query_id($QueryID);
 
 if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
-    $DB->query("
+    $app->dbOld->query("
       UPDATE users_info
       SET RatioWatchEnds = NULL, RatioWatchDownload = '0', RatioWatchTimes = '0'
       WHERE UserID = '$UserID'");
@@ -238,38 +235,38 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
 }
 
 if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM xbt_snatched
       WHERE uid = '$UserID'");
     $EditSummary[] = 'Snatch list cleared';
-    $Cache->delete_value("recent_snatches_$UserID");
+    $app->cache->delete("recent_snatches_$UserID");
 }
 
 if ($_POST['ResetDownloadList'] && check_perms('users_edit_reset_keys')) {
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM users_downloads
       WHERE UserID = '$UserID'");
     $EditSummary[] = 'Download list cleared';
 }
 
 if (($_POST['ResetSession'] || $_POST['LogOut']) && check_perms('users_logout')) {
-    $Cache->delete_value("user_info_$UserID");
-    $Cache->delete_value("user_info_heavy_$UserID");
-    $Cache->delete_value("user_stats_$UserID");
-    $Cache->delete_value("enabled_$UserID");
+    $app->cache->delete("user_info_$UserID");
+    $app->cache->delete("user_info_heavy_$UserID");
+    $app->cache->delete("user_stats_$UserID");
+    $app->cache->delete("enabled_$UserID");
 
     if ($_POST['LogOut']) {
-        $DB->query("
+        $app->dbOld->query("
           SELECT SessionID
           FROM users_sessions
           WHERE UserID = '$UserID'");
 
-        while (list($SessionID) = $DB->next_record()) {
-            $Cache->delete_value("session_{$UserID}_$SessionID");
+        while (list($SessionID) = $app->dbOld->next_record()) {
+            $app->cache->delete("session_{$UserID}_$SessionID");
         }
-        $Cache->delete_value("users_sessions_$UserID");
+        $app->cache->delete("users_sessions_$UserID");
 
-        $DB->query("
+        $app->dbOld->query("
           DELETE FROM users_sessions
           WHERE UserID = '$UserID'");
     }
@@ -278,44 +275,44 @@ if (($_POST['ResetSession'] || $_POST['LogOut']) && check_perms('users_logout'))
 // Start building SQL query and edit summary
 if ($Classes[$Class]['Level'] != $Cur['Class']
   && (
-      ($Classes[$Class]['Level'] < $LoggedUser['Class'] && check_perms('users_promote_below', $Cur['Class']))
-    || ($Classes[$Class]['Level'] <= $LoggedUser['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
+      ($Classes[$Class]['Level'] < $app->user->extra['Class'] && check_perms('users_promote_below', $Cur['Class']))
+    || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
   )
-  ) {
+) {
     $UpdateSet[] = "PermissionID = '$Class'";
-    $EditSummary[] = 'class changed to '.Users::make_class_string($Class);
+    $EditSummary[] = 'class changed to '.User::make_class_string($Class);
     $LightUpdates['PermissionID'] = $Class;
     $DeleteKeys = true;
 
-    $DB->query("
+    $app->dbOld->query("
       SELECT DISTINCT DisplayStaff
       FROM permissions
       WHERE ID = $Class
         OR ID = ".$ClassLevels[$Cur['Class']]['ID']);
 
-    if ($DB->record_count() === 2) {
+    if ($app->dbOld->record_count() === 2) {
         if ($Classes[$Class]['Level'] < $Cur['Class']) {
             $SupportFor = '';
         }
         $ClearStaffIDCache = true;
     }
-    $Cache->delete_value("donor_info_$UserID");
+    $app->cache->delete("donor_info_$UserID");
 }
 
 if ($Username != $Cur['Username'] && check_perms('users_edit_usernames', $Cur['Class'] - 1)) {
-    $DB->query("
+    $app->dbOld->query("
       SELECT ID
       FROM users_main
       WHERE Username = '$Username'");
 
-    if ($DB->next_record() > 0) {
-        list($UsedUsernameID) = $DB->next_record();
+    if ($app->dbOld->next_record() > 0) {
+        list($UsedUsernameID) = $app->dbOld->next_record();
         error("Username already in use by <a href=\"user.php?id=$UsedUsernameID\">$Username</a>");
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } elseif ($Username == '0' || $Username == '1') {
         error('You cannot set a username of "0" or "1".');
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Username = '$Username'";
@@ -328,7 +325,7 @@ if ($Title != db_string($Cur['Title']) && check_perms('users_edit_titles')) {
     // Using the unescaped value for the test to avoid confusion
     if (strlen($_POST['Title']) > 1024) {
         error("Custom titles have a maximum length of 1,024 characters.");
-        header("Location: user.php?id=$UserID");
+        Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Title = '$Title'";
@@ -355,7 +352,7 @@ if (count($DroppedClasses) > 0) {
     }
 
     $EditSummary[] = 'Secondary classes dropped: '.implode(', ', $ClassChanges);
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM users_levels
       WHERE UserID = '$UserID'
         AND PermissionID IN (".implode(',', $DroppedClasses).')');
@@ -381,7 +378,7 @@ if (count($AddedClasses) > 0) {
         $Values[] = "($UserID, $PermID)";
     }
 
-    $DB->query("
+    $app->dbOld->query("
       INSERT INTO users_levels (UserID, PermissionID)
       VALUES ".implode(', ', $Values));
 
@@ -397,26 +394,26 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
 }
 
 if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && (check_perms('users_edit_ratio')
-  || (check_perms('users_edit_own_ratio') && $UserID == $LoggedUser['ID']))) {
+  || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from ".Format::get_size($Cur['Uploaded']).' to '.Format::get_size($Uploaded);
-    $Cache->delete_value("user_stats_$UserID");
+    $app->cache->delete("user_stats_$UserID");
 }
 
 if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && (check_perms('users_edit_ratio')
-  || (check_perms('users_edit_own_ratio') && $UserID == $LoggedUser['ID']))) {
+  || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from ".Format::get_size($Cur['Downloaded']).' to '.Format::get_size($Downloaded);
-    $Cache->delete_value("user_stats_$UserID");
+    $app->cache->delete("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $LoggedUser['ID']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from ".$Cur['BonusPoints']." to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $LoggedUser['ID']))) {
+if ($FLTokens != $Cur['FLTokens'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from ".$Cur['FLTokens']." to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
@@ -433,7 +430,7 @@ if (check_perms('users_edit_badges')) {
     if (!empty($Badges)) {
         $query .= " AND BadgeID NOT IN (".implode(',', $Badges).")";
     }
-    $DB->query($query);
+    $app->dbOld->query($query);
 
     if (!empty($Badges)) {
         $query = "INSERT IGNORE INTO users_badges (UserID, BadgeID) VALUES ";
@@ -444,15 +441,15 @@ if (check_perms('users_edit_badges')) {
                 $query .= ", ";
             }
         }
-        $DB->query($query);
+        $app->dbOld->query($query);
     }
 
-    $Cache->delete_value("user_badges_".$UserID);
+    $app->cache->delete("user_badges_".$UserID);
 }
 
 if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]".$LoggedUser['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=".site_url()."wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]".$app->user->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
     $UpdateSet[] = "Warned = NOW() + INTERVAL $WarnLength WEEK";
     $Msg = "warned for $WarnLength $Weeks";
@@ -469,16 +466,16 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = null;
 } elseif ($Warned == 1 && $ExtendWarning != '---' && check_perms('users_warn')) {
     $Weeks = 'week' . ($ExtendWarning === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'Your warning has been extended', "Your warning has been extended by $ExtendWarning $Weeks by [user]".$LoggedUser['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'Your warning has been extended', "Your warning has been extended by $ExtendWarning $Weeks by [user]".$app->user->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
 
     $UpdateSet[] = "Warned = Warned + INTERVAL $ExtendWarning WEEK";
-    $DB->query("
+    $app->dbOld->query("
       SELECT Warned + INTERVAL $ExtendWarning WEEK
       FROM users_info
       WHERE UserID = '$UserID'");
 
-    list($WarnedUntil) = $DB->next_record();
+    list($WarnedUntil) = $app->dbOld->next_record();
     $Msg = "warning extended by $ExtendWarning $Weeks to $WarnedUntil";
 
     if ($WarnReason) {
@@ -489,15 +486,15 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = $WarnedUntil;
 } elseif ($Warned == 1 && $ExtendWarning == '---' && $ReduceWarning != '---' && check_perms('users_warn')) {
     $Weeks = 'week' . ($ReduceWarning === 1 ? '' : 's');
-    Misc::send_pm($UserID, 0, 'Your warning has been reduced', "Your warning has been reduced by $ReduceWarning $Weeks by [user]".$LoggedUser['Username']."[/user]. The reason given was:
+    Misc::send_pm($UserID, 0, 'Your warning has been reduced', "Your warning has been reduced by $ReduceWarning $Weeks by [user]".$app->user->core['username']."[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
     $UpdateSet[] = "Warned = Warned - INTERVAL $ReduceWarning WEEK";
-    $DB->query("
+    $app->dbOld->query("
       SELECT Warned - INTERVAL $ReduceWarning WEEK
       FROM users_info
       WHERE UserID = '$UserID'");
 
-    list($WarnedUntil) = $DB->next_record();
+    list($WarnedUntil) = $app->dbOld->next_record();
     $Msg = "warning reduced by $ReduceWarning $Weeks to $WarnedUntil";
 
     if ($WarnReason) {
@@ -508,7 +505,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = $WarnedUntil;
 }
 
-if ($SupportFor != db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $LoggedUser['ID']))) {
+if ($SupportFor != db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "SupportFor = '$SupportFor'";
     $EditSummary[] = "First-Line Support status changed to \"$SupportFor\"";
 }
@@ -524,7 +521,7 @@ if ($PermittedForums != db_string($Cur['PermittedForums']) && check_perms('users
     $ForumList = [];
 
     foreach ($ForumSet as $ForumID) {
-        if ($Forums[$ForumID]['MinClassCreate'] <= $LoggedUser['EffectiveClass']) {
+        if ($Forums[$ForumID]['MinClassCreate'] <= $app->user->extra['EffectiveClass']) {
             $ForumList[] = $ForumID;
         }
     }
@@ -633,11 +630,11 @@ if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
 
 if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any')) {
     $UpdateSet[] = "DisablePoints = '$DisablePoints'";
-    $EditSummary[] = BONUS_POINTS.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
+    $EditSummary[] = bonusPoints.' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePoints'] = $DisablePoints;
 
     if (!empty($UserReason)) {
-        Misc::send_pm($UserID, 0, 'Your '.BONUS_POINTS.'-earning ability has been disabled', "Your ".BONUS_POINTS."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
+        Misc::send_pm($UserID, 0, 'Your '.bonusPoints.'-earning ability has been disabled', "Your ".bonusPoints."-earning ability has been disabled. The reason given was: [quote]{$UserReason}[/quote] If you would like to discuss this, please join ".DISABLED_CHAN.' on our IRC network. Instructions can be found [url='.site_url().'wiki.php?action=article&amp;name=IRC+-+How+to+join]here[/url].');
     }
 }
 
@@ -677,7 +674,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
         Tools::disable_users($UserID, '', 1);
         $TrackerUserUpdates = [];
     } elseif ($EnableUser == '1') {
-        $Cache->increment('stats_user_count');
+        $app->cache->increment('stats_user_count');
         $VisibleTrIP = ($Visible && Crypto::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
         Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
@@ -687,7 +684,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
             $UpdateSet[] = "m.can_leech = '1'";
             $UpdateSet[] = "i.RatioWatchDownload = '0'";
         } else {
-            $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.number_format($Cur['RequiredRatio'], 2).')';
+            $EnableStr .= ' (Ratio: '.Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false).', RR: '.\Gazelle\Text::float($Cur['RequiredRatio'], 2).')';
             if ($Cur['RatioWatchEnds']) {
                 $UpdateSet[] = "i.RatioWatchEnds = NOW()";
                 $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
@@ -701,22 +698,22 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
         $LightUpdates['Enabled'] = 1;
     }
     $EditSummary[] = $EnableStr;
-    $Cache->replace_value("enabled_$UserID", $EnableUser, 0);
+    $app->cache->set("enabled_$UserID", $EnableUser, 0);
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
-    $Passkey = db_string(Users::make_secret());
+    $Passkey = db_string(\Gazelle\Text::random());
     $UpdateSet[] = "torrent_pass = '$Passkey'";
     $EditSummary[] = 'passkey reset';
     $HeavyUpdates['torrent_pass'] = $Passkey;
     $TrackerUserUpdates['passkey'] = $Passkey;
-    $Cache->delete_value('user_'.$Cur['torrent_pass']);
+    $app->cache->delete('user_'.$Cur['torrent_pass']);
     // MUST come after the case for updating can_leech
     Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
-    $Authkey = db_string(Users::make_secret());
+    $Authkey = db_string(\Gazelle\Text::random());
     $UpdateSet[] = "AuthKey = '$Authkey'";
     $EditSummary[] = 'authkey reset';
     $HeavyUpdates['AuthKey'] = $Authkey;
@@ -724,55 +721,55 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    Misc::send_email($HackedEmail, "Your $ENV->SITE_NAME account", "Your $ENV->SITE_NAME account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    \Gazelle\App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
-    $DB->query("
+    $app->dbOld->query("
       SELECT ID, Uploaded, Downloaded
       FROM users_main
       WHERE Username LIKE '$MergeStatsFrom'");
 
-    if ($DB->has_results()) {
-        list($MergeID, $MergeUploaded, $MergeDownloaded) = $DB->next_record();
-        $DB->query("
+    if ($app->dbOld->has_results()) {
+        list($MergeID, $MergeUploaded, $MergeDownloaded) = $app->dbOld->next_record();
+        $app->dbOld->query("
           UPDATE users_main AS um
             JOIN users_info AS ui ON um.ID = ui.UserID
           SET
             um.Uploaded = 0,
             um.Downloaded = 0,
-            ui.AdminComment = CONCAT('".sqltime().' - Stats (Uploaded: '.Format::get_size($MergeUploaded).', Downloaded: '.Format::get_size($MergeDownloaded).', Ratio: '.Format::get_ratio($MergeUploaded, $MergeDownloaded).') merged into '.site_url()."user.php?id=$UserID (".$Cur['Username'].') by '.$LoggedUser['Username']."\n\n', ui.AdminComment)
+            ui.AdminComment = CONCAT('".sqltime().' - Stats (Uploaded: '.Format::get_size($MergeUploaded).', Downloaded: '.Format::get_size($MergeDownloaded).', Ratio: '.Format::get_ratio($MergeUploaded, $MergeDownloaded).') merged into '.site_url()."user.php?id=$UserID (".$Cur['Username'].') by '.$app->user->core['username']."\n\n', ui.AdminComment)
           WHERE ID = $MergeID");
 
         $UpdateSet[] = "Uploaded = Uploaded + '$MergeUploaded'";
         $UpdateSet[] = "Downloaded = Downloaded + '$MergeDownloaded'";
         $EditSummary[] = 'stats merged from '.site_url()."user.php?id=$MergeID ($MergeStatsFrom) (previous stats: Uploaded: ".Format::get_size($Cur['Uploaded']).', Downloaded: '.Format::get_size($Cur['Downloaded']).', Ratio: '.Format::get_ratio($Cur['Uploaded'], $Cur['Downloaded']).')';
-        $Cache->delete_value("user_stats_$UserID");
-        $Cache->delete_value("user_stats_$MergeID");
+        $app->cache->delete("user_stats_$UserID");
+        $app->cache->delete("user_stats_$MergeID");
     }
 }
 
 if ($Pass && check_perms('users_edit_password')) {
-    $UpdateSet[] = "PassHash = '".db_string(Users::make_sec_hash($Pass))."'";
+    $UpdateSet[] = "PassHash = '".db_string(Auth::makeHash($Pass))."'";
     $EditSummary[] = 'password reset';
 
-    $Cache->delete_value("user_info_$UserID");
-    $Cache->delete_value("user_info_heavy_$UserID");
-    $Cache->delete_value("user_stats_$UserID");
-    $Cache->delete_value("enabled_$UserID");
+    $app->cache->delete("user_info_$UserID");
+    $app->cache->delete("user_info_heavy_$UserID");
+    $app->cache->delete("user_stats_$UserID");
+    $app->cache->delete("enabled_$UserID");
 
-    $DB->query("
+    $app->dbOld->query("
       SELECT SessionID
       FROM users_sessions
       WHERE UserID = '$UserID'");
 
-    while (list($SessionID) = $DB->next_record()) {
-        $Cache->delete_value("session_{$UserID}_$SessionID");
+    while (list($SessionID) = $app->dbOld->next_record()) {
+        $app->cache->delete("session_{$UserID}_$SessionID");
     }
 
-    $Cache->delete_value("users_sessions_$UserID");
+    $app->cache->delete("users_sessions_$UserID");
 
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM users_sessions
       WHERE UserID = '$UserID'");
 }
@@ -782,7 +779,7 @@ if (empty($UpdateSet) && empty($EditSummary)) {
         if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && check_perms('users_disable_any')) {
             $UpdateSet[] = "AdminComment = '$AdminComment'";
         } else {
-            header("Location: user.php?id=$UserID");
+            Http::redirect("user.php?id=$UserID");
             error();
         }
     } else {
@@ -795,22 +792,24 @@ if (count($TrackerUserUpdates) > 1) {
 }
 
 if ($DeleteKeys) {
-    $Cache->delete_value("user_info_$UserID");
-    $Cache->delete_value("user_info_heavy_$UserID");
+    $app->cache->delete("user_info_$UserID");
+    $app->cache->delete("user_info_heavy_$UserID");
 } else {
-    $Cache->begin_transaction("user_info_$UserID");
-    $Cache->update_row(false, $LightUpdates);
-    $Cache->commit_transaction(0);
+    /*
+    $app->cacheOld->begin_transaction("user_info_$UserID");
+    $app->cacheOld->update_row(false, $LightUpdates);
+    $app->cacheOld->commit_transaction(0);
 
-    $Cache->begin_transaction("user_info_heavy_$UserID");
-    $Cache->update_row(false, $HeavyUpdates);
-    $Cache->commit_transaction(0);
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, $HeavyUpdates);
+    $app->cacheOld->commit_transaction(0);
+    */
 }
 
 $Summary = '';
 // Create edit summary
 if ($EditSummary) {
-    $Summary = implode(', ', $EditSummary) . ' by ' . $LoggedUser['Username'];
+    $Summary = implode(', ', $EditSummary) . ' by ' . $app->user->core['username'];
     $Summary = sqltime() . ' - ' . ucfirst($Summary);
 
     if ($Reason) {
@@ -820,7 +819,7 @@ if ($EditSummary) {
 
     $Summary .= "\n\n$AdminComment";
 } elseif (empty($UpdateSet) && empty($EditSummary) && $Cur['AdminComment'] == $_POST['AdminComment']) {
-    $Summary = sqltime() . ' - Comment added by ' . $LoggedUser['Username'] . ': ' . "$Reason\n\n";
+    $Summary = sqltime() . ' - Comment added by ' . $app->user->core['username'] . ': ' . "$Reason\n\n";
 }
 
 if (!empty($Summary)) {
@@ -844,37 +843,37 @@ $SQL = "
 
 // Perform update
 //die($SQL);
-$DB->query($SQL);
+$app->dbOld->query($SQL);
 
 if (isset($ClearStaffIDCache)) {
-    $Cache->delete_value('staff_ids');
+    $app->cache->delete('staff_ids');
 }
 
 // redirect to user page
-header("location: user.php?id=$UserID");
+Http::redirect("user.php?id=$UserID");
 
 function translateUserStatus($Status)
 {
     switch ($Status) {
-    case 0:
-      return 'Unconfirmed';
-    case 1:
-      return 'Enabled';
-    case 2:
-      return 'Disabled';
-    default:
-      return $Status;
-  }
+        case 0:
+            return 'Unconfirmed';
+        case 1:
+            return 'Enabled';
+        case 2:
+            return 'Disabled';
+        default:
+            return $Status;
+    }
 }
 
 function translateLeechStatus($Status)
 {
     switch ($Status) {
-    case 0:
-      return 'Disabled';
-    case 1:
-      return 'Enabled';
-    default:
-      return $Status;
-  }
+        case 0:
+            return 'Disabled';
+        case 1:
+            return 'Enabled';
+        default:
+            return $Status;
+    }
 }

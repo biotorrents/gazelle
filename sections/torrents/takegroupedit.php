@@ -1,5 +1,8 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
+
+
+$app = \Gazelle\App::go();
 
 /**
  * Input validation
@@ -13,18 +16,18 @@ if (!check_perms('site_edit_wiki')) {
 }
 
 # Variables for database input
-$user_id = (int) $LoggedUser['ID'];
+$user_id = (int) $app->user->core['id'];
 $group_id = (int) $_REQUEST['groupid'];
-Security::checkInt($user_id, $group_id);
+Security::int($user_id, $group_id);
 
 # If we're reverting to a previous revision
 if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     $revision_id = (int) $_GET['revisionid'];
-    Security::checkInt($revision_id);
+    Security::int($revision_id);
 
     # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {
-        View::show_header();
+        View::header();
     } ?>
 
 <div class="center">
@@ -38,7 +41,7 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="get">
       <input type="hidden" name="action" value="revert" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="confirm" value="true" />
       <input type="hidden" name="groupid" value="<?=$group_id?>" />
       <input type="hidden" name="revisionid"
@@ -55,7 +58,7 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
 </div>
 
 <?php
-    View::show_footer();
+    View::footer();
     error();
 }
 
@@ -65,10 +68,10 @@ else {
     $description = $_POST['body'];
     $picture = $_POST['image'];
 
-    if (($GroupInfo = $Cache->get_value('torrents_details_'.$group_id)) && !isset($GroupInfo[0][0])) {
+    if (($GroupInfo = $app->cache->get('torrents_details_'.$group_id)) && !isset($GroupInfo[0][0])) {
         $GroupCategoryID = $GroupInfo[0]['category_id'];
     } else {
-        $DB->query("
+        $app->dbOld->query("
         SELECT
           `category_id`
         FROM
@@ -76,21 +79,20 @@ else {
         WHERE
           `id` = '$group_id'
         ");
-        list($GroupCategoryID) = $DB->next_record();
+        list($GroupCategoryID) = $app->dbOld->next_record();
     }
 
     // Trickery
-    if (!preg_match("/^".IMAGE_REGEX."$/i", $picture)) {
+    if (!preg_match("/{$app->env->regexImage}/i", $picture)) {
         $picture = '';
     }
 
-    ImageTools::blacklisted($picture);
     $Summary = db_string($_POST['summary']);
 }
 
 // Insert revision
 if (empty($revision_id)) { // edit
-  $DB->prepare_query("
+    $app->dbOld->prepared_query("
   INSERT INTO `wiki_torrents`(
     `PageID`,
     `Body`,
@@ -108,9 +110,8 @@ if (empty($revision_id)) { // edit
     NOW()
   )
   ");
-    $DB->exec_prepared_query();
 } else { // revert
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `PageID`,
       `Body`,
@@ -120,13 +121,13 @@ if (empty($revision_id)) { // edit
     WHERE
       `RevisionID` = '$revision_id'
     ");
-    list($PossibleGroupID, $Body, $Image) = $DB->next_record();
+    list($PossibleGroupID, $Body, $Image) = $app->dbOld->next_record();
 
     if ($PossibleGroupID !== $group_id) {
         error(404);
     }
 
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO `wiki_torrents`(
       `PageID`,
       `Body`,
@@ -149,12 +150,12 @@ if (empty($revision_id)) { // edit
     ");
 }
 
-$revision_id = $DB->inserted_id();
+$revision_id = $app->dbOld->inserted_id();
 $description = db_string($description);
 $picture = db_string($picture);
 
 // Update torrents table (technically, we don't need the revision_id column, but we can use it for a join which is nice and fast)
-$DB->query("
+$app->dbOld->query("
 UPDATE
   `torrents_group`
 SET
@@ -166,10 +167,10 @@ WHERE
 ");
 
 // There we go, all done!
-$Cache->delete_value('torrents_details_'.$group_id);
-$Cache->delete_value('torrent_group_'.$group_id);
+$app->cache->delete('torrents_details_'.$group_id);
+$app->cache->delete('torrent_group_'.$group_id);
 
-$DB->query("
+$app->dbOld->query("
 SELECT
   `CollageID`
 FROM
@@ -178,14 +179,14 @@ WHERE
   `GroupID` = '$group_id'
 ");
 
-if ($DB->has_results()) {
-    while (list($CollageID) = $DB->next_record()) {
-        $Cache->delete_value('collage_'.$CollageID);
+if ($app->dbOld->has_results()) {
+    while (list($CollageID) = $app->dbOld->next_record()) {
+        $app->cache->delete('collage_'.$CollageID);
     }
 }
 
 // Fix Recent Uploads/Downloads for image change
-$DB->query("
+$app->dbOld->query("
 SELECT DISTINCT
   `UserID`
 FROM
@@ -197,25 +198,28 @@ WHERE
   tg.`id` = '$group_id'
 ");
 
-$user_ids = $DB->collect('UserID');
+$user_ids = $app->dbOld->collect('UserID');
 foreach ($user_ids as $user_id) {
-    $RecentUploads = $Cache->get_value('recent_uploads_'.$user_id);
+    $RecentUploads = $app->cache->get('recent_uploads_'.$user_id);
 
     if (is_array($RecentUploads)) {
         foreach ($RecentUploads as $Key => $Recent) {
             if ($Recent['id'] === $group_id) {
                 if ($Recent['picture'] !== $picture) {
                     $Recent['picture'] = $picture;
-                    $Cache->begin_transaction('recent_uploads_'.$user_id);
-                    $Cache->update_row($Key, $Recent);
-                    $Cache->commit_transaction(0);
+
+                    /*
+                    $app->cacheOld->begin_transaction('recent_uploads_'.$user_id);
+                    $app->cacheOld->update_row($Key, $Recent);
+                    $app->cacheOld->commit_transaction(0);
+                    */
                 }
             }
         }
     }
 }
 
-$DB->query("
+$app->dbOld->query("
 SELECT
   `ID`
 FROM
@@ -224,9 +228,9 @@ WHERE
   `GroupID` = '$group_id'
 ");
 
-if ($DB->has_results()) {
-    $TorrentIDs = implode(',', $DB->collect('ID'));
-    $DB->query("
+if ($app->dbOld->has_results()) {
+    $TorrentIDs = implode(',', $app->dbOld->collect('ID'));
+    $app->dbOld->query("
     SELECT DISTINCT
       `uid`
     FROM
@@ -235,18 +239,21 @@ if ($DB->has_results()) {
       `fid` IN($TorrentIDs)
     ");
 
-    $Snatchers = $DB->collect('uid');
+    $Snatchers = $app->dbOld->collect('uid');
     foreach ($Snatchers as $user_id) {
-        $RecentSnatches = $Cache->get_value('recent_snatches_'.$user_id);
+        $RecentSnatches = $app->cache->get('recent_snatches_'.$user_id);
 
         if (is_array($RecentSnatches)) {
             foreach ($RecentSnatches as $Key => $Recent) {
                 if ($Recent['id'] == $group_id) {
                     if ($Recent['picture'] !== $picture) {
                         $Recent['picture'] = $picture;
-                        $Cache->begin_transaction('recent_snatches_'.$user_id);
-                        $Cache->update_row($Key, $Recent);
-                        $Cache->commit_transaction(0);
+
+                        /*
+                        $app->cacheOld->begin_transaction('recent_snatches_'.$user_id);
+                        $app->cacheOld->update_row($Key, $Recent);
+                        $app->cacheOld->commit_transaction(0);
+                        */
                     }
                 }
             }
@@ -254,4 +261,4 @@ if ($DB->has_results()) {
     }
 }
 
-header("Location: torrents.php?id=$group_id");
+Http::redirect("torrents.php?id=$group_id");

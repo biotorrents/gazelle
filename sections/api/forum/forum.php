@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 # todo: Go through line by line
 
@@ -16,15 +19,15 @@ Things to expect in $_GET:
 
 // Check for lame SQL injection attempts
 $ForumID = $_GET['forumid'];
-if (!is_number($ForumID)) {
+if (!is_numeric($ForumID)) {
     echo json_encode(array('status' => 'failure'));
     error();
 }
 
 if (isset($_GET['pp'])) {
     $PerPage = intval($_GET['pp']);
-} elseif (isset($LoggedUser['PostsPerPage'])) {
-    $PerPage = $LoggedUser['PostsPerPage'];
+} elseif (isset($app->user->extra['PostsPerPage'])) {
+    $PerPage = $app->user->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
@@ -36,10 +39,10 @@ list($Page, $Limit) = Format::page_limit(TOPICS_PER_PAGE);
 // Caching anything beyond the first page of any given forum is just wasting ram
 // users are more likely to search then to browse to page 2
 if ($Page === 1) {
-    list($Forum, , , $Stickies) = $Cache->get_value("forums_$ForumID");
+    list($Forum, , , $Stickies) = $app->cache->get("forums_$ForumID");
 }
 if (!isset($Forum) || !is_array($Forum)) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       ID,
       Title,
@@ -54,15 +57,15 @@ if (!isset($Forum) || !is_array($Forum)) {
     WHERE ForumID = '$ForumID'
     ORDER BY IsSticky DESC, LastPostTime DESC
     LIMIT $Limit"); // Can be cached until someone makes a new post
-    $Forum = $DB->to_array('ID', MYSQLI_ASSOC, false);
+    $Forum = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
     if ($Page === 1) {
-        $DB->query("
+        $app->dbOld->query("
       SELECT COUNT(ID)
       FROM forums_topics
       WHERE ForumID = '$ForumID'
         AND IsSticky = '1'");
-        list($Stickies) = $DB->next_record();
-        $Cache->cache_value("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
+        list($Stickies) = $app->dbOld->next_record();
+        $app->cache->set("forums_$ForumID", array($Forum, '', 0, $Stickies), 0);
     }
 }
 
@@ -71,21 +74,21 @@ if (!isset($Forums[$ForumID])) {
 }
 // Make sure they're allowed to look at the page
 if (!check_perms('site_moderate_forums')) {
-    if (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] === 0) {
+    if (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] === 0) {
         json_die("failure", "insufficient permissions to view page");
     }
 }
-if ($LoggedUser['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $LoggedUser['Class']) {
+if ($app->user->extra['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $app->user->extra['Class']) {
     json_die("failure", "insufficient permissions to view page");
 }
 
-$ForumName = display_str($Forums[$ForumID]['Name']);
+$ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
 $JsonSpecificRules = [];
 foreach ($Forums[$ForumID]['SpecificRules'] as $ThreadIDs) {
     $Thread = Forums::get_thread_info($ThreadIDs);
     $JsonSpecificRules[] = array(
     'threadId' => (int)$ThreadIDs,
-    'thread' => display_str($Thread['Title'])
+    'thread' => \Gazelle\Text::esc($Thread['Title'])
   );
 }
 
@@ -102,7 +105,7 @@ if (count($Forum) === 0) {
     );
 } else {
     // forums_last_read_topics is a record of the last post a user read in a topic, and what page that was on
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -116,13 +119,13 @@ if (count($Forum) === 0) {
       ) AS Page
     FROM forums_last_read_topics AS l
     WHERE l.TopicID IN(".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$LoggedUser['ID'].'\'');
+      AND l.UserID = \''.$app->user->core['id'].'\'');
 
     // Turns the result set into a multi-dimensional array, with
     // forums_last_read_topics.TopicID as the key.
     // This is done here so we get the benefit of the caching, and we
     // don't have to make a database query for each topic on the page
-    $LastRead = $DB->to_array('TopicID');
+    $LastRead = $app->dbOld->to_array('TopicID');
 
     $JsonTopics = [];
     foreach ($Forum as $Topic) {
@@ -131,15 +134,15 @@ if (count($Forum) === 0) {
         // Handle read/unread posts - the reason we can't cache the whole page
         if ((!$Locked || $Sticky)
         && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID)
-          && strtotime($LastTime) > $LoggedUser['CatchupTime'])
+          && strtotime($LastTime) > $app->user->extra['CatchupTime'])
     ) {
             $Read = 'unread';
         } else {
             $Read = 'read';
         }
-        $UserInfo = Users::user_info($AuthorID);
+        $UserInfo = User::user_info($AuthorID);
         $AuthorName = $UserInfo['Username'];
-        $UserInfo = Users::user_info($LastAuthorID);
+        $UserInfo = User::user_info($LastAuthorID);
         $LastAuthorName = $UserInfo['Username'];
         // Bug fix for no last time available
         if (!$LastTime) {
@@ -148,7 +151,7 @@ if (count($Forum) === 0) {
 
         $JsonTopics[] = array(
       'topicId' => (int)$TopicID,
-      'title' => display_str($Title),
+      'title' => \Gazelle\Text::esc($Title),
       'authorId' => (int)$AuthorID,
       'authorName' => $AuthorName,
       'locked' => $Locked === 1,

@@ -1,13 +1,15 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('users_mod')) {
     error(403);
 }
 
 if (!FEATURE_EMAIL_REENABLE) {
     // This feature is disabled
-    header('Location: tools.php');
+    Http::redirect("tools.php");
     error();
 }
 
@@ -18,7 +20,7 @@ foreach (array('username', 'ip', 'submitted_between', 'submitted_between', 'subm
     }
 }
 
-View::show_header('Enable Requests', 'enable_requests');
+View::header('Enable Requests', 'enable_requests');
 
 // Pagination
 $RequestsPerPage = 25;
@@ -124,7 +126,7 @@ if (!$ShowChecked || count($Where) === 0) {
     $Where[] = '`Outcome` IS NULL';
 }
 
-$QueryID = $DB->query("
+$QueryID = $app->dbOld->query("
 SELECT SQL_CALC_FOUND_ROWS
   uer.`ID`,
   uer.`UserID`,
@@ -148,9 +150,9 @@ LIMIT
   $Limit
 ");
 
-$DB->query("SELECT FOUND_ROWS()");
-list($NumResults) = $DB->next_record();
-$DB->set_query_id($QueryID);
+$app->dbOld->query("SELECT FOUND_ROWS()");
+list($NumResults) = $app->dbOld->next_record();
+$app->dbOld->set_query_id($QueryID);
 ?>
 
 <div class="header">
@@ -193,7 +195,7 @@ $DB->set_query_id($QueryID);
         </tr>
 
         <?php
-        $DB->query("
+        $app->dbOld->query("
         SELECT
           COUNT(`CheckedBy`),
           `CheckedBy`
@@ -209,10 +211,10 @@ $DB->set_query_id($QueryID);
         LIMIT 50
         ");
 
-        while (list($Checked, $UserID) = $DB->next_record()) { ?>
+        while (list($Checked, $UserID) = $app->dbOld->next_record()) { ?>
         <tr>
             <td>
-                <?=Users::format_username($UserID)?>
+                <?=User::format_username($UserID)?>
             </td>
 
             <td>
@@ -221,7 +223,7 @@ $DB->set_query_id($QueryID);
         </tr>
         <?php
         }
-    $DB->set_query_id($QueryID); ?>
+    $app->dbOld->set_query_id($QueryID); ?>
     </table>
 
     <form action="" method="GET" id="search_form" <?=!isset($_GET['search']) ? 'class="hidden"' : ''?>>
@@ -428,7 +430,7 @@ if ($NumResults > 0) { ?>
     </tr>
 
     <?php
-    while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $DB->next_record()) {
+    while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $app->dbOld->next_record()) {
         ?>
     <tr class="row" id="row_<?=$ID?>">
         <td class="center">
@@ -438,19 +440,19 @@ if ($NumResults > 0) { ?>
         </td>
 
         <td>
-            <?=Users::format_username($UserID)?>
+            <?=User::format_username($UserID)?>
         </td>
 
         <td>
-            <?=display_str(Crypto::decrypt($Email))?>
+            <?=\Gazelle\Text::esc(Crypto::decrypt($Email))?>
         </td>
 
         <td>
-            <?=display_str(Crypto::decrypt($IP))?>
+            <?=\Gazelle\Text::esc(Crypto::decrypt($IP))?>
         </td>
 
         <td>
-            <?=display_str($UserAgent)?>
+            <?=\Gazelle\Text::esc($UserAgent)?>
         </td>
 
         <td>
@@ -477,7 +479,7 @@ if ($NumResults > 0) { ?>
         </td>
         <?php } else { ?>
         <td>
-            <?=Users::format_username($CheckedBy);?>
+            <?=User::format_username($CheckedBy);?>
         </td>
 
         <td>
@@ -517,4 +519,4 @@ if ($NumResults > 0) { ?>
     No new pending auto enable requests <?=($_GET['view'] === 'main') ? '' : ' in this view' ?>
 </h2>
 <?php }
-View::show_footer();
+View::footer();

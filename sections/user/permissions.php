@@ -1,24 +1,24 @@
 <?php
 declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 // todo: Redo HTML
 if (!check_perms('admin_manage_permissions')) {
     error(403);
 }
-if (!isset($_REQUEST['userid']) || !is_number($_REQUEST['userid'])) {
+if (!isset($_REQUEST['userid']) || !is_numeric($_REQUEST['userid'])) {
     error(404);
 }
 
-include(SERVER_ROOT."/classes/permissions_form.php");
+list($UserID, $Username, $PermissionID) = array_values(User::user_info($_REQUEST['userid']));
 
-list($UserID, $Username, $PermissionID) = array_values(Users::user_info($_REQUEST['userid']));
-
-$DB->query("
+$app->dbOld->query("
   SELECT CustomPermissions
   FROM users_main
   WHERE ID = '$UserID'");
 
-list($Customs) = $DB->next_record(MYSQLI_NUM, false);
+list($Customs) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 
 $Defaults = Permissions::get_permissions_for_user($UserID, []);
@@ -27,6 +27,7 @@ $Delta = [];
 if (isset($_POST['action'])) {
     authorize();
 
+    $PermissionsArray = Permissions::listPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {
         $Setting = isset($_POST["perm_$Perm"]) ? 1 : 0;
         $Default = isset($Defaults[$Perm]) ? 1 : 0;
@@ -34,15 +35,18 @@ if (isset($_POST['action'])) {
             $Delta[$Perm] = $Setting;
         }
     }
-    if (!is_number($_POST['maxcollages']) && !empty($_POST['maxcollages'])) {
+    if (!is_numeric($_POST['maxcollages']) && !empty($_POST['maxcollages'])) {
         error("Please enter a valid number of extra personal collages");
     }
     $Delta['MaxCollages'] = $_POST['maxcollages'];
 
-    $Cache->begin_transaction("user_info_heavy_$UserID");
-    $Cache->update_row(false, array('CustomPermissions' => $Delta));
-    $Cache->commit_transaction(0);
-    $DB->query("
+    /*
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, array('CustomPermissions' => $Delta));
+    $app->cacheOld->commit_transaction(0);
+    */
+
+    $app->dbOld->query("
     UPDATE users_main
     SET CustomPermissions = '".db_string(serialize($Delta))."'
     WHERE ID = '$UserID'");
@@ -68,7 +72,7 @@ function display_perm($Key, $Title)
     echo "$Perm\n";
 }
 
-View::show_header("$Username &gt; Permissions");
+View::header("$Username &gt; Permissions");
 ?>
 <script type="text/javascript">
   //<![CDATA[
@@ -83,7 +87,7 @@ View::show_header("$Username &gt; Permissions");
   //]]>
 </script>
 <div class="header">
-  <h2><?=Users::format_username($UserID, false, false, false)?> &gt;
+  <h2><?=User::format_username($UserID, false, false, false)?> &gt;
     Permissions</h2>
   <div class="linkbox">
     <a href="#" onclick="reset(); return false;" class="brackets">Defaults</a>
@@ -100,7 +104,7 @@ View::show_header("$Username &gt; Permissions");
 </div>
 <br />
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="">
-  <table class="permission_head skeleton-fix">
+  <table class="permission_head skeletonFix">
     <tr>
       <td class="label">Extra personal collages</td>
       <td><input type="text" name="maxcollages" size="5"
@@ -110,11 +114,11 @@ View::show_header("$Username &gt; Permissions");
   </table>
   <input type="hidden" name="action" value="permissions" />
   <input type="hidden" name="auth"
-    value="<?=$LoggedUser['AuthKey']?>" />
+    value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" name="id"
     value="<?=$_REQUEST['userid']?>" />
   <?php
 permissions_form();
 ?>
 </form>
-<?php View::show_footer();
+<?php View::footer();

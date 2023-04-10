@@ -5,7 +5,9 @@
  * This is the page that displays the request to the end user after being created.
  */
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+$app = \Gazelle\App::go();
+
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(0);
 }
 
@@ -63,13 +65,13 @@ $DisplayLink .= $Extra;
 $RequestVotes = Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0')));
-$UserCanEdit = (!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2);
+$UserCanEdit = (!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
-// Comments (must be loaded before View::show_header so that subscriptions and quote notifications are handled properly)
+// Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('requests', $RequestID);
 
-View::show_header(
+View::header(
     "View request: $Title",
     'comments,requests,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
@@ -86,11 +88,11 @@ View::show_header(
       <a href="requests.php?action=edit&amp;id=<?=$RequestID?>"
         class="brackets">Edit</a>
       <?php }
-  if ($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) {?>
+      if ($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) {?>
       <a href="requests.php?action=delete&amp;id=<?=$RequestID?>"
         class="brackets">Delete</a>
       <?php }
-  if (Bookmarks::has_bookmarked('request', $RequestID)) { ?>
+      if (Bookmarks::isBookmarked('request', $RequestID)) { ?>
       <a href="#" id="bookmarklink_request_<?=$RequestID?>"
         onclick="Unbookmark('request', <?=$RequestID?>, 'Bookmark'); return false;"
         class="brackets">Remove bookmark</a>
@@ -108,7 +110,7 @@ View::show_header(
       <a href="upload.php?requestid=<?=$RequestID?><?=($Request['GroupID'] ? "&amp;groupid=$Request[GroupID]" : '')?>"
         class="brackets">Upload request</a>
       <?php }
-  if (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0'))) { ?>
+      if (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0'))) { ?>
       <a href="reports.php?action=report&amp;type=request_update&amp;id=<?=$RequestID?>"
         class="brackets">Request update</a>
       <?php } ?>
@@ -124,7 +126,7 @@ $encoded_artist = urlencode($encoded_artist);
 ?>
     </div>
   </div>
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <?php if ($Request['CategoryID'] !== '0') { ?>
     <div class="box box_image box_image_albumart box_albumart">
       <!-- .box_albumart deprecated -->
@@ -134,43 +136,43 @@ $encoded_artist = urlencode($encoded_artist);
     if (!empty($Request['Image'])) {
         ?>
         <img style="width: 100%;"
-          src="<?=ImageTools::process($Request['Image'], 'thumb')?>"
-          lightbox-img="<?=ImageTools::process($Request['Image'])?>"
+          src="<?=\Gazelle\Images::process($Request['Image'], 'thumb')?>"
+          lightbox-img="<?=\Gazelle\Images::process($Request['Image'])?>"
           alt="<?=$Title?>" class="lightbox-init" />
         <?php
     } else { ?>
         <img style="width: 100%;"
-          src="<?=STATIC_SERVER?>common/noartwork/music.png"
+          src="<?=staticServer?>common/noartwork.png"
           alt="<?=$CategoryName?>" class="tooltip"
           title="<?=$CategoryName?>" height="220" border="0" />
         <?php } ?>
       </div>
     </div>
     <?php
-  }
+    }
 
   $ArtistVariant = "Author(s)";
-  /*
-  switch ($CategoryName) {
-    case "Movies":
-      $ArtistVariant = "Idols";
-      break;
-    case "Anime":
-      $ArtistVariant = "Studios";
-      break;
-    case "Manga":
-      $ArtistVariant = "Artists";
-      break;
-    case "Games":
-      $ArtistVariant = "Developers";
-      break;
-    case "Other":
-      $ArtistVariant = "Creators";
-      break;
-    default:
-      $ArtistVariant = "Artists";
-  }
-  */
+/*
+switch ($CategoryName) {
+  case "Movies":
+    $ArtistVariant = "Idols";
+    break;
+  case "Anime":
+    $ArtistVariant = "Studios";
+    break;
+  case "Manga":
+    $ArtistVariant = "Artists";
+    break;
+  case "Games":
+    $ArtistVariant = "Developers";
+    break;
+  case "Other":
+    $ArtistVariant = "Creators";
+    break;
+  default:
+    $ArtistVariant = "Artists";
+}
+*/
 ?>
     <div class="box box_artists">
       <div class="head"><strong><?= $ArtistVariant ?></strong></div>
@@ -186,119 +188,97 @@ $encoded_artist = urlencode($encoded_artist);
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
         <?php foreach ($Request['Tags'] as $TagID => $TagName) {
-    $Split = Tags::get_name_and_class($TagName); ?>
+            $Split = Tags::get_name_and_class($TagName); ?>
         <li>
           <a class="<?= $Split['class']?>"
-            href="torrents.php?taglist=<?=$TagName?>"><?=display_str($Split['name']) ?></a>
+            href="torrents.php?taglist=<?=$TagName?>"><?=\Gazelle\Text::esc($Split['name']) ?></a>
           <br style="clear: both;" />
         </li>
         <?php
-} ?>
+        } ?>
       </ul>
     </div>
     <div class="box box_votes">
       <div class="head"><strong>Top Contributors</strong></div>
       <table class="layout" id="request_top_contrib">
         <?php
-  $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
-  $ViewerVote = false;
-  for ($i = 0; $i < $VoteMax; $i++) {
-      $User = array_shift($RequestVotes['Voters']);
-      $Boldify = false;
-      if ($User['UserID'] === $LoggedUser['ID']) {
-          $ViewerVote = true;
-          $Boldify = true;
-      } ?>
+          $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
+$ViewerVote = false;
+for ($i = 0; $i < $VoteMax; $i++) {
+    $User = array_shift($RequestVotes['Voters']);
+    $Boldify = false;
+    if ($User['UserID'] === $app->user->core['id']) {
+        $ViewerVote = true;
+        $Boldify = true;
+    } ?>
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . display_str($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . \Gazelle\Text::esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
           </td>
           <td class="number_column">
             <?= ($Boldify ? '<strong>' : '') . Format::get_size($User['Bounty']) . ($Boldify ? "</strong>\n" : "\n") ?>
           </td>
         </tr>
         <?php
-  }
-  reset($RequestVotes['Voters']);
-  if (!$ViewerVote) {
-      foreach ($RequestVotes['Voters'] as $User) {
-          if ($User['UserID'] === $LoggedUser['ID']) { ?>
+}
+reset($RequestVotes['Voters']);
+if (!$ViewerVote) {
+    foreach ($RequestVotes['Voters'] as $User) {
+        if ($User['UserID'] === $app->user->core['id']) { ?>
         <tr>
           <td>
             <a
-              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= display_str($User['Username']) ?></strong></a>
+              href="user.php?id=<?= $User['UserID'] ?>"><strong><?= \Gazelle\Text::esc($User['Username']) ?></strong></a>
           </td>
           <td class="number_column">
             <strong><?= Format::get_size($User['Bounty']) ?></strong>
           </td>
         </tr>
         <?php }
-      }
-  }
+        }
+}
 ?>
       </table>
     </div>
   </div>
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">
-        <table class="request_form skeleton-fix">
+        <table class="request_form skeletonFix">
           <tr>
             <td class="label">Created</td>
             <td>
               <?= time_diff($Request['TimeAdded']) ?> by
-              <strong><?= Users::format_username($Request['UserID'], false, false, false) ?></strong>
+              <strong><?= User::format_username($Request['UserID'], false, false, false) ?></strong>
             </td>
           </tr>
           <?php if ($CategoryName == 'Movies') {
-    if (!empty($Request['CatalogueNumber'])) { ?>
+              if (!empty($Request['CatalogueNumber'])) { ?>
           <tr>
             <td class="label">Catalogue number</td>
             <td><?= $Request['CatalogueNumber'] ?>
             </td>
           </tr>
           <?php
-    }
-}
+              }
+          }
 
-/*
-  $Worldcat = '';
-  $OCLC = str_replace(' ', '', $Request['OCLC']);
-  if ($OCLC !== '') {
-    $OCLCs = explode(',', $OCLC);
-    for ($i = 0; $i < count($OCLCs); $i++) {
-      if (!empty($Worldcat)) {
-        $Worldcat .= ', <a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-      } else {
-        $Worldcat = '<a href="https://www.worldcat.org/oclc/'.$OCLCs[$i].'">'.$OCLCs[$i].'</a>';
-      }
-    }
-  }
-  if (!empty($Worldcat)) {
-?>
-          <tr>
-            <td class="label">WorldCat (OCLC) ID</td>
-            <td><?=$Worldcat?>
-            </td>
-          </tr>
-          <?
-  }
-*/
-  if ($Request['GroupID']) {
-      ?>
+
+          if ($Request['GroupID']) {
+              ?>
           <tr>
             <td class="label">Torrent Group</td>
             <td><a
                 href="torrents.php?id=<?= $Request['GroupID'] ?>">torrents.php?id=<?= $Request['GroupID'] ?></a></td>
           </tr>
           <?php
-  } ?>
+          } ?>
           <tr>
             <td class="label">Votes</td>
             <td>
-              <span id="votecount"><?= number_format($VoteCount) ?></span>
+              <span id="votecount"><?= \Gazelle\Text::float($VoteCount) ?></span>
               <?php if ($CanVote) { ?>
               &nbsp;&nbsp;<a href="javascript:Vote(0)" class="brackets"><strong>+</strong></a>
               <strong>Costs <?= Format::get_size($MinimumVote, 0) ?></strong>
@@ -312,9 +292,9 @@ $encoded_artist = urlencode($encoded_artist);
             </td>
           </tr>
           <?php
-  }
-  if ($CanVote) {
-      ?>
+          }
+          if ($CanVote) {
+              ?>
           <tr id="voting">
             <td class="label">Custom Vote</td>
             <td>
@@ -336,29 +316,29 @@ $encoded_artist = urlencode($encoded_artist);
               <form class="add_form" name="request" action="requests.php" method="get" id="request_form">
                 <input type="hidden" name="action" value="vote" />
                 <input type="hidden" name="auth"
-                  value="<?=$LoggedUser['AuthKey']?>" />
+                  value="<?=$app->user->extra['AuthKey']?>" />
                 <input type="hidden" id="request_tax"
                   value="<?=$RequestTax?>" />
                 <input type="hidden" id="requestid" name="id"
                   value="<?=$RequestID?>" />
                 <input type="hidden" id="auth" name="auth"
-                  value="<?=$LoggedUser['AuthKey']?>" />
+                  value="<?=$app->user->extra['AuthKey']?>" />
                 <input type="hidden" id="amount" name="amount" value="0" />
                 <input type="hidden" id="current_uploaded"
-                  value="<?=$LoggedUser['BytesUploaded']?>" />
+                  value="<?=$app->user->extra['Uploaded']?>" />
                 <input type="hidden" id="current_downloaded"
-                  value="<?=$LoggedUser['BytesDownloaded']?>" />
+                  value="<?=$app->user->extra['Downloaded']?>" />
                 <input type="hidden" id="current_rr"
-                  value="<?=(float)$LoggedUser['RequiredRatio']?>" />
+                  value="<?=(float)$app->user->extra['RequiredRatio']?>" />
                 <input id="total_bounty" type="hidden"
                   value="<?=$RequestVotes['TotalBounty']?>" />
 
                 <ul>
                   <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">0.00 MiB</span></li> -->
-                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
+                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($app->user->extra['Uploaded']) ?></span>
                   </li>
-                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
+                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded']) ?></span>
                   </li>
                 </ul>
                 <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();" />
@@ -366,22 +346,22 @@ $encoded_artist = urlencode($encoded_artist);
             </td>
           </tr>
           <?php
-  } ?>
+          } ?>
           <tr id="bounty">
             <td class="label">Bounty</td>
             <td id="formatted_bounty"><?=Format::get_size($RequestVotes['TotalBounty'])?>
             </td>
           </tr>
           <?php
-  if ($IsFilled) {
-      $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
+          if ($IsFilled) {
+              $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
           <tr>
             <td class="label">Filled</td>
             <td>
               <strong><a
                   href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>">Yes</a></strong>,
-              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : Users::format_username($Request['FillerID'], false, false, false))?>
-              <?php if ($LoggedUser['ID'] == $Request['UserID'] || $LoggedUser['ID'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
+              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : User::format_username($Request['FillerID'], false, false, false))?>
+              <?php if ($app->user->core['id'] == $Request['UserID'] || $app->user->core['id'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
               <strong><a
                   href="requests.php?action=unfill&amp;id=<?=$RequestID?>"
                   class="brackets">Unfill</a></strong> Unfilling a request without a valid, nontrivial reason will
@@ -390,7 +370,7 @@ $encoded_artist = urlencode($encoded_artist);
             </td>
           </tr>
           <?php
-  } else { ?>
+          } else { ?>
           <tr>
             <td class="label" valign="top">Fill Request</td>
             <td>
@@ -398,7 +378,7 @@ $encoded_artist = urlencode($encoded_artist);
                 <div>
                   <input type="hidden" name="action" value="takefill" />
                   <input type="hidden" name="auth"
-                    value="<?=$LoggedUser['AuthKey']?>" />
+                    value="<?=$app->user->extra['AuthKey']?>" />
                   <input type="hidden" name="requestid"
                     value="<?=$RequestID?>" />
                   <input type="text" size="50" name="link" <?=(!empty($Link) ? " value='$Link'" : '')?>
@@ -425,7 +405,7 @@ $encoded_artist = urlencode($encoded_artist);
     <div class="box box_request_desc">
       <div class="head"><strong>Description</strong></div>
       <div class="pad">
-        <?=       Text::full_format($Request['Description']);?>
+        <?=       \Gazelle\Text::parse($Request['Description']);?>
       </div>
     </div>
     <div id="request_comments">
@@ -458,4 +438,4 @@ View::parse('generic/reply/quickreply.php', array(
     </div>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

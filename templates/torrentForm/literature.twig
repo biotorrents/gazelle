@@ -1,0 +1,16 @@
+{# literature #}
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="literature">Literature</label>
+		</th>
+
+		<td>
+			<textarea id="literature" name="literature" placeholder="Up to ten DOI numbers, one per line">{{ value }}</textarea>
+
+			<aside>
+				<a href="#sidebar" class="button">autofill in the sidebar</a>
+			</aside>
+		</td>
+	</tr>
+{% endif %}

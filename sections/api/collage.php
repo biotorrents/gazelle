@@ -1,20 +1,23 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 define('ARTIST_COLLAGE', 'Artists');
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die('failure', 'bad parameters');
 }
 
 $CollageID = $_GET['id'];
-$CacheKey = "collage_$CollageID";
-$CollageData = $Cache->get_value($CacheKey);
+$cacheKey = "collage_$CollageID";
+$CollageData = $app->cache->get($cacheKey);
 
 if ($CollageData) {
     list($Name, $Description, $CommentList, $Deleted, $CollageCategoryID, $CreatorID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $CollageData;
 } else {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `Name`,
       `Description`,
@@ -32,17 +35,17 @@ if ($CollageData) {
       `ID` = '$CollageID'
     ");
 
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         json_die("failure");
     }
 
-    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $DB->next_record(MYSQLI_NUM);
+    list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $app->dbOld->next_record(MYSQLI_NUM);
     $CommentList = null;
     $SetCache = true;
 }
 
 // todo: Cache this
-$DB->query("
+$app->dbOld->query("
 SELECT
   `GroupID`
 FROM
@@ -50,12 +53,12 @@ FROM
 WHERE
   `CollageID` = $CollageID
 ");
-$TorrentGroups = $DB->collect('GroupID');
+$TorrentGroups = $app->dbOld->collect('GroupID');
 
 $JSON = array(
   'id'                  => (int) $CollageID,
   'name'                => $Name,
-  'description'         => Text::full_format($Description),
+  'description'         => \Gazelle\Text::parse($Description),
   'creatorID'           => (int) $CreatorID,
   'deleted'             => (bool) $Deleted,
   'collageCategoryID'   => (int) $CollageCategoryID,
@@ -63,7 +66,7 @@ $JSON = array(
   'locked'              => (bool) $Locked,
   'maxGroups'           => (int) $MaxGroups,
   'maxGroupsPerUser'    => (int) $MaxGroupsPerUser,
-  'hasBookmarked'       => Bookmarks::has_bookmarked('collage', $CollageID),
+  'hasBookmarked'       => Bookmarks::isBookmarked('collage', $CollageID),
   'subscriberCount'     => (int) $Subscribers,
   'torrentGroupIDList'  => $TorrentGroups
 );
@@ -71,7 +74,7 @@ $JSON = array(
 if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     // Torrent collage
     $TorrentGroups = [];
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       ct.`GroupID`
     FROM
@@ -85,7 +88,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
       ct.`Sort`
     ");
 
-    $GroupIDs = $DB->collect('GroupID');
+    $GroupIDs = $app->dbOld->collect('GroupID');
     $GroupList = Torrents::get_groups($GroupIDs);
 
     foreach ($GroupIDs as $GroupID) {
@@ -124,7 +127,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     $JSON['torrentgroups'] = $TorrentGroups;
 } else {
     // Artist collage
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       ca.`ArtistID`,
       ag.`Name`,
@@ -144,7 +147,7 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
     ");
 
     $Artists = [];
-    while (list($ArtistID, $ArtistName, $ArtistImage) = $DB->next_record()) {
+    while (list($ArtistID, $ArtistName, $ArtistImage) = $app->dbOld->next_record()) {
         $Artists[] = array(
           'id'      => (int) $ArtistID,
           'name'    => $ArtistName,
@@ -168,7 +171,7 @@ if (isset($SetCache)) {
       $Updated,
       (int) $Subscribers
     );
-    $Cache->cache_value($CacheKey, $CollageData, 3600);
+    $app->cache->set($cacheKey, $CollageData, 3600);
 }
 
 json_print('success', $JSON);

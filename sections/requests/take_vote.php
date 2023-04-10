@@ -1,90 +1,89 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 //******************************************************************************//
 //--------------- Vote on a request --------------------------------------------//
 //This page is ajax!
 
 if (!check_perms('site_vote')) {
-  error(403);
+    error(403);
 }
 
 authorize();
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
-  error(0);
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
+    error(0);
 }
 
 $RequestID = $_GET['id'];
 
-if (empty($_GET['amount']) || !is_number($_GET['amount']) || $_GET['amount'] < $MinimumVote) {
-  $Amount = $MinimumVote;
+if (empty($_GET['amount']) || !is_numeric($_GET['amount']) || $_GET['amount'] < $MinimumVote) {
+    $Amount = $MinimumVote;
 } else {
-  $Amount = $_GET['amount'];
+    $Amount = $_GET['amount'];
 }
 
 $Bounty = ($Amount * (1 - $RequestTax));
 
-$DB->query("
+$app->dbOld->query("
   SELECT TorrentID
   FROM requests
   WHERE ID = $RequestID");
-list($Filled) = $DB->next_record();
+list($Filled) = $app->dbOld->next_record();
 
-if ($LoggedUser['BytesUploaded'] >= $Amount && empty($Filled)) {
+if ($app->user->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
 
   // Create vote!
-  $DB->query("
+    $app->dbOld->query("
     INSERT IGNORE INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$LoggedUser['ID'].", $Bounty)");
+      ($RequestID, ".$app->user->core['id'].", $Bounty)");
 
-  if ($DB->affected_rows() < 1) {
-    //Insert failed, probably a dupe vote, just increase their bounty.
-      $DB->query("
+    if ($app->dbOld->affected_rows() < 1) {
+        //Insert failed, probably a dupe vote, just increase their bounty.
+        $app->dbOld->query("
         UPDATE requests_votes
         SET Bounty = (Bounty + $Bounty)
-        WHERE UserID = ".$LoggedUser['ID']."
+        WHERE UserID = ".$app->user->core['id']."
           AND RequestID = $RequestID");
-    echo 'dupe';
-  }
+        echo 'dupe';
+    }
 
 
 
-  $DB->query("
+    $app->dbOld->query("
     UPDATE requests
     SET LastVote = NOW()
     WHERE ID = $RequestID");
 
-  $Cache->delete_value("request_$RequestID");
-  $Cache->delete_value("request_votes_$RequestID");
+    $app->cache->delete("request_$RequestID");
+    $app->cache->delete("request_votes_$RequestID");
 
-  $ArtistForm = Requests::get_artists($RequestID);
-  foreach ($ArtistForm as $Artist) {
-    $Cache->delete_value('artists_requests_'.$Artist['id']);
-  }
+    $ArtistForm = Requests::get_artists($RequestID);
+    foreach ($ArtistForm as $Artist) {
+        $app->cache->delete('artists_requests_'.$Artist['id']);
+    }
 
-  // Subtract amount from user
-  $DB->query("
+    // Subtract amount from user
+    $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Amount)
-    WHERE ID = ".$LoggedUser['ID']);
-  $Cache->delete_value('user_stats_'.$LoggedUser['ID']);
+    WHERE ID = ".$app->user->core['id']);
+    $app->cache->delete('user_stats_'.$app->user->core['id']);
 
-  Requests::update_sphinx_requests($RequestID);
-  echo 'success';
-  $DB->query("
+    Requests::update_sphinx_requests($RequestID);
+    echo 'success';
+    $app->dbOld->query("
     SELECT UserID
     FROM requests_votes
     WHERE RequestID = '$RequestID'
-      AND UserID != '$LoggedUser[ID]'");
-  $UserIDs = [];
-  while (list($UserID) = $DB->next_record()) {
-    $UserIDs[] = $UserID;
-  }
-//  NotificationsManager::notify_users($UserIDs, NotificationsManager::REQUESTALERTS, Format::get_size($Amount) . " of bounty has been added to a request you've voted on!", "requests.php?action=view&id=" . $RequestID);
-
-} elseif ($LoggedUser['BytesUploaded'] < $Amount) {
-  echo 'bankrupt';
+      AND UserID != '{$app->user->core['id']}'");
+    $UserIDs = [];
+    while (list($UserID) = $app->dbOld->next_record()) {
+        $UserIDs[] = $UserID;
+    }
+} elseif ($app->user->extra['BytesUploaded'] < $Amount) {
+    echo 'bankrupt';
 }
-
-?>

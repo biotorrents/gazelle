@@ -1,35 +1,38 @@
 <?php
+
 declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 authorize();
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $DB->next_record();
+list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld->next_record();
 
 if ($CategoryID === 0
-&& $UserID !== $LoggedUser['ID']
+&& $UserID !== $app->user->core['id']
 && !check_perms('site_collages_delete')) {
     error(403);
 }
 
 if (isset($_POST['name'])) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT ID, Deleted
     FROM collages
     WHERE Name = '".db_string($_POST['name'])."'
       AND ID != '$CollageID'
     LIMIT 1");
 
-    if ($DB->has_results()) {
-        list($ID, $Deleted) = $DB->next_record();
+    if ($app->dbOld->has_results()) {
+        list($ID, $Deleted) = $app->dbOld->next_record();
         if ($Deleted) {
             $Err = 'A collage with that name already exists but needs to be recovered, please <a href="staffpm.php">contact</a> the staff team!';
         } else {
@@ -37,7 +40,7 @@ if (isset($_POST['name'])) {
         }
 
         $ErrNoEscape = true;
-        include(SERVER_ROOT.'/sections/collages/edit.php');
+        include(serverRoot.'/sections/collages/edit.php');
         error();
     }
 }
@@ -52,19 +55,19 @@ $Updates = array("Description='".db_string($_POST['description'])."', TagList='"
 
 if (!check_perms('site_collages_delete')
 && ($CategoryID === 0
-&& $UserID === $LoggedUser['ID']
+&& $UserID === $app->user->core['id']
 && check_perms('site_collages_renamepersonal'))) {
-    if (!stristr($_POST['name'], $LoggedUser['Username'])) {
+    if (!stristr($_POST['name'], $app->user->core['username'])) {
         error("Your personal collage's title must include your username.");
     }
 }
 
 if (isset($_POST['featured'])
 && $CategoryID === 0
-&& (($LoggedUser['ID'] === $UserID
+&& (($app->user->core['id'] === $UserID
 && check_perms('site_collages_personal'))
 || check_perms('site_collages_delete'))) {
-    $DB->query("
+    $app->dbOld->query("
     UPDATE collages
     SET Featured = 0
     WHERE CategoryID = 0
@@ -74,7 +77,7 @@ if (isset($_POST['featured'])
 
 if (check_perms('site_collages_delete')
 || ($CategoryID === 0
-&& $UserID === $LoggedUser['ID']
+&& $UserID === $app->user->core['id']
 && check_perms('site_collages_renamepersonal'))) {
     $Updates[] = "Name = '".db_string($_POST['name'])."'";
 }
@@ -92,21 +95,21 @@ if (check_perms('site_collages_delete')) {
         $Updates[] = 'Locked = ' . ($Locked ? "'0'" : "'1'");
     }
 
-    if (isset($_POST['maxgroups']) && ($_POST['maxgroups'] === 0 || is_number($_POST['maxgroups'])) && $_POST['maxgroups'] !== $MaxGroups) {
+    if (isset($_POST['maxgroups']) && ($_POST['maxgroups'] === 0 || is_numeric($_POST['maxgroups'])) && $_POST['maxgroups'] !== $MaxGroups) {
         $Updates[] = 'MaxGroups = ' . $_POST['maxgroups'];
     }
 
-    if (isset($_POST['maxgroups']) && ($_POST['maxgroupsperuser'] === 0 || is_number($_POST['maxgroupsperuser'])) && $_POST['maxgroupsperuser'] !== $MaxGroupsPerUser) {
+    if (isset($_POST['maxgroups']) && ($_POST['maxgroupsperuser'] === 0 || is_numeric($_POST['maxgroupsperuser'])) && $_POST['maxgroupsperuser'] !== $MaxGroupsPerUser) {
         $Updates[] = 'MaxGroupsPerUser = ' . $_POST['maxgroupsperuser'];
     }
 }
 
 if (!empty($Updates)) {
-    $DB->query('
+    $app->dbOld->query('
     UPDATE collages
     SET '.implode(', ', $Updates)."
     WHERE ID = $CollageID");
 }
 
-$Cache->delete_value('collage_'.$CollageID);
+$app->cache->delete('collage_'.$CollageID);
 header('Location: collages.php?id='.$CollageID);

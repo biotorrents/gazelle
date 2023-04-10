@@ -1,0 +1,645 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+	<h2>User stats</h2>
+
+	{# overview #}
+	<section>
+		<table>
+			<tr>
+				<th>Unique visitors</th>
+				<th>Total pageviews</th>
+				<th>Bounce rate</th>
+				<th>Visit duration</th>
+				<th>Current visitors</th>
+			</tr>
+
+			<tr>
+				<td>{{ overview.visitors}}</td>
+				<td>{{ overview.pageviews}}</td>
+				<td>{{ overview.bounce_rate}}%</td>
+				<td>{{ overview.visit_duration|hhmmss }}</td>
+				<td>{{ realtime }}</td>
+			</tr>
+		</table>
+	</section>
+
+
+	{# overTime #}
+	<section>
+		<h3>Aggregate stats over time</h3>
+
+		<canvas class="chart" id="overTime"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let overTimeCanvas = document.getElementById('overTime').getContext('2d');
+let overTimeData = JSON.parse('{{ overTime|json_encode|raw }}');
+
+let overTimeChart = new Chart(overTimeCanvas, {
+type: 'line',
+data: {
+labels: Object.keys(overTimeData.visitors),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(overTimeData.visitors),
+// $red500: #f44336;
+borderColor: '#f44336',
+backgroundColor: '#f44336' + 50
+}, {
+label: 'Pageviews',
+data: Object.values(overTimeData.pageviews),
+// $blue500: #2196f3;
+borderColor: '#2196f3',
+backgroundColor: '#2196f3' + 50
+}, {
+label: 'Bounce rate',
+data: Object.values(overTimeData.bounce_rate),
+// $green500: #4caf50;
+borderColor: '#4caf50',
+backgroundColor: '#4caf50' + 50
+}, {
+label: 'Visit duration',
+data: Object.values(overTimeData.visit_duration),
+// $orange500: #ff9800;
+borderColor: '#ff9800',
+backgroundColor: '#ff9800' + 50
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Aggregate stats over time'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# usersTimeline #}
+	<section>
+		<h3>Registrations and disables</h3>
+
+		<canvas class="chart" id="usersTimeline"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let usersTimelineCanvas = document.getElementById('usersTimeline').getContext('2d');
+let usersTimelineData = JSON.parse('{{ usersTimeline|json_encode|raw }}');
+
+let usersTimelineChart = new Chart(usersTimelineCanvas, {
+type: 'line',
+data: {
+labels: Object.keys(usersTimelineData.registrations),
+datasets: [
+{
+label: 'New registrations',
+data: Object.values(usersTimelineData.registrations),
+// $blue500: #2196f3;
+borderColor: '#2196f3',
+backgroundColor: '#2196f3' + 50
+}, {
+label: 'Disabled users',
+data: Object.values(usersTimelineData.disables),
+// $orange500: #ff9800;
+borderColor: '#ff9800',
+backgroundColor: '#ff9800' + 50
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Registrations and disables'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# classDistribution #}
+	<section>
+		<h3>Class distribution</h3>
+
+		<canvas class="chart" id="classDistribution"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let classDistributionCanvas = document.getElementById('classDistribution').getContext('2d');
+let classDistributionData = JSON.parse('{{ classDistribution|json_encode|raw }}');
+
+let classDistributionChart = new Chart(classDistributionCanvas, {
+type: 'doughnut',
+data: {
+labels: Object.keys(classDistributionData),
+datasets: [
+{
+data: Object.values(classDistributionData),
+// green shades
+backgroundColor: [
+'#e8f5e9',
+'#c8e6c9',
+'#a5d6a7',
+'#81c784',
+'#66bb6a',
+'#4caf50',
+'#43a047',
+'#388e3c',
+'#2e7d32',
+'#1b5e20',
+]
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Class distribution'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# top pages: controls #}
+	<span class="flexHeader">
+		<h3>Top pages</h3>
+
+		<span class="buttons">
+			<a class="button button-primary" id="topPagesButton" onclick="visible('topPages', this.id)">Top 10 pages</a>
+			<a class="button" id="entryPagesButton" onclick="visible('entryPages', this.id)">Entry pages</a>
+			<a class="button" id="exitPagesButton" onclick="visible('exitPages', this.id)">Exit pages</a>
+		</span>
+	</span>
+
+	{# topPages #}
+	<section>
+		<canvas class="chart" id="topPages"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let topPagesCanvas = document.getElementById('topPages').getContext('2d');
+let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+
+let topPagesChart = new Chart(topPagesCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(topPagesData.page),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(topPagesData.page),
+// $purple500: #9c27b0;
+backgroundColor: '#9c27b0' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Top 10 pages'
+}
+}
+}
+});
+})();
+		</script>
+
+		{# entryPages #}
+		<canvas class="chart" id="entryPages"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let topPagesCanvas = document.getElementById('entryPages').getContext('2d');
+let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+
+let topPagesChart = new Chart(topPagesCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(topPagesData.entry_page),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(topPagesData.entry_page),
+// $purple500: #9c27b0;
+backgroundColor: '#9c27b0' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Top 10 entry pages'
+}
+}
+}
+});
+})();
+		</script>
+
+		{# exitPages #}
+		<canvas class="chart" id="exitPages"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let topPagesCanvas = document.getElementById('exitPages').getContext('2d');
+let topPagesData = JSON.parse('{{ topPages|json_encode|raw }}');
+
+let topPagesChart = new Chart(topPagesCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(topPagesData.exit_page),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(topPagesData.exit_page),
+// $purple500: #9c27b0;
+backgroundColor: '#9c27b0' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Top 10 exit pages'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# sources and referrers: controls #}
+	<span class="flexHeader">
+		<h3>Sources and referrers</h3>
+
+		<span class="buttons">
+			<a class="button button-primary" id="sourcesButton" onclick="visible('sources', this.id)">Sources</a>
+			<a class="button" id="referrersButton" onclick="visible('referrers', this.id)">Referrers</a>
+		</span>
+	</span>
+
+	<section>
+		{# sources #}
+		<canvas class="chart" id="sources"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let sourcesCanvas = document.getElementById('sources').getContext('2d');
+let sourcesData = JSON.parse('{{ sources|json_encode|raw }}');
+
+let sourcesChart = new Chart(sourcesCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(sourcesData.source),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(sourcesData.source),
+// $orange500: #ff9800;
+backgroundColor: '#ff9800' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Top 10 referrer sources'
+}
+}
+}
+});
+})();
+		</script>
+
+		{# referrers #}
+		<canvas class="chart" id="referrers"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let referrersCanvas = document.getElementById('referrers').getContext('2d');
+let referrersData = JSON.parse('{{ sources|json_encode|raw }}');
+
+let referrersChart = new Chart(referrersCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(referrersData.referrer),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(referrersData.referrer),
+// $orange500: #ff9800;
+backgroundColor: '#ff9800' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Top 10 HTTP referrers'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# devices, browsers, and operating systems: controls #}
+	<span class="flexHeader">
+		<h3>Devices, browsers, and operating systems</h3>
+
+		<span class="buttons">
+			<a class="button button-primary" id="devicesButton" onclick="visible('devices', this.id)">Devices</a>
+			<a class="button" id="browsersButton" onclick="visible('browsers', this.id)">Browsers</a>
+			<a class="button" id="operatingSystemsButton" onclick="visible('operatingSystems', this.id)">Operating systems</a>
+		</span>
+	</span>
+
+	<section>
+		{# devices #}
+		<canvas class="chart" id="devices"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let devicesCanvas = document.getElementById('devices').getContext('2d');
+let devicesData = JSON.parse('{{ devices|json_encode|raw }}');
+
+let devicesChart = new Chart(devicesCanvas, {
+type: 'doughnut',
+data: {
+labels: Object.keys(devicesData.device),
+datasets: [
+{
+data: Object.values(devicesData.device),
+// all shades 500: divided by 4
+backgroundColor: [
+'#f44336' + 50,
+'#03a9f4' + 50,
+'#ffeb3b' + 50,
+'#607d8b' + 50,
+]
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Devices'
+}
+}
+}
+});
+})();
+		</script>
+
+		{# browsers #}
+		<canvas class="chart" id="browsers"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let browsersCanvas = document.getElementById('browsers').getContext('2d');
+let browsersData = JSON.parse('{{ devices|json_encode|raw }}');
+
+let browsersChart = new Chart(browsersCanvas, {
+type: 'doughnut',
+data: {
+labels: Object.keys(browsersData.browser),
+datasets: [
+{
+data: Object.values(browsersData.browser),
+// all shades 500: every other reverse
+backgroundColor: [
+'#607d8b' + 50,
+'#795548' + 50,
+'#ff9800' + 50,
+'#ffeb3b' + 50,
+'#8bc34a' + 50,
+'#009688' + 50,
+'#03a9f4' + 50,
+'#3f51b5' + 50,
+'#9c27b0' + 50,
+'#f44336' + 50,
+]
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Browsers'
+}
+}
+}
+});
+})();
+		</script>
+
+		{# operatingSystems #}
+		<canvas class="chart" id="operatingSystems"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let operatingSystemsCanvas = document.getElementById('operatingSystems').getContext('2d');
+let operatingSystemsData = JSON.parse('{{ devices|json_encode|raw }}');
+
+let operatingSystemsChart = new Chart(operatingSystemsCanvas, {
+type: 'doughnut',
+data: {
+labels: Object.keys(operatingSystemsData.os),
+datasets: [
+{
+data: Object.values(operatingSystemsData.os),
+// all shades 500: every other forward
+backgroundColor: [
+'#f44336' + 50,
+'#9c27b0' + 50,
+'#3f51b5' + 50,
+'#03a9f4' + 50,
+'#009688' + 50,
+'#8bc34a' + 50,
+'#ffeb3b' + 50,
+'#ff9800' + 50,
+'#795548' + 50,
+'#607d8b' + 50,
+]
+}
+]
+},
+
+options: {
+plugins: {
+title: {
+display: true,
+text: 'Operating systems'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	{# locations #}
+	<section>
+		<h3>Locations</h3>
+		<canvas class="chart" id="locations"></canvas>
+		<script>
+			(() => {
+'use strict';
+
+let locationsCanvas = document.getElementById('locations').getContext('2d');
+let locationsData = JSON.parse('{{ locations|json_encode|raw }}');
+
+let locationsChart = new Chart(locationsCanvas, {
+type: 'bar',
+data: {
+labels: Object.keys(locationsData),
+datasets: [
+{
+label: 'Visitors',
+data: Object.values(locationsData),
+// $green500: #4caf50;
+backgroundColor: '#4caf50' + 50
+}
+]
+},
+
+options: {
+indexAxis: 'y',
+
+plugins: {
+title: {
+display: true,
+text: 'Locations'
+}
+}
+}
+});
+})();
+		</script>
+	</section>
+
+
+	<script>
+		// toggle visibility
+function visible(canvas, button) { // canvas
+$('#' + canvas).parent().children(':not(#' + canvas + ')').hide();
+$('#' + canvas).show();
+
+// button
+$('#' + button).parent().children(':not(#' + button + ')').removeClass('button-primary');
+$('#' + button).addClass('button-primary');
+}
+
+// hidden by default
+(() => {
+$('#entryPages').hide();
+$('#exitPages').hide();
+
+$('#referrers').hide();
+
+$('#browsers').hide();
+$('#operatingSystems').hide();
+})();
+	</script>
+
+{% endblock %}
+
+
+{#
+<section>
+	<canvas class="chart" id="canvas"></canvas>
+	<script>
+		fetch('https://unpkg.com/world-atlas/countries-50m.json').then((r) => r.json()).then((data) => {
+const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+
+const chart = new Chart(document.getElementById('canvas').getContext('2d'), {
+type: 'choropleth',
+data: {
+labels: countries.map((d) => d.properties.name),
+datasets: [
+{
+label: 'Countries',
+data: countries.map((d) => ({feature: d, value: Math.random()}))
+},
+]
+},
+options: {
+showOutline: true,
+showGraticule: true,
+plugins: {
+legend: {
+display: false
+}
+},
+scales: {
+xy: {
+projection: 'equalEarth'
+}
+}
+}
+});
+});
+	</script>
+</section>
+#}

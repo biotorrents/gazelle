@@ -1,36 +1,38 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if ($ID = (int)($_GET['id'])) {
-  // Check if conversation belongs to user
-  $DB->query("
+    // Check if conversation belongs to user
+    $app->dbOld->query("
     SELECT UserID, Level, AssignedToUser
     FROM staff_pm_conversations
     WHERE ID = $ID");
-  list($UserID, $Level, $AssignedToUser) = $DB->next_record();
+    list($UserID, $Level, $AssignedToUser) = $app->dbOld->next_record();
 
-  if ($UserID == $LoggedUser['ID']
+    if ($UserID == $app->user->core['id']
     || ($IsFLS && $Level == 0)
-    || $AssignedToUser == $LoggedUser['ID']
-    || ($IsStaff && $Level <= $LoggedUser['EffectiveClass'])
+    || $AssignedToUser == $app->user->core['id']
+    || ($IsStaff && $Level <= $app->user->extra['EffectiveClass'])
     ) {
-    /*if ($Level != 0 && $IsStaff == false) {
-      error(403);
-    }*/
+        /*if ($Level != 0 && $IsStaff == false) {
+          error(403);
+        }*/
 
-    // Conversation belongs to user or user is staff, unresolve it
-    $DB->query("
+        // Conversation belongs to user or user is staff, unresolve it
+        $app->dbOld->query("
       UPDATE staff_pm_conversations
       SET Status = 'Unanswered'
       WHERE ID = $ID");
-    // Clear cache for user
-    $Cache->delete_value("num_staff_pms_$LoggedUser[ID]");
+        // Clear cache for user
+        $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
-    header('Location: staffpm.php');
-  } else {
-    // Conversation does not belong to user
-    error(403);
-  }
+        Http::redirect("staffpm.php");
+    } else {
+        // Conversation does not belong to user
+        error(403);
+    }
 } else {
-  // No ID
-  header('Location: staffpm.php');
+    // No ID
+    Http::redirect("staffpm.php");
 }
-?>

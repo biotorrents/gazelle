@@ -1,113 +1,112 @@
 <?php
-declare(strict_types = 1);
 
-enforce_login();
-if (!check_perms('admin_manage_news')) {
+declare(strict_types=1);
+
+
+/**
+ * site news
+ */
+
+$app = \Gazelle\App::go();
+
+#Http::csrf();
+
+if (!check_perms("admin_manage_news")) {
     error(403);
 }
 
-View::show_header(
-    'Manage news',
-    'vendor/easymde.min',
-    'vendor/easymde.min'
-);
+# variables
+$get = Http::query("get");
+$get["newsId"] ??= null;
+$get["delete"] ??= null;
 
-switch ($_GET['action']) {
-  case 'takeeditnews':
-    if (!check_perms('admin_manage_news')) {
-        error(403);
+$post = Http::query("post");
+$post["newsId"] ??= null;
+$post["formAction"] ??= null;
+$post["subject"] ??= null;
+$post["body"] ??= null;
+
+# twig template
+$edit = false;
+
+# create
+if ($post["formAction"] === "create") {
+    $query = "insert into news (userId, title, body, time) values (?, ?, ?, now())";
+    $app->dbNew->do($query, [ $app->user->core["id"], $post["subject"], $post["body"] ]);
+
+    $app->cache->delete("news_latest_id");
+    $app->cache->delete("news_latest_title");
+    $app->cache->delete("news");
+
+    Http::redirect();
+}
+
+# read
+if ($get["newsId"]) {
+    $query = "select * from news where id = ?";
+    $row = $app->dbNew->row($query, [ $get["newsId"] ]);
+
+    $subject = $row["Title"];
+    $body = $row["Body"];
+
+    # twig template
+    $edit = true;
+}
+
+# update
+if ($post["newsId"] && $post["formAction"] === "update") {
+    $query = "update news set title = ?, body = ? where id = ?";
+    $app->dbNew->do($query, [ $post["subject"], $post["body"], $post["newsId"] ]);
+
+    $app->cache->delete("news");
+    $app->cache->delete("feed_news");
+}
+
+# delete
+if ($get["newsId"] && $get["delete"]) {
+    authorize();
+
+    $query = "delete from news where id = ?";
+    $app->dbNew->do($query, [ $get["newsId"] ]);
+
+    $app->cache->delete("news");
+    $app->cache->delete("feed_news");
+
+    # deleting latest news
+    $latestNews = $app->cache->get("news_latest_id") ?? null;
+    if ($latestNews === $get["newsId"]) {
+        $app->cache->delete("news_latest_id");
+        $app->cache->delete("news_latest_title");
     }
+}
 
-    if (is_number($_POST['newsid'])) {
-        authorize();
+# old news
+$query = "select * from news order by time desc limit 20";
+$ref = $app->dbNew->multi($query, []) ?? [];
 
-        $DB->prepared_query("
-        UPDATE news
-        SET Title = '".db_string($_POST['title'])."', Body = '".db_string($_POST['body'])."'
-        WHERE ID = '".db_string($_POST['newsid'])."'");
-        $Cache->delete_value('news');
-        $Cache->delete_value('feed_news');
-    }
+$oldNews = [];
+foreach ($ref as $row) {
+    $item = [
+      "id" => $row["ID"],
+      "subject" => $row["Title"],
+      "body" => Illuminate\Support\Str::words($row["Body"]),
+      "created" => $row["Time"],
+    ];
 
-    header('Location: index.php');
-    break;
+    $oldNews[] = $item;
+}
 
+# twig template
+$app->twig->display("admin/siteNews.twig", [
+  "title" => "Manage site news",
+  "sidebar" => true,
 
-  case 'editnews':
-    if (is_number($_GET['id'])) {
-        $NewsID = $_GET['id'];
-        $DB->prepared_query("
-        SELECT Title, Body
-        FROM news
-        WHERE ID = $NewsID");
-        list($Title, $Body) = $DB->next_record();
-    }
-} ?>
+  # edit news
+  "edit" => $edit,
+  "newsId" => $get["newsId"] ?? null,
+  "subject" => $subject ?? null,
+  "body" => $body ?? null,
 
-<div>
-  <div class="header">
-    <h2>
-      <?= ($_GET['action'] === 'news') ? 'Create a news post' : 'Edit news post';?>
-    </h2>
-  </div>
-
-  <form
-    class="<?= ($_GET['action'] === 'news') ? 'create_form' : 'edit_form';?>"
-    name="news_post" action="tools.php" method="post">
-    <div class="box pad">
-      <input type="hidden" name="action"
-        value="<?= ($_GET['action'] === 'news') ? 'takenewnews' : 'takeeditnews';?>">
-      <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>">
-
-      <?php if ($_GET['action'] === 'editnews') { ?>
-      <input type="hidden" name="newsid" value="<?=$NewsID; ?>">
-      <?php } ?>
-
-      <h3>Title</h3>
-      <input type="text" name="title" size="95" <?php if (!empty($Title)) {
-    echo ' value="' .display_str($Title).'"';
-} ?>>
-
-      <h3>Body</h3>
-      <?php
-$Textarea = new TEXTAREA_PREVIEW(
-    $Name = 'body',
-    $ID = '',
-    $Value = display_str($Body) ?? '',
-); ?>
-
-      <div class="center">
-        <input type="submit" class="button-primary"
-          value="<?= ($_GET['action'] === 'news') ? 'Create news post' : 'Edit news post';?>">
-      </div>
-    </div>
-  </form>
-
-  <h2>News archive</h2>
-  <?php
-$DB->prepared_query('
-  SELECT
-    ID,
-    Title,
-    Body,
-    Time
-  FROM news
-  ORDER BY Time DESC');// LIMIT 20
-while (list($NewsID, $Title, $Body, $NewsTime) = $DB->next_record()) {
-    ?>
-  <div class="box vertical_space news_post">
-    <div class="head">
-      <strong><?=display_str($Title) ?></strong> - posted <?=time_diff($NewsTime) ?>
-      - <a href="tools.php?action=editnews&amp;id=<?=$NewsID?>"
-        class="brackets">Edit</a>
-      <a href="tools.php?action=deletenews&amp;id=<?=$NewsID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
-        class="brackets">Delete</a>
-    </div>
-    <div class="pad"><?=Text::full_format($Body) ?>
-    </div>
-  </div>
-  <?php
-} ?>
-</div>
-<?php View::show_footer();
+  # old news
+  "oldNews" => $oldNews,
+]);

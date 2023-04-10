@@ -1,8 +1,10 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 // todo: Cache this
-$DB->query("
+$app->dbOld->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -14,7 +16,7 @@ $DB->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $DB->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 // Loop through the result set, building up $Collage and $TorrentTable
 // Then we print them.
@@ -27,7 +29,7 @@ $UserAdditions = [];
 
 foreach ($Artists as $Artist) {
     $UserID = $Artist['UserID'];
-    if ($UserID === $LoggedUser['ID']) {
+    if ($UserID === $app->user->core['id']) {
         $NumGroupsByUser++;
     }
 
@@ -50,7 +52,7 @@ foreach ($Artists as $Artist) {
     href="artist.php?id=<?=$Artist['ArtistID']?>">
     <?php if ($Artist['Image']) { ?>
     <img class="tooltip"
-      src="<?=ImageTools::process($Artist['Image'], 'thumb')?>"
+      src="<?=\Gazelle\Images::process($Artist['Image'], 'thumb')?>"
       alt="<?=$Artist['Name']?>"
       title="<?=$Artist['Name']?>" width="118" />
     <?php } else { ?>
@@ -67,7 +69,7 @@ if (!check_perms('site_collages_delete') && ($Locked || ($MaxGroups > 0 && $NumG
 }
 
 // Silly hack for people who are on the old setting
-$CollageCovers = (isset($LoggedUser['CollageCovers']) ? $LoggedUser['CollageCovers'] : 25 * (abs($LoggedUser['HideCollage'] - 1)));
+$CollageCovers = (isset($app->user->extra['CollageCovers']) ? $app->user->extra['CollageCovers'] : 25 * (abs($app->user->extra['HideCollage'] - 1)));
 $CollagePages = [];
 
 // Pad it out
@@ -86,7 +88,7 @@ for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
     $CollagePages[] = $CollagePage;
 }
 
-View::show_header($Name, 'browse,collage,recommend');
+View::header($Name, 'browse,collage,recommend');
 ?>
 
 <div>
@@ -103,7 +105,7 @@ View::show_header($Name, 'browse,collage,recommend');
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php
-  }
+      }
   if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
       ?>
       <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
@@ -113,7 +115,7 @@ View::show_header($Name, 'browse,collage,recommend');
       <span class="brackets">Locked</span>
       <?php
   }
-  if (Bookmarks::has_bookmarked('collage', $CollageID)) {
+  if (Bookmarks::isBookmarked('collage', $CollageID)) {
       ?>
       <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
         class="brackets"
@@ -134,14 +136,14 @@ View::show_header($Name, 'browse,collage,recommend');
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collage</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID === $LoggedUser['ID']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$LoggedUser['AuthKey']?>"
+      <?php if (check_perms('site_collages_delete') || $CreatorID === $app->user->core['id']) { ?>
+      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
     </div>
   </div>
 
-  <div class="sidebar">
+  <div class="sidebar one-third column">
     <div class="box box_category">
       <div class="head"><strong>Category</strong></div>
       <div class="pad"><a
@@ -150,18 +152,18 @@ View::show_header($Name, 'browse,collage,recommend');
 
     <div class="box box_description">
       <div class="head"><strong>Description</strong></div>
-      <div class="pad"><?=Text::full_format($Description)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Description)?>
       </div>
     </div>
 
     <div class="box box_info box_statistics_collage_torrents">
       <div class="head"><strong>Statistics</strong></div>
       <ul class="stats nobullet">
-        <li>Artists: <?=number_format($NumGroups)?>
+        <li>Artists: <?=\Gazelle\Text::float($NumGroups)?>
         </li>
-        <li>Subscribers: <?=number_format((int)$Subscribers)?>
+        <li>Subscribers: <?=\Gazelle\Text::float((int)$Subscribers)?>
         </li>
-        <li>Built by <?=number_format(count($UserAdditions))?>
+        <li>Built by <?=\Gazelle\Text::float(count($UserAdditions))?>
           user<?=(count($UserAdditions) > 1 ? 's' : '')?>
         </li>
         <li>Last updated: <?=time_diff($Updated)?>
@@ -181,8 +183,8 @@ foreach ($UserAdditions as $UserID => $Additions) {
     if ($i > 5) {
         break;
     } ?>
-          <li><?=Users::format_username($UserID, false, false, false)?>
-            (<?=number_format($Additions)?>)</li>
+          <li><?=User::format_username($UserID, false, false, false)?>
+            (<?=\Gazelle\Text::float($Additions)?>)</li>
           <?php
 }
 ?>
@@ -192,19 +194,18 @@ foreach ($UserAdditions as $UserID => $Additions) {
 
     <?php if (check_perms('site_collages_manage') && !isset($PreventAdditions)) { ?>
     <div class="box box_addartist">
-      <div class="head"><strong>Add Artists</strong><span class="float_right"><a href="#"
-            onclick="$('.add_artist_container').toggle_class('hidden'); this.innerHTML = (this.innerHTML === 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
+      <div class="head"><strong>Add Artists</strong><span class="u-pull-right"><a href="#"
+            onclick="$('.add_artist_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML === 'Batch add' ? 'Individual add' : 'Batch add'); return false;"
             class="brackets">Batch add</a></span></div>
       <div class="pad add_artist_container">
         <form class="add_form" name="artist" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
-            <input type="text" id="artist" size="20" name="url" <?php Users::has_autocomplete_enabled('other'); ?>
-            />
+            <input type="text" id="artist" size="20" name="url" />
           </div>
           <div class="submit_div">
             <input type="submit" value="Add" />
@@ -217,7 +218,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
         <form class="add_form" name="artists" action="collages.php" method="post">
           <input type="hidden" name="action" value="add_artist_batch" />
           <input type="hidden" name="auth"
-            value="<?=$LoggedUser['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="collageid"
             value="<?=$CollageID?>" />
           <div>
@@ -235,7 +236,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
     <h3>Comments</h3>
     <?php
 if ($CommentList === null) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       c.ID,
       c.Body,
@@ -248,20 +249,20 @@ if ($CommentList === null) {
       AND c.PageID = $CollageID
     ORDER BY c.ID DESC
     LIMIT 15");
-    $CommentList = $DB->to_array(false, MYSQLI_NUM);
+    $CommentList = $app->dbOld->to_array(false, MYSQLI_NUM);
 }
 
 foreach ($CommentList as $Comment) {
     list($CommentID, $Body, $UserID, $Username, $CommentTime) = $Comment; ?>
     <div class="box comment">
       <div class="head">
-        <?=Users::format_username($UserID, false, false, false) ?>
+        <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
         <br />
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>
-      <div class="pad"><?=Text::full_format($Body)?>
+      <div class="pad"><?=\Gazelle\Text::parse($Body)?>
       </div>
     </div>
     <?php
@@ -274,7 +275,7 @@ foreach ($CommentList as $Comment) {
     </div>
 
     <?php
-if (!$LoggedUser['DisablePosting']) {
+if (!$app->user->extra['DisablePosting']) {
     ?>
     <div class="box box_addcomment">
       <div class="head"><strong>Comment</strong></div>
@@ -283,7 +284,7 @@ if (!$LoggedUser['DisablePosting']) {
         <input type="hidden" name="action" value="take_post" />
         <input type="hidden" name="page" value="collages" />
         <input type="hidden" name="auth"
-          value="<?=$LoggedUser['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>" />
         <input type="hidden" name="pageid" value="<?=$CollageID?>" />
         <div class="pad">
           <div>
@@ -300,7 +301,7 @@ if (!$LoggedUser['DisablePosting']) {
 ?>
   </div>
 
-  <div class="main_column">
+  <div class="main_column two-thirds column">
     <?php
 if ($CollageCovers !== 0) {
     ?>
@@ -366,7 +367,7 @@ if ($CollageCovers !== 0) {
       //]]>
     </script>
     <?php
-  }
+    }
 }
 ?>
 
@@ -382,4 +383,4 @@ if ($CollageCovers !== 0) {
 </div>
 
 <?php
-View::show_footer();
+View::footer();

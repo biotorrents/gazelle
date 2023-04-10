@@ -1,38 +1,61 @@
 <?php
+
 declare(strict_types=1);
 
-$All = (!empty($_GET['filter']) && $_GET['filter'] === 'all');
-$Join = $All
-    ? ''
-    : ("
-        JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
-        JOIN `xbt_snatched` AS x ON x.`fid` = t.`ID`
-        AND x.`uid` = '$LoggedUser[ID]'
-    ");
 
-View::show_header('Torrent groups with no publications');
+/**
+ * literature
+ */
 
-$DB->prepared_query("
-SELECT SQL_CALC_FOUND_ROWS
-  tg.`id`
-FROM
-  `torrents_group` AS tg
-$Join
-WHERE
-  tg.`id` NOT IN(
-  SELECT DISTINCT
-    `group_id`
-  FROM
-    `literature`
-  )
-ORDER BY
-  RAND()
-LIMIT 20
-");
+$app = \Gazelle\App::go();
 
-$Groups = $DB->to_array('id', MYSQLI_ASSOC);
-$DB->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$get = Http::query("get");
+$snatchedOnly = $get["snatches"] ?? null;
+
+# snatched vs. all
+$allTorrents = true;
+if ($snatchedOnly) {
+    $allTorrents = false;
+    $subQuery = "
+        join torrents on torrents.groupId = torrents_group.id
+        join xbt_snatched on xbt_snatched.fid = torrents.id
+        and xbt_snatched.uid = {$app->user->core["id"]}
+    ";
+} else {
+    $subQuery = "";
+}
+
+$query = "
+    select sql_calc_found_rows torrents_group.id
+    from torrents_group
+    {$subQuery}
+    where torrents_group.id not in
+    (select distinct group_id from literature)
+    order by rand() limit 20
+";
+
+$ref = $app->dbNew->multi($query) ?? [];
+$groupIds = array_column($ref, "id");
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
+
+# twig template
+$app->twig->display("better/list.twig", [
+  "title" => "Better",
+  "header" => "Torrent groups with no publications",
+  "sidebar" => true,
+  "torrentGroups" => $torrentGroups,
+]);
+
+exit;
+
+/** continue */
+
+View::header('Torrent groups with no publications');
+
+$Groups = $app->dbOld->to_array('id', MYSQLI_ASSOC);
+$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 $Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="header">
@@ -59,7 +82,7 @@ $Results = Torrents::get_groups(array_keys($Groups)); ?>
 
 <div class="box pad">
   <h3>
-    There are <?=number_format($NumResults)?> groups remaining
+    There are <?=\Gazelle\Text::float($NumResults)?> groups remaining
   </h3>
 
   <table class="torrent_table">
@@ -70,8 +93,8 @@ foreach ($Results as $Result) {
     $TorrentTags = new Tags($tag_list);
 
     $DisplayName = "<a href='torrents.php?id=$id' ";
-    if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-        $DisplayName .= 'data-cover="'.ImageTools::process($picture, 'thumb').'" ';
+    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
+        $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
     }
     $DisplayName .= ">$LangName</a>";
 
@@ -94,4 +117,4 @@ foreach ($Results as $Result) {
 } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

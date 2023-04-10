@@ -1,0 +1,165 @@
+/**
+ * font size wrappers
+ */
+.x-small {
+  font-size: x-small;
+}
+
+.small {
+  font-size: small;
+}
+
+.medium {
+  font-size: medium;
+}
+
+.large {
+  font-size: large;
+}
+
+.x-large {
+  font-size: x-large;
+}
+
+/* search results */
+.torrentTitle {
+  font-size: larger;
+}
+
+/**
+ * text spacing
+ */
+
+.center {
+  margin: auto;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.left {
+  /* float: left; */
+  text-align: left;
+}
+
+.right {
+  /* float: right; */
+  text-align: right;
+}
+
+.nobr {
+  white-space: nowrap;
+}
+
+.spacer {
+  width: 100%;
+}
+
+.halfwide {
+  max-width: 50%;
+  margin: auto;
+  text-align: center;
+}
+
+/**
+ * wikipedia-style external links
+ */
+a.external {
+  background-image: url("/images/symbols/external-link-ltr-icon.svg");
+  background-position: center right;
+  background-repeat: no-repeat;
+  padding-right: 13px;
+}
+
+/**
+ * monospace fixes, etc.
+ */
+.monospace {
+  font-family: monospace;
+}
+
+code,
+pre {
+  white-space: pre-wrap;
+
+  br {
+    display: none;
+  }
+}
+
+/**
+ * breadcrumbs
+ */
+
+h2#breadcrumbs {
+  li {
+    display: inline;
+    list-style: none;
+    margin: 0;
+  }
+}
+
+/**
+ * brackets, e.g., [bookmark]
+ */
+.brackets {
+  cursor: pointer;
+  text-indent: 0px;
+  white-space: nowrap;
+
+  &:before {
+    content: "[";
+  }
+
+  &:after {
+    content: "]";
+  }
+}
+
+/**
+ * ordered lists
+ * https://stackoverflow.com/a/2730079
+ */
+
+/* no IE6/7 */
+html>
+
+/**/
+body ol {
+  list-style-type: none;
+  counter-reset: level1;
+}
+
+ol li:before {
+  content: counter(level1) ". ";
+  counter-increment: level1;
+}
+
+ol li ol {
+  list-style-type: none;
+  counter-reset: level2;
+}
+
+ol li ol li:before {
+  content: counter(level1) "." counter(level2) " ";
+  counter-increment: level2;
+}
+
+/**
+ * unordered lists
+ */
+
+ul {
+  &.nobullet li {
+    list-style: none;
+    margin: 0;
+  }
+}
+
+/* details and summary (HTML5) */
+details {
+  font-weight: normal;
+}
+
+summary {
+  font-weight: bold;
+}

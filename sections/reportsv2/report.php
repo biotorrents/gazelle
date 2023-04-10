@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 /**
  * This is the frontend of reporting a torrent, it's what users see when
  * they visit reportsv2.php?id=xxx
@@ -8,24 +10,23 @@
 
 $ENV = ENV::go();
 
-require_once "$ENV->SERVER_ROOT/sections/torrents/functions.php";
 
 // If we're not coming from torrents.php, check we're being returned because of an error.
-if (!isset($_GET['id']) || !is_number($_GET['id'])) {
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     if (!isset($Err)) {
         error(404);
     }
 } else {
     $TorrentID = $_GET['id'];
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT tg.`category_id`, t.`GroupID`, u.`Username`
     FROM `torrents_group` AS tg
       LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
       LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`
     WHERE t.`ID` = " . $_GET['id']);
-    list($CategoryID, $GroupID, $Username) = $DB->next_record();
+    list($CategoryID, $GroupID, $Username) = $app->dbOld->next_record();
     $Artists = Artists::get_artist($GroupID);
-    $TorrentCache = get_group_info($GroupID, true);
+    $TorrentCache = TorrentFunctions::get_group_info($GroupID, true);
     $GroupDetails = $TorrentCache[0];
     $TorrentList = $TorrentCache[1];
     // Resolve the torrentlist to the one specific torrent being reported
@@ -38,20 +39,20 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
 
     // Group details
     list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP,
-    $GroupYear, $GroupStudio, $GroupSeries, $GroupCatalogueNumber,
-    $GroupCategoryID, $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs,
-    $TorrentTagUserIDs, $Screenshots, $GroupFlags) = array_values($GroupDetails);
+        $GroupYear, $GroupStudio, $GroupSeries, $GroupCatalogueNumber,
+        $GroupCategoryID, $GroupDLSite, $GroupTime, $TorrentTags, $TorrentTagIDs,
+        $TorrentTagUserIDs, $Screenshots, $GroupFlags) = array_values($GroupDetails);
 
     $DisplayName = $GroupName;
     $AltName = $GroupName; // Goes in the alt text of the image
-  $Title = $GroupName; // Goes in <title>
-  $WikiBody = Text::full_format($WikiBody);
+    $Title = $GroupName; // Goes in <title>
+    $WikiBody = \Gazelle\Text::parse($WikiBody);
 
     // Get the artist name, group name etc.
     $Artists = Artists::get_artist($GroupID);
     if ($Artists) {
         $DisplayName = '<span dir="ltr">' . Artists::display_artists($Artists, true) . "<a href=\"torrents.php?torrentid=$TorrentID\">$DisplayName</a></span>";
-        $AltName = display_str(Artists::display_artists($Artists, false)) . $AltName;
+        $AltName = \Gazelle\Text::esc(Artists::display_artists($Artists, false)) . $AltName;
         $Title = $AltName;
     }
     if ($GroupYear > 0) {
@@ -67,7 +68,7 @@ if (!isset($_GET['id']) || !is_number($_GET['id'])) {
     */
 }
 
-View::show_header('Report', 'reportsv2,browse,torrent,recommend');
+View::header('Report', 'reportsv2,browse,torrent,recommend');
 ?>
 
 <div>
@@ -94,15 +95,15 @@ View::show_header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-      build_torrents_table($Cache, $DB, $LoggedUser, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
-      ?>
+TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
+?>
     </table>
   </div>
 
-  <form class="create_form" name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
+  <form name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
     <div>
       <input type="hidden" name="submit" value="true" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
       <input type="hidden" name="categoryid" value="<?=$CategoryID?>" />
     </div>
@@ -115,21 +116,21 @@ View::show_header('Report', 'reportsv2,browse,torrent,recommend');
           <td>
             <select id="type" name="type" class="change_report_type">
 <?php
-        if (!empty($Types[$CategoryID])) {
-            $TypeList = $Types['master'] + $Types[$CategoryID];
-            $Priorities = [];
-            foreach ($TypeList as $Key => $Value) {
-                $Priorities[$Key] = $Value['priority'];
-            }
-            array_multisort($Priorities, SORT_ASC, $TypeList);
-        } else {
-            $TypeList = $Types['master'];
-        }
-        foreach ($TypeList as $Type => $Data) {
-            ?>
+  if (!empty($Types[$CategoryID])) {
+      $TypeList = $Types['master'] + $Types[$CategoryID];
+      $Priorities = [];
+      foreach ($TypeList as $Key => $Value) {
+          $Priorities[$Key] = $Value['priority'];
+      }
+      array_multisort($Priorities, SORT_ASC, $TypeList);
+  } else {
+      $TypeList = $Types['master'];
+  }
+  foreach ($TypeList as $Type => $Data) {
+      ?>
               <option value="<?=($Type)?>"><?=($Data['title'])?></option>
 <?php
-        } ?>
+  } ?>
             </select>
           </td>
         </tr>
@@ -139,19 +140,19 @@ View::show_header('Report', 'reportsv2,browse,torrent,recommend');
 
       <div id="dynamic_form">
 <?php
-        /**
-         * THIS IS WHERE SEXY AJAX COMES IN
-         * The following malarky is needed so that if you get sent back here, the fields are filled in.
-         */
-        ?>
-        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? display_str($_POST['sitelink']) : '')?>" />
-        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? display_str($_POST['image']) : '')?>" />
-        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? display_str($_POST['track']) : '')?>" />
-        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? display_str($_POST['link']) : '')?>" />
-        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? display_str($_POST['extra']) : '')?>" />
+  /**
+   * THIS IS WHERE SEXY AJAX COMES IN
+   * The following malarky is needed so that if you get sent back here, the fields are filled in.
+   */
+?>
+        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>" />
+        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>" />
+        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>" />
+        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>" />
+        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? \Gazelle\Text::esc($_POST['extra']) : '')?>" />
       </div>
     </div>
   <input type="submit" class="button-primary" value="Report" />
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

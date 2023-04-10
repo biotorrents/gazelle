@@ -1,19 +1,20 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
 
 $ENV = ENV::go();
-require_once SERVER_ROOT.'/classes/twofa.class.php';
-require_once SERVER_ROOT.'/classes/u2f.class.php';
 
-$TwoFA = new TwoFactorAuth($ENV->SITE_NAME);
-$U2F = new u2f\U2F('https://'.SITE_DOMAIN);
+$app = \Gazelle\App::go();
+$db = $app->dbOld;
+
+$TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
+$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
 
 if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'PGP') {
         if (!empty($_POST['publickey']) && (strpos($_POST['publickey'], 'BEGIN PGP PUBLIC KEY BLOCK') === false || strpos($_POST['publickey'], 'END PGP PUBLIC KEY BLOCK') === false)) {
             $Error = "Invalid PGP public key";
         } else {
-            $DB->query("
+            $app->dbOld->query("
               UPDATE users_main
               SET PublicKey = '".db_string($_POST['publickey'])."'
               WHERE ID = $UserID");
@@ -23,7 +24,7 @@ if ($Type = $_POST['type'] ?? false) {
 
     if ($Type === '2FA-E') {
         if ($TwoFA->verifyCode($_POST['twofasecret'], $_POST['twofa'])) {
-            $DB->query("
+            $app->dbOld->query("
               UPDATE users_main
               SET TwoFactor='".db_string($_POST['twofasecret'])."'
               WHERE ID = $UserID");
@@ -34,7 +35,7 @@ if ($Type = $_POST['type'] ?? false) {
     }
 
     if ($Type === '2FA-D') {
-        $DB->query("
+        $app->dbOld->query("
           UPDATE users_main
           SET TwoFactor = NULL
           WHERE ID = $UserID");
@@ -44,18 +45,18 @@ if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'U2F-E') {
         try {
             $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
-            $DB->query("
+            $app->dbOld->query("
               INSERT INTO u2f
                 (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
               Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
             $Message = "U2F token registered";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $Error = "Failed to register U2F token";
         }
     }
 
     if ($Type === 'U2F-D') {
-        $DB->query("
+        $app->dbOld->query("
           DELETE FROM u2f
           WHERE UserID = $UserID");
         $Message = 'U2F tokens deregistered';
@@ -63,24 +64,24 @@ if ($Type = $_POST['type'] ?? false) {
 }
 
 $U2FRegs = [];
-$DB->query("
+$app->dbOld->query("
   SELECT KeyHandle, PublicKey, Certificate, Counter
   FROM u2f
   WHERE UserID = $UserID");
 
 // Needs to be an array of objects, so we can't use to_array()
-while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $DB->next_record()) {
+while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $app->dbOld->next_record()) {
     $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT PublicKey, TwoFactor
   FROM users_main
   WHERE ID = $UserID");
 
-list($PublicKey, $TwoFactor) = $DB->next_record();
+list($PublicKey, $TwoFactor) = $app->dbOld->next_record();
 list($U2FRequest, $U2FSigs) = $U2F->getRegisterData($U2FRegs);
-View::show_header("2FA Settings", 'u2f');
+View::header("2FA Settings", 'u2f');
 ?>
 
 <h2>Additional Account Security Options</h2>
@@ -90,7 +91,7 @@ View::show_header("2FA Settings", 'u2f');
   </div>
   <?php }
 
-   if (isset($Error)) { ?>
+  if (isset($Error)) { ?>
   <div class="alertbar error"><?=$Error?>
   </div>
   <?php } ?>
@@ -102,7 +103,7 @@ View::show_header("2FA Settings", 'u2f');
 
     <div class="pad">
       <?php if (empty($PublicKey)) {
-       if (!empty($TwoFactor) || sizeof($U2FRegs) > 0) { ?>
+          if (!empty($TwoFactor) || sizeof($U2FRegs) > 0) { ?>
       <strong class="important_text">
         You have a form of 2FA enabled but no PGP key associated with your account.
         If you lose access to your 2FA device, you will permanently lose access to your account.
@@ -129,7 +130,7 @@ View::show_header("2FA Settings", 'u2f');
         from loss (backup) or theft (revocation certificate).
       </p>
       <?php
-   } else { ?>
+      } else { ?>
       <p>
         The PGP public key associated with your account is shown below.
       </p>
@@ -147,7 +148,7 @@ View::show_header("2FA Settings", 'u2f');
         <br />
 
         <textarea name="publickey" id="publickey" spellcheck="false" cols="64"
-          rows="8"><?=display_str($PublicKey)?></textarea>
+          rows="8"><?=\Gazelle\Text::esc($PublicKey)?></textarea>
         <br />
 
         <button type="submit" name="type" value="PGP">Update Public Key</button>
@@ -162,8 +163,8 @@ View::show_header("2FA Settings", 'u2f');
 
     <div class="pad">
       <?php $TwoFASecret = empty($TwoFactor) ? $TwoFA->createSecret() : $TwoFactor;
-      if (empty($TwoFactor)) {
-          if (sizeof($U2FRegs) === 0) { ?>
+if (empty($TwoFactor)) {
+    if (sizeof($U2FRegs) === 0) { ?>
       <p>
         Two Factor Authentication is not currently enabled for this account.
         To enable it, add the secret key below to your 2FA client either manually or by scanning the QR code, then enter
@@ -174,7 +175,7 @@ View::show_header("2FA Settings", 'u2f');
         <input type="text" size="60" name="twofasecret" id="twofasecret"
           value="<?=$TwoFASecret?>" readonly><br>
         <img
-          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$LoggedUser['Username'], $TwoFASecret)?>" />
+          src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->user->core['username'], $TwoFASecret)?>" />
         <br />
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
@@ -205,7 +206,7 @@ View::show_header("2FA Settings", 'u2f');
 
         <p>
           <img
-            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->SITE_NAME.':'.$LoggedUser['Username'], $TwoFASecret)?>" />
+            src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->user->core['username'], $TwoFASecret)?>" />
         </p>
 
         <p>
@@ -274,4 +275,4 @@ View::show_header("2FA Settings", 'u2f');
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

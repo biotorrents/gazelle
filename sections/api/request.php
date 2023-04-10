@@ -1,17 +1,18 @@
 <?php
+
 #declare(strict_types=1);
 
 $RequestTax = 0.1;
 
 // Minimum and default amount of upload to remove from the user when they vote.
-// Also change in static/functions/requests.js
+// Also change in static/js/requests.js
 $MinimumVote = 20 * 1024 * 1024;
 
 /*
  * This is the page that displays the request to the end user after being created.
  */
 
-if (empty($_GET['id']) || !is_number($_GET['id'])) {
+if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die("failure");
 }
 
@@ -25,8 +26,8 @@ if ($Request === false) {
 }
 
 $CategoryID = $Request['CategoryID'];
-$Requestor = Users::user_info($Request['UserID']);
-$Filler = $Request['FillerID'] ? Users::user_info($Request['FillerID']) : null;
+$Requestor = User::user_info($Request['UserID']);
+$Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
 $CanVote = !$IsFilled && check_perms('site_vote');
@@ -43,7 +44,7 @@ $JsonArtists = Requests::get_artists($RequestID);
 $RequestVotes = Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && (($CategoryID == 0) || ($CategoryName == 'Music' && $Request['Year'] == 0)));
-$UserCanEdit = (!$IsFilled && $LoggedUser['ID'] == $Request['UserID'] && $VoteCount < 2);
+$UserCanEdit = (!$IsFilled && $app->user->core['id'] == $Request['UserID'] && $VoteCount < 2);
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
 $JsonTopContributors = [];
@@ -63,7 +64,7 @@ list($NumComments, $Page, $Thread) = Comments::load('requests', $RequestID, fals
 $JsonRequestComments = [];
 foreach ($Thread as $Key => $Post) {
     list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
-    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(Users::user_info($AuthorID));
+    list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID));
     $JsonRequestComments[] = array(
     'postId'          => (int)$PostID,
     'authorId'        => (int)$AuthorID,
@@ -71,10 +72,10 @@ foreach ($Thread as $Key => $Post) {
     'donor'           => ($Donor == 1),
     'warned'          => (bool)$Warned,
     'enabled'         => ($Enabled == 2 ? false : true),
-    'class'           => Users::make_class_string($PermissionID),
+    'class'           => User::make_class_string($PermissionID),
     'addedTime'       => $AddedTime,
     'avatar'          => $Avatar,
-    'comment'         => Text::full_format($Body),
+    'comment'         => \Gazelle\Text::parse($Body),
     'editedUserId'    => (int)$EditedUserID,
     'editedUsername'  => $EditedUsername,
     'editedTime'      => $EditedTime
@@ -89,7 +90,7 @@ json_die('success', array(
   'requestId'       => (int)$RequestID,
   'requestorId'     => (int)$Request['UserID'],
   'requestorName'   => $Requestor['Username'],
-  'isBookmarked'    => Bookmarks::has_bookmarked('request', $RequestID),
+  'isBookmarked'    => Bookmarks::isBookmarked('request', $RequestID),
   'requestTax'      => (float)$RequestTax,
   'timeAdded'       => $Request['TimeAdded'],
   'canEdit'         => (bool)$CanEdit,
@@ -105,7 +106,7 @@ json_die('success', array(
   'year'            => (int)$Request['Year'],
   'image'           => $Request['Image'],
   'bbDescription'   => $Request['Description'],
-  'description'     => Text::full_format($Request['Description']),
+  'description'     => \Gazelle\Text::parse($Request['Description']),
   'artists'         => $JsonArtists,
   'isFilled'        => (bool)$IsFilled,
   'fillerId'        => (int)$Request['FillerID'],

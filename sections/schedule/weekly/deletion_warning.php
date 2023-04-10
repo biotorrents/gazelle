@@ -1,22 +1,26 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 // Send warnings to uploaders of torrents that will be deleted this week
-$DB->query("
-  SELECT
-    t.ID,
-    t.GroupID,
-    COALESCE(NULLIF(tg.Name,''), NULLIF(tg.Title2,''), tg.NameJP) AS Name,
-    t.UserID
-  FROM torrents AS t
-    JOIN torrents_group AS tg ON tg.ID = t.GroupID
-    JOIN users_info AS u ON u.UserID = t.UserID
-  WHERE t.last_action < NOW() - INTERVAL 20 DAY
-    AND t.last_action != 0
-    AND u.UnseededAlerts = '1'
-  ORDER BY t.last_action ASC");
-  
-$TorrentIDs = $DB->to_array();
+$app->dbOld->query("
+SELECT
+  t.`ID`,
+  t.`GroupID`,
+  COALESCE(NULLIF(tg.`title`,''), NULLIF(tg.`subject`,''), tg.`object`) AS Name,
+  t.`UserID`
+FROM `torrents` AS t
+  JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
+  JOIN `users_info` AS u ON u.`UserID` = t.`UserID`
+WHERE t.`last_action` < NOW() - INTERVAL 20 DAY
+  AND t.`last_action` != 0
+  AND u.`UnseededAlerts` = '1'
+ORDER BY t.`last_action` ASC
+");
+
+$TorrentIDs = $app->dbOld->to_array();
 $TorrentAlerts = [];
 
 foreach ($TorrentIDs as $TorrentID) {

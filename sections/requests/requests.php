@@ -37,10 +37,10 @@ $Submitted = !empty($_GET['submit']);
 
 // Paranoia
 if (!empty($_GET['userid'])) {
-    if (!is_number($_GET['userid'])) {
+    if (!is_numeric($_GET['userid'])) {
         error('User ID must be an integer');
     }
-    $UserInfo = Users::user_info($_GET['userid']);
+    $UserInfo = User::user_info($_GET['userid']);
     if (empty($UserInfo)) {
         error('That user does not exist');
     }
@@ -56,50 +56,50 @@ if (empty($_GET['type'])) {
     }
 } else {
     switch ($_GET['type']) {
-    case 'created':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              error(403);
-          }
-          $Title = "Requests created by $UserInfo[Username]";
-          $SphQL->where('userid', $UserInfo['ID']);
-      } else {
-          $Title = 'My requests';
-          $SphQL->where('userid', $LoggedUser['ID']);
-      }
-      break;
-    case 'voted':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              error(403);
-          }
-          $Title = "Requests voted for by $UserInfo[Username]";
-          $SphQL->where('voter', $UserInfo['ID']);
-      } else {
-          $Title = 'Requests I have voted on';
-          $SphQL->where('voter', $LoggedUser['ID']);
-      }
-      break;
-    case 'filled':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              error(403);
-          }
-          $Title = "Requests filled by $UserInfo[Username]";
-          $SphQL->where('fillerid', $UserInfo['ID']);
-      } else {
-          $Title = 'Requests I have filled';
-          $SphQL->where('fillerid', $LoggedUser['ID']);
-      }
-      break;
-    case 'bookmarks':
-      $Title = 'Your bookmarked requests';
-      $BookmarkView = true;
-      $SphQL->where('bookmarker', $LoggedUser['ID']);
-      break;
-    default:
-      error(404);
-  }
+        case 'created':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    error(403);
+                }
+                $Title = "Requests created by $UserInfo[Username]";
+                $SphQL->where('userid', $UserInfo['ID']);
+            } else {
+                $Title = 'My requests';
+                $SphQL->where('userid', $app->user->core['id']);
+            }
+            break;
+        case 'voted':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    error(403);
+                }
+                $Title = "Requests voted for by $UserInfo[Username]";
+                $SphQL->where('voter', $UserInfo['ID']);
+            } else {
+                $Title = 'Requests I have voted on';
+                $SphQL->where('voter', $app->user->core['id']);
+            }
+            break;
+        case 'filled':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    error(403);
+                }
+                $Title = "Requests filled by $UserInfo[Username]";
+                $SphQL->where('fillerid', $UserInfo['ID']);
+            } else {
+                $Title = 'Requests I have filled';
+                $SphQL->where('fillerid', $app->user->core['id']);
+            }
+            break;
+        case 'bookmarks':
+            $Title = 'Your bookmarked requests';
+            $BookmarkView = true;
+            $SphQL->where('bookmarker', $app->user->core['id']);
+            break;
+        default:
+            error(404);
+    }
 }
 
 if ($Submitted && empty($_GET['show_filled'])) {
@@ -274,7 +274,7 @@ if (!empty($_GET['releases'])) {
 }
 
 if (!empty($_GET['requestor'])) {
-    if (is_number($_GET['requestor'])) {
+    if (is_numeric($_GET['requestor'])) {
         $SphQL->where('userid', $_GET['requestor']);
     } else {
         error(404);
@@ -282,14 +282,14 @@ if (!empty($_GET['requestor'])) {
 }
 
 if (isset($_GET['year'])) {
-    if (is_number($_GET['year']) || $_GET['year'] === '0') {
+    if (is_numeric($_GET['year']) || $_GET['year'] === '0') {
         $SphQL->where('year', $_GET['year']);
     } else {
         error(404);
     }
 }
 
-if (!empty($_GET['page']) && is_number($_GET['page']) && $_GET['page'] > 0) {
+if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $Page = $_GET['page'];
     $Offset = ($Page - 1) * REQUESTS_PER_PAGE;
     $SphQL->limit($Offset, REQUESTS_PER_PAGE, $Offset + REQUESTS_PER_PAGE);
@@ -314,7 +314,7 @@ if ($NumResults > 0) {
 }
 
 $CurrentURL = Format::get_url(array('order', 'sort', 'page'));
-View::show_header($Title, 'requests');
+View::header($Title, 'requests');
 ?>
 
 <div>
@@ -324,16 +324,16 @@ View::show_header($Title, 'requests');
     </div>
     <div class="linkbox">
         <?php if (!$BookmarkView) {
-    if (check_perms('site_submit_requests')) { ?>
+            if (check_perms('site_submit_requests')) { ?>
         <a href="requests.php?action=new" class="brackets">New request</a>
         <a href="requests.php?type=created" class="brackets">My requests</a>
         <?php }
-    if (check_perms('site_vote')) { ?>
+            if (check_perms('site_vote')) { ?>
         <a href="requests.php?type=voted" class="brackets">Requests I've voted on</a>
         <?php } ?>
         <a href="bookmarks.php?type=requests" class="brackets">Bookmarked requests</a>
         <?php
-} else { ?>
+        } else { ?>
         <a href="bookmarks.php?type=torrents" class="brackets">Torrents</a>
         <a href="bookmarks.php?type=artists" class="brackets">Artists</a>
         <a href="bookmarks.php?type=collages" class="brackets">Collections</a>
@@ -354,7 +354,7 @@ View::show_header($Title, 'requests');
             value="<?=$_GET['type']?>" />
         <?php } ?>
         <input type="hidden" name="submit" value="true" />
-        <?php if (!empty($_GET['userid']) && is_number($_GET['userid'])) { ?>
+        <?php if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) { ?>
         <input type="hidden" name="userid"
             value="<?=$_GET['userid']?>" />
         <?php } ?>
@@ -367,8 +367,8 @@ View::show_header($Title, 'requests');
                     </td>
                     <td>
                         <input type="search" name="search" size="60" class="inputtext" placeholder="Search Terms" value="<?php if (isset($_GET['search'])) {
-        echo display_str($_GET['search']);
-    } ?>" />
+                            echo \Gazelle\Text::esc($_GET['search']);
+                        } ?>" />
                     </td>
                 </tr>
 
@@ -379,9 +379,7 @@ View::show_header($Title, 'requests');
                     <td>
                         <input type="search" name="tags" id="tags" size="50" class="inputtext"
                             placeholder="Tags (comma-separated)"
-                            value="<?=!empty($TagNames) ? display_str($TagNames) : ''?>"
-                            <?php Users::has_autocomplete_enabled('other'); ?>
-                        />&nbsp;
+                            value="<?=!empty($TagNames) ? \Gazelle\Text::esc($TagNames) : ''?>" />&nbsp;
                         <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked')?>
                         /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
                         <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked')?>
@@ -393,7 +391,7 @@ View::show_header($Title, 'requests');
                 <tr>
                   <td class="label"><!-- Requested By --></td>
                     <td>
-                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=display_str($_GET['requester'])?>" />
+                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=\Gazelle\Text::esc($_GET['requester'])?>" />
                     </td>
                 </tr>
                 */ ?>
@@ -416,14 +414,14 @@ View::show_header($Title, 'requests');
             </table>
             <table class="layout cat_list">
                 <?php
-    $x = 1;
-    reset($Categories);
-    foreach ($Categories as $CatKey => $CatName) {
-        if ($x % 8 === 0 || $x === 1) {
-            ?>
+                        $x = 1;
+        reset($Categories);
+        foreach ($Categories as $CatKey => $CatName) {
+            if ($x % 8 === 0 || $x === 1) {
+                ?>
                 <tr>
                     <?php
-        } ?>
+            } ?>
                     <td>
                         <input type="checkbox"
                             name="filter_cat[<?=($CatKey + 1) ?>]"
@@ -435,10 +433,10 @@ View::show_header($Title, 'requests');
                     <?php if ($x % 7 === 0) { ?>
                 </tr>
                 <?php
-      }
-        $x++;
-    }
-?>
+                    }
+            $x++;
+        }
+        ?>
             </table>
             <table class="layout">
                 <tr>
@@ -456,7 +454,7 @@ View::show_header($Title, 'requests');
     <?php } ?>
     <table id="request_table" class="request_table border" cellpadding="6" cellspacing="1" border="0" width="100%">
         <tr class="colhead_dark">
-            <th class="small cats_col"></th>
+            <th class="small categoryColumn"></th>
             <th style="width: 38%;" class="nobr">
                 <strong>Request Name</strong>
             </th>
@@ -489,71 +487,71 @@ View::show_header($Title, 'requests');
             </th>
         </tr>
         <?php
-    if ($NumResults === 0) {
-        // not viewing bookmarks but no requests found
-?>
+            if ($NumResults === 0) {
+                // not viewing bookmarks but no requests found
+                ?>
         <tr class="row">
             <td colspan="8">
                 Nothing found!
             </td>
         </tr>
         <?php
-    } elseif ($Page === 0) { ?>
+            } elseif ($Page === 0) { ?>
         <tr class="row">
             <td colspan="8">
                 The requested page contains no matches!
             </td>
         </tr>
         <?php
-    } else {
-        $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18
-        $Requests = Requests::get_requests(array_keys($SphRequests));
-        foreach ($Requests as $RequestID => $Request) {
-            $SphRequest = $SphRequests[$RequestID];
-            $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
-            $VoteCount = $SphRequest['votes'];
-
-            if ($Request['CategoryID'] === 0) {
-                $CategoryName = 'Unknown';
             } else {
-                $CategoryName = $Categories[$Request['CategoryID'] - 1];
-            }
+                $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18
+                $Requests = Requests::get_requests(array_keys($SphRequests));
+                foreach ($Requests as $RequestID => $Request) {
+                    $SphRequest = $SphRequests[$RequestID];
+                    $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
+                    $VoteCount = $SphRequest['votes'];
 
-            if ($Request['TorrentID'] !== 0) {
-                $IsFilled = true;
-                $FillerInfo = Users::user_info($Request['FillerID']);
-            } else {
-                $IsFilled = false;
-            }
+                    if ($Request['CategoryID'] === 0) {
+                        $CategoryName = 'Unknown';
+                    } else {
+                        $CategoryName = $Categories[$Request['CategoryID'] - 1];
+                    }
 
-            $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
+                    if ($Request['TorrentID'] !== 0) {
+                        $IsFilled = true;
+                        $FillerInfo = User::user_info($Request['FillerID']);
+                    } else {
+                        $IsFilled = false;
+                    }
 
-            $ArtistForm = Requests::get_artists($RequestID);
-            $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-            $FullName = "<a class='torrent_title' href='requests.php?action=view&amp;id=$RequestID'><span ";
+                    $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
 
-            if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-                $FullName .= 'data-cover="'.ImageTools::process($Request['Image']).'" ';
-            }
+                    $ArtistForm = Requests::get_artists($RequestID);
+                    $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+                    $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
-            $FullName .= "dir='ltr'>$Title</span></a>";
-            $FullName .= "<br />$ArtistLink";
+                    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
+                        $FullName .= 'data-cover="'.\Gazelle\Images::process($Request['Image']).'" ';
+                    }
 
-            $ExtraInfo = '';
+                    $FullName .= "dir='ltr'>$Title</span></a>";
+                    $FullName .= "<br />$ArtistLink";
 
-            if (!empty($Request['CatalogueNumber'])) {
-                $Label = '<br />🔑&nbsp;';
-                $ExtraInfo .= $Label.$Request['CatalogueNumber'];
-            }
+                    $ExtraInfo = '';
 
-            if ($ExtraInfo) {
-                $FullName .= " $ExtraInfo";
-            }
+                    if (!empty($Request['CatalogueNumber'])) {
+                        $Label = '<br />🔑&nbsp;';
+                        $ExtraInfo .= $Label.$Request['CatalogueNumber'];
+                    }
 
-            $Tags = $Request['Tags']; ?>
+                    if ($ExtraInfo) {
+                        $FullName .= " $ExtraInfo";
+                    }
+
+                    $Tags = $Request['Tags']; ?>
 
         <tr class="request">
-            <td class="center cats_col">
+            <td class="center categoryColumn">
                 <div title="<?=Format::pretty_category($Request['CategoryID'])?>"
                     class="tooltip <?=Format::css_category($Request['CategoryID'])?>">
                 </div>
@@ -565,16 +563,16 @@ View::show_header($Title, 'requests');
                 <div class="tags">
                     <?php
     $TagList = [];
-            foreach ($Request['Tags'] as $TagID => $TagName) {
-                $Split = Tags::get_name_and_class($TagName);
-                $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.display_str($Split['name']).'</a>';
-            }
-            $TagList = implode(', ', $TagList); ?>
+                    foreach ($Request['Tags'] as $TagID => $TagName) {
+                        $Split = Tags::get_name_and_class($TagName);
+                        $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.\Gazelle\Text::esc($Split['name']).'</a>';
+                    }
+                    $TagList = implode(', ', $TagList); ?>
                     <?=$TagList?>
                 </div>
             </td>
             <td class="nobr">
-                <span id="vote_count_<?=$RequestID?>"><?=number_format($VoteCount)?></span>
+                <span id="vote_count_<?=$RequestID?>"><?=\Gazelle\Text::float($VoteCount)?></span>
                 <?php if (!$IsFilled && check_perms('site_vote')) { ?>
                 &nbsp;&nbsp; <a
                     href="javascript:Vote(0, <?=$RequestID?>)"
@@ -594,31 +592,31 @@ View::show_header($Title, 'requests');
             </td>
             <td>
                 <?php if ($IsFilled) {
-                if ($Request['AnonymousFill']) { ?>
+                    if ($Request['AnonymousFill']) { ?>
                 <em>Anonymous</em>
                 <?php } else { ?>
                 <a
                     href="user.php?id=<?=$FillerInfo['ID']?>"><?=$FillerInfo['Username']?></a>
                 <?php }
-            } else { ?>
+                } else { ?>
                 &ndash;
                 <?php } ?>
             </td>
             <td>
                 <a
-                    href="user.php?id=<?=$Request['UserID']?>"><?=Users::format_username($Request['UserID'], false, false, false)?></a>
+                    href="user.php?id=<?=$Request['UserID']?>"><?=User::format_username($Request['UserID'], false, false, false)?></a>
             </td>
             <td class="nobr">
-                <?=time_diff($Request['TimeAdded'], 1)?>
+                <?=time_diff(intval($Request['TimeAdded']), 1)?>
             </td>
             <td class="nobr">
-                <?=time_diff($Request['LastVote'], 1)?>
+                <?=time_diff(intval($Request['LastVote']), 1)?>
             </td>
         </tr>
         <?php
-        } // foreach
-    } // else
-  } // if ($BookmarkView && $NumResults < 1)
+                } // foreach
+            } // else
+    } // if ($BookmarkView && $NumResults < 1)
 ?>
     </table>
     <?php if (isset($PageLinks)) { ?>
@@ -627,4 +625,4 @@ View::show_header($Title, 'requests');
     </div>
     <?php } ?>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -1,4 +1,7 @@
 <?php
+
+$app = \Gazelle\App::go();
+
 /*
 This page is something of a hack so those
 easily scared off by funky solutions, don't
@@ -10,7 +13,7 @@ it's slow to run sub queries, so we had to get
 creative for this one.
 
 The solution I settled on abuses the way
-$DB->to_array() works. What we've done, is
+$app->dbOld->to_array() works. What we've done, is
 backwards ordering. The results returned by the
 query have the best one for each GroupID last,
 and while to_array traverses the results, it
@@ -27,8 +30,8 @@ heart. -A9
 if (
   !isset($_REQUEST['collageid'])
   || !isset($_REQUEST['preference'])
-  || !is_number($_REQUEST['preference'])
-  || !is_number($_REQUEST['collageid'])
+  || !is_numeric($_REQUEST['preference'])
+  || !is_numeric($_REQUEST['collageid'])
   || $_REQUEST['preference'] > 2
   || count($_REQUEST['list']) === 0
 ) {
@@ -44,11 +47,11 @@ $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 $CollageID = $_REQUEST['collageid'];
 $Preference = $Preferences[$_REQUEST['preference']];
 
-$DB->query("
+$app->dbOld->query("
   SELECT Name
   FROM collages
   WHERE ID = '$CollageID'");
-list($CollageName) = $DB->next_record(MYSQLI_NUM, false);
+list($CollageName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 $SQL = "
 SELECT
@@ -78,14 +81,14 @@ ORDER BY
   t.$Preference
 ";
 
-$DownloadsQ = $DB->query($SQL);
+$DownloadsQ = $app->dbOld->query($SQL);
 $Collector = new TorrentsDL($DownloadsQ, $CollageName);
 
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        file_get_contents(TORRENT_STORE.$TorrentID.'.torrent');
+        file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
         $GroupID = $GroupIDs[$TorrentID];
         $Download =& $Downloads[$GroupID];
         $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);
@@ -99,6 +102,3 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
 }
 $Collector->finalize();
 $Settings = array(implode(':', $_REQUEST['list']), $_REQUEST['preference']);
-if (!isset($LoggedUser['Collector']) || $LoggedUser['Collector'] != $Settings) {
-    Users::update_site_options($LoggedUser['ID'], array('Collector' => $Settings));
-}

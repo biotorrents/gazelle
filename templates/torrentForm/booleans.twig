@@ -1,0 +1,23 @@
+{# annotated #}
+<tr>
+	<th>
+		<label>Annotated or aligned</label>
+	</th>
+
+	<td>
+		<input type="checkbox" id="annotated" name="annotated" value="true" {{ (data.annotated) ? "checked" : "" }}/>
+		<label for="annotated" class="boolean">Whether the torrent contains alignments, annotations, or other structural metadata</label>
+	</td>
+</tr>
+
+{# anonymous #}
+<tr>
+	<th>
+		<label>Upload anonymously</label>
+	</th>
+
+	<td>
+		<input type="checkbox" id="anonymous" name="anonymous" value="true" {{ (data.anonymous) ? "checked" : "" }}/>
+		<label for="anonymous" class="boolean">Hide your username from other users on the torrent details page</label>
+	</td>
+</tr>

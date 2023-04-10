@@ -1,7 +1,10 @@
-<?
-$UserID = $LoggedUser['ID'];
+<?php
 
-$DB->query("
+$app = \Gazelle\App::go();
+
+$UserID = $app->user->core['id'];
+
+$app->dbOld->query("
   SELECT
     g.ID,
     g.Name,
@@ -18,12 +21,12 @@ $DB->query("
   JOIN torrents_group AS g ON g.ID = t.GroupID
   LEFT JOIN xbt_files_users AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
   WHERE s.UserID = $UserID");
-if ($DB->has_results()) {
-  $Torrents = $DB->to_array(false, MYSQLI_ASSOC, false);
+if ($app->dbOld->has_results()) {
+    $Torrents = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
 }
 
 //Include the header
-View::show_header('Snatch List');
+View::header('Snatch List');
 ?>
 <div>
   <h2>Snatch History</h2>
@@ -37,32 +40,33 @@ View::show_header('Snatch List');
       <td class="number_column">Last Active</td>
       <td class="number_column">HnR</td>
     </tr>
-<?
+<?php
 foreach ($Torrents as $Torrent) {
-  $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
-  if (!isset($LoggedUser['CoverArt']) || $LoggedUser['CoverArt']) {
-    $DisplayName .= 'data-cover="'.ImageTools::process($Torrent['WikiImage'], 'thumb').'" ';
-  }
-  $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
+    $DisplayName = "<a href=\"torrents.php?id=$Torrent[ID]&torrentid=$Torrent[TorrentID]\" ";
+    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
+        $DisplayName .= 'data-cover="'.\Gazelle\Images::process($Torrent['WikiImage'], 'thumb').'" ';
+    }
+    $DisplayName .= "dir=\"ltr\">$Torrent[Name]</a>";
 
-  $HnR = false;
-  if ($Torrent['SeedTime'] < (2*24*60*60) &&
+    $HnR = false;
+    if ($Torrent['SeedTime'] < (2*24*60*60) &&
       $Torrent['active'] != "1" &&
       $Torrent['UserID'] != $UserID
-  ) $HnR = true;
-?>
+  ) {
+        $HnR = true;
+    } ?>
   <tr class="torrent">
     <td><div class="<?=Format::css_category($Torrent['CategoryID'])?>"></div></td>
     <td><a><?=$DisplayName ?></a></td>
     <td class="number_column"><?=time_diff(time()+$Torrent['SeedTime'], 2, false) ?></td>
     <td class="number_column"><?=$Torrent['LastUpdate'] ?></td>
-    <td class="number_column"><?=($HnR?'<a class="hnr-yes">Yes</a>':'<a class="hnr-no">No</a>') ?></td>
+    <td class="number_column"><?=($HnR ? '<a class="hnr-yes">Yes</a>' : '<a class="hnr-no">No</a>') ?></td>
   </tr>
-<?
+<?php
 }
 ?>
     </tbody>
     </table>
   </div>
 </div>
-<? View::show_footer(); ?>
+<?php View::footer(); ?>

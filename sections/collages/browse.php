@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 define('COLLAGES_PER_PAGE', 25);
 
 list($Page, $Limit) = Format::page_limit(COLLAGES_PER_PAGE);
@@ -84,7 +86,7 @@ $BaseSQL = $SQL = "
   WHERE Deleted = '0'";
 
 if ($BookmarkView) {
-    $SQL .= " AND bc.UserID = '" . $LoggedUser['ID'] . "'";
+    $SQL .= " AND bc.UserID = '" . $app->user->core['id'] . "'";
 }
 
 if (!empty($Search)) {
@@ -111,10 +113,10 @@ if (!empty($Tags)) {
 
 if (!empty($_GET['userid'])) {
     $UserID = $_GET['userid'];
-    if (!is_number($UserID)) {
+    if (!is_numeric($UserID)) {
         error(404);
     }
-    $User = Users::user_info($UserID);
+    $User = User::user_info($UserID);
     $Perms = Permissions::get_permissions($User['PermissionID']);
     $UserClass = $Perms['Class'];
 
@@ -123,11 +125,11 @@ if (!empty($_GET['userid'])) {
         if (!check_paranoia('collagecontribs', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $DB->query("
+        $app->dbOld->query("
       SELECT DISTINCT CollageID
       FROM collages_torrents
       WHERE UserID = $UserID");
-        $CollageIDs = $DB->collect('CollageID');
+        $CollageIDs = $app->dbOld->collect('CollageID');
         if (empty($CollageIDs)) {
             $SQL .= " AND 0";
         } else {
@@ -149,19 +151,19 @@ if (!empty($Categories)) {
 if (isset($_GET['action']) && $_GET['action'] === 'mine') {
     $SQL = $BaseSQL;
     $SQL .= "
-    AND c.UserID = '".$LoggedUser['ID']."'
+    AND c.UserID = '".$app->user->core['id']."'
     AND c.CategoryID = 0";
 }
 
 $SQL .= "
   ORDER BY $Order $Way
   LIMIT $Limit";
-$DB->query($SQL);
-$Collages = $DB->to_array();
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$app->dbOld->query($SQL);
+$Collages = $app->dbOld->to_array();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
-View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
+View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
 ?>
 
 <div>
@@ -180,12 +182,12 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
         <input type="hidden" name="action" value="search" />
       </div>
 
-      <table cellpadding="6" cellspacing="1" border="0" class="skeleton-fix" width="100%">
+      <table cellpadding="6" cellspacing="1" border="0" class="skeletonFix" width="100%">
         <tr id="search_terms">
           <td class="label"></td>
           <td>
             <input type="search" name="search" size="60" placeholder="Search terms"
-              value="<?=(!empty($_GET['search']) ? display_str($_GET['search']) : '')?>" />
+              value="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : '')?>" />
           </td>
         </tr>
 
@@ -193,9 +195,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? display_str($_GET['tags']) : '')?>"
-              <?php Users::has_autocomplete_enabled('other'); ?>
-            />
+              value="<?=(!empty($_GET['tags']) ? \Gazelle\Text::esc($_GET['tags']) : '')?>" />
             &ensp;
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
     'tags_type',
@@ -205,10 +205,10 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
 
             <label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1" <?Format::selected(
-                  'tags_type',
-                  1,
-                  'checked'
-              )?> />
+                'tags_type',
+                1,
+                'checked'
+            )?> />
 
             <label for="tags_type1"> All</label>
           </td>
@@ -230,12 +230,12 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
           <td class="label">Search In</td>
           <td>
             <input type="radio" name="type" value="c.name" <?php if ($Type==='c.name') {
-                  echo 'checked="checked" ' ;
-              }
-              ?>/> Names&nbsp;&nbsp;
+                echo 'checked="checked" ' ;
+            }
+      ?>/> Names&nbsp;&nbsp;
             <input type="radio" name="type" value="description" <?php if ($Type==='description') {
-                  echo 'checked="checked" ' ;
-              } ?>/> Descriptions
+                echo 'checked="checked" ' ;
+            } ?>/> Descriptions
           </td>
         </tr>
         <tr id="order_by">
@@ -278,23 +278,23 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
     <?php
       }
       if (check_perms('site_collages_personal')) {
-          $DB->query("
+          $app->dbOld->query("
         SELECT ID
         FROM collages
-        WHERE UserID = '$LoggedUser[ID]'
+        WHERE UserID = '{$app->user->core['id']}'
           AND CategoryID = '0'
           AND Deleted = '0'");
-          $CollageCount = $DB->record_count();
+          $CollageCount = $app->dbOld->record_count();
 
           if ($CollageCount === 1) {
-              list($CollageID) = $DB->next_record(); ?>
+              list($CollageID) = $app->dbOld->next_record(); ?>
     <a href="collages.php?id=<?=$CollageID?>"
       class="brackets">Personal collection</a>
     <?php
           } elseif ($CollageCount > 1) { ?>
     <a href="collages.php?action=mine" class="brackets">Personal collections</a>
     <?php
-      }
+          }
       }
       if (check_perms('site_collages_subscribe')) {
           ?>
@@ -311,9 +311,9 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
     <br />
     <?php
       } ?>
-    <a href="collages.php?userid=<?=$LoggedUser['ID']?>"
+    <a href="collages.php?userid=<?=$app->user->core['id']?>"
       class="brackets">Collections you started</a>
-    <a href="collages.php?userid=<?=$LoggedUser['ID']?>&amp;contrib=1"
+    <a href="collages.php?userid=<?=$app->user->core['id']?>&amp;contrib=1"
       class="brackets">Collections you contributed to</a>
     <br /><br />
     <?php
@@ -326,7 +326,7 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
     <?php
   }
   $Pages = Format::get_pages($Page, $NumResults, COLLAGES_PER_PAGE, 9);
-  echo $Pages;
+echo $Pages;
 ?>
   </div>
   <?php if (count($Collages) === 0) { ?>
@@ -341,8 +341,8 @@ View::show_header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections
   <!--box-->
 </div>
 <!--content-->
-<?php View::show_footer();
-    error();
+<?php View::footer();
+      error();
   }
 ?>
 <table width="100%" id="collage_table" class="collage_table box">
@@ -367,10 +367,10 @@ foreach ($Collages as $Collage) {
         href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$CollageCats[(int)$CategoryID]?></a>
     </td>
     <td>
-      <a class="torrent_title" id="collage_name"
+      <a class="torrentTitle" id="collage_name"
         href="collages.php?id=<?=$ID?>"><?=$Name?></a>
       <?php if ($BookmarkView) { ?>
-      <span class="float_right">
+      <span class="u-pull-right">
         <a href="#"
           onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
           class="brackets">Remove bookmark</a>
@@ -379,13 +379,13 @@ foreach ($Collages as $Collage) {
       <div class="tags"><?=$TorrentTags->format('collages.php?action=search&amp;tags=')?>
       </div>
     </td>
-    <td class="number_column"><?=number_format((int)$NumTorrents)?>
+    <td class="number_column"><?=\Gazelle\Text::float((int)$NumTorrents)?>
     </td>
-    <td class="number_column"><?=number_format((int)$Subscribers)?>
+    <td class="number_column"><?=\Gazelle\Text::float((int)$Subscribers)?>
     </td>
-    <td class="nobr"><?=time_diff($Updated)?>
+    <td class="nobr"><?=time_diff(intval($Updated))?>
     </td>
-    <td><?=Users::format_username($UserID, false, false, false)?>
+    <td><?=User::format_username($UserID, false, false, false)?>
     </td>
   </tr>
   <?php
@@ -395,4 +395,4 @@ foreach ($Collages as $Collage) {
 <div class="linkbox"><?=$Pages?>
 </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

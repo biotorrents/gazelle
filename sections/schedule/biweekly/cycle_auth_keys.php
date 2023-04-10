@@ -1,17 +1,20 @@
 <?php
-#declare(strict_types=1);
 
-$DB->query("
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
+
+$app->dbOld->query("
 UPDATE
   `users_info`
 SET
   `AuthKey` =
     MD5(
       CONCAT(
-        `AuthKey`, RAND(), '".db_string(Users::make_secret())."',
+        `AuthKey`, RAND(), '".\Gazelle\Text::random()."',
         SHA1(
           CONCAT(
-            RAND(), RAND(), '".db_string(Users::make_secret())."'
+            RAND(), RAND(), '".\Gazelle\Text::random()."'
           )
         )
       )

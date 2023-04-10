@@ -1,0 +1,35 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<table id="forumIndex">
+    <tr>
+        <th>Category</th>
+        <th>Topics</th>
+        <th>Posts</th>
+    </tr>
+
+    {% for category in categories %}
+    <tr>
+        <td>
+            <a href="/boards/{{ category.slug }}">{{ category.name }}</a>
+            <br />
+            {{ category.description_text }}
+        </td>
+
+        <td>{{ category.topic_count }}</td>
+        <td>{{ category.post_count }}</td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("discourse/boards/sidebar.twig") }}
+
+{% endblock %}

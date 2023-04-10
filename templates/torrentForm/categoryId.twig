@@ -1,0 +1,18 @@
+{# categoryId #}
+<tr>
+	<th>
+		<label for="categoryId" class="required">Category</label>
+	</th>
+
+	<td>
+		<select id="categoryId" name="categoryId" required>
+			{% for item in env.CATS %}
+				<option value="{{ item.ID }}" {{ (value == item.ID) ? "selected" : "" }}>{{ item.Name }}</option>
+			{% endfor %}
+		</select>
+
+		<aside id="categoryDescription">
+            {# category description #}
+		</aside>
+	</td>
+</tr>

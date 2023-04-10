@@ -1,10 +1,13 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if (!($IsFLS)) {
-  // Logged in user is not FLS or Staff
-  error(403);
+    // Logged in user is not FLS or Staff
+    error(403);
 }
 
-View::show_header('Staff PMs', 'staffpm');
+View::header('Staff PMs', 'staffpm');
 
 ?>
 <div>
@@ -55,16 +58,15 @@ View::show_header('Staff PMs', 'staffpm');
     <div class="center">
       <h3>Edit old responses:</h3>
     </div>
-<?
+<?php
 
 // List common responses
-$DB->query("
+$app->dbOld->query("
   SELECT ID, Message, Name
   FROM staff_pm_responses
   ORDER BY ID DESC");
-while (list($ID, $Message, $Name) = $DB->next_record()) {
-
-?>
+while (list($ID, $Message, $Name) = $app->dbOld->next_record()) {
+    ?>
     <br />
     <div id="ajax_message_<?=$ID?>" class="hidden center alertbar"></div>
     <br />
@@ -73,13 +75,13 @@ while (list($ID, $Message, $Name) = $DB->next_record()) {
         <div class="head">
           <strong>Name:</strong>
           <input type="hidden" name="id" value="<?=$ID?>" />
-          <input type="text" name="name" id="response_name_<?=$ID?>" size="87" value="<?=display_str($Name)?>" />
+          <input type="text" name="name" id="response_name_<?=$ID?>" size="87" value="<?=\Gazelle\Text::esc($Name)?>" />
         </div>
         <div class="pad">
           <div class="box pad hidden" id="response_div_<?=$ID?>">
-            <?=Text::full_format($Message)?>
+            <?=\Gazelle\Text::parse($Message)?>
           </div>
-          <textarea rows="10" cols="87" id="response_message_<?=$ID?>" name="message"><?=display_str($Message)?></textarea>
+          <textarea rows="10" cols="87" id="response_message_<?=$ID?>" name="message"><?=\Gazelle\Text::esc($Message)?></textarea>
           <br />
           <input type="button" value="Toggle preview" onclick="PreviewResponse(<?=$ID?>);" />
           <input type="button" value="Delete" onclick="DeleteMessage(<?=$ID?>);" />
@@ -87,9 +89,9 @@ while (list($ID, $Message, $Name) = $DB->next_record()) {
         </div>
       </form>
     </div>
-<?
+<?php
 }
 ?>
   </div>
 </div>
-<? View::show_footer(); ?>
+<?php View::footer(); ?>

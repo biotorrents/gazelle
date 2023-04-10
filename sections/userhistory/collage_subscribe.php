@@ -1,38 +1,41 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 // perform the back end of subscribing to collages
 authorize();
 
-if (!is_number($_GET['collageid'])) {
-  error(0);
+if (!is_numeric($_GET['collageid'])) {
+    error(0);
 }
 
 $CollageID = (int)$_GET['collageid'];
 
-if (!$UserSubscriptions = $Cache->get_value('collage_subs_user_'.$LoggedUser['ID'])) {
-  $DB->prepared_query('
+if (!$UserSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->core['id'])) {
+    $app->dbOld->prepared_query('
     SELECT CollageID
     FROM users_collage_subs
-    WHERE UserID = '.db_string($LoggedUser['ID']));
-  $UserSubscriptions = $DB->collect(0);
-  $Cache->cache_value('collage_subs_user_'.$LoggedUser['ID'], $UserSubscriptions, 0);
+    WHERE UserID = '.db_string($app->user->core['id']));
+    $UserSubscriptions = $app->dbOld->collect(0);
+    $app->cache->set('collage_subs_user_'.$app->user->core['id'], $UserSubscriptions, 0);
 }
 
 if (($Key = array_search($CollageID, $UserSubscriptions)) !== false) {
-  $DB->prepared_query('
+    $app->dbOld->prepared_query('
     DELETE FROM users_collage_subs
-    WHERE UserID = '.db_string($LoggedUser['ID'])."
+    WHERE UserID = '.db_string($app->user->core['id'])."
       AND CollageID = $CollageID");
-  unset($UserSubscriptions[$Key]);
-  Collages::decrease_subscriptions($CollageID);
+    unset($UserSubscriptions[$Key]);
+    Collages::subtractSubscription($CollageID);
 } else {
-  $DB->prepared_query("
+    $app->dbOld->prepared_query("
     INSERT IGNORE INTO users_collage_subs
       (UserID, CollageID, LastVisit)
     VALUES
-      ($LoggedUser[ID], $CollageID, NOW())");
-  array_push($UserSubscriptions, $CollageID);
-  Collages::increase_subscriptions($CollageID);
+      ({$app->user->core['id']}, $CollageID, NOW())");
+    array_push($UserSubscriptions, $CollageID);
+    Collages::addSubscription($CollageID);
 }
-$Cache->replace_value('collage_subs_user_'.$LoggedUser['ID'], $UserSubscriptions, 0);
-$Cache->delete_value('collage_subs_user_new_'.$LoggedUser['ID']);
-$Cache->delete_value("collage_$CollageID");
+$app->cache->set('collage_subs_user_'.$app->user->core['id'], $UserSubscriptions, 0);
+$app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
+$app->cache->delete("collage_$CollageID");

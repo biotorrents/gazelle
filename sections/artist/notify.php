@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 authorize();
 if (!check_perms('site_torrents_notify')) {
@@ -7,59 +10,59 @@ if (!check_perms('site_torrents_notify')) {
 }
 
 $ArtistID = (int) $_GET['artistid'];
-Security::checkInt($ArtistID);
+Security::int($ArtistID);
 
 /*
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT GROUP_CONCAT(Name SEPARATOR '|')
   FROM artists_alias
   WHERE ArtistID = '$ArtistID'
     AND Redirect = 0
   GROUP BY ArtistID");
-list($ArtistAliases) = $DB->next_record(MYSQLI_NUM, FALSE);
+list($ArtistAliases) = $app->dbOld->next_record(MYSQLI_NUM, FALSE);
 */
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = '$ArtistID'");
-list($ArtistAliases) = $DB->next_record(MYSQLI_NUM, false);
+list($ArtistAliases) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-$Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID']);
+$Notify = $app->cache->get('notify_artists_'.$app->user->core['id']);
 if (empty($Notify)) {
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE Label = 'Artist notifications'
-      AND UserID = '$LoggedUser[ID]'
+      AND UserID = '{$app->user->core['id']}'
     ORDER BY ID
     LIMIT 1");
 } else {
-    $DB->prepared_query("
+    $app->dbOld->prepared_query("
     SELECT ID, Artists
     FROM users_notify_filters
     WHERE ID = '$Notify[ID]'");
 }
 
-if (empty($Notify) && !$DB->has_results()) {
-    $DB->prepared_query("
+if (empty($Notify) && !$app->dbOld->has_results()) {
+    $app->dbOld->prepared_query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists)
     VALUES
-      ('$LoggedUser[ID]', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
-    $FilterID = $DB->inserted_id();
-    $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
-    $Cache->delete_value('notify_artists_'.$LoggedUser['ID']);
+      ('{$app->user->core['id']}', 'Artist notifications', '|".db_string($ArtistAliases)."|')");
+    $FilterID = $app->dbOld->inserted_id();
+    $app->cache->delete('notify_filters_'.$app->user->core['id']);
+    $app->cache->delete('notify_artists_'.$app->user->core['id']);
 } else {
-    list($ID, $ArtistNames) = $DB->next_record(MYSQLI_NUM, false);
+    list($ID, $ArtistNames) = $app->dbOld->next_record(MYSQLI_NUM, false);
     if (stripos($ArtistNames, "|$ArtistAliases|") === false) {
         $ArtistNames .= "$ArtistAliases|";
-        $DB->prepared_query("
+        $app->dbOld->prepared_query("
       UPDATE users_notify_filters
       SET Artists = '".db_string($ArtistNames)."'
       WHERE ID = '$ID'");
-        $Cache->delete_value('notify_filters_'.$LoggedUser['ID']);
-        $Cache->delete_value('notify_artists_'.$LoggedUser['ID']);
+        $app->cache->delete('notify_filters_'.$app->user->core['id']);
+        $app->cache->delete('notify_artists_'.$app->user->core['id']);
     }
 }
 header('Location: '.$_SERVER['HTTP_REFERER']);

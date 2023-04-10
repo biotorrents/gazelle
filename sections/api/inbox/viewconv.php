@@ -1,34 +1,37 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 $ConvID = $_GET['id'];
-if (!$ConvID || !is_number($ConvID)) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+if (!$ConvID || !is_numeric($ConvID)) {
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
 
 
 
-$UserID = $LoggedUser['ID'];
-$DB->query("
+$UserID = $app->user->core['id'];
+$app->dbOld->query("
   SELECT InInbox, InSentbox
   FROM pm_conversations_users
   WHERE UserID = '$UserID'
     AND ConvID = '$ConvID'");
-if (!$DB->has_results()) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+if (!$app->dbOld->has_results()) {
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
-list($InInbox, $InSentbox) = $DB->next_record();
+list($InInbox, $InSentbox) = $app->dbOld->next_record();
 
 
 
 
 if (!$InInbox && !$InSentbox) {
-  echo json_encode(array('status' => 'failure'));
-  error();
+    echo json_encode(array('status' => 'failure'));
+    error();
 }
 
 // Get information on the conversation
-$DB->query("
+$app->dbOld->query("
   SELECT
     c.Subject,
     cu.Sticky,
@@ -40,60 +43,60 @@ $DB->query("
     LEFT JOIN users_main AS um ON um.ID = cu.ForwardedTo
   WHERE c.ID = '$ConvID'
     AND UserID = '$UserID'");
-list($Subject, $Sticky, $UnRead, $ForwardedID, $ForwardedName) = $DB->next_record();
+list($Subject, $Sticky, $UnRead, $ForwardedID, $ForwardedName) = $app->dbOld->next_record();
 
-$DB->query("
+$app->dbOld->query("
   SELECT um.ID, Username
   FROM pm_messages AS pm
     JOIN users_main AS um ON um.ID = pm.SenderID
   WHERE pm.ConvID = '$ConvID'");
 
-while (list($PMUserID, $Username) = $DB->next_record()) {
-  $PMUserID = (int)$PMUserID;
-  $Users[$PMUserID]['UserStr'] = Users::format_username($PMUserID, true, true, true, true);
-  $Users[$PMUserID]['Username'] = $Username;
-  $UserInfo = Users::user_info($PMUserID);
-  $Users[$PMUserID]['Avatar'] = $UserInfo['Avatar'];
+while (list($PMUserID, $Username) = $app->dbOld->next_record()) {
+    $PMUserID = (int)$PMUserID;
+    $Users[$PMUserID]['UserStr'] = User::format_username($PMUserID, true, true, true, true);
+    $Users[$PMUserID]['Username'] = $Username;
+    $UserInfo = User::user_info($PMUserID);
+    $Users[$PMUserID]['Avatar'] = $UserInfo['Avatar'];
 }
 $Users[0]['UserStr'] = 'System'; // in case it's a message from the system
 $Users[0]['Username'] = 'System';
 $Users[0]['Avatar'] = '';
 
 if ($UnRead == '1') {
-  $DB->query("
+    $app->dbOld->query("
     UPDATE pm_conversations_users
     SET UnRead = '0'
     WHERE ConvID = '$ConvID'
       AND UserID = '$UserID'");
-  // Clear the caches of the inbox and sentbox
-  $Cache->decrement("inbox_new_$UserID");
+    // Clear the caches of the inbox and sentbox
+    $app->cache->decrement("inbox_new_$UserID");
 }
 
 // Get messages
-$DB->query("
+$app->dbOld->query("
   SELECT SentDate, SenderID, Body, ID
   FROM pm_messages
   WHERE ConvID = '$ConvID'
   ORDER BY ID");
 
 $JsonMessages = [];
-while (list($SentDate, $SenderID, $Body, $MessageID) = $DB->next_record()) {
-  $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
-  $JsonMessage = array(
+while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record()) {
+    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
+    $JsonMessage = array(
     'messageId' => (int)$MessageID,
     'senderId' => (int)$SenderID,
     'senderName' => $Users[(int)$SenderID]['Username'],
     'sentDate' => $SentDate,
     'avatar' => $Users[(int)$SenderID]['Avatar'],
     'bbBody' => $Body,
-    'body' => Text::full_format($Body)
+    'body' => \Gazelle\Text::parse($Body)
   );
-  $JsonMessages[] = $JsonMessage;
+    $JsonMessages[] = $JsonMessage;
 }
 
 print
   json_encode(
-    array(
+      array(
       'status' => 'success',
       'response' => array(
         'convId' => (int)$ConvID,
@@ -103,4 +106,3 @@ print
       )
     )
   );
-?>

@@ -1,33 +1,35 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 authorize();
 if (!check_perms('site_edit_wiki')) {
-  error(403);
+    error(403);
 }
 
 $ID = $_GET['id'];
 $GroupID = $_GET['groupid'];
 
 
-if (!is_number($ID) || !is_number($ID) || !is_number($GroupID) || !is_number($GroupID)) {
-  error(404);
+if (!is_numeric($ID) || !is_numeric($ID) || !is_numeric($GroupID) || !is_numeric($GroupID)) {
+    error(404);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT Image, Summary
   FROM cover_art
   WHERE ID = '$ID'");
-list($Image, $Summary) = $DB->next_record();
+list($Image, $Summary) = $app->dbOld->next_record();
 
-$DB->query("
+$app->dbOld->query("
   DELETE FROM cover_art
   WHERE ID = '$ID'");
 
-$DB->query("
+$app->dbOld->query("
   INSERT INTO group_log
     (GroupID, UserID, Time, Info)
   VALUES
-    ('$GroupID', ".$LoggedUser['ID'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
+    ('$GroupID', ".$app->user->core['id'].", NOW(), '".db_string("Additional cover \"$Summary - $Image\" removed from group")."')");
 
-$Cache->delete_value("torrents_cover_art_$GroupID");
+$app->cache->delete("torrents_cover_art_$GroupID");
 header('Location: '.$_SERVER['HTTP_REFERER']);
-?>

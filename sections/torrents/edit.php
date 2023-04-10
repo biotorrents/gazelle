@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 /**
  * Edit form
  *
@@ -10,15 +12,15 @@
  * which are off limits to most members.
  */
 
-require_once SERVER_ROOT.'/classes/torrent_form.class.php';
-if (!is_number($_GET['id']) || !$_GET['id']) {
+require_once serverRoot.'/classes/torrent_form.class.php';
+if (!is_numeric($_GET['id']) || !$_GET['id']) {
     error(400);
 }
 
 # DB query for the main torrent parameters
 # todo: Simplify based on unused tables
 $TorrentID = $_GET['id'];
-$DB->query("
+$app->dbOld->query("
 SELECT
   t.`Media`,
   t.`Container`,
@@ -71,16 +73,16 @@ WHERE
 ");
 
 # Error on no results
-list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
 if (!$Properties) {
     error(404);
 }
 
 # Error on bad permissions
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
-if (($LoggedUser['ID'] !== $Properties['UserID']
+if (($app->user->core['id'] !== $Properties['UserID']
   && !check_perms('torrents_edit'))
-  || $LoggedUser['DisableWiki']) {
+  || $app->user->extra['DisableWiki']) {
     error(403);
 }
 
@@ -92,7 +94,7 @@ if (($LoggedUser['ID'] !== $Properties['UserID']
  * Commenting only to see it better.
  */
 
-View::show_header('Edit torrent', 'upload,torrent');
+View::header('Edit torrent', 'upload,torrent');
 $TorrentForm = new TorrentForm(
     $Torrent = $Properties,
     $Error = $Err,
@@ -124,7 +126,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="editgroupid" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -170,7 +172,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
     <input type="hidden" name="action" value="newgroup" />
 
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
 
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
 
@@ -262,7 +264,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   <form action="torrents.php" method="post">
     <input type="hidden" name="action" value="changecategory" />
     <input type="hidden" name="auth"
-      value="<?=$LoggedUser['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>" />
     <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
     <input type="hidden" name="oldgroupid"
       value="<?=$Properties['GroupID']?>" />
@@ -318,13 +320,10 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         </td>
       </tr>
     </table>
-    <script type="text/javascript">
-      ChangeCategory($('#newcategoryid').raw().value);
-    </script>
   </form>
 </div>
 <?php
   } ?>
 <?php
 } // if check_perms('torrents_edit')
-View::show_footer();
+View::footer();

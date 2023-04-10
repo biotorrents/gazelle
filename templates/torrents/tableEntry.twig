@@ -1,0 +1,207 @@
+{##
+ # search results table entry
+ #}
+
+{# torrent group #}
+<tr>
+
+	{# grouped #}
+	{# <td /> #}
+
+
+	{# category icon #}
+	<td class="center">
+		{{group.category_id|categoryIcon }}
+	</td>
+
+
+	{# title #}
+	<td class="tableGroup" colspan="6">
+<div class="flexColumn">
+
+		{# title link #}
+		<a class="torrentTitle" href="torrents.php?id={{ group.id }}" {# open tag #}
+
+    {% if group.picture %}
+        data-cover="{{ group.picture }}" {# open tag #}
+    {% endif %}
+
+    dir="ltr">
+			{{ group.title|raw }}
+		</a>
+
+		<div class="flexRow">
+			{# subject #}
+			{% if group.subject %}
+				<span class="tooltip subjectObject" title="Organism">{{ "<em>#{group.subject}</em>"|raw }}
+					{# object #}
+					{{ (group.object) ? group.object : "" }}
+				</span>
+			{% endif %}
+
+			{# year #}
+			{% if group.year %}
+				<span class="tooltip year" title="Year">{{ group.year }}</span>
+			{% endif %}
+
+			{# identifier #}
+			{% if group.identifier %}
+				<span class="tooltip identifier" title="Identifier">{{ group.identifier }}</span>
+			{% endif %}
+
+			{# workgroup #}
+			{% if group.workgroup %}
+				<span class="tooltip workgroup" title="Workgroup">{{ group.workgroup|raw }}</span>
+			{% endif %}
+
+			{# location #}
+			{% if group.location %}
+				<span class="tooltip location" title="Location">{{ group.location|raw }}</span>
+			{% endif %}
+		</div>
+
+		{# tags #}
+		{% if group.tag_list is not empty %}
+			<div class="tooltip tagList" title="Tags">{{ displayTags(group.tag_list)|raw }}</div>
+		{% endif %}
+
+		{# creators #}
+		{% if group.Artists is not empty %}
+			<div class="tooltip creatorList" title="Creators">{{ displayCreators(group.Artists)|raw }}</div>
+		{% endif %}
+
+		{#
+		{% if extra_info|default(false) %}
+		  <br />
+		  <span class="torrent_info">
+		    {{ extra_info|raw }}
+		  </span>
+		{% endif %}
+		#}
+
+</div>
+	</td>
+
+
+	{# timeAdded # }
+	<td></td>
+
+
+	{# data size # }
+	<td></td>
+
+
+	{# file count # }
+	<td></td>
+
+
+	{# seeders # }
+	<td></td>
+
+
+	{# leechers # }
+	<td></td>
+
+
+	{# snatches # }
+	<td></td>
+  #}
+
+</tr>
+
+
+{# individual torrents #}
+{% for torrent in group.Torrents %}
+<tr>
+
+	{# grouped #}
+  {# <td /> #}
+
+
+	{# category icon #}
+<td class="center">
+<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.ID }}">Go&nbsp;»</a>
+</td>
+
+
+	{# title #}
+	<td class="flexRow">
+
+  {# platform #}
+  {% if torrent.Media %}
+    <span class="platform" title="Platform">{{ torrent.Media }}</span>
+  {% endif %}
+
+  {# format #}
+  {% if torrent.Container %}
+    <span class="format" title="Format">{{ torrent.Container }}</span>
+  {% endif %}
+
+  {# version #}
+  {% if torrent.Version %}
+    <span class="version" title="Version">{{ torrent.Version }}</span>
+  {% endif %}
+
+  {# scope #}
+  {% if torrent.Resolution %}
+    <span class="scope" title="Scope">{{ torrent.Resolution }}</span>
+  {% endif %}
+
+  {# archive #}
+  {% if torrent.Archive %}
+    <span class="archive" title="Archive">{{ torrent.Archive }}</span>
+  {% endif %}
+
+  {# license #}
+  {% if torrent.Codec %}
+    <span class="license" title="License">{{ torrent.Codec }}</span>
+  {% endif %}
+
+  {# alignment #}
+  {% if torrent.Censored %}
+    <span title="Alignment" class="good">Aligned</span>
+  {% else %}
+      <span title="Alignment" class="bad">Not aligned</span>
+  {% endif %}
+
+</td>
+
+
+	{# timeAdded #}
+	<td class="nobr" title="{{ torrent.Time }}">
+  {{ torrent.Time|relativeTime }}
+  </td>
+
+
+	{# data size #}
+	<td class="nobr">
+  {{ torrent.Size|get_size }}
+  </td>
+
+
+	{# file count #}
+  {#
+	<td class="nobr">
+  {{ torrent.HasFile|number_format }}
+  </td>
+  #}
+
+
+	{# seeders #}
+	<td class="nobr">
+    {{ torrent.Seeders|number_format }}
+  </td>
+
+
+	{# leechers #}
+	<td class="nobr">
+    {{ torrent.Leechers|number_format }}
+</td>
+
+
+	{# snatches #}
+	<td class="nobr">
+    {{ torrent.Snatched|number_format }}
+</td>
+</tr>
+{% endfor %}

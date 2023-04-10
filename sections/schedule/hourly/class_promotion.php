@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 $ENV = ENV::go();
 
@@ -80,29 +83,32 @@ foreach ($Criteria as $L) { // $L = Level
         $Query .= ' AND '.$L['Extra'];
     }
 
-    $DB->query($Query);
-    $UserIDs = $DB->collect('ID');
+    $app->dbOld->query($Query);
+    $UserIDs = $app->dbOld->collect('ID');
 
     if (count($UserIDs) > 0) {
-        $DB->query("
+        $app->dbOld->query("
           UPDATE users_main
           SET PermissionID = ".$L['To']."
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
-            $Cache->begin_transaction("user_info_$UserID");
-            $Cache->update_row(false, array('PermissionID' => $L['To']));
-            $Cache->commit_transaction(0);
-            $Cache->delete_value("user_info_$UserID");
-            $Cache->delete_value("user_info_heavy_$UserID");
-            $Cache->delete_value("user_stats_$UserID");
-            $Cache->delete_value("enabled_$UserID");
+            /*
+            $app->cacheOld->begin_transaction("user_info_$UserID");
+            $app->cacheOld->update_row(false, array('PermissionID' => $L['To']));
+            $app->cacheOld->commit_transaction(0);
+            */
 
-            $DB->query("
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_stats_$UserID");
+            $app->cache->delete("enabled_$UserID");
+
+            $app->dbOld->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($L['To'])." by System\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['To'])." by System\n\n', AdminComment)
               WHERE UserID = $UserID");
-            Misc::send_pm($UserID, 0, 'You have been promoted to '.Users::make_class_string($L['To']), 'Congratulations on your promotion to '.Users::make_class_string($L['To'])."!\n\nTo read more about ".$ENV->SITE_NAME."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+            Misc::send_pm($UserID, 0, 'You have been promoted to '.User::make_class_string($L['To']), 'Congratulations on your promotion to '.User::make_class_string($L['To'])."!\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
         }
     }
 
@@ -127,29 +133,32 @@ foreach ($Criteria as $L) { // $L = Level
         )
       AND Enabled = '1'";
 
-    $DB->query($Query);
-    $UserIDs = $DB->collect('ID');
+    $app->dbOld->query($Query);
+    $UserIDs = $app->dbOld->collect('ID');
 
     if (count($UserIDs) > 0) {
-        $DB->query("
+        $app->dbOld->query("
           UPDATE users_main
           SET PermissionID = ".$L['From']."
           WHERE ID IN(".implode(',', $UserIDs).')');
 
         foreach ($UserIDs as $UserID) {
-            $Cache->begin_transaction("user_info_$UserID");
-            $Cache->update_row(false, array('PermissionID' => $L['From']));
-            $Cache->commit_transaction(0);
-            $Cache->delete_value("user_info_$UserID");
-            $Cache->delete_value("user_info_heavy_$UserID");
-            $Cache->delete_value("user_stats_$UserID");
-            $Cache->delete_value("enabled_$UserID");
+            /*
+            $app->cacheOld->begin_transaction("user_info_$UserID");
+            $app->cacheOld->update_row(false, array('PermissionID' => $L['From']));
+            $app->cacheOld->commit_transaction(0);
+            */
 
-            $DB->query("
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
+            $app->cache->delete("user_stats_$UserID");
+            $app->cache->delete("enabled_$UserID");
+
+            $app->dbOld->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($L['From'])." by System\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['From'])." by System\n\n', AdminComment)
               WHERE UserID = $UserID");
-            Misc::send_pm($UserID, 0, 'You have been demoted to '.Users::make_class_string($L['From']), "You now only qualify for the \"".Users::make_class_string($L['From'])."\" user class.\n\nTo read more about ".$ENV->SITE_NAME."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+            Misc::send_pm($UserID, 0, 'You have been demoted to '.User::make_class_string($L['From']), "You now only qualify for the \"".User::make_class_string($L['From'])."\" user class.\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
         }
     }
 }

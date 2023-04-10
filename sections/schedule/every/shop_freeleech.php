@@ -1,9 +1,13 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
+
 
 // BP shop freeleeches
 $date = date('Y-m-d H:i:s');
-$DB->query("
+$app->dbOld->query("
   SELECT DISTINCT t.GroupID, sf.TorrentID
   FROM shop_freeleeches AS sf
   JOIN torrents AS t
@@ -12,22 +16,22 @@ $DB->query("
     sf.ExpiryTime < '".$date."'");
 
 $TorrentIDs = [];
-if ($DB->has_results()) {
-    while (list($GroupID, $TorrentID) = $DB->next_record()) {
+if ($app->dbOld->has_results()) {
+    while (list($GroupID, $TorrentID) = $app->dbOld->next_record()) {
         $TorrentIDs[] = $TorrentID;
-        $Cache->delete_value("torrents_details_$GroupID");
-        $Cache->delete_value("torrent_group_$GroupID");
+        $app->cache->delete("torrents_details_$GroupID");
+        $app->cache->delete("torrent_group_$GroupID");
     }
 
     Torrents::freeleech_torrents($TorrentIDs, 0, 0);
-    $DB->query("
+    $app->dbOld->query("
       DELETE FROM shop_freeleeches
       WHERE ExpiryTime < '".$date."'");
-    $Cache->delete_value('shop_freeleech_list');
+    $app->cache->delete('shop_freeleech_list');
 }
 
 // Also clear misc table for expired freeleech
-$DB->query("
+$app->dbOld->query("
   DELETE FROM misc
   WHERE Second = 'freeleech'
     AND CAST(First AS UNSIGNED INTEGER) < " . date('U'));

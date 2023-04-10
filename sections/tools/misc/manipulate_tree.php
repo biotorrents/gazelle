@@ -1,26 +1,28 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 // Props to Leto of StC.
 if (!check_perms('users_view_invites') && !check_perms('users_disable_users') && !check_perms('users_edit_invites') && !check_perms('users_disable_any')) {
-  error(404);
+    error(404);
 }
-View::show_header('Manipulate Invite Tree');
+View::header('Manipulate Invite Tree');
 
 if ($_POST['id']) {
-  authorize();
+    authorize();
 
-  if (!is_number($_POST['id'])) {
-    error(403);
-  }
-  if (!$_POST['comment']) {
-    error('Please enter a comment to add to the users affected.');
-  }
-  else {
-    $Comment = date('Y-m-d H:i:s') . " - ";
-    $Comment .= db_string($_POST['comment']);
-    $Comment .= "\n" . "Manipulate Tree used by " . $LoggedUser['Username'];
-  }
-  $UserID = $_POST['id'];
-  $DB->query("
+    if (!is_numeric($_POST['id'])) {
+        error(403);
+    }
+    if (!$_POST['comment']) {
+        error('Please enter a comment to add to the users affected.');
+    } else {
+        $Comment = date('Y-m-d H:i:s') . " - ";
+        $Comment .= db_string($_POST['comment']);
+        $Comment .= "\n" . "Manipulate Tree used by " . $app->user->core['username'];
+    }
+    $UserID = $_POST['id'];
+    $app->dbOld->query("
       SELECT
         t1.TreePosition,
         t1.TreeID,
@@ -37,14 +39,14 @@ if ($_POST['id']) {
         ) AS MaxPosition
       FROM invite_tree AS t1
       WHERE t1.UserID = $UserID");
-  list ($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $DB->next_record();
-  if (!$MaxPosition) {
-    $MaxPosition = 1000000;
-  } // $MaxPermission is null if the user is the last one in that tree on that level
-  if (!$TreeID) {
-    return;
-  }
-  $DB->query("
+    list($TreePosition, $TreeID, $TreeLevel, $MaxPosition) = $app->dbOld->next_record();
+    if (!$MaxPosition) {
+        $MaxPosition = 1000000;
+    } // $MaxPermission is null if the user is the last one in that tree on that level
+    if (!$TreeID) {
+        return;
+    }
+    $app->dbOld->query("
       SELECT
         UserID
       FROM invite_tree
@@ -53,31 +55,30 @@ if ($_POST['id']) {
         AND TreePosition < $MaxPosition
         AND TreeLevel > $TreeLevel
       ORDER BY TreePosition");
-  $BanList = [];
+    $BanList = [];
 
-  while (list ($Invitee) = $DB->next_record()) {
-    $BanList[] = $Invitee;
-  }
+    while (list($Invitee) = $app->dbOld->next_record()) {
+        $BanList[] = $Invitee;
+    }
 
-  foreach ($BanList as $Key => $InviteeID) {
-    if ($_POST['perform'] === 'nothing') {
-      Tools::update_user_notes($InviteeID, $Comment . "\n\n");
-      $Msg = "Successfully commented on entire invite tree!";
-    } elseif ($_POST['perform'] === 'disable') {
-      Tools::disable_users($InviteeID, $Comment);
-      $Msg = "Successfully banned entire invite tree!";
-    } elseif ($_POST['perform'] === 'inviteprivs') { // DisableInvites =1
-      Tools::update_user_notes($InviteeID, $Comment . "\n\n");
-      $DB->query("
+    foreach ($BanList as $Key => $InviteeID) {
+        if ($_POST['perform'] === 'nothing') {
+            Tools::update_user_notes($InviteeID, $Comment . "\n\n");
+            $Msg = "Successfully commented on entire invite tree!";
+        } elseif ($_POST['perform'] === 'disable') {
+            Tools::disable_users($InviteeID, $Comment);
+            $Msg = "Successfully banned entire invite tree!";
+        } elseif ($_POST['perform'] === 'inviteprivs') { // DisableInvites =1
+            Tools::update_user_notes($InviteeID, $Comment . "\n\n");
+            $app->dbOld->query("
         UPDATE users_info
         SET DisableInvites = '1'
         WHERE UserID = '$InviteeID'");
-      $Msg = "Successfully removed invite privileges from entire tree!";
+            $Msg = "Successfully removed invite privileges from entire tree!";
+        } else {
+            error(403);
+        }
     }
-    else {
-      error(403);
-    }
-  }
 }
 ?>
 
@@ -89,7 +90,7 @@ if ($_POST['id']) {
 <?php } ?>
   <form class="manage_form" name="user" action="" method="post">
     <input type="hidden" id="action" name="action" value="manipulate_tree" />
-    <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
     <table class="layout">
       <tr>
         <td class="label"><strong>UserID</strong></td>
@@ -101,12 +102,18 @@ if ($_POST['id']) {
         <td class="label"><strong>Action: </strong></td>
         <td colspan="2">
           <select name="perform">
-            <option value="nothing"<?
-          if ($_POST['perform'] === 'nothing') { echo ' selected="selected"'; } ?>>Do nothing</option>
-            <option value="disable"<?
-          if ($_POST['perform'] === 'disable') { echo ' selected="selected"'; } ?>>Disable entire tree</option>
-            <option value="inviteprivs"<?
-          if ($_POST['perform'] === 'inviteprivs') { echo ' selected="selected"'; } ?>>Disable invites privileges</option>
+            <option value="nothing"<?php
+          if ($_POST['perform'] === 'nothing') {
+              echo ' selected="selected"';
+          } ?>>Do nothing</option>
+            <option value="disable"<?php
+          if ($_POST['perform'] === 'disable') {
+              echo ' selected="selected"';
+          } ?>>Disable entire tree</option>
+            <option value="inviteprivs"<?php
+          if ($_POST['perform'] === 'inviteprivs') {
+              echo ' selected="selected"';
+          } ?>>Disable invites privileges</option>
           </select>
         </td>
         <td align="left"><input type="submit" class="button-primary" value="Go" /></td>
@@ -115,4 +122,4 @@ if ($_POST['id']) {
   </form>
 </div>
 
-<? View::show_footer(); ?>
+<?php View::footer(); ?>

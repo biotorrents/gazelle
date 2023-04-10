@@ -1,5 +1,16 @@
 <?php
+
 #declare(strict_types = 1);
+
+
+/**
+ * cache stats admin page
+ *
+ * todo: rewrite this to show redis data,
+ * and fold in the key management page as well
+ */
+
+$app = \Gazelle\App::go();
 
 if (!check_perms('site_debug') || !check_perms('admin_clear_cache')) {
     error(403);
@@ -7,14 +18,14 @@ if (!check_perms('site_debug') || !check_perms('admin_clear_cache')) {
 
 if (isset($_POST['global_flush'])) {
     authorize();
-    $Cache->flush();
+    $app->cache->flush();
 }
 
-$DB->prepared_query('SHOW GLOBAL STATUS');
-$DBStats = $DB->to_array('Variable_name');
-$MemStats = $Cache->getStats();
+$app->dbOld->prepared_query('SHOW GLOBAL STATUS');
+$dbStats = $app->dbOld->to_array('Variable_name');
+$MemStats = $app->cache->info();
 
-View::show_header("Service Stats"); ?>
+View::header("Service Stats"); ?>
 
 <div class="permissions">
   <div class="permission_container">
@@ -30,20 +41,20 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['threads'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($MemStats['threads'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
       <tr>
-        <td<?php if ($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']> 0.7) {
-    echo '
+        <td<?php if ($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']> 0.7) {
+            echo '
           class="invalid" ';
-} ?>>Database:</td>
+        } ?>>Database:</td>
 
           <td>
-            <?=number_format($DBStats['Threads_created']['Value'])?>
-            <span class="float_right">(<?=number_format(($DBStats['Threads_connected']['Value'] / $DBStats['Threads_created']['Value']) * 100, 3)?>%)</span>
+            <?=\Gazelle\Text::float($dbStats['Threads_created']['Value'])?>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']) * 100, 3)?>%)</span>
           </td>
       </tr>
 
@@ -58,14 +69,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['total_connections'])?>
+          <?=\Gazelle\Text::float($MemStats['total_connections'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Connections']['Value'])?>
+          <?=\Gazelle\Text::float($dbStats['Connections']['Value'])?>
         </td>
       </tr>
 
@@ -80,26 +91,26 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache Current Index:</td>
         <td>
-          <?=number_format($MemStats['curr_items'])?>
+          <?=\Gazelle\Text::float($MemStats['curr_items'])?>
         </td>
       </tr>
 
       <tr>
         <td>Cache Total Index:</td>
         <td>
-          <?=number_format($MemStats['total_items'])?>
+          <?=\Gazelle\Text::float($MemStats['total_items'])?>
         </td>
       </tr>
 
       <tr>
         <td<?php if ($MemStats['bytes'] / $MemStats['limit_maxbytes']> 0.85) {
-    echo ' class="tooltip invalid"
+            echo ' class="tooltip invalid"
           title="Evictions begin when storage exceeds 85%" ';
-} ?>>Cache Storage:</td>
+        } ?>>Cache Storage:</td>
 
           <td>
             <?=Format::get_size($MemStats['bytes'])?>
-            <span class="float_right">(<?=number_format(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -117,7 +128,7 @@ View::show_header("Service Stats"); ?>
           <form class="delete_form" name="cache" action="" method="post">
             <input type="hidden" name="action" value="service_stats" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>" />
             <input type="hidden" name="global_flush" value="1" />
             <input type="submit" class="button-primary" value="Flush" />
           </form>
@@ -139,14 +150,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_get'])?>
+          <?=\Gazelle\Text::float($MemStats['cmd_get'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'])?>
+          <?=\Gazelle\Text::float($dbStats['Com_select']['Value'])?>
         </td>
       </tr>
 
@@ -156,14 +167,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'])?>
+          <?=\Gazelle\Text::float($MemStats['cmd_set'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'] + $DBStats['Com_update']['Value'])?>
+          <?=\Gazelle\Text::float($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value'])?>
         </td>
       </tr>
 
@@ -177,20 +188,20 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td<?php if ($MemStats['get_hits'] / $MemStats['cmd_get'] < 0.7) {
-    echo ' class="invalid" ' ;
-} ?>>Cache:</td>
+            echo ' class="invalid" ' ;
+        } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['get_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
+            <?=\Gazelle\Text::float($MemStats['get_hits'])?>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['get_hits'] / $MemStats['cmd_get']) * 100, 3);?>%)</span>
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($dbStats['Com_select']['Value'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -201,16 +212,16 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($MemStats['cmd_set'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($dbStats['Com_insert']['Value'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -220,23 +231,23 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td<?php if ($MemStats['incr_hits']/($MemStats['incr_hits'] + $MemStats['incr_misses']) < 0.7) {
-    echo ' class="invalid" ' ;
-} ?>>Cache Increment:</td>
+            echo ' class="invalid" ' ;
+        } ?>>Cache Increment:</td>
 
           <td>
-            <?=number_format($MemStats['incr_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
+            <?=\Gazelle\Text::float($MemStats['incr_hits'])?>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
       <tr>
         <td<?php if ($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses']) < 0.7) {
-    echo ' class="invalid" ' ;
-} ?>>Cache Decrement:</td>
+            echo ' class="invalid" ' ;
+        } ?>>Cache Decrement:</td>
 
           <td>
-            <?=number_format($MemStats['decr_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
+            <?=\Gazelle\Text::float($MemStats['decr_hits'])?>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['decr_hits'] / ($MemStats['decr_hits'] + $MemStats['decr_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
@@ -246,22 +257,22 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td<?php if ($MemStats['cas_hits']> 0 && $MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])
-          < 0.7) {
-    echo ' class="tooltip invalid" title="More than 30% of the issued CAS commands were unnecessarily wasting time and resources." '
+                  < 0.7) {
+            echo ' class="tooltip invalid" title="More than 30% of the issued CAS commands were unnecessarily wasting time and resources." '
             ;
-} elseif ($MemStats['cas_hits']==0) {
-    echo ' class="tooltip notice" title="Disable CAS with the -C parameter and save resources since it is not used." '
+        } elseif ($MemStats['cas_hits']==0) {
+            echo ' class="tooltip notice" title="Disable CAS with the -C parameter and save resources since it is not used." '
             ;
-} ?>>Cache:</td>
+        } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cas_hits'])?>
-            <span class="float_right">(
+            <?=\Gazelle\Text::float($MemStats['cas_hits'])?>
+            <span class="u-pull-right">(
               <?php if ($MemStats['cas_hits'] > 0) {
-    echo number_format(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3);
-} else {
-    echo '0.000';
-} ?>%)
+                  echo \Gazelle\Text::float(($MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])) * 100, 3);
+              } else {
+                  echo '0.000';
+              } ?>%)
             </span>
           </td>
       </tr>
@@ -269,8 +280,8 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_update']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($dbStats['Com_update']['Value'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -280,21 +291,21 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td<?php if ($MemStats['delete_hits'] / ($MemStats['delete_hits']+$MemStats['delete_misses']) < 0.7) {
-    echo ' class="tooltip invalid" title="More than 30% of the issued delete commands were unnecessary wasting time and resources." '
-          ;
-} ?>>Cache:</td>
+            echo ' class="tooltip invalid" title="More than 30% of the issued delete commands were unnecessary wasting time and resources." '
+            ;
+        } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['delete_hits'])?>
-            <span class="float_right">(<?=number_format(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
+            <?=\Gazelle\Text::float($MemStats['delete_hits'])?>
+            <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses'])) * 100, 3);?>%)</span>
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_delete']['Value'])?>
-          <span class="float_right">(100.000%)</span>
+          <?=\Gazelle\Text::float($dbStats['Com_delete']['Value'])?>
+          <span class="u-pull-right">(100.000%)</span>
         </td>
       </tr>
 
@@ -308,35 +319,35 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td<?php if ($MemStats['cmd_flush']> $MemStats['uptime'] / 7 * 24 * 3600) {
-    echo ' class="tooltip invalid"
+            echo ' class="tooltip invalid"
           title="Flushing the cache on a regular basis defeats the benefits of it, look into using cache transactions,
           or deletes instead of global flushing where possible." ';
-} ?>>Cache Flushes:</td>
+        } ?>>Cache Flushes:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_flush'])?>
+            <?=\Gazelle\Text::float($MemStats['cmd_flush'])?>
           </td>
       </tr>
 
       <tr>
         <td<?php if ($MemStats['evictions']> 0) {
-    echo ' class="invalid" ';
-} ?>>Cache Evicted:</td>
+            echo ' class="invalid" ';
+        } ?>>Cache Evicted:</td>
 
           <td>
-            <?=number_format($MemStats['evictions'])?>
+            <?=\Gazelle\Text::float($MemStats['evictions'])?>
           </td>
       </tr>
 
       <tr>
-        <td<?php if ($DBStats['Slow_queries']['Value']> $DBStats['Questions']['Value'] / 7500) {
-    echo ' class="tooltip
+        <td<?php if ($dbStats['Slow_queries']['Value']> $dbStats['Questions']['Value'] / 7500) {
+            echo ' class="tooltip
           invalid" title="1/7500 queries is allowed to be slow to minimize performance impact." ';
-} ?>>Database Slow:
+        } ?>>Database Slow:
           </td>
 
           <td>
-            <?=number_format($DBStats['Slow_queries']['Value'])?>
+            <?=\Gazelle\Text::float($dbStats['Slow_queries']['Value'])?>
           </td>
       </tr>
 
@@ -358,7 +369,7 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_received']['Value'])?>
+          <?=Format::get_size($dbStats['Bytes_received']['Value'])?>
         </td>
       </tr>
 
@@ -376,7 +387,7 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_sent']['Value'])?>
+          <?=Format::get_size($dbStats['Bytes_sent']['Value'])?>
         </td>
       </tr>
     </table>
@@ -393,20 +404,20 @@ View::show_header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if (($MemStats['cmd_get'] / $MemStats['uptime']) * 5 < $DBStats['Com_select']['Value'] /
-          $DBStats['Uptime']['Value']) {
-    echo ' class="invalid" ' ;
-} ?>>Cache:</td>
+        <td<?php if (($MemStats['cmd_get'] / $MemStats['uptime']) * 5 < $dbStats['Com_select']['Value'] /
+                  $dbStats['Uptime']['Value']) {
+            echo ' class="invalid" ' ;
+        } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_get'] / $MemStats['uptime'], 5)?>/s
+            <?=\Gazelle\Text::float($MemStats['cmd_get'] / $MemStats['uptime'], 5)?>/s
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -415,20 +426,20 @@ View::show_header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if (($MemStats['cmd_set'] / $MemStats['uptime']) * 5 < ($DBStats['Com_insert']['Value'] +
-          $DBStats['Com_update']['Value']) / $DBStats['Uptime']['Value']) {
-    echo ' class="invalid" ' ;
-} ?>>Cache:</td>
+        <td<?php if (($MemStats['cmd_set'] / $MemStats['uptime']) * 5 < ($dbStats['Com_insert']['Value'] +
+                  $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value']) {
+            echo ' class="invalid" ' ;
+        } ?>>Cache:</td>
 
           <td>
-            <?=number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
+            <?=\Gazelle\Text::float($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
           </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format(($DBStats['Com_insert']['Value'] + $DBStats['Com_update']['Value']) / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float(($dbStats['Com_insert']['Value'] + $dbStats['Com_update']['Value']) / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -443,14 +454,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['get_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['get_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_select']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Com_select']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -461,14 +472,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['cmd_set'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_insert']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Com_insert']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -479,14 +490,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache Increment:</td>
         <td>
-          <?=number_format($MemStats['incr_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['incr_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Cache Decrement:</td>
         <td>
-          <?=number_format($MemStats['decr_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['decr_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
@@ -497,14 +508,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['cas_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['cas_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_update']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Com_update']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -515,14 +526,14 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=number_format($MemStats['delete_hits'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['delete_hits'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=number_format($DBStats['Com_delete']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Com_delete']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -537,21 +548,21 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Cache Flushes:</td>
         <td>
-          <?=number_format($MemStats['cmd_flush'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['cmd_flush'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Cache Evicted:</td>
         <td>
-          <?=number_format($MemStats['evictions'] / $MemStats['uptime'], 5)?>/s
+          <?=\Gazelle\Text::float($MemStats['evictions'] / $MemStats['uptime'], 5)?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database Slow:</td>
         <td>
-          <?=number_format($DBStats['Slow_queries']['Value'] / $DBStats['Uptime']['Value'], 5)?>/s
+          <?=\Gazelle\Text::float($dbStats['Slow_queries']['Value'] / $dbStats['Uptime']['Value'], 5)?>/s
         </td>
       </tr>
 
@@ -573,7 +584,7 @@ View::show_header("Service Stats"); ?>
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($DBStats['Bytes_received']['Value'] / $DBStats['Uptime']['Value'])?>/s
+          <?=Format::get_size($dbStats['Bytes_received']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
 
@@ -590,10 +601,10 @@ View::show_header("Service Stats"); ?>
 
       <tr>
         <td>Database:</td>
-        <td><?=Format::get_size($DBStats['Bytes_sent']['Value'] / $DBStats['Uptime']['Value'])?>/s
+        <td><?=Format::get_size($dbStats['Bytes_sent']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
     </table>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

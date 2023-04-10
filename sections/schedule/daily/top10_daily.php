@@ -1,14 +1,18 @@
 <?php
-#declare(strict_types=1);
 
-$DB->query("
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
+
+/*
+$app->dbOld->query("
   INSERT INTO top10_history (Date, Type)
   VALUES ('$sqltime', 'Daily')");
-$HistoryID = $DB->inserted_id();
+$HistoryID = $app->dbOld->inserted_id();
 
-$Top10 = $Cache->get_value('top10tor_day_10');
+$Top10 = $app->cache->get('top10tor_day_10');
 if ($Top10 === false) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       t.`ID`,
       g.`id`,
@@ -36,7 +40,7 @@ if ($Top10 === false) {
     DESC
     LIMIT 10;
     ");
-    $Top10 = $DB->to_array();
+    $Top10 = $app->dbOld->to_array();
 }
 
 $i = 1;
@@ -53,13 +57,13 @@ foreach ($Top10 as $Torrent) {
     if (!empty($Artists)) {
         $DisplayName = Artists::display_artists($Artists, false, true);
     }
-    */
+    * /
 
     /*
     if ($GroupCategoryID === 1 && $GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";
     }
-    */
+    * /
 
     // Append extra info to torrent title
     $ExtraInfo = '';
@@ -80,7 +84,7 @@ foreach ($Top10 as $Torrent) {
     $TitleString = "$DisplayName $ExtraInfo";
     $TagString = str_replace('|', ' ', $TorrentTags);
 
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO top10_history_torrents(
       `HistoryID`,
       `Rank`,
@@ -98,3 +102,4 @@ foreach ($Top10 as $Torrent) {
     ");
     $i++;
 }
+*/

@@ -1,4 +1,5 @@
-<?
+<?php
+
 if (!check_perms('users_mod')) {
     json_error(403);
 }
@@ -17,9 +18,9 @@ if ($Type == "resolve") {
     // Error check and set things up
     if ($Status == "Approve" || $Status == "Approve Selected") {
         $Status = AutoEnable::APPROVED;
-    } else if ($Status == "Reject" || $Status == "Reject Selected") {
+    } elseif ($Status == "Reject" || $Status == "Reject Selected") {
         $Status = AutoEnable::DENIED;
-    } else if ($Status == "Discard" || $Status == "Discard Selected") {
+    } elseif ($Status == "Discard" || $Status == "Discard Selected") {
         $Status = AutoEnable::DISCARDED;
     } else {
         json_error("Invalid resolution option");
@@ -27,13 +28,13 @@ if ($Type == "resolve") {
 
     if (is_array($IDs) && count($IDs) == 0) {
         json_error("You must select at least one reuqest to use this option");
-    } else if (!is_array($IDs) && !is_number($IDs)) {
+    } elseif (!is_array($IDs) && !is_numeric($IDs)) {
         json_error("You must select at least 1 request");
     }
 
     // Handle request
     AutoEnable::handle_requests($IDs, $Status, $Comment);
-} else if ($Type == "unresolve") {
+} elseif ($Type == "unresolve") {
     $ID = (int) $_GET['id'];
     AutoEnable::unresolve_request($ID);
 } else {
@@ -42,7 +43,8 @@ if ($Type == "resolve") {
 
 echo json_encode(array("status" => "success"));
 
-function json_error($Message) {
+function json_error($Message)
+{
     echo json_encode(array("status" => $Message));
     error();
 }

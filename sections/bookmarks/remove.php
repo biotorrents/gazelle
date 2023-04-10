@@ -1,38 +1,41 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 authorize();
-if (!Bookmarks::can_bookmark($_GET['type'])) {
+if (!Bookmarks::validateType($_GET['type'])) {
     error(404);
 }
 
 $Type = $_GET['type'];
 list($Table, $Col) = Bookmarks::bookmark_schema($Type);
 
-if (!is_number($_GET['id'])) {
+if (!is_numeric($_GET['id'])) {
     error(0);
 }
 $PageID = $_GET['id'];
 
-$DB->query("
+$app->dbOld->query("
   DELETE FROM $Table
-  WHERE UserID = $LoggedUser[ID]
+  WHERE UserID = {$app->user->core['id']}
     AND $Col = $PageID");
-$Cache->delete_value("bookmarks_{$Type}_$UserID");
+$app->cache->delete("bookmarks_{$Type}_$UserID");
 
-if ($DB->affected_rows()) {
+if ($app->dbOld->affected_rows()) {
     if ($Type === 'torrent') {
-        $Cache->delete_value("bookmarks_group_ids_$UserID");
+        $app->cache->delete("bookmarks_group_ids_$UserID");
     } elseif ($Type === 'request') {
-        $DB->query("
+        $app->dbOld->query("
           SELECT UserID
           FROM $Table
           WHERE $Col = $PageID");
 
-        if ($DB->record_count() < 100) {
+        if ($app->dbOld->record_count() < 100) {
             // Sphinx doesn't like huge MVA updates. Update sphinx_requests_delta
             // and live with the <= 1 minute delay if we have more than 100 bookmarkers
-            $Bookmarkers = implode(',', $DB->collect('UserID'));
+            $Bookmarkers = implode(',', $app->dbOld->collect('UserID'));
             $SphQL = new SphinxqlQuery();
             $SphQL->raw_query("UPDATE requests, requests_delta SET bookmarker = ($Bookmarkers) WHERE id = $PageID");
         } else {

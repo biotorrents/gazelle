@@ -1,6 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 # todo: Fix multiple authors and bounty preview
 
 /*
@@ -13,7 +15,7 @@ $NewRequest = $_GET['action'] === 'new';
 
 if (!$NewRequest) {
     $RequestID = $_GET['id'];
-    if (!is_number($RequestID)) {
+    if (!is_numeric($RequestID)) {
         error(404);
     }
 }
@@ -21,7 +23,7 @@ if (!$NewRequest) {
 $Disabled = '';
 
 /* todo: Fix this or configure the limit with good error message
-if ($NewRequest && ($LoggedUser['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
+if ($NewRequest && ($app->user->extra['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
     error('You do not have enough uploaded to make a request');
 }
 */
@@ -49,7 +51,7 @@ if (!$NewRequest) {
         $CategoryName = $Categories[$CategoryID - 1];
 
         $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && $CategoryID === '0');
-        $CanEdit = ((!$IsFilled && $LoggedUser['ID'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+        $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
         if (!$CanEdit) {
             error(403);
@@ -60,44 +62,44 @@ if (!$NewRequest) {
     }
 }
 
-  if ($NewRequest && !empty($_GET['artistid']) && is_number($_GET['artistid'])) {
-      $DB->query("
+  if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
+      $app->dbOld->query("
         SELECT Name
         FROM artists_group
         WHERE artistid = ".$_GET['artistid']."
         LIMIT 1");
-      list($ArtistName) = $DB->next_record();
+      list($ArtistName) = $app->dbOld->next_record();
       $ArtistForm = array(
       1 => array(array('name' => trim($ArtistName))),
     );
-  } elseif ($NewRequest && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
+  } elseif ($NewRequest && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
       $ArtistForm = Artists::get_artist($_GET['groupid']);
-      $DB->query("
+      $app->dbOld->query("
         SELECT
-        tg.Name,
-        tg.Title2,
-        tg.NameJP,
-        tg.Year,
-        tg.Studio,
-        tg.Series,
-        tg.CatalogueNumber,
-        tg.WikiImage,
+        tg.`title`,
+        tg.`subject`,
+        tg.`object`,
+        tg.`year`,
+        tg.`workgroup`,
+        tg.`location`,
+        tg.`identifier`,
+        tg.`picture`,
         GROUP_CONCAT(t.Name SEPARATOR ', '),
-        tg.CategoryID
-        FROM torrents_group AS tg
-        JOIN torrents_tags AS tt ON tt.GroupID = tg.ID
-        JOIN tags AS t ON t.ID = tt.TagID
-        WHERE tg.ID = ".$_GET['groupid']);
-      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $DB->next_record()) {
+        tg.`category_id`
+        FROM `torrents_group` AS tg
+        JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
+        JOIN `tags` AS t ON t.`ID` = tt.`TagID`
+        WHERE tg.`id` = ".$_GET['groupid']);
+      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
           $GroupID = trim($_REQUEST['groupid']);
           $CategoryName = $Categories[$CategoryID - 1];
           $Disabled = 'readonly="readonly"';
       }
   }
 
-View::show_header(
+View::header(
     ($NewRequest ? 'Create Request' : 'Edit Request'),
-    'requests,upload,form_validate,vendor/easymde.min',
+    'requests,upload,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -121,17 +123,17 @@ View::show_header(
         <?php } ?>
 
         <input type="hidden" name="auth"
-          value="<?= $LoggedUser['AuthKey'] ?>" />
+          value="<?= $app->user->extra['AuthKey'] ?>" />
 
         <input type="hidden" name="action"
           value="<?= ($NewRequest ? 'takenew' : 'takeedit') ?>" />
       </div>
 
       <!-- Main table -->
-      <table class="layout">
+      <table class="skeletonFix">
         <tr>
           <td colspan="2" class="center">Please make sure your request follows the
-            <a href="rules.php?p=requests">request rules</a>!
+            <a href="/rules/requests">request rules</a>!
           </td>
         </tr>
         <?php if ($NewRequest || $CanEdit) { ?>
@@ -168,7 +170,7 @@ View::show_header(
 
           <td>
             <input type="text" id="catalogue" name="cataloguenumber" size="15"
-              value="<?= (isset($CatalogueNumber)?$CatalogueNumber:'') ?>"
+              value="<?= (isset($CatalogueNumber) ? $CatalogueNumber : '') ?>"
               <?= $Disabled ?>/>
             <?php if (empty($Disabled)) { ?>
             <input type="button" autofill="jav" value="Autofill" style="pointer-events: none; opacity: 0.5;"></input>
@@ -211,7 +213,7 @@ View::show_header(
 
           <td>
             <input type="text" id="title_jp" name="title_jp" size="45"
-              value="<?= !empty($TitleJP)?$TitleJP:'' ?>"
+              value="<?= !empty($TitleJP) ? $TitleJP : '' ?>"
               <?= $Disabled ?>/>
           </td>
         </tr>
@@ -232,8 +234,7 @@ View::show_header(
     if (!empty($ArtistForm)) {
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" value="<?=display_str($Artist['name']) ?>" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=\Gazelle\Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
 
             <?php
             if (empty($Disabled)) {
@@ -246,8 +247,7 @@ View::show_header(
             }
         }
     } else { ?>
-            <input type="text" id="artist_0" name="artists[]" <?php Users::has_autocomplete_enabled('other'); ?>
-            size="45" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" <?=$Disabled?>/>
 
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
@@ -282,15 +282,15 @@ View::show_header(
 
           <td>
             <?php
-              $GenreTags = $Cache->get_value('genre_tags');
+              $GenreTags = $app->cache->get('genre_tags');
                 if (!$GenreTags) {
-                    $DB->query('
+                    $app->dbOld->query('
                     SELECT Name
                     FROM tags
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
-                    $GenreTags = $DB->collect('Name');
-                    $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+                    $GenreTags = $app->dbOld->collect('Name');
+                    $app->cache->set('genre_tags', $GenreTags, 3600 * 6);
                 }
 
                 if (!empty($Disabled)) { ?>
@@ -306,9 +306,7 @@ View::show_header(
               </select>
 
               <input type="text" id="tags" name="tags" size="45"
-                value="<?= (!empty($Tags) ? display_str($Tags) : '') ?>"
-                <?php Users::has_autocomplete_enabled('other'); ?>
-              <?= $Disabled ?>/>
+                value="<?= (!empty($Tags) ? \Gazelle\Text::esc($Tags) : '') ?>" <?= $Disabled ?> />
           </td>
         </tr>
 
@@ -321,10 +319,10 @@ View::show_header(
 
           <td>
             <?php
-                new TEXTAREA_PREVIEW(
-                    $Name = 'description',
-                    $ID = 'req_desc',
-                    $Value = $Request['Description'] ?? '',
+                View::textarea(
+                    id: 'req_desc',
+                    name: 'description',
+                    value: $Request['Description'] ?? '',
                 ); ?>
           </td>
         </tr>
@@ -342,7 +340,7 @@ View::show_header(
             <code><?= site_url() ?>torrents.php?id=</code>
 
             <input type="text" name="groupid"
-              value="<?= isset($GroupID)?$GroupID:'' ?>"
+              value="<?= isset($GroupID) ? $GroupID : '' ?>"
               size="15" />
           </td>
         </tr>
@@ -416,10 +414,10 @@ View::show_header(
               value="<?= (!empty($Bounty) ? $Bounty : '100') ?>" />
 
             <input type="hidden" id="current_uploaded"
-              value="<?= $LoggedUser['BytesUploaded'] ?>" />
+              value="<?= $app->user->extra['BytesUploaded'] ?>" />
 
             <input type="hidden" id="current_downloaded"
-              value="<?= $LoggedUser['BytesDownloaded'] ?>" />
+              value="<?= $app->user->extra['BytesDownloaded'] ?>" />
 
             <ul>
               <!-- todo: Return this feature
@@ -430,12 +428,12 @@ View::show_header(
 
               <li>
                 <strong>Uploaded:</strong>
-                <span id="new_uploaded"><?= Format::get_size($LoggedUser['BytesUploaded']) ?></span>
+                <span id="new_uploaded"><?= Format::get_size($app->user->extra['BytesUploaded']) ?></span>
               </li>
 
               <li>
                 <strong>Ratio:</strong>
-                <span id="new_ratio"><?= Format::get_ratio_html($LoggedUser['BytesUploaded'], $LoggedUser['BytesDownloaded']) ?></span>
+                <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['BytesUploaded'], $app->user->extra['BytesDownloaded']) ?></span>
               </li>
             </ul>
           </td>
@@ -458,4 +456,4 @@ View::show_header(
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

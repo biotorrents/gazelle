@@ -1,24 +1,26 @@
 <?php
-declare(strict_types = 1);
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 $CollageID = $_GET['collageid'];
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT Name, UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $UserID, $CategoryID) = $DB->next_record();
-if ($CategoryID === '0' && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
+if ($CategoryID === '0' && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 if ($CategoryID != array_search(ARTIST_COLLAGE, $CollageCats)) {
     error(404);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT
     ca.ArtistID,
     ag.Name,
@@ -31,10 +33,10 @@ $DB->query("
   WHERE ca.CollageID = '$CollageID'
   ORDER BY ca.Sort");
 
-$Artists = $DB->to_array('ArtistID', MYSQLI_ASSOC);
+$Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 
-View::show_header(
+View::header(
     "Manage collage $Name",
     'vendor/jquery.tablesorter.min,sort'
 ); ?>
@@ -118,12 +120,12 @@ View::show_header(
           </td>
           <td><?=(trim($Artist['Name']) ?: '&nbsp;')?>
           </td>
-          <td class="nobr"><?=Users::format_username($Artist['UserID'], $$Artist['Username'], false, false, false)?>
+          <td class="nobr"><?=User::format_username($Artist['UserID'], $$Artist['Username'], false, false, false)?>
           </td>
           <td class="nobr">
             <input type="hidden" name="action" value="manage_artists_handle" />
             <input type="hidden" name="auth"
-              value="<?=$LoggedUser['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>" />
             <input type="hidden" name="collageid"
               value="<?=$CollageID?>" />
             <input type="hidden" name="artistid"
@@ -144,7 +146,7 @@ View::show_header(
     <div>
       <input type="hidden" name="action" value="manage_artists_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <input type="hidden" name="artistid" value="1" />
@@ -153,4 +155,4 @@ View::show_header(
     </div>
   </form>
 </div>
-<?php View::show_footer();
+<?php View::footer();

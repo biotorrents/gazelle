@@ -1,15 +1,21 @@
-<?
+<?php
+
+#declare(strict_types=1);
+
+$app = \Gazelle\App::go();
+
+
 //******************************************************************************//
 //--------------- Delete request -----------------------------------------------//
 
 authorize();
 
 $RequestID = $_POST['id'];
-if (!is_number($RequestID)) {
-  error(0);
+if (!is_numeric($RequestID)) {
+    error(0);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT
     UserID,
     Title,
@@ -17,61 +23,60 @@ $DB->query("
     GroupID
   FROM requests
   WHERE ID = $RequestID");
-list($UserID, $Title, $CategoryID, $GroupID) = $DB->next_record();
+list($UserID, $Title, $CategoryID, $GroupID) = $app->dbOld->next_record();
 
-if ($LoggedUser['ID'] != $UserID && !check_perms('site_moderate_requests')) {
-  error(403);
+if ($app->user->core['id'] != $UserID && !check_perms('site_moderate_requests')) {
+    error(403);
 }
 
 $CategoryName = $Categories[$CategoryID - 1];
 
 //Do we need to get artists?
 if ($CategoryName != 'Music') {
-  $ArtistForm = Requests::get_artists($RequestID);
-  $ArtistName = Artists::display_artists($ArtistForm, false, true);
-  $FullName = $ArtistName.$Title;
+    $ArtistForm = Requests::get_artists($RequestID);
+    $ArtistName = Artists::display_artists($ArtistForm, false, true);
+    $FullName = $ArtistName.$Title;
 } else {
-  $FullName = $Title;
+    $FullName = $Title;
 }
 
 
 
 // Delete request, votes and tags
-$DB->query("DELETE FROM requests WHERE ID = '$RequestID'");
-$DB->query("DELETE FROM requests_votes WHERE RequestID = '$RequestID'");
-$DB->query("DELETE FROM requests_tags WHERE RequestID = '$RequestID'");
+$app->dbOld->query("DELETE FROM requests WHERE ID = '$RequestID'");
+$app->dbOld->query("DELETE FROM requests_votes WHERE RequestID = '$RequestID'");
+$app->dbOld->query("DELETE FROM requests_tags WHERE RequestID = '$RequestID'");
 Comments::delete_page('requests', $RequestID);
 
-$DB->query("
+$app->dbOld->query("
   SELECT ArtistID
   FROM requests_artists
   WHERE RequestID = $RequestID");
-$RequestArtists = $DB->to_array();
+$RequestArtists = $app->dbOld->to_array();
 foreach ($RequestArtists as $RequestArtist) {
-  $Cache->delete_value("artists_requests_$RequestArtist");
+    $app->cache->delete("artists_requests_$RequestArtist");
 }
-$DB->query("
+$app->dbOld->query("
   DELETE FROM requests_artists
   WHERE RequestID = '$RequestID'");
-$Cache->delete_value("request_artists_$RequestID");
+$app->cache->delete("request_artists_$RequestID");
 
-G::$DB->query("
+$app->dbOld->query("
   REPLACE INTO sphinx_requests_delta
     (ID)
   VALUES
     ($RequestID)");
 
-if ($UserID != $LoggedUser['ID']) {
-  Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$LoggedUser['ID'].']'.$LoggedUser['Username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
+if ($UserID != $app->user->core['id']) {
+    Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$LoggedUser['ID'].' ('.$LoggedUser['Username'].') for the reason: '.$_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$app->user->core['id'].' ('.$app->user->core['username'].') for the reason: '.$_POST['reason']);
 
-$Cache->delete_value("request_$RequestID");
-$Cache->delete_value("request_votes_$RequestID");
+$app->cache->delete("request_$RequestID");
+$app->cache->delete("request_votes_$RequestID");
 if ($GroupID) {
-  $Cache->delete_value("requests_group_$GroupID");
+    $app->cache->delete("requests_group_$GroupID");
 }
 
-header('Location: requests.php');
-?>
+Http::redirect("requests.php");

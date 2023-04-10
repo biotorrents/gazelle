@@ -1,0 +1,25 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Confirm your account</h2>
+
+	{% if response is not null %}
+		<p class="error">
+			{{ response }}
+		</p>
+
+	{% else %}
+		<p class="info">
+			Thanks for confirming your account.
+			Please enjoy the site!
+		</p>
+
+		<p>
+			<a href="/rules" class="button button-primary">Rules</a>
+			<a href="/wiki" class="button">Wiki</a>
+		</p>
+
+	{% endif %}
+
+{% endblock %}

@@ -1,10 +1,14 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 // The SQL query's line below controls the deletion clock
 //   (t.last_action < (NOW() - INTERVAL 28 DAY) AND t.last_action IS NOT NULL)
 
-$DB->query("
+/*
+$app->dbOld->query("
 SELECT
   t.`ID`,
   t.`GroupID`,
@@ -23,7 +27,7 @@ OR
   (t.`Time` <(NOW() - INTERVAL 3 DAY) AND t.`last_action` IS NULL)
 ");
 
-$Torrents = $DB->to_array(false, MYSQLI_NUM, false);
+$Torrents = $app->dbOld->to_array(false, MYSQLI_NUM, false);
 echo 'Found '.count($Torrents)." inactive torrents to be deleted.\n";
 $LogEntries = $DeleteNotes = [];
 
@@ -68,8 +72,9 @@ unset($DeleteNotes);
 
 if (count($LogEntries) > 0) {
     $Values = "('".implode("', '$sqltime'), ('", $LogEntries) . "', '$sqltime')";
-    $DB->query("
+    $app->dbOld->query("
       INSERT INTO log (Message, Time)
       VALUES $Values");
     echo "\nDeleted $i torrents for inactivity\n";
 }
+*/

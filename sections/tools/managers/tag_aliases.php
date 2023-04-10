@@ -1,40 +1,43 @@
 <?php
+
+$app = \Gazelle\App::go();
+
 if (!(check_perms('users_mod') || check_perms('site_tag_aliases_read'))) {
-  error(403);
+    error(403);
 }
 
-View::show_header('Tag Aliases');
+View::header('Tag Aliases');
 
 $orderby = ((isset($_GET['order']) && $_GET['order'] === 'badtags') ? 'BadTag' : 'AliasTag');
 
 if (check_perms('users_mod')) {
-  if (isset($_POST['newalias'])) {
-    $badtag = db_string($_POST['badtag']);
-    $aliastag = db_string($_POST['aliastag']);
+    if (isset($_POST['newalias'])) {
+        $badtag = db_string($_POST['badtag']);
+        $aliastag = db_string($_POST['aliastag']);
 
-    $DB->query("
+        $app->dbOld->query("
       INSERT INTO tag_aliases (BadTag, AliasTag)
       VALUES ('$badtag', '$aliastag')");
-  }
+    }
 
-  if (isset($_POST['changealias']) && is_number($_POST['aliasid'])) {
-    $aliasid = $_POST['aliasid'];
-    $badtag = db_string($_POST['badtag']);
-    $aliastag = db_string($_POST['aliastag']);
+    if (isset($_POST['changealias']) && is_numeric($_POST['aliasid'])) {
+        $aliasid = $_POST['aliasid'];
+        $badtag = db_string($_POST['badtag']);
+        $aliastag = db_string($_POST['aliastag']);
 
-    if ($_POST['save']) {
-      $DB->query("
+        if ($_POST['save']) {
+            $app->dbOld->query("
         UPDATE tag_aliases
         SET BadTag = '$badtag', AliasTag = '$aliastag'
         WHERE ID = '$aliasid' ");
-    }
-    if ($_POST['delete']) {
-      $DB->query("
+        }
+        if ($_POST['delete']) {
+            $app->dbOld->query("
         DELETE FROM tag_aliases
         WHERE ID = '$aliasid'");
+        }
+        $app->cache->delete('tag_aliases_search');
     }
-    $Cache->delete_value('tag_aliases_search');
-  }
 }
 ?>
 <div class="header">
@@ -69,13 +72,13 @@ if (check_perms('users_mod')) {
 <?php } ?>
     </form>
   </tr>
-<?
-$DB->query("
+<?php
+$app->dbOld->query("
   SELECT ID, BadTag, AliasTag
   FROM tag_aliases
   ORDER BY $orderby");
-while (list($ID, $BadTag, $AliasTag) = $DB->next_record()) {
-  ?>
+while (list($ID, $BadTag, $AliasTag) = $app->dbOld->next_record()) {
+    ?>
   <tr>
     <form class="manage_form" name="aliases" method="post" action="">
       <input type="hidden" name="changealias" value="1" />
@@ -94,7 +97,7 @@ while (list($ID, $BadTag, $AliasTag) = $DB->next_record()) {
 <?php } ?>
     </form>
   </tr>
-<?
+<?php
 } ?>
 </table>
-<? View::show_footer(); ?>
+<?php View::footer(); ?>

@@ -1,0 +1,182 @@
+/**
+ * alternating rows
+ */
+table.alternatingRows {
+  tr:nth-child(2n) {
+    background: whitesmoke;
+  }
+
+  tr:nth-child(2n-1) {
+    background: white;
+  }
+}
+
+/**
+ * every table
+ */
+table {
+  width: 100%;
+
+  /* align baseline */
+  &.baseline {
+    vertical-align: baseline;
+  }
+
+  /* compact tables */
+  &.compact,
+  &.dense,
+  &.small {
+    th,
+    td {
+      border-bottom: none;
+      padding: 0;
+    }
+
+    tr {
+      vertical-align: baseline;
+    }
+  }
+}
+
+/**
+ * sidebar, e.g., homepage stats
+ */
+table.sidebar {
+  td {
+    text-align: right;
+  }
+}
+
+/**
+ * sortable tables
+ */
+
+$bitmap: "/images/symbols/table-order.png";
+$nrsr: no-repeat scroll right;
+
+@mixin bitmap($px) {
+  background: url($bitmap) $nrsr $px transparent;
+}
+
+.headerSort {
+  cursor: pointer;
+}
+
+.headerSort span {
+  @include bitmap(-38px);
+  padding: 0px 20px 0 0;
+}
+
+.headerSortDown span {
+  @include bitmap(4px);
+}
+
+.headerSortUp span {
+  @include bitmap(-79px);
+}
+
+.headerSort.sorter-false,
+.headerSort.sorter-false span {
+  background-image: none;
+  cursor: default;
+}
+
+/* generic */
+#sortable {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 50%;
+
+  li {
+    padding: 0px;
+    font-size: 1.2em;
+    height: 1.5em;
+  }
+}
+
+/* drag and drop controls */
+.drag_drop_save {
+  padding: 6px 0;
+  overflow: hidden;
+}
+
+#manage_collage_table.ui-sortable .drag {
+  cursor: n-resize;
+}
+
+#manage_collage_table.ui-sortable .ui-sortable-helper.drag {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+#manage_collage_table .ui-sortable-helper td,
+#manage_collage_table .ui-sortable-placeholder {
+  border: 0;
+}
+
+/* the main torrent page header */
+table.torrent-header {
+  margin: 2rem 0;
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  td.controls {
+    text-align: right;
+  }
+}
+
+/**
+ * boards/forums/discourse
+ */
+
+/* forum index */
+table#forumIndex,
+table#privateMessages {
+  width: 100%;
+}
+
+/* forum thread */
+table#forumTopic {
+  td {
+    vertical-align: top;
+
+    &.avatar {
+      text-align: center;
+      width: 5rem;
+    }
+  }
+}
+
+/* wiki */
+table#wikiArticle {
+  td {
+    border-bottom: none;
+  }
+}
+
+/* available reactions to posts */
+aside.postActions {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-end;
+  gap: 2rem;
+
+  background: whitesmoke;
+  padding: 1rem;
+
+  .spacer {
+    flex-grow: 1;
+  }
+
+  a {
+    text-decoration: none;
+
+    &.reply {
+      &:after {
+        content: "Reply";
+      }
+    }
+  }
+}

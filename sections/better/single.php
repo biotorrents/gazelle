@@ -1,23 +1,44 @@
 <?php
-declare(strict_types = 1);
 
-if (($Results = $Cache->get_value('better_single_groupids')) === false) {
-    $DB->prepared_query("
-    SELECT
-      t.`ID` AS `TorrentID`,
-      t.`GroupID` AS `GroupID`
-    FROM `xbt_files_users` AS x
-      JOIN `torrents` AS t ON t.`ID`=x.`fid`
-    GROUP BY x.`fid`
-    HAVING COUNT(x.`uid`) = 1
-    LIMIT 30");
+declare(strict_types=1);
 
-    $Results = $DB->to_pair('GroupID', 'TorrentID', false);
-    $Cache->cache_value('better_single_groupids', $Results, 30 * 60);
-}
+
+/**
+ * single-seeder torrents
+ */
+
+$app = \Gazelle\App::go();
+
+$query = "
+    select torrents.id, torrents.groupId from xbt_files_users
+    join torrents on torrents.id = xbt_files_users.fid
+    group by xbt_files_users.fid
+    having count(xbt_files_users.uid) = 1
+    limit 20
+";
+
+$ref = $app->dbNew->multi($query) ?? [];
+$groupIds = array_column($ref, "id");
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
+
+# twig template
+$app->twig->display("better/list.twig", [
+    "title" => "Better",
+    "header" => "Torrents with only one seeder",
+    "sidebar" => true,
+    "torrentGroups" => $torrentGroups,
+]);
+
+
+exit;
+
+
+/** continue */
+
 
 $Groups = Torrents::get_groups(array_keys($Results));
-View::show_header('Single seeder torrents'); ?>
+View::header('Single seeder torrents'); ?>
 
 <div class="header">
   <h2>
@@ -54,7 +75,7 @@ foreach ($Results as $GroupID => $TorrentID) {
         $DisplayName = '';
     }
 
-    $DisplayName .= "<a href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' class='torrent_title'>$GroupName</a>";
+    $DisplayName .= "<a href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' class='torrentTitle'>$GroupName</a>";
 
     if ($GroupYear > 0) {
         $DisplayName .= " [$GroupYear]";
@@ -69,7 +90,7 @@ foreach ($Results as $GroupID => $TorrentID) {
     class="torrent torrent_row<?=$Torrents[$TorrentID]['IsSnatched'] ? ' snatched_torrent' : ''?>">
     <td>
       <span class="torrent_links_block">
-        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+        <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
           title="Download" class="brackets tooltip">DL</a>
       </span>
 
@@ -84,4 +105,4 @@ foreach ($Results as $GroupID => $TorrentID) {
 } ?>
 </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

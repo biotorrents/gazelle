@@ -1,29 +1,33 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if (!check_perms('site_collages_recover')) {
-  error(403);
+    error(403);
 }
 
-if ($_POST['collage_id'] && is_number($_POST['collage_id'])) {
-  authorize();
-  $CollageID = $_POST['collage_id'];
+$_POST['collage_id'] ??= null;
+if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
+    authorize();
+    $CollageID = $_POST['collage_id'];
 
-  $DB->query("
+    $app->dbOld->query("
     SELECT Name
     FROM collages
     WHERE ID = $CollageID");
-  if (!$DB->has_results()) {
-    error('Collage is completely deleted');
-  } else {
-    $DB->query("
+    if (!$app->dbOld->has_results()) {
+        error('Collage is completely deleted');
+    } else {
+        $app->dbOld->query("
       UPDATE collages
       SET Deleted = '0'
       WHERE ID = $CollageID");
-    $Cache->delete_value("collage_$CollageID");
-    Misc::write_log("Collage $CollageID was recovered by ".$LoggedUser['Username']);
-    header("Location: collages.php?id=$CollageID");
-  }
+        $app->cache->delete("collage_$CollageID");
+        Misc::write_log("Collage $CollageID was recovered by ".$app->user->core['username']);
+        Http::redirect("collages.php?id=$CollageID");
+    }
 }
-View::show_header('Collage recovery!');
+View::header('Collage recovery!');
 ?>
 <div class="center">
   <div class="box" style="width: 600px; margin: 0px auto;">
@@ -33,7 +37,7 @@ View::show_header('Collage recovery!');
     <div class="pad">
       <form class="undelete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="recover" />
-        <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
         <div>
           <strong>Collage ID: </strong>
           <input type="text" name="collage_id" size="8" />
@@ -45,5 +49,5 @@ View::show_header('Collage recovery!');
     </div>
   </div>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();

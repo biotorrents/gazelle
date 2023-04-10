@@ -1,9 +1,11 @@
 <?php
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 # todo: I like the idea of store-based promotions expanded to other factors,
 # e.g., under an HnR threshold or minimum account age
-$UserID = $LoggedUser['ID'];
+$UserID = $app->user->core['id'];
 $GiB = 1024*1024*1024;
 
 $Classes = array(
@@ -50,7 +52,7 @@ $Classes = array(
     'MinRatio'    => 1.3,
     'TorUnique'   => false
   ),
-  
+
   POWER_TM => array(
     'Name'        => 'Titty Monster',
     'Price'       => 100000,
@@ -64,15 +66,15 @@ $Classes = array(
 );
 
 $To = -1;
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT PermissionID, BonusPoints, Warned, Uploaded, Downloaded, (Uploaded / Downloaded) AS Ratio, Enabled, COUNT(torrents.ID) AS Uploads, COUNT(DISTINCT torrents.GroupID) AS Groups
   FROM users_main
     JOIN users_info ON users_main.ID = users_info.UserID
     JOIN torrents ON torrents.UserID = users_main.ID
   WHERE users_main.ID = $UserID");
 
-if ($DB->has_results()) {
-    list($PermID, $BP, $Warned, $Upload, $Download, $Ratio, $Enabled, $Uploads, $Groups) = $DB->next_record();
+if ($app->dbOld->has_results()) {
+    list($PermID, $BP, $Warned, $Upload, $Download, $Ratio, $Enabled, $Uploads, $Groups) = $app->dbOld->next_record();
 
     switch ($PermID) {
     case USER:
@@ -100,7 +102,7 @@ if ($DB->has_results()) {
         $Err[] = "This account is disabled, how did you get here?";
     } else {
         if ($Classes[$To]['NonSmall'] > 0) {
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               SELECT COUNT(torrents.ID)
               FROM torrents
               JOIN torrents_group ON torrents.GroupID = torrents_group.ID
@@ -108,8 +110,8 @@ if ($DB->has_results()) {
                 OR (torrents_group.CategoryID = 3 AND torrents_group.Pages >= 50))
                 AND torrents.UserID = $UserID");
 
-            if ($DB->has_results()) {
-                list($NonSmall) = $DB->next_record();
+            if ($app->dbOld->has_results()) {
+                list($NonSmall) = $app->dbOld->next_record();
 
                 if ($NonSmall < $Classes[$To]['NonSmall']) {
                     $Err[] = "You do not have enough large uploads.";
@@ -123,7 +125,7 @@ if ($DB->has_results()) {
             $Err[] = "You cannot be promoted while warned";
         }
 
-        if ($LoggedUser['DisablePromotion']) {
+        if ($app->user->extra['DisablePromotion']) {
             $Err[] = "You have been banned from purchasing promotions";
         }
 
@@ -159,31 +161,31 @@ if ($DB->has_results()) {
         }
 
         if (!isset($Err)) {
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_main
               SET
                 BonusPoints = BonusPoints - ".$Classes[$To]['Price'].",
                 PermissionID = $To
               WHERE ID = $UserID");
 
-            $DB->prepared_query("
+            $app->dbOld->prepared_query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".Users::make_class_string($To)." via store purchase\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
-            $Cache->delete_value("user_info_$UserID");
-            $Cache->delete_value("user_info_heavy_$UserID");
+            $app->cache->delete("user_info_$UserID");
+            $app->cache->delete("user_info_heavy_$UserID");
         }
     }
 }
 
-View::show_header('Store'); ?>
+View::header('Store'); ?>
 <div>
-  <h2>Purchase <?=isset($Err)?"Failed":"Successful"?>
+  <h2>Purchase <?=isset($Err) ? "Failed" : "Successful"?>
   </h2>
   <div class="box">
     <p>
-      <?=isset($Err)?"Error: ".implode("<br />Error: ", $Err):"You have been promoted to ".$Classes[$To]['Name']."!"?>
+      <?=isset($Err) ? "Error: ".implode("<br />Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>
@@ -191,4 +193,4 @@ View::show_header('Store'); ?>
   </div>
 </div>
 <?php
-View::show_footer();
+View::footer();

@@ -1,55 +1,57 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 authorize();
 
 $CollageID = $_POST['collageid'];
-if (!is_number($CollageID)) {
-  error(404);
+if (!is_numeric($CollageID)) {
+    error(404);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT UserID, CategoryID
   FROM collages
   WHERE ID = '$CollageID'");
-list($UserID, $CategoryID) = $DB->next_record();
-if ($CategoryID === '0' && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
-  error(403);
+list($UserID, $CategoryID) = $app->dbOld->next_record();
+if ($CategoryID === '0' && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
+    error(403);
 }
 
 
 $GroupID = $_POST['groupid'];
-if (!is_number($GroupID)) {
-  error(404);
+if (!is_numeric($GroupID)) {
+    error(404);
 }
 
 if ($_POST['submit'] === 'Remove') {
-  $DB->query("
+    $app->dbOld->query("
     DELETE FROM collages_torrents
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
-  $Rows = $DB->affected_rows();
-  $DB->query("
+    $Rows = $app->dbOld->affected_rows();
+    $app->dbOld->query("
     UPDATE collages
     SET NumTorrents = NumTorrents - $Rows
     WHERE ID = '$CollageID'");
-  $Cache->delete_value("torrents_details_$GroupID");
-  $Cache->delete_value("torrent_collages_$GroupID");
-  $Cache->delete_value("torrent_collages_personal_$GroupID");
+    $app->cache->delete("torrents_details_$GroupID");
+    $app->cache->delete("torrent_collages_$GroupID");
+    $app->cache->delete("torrent_collages_personal_$GroupID");
 } elseif (isset($_POST['drag_drop_collage_sort_order'])) {
+    @parse_str($_POST['drag_drop_collage_sort_order'], $Series);
+    $Series = @array_shift($Series);
+    if (is_array($Series)) {
+        $SQL = [];
+        foreach ($Series as $Sort => $GroupID) {
+            if (is_numeric($Sort) && is_numeric($GroupID)) {
+                $Sort = ($Sort + 1) * 10;
+                $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $CollageID);
+            }
+        }
 
-  @parse_str($_POST['drag_drop_collage_sort_order'], $Series);
-  $Series = @array_shift($Series);
-  if (is_array($Series)) {
-    $SQL = [];
-    foreach ($Series as $Sort => $GroupID) {
-      if (is_number($Sort) && is_number($GroupID)) {
-        $Sort = ($Sort + 1) * 10;
-        $SQL[] = sprintf('(%d, %d, %d)', $GroupID, $Sort, $CollageID);
-      }
-    }
-
-    $SQL = '
+        $SQL = '
       INSERT INTO collages_torrents
         (GroupID, Sort, CollageID)
       VALUES
@@ -57,20 +59,19 @@ if ($_POST['submit'] === 'Remove') {
       ON DUPLICATE KEY UPDATE
         Sort = VALUES (Sort)';
 
-    $DB->query($SQL);
-  }
-
+        $app->dbOld->query($SQL);
+    }
 } else {
-  $Sort = $_POST['sort'];
-  if (!is_number($Sort)) {
-    error(404);
-  }
-  $DB->query("
+    $Sort = $_POST['sort'];
+    if (!is_numeric($Sort)) {
+        error(404);
+    }
+    $app->dbOld->query("
     UPDATE collages_torrents
     SET Sort = '$Sort'
     WHERE CollageID = '$CollageID'
       AND GroupID = '$GroupID'");
 }
 
-$Cache->delete_value("collage_$CollageID");
-header("Location: collages.php?action=manage&collageid=$CollageID");
+$app->cache->delete("collage_$CollageID");
+Http::redirect("collages.php?action=manage&collageid=$CollageID");

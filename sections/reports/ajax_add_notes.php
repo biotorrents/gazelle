@@ -1,27 +1,30 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('admin_reports') || empty($_POST['id'])) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'failure'
       )
     );
-  die();
+    die();
 }
 
 $ID = (int)$_POST['id'];
 
 $Notes = $_POST['notes'];
 
-$DB->query("
+$app->dbOld->query("
   UPDATE reports
   SET Notes = ?
   WHERE ID = ?", $Notes, $ID);
 print
   json_encode(
-    array(
+      array(
       'status' => 'success'
     )
   );

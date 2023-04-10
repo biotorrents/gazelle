@@ -1,37 +1,66 @@
 <?php
-#declare(strict_types=1);
 
-if (check_perms('admin_reports') && !empty($_GET['remove']) && is_number($_GET['remove'])) {
-    $DB->prepared_query("
-    DELETE FROM torrents_bad_folders
-    WHERE TorrentID = ".$_GET['remove']);
+declare(strict_types=1);
 
-    $DB->prepared_query("
-    SELECT GroupID
-    FROM torrents
-    WHERE ID = ".$_GET['remove']);
 
-    list($GroupID) = $DB->next_record();
-    $Cache->delete_value('torrents_details_'.$GroupID);
-}
+/**
+ * bad folders
+ */
 
-if (!empty($_GET['filter']) && $_GET['filter'] == 'all') {
-    $Join = '';
-    $All = true;
+$app = \Gazelle\App::go();
+
+$get = Http::query("get");
+$snatchedOnly = $get["snatches"] ?? null;
+
+# snatched vs. all
+$allTorrents = true;
+if ($snatchedOnly) {
+    $allTorrents = false;
+    $subQuery = "
+        join xbt_snatched on xbt_snatched.fid = torrents_bad_folders.torrentId
+        and xbt_snatched.uid = {$app->user->core["id"]}
+    ";
 } else {
-    $Join = "JOIN xbt_snatched AS x ON x.fid = tbf.TorrentID AND x.uid = ".$LoggedUser['ID'];
-    $All = false;
+    $subQuery = "";
 }
 
-View::show_header('Torrents with bad folder names');
-$DB->prepared_query("
+$query = "
+    select torrents_bad_folders.torrentId, torrents.groupId
+    from torrents_bad_folders
+    join torrents on torrents.id = torrents_bad_folders.torrentId
+    {$subQuery}
+    order by rand() limit 20
+";
+
+$ref = $app->dbNew->multi($query) ?? [];
+$groupIds = array_column($ref, "groupId");
+$torrentGroups = Torrents::get_groups($groupIds);
+#!d($torrentGroups);exit;
+
+# twig template
+$app->twig->display("better/list.twig", [
+  "title" => "Better",
+  "header" => "Torrents with bad folder names",
+  "sidebar" => true,
+  "torrentGroups" => $torrentGroups,
+]);
+
+
+exit;
+
+
+/** continue */
+
+
+View::header('Torrents with bad folder names');
+$app->dbOld->prepared_query("
   SELECT tbf.TorrentID, t.GroupID
   FROM torrents_bad_folders AS tbf
     JOIN torrents AS t ON t.ID = tbf.TorrentID
     $Join
   ORDER BY tbf.TimeAdded ASC");
 
-$TorrentsInfo = $DB->to_array('TorrentID', MYSQLI_ASSOC);
+$TorrentsInfo = $app->dbOld->to_array('TorrentID', MYSQLI_ASSOC);
 foreach ($TorrentsInfo as $Torrent) {
     $GroupIDs[] = $Torrent['GroupID'];
 }
@@ -61,7 +90,7 @@ $Results = Torrents::get_groups($GroupIDs);
 
 <div class="box pad">
   <h3>
-    There are <?=number_format(count($TorrentsInfo))?> torrents
+    There are <?=\Gazelle\Text::float(count($TorrentsInfo))?> torrents
     remaining
   </h3>
 
@@ -94,7 +123,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
       class="torrent torrent_row<?=$Torrents[$TorrentID]['IsSnatched'] ? ' snatched_torrent' : ''?>">
       <td>
         <span class="torrent_links_block">
-          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$LoggedUser['AuthKey']?>&amp;torrent_pass=<?=$LoggedUser['torrent_pass']?>"
+          <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             class="brackets tooltip" title="Download">DL</a>
         </span>
 
@@ -113,4 +142,4 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
 } ?>
   </table>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -1,13 +1,10 @@
 <?php
+
 #declare(strict_types=1);
 
-# todo: Go through line by line
+$app = \Gazelle\App::go();
 
-// For sorting tags
-function compare($X, $Y)
-{
-    return($Y['count'] - $X['count']);
-}
+# todo: Go through line by line
 
 if (!empty($_GET['artistreleases'])) {
     $OnlyArtistReleases = true;
@@ -18,18 +15,18 @@ if ($_GET['id'] && $_GET['artistname']) {
 }
 
 $ArtistID = $_GET['id'];
-if ($ArtistID && !is_number($ArtistID)) {
+if ($ArtistID && !is_numeric($ArtistID)) {
     json_die('failure');
 }
 
 if (empty($ArtistID)) {
     if (!empty($_GET['artistname'])) {
         $Name = db_string(trim($_GET['artistname']));
-        $DB->query("
+        $app->dbOld->query("
       SELECT ArtistID
       FROM artists_alias
       WHERE Name LIKE '$Name'");
-        if (!(list($ArtistID) = $DB->next_record(MYSQLI_NUM, false))) {
+        if (!(list($ArtistID) = $app->dbOld->next_record(MYSQLI_NUM, false))) {
             json_die('failure');
         }
         // If we get here, we got the ID!
@@ -38,12 +35,12 @@ if (empty($ArtistID)) {
 
 if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     $RevisionID = $_GET['revisionid'];
-    if (!is_number($RevisionID)) {
+    if (!is_numeric($RevisionID)) {
         error(0);
     }
-    $Data = $Cache->get_value("artist_$ArtistID"."_revision_$RevisionID");
+    $Data = $app->cache->get("artist_$ArtistID"."_revision_$RevisionID");
 } else { // viewing the live version
-    $Data = $Cache->get_value("artist_$ArtistID");
+    $Data = $app->cache->get("artist_$ArtistID");
     $RevisionID = false;
 }
 if ($Data) {
@@ -91,22 +88,22 @@ if ($Data) {
       WHERE a.ArtistID = '$ArtistID' ";
     }
     $sql .= " GROUP BY a.ArtistID";
-    $DB->query($sql);
+    $app->dbOld->query($sql);
 
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         json_die('failure');
     }
 
-    //  list($Name, $Image, $Body, $VanityHouseArtist) = $DB->next_record(MYSQLI_NUM, array(0));
-    list($Name, $Image, $Body) = $DB->next_record(MYSQLI_NUM, array(0));
+    //  list($Name, $Image, $Body, $VanityHouseArtist) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
+    list($Name, $Image, $Body) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
 }
 
 // Requests
 $Requests = [];
-if (empty($LoggedUser['DisableRequests'])) {
-    $Requests = $Cache->get_value("artists_requests_$ArtistID");
+if (empty($app->user->extra['DisableRequests'])) {
+    $Requests = $app->cache->get("artists_requests_$ArtistID");
     if (!is_array($Requests)) {
-        $DB->query("
+        $app->dbOld->query("
       SELECT
         r.ID,
         r.CategoryID,
@@ -123,18 +120,18 @@ if (empty($LoggedUser['DisableRequests'])) {
       GROUP BY r.ID
       ORDER BY Votes DESC");
 
-        if ($DB->has_results()) {
-            $Requests = $DB->to_array('ID', MYSQLI_ASSOC, false);
+        if ($app->dbOld->has_results()) {
+            $Requests = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
         } else {
             $Requests = [];
         }
-        $Cache->cache_value("artists_requests_$ArtistID", $Requests);
+        $app->cache->set("artists_requests_$ArtistID", $Requests);
     }
 }
 $NumRequests = count($Requests);
 
-if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
-    $DB->query("
+if (($Importances = $app->cache->get("artist_groups_$ArtistID")) === false) {
+    $app->dbOld->query("
     SELECT DISTINCTROW
       ta.`GroupID`,
       ta.`Importance`,
@@ -151,10 +148,10 @@ if (($Importances = $Cache->get_value("artist_groups_$ArtistID")) === false) {
       tg.`Name`
     DESC
     ");
-    
-    $GroupIDs = $DB->collect('GroupID');
-    $Importances = $DB->to_array(false, MYSQLI_BOTH, false);
-    $Cache->cache_value("artist_groups_$ArtistID", $Importances, 0);
+
+    $GroupIDs = $app->dbOld->collect('GroupID');
+    $Importances = $app->dbOld->to_array(false, MYSQLI_BOTH, false);
+    $app->cache->set("artist_groups_$ArtistID", $Importances, 0);
 } else {
     $GroupIDs = [];
     foreach ($Importances as $Group) {
@@ -288,7 +285,7 @@ foreach ($GroupIDs as $GroupID) {
     'releaseType' => (int)$ReleaseType,
     'wikiImage' => $WikiImage,
     'groupVanityHouse' => $GroupVanityHouse == 1,
-    'hasBookmarked' => Bookmarks::has_bookmarked('torrent', $GroupID),
+    'hasBookmarked' => Bookmarks::isBookmarked('torrent', $GroupID),
     'artists' => $Artists,
     'extendedArtists' => $ExtendedArtists,
     'torrent' => $InnerTorrents,
@@ -312,15 +309,15 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $Cache->get_value('notify_artists_'.$LoggedUser['ID'])) === false) {
-        $DB->query("
+    if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
+        $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
-      WHERE UserID = '$LoggedUser[ID]'
+      WHERE UserID = '{{$app->user->core['id']}}'
         AND Label = 'Artist notifications'
       LIMIT 1");
-        $Notify = $DB->next_record(MYSQLI_ASSOC, false);
-        $Cache->cache_value('notify_artists_'.$LoggedUser['ID'], $Notify, 0);
+        $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
+        $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;
@@ -339,15 +336,15 @@ if ($RevisionID) {
 
 $Data = array(array($Name, $Image, $Body));
 
-$Cache->cache_value($Key, $Data, 3600);
+$app->cache->set($Key, $Data, 3600);
 
 json_die('success', array(
   'id' => (int)$ArtistID,
   'name' => $Name,
   'notificationsEnabled' => $notificationsEnabled,
-  'hasBookmarked' => Bookmarks::has_bookmarked('artist', $ArtistID),
+  'hasBookmarked' => Bookmarks::isBookmarked('artist', $ArtistID),
   'image' => $Image,
-  'body' => Text::full_format($Body),
+  'body' => \Gazelle\Text::parse($Body),
   'vanityHouse' => $VanityHouseArtist == 1,
   'tags' => array_values($Tags),
   'statistics' => array(

@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 # todo: Go through line by line
 $UserID = (int) $_GET['userid'];
@@ -15,7 +18,7 @@ if (empty($Limit)) {
 
 $Results = [];
 if (check_paranoia_here('snatched')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       g.`id`,
       g.`title`,
@@ -38,8 +41,8 @@ if (check_paranoia_here('snatched')) {
     LIMIT $Limit
     ");
 
-    $RecentSnatches = $DB->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($DB->collect('ID'));
+    $RecentSnatches = $app->dbOld->to_array(false, MYSQLI_ASSOC);
+    $Artists = Artists::get_artists($app->dbOld->collect('ID'));
 
     foreach ($RecentSnatches as $Key => $SnatchInfo) {
         $RecentSnatches[$Key]['artists'][] = $Artists[$SnatchInfo['ID']];
@@ -51,7 +54,7 @@ if (check_paranoia_here('snatched')) {
 }
 
 if (check_paranoia_here('uploads')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       g.`id`,
       g.`title`,
@@ -71,8 +74,8 @@ if (check_paranoia_here('uploads')) {
     LIMIT $Limit
     ");
 
-    $RecentUploads = $DB->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($DB->collect('ID'));
+    $RecentUploads = $app->dbOld->to_array(false, MYSQLI_ASSOC);
+    $Artists = Artists::get_artists($app->dbOld->collect('ID'));
 
     foreach ($RecentUploads as $Key => $UploadInfo) {
         $RecentUploads[$Key]['artists'][] = $Artists[$UploadInfo['ID']];

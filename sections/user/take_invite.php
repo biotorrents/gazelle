@@ -1,51 +1,53 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
 $ENV = ENV::go();
 
-if (!$UserCount = $Cache->get_value('stats_user_count')) {
-    $DB->query("
+if (!$UserCount = $app->cache->get('stats_user_count')) {
+    $app->dbOld->query("
     SELECT COUNT(ID)
     FROM users_main
     WHERE Enabled = '1'");
-    list($UserCount) = $DB->next_record();
-    $Cache->cache_value('stats_user_count', $UserCount, 0);
+    list($UserCount) = $app->dbOld->next_record();
+    $app->cache->set('stats_user_count', $UserCount, 0);
 }
 
-$UserID = $LoggedUser['ID'];
+$UserID = $app->user->core['id'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
-    header('Location: user.php?action=invite');
+    Http::redirect("user.php?action=invite");
     error();
 }
 
 // This is where we handle things passed to us
 authorize();
 
-$DB->query("
+$app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
-list($CanLeech) = $DB->next_record();
+list($CanLeech) = $app->dbOld->next_record();
 
-if ($LoggedUser['RatioWatch']
+if ($app->user->extra['RatioWatch']
   || !$CanLeech
-  || $LoggedUser['DisableInvites'] == '1'
-  || $LoggedUser['Invites'] == 0
+  || $app->user->extra['DisableInvites'] == '1'
+  || $app->user->extra['Invites'] == 0
   && !check_perms('site_send_unlimited_invites')
   || (
-      $UserCount >= USER_LIMIT
-    && USER_LIMIT != 0
+      $UserCount >= userLimit
+    && userLimit != 0
     && !check_perms('site_can_invite_always')
   )
-  ) {
+) {
     error(403);
 }
 
 $Email = trim($_POST['email']);
-$Username = $LoggedUser['Username'];
-$SiteName =  $ENV->SITE_NAME ;
+$Username = $app->user->core['username'];
+$SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
 $InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
@@ -58,29 +60,29 @@ if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites'))
 }
 
 foreach ($Emails as $CurEmail) {
-    if (!preg_match("/^".EMAIL_REGEX."$/i", $CurEmail)) {
+    if (!preg_match("/{$app->env->regexEmail}/", $CurEmail)) {
         if (count($Emails) > 1) {
             continue;
         } else {
             error('Invalid email.');
-            header('Location: user.php?action=invite');
+            Http::redirect("user.php?action=invite");
             error();
         }
     }
-    $DB->query("
+    $app->dbOld->query("
     SELECT Email
     FROM invites
-    WHERE InviterID = ".$LoggedUser['ID']);
-    if ($DB->has_results()) {
-        while (list($MaybeEmail) = $DB->next_record()) {
+    WHERE InviterID = ".$app->user->core['id']);
+    if ($app->dbOld->has_results()) {
+        while (list($MaybeEmail) = $app->dbOld->next_record()) {
             if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
-                header('Location: user.php?action=invite');
+                Http::redirect("user.php?action=invite");
                 error();
             }
         }
     }
-    $InviteKey = db_string(Users::make_secret());
+    $InviteKey = db_string(\Gazelle\Text::random());
 
     $DisabledChan = DISABLED_CHAN;
     $IRCServer = BOT_SERVER;
@@ -102,23 +104,26 @@ Thank you,
 $SiteName Staff
 EOT;
 
-    $DB->query("
+    $app->dbOld->query("
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('$LoggedUser[ID]', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('{$app->user->core['id']}', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
-        $DB->query("
+        $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
-      WHERE ID = '$LoggedUser[ID]'");
-        $Cache->begin_transaction('user_info_heavy_'.$LoggedUser['ID']);
-        $Cache->update_row(false, array('Invites' => '-1'));
-        $Cache->commit_transaction(0);
+      WHERE ID = '{$app->user->core['id']}'");
+
+        /*
+          $app->cacheOld->begin_transaction('user_info_heavy_'.$app->user->core['id']);
+          $app->cacheOld->update_row(false, array('Invites' => '-1'));
+          $app->cacheOld->commit_transaction(0);
+          */
     }
 
-    Misc::send_email($CurEmail, "You have been invited to $ENV->SITE_NAME", $Message, 'noreply');
+    \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
-header('Location: user.php?action=invite');
+Http::redirect("user.php?action=invite");

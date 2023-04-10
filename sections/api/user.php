@@ -1,19 +1,22 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die('failure', 'bad id parameter');
 }
 
 $UserID = $_GET['id'];
-if ($UserID === $LoggedUser['ID']) {
+if ($UserID === $app->user->core['id']) {
     $OwnProfile = true;
 } else {
     $OwnProfile = false;
 }
 
 // Always view as a normal user
-$DB->query("
+$app->dbOld->query("
 SELECT
   m.`Username`,
   m.`Email`,
@@ -59,11 +62,11 @@ GROUP BY
 ");
 
 // If user doesn't exist
-if (!$DB->has_results()) {
+if (!$app->dbOld->has_results()) {
     json_die('failure', 'no such user');
 }
 
-list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $DB->next_record(MYSQLI_NUM, array(9, 11));
+list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $app->dbOld->next_record(MYSQLI_NUM, array(9, 11));
 
 $Paranoia = unserialize($Paranoia);
 if (!is_array($Paranoia)) {
@@ -89,22 +92,22 @@ function check_paranoia_here($Setting)
 }
 
 $Friend = false;
-$DB->query("
+$app->dbOld->query("
 SELECT
   `FriendID`
 FROM
   `friends`
 WHERE
-  `UserID` = '$LoggedUser[ID]'
+  `UserID` = '{$app->user->core['id']}'
   AND `FriendID` = '$UserID'
 ");
 
-if ($DB->has_results()) {
+if ($app->dbOld->has_results()) {
     $Friend = true;
 }
 
 if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT r.`ID`),
       SUM(rv.`Bounty`)
@@ -116,9 +119,9 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       r.`FillerID` = $UserID
     ");
-    list($RequestsFilled, $TotalBounty) = $DB->next_record();
+    list($RequestsFilled, $TotalBounty) = $app->dbOld->next_record();
 
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`RequestID`),
       SUM(`Bounty`)
@@ -127,9 +130,9 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       `UserID` = $UserID
     ");
-    list($RequestsVoted, $TotalSpent) = $DB->next_record();
+    list($RequestsVoted, $TotalSpent) = $app->dbOld->next_record();
 
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -137,7 +140,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     WHERE
       `UserID` = '$UserID'
     ");
-    list($Uploads) = $DB->next_record();
+    list($Uploads) = $app->dbOld->next_record();
 } else {
     $RequestsFilled = null;
     $TotalBounty = null;
@@ -146,7 +149,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
 }
 
 if (check_paranoia_here('uploads+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -154,13 +157,13 @@ if (check_paranoia_here('uploads+')) {
     WHERE
       `UserID` = '$UserID'
     ");
-    list($Uploads) = $DB->next_record();
+    list($Uploads) = $app->dbOld->next_record();
 } else {
     $Uploads = null;
 }
 
 if (check_paranoia_here('artistsadded')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ArtistID`)
     FROM
@@ -168,7 +171,7 @@ if (check_paranoia_here('artistsadded')) {
     WHERE
       `UserID` = $UserID
     ");
-    list($ArtistsAdded) = $DB->next_record();
+    list($ArtistsAdded) = $app->dbOld->next_record();
 } else {
     $ArtistsAdded = null;
 }
@@ -228,7 +231,7 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
 
 // Community section
 if (check_paranoia_here('snatched+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`),
       COUNT(DISTINCT x.`fid`)
@@ -240,11 +243,11 @@ if (check_paranoia_here('snatched+')) {
     WHERE
       x.`uid` = '$UserID'
     ");
-    list($Snatched, $UniqueSnatched) = $DB->next_record();
+    list($Snatched, $UniqueSnatched) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -253,11 +256,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'torrents'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumComments) = $DB->next_record();
+    list($NumComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -266,11 +269,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'artist'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumArtistComments) = $DB->next_record();
+    list($NumArtistComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -279,11 +282,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'collages'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumCollageComments) = $DB->next_record();
+    list($NumCollageComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('torrentcomments+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -292,11 +295,11 @@ if (check_paranoia_here('torrentcomments+')) {
       `Page` = 'requests'
       AND `AuthorID` = '$UserID'
     ");
-    list($NumRequestComments) = $DB->next_record();
+    list($NumRequestComments) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('collages+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`ID`)
     FROM
@@ -305,11 +308,11 @@ if (check_paranoia_here('collages+')) {
       `Deleted` = '0'
       AND `UserID` = '$UserID'
     ");
-    list($NumCollages) = $DB->next_record();
+    list($NumCollages) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('collagecontribs+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT ct.`CollageID`)
     FROM
@@ -321,11 +324,11 @@ if (check_paranoia_here('collagecontribs+')) {
       c.`Deleted` = '0'
       AND ct.`UserID` = '$UserID'
     ");
-    list($NumCollageContribs) = $DB->next_record();
+    list($NumCollageContribs) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('uniquegroups+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(DISTINCT `GroupID`)
     FROM
@@ -333,11 +336,11 @@ if (check_paranoia_here('uniquegroups+')) {
     WHERE
       `UserID` = '$UserID'
     ");
-    list($UniqueGroups) = $DB->next_record();
+    list($UniqueGroups) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('seeding+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
     FROM
@@ -349,11 +352,11 @@ if (check_paranoia_here('seeding+')) {
       x.`uid` = '$UserID'
       AND x.`remaining` = 0
     ");
-    list($Seeding) = $DB->next_record();
+    list($Seeding) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('leeching+')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
     FROM
@@ -365,11 +368,11 @@ if (check_paranoia_here('leeching+')) {
       x.`uid` = '$UserID'
       AND x.`remaining` > 0
     ");
-    list($Leeching) = $DB->next_record();
+    list($Leeching) = $app->dbOld->next_record();
 }
 
 if (check_paranoia_here('invitedcount')) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       COUNT(`UserID`)
     FROM
@@ -377,7 +380,7 @@ if (check_paranoia_here('invitedcount')) {
     WHERE
       `Inviter` = '$UserID'
     ");
-    list($Invited) = $DB->next_record();
+    list($Invited) = $app->dbOld->next_record();
 }
 
 if (!$OwnProfile) {
@@ -430,7 +433,7 @@ json_print('success', [
   'username'    => $Username,
   'avatar'      => $Avatar,
   'isFriend'    => (bool) $Friend,
-  'profileText' => Text::full_format($Info),
+  'profileText' => \Gazelle\Text::parse($Info),
 
   'stats' => [
     'joinedDate'    => $JoinDate,

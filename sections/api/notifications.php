@@ -1,5 +1,8 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 # todo: Go through line by line
 if (!check_perms('site_torrents_notify')) {
@@ -9,7 +12,7 @@ if (!check_perms('site_torrents_notify')) {
 define('NOTIFICATIONS_PER_PAGE', 50);
 list($Page, $Limit) = Format::page_limit(NOTIFICATIONS_PER_PAGE);
 
-$Results = $DB->query("
+$Results = $app->dbOld->query("
     SELECT
       SQL_CALC_FOUND_ROWS
       unt.TorrentID,
@@ -20,33 +23,33 @@ $Results = $DB->query("
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
-    WHERE unt.UserID = $LoggedUser[ID]".
-    ((!empty($_GET['filterid']) && is_number($_GET['filterid']))
+    WHERE unt.UserID = {$app->user->core['id']}".
+    ((!empty($_GET['filterid']) && is_numeric($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
       : '')."
     ORDER BY TorrentID DESC
     LIMIT $Limit");
-$GroupIDs = array_unique($DB->collect('GroupID'));
+$GroupIDs = array_unique($app->dbOld->collect('GroupID'));
 
-$DB->query('SELECT FOUND_ROWS()');
-list($TorrentCount) = $DB->next_record();
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($TorrentCount) = $app->dbOld->next_record();
 
 if (count($GroupIDs)) {
     $TorrentGroups = Torrents::get_groups($GroupIDs);
-    $DB->query("
+    $app->dbOld->query("
     UPDATE users_notify_torrents
     SET UnRead = '0'
-    WHERE UserID = $LoggedUser[ID]");
-    $Cache->delete_value("notifications_new_$LoggedUser[ID]");
+    WHERE UserID = {$app->user->core['id']}");
+    $app->cache->delete("notifications_new_{$app->user->core['id']}");
 }
 
-$DB->set_query_id($Results);
+$app->dbOld->set_query_id($Results);
 
 $JsonNotifications = [];
 $NumNew = 0;
 
 $FilterGroups = [];
-while ($Result = $DB->next_record(MYSQLI_ASSOC)) {
+while ($Result = $app->dbOld->next_record(MYSQLI_ASSOC)) {
     if (!$Result['FilterID']) {
         $Result['FilterID'] = 0;
     }

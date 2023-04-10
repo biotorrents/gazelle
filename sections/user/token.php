@@ -1,5 +1,6 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
 
 /**
  * Adapted from
@@ -11,7 +12,7 @@ if (!apcu_exists('DBKEY')) {
 }
 
 $ENV = ENV::go();
-$userId = (int) ($_GET['user_id'] ?? $LoggedUser['ID']);
+$userId = (int) ($_GET['user_id'] ?? $app->user->core['id']);
 
 $tokenId = (int) ($_GET['token_id'] ?? 0);
 $error = null;
@@ -19,26 +20,26 @@ $token = null;
 $tokenName = '';
 
 $_GET['do'] = $_GET['do'] ?? '';
-if (!empty($_GET['do']) && $userId !== $LoggedUser['ID'] && !check_perms('users_mod')) {
+if (!empty($_GET['do']) && $userId !== $app->user->core['id'] && !check_perms('users_mod')) {
     error(403);
 }
 
 if ($_GET['do'] === 'revoke') {
-    Users::revokeApiTokenById($userId, $tokenId);
+    User::revokeApiTokenById($userId, $tokenId);
     header('Location: user.php?action=edit&userid=' . $userId);
     die();
 } elseif ($_GET['do'] === 'generate') {
     $tokenName = $_POST['token_name'] ?? '';
     if (empty(trim($tokenName))) {
         $error = 'You must supply a name for the token.';
-    } elseif (Users::hasTokenByName($userId, $tokenName)) {
+    } elseif (User::hasTokenByName($userId, $tokenName)) {
         $error = 'You have already generated a token with that name.';
     } else {
-        $token = Users::createApiToken($userId, $tokenName, $ENV->getPriv('ENCKEY'));
+        $token = User::createApiToken($userId, $tokenName, $ENV->getPriv('siteCryptoKey'));
     }
 }
 
-View::show_header('Generate API Token');
+View::header('Generate API Token');
 
 if (is_null($token)) {
     if ($error) {
@@ -48,7 +49,7 @@ if (is_null($token)) {
         </div>
 HTML;
     }
-    
+
     echo $HTML = <<<HTML
     <div class="box pad">
       <p>
@@ -103,4 +104,4 @@ HTML;
 HTML;
 }
 
-View::show_footer();
+View::footer();

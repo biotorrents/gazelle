@@ -1,5 +1,8 @@
-<?
-View::show_header('Manage Permissions');
+<?php
+
+$app = \Gazelle\App::go();
+
+View::header('Manage Permissions');
 ?>
 <script type="text/javascript">//<![CDATA[
 function confirmDelete(id) {
@@ -17,8 +20,8 @@ function confirmDelete(id) {
       <a href="tools.php" class="brackets">Back to tools</a>
     </div>
   </div>
-<?
-$DB->prepared_query("
+<?php
+$app->dbOld->prepared_query("
   SELECT
     p.ID,
     p.Name,
@@ -30,21 +33,21 @@ $DB->prepared_query("
     LEFT JOIN users_levels AS l ON l.PermissionID = p.ID
   GROUP BY p.ID
   ORDER BY p.Secondary ASC, p.Level ASC");
-if ($DB->has_results()) {
-?>
+if ($app->dbOld->has_results()) {
+    ?>
   <div class="box">
-  <table class="skeleton-fix">
+  <table class="skeletonFix">
     <tr class="colhead">
       <td>Name</td>
       <td>Level</td>
       <td>User count</td>
       <td class="center">Actions</td>
     </tr>
-<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $DB->next_record()) { ?>
+<?php while (list($ID, $Name, $Level, $Secondary, $UserCount) = $app->dbOld->next_record()) { ?>
     <tr>
-      <td><?=display_str($Name); ?></td>
+      <td><?=\Gazelle\Text::esc($Name); ?></td>
       <td><?=($Secondary ? 'Secondary' : $Level) ?></td>
-      <td><?=number_format($UserCount); ?></td>
+      <td><?=\Gazelle\Text::float($UserCount); ?></td>
       <td class="center">
         <a href="tools.php?action=permissions&amp;id=<?=$ID ?>" class="brackets">Edit</a>
         <a href="#" onclick="return confirmDelete(<?=$ID?>);" class="brackets">Remove</a>
@@ -53,12 +56,12 @@ if ($DB->has_results()) {
 <?php } ?>
   </table>
   </div>
-<?
+<?php
 } else { ?>
   <h2>There are no permission classes.</h2>
-<?
+<?php
 } ?>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();
 ?>

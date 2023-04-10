@@ -1,6 +1,10 @@
-<?
-if (!$News = $Cache->get_value('news')) {
-  $DB->query("
+<?php
+
+
+$app = \Gazelle\App::go();
+
+if (!$News = $app->cache->get('news')) {
+    $app->dbOld->query("
     SELECT
       ID,
       Title,
@@ -9,24 +13,27 @@ if (!$News = $Cache->get_value('news')) {
     FROM news
     ORDER BY Time DESC
     LIMIT 5");
-  $News = $DB->to_array(false, MYSQLI_NUM, false);
-  $Cache->cache_value('news', $News, 3600 * 24 * 30);
-  $Cache->cache_value('news_latest_id', $News[0][0], 0);
+    $News = $app->dbOld->to_array(false, MYSQLI_NUM, false);
+    $app->cache->set('news', $News, 3600 * 24 * 30);
+    $app->cache->set('news_latest_id', $News[0][0], 0);
 }
 
-if ($LoggedUser['LastReadNews'] != $News[0][0]) {
-  $Cache->begin_transaction("user_info_heavy_$UserID");
-  $Cache->update_row(false, array('LastReadNews' => $News[0][0]));
-  $Cache->commit_transaction(0);
-  $DB->query("
+if ($app->user->extra['LastReadNews'] != $News[0][0]) {
+    /*
+    $app->cacheOld->begin_transaction("user_info_heavy_$UserID");
+    $app->cacheOld->update_row(false, array('LastReadNews' => $News[0][0]));
+    $app->cacheOld->commit_transaction(0);
+    */
+
+    $app->dbOld->query("
     UPDATE users_info
     SET LastReadNews = '".$News[0][0]."'
     WHERE UserID = $UserID");
-  $LoggedUser['LastReadNews'] = $News[0][0];
+    $app->user->extra['LastReadNews'] = $News[0][0];
 }
 
-if (($Blog = $Cache->get_value('blog')) === false) {
-  $DB->query("
+if (($Blog = $app->cache->get('blog')) === false) {
+    $app->dbOld->query("
     SELECT
       b.ID,
       um.Username,
@@ -39,18 +46,18 @@ if (($Blog = $Cache->get_value('blog')) === false) {
       LEFT JOIN users_main AS um ON b.UserID = um.ID
     ORDER BY Time DESC
     LIMIT 20");
-  $Blog = $DB->to_array();
-  $Cache->cache_value('blog', $Blog, 1209600);
+    $Blog = $app->dbOld->to_array();
+    $app->cache->set('blog', $Blog, 1209600);
 }
 $JsonBlog = [];
 for ($i = 0; $i < 5; $i++) {
-  list($BlogID, $Author, $AuthorID, $Title, $Body, $BlogTime, $ThreadID) = $Blog[$i];
-  $JsonBlog[] = array(
+    list($BlogID, $Author, $AuthorID, $Title, $Body, $BlogTime, $ThreadID) = $Blog[$i];
+    $JsonBlog[] = array(
     'blogId' => (int)$BlogID,
     'author' => $Author,
     'title' => $Title,
     'bbBody' => $Body,
-    'body' => Text::full_format($Body),
+    'body' => \Gazelle\Text::parse($Body),
     'blogTime' => $BlogTime,
     'threadId' => (int)$ThreadID
   );
@@ -59,22 +66,22 @@ for ($i = 0; $i < 5; $i++) {
 $JsonAnnouncements = [];
 $Count = 0;
 foreach ($News as $NewsItem) {
-  list($NewsID, $Title, $Body, $NewsTime) = $NewsItem;
-  if (strtotime($NewsTime) > time()) {
-    continue;
-  }
+    list($NewsID, $Title, $Body, $NewsTime) = $NewsItem;
+    if (strtotime($NewsTime) > time()) {
+        continue;
+    }
 
-  $JsonAnnouncements[] = array(
+    $JsonAnnouncements[] = array(
     'newsId' => (int)$NewsID,
     'title' => $Title,
     'bbBody' => $Body,
-    'body' => Text::full_format($Body),
+    'body' => \Gazelle\Text::parse($Body),
     'newsTime' => $NewsTime
   );
 
-  if (++$Count > 4) {
-    break;
-  }
+    if (++$Count > 4) {
+        break;
+    }
 }
 
 json_die("success", array(

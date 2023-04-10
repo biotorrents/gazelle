@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,15 +13,94 @@ declare(strict_types=1);
  * and this page must be called again.
  */
 
-View::show_header(
+$app = \Gazelle\App::go();
+
+# announce and source
+#$announceUris = ANNOUNCE_URLS[0];
+$announceUris = call_user_func_array("array_merge", ANNOUNCE_URLS);
+
+$passKey = $app->user->extra["torrent_pass"];
+$sourceKey = User::uploadSource();
+
+# tagList
+$query = "select name from tags where tagType = ? order by name";
+$tagList = $app->dbNew->column($query, "name", ["genre"]);
+
+
+
+# twig template
+$app->twig->display("torrents/upload.twig", [
+    "title" => "Upload",
+    "sidebar" => true,
+    "js" => ["upload", "vendor/easymde.min"],
+    "css" => ["vendor/easymde.min"],
+
+    # upload form variables
+    "newTorrent" => true, # todo: make programmatic
+    "announceUris" => $announceUris,
+    "passKey" => $passKey,
+    "sourceKey" => $sourceKey,
+    "tagList" => $tagList,
+    "submitType" => "create",
+
+    # todo: this needs to be torrentGroup
+    "data" => [
+      "categoryId" => null,
+      "identifier" => null,
+      "groupId" => null,
+      "requestId" => null,
+      "torrentId" => null,
+      "version" => null,
+      "title" => null,
+      "subject" => null,
+      "object" => null,
+      "creatorList" => null,
+      "workgroup" => null,
+      "location" => null,
+      "year" => null,
+      "license" => null,
+      "platform" => null,
+      "format" => null,
+      "archive" => null,
+      "scope" => null,
+      "tagList" => null,
+      "picture" => null,
+      "mirrors" => null,
+      "literature" => null,
+      "seqhash" => null,
+      "groupDescription" => null,
+      "torrentDescription" => null,
+      "annotated" => null,
+      "anonymous" => null,
+    ],
+
+
+
+]);
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+View::header(
     'Upload',
     'upload,vendor/easymde.min',
     'vendor/easymde.min'
 );
 
-if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid'])) {
+if (empty($Properties) && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
     $GroupID = $_GET['groupid'];
-    $DB->prepare_query("
+    $app->dbOld->prepared_query("
       SELECT
         tg.`id` as GroupID,
         tg.`category_id`,
@@ -38,15 +118,15 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
       WHERE tg.`id` = '$GroupID'
       GROUP BY tg.`id`
       ");
-    $DB->exec_prepared_query();
 
-    if ($DB->has_results()) {
-        list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+
+    if ($app->dbOld->has_results()) {
+        list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
         $UploadForm = $Categories[$Properties['CategoryID'] - 1];
         $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
         $Properties['Artists'] = Artists::get_artist($_GET['groupid']);
 
-        $DB->query("
+        $app->dbOld->query("
         SELECT
           GROUP_CONCAT(tags.`Name` SEPARATOR ', ') AS TagList
         FROM
@@ -55,17 +135,17 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
         WHERE
           tt.`GroupID` = '$_GET[groupid]'
         ");
-        list($Properties['TagList']) = $DB->next_record();
+        list($Properties['TagList']) = $app->dbOld->next_record();
     } else {
         unset($_GET['groupid']);
     }
 
-    if (!empty($_GET['requestid']) && is_number($_GET['requestid'])) {
+    if (!empty($_GET['requestid']) && is_numeric($_GET['requestid'])) {
         $Properties['RequestID'] = $_GET['requestid'];
     }
-} elseif (empty($Properties) && isset($_GET['requestid']) && is_number($_GET['requestid'])) {
+} elseif (empty($Properties) && isset($_GET['requestid']) && is_numeric($_GET['requestid'])) {
     $RequestID = $_GET['requestid'];
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `ID` AS RequestID,
       `CategoryID`,
@@ -79,7 +159,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_number($_GET['groupid']
     WHERE
       `ID` = '$RequestID'
     ");
-    list($Properties) = $DB->to_array(false, MYSQLI_BOTH);
+    list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
 
     $UploadForm = $Categories[$Properties['CategoryID'] - 1];
     $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
@@ -94,15 +174,14 @@ if (!empty($ArtistForm)) {
 /**
  * TorrentForm
  */
-require_once SERVER_ROOT.'/classes/torrent_form.class.php';
 $TorrentForm = new TorrentForm($Properties ?? false, $Err ?? false);
 
 /**
  * Genre tags
  */
-$GenreTags = $Cache->get_value('genre_tags');
+$GenreTags = $app->cache->get('genre_tags');
 if (!$GenreTags) {
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `Name`
     FROM
@@ -112,11 +191,11 @@ if (!$GenreTags) {
     ORDER BY
       `Name`
     ");
-    
-    $GenreTags = $DB->collect('Name');
-    $Cache->cache_value('genre_tags', $GenreTags, 3600 * 6);
+
+    $GenreTags = $app->dbOld->collect('Name');
+    $app->cache->set('genre_tags', $GenreTags, 3600 * 6);
 }
 
 # Twig based class
 $TorrentForm->render();
-View::show_footer();
+View::footer();

@@ -1,83 +1,98 @@
 <?php
-#declare(strict_types=1);
 
-//******************************************************************************//
-//--------------- Fill a request -----------------------------------------------//
+declare(strict_types=1);
 
-$RequestID = $_REQUEST['requestid'];
-if (!is_number($RequestID)) {
-    error(0);
-}
 
+$app = \Gazelle\App::go();
+
+/**
+ * Fill a request
+ */
+
+$RequestID = (int) $_REQUEST['requestid'];
+Security::int($RequestID);
 authorize();
 
-//VALIDATION
-if (!empty($_GET['torrentid']) && is_number($_GET['torrentid'])) {
+# Validation
+if (!empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
     $TorrentID = $_GET['torrentid'];
 } else {
     if (empty($_POST['link'])) {
         error('You forgot to supply a link to the filling torrent');
     } else {
         $Link = $_POST['link'];
-        if (!preg_match('/'.TORRENT_REGEX.'/i', $Link, $Matches)) {
+        if (!preg_match("/{$app->env->regexTorrent}/i", $Link, $Matches)) {
             error('Your link didn\'t seem to be a valid torrent link');
         } else {
             $TorrentID = $Matches[4];
         }
     }
-    if (!$TorrentID || !is_number($TorrentID)) {
+    if (!$TorrentID || !is_numeric($TorrentID)) {
         error(404);
     }
 }
 
-//Torrent exists, check it's applicable
-$DB->query("
-  SELECT
-    t.UserID,
-    t.Time,
-    tg.CategoryID,
-    tg.CatalogueNumber,
-  FROM torrents AS t
-    LEFT JOIN torrents_group AS tg ON t.GroupID = tg.ID
-  WHERE t.ID = $TorrentID
-  LIMIT 1");
+// Torrent exists, check it's applicable
+$app->dbOld->query("
+SELECT
+  t.`UserID`,
+  t.`Time`,
+  tg.`category_id`,
+  tg.`identifier`
+FROM
+  `torrents` AS t
+LEFT JOIN `torrents_group` AS tg
+ON
+  t.`GroupID` = tg.`id`
+WHERE
+  t.I `D = '$TorrentID'
+LIMIT 1
+");
 
-if (!$DB->has_results()) {
+if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($UploaderID, $UploadTime, $TorrentCategoryID, $TorrentCatalogueNumber) = $DB->next_record();
+list($UploaderID, $UploadTime, $TorrentCategoryID, $TorrentCatalogueNumber) = $app->dbOld->next_record();
 
-$FillerID = $LoggedUser['ID'];
-$FillerUsername = $LoggedUser['Username'];
+$FillerID = $app->user->core['id'];
+$FillerUsername = $app->user->core['username'];
 
 if (!empty($_POST['user']) && check_perms('site_moderate_requests')) {
     $FillerUsername = $_POST['user'];
-    $DB->query("
-    SELECT ID
-    FROM users_main
-    WHERE Username LIKE '".db_string($FillerUsername)."'");
-    if (!$DB->has_results()) {
-        $Err = 'No such user to fill for!';
+    $app->dbOld->prepared_query("
+    SELECT
+      `ID`
+    FROM
+      `users_main`
+    WHERE
+      `Username` LIKE '$FillerUsername'
+    ");
+
+    if (!$app->dbOld->has_results()) {
+        $Err = 'No such user to fill the request for!';
     } else {
-        list($FillerID) = $DB->next_record();
+        list($FillerID) = $app->dbOld->next_record();
     }
 }
 
 if (time_ago($UploadTime) < 3600 && $UploaderID !== $FillerID && !check_perms('site_moderate_requests')) {
-    $Err = 'There is a one hour grace period for new uploads to allow the torrent\'s uploader to fill the request.';
+    $Err = "There's a one hour grace period for new uploads to allow the torrent's uploader to fill the request.";
 }
 
 
-$DB->query("
-  SELECT
-    Title,
-    UserID,
-    TorrentID,
-    CategoryID,
-    CatalogueNumber,
-  FROM requests
-  WHERE ID = $RequestID");
-list($Title, $RequesterID, $OldTorrentID, $RequestCategoryID, $RequestCatalogueNumber) = $DB->next_record();
+$app->dbOld->prepared_query("
+SELECT
+  `Title`,
+  `UserID`,
+  `TorrentID`,
+  `CategoryID`,
+  `CatalogueNumber`
+FROM
+  `requests`
+WHERE
+  `ID` = '$RequestID'
+");
+list($Title, $RequesterID, $OldTorrentID, $RequestCategoryID, $RequestCatalogueNumber) = $app->dbOld->next_record();
 
 
 if (!empty($OldTorrentID)) {
@@ -91,7 +106,7 @@ $CategoryName = $Categories[$RequestCategoryID - 1];
 
 if ($RequestCatalogueNumber) {
     if (str_replace('-', '', strtolower($TorrentCatalogueNumber)) !== str_replace('-', '', strtolower($RequestCatalogueNumber))) {
-        $Err = "This request requires the catalogue number $RequestCatalogueNumber";
+        $Err = "This request requires the catalogue number $RequestCatalogueNumber.";
     }
 }
 
@@ -100,23 +115,32 @@ if (!empty($Err)) {
     error($Err);
 }
 
-//We're all good! Fill!
-$DB->query("
-  UPDATE requests
-  SET FillerID = $FillerID,
-    TorrentID = $TorrentID,
-    TimeFilled = NOW()
-  WHERE ID = $RequestID");
+// We're all good! Fill!
+$app->dbOld->prepared_query("
+UPDATE
+  `requests`
+SET
+  `FillerID` = '$FillerID',
+  `TorrentID` = '$TorrentID',
+  `TimeFilled` = NOW()
+WHERE
+  `ID` = '$RequestID'
+");
 
 $ArtistForm = Requests::get_artists($RequestID);
 $ArtistName = Artists::display_artists($ArtistForm, false, true);
 $FullName = $ArtistName.$Title;
 
-$DB->query("
-  SELECT UserID
-  FROM requests_votes
-  WHERE RequestID = $RequestID");
-$UserIDs = $DB->to_array();
+$app->dbOld->prepared_query("
+SELECT
+  `UserID`
+FROM
+  `requests_votes`
+WHERE
+  `RequestID` = '$RequestID'
+");
+
+$UserIDs = $app->dbOld->to_array();
 foreach ($UserIDs as $User) {
     list($VoterID) = $User;
     Misc::send_pm($VoterID, 0, "The request \"$FullName\" has been filled", 'One of your requests&#8202;&mdash;&#8202;[url='.site_url()."requests.php?action=view&amp;id=$RequestID]$FullName".'[/url]&#8202;&mdash;&#8202;has been filled. You can view it here: [url]'.site_url()."torrents.php?torrentid=$TorrentID".'[/url]');
@@ -129,36 +153,40 @@ $RequestVotes = Requests::get_votes_array($RequestID);
 Misc::write_log("Request $RequestID ($FullName) was filled by user $FillerID ($FillerUsername) with the torrent $TorrentID for a ".Format::get_size($RequestVotes['TotalBounty']).' bounty.');
 
 // Give bounty
-$DB->query("
-  UPDATE users_main
-  SET Uploaded = (Uploaded + ".intval($RequestVotes['TotalBounty']*(1/4)).")
-  WHERE ID = $FillerID");
+$app->dbOld->prepared_query("
+UPDATE `users_main`
+SET `Uploaded` = (`Uploaded` + ".intval($RequestVotes['TotalBounty']*(1/4)).")
+WHERE `ID` = '$FillerID'
+");
 
-$DB->query("
-  UPDATE users_main
-  SET Uploaded = (Uploaded + ".intval($RequestVotes['TotalBounty']*(3/4)).")
-  WHERE ID = $UploaderID");
+$app->dbOld->prepared_query("
+UPDATE `users_main`
+SET `Uploaded` = (`Uploaded` + ".intval($RequestVotes['TotalBounty']*(3/4)).")
+WHERE `ID` = '$UploaderID'
+");
 
-
-$Cache->delete_value("user_stats_$FillerID");
-$Cache->delete_value("request_$RequestID");
+$app->cache->delete("user_stats_$FillerID");
+$app->cache->delete("request_$RequestID");
 if (isset($GroupID)) {
-    $Cache->delete_value("requests_group_$GroupID");
+    $app->cache->delete("requests_group_$GroupID");
 }
 
+$app->dbOld->prepared_query("
+SELECT
+  `ArtistID`
+FROM
+  `requests_artists`
+WHERE
+  `RequestID` = '$RequestID'
+");
 
-
-$DB->query("
-  SELECT ArtistID
-  FROM requests_artists
-  WHERE RequestID = $RequestID");
-$ArtistIDs = $DB->to_array();
+$ArtistIDs = $app->dbOld->to_array();
 foreach ($ArtistIDs as $ArtistID) {
-    $Cache->delete_value("artists_requests_".$ArtistID[0]);
+    $app->cache->delete("artists_requests_".$ArtistID[0]);
 }
 
 Requests::update_sphinx_requests($RequestID);
 $SphQL = new SphinxqlQuery();
 $SphQL->raw_query("UPDATE requests, requests_delta SET torrentid = $TorrentID, fillerid = $FillerID WHERE id = $RequestID", false);
 
-header("Location: requests.php?action=view&id=$RequestID");
+Http::redirect("requests.php?action=view&id=$RequestID");

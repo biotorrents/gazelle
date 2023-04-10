@@ -1,18 +1,21 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 authorize();
 $UserSubscriptions = Subscriptions::get_subscriptions();
 if (!empty($UserSubscriptions)) {
-  $DB->query("
+    $app->dbOld->query("
     INSERT INTO forums_last_read_topics (UserID, TopicID, PostID)
-      SELECT '$LoggedUser[ID]', ID, LastPostID
+      SELECT '{$app->user->core['id']}', ID, LastPostID
       FROM forums_topics
       WHERE ID IN (".implode(',', $UserSubscriptions).')
     ON DUPLICATE KEY UPDATE
       PostID = LastPostID');
 }
-$DB->query("
+$app->dbOld->query("
   INSERT INTO users_comments_last_read (UserID, Page, PageID, PostID)
-  SELECT $LoggedUser[ID], t.Page, t.PageID, t.LastPostID
+  SELECT {$app->user->core['id']}, t.Page, t.PageID, t.LastPostID
   FROM (
     SELECT
       s.Page,
@@ -29,6 +32,5 @@ $DB->query("
   ) AS t
   ON DUPLICATE KEY UPDATE
     PostID = LastPostID");
-$Cache->delete_value('subscriptions_user_new_'.$LoggedUser['ID']);
-header('Location: userhistory.php?action=subscriptions');
-?>
+$app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
+Http::redirect("userhistory.php?action=subscriptions");

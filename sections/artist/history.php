@@ -1,27 +1,30 @@
-<?
-if (!is_number($_GET['artistid'])) {
-  error(0);
+<?php
+
+$app = \Gazelle\App::go();
+
+if (!is_numeric($_GET['artistid'])) {
+    error(0);
 }
 $ArtistID = (int)$_GET['artistid'];
 
-$DB->query("
+$app->dbOld->query("
   SELECT Name
   FROM artists_group
   WHERE ArtistID = $ArtistID");
-if (!$DB->has_results()) {
-  error(404);
+if (!$app->dbOld->has_results()) {
+    error(404);
 }
-list($Name) = $DB->next_record();
+list($Name) = $app->dbOld->next_record();
 
-View::show_header("Revision history for $Name");
+View::header("Revision history for $Name");
 ?>
 <div>
   <div class="header">
     <h2>Revision history for <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a></h2>
   </div>
-<?
+<?php
 RevisionHistoryView::render_revision_history(RevisionHistory::get_revision_history('artists', $ArtistID), "artist.php?id=$ArtistID");
 ?>
 </div>
-<?
-View::show_footer();
+<?php
+View::footer();

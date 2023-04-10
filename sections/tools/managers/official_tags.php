@@ -1,54 +1,57 @@
-<?
+<?php
+
+$app = \Gazelle\App::go();
+
 if (!check_perms('users_mod')) {
-  error(403);
+    error(403);
 }
 
 if (isset($_POST['doit'])) {
-  authorize();
+    authorize();
 
-  if (isset($_POST['oldtags'])) {
-    $OldTagIDs = $_POST['oldtags'];
-    foreach ($OldTagIDs AS $OldTagID) {
-      if (!is_number($OldTagID)) {
-        error(403);
-      }
-    }
-    $OldTagIDs = implode(', ', $OldTagIDs);
+    if (isset($_POST['oldtags'])) {
+        $OldTagIDs = $_POST['oldtags'];
+        foreach ($OldTagIDs as $OldTagID) {
+            if (!is_numeric($OldTagID)) {
+                error(403);
+            }
+        }
+        $OldTagIDs = implode(', ', $OldTagIDs);
 
-    $DB->query("
+        $app->dbOld->query("
       UPDATE tags
       SET TagType = 'other'
       WHERE ID IN ($OldTagIDs)");
-  }
+    }
 
-  if ($_POST['newtag']) {
-    $TagName = Misc::sanitize_tag($_POST['newtag']);
+    if ($_POST['newtag']) {
+        $TagName = Misc::sanitize_tag($_POST['newtag']);
 
-    $DB->query("
+        $app->dbOld->query("
       SELECT ID
       FROM tags
       WHERE Name LIKE '$TagName'");
-    list($TagID) = $DB->next_record();
+        list($TagID) = $app->dbOld->next_record();
 
-    if ($TagID) {
-      $DB->query("
+        if ($TagID) {
+            $app->dbOld->query("
         UPDATE tags
         SET TagType = 'genre'
         WHERE ID = $TagID");
-    } else { // Tag doesn't exist yet - create tag
-      $DB->query("
+        } else { // Tag doesn't exist yet - create tag
+            $app->dbOld->query("
         INSERT INTO tags
           (Name, UserID, TagType, Uses)
         VALUES
-          ('$TagName', ".$LoggedUser['ID'].", 'genre', 0)");
-      $TagID = $DB->inserted_id();
+          ('$TagName', ".$app->user->core['id'].", 'genre', 0)");
+            $TagID = $app->dbOld->inserted_id();
+        }
     }
-  }
 
-  $Cache->delete_value('genre_tags');
+    $app->cache->delete('genre_tags');
 }
 
-View::show_header('Official Tags Manager');
+View::header('Official Tags Manager');
 ?>
 <div class="header">
   <h2>Official Tags Manager</h2>
@@ -57,7 +60,7 @@ View::show_header('Official Tags Manager');
   <div style="display: inline-block;">
     <form class="manage_form" name="tags" method="post" action="">
       <input type="hidden" name="action" value="official_tags" />
-      <input type="hidden" name="auth" value="<?=$LoggedUser['AuthKey']?>" />
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="doit" value="1" />
       <table class="tags_table layout box slight_margin">
         <tr class="colhead_dark">
@@ -73,26 +76,27 @@ View::show_header('Official Tags Manager');
           <td style="font-weight: bold;">Tag</td>
           <td style="font-weight: bold;">Uses</td>
         </tr>
-<?
+<?php
 $i = 0;
-$DB->query("
+$app->dbOld->query("
   SELECT ID, Name, Uses
   FROM tags
   WHERE TagType = 'genre'
   ORDER BY Name ASC");
-$TagCount = $DB->record_count();
-$Tags = $DB->to_array();
+$TagCount = $app->dbOld->record_count();
+$Tags = $app->dbOld->to_array();
 for ($i = 0; $i < $TagCount / 3; $i++) {
-  list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
-  if (isset($Tags[ceil($TagCount / 3) + $i]))
-    list($TagID2, $TagName2, $TagUses2) = $Tags[ceil($TagCount / 3) + $i];
-  if (isset($Tags[2 * ceil($TagCount / 3) + $i]))
-    list($TagID3, $TagName3, $TagUses3) = $Tags[2 * ceil($TagCount / 3) + $i];
-?>
+    list($TagID1, $TagName1, $TagUses1) = $Tags[$i];
+    if (isset($Tags[ceil($TagCount / 3) + $i])) {
+        list($TagID2, $TagName2, $TagUses2) = $Tags[ceil($TagCount / 3) + $i];
+    }
+    if (isset($Tags[2 * ceil($TagCount / 3) + $i])) {
+        list($TagID3, $TagName3, $TagUses3) = $Tags[2 * ceil($TagCount / 3) + $i];
+    } ?>
         <tr class="row">
           <td style="text-align: center;"><input type="checkbox" name="oldtags[]" value="<?=$TagID1?>" /></td>
           <td><?=$TagName1?></td>
-          <td style="text-align: center;"><?=number_format($TagUses1)?></td>
+          <td style="text-align: center;"><?=\Gazelle\Text::float($TagUses1)?></td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID2) { ?>
@@ -100,7 +104,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
 <?php } ?>
           </td>
           <td><?=$TagName2?></td>
-          <td style="text-align: center;"><?=number_format($TagUses2)?></td>
+          <td style="text-align: center;"><?=\Gazelle\Text::float($TagUses2)?></td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID3) { ?>
@@ -108,9 +112,9 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
 <?php } ?>
           </td>
           <td><?=$TagName3?></td>
-          <td style="text-align: center;"><?=number_format($TagUses3)?></td>
+          <td style="text-align: center;"><?=\Gazelle\Text::float($TagUses3)?></td>
         </tr>
-<?
+<?php
 }
 ?>
         <tr class="row">
@@ -128,4 +132,4 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
     </form>
   </div>
 </div>
-<? View::show_footer(); ?>
+<?php View::footer(); ?>

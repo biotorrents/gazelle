@@ -1,9 +1,11 @@
 <?php
 #declare(strict_types = 1);
 
-include SERVER_ROOT.'/sections/reports/array.php';
+$app = \Gazelle\App::go();
 
-if (empty($_GET['type']) || empty($_GET['id']) || !is_number($_GET['id'])) {
+include serverRoot.'/sections/reports/array.php';
+
+if (empty($_GET['type']) || empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(404);
 }
 
@@ -17,119 +19,116 @@ $ID = $_GET['id'];
 
 switch ($Short) {
   case 'user':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Username) = $DB->next_record();
+    list($Username) = $app->dbOld->next_record();
     break;
 
   case 'request_update':
     $NoReason = true;
-    $DB->query("
+    $app->dbOld->query("
       SELECT Title, Description, TorrentID, CategoryID, Year
       FROM requests
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled, $CategoryID, $Year) = $DB->next_record();
+    list($Name, $Desc, $Filled, $CategoryID, $Year) = $app->dbOld->next_record();
     if ($Filled || ($CategoryID != 0 && ($Categories[$CategoryID - 1] != 'Music' || $Year != 0))) {
         error(403);
     }
     break;
 
   case 'request':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Title, Description, TorrentID
       FROM requests
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc, $Filled) = $DB->next_record();
+    list($Name, $Desc, $Filled) = $app->dbOld->next_record();
     break;
 
   case 'collage':
-    $DB->query("
+    $app->dbOld->query("
       SELECT Name, Description
       FROM collages
       WHERE ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Name, $Desc) = $DB->next_record();
+    list($Name, $Desc) = $app->dbOld->next_record();
     break;
 
   case 'thread':
-    $DB->query("
+    $app->dbOld->query("
       SELECT ft.Title, ft.ForumID, um.Username
       FROM forums_topics AS ft
         JOIN users_main AS um ON um.ID = ft.AuthorID
       WHERE ft.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Title, $ForumID, $Username) = $DB->next_record();
-    $DB->query("
+    list($Title, $ForumID, $Username) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $DB->next_record();
-    if (!empty($LoggedUser['DisableForums'])
-        || ($MinClassRead > $LoggedUser['EffectiveClass'] && (!isset($LoggedUser['CustomForums'][$ForumID]) || $LoggedUser['CustomForums'][$ForumID] == 0))
-        || (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] == 0)) {
+    list($MinClassRead) = $app->dbOld->next_record();
+    if (!empty($app->user->extra['DisableForums'])
+        || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
+        || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
 
   case 'post':
-    $DB->query("
+    $app->dbOld->query("
       SELECT fp.Body, fp.TopicID, um.Username
       FROM forums_posts AS fp
         JOIN users_main AS um ON um.ID = fp.AuthorID
       WHERE fp.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Body, $TopicID, $Username) = $DB->next_record();
-    $DB->query("
+    list($Body, $TopicID, $Username) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT ForumID
       FROM forums_topics
       WHERE ID = $TopicID");
-    list($ForumID) = $DB->next_record();
-    $DB->query("
+    list($ForumID) = $app->dbOld->next_record();
+    $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $DB->next_record();
-    if (!empty($LoggedUser['DisableForums'])
-        || ($MinClassRead > $LoggedUser['EffectiveClass'] && (!isset($LoggedUser['CustomForums'][$ForumID]) || $LoggedUser['CustomForums'][$ForumID] == 0))
-        || (isset($LoggedUser['CustomForums'][$ForumID]) && $LoggedUser['CustomForums'][$ForumID] == 0)) {
+    list($MinClassRead) = $app->dbOld->next_record();
+    if (!empty($app->user->extra['DisableForums'])
+        || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
+        || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
         error(403);
     }
     break;
 
   case 'comment':
-    $DB->query("
+    $app->dbOld->query("
       SELECT c.Body, um.Username
       FROM comments AS c
         JOIN users_main AS um ON um.ID = c.AuthorID
       WHERE c.ID = $ID");
-    if (!$DB->has_results()) {
+    if (!$app->dbOld->has_results()) {
         error(404);
     }
-    list($Body, $Username) = $DB->next_record();
+    list($Body, $Username) = $app->dbOld->next_record();
     break;
 }
 
-View::show_header(
-    'Report a '.$Type['title'],
-    'vendor/jquery.validate.min,form_validate'
-);
+View::header('Report a '.$Type['title']);
 ?>
 <div class="thin">
   <div class="header">
@@ -152,7 +151,7 @@ View::show_header(
 switch ($Short) {
   case 'user':
 ?>
-  <p>You are reporting the user <strong><?=display_str($Username)?></strong></p>
+  <p>You are reporting the user <strong><?=\Gazelle\Text::esc($Username)?></strong></p>
   <?php
     break;
   case 'request_update':
@@ -165,9 +164,9 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -178,10 +177,10 @@ switch ($Short) {
   <div class="box pad center">
     <p><strong>It will greatly increase the turnover rate of the updates if you can fill in as much of the following
         details as possible.</strong></p>
-    <form class="create_form" id="report_form" name="report" action="" method="post">
+    <form id="report_form" name="report" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <table class="layout">
@@ -227,9 +226,9 @@ switch ($Short) {
       <td>Filled?</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
       <td><strong><?=($Filled == 0 ? 'No' : 'Yes')?></strong>
       </td>
@@ -246,9 +245,9 @@ switch ($Short) {
       <td>Description</td>
     </tr>
     <tr>
-      <td><?=display_str($Name)?>
+      <td><?=\Gazelle\Text::esc($Name)?>
       </td>
-      <td><?=Text::full_format($Desc)?>
+      <td><?=\Gazelle\Text::parse($Desc)?>
       </td>
     </tr>
   </table>
@@ -263,9 +262,9 @@ switch ($Short) {
       <td>Title</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=display_str($Title)?>
+      <td><?=\Gazelle\Text::esc($Title)?>
       </td>
     </tr>
   </table>
@@ -280,9 +279,9 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=Text::full_format($Body)?>
+      <td><?=\Gazelle\Text::parse($Body)?>
       </td>
     </tr>
   </table>
@@ -297,9 +296,9 @@ switch ($Short) {
       <td>Body</td>
     </tr>
     <tr>
-      <td><?=display_str($Username)?>
+      <td><?=\Gazelle\Text::esc($Username)?>
       </td>
-      <td><?=Text::full_format($Body)?>
+      <td><?=\Gazelle\Text::parse($Body)?>
       </td>
     </tr>
   </table>
@@ -310,10 +309,10 @@ if (empty($NoReason)) {
     ?>
   <h3>Reason</h3>
   <div class="box pad center">
-    <form class="create_form" name="report" id="report_form" action="" method="post">
+    <form name="report" id="report_form" action="" method="post">
       <input type="hidden" name="action" value="takereport" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="id" value="<?=$ID?>" />
       <input type="hidden" name="type" value="<?=$Short?>" />
       <textarea class="required" rows="10" cols="95" name="reason"></textarea><br /><br />
@@ -325,4 +324,4 @@ if (empty($NoReason)) {
 // close <div class="thin">?>
 </div>
 <?php
-View::show_footer();
+View::footer();

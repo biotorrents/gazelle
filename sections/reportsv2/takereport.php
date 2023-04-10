@@ -1,5 +1,10 @@
 <?php
 
+#declare(strict_types = 1);
+
+
+$app = \Gazelle\App::go();
+
 /**
  * This page handles the backend from when a user submits a report.
  * It checks for (in order):
@@ -16,7 +21,7 @@ authorize();
 
 $TorrentID = (int) $_POST['torrentid'];
 $CategoryID = (int) $_POST['categoryid'];
-Security::checkInt($TorrentID, $CategoryID);
+Security::int($TorrentID, $CategoryID);
 
 if (!isset($_POST['type'])) {
     error(404);
@@ -40,7 +45,7 @@ foreach ($ReportType['report_fields'] as $Field => $Value) {
 }
 
 if (!empty($_POST['sitelink'])) {
-    if (preg_match_all('/'.TORRENT_REGEX.'/i', $_POST['sitelink'], $Matches)) {
+    if (preg_match_all("/{$app->env->regexTorrent}/i", $_POST['sitelink'], $Matches)) {
         $ExtraIDs = implode(' ', $Matches[4]);
 
         if (in_array($TorrentID, $Matches[4])) {
@@ -53,7 +58,7 @@ if (!empty($_POST['sitelink'])) {
 
 if (!empty($_POST['link'])) {
     // resource_type://domain:port/filepathname?query_string#anchor
-    if (preg_match_all('/'.URL_REGEX.'/is', $_POST['link'], $Matches)) {
+    if (preg_match_all("/{$app->env->regexUri}/i", $_POST['link'], $Matches)) {
         $Links = implode(' ', $Matches[0]);
     } else {
         $Err = "The extra links you provided weren't links...";
@@ -63,7 +68,7 @@ if (!empty($_POST['link'])) {
 }
 
 if (!empty($_POST['image'])) {
-    if (preg_match("/^(".IMAGE_REGEX.")( ".IMAGE_REGEX.")*$/is", trim($_POST['image']), $Matches)) {
+    if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image']), $Matches)) {
         $Images = $Matches[0];
     } else {
         $Err = "The extra image links you provided weren't links to images...";
@@ -88,57 +93,57 @@ if (!empty($_POST['extra'])) {
     $Err = 'As useful as blank reports are, could you be a tiny bit more helpful? (Leave a comment)';
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT `GroupID`
   FROM `torrents`
   WHERE `ID` = '$TorrentID'
   ");
-if (!$DB->has_results()) {
+if (!$app->dbOld->has_results()) {
     $Err = "A torrent with that ID doesn't exist!";
 }
-list($GroupID) = $DB->next_record();
+list($GroupID) = $app->dbOld->next_record();
 
 if (!empty($Err)) {
-    error($Error = $Err, $Debug = false);
-    include(SERVER_ROOT.'/sections/reportsv2/report.php');
+    error($Err);
+    include(serverRoot.'/sections/reportsv2/report.php');
     error();
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT `ID`
   FROM `reportsv2`
   WHERE `TorrentID` = '$TorrentID'
-    AND `ReporterID` = ".db_string($LoggedUser['ID'])."
+    AND `ReporterID` = ".db_string($app->user->core['id'])."
     AND `ReportedTime` > '".time_minus(3)."'");
-if ($DB->has_results()) {
-    header("Location: torrents.php?torrentid=$TorrentID");
+if ($app->dbOld->has_results()) {
+    Http::redirect("torrents.php?torrentid=$TorrentID");
     error();
 }
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   INSERT INTO `reportsv2`
     (`ReporterID`, `TorrentID`, `Type`, `UserComment`, `Status`, `ReportedTime`, `Track`, `Image`, `ExtraID`, `Link`)
   VALUES
-    (".db_string($LoggedUser['ID']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
+    (".db_string($app->user->core['id']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
 
-$ReportID = $DB->inserted_id();
+$ReportID = $app->dbOld->inserted_id();
 
-$DB->prepared_query("
+$app->dbOld->prepared_query("
   SELECT `UserID`
   FROM `torrents`
   WHERE `ID` = $TorrentID");
-list($UploaderID) = $DB->next_record();
-$DB->prepared_query("
+list($UploaderID) = $app->dbOld->next_record();
+$app->dbOld->prepared_query("
   SELECT `title`, `subject`, `object`
   FROM `torrents_group`
   WHERE `id` = '$GroupID'
   ");
-list($GroupNameEng, $GroupTitle2, $GroupNameJP) = $DB->next_record();
+list($GroupNameEng, $GroupTitle2, $GroupNameJP) = $app->dbOld->next_record();
 $GroupName = $GroupNameEng ? $GroupNameEng : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
 
 Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=".site_url()."torrents.php?torrentid=$TorrentID]".$GroupName."[/url]\", was reported for the reason \"".$ReportType['title']."\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
 
-$Cache->delete_value("reports_torrent_$TorrentID");
-$Cache->increment('num_torrent_reportsv2');
+$app->cache->delete("reports_torrent_$TorrentID");
+$app->cache->increment('num_torrent_reportsv2');
 
-header("Location: torrents.php?torrentid=$TorrentID");
+Http::redirect("torrents.php?torrentid=$TorrentID");

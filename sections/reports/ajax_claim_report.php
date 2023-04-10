@@ -1,42 +1,45 @@
 <?php
+
 #declare(strict_types=1);
 
+$app = \Gazelle\App::go();
+
 if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'failure'
       )
     );
-  die();
+    die();
 }
 
 $ID = (int)$_POST['id'];
-$DB->query("
+$app->dbOld->query("
   SELECT ClaimerID
   FROM reports
   WHERE ID = '$ID'");
-list($ClaimerID) = $DB->next_record();
+list($ClaimerID) = $app->dbOld->next_record();
 if ($ClaimerID) {
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'dupe'
       )
     );
-  die();
+    die();
 } else {
-  $UserID = $LoggedUser['ID'];
-  $DB->query("
+    $UserID = $app->user->core['id'];
+    $app->dbOld->query("
     UPDATE reports
     SET ClaimerID = '$UserID'
     WHERE ID = '$ID'");
-  print
+    print
     json_encode(
-      array(
+        array(
         'status' => 'success',
-        'username' => $LoggedUser['Username']
+        'username' => $app->user->core['username']
       )
     );
-  die();
+    die();
 }

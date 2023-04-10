@@ -1,0 +1,11 @@
+{# torrentDescription #}
+<tr>
+	<th>
+		<label for="torrentDescription">Torrent description</label>
+	</th>
+
+	<td>
+		{% set variables = {"id": "torrentDescription", "name": "torrentDescription", "placeholder": "Specific info about the protocols and equipment used to produce the data", "value": value} %}
+		{% include "_base/textarea.twig" with variables %}
+	</td>
+</tr>

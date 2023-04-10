@@ -1,13 +1,15 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Top 10 Donors');
+$app = \Gazelle\App::go();
+
+View::header('Top 10 Donors');
 ?>
 
 <div>
   <div class="header">
     <h2>Top Donors</h2>
-    <?php Top10View::render_linkbox("donors"); ?>
+    <?php Top10::render_linkbox("donors"); ?>
   </div>
   <?php
 
@@ -15,7 +17,7 @@ $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
 
 $IsMod = check_perms("users_mod");
-$DB->prepared_query("
+$app->dbOld->prepared_query("
 SELECT
   `UserID`,
   `TotalRank`,
@@ -34,12 +36,12 @@ LIMIT
   $Limit
 ");
 
-$Results = $DB->to_array();
+$Results = $app->dbOld->to_array();
 generate_user_table('Top Donors', $Results, $Limit);
 echo '</div>';
-View::show_footer();
+View::footer();
 
-// Generate a table based on data from most recent query to $DB
+// Generate a table based on data from most recent query to $app->dbOld
 function generate_user_table($Caption, $Results, $Limit)
 {
     global $Time, $IsMod; ?>
@@ -47,17 +49,17 @@ function generate_user_table($Caption, $Results, $Limit)
     <small class="top10_quantity_links">
       <?php
   switch ($Limit) {
-    case 100: ?>
+      case 100: ?>
       &ndash; <a href="top10.php?type=donors" class="brackets">Top 10</a>
       &ndash; <span class="brackets">Top 100</span>
       &ndash; <a href="top10.php?type=donors&amp;limit=250" class="brackets">Top 250</a>
       <?php break;
-    case 250: ?>
+      case 250: ?>
       &ndash; <a href="top10.php?type=donors" class="brackets">Top 10</a>
       &ndash; <a href="top10.php?type=donors&amp;limit=100" class="brackets">Top 100</a>
       &ndash; <span class="brackets">Top 250</span>
       <?php break;
-    default: ?>
+      default: ?>
       &ndash; <span class="brackets">Top 10</span>
       &ndash; <a href="top10.php?type=donors&amp;limit=100" class="brackets">Top 100</a>
       &ndash; <a href="top10.php?type=donors&amp;limit=250" class="brackets">Top 250</a>
@@ -86,7 +88,7 @@ function generate_user_table($Caption, $Results, $Limit)
     </table><br />';
   }
 
-    $Position = 0;
+      $Position = 0;
     foreach ($Results as $Result) {
         $Position++; ?>
     <tr class="row">

@@ -1,25 +1,27 @@
 <?php
 #declare(strict_types = 1);
 
-if (!empty($_GET['collageid']) && is_number($_GET['collageid'])) {
+$app = \Gazelle\App::go();
+
+if (!empty($_GET['collageid']) && is_numeric($_GET['collageid'])) {
     $CollageID = $_GET['collageid'];
 }
-if (!is_number($CollageID)) {
+if (!is_numeric($CollageID)) {
     error(0);
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT Name, Description, TagList, UserID, CategoryID, Locked, MaxGroups, MaxGroupsPerUser, Featured
   FROM collages
   WHERE ID = '$CollageID'");
-list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $DB->next_record();
+list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $app->dbOld->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
-if ($CategoryID == 0 && $UserID != $LoggedUser['ID'] && !check_perms('site_collages_delete')) {
+if ($CategoryID == 0 && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
 
-View::show_header(
+View::header(
     'Edit',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -29,7 +31,7 @@ if (!empty($Err)) {
     if (isset($ErrNoEscape)) {
         echo '<div class="box save_message error">'.$Err.'</div>';
     } else {
-        echo '<div class="box save_message error">'.display_str($Err).'</div>';
+        echo '<div class="box save_message error">'.\Gazelle\Text::esc($Err).'</div>';
     }
 }
 ?>
@@ -41,11 +43,11 @@ if (!empty($Err)) {
     <form class="edit_form" name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="edit_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <input type="hidden" name="collageid"
         value="<?=$CollageID?>" />
       <table id="edit_collage" class="layout collage_edit">
-        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $LoggedUser['ID'] && check_perms('site_collages_renamepersonal'))) { ?>
+        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"
@@ -76,10 +78,9 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
           <td class="label">Description</td>
           <td>
             <?php
-      new TEXTAREA_PREVIEW(
-          $Name = 'description',
-          $ID = 'description',
-          $Value = display_str($Description) ?? '',
+      View::textarea(
+          id: 'description',
+          value: \Gazelle\Text::esc($Description) ?? '',
       ); ?>
           </td>
         </tr>
@@ -123,4 +124,4 @@ if (check_perms('site_collages_delete')) { ?>
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

@@ -1,26 +1,33 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * THIS IS GOING AWAY
+ */
 
 $ENV = ENV::go();
 $Sep = '&emsp;';
 
-# End <div#content>, begin <footer>
-# This needs to be <main>, in each page
-echo $HTML = '</div></main><footer>';
+#$LastActive = $LastActive ?? ['LastUpdate' => null, 'IP' => null];
+
+# End <main#content.container>, begin <footer>
+# #content is Gazelle, .container is Skeleton
+echo $HTML = '</main><footer>';
 
 # Disclaimer
-#if (!empty($Options['disclaimer'])) {
-    echo $HTML = <<<HTML
-    <p>
-      No data are hosted on $ENV->SITE_NAME's servers.
-      All torrents are user-generated content.
-      Torrents without a specified license may be protected by copyright.
+echo $HTML = <<<HTML
+<p>
+  No data are hosted on $ENV->siteName's servers.
+  All torrents are user-generated content.
+  Torrents without a specified license may be protected by copyright.
 </p>
 HTML;
-#}
 
+/*
 # Sessions
-if (count($UserSessions) > 1) {
+if (count($UserSessions ?? []) > 1) {
     foreach ($UserSessions as $ThisSessionID => $Session) {
         if ($ThisSessionID !== $SessionID) {
             $LastActive = $Session;
@@ -53,71 +60,41 @@ if (!empty($LastActive)) {
     </p>
 HTML;
 }
+*/
 
 # Site meta
 $Year = date('Y');
 $Load = sys_getloadavg();
-  
+
 echo $HTML = <<<HTML
 <p>
   &copy;
   $Year
-  $ENV->SITE_NAME
+  $ENV->siteName
   $Sep
-  <a href='/sections/legal/canary.txt'>Warrant Canary</a>
+  <a href="/canary">Warrant Canary</a>
 </p>
 HTML;
 
-# Script meta
-$MicroTime = number_format(((microtime(true) - $ScriptStartTime) * 1000), 5);
-$Used = Format::get_size(memory_get_usage(true));
-$Load = number_format($Load[0], 2).' '.number_format($Load[1], 2).' '.number_format($Load[2], 2);
-$Date = date('M d Y');
-$Time = date('H:i');
-
-echo $HTML = <<<HTML
-<p>
-  <strong>Time:</strong>
-  $MicroTime ms
-  $Sep
-
-  <!--
-  <strong>Used:</strong>
-  $Used
-  $Sep
-  -->
-
-  <strong>Load:</strong>
-  $Load
-  $Sep
-
-  <strong>Date:</strong>
-  $Date,
-  $Time
-</p>
-HTML;
-
-# Start debug
-if (DEBUG_MODE || check_perms('site_debug')) {
-    echo $HTML = <<<HTML
-<div id="site_debug">
-HTML;
-
-    $Debug->perf_table();
-    $Debug->flag_table();
-    $Debug->error_table();
-    $Debug->sphinx_table();
-    $Debug->query_table();
-    $Debug->cache_table();
-    $Debug->vars_table();
-    $Debug->ocelot_table();
-
-    echo $HTML = <<<HTML
-</div>
-HTML;
+# Debug
+if ($ENV->dev) {
+    /**
+     * DebugBar trial, missing important collectors:
+     *
+     *   - Sphinx
+     *   - Ocelot
+     *   - MySQL
+     *   - Cache
+     *
+     * Otherwise, nothing of value was lost.
+     * @see http://phpdebugbar.com/docs/
+     */
+    $debug = Debug::go();
+    $Render = $debug->getJavascriptRenderer();
+    echo $Render->render();
 }
-# End debug
 
+# Notifications
 global $NotificationSpans;
 if (!empty($NotificationSpans)) {
     foreach ($NotificationSpans as $Notification) {
@@ -125,9 +102,12 @@ if (!empty($NotificationSpans)) {
     }
 }
 
+# Done
 echo $HTML = <<<HTML
     </footer>
-    <script src="$ENV->STATIC_SERVER/functions/vendor/instantpage.js" type="module"></script>
+    <script>hljs.highlightAll();</script>
+    <script src="/js/vendor/instantpage.min.js" crossorigin="anonymous"></script>
+    <script src="/js/menus.js" crossorigin="anonymous"></script>
   </body>
 </html>
 HTML;

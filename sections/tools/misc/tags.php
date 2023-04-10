@@ -1,7 +1,9 @@
 <?php
 #declare(strict_types=1);
 
-View::show_header('Batch Tag Editor', 'validate');
+$app = \Gazelle\App::go();
+
+View::header('Batch Tag Editor', 'validate');
 if (!check_perms('users_mod')) {
     error(403);
 }
@@ -67,38 +69,38 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           <strong>Error:</strong> Cannot merge tag $Tag with itself!
         </div>
       </div>";
-            View::show_footer();
+            View::footer();
             exit;
         }
 
         // 1) make sure tag exists
-        $DB->query("
+        $app->dbOld->query("
       SELECT ID
       FROM tags
       WHERE Name = ?
       LIMIT 1", $Tag);
-        if (!$DB->has_results()) {
+        if (!$app->dbOld->has_results()) {
             echo "
         <div class=\"box pad center\">
           <strong>Error:</strong> No such tag found: $Tag
         </div>
       </div>";
-            View::show_footer();
+            View::footer();
             exit;
         }
-        list($TagID) = $DB->next_record();
+        list($TagID) = $app->dbOld->next_record();
 
         // 2) check if replacement exists
         $ReplacementID = null;
         if ($Replacement) {
-            $DB->query("
+            $app->dbOld->query("
         SELECT ID
         FROM tags
         WHERE Name = ?
         LIMIT 1", $Replacement);
-            if (!$DB->has_results()) {
+            if (!$app->dbOld->has_results()) {
                 $Mode = MODE_RENAME;
-                list($ReplacementID) = $DB->next_record();
+                list($ReplacementID) = $app->dbOld->next_record();
             } else {
                 $Mode = MODE_MERGE;
             }
@@ -109,7 +111,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         if ($_GET['list']) {
             $AffectedTorrents = [];
             // 3) get a list of affected torrents
-            $DB->query("
+            $app->dbOld->query("
         SELECT
           tg.ID,
           ag.ArtistID,
@@ -120,14 +122,14 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
           JOIN torrents_tags AS t ON t.GroupID = tg.ID
         WHERE t.TagID = ?", $TagID);
-            while (list($TorrentID, $ArtistID, $ArtistName, $TorrentName) = $DB->next_record()) {
+            while (list($TorrentID, $ArtistID, $ArtistName, $TorrentName) = $app->dbOld->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".display_str($TorrentName).'</a>';
+                $Row.= "<a href=\"torrents.php?id=$TorrentID\">".\Gazelle\Text::esc($TorrentName).'</a>';
                 $AffectedTorrents[] = $Row;
             }
 
             // 4) get a list of affected requests
-            $DB->query("
+            $app->dbOld->query("
         SELECT
           ra.RequestID,
           ag.ArtistID,
@@ -138,9 +140,9 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
           LEFT JOIN artists_group AS ag ON ag.ArtistID = ra.ArtistID
           JOIN requests_tags AS t ON t.RequestID = r.ID
         WHERE t.TagID = ?", $TagID);
-            while (list($RequestID, $ArtistID, $ArtistName, $RequestName) = $DB->next_record()) {
+            while (list($RequestID, $ArtistID, $ArtistName, $RequestName) = $app->dbOld->next_record()) {
                 $Row = ($ArtistName ? "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - " : '');
-                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".display_str($RequestName).'</a>';
+                $Row.= "<a href=\"requests.php?action=viewrequest&amp;id=$RequestID\">".\Gazelle\Text::esc($RequestName).'</a>';
                 $AffectedRequests[] = $Row;
             }
         }
@@ -149,42 +151,42 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         if ($Mode == MODE_RENAME) {
             // EASY! just rename the tag
             // 5) rename the tag
-            $DB->query("
+            $app->dbOld->query("
         UPDATE tags
         SET Name = '$Replacement'
         WHERE ID = $TagID
         LIMIT 1;");
-            $TotalAffected = $DB->affected_rows();
+            $TotalAffected = $app->dbOld->affected_rows();
 
             // 6) update hashes so searching works
-            $DB->query("
+            $app->dbOld->query("
         SELECT GroupID
         FROM torrents_tags
         WHERE TagID = $TagID;");
-            if ($DB->has_results()) {
-                while (list($GroupID) = $DB->next_record()) {
+            if ($app->dbOld->has_results()) {
+                while (list($GroupID) = $app->dbOld->next_record()) {
                     Torrents::update_hash($GroupID);
                 }
             }
         } elseif ($Mode == MODE_DELETE) {
             // EASY! just delete the tag
             // 5) delete the tag
-            $DB->query("
+            $app->dbOld->query("
         DELETE FROM tags
         WHERE ID = ?", $TagID);
 
             // 6) get a list of the affected groups
-            $DB->query("
+            $app->dbOld->query("
         SELECT GroupID
         FROM torrents_tags
         WHERE TagID = ?", $TagID);
-            $AffectedGroups = $DB->to_array();
+            $AffectedGroups = $app->dbOld->to_array();
 
             // 7) remove the tag from the groups
-            $DB->query("
+            $app->dbOld->query("
         DELETE FROM torrents_tags
         WHERE TagID = ?", $TagID);
-            $TotalAffected = $DB->affected_rows();
+            $TotalAffected = $app->dbOld->affected_rows();
 
             // 8) update the newly tagless groups
             foreach ($AffectedGroups as $AffectedGroup) {
@@ -195,107 +197,107 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
             // HARD! merge two tags together and update usage
             // 5) remove dupe tags from torrents
             //  (torrents that have both "old tag" and "replacement tag" set)
-            $DB->query("
+            $app->dbOld->query("
         SELECT GroupID
         FROM torrents_tags
         WHERE TagID = $ReplacementID;");
-            if ($DB->has_results()) {
+            if ($app->dbOld->has_results()) {
                 $Query = "
           DELETE FROM torrents_tags
           WHERE TagID = $TagID
             AND GroupID IN (";
-                while (list($GroupID) = $DB->next_record()) {
+                while (list($GroupID) = $app->dbOld->next_record()) {
                     $Query .= "$GroupID,";
                 }
                 $Query = substr($Query, 0, -1) . ');';
-                $DB->query($Query);
-                $TotalAffected = $DB->affected_rows();
+                $app->dbOld->query($Query);
+                $TotalAffected = $app->dbOld->affected_rows();
             }
 
             // 6) replace old tag in torrents
-            $DB->query("
+            $app->dbOld->query("
         UPDATE torrents_tags
         SET TagID = $ReplacementID
         WHERE TagID = $TagID;");
-            $UsageChange = $DB->affected_rows();
+            $UsageChange = $app->dbOld->affected_rows();
 
             // 7) remove dupe tags from artists
-            $DB->query("
+            $app->dbOld->query("
         SELECT ArtistID
         FROM artists_tags
         WHERE TagID = $ReplacementID;");
-            if ($DB->has_results()) {
+            if ($app->dbOld->has_results()) {
                 $Query = "
           DELETE FROM artists_tags
           WHERE TagID = $TagID
             AND ArtistID IN (";
-                while (list($ArtistID) = $DB->next_record()) {
+                while (list($ArtistID) = $app->dbOld->next_record()) {
                     $Query .= "$ArtistID,";
                 }
                 $Query = substr($Query, 0, -1) . ');';
-                $DB->query($Query);
-                $TotalAffected += $DB->affected_rows();
+                $app->dbOld->query($Query);
+                $TotalAffected += $app->dbOld->affected_rows();
             }
 
             // 8) replace old tag in artists
-            $DB->query("
+            $app->dbOld->query("
         UPDATE artists_tags
         SET TagID = $ReplacementID
         WHERE TagID = $TagID;");
-            $UsageChange += $DB->affected_rows();
+            $UsageChange += $app->dbOld->affected_rows();
 
             // 9) remove dupe tags from requests
-            $DB->query("
+            $app->dbOld->query("
         SELECT RequestID
         FROM requests_tags
         WHERE TagID = $ReplacementID;");
-            if ($DB->has_results()) {
+            if ($app->dbOld->has_results()) {
                 $Query = "
           DELETE FROM requests_tags
           WHERE TagID = $TagID
             AND RequestID IN (";
-                while (list($RequestID) = $DB->next_record()) {
+                while (list($RequestID) = $app->dbOld->next_record()) {
                     $Query .= "$RequestID,";
                 }
                 $Query = substr($Query, 0, -1) . ');';
-                $DB->query($Query);
-                $TotalAffected += $DB->affected_rows();
+                $app->dbOld->query($Query);
+                $TotalAffected += $app->dbOld->affected_rows();
             }
 
             // 10) replace old tag in requests
-            $DB->query("
+            $app->dbOld->query("
         UPDATE requests_tags
         SET TagID = $ReplacementID
         WHERE TagID = $TagID;");
-            $UsageChange += $DB->affected_rows();
+            $UsageChange += $app->dbOld->affected_rows();
             $TotalAffected += $UsageChange;
 
             // 11) finally, remove old tag completely
-            $DB->query("
+            $app->dbOld->query("
         DELETE FROM tags
         WHERE ID = $TagID
         LIMIT 1");
 
             // 12) update usage count for replacement tag
-            $DB->query("
+            $app->dbOld->query("
         UPDATE tags
         SET Uses = Uses + $UsageChange
         WHERE ID = $ReplacementID
         LIMIT 1");
 
             // 13) update hashes so searching works
-            $DB->query("
+            $app->dbOld->query("
         SELECT GroupID
         FROM torrents_tags
         WHERE TagID = $ReplacementID;");
-            if ($DB->has_results()) {
-                while (list($GroupID) = $DB->next_record()) {
+            if ($app->dbOld->has_results()) {
+                while (list($GroupID) = $app->dbOld->next_record()) {
                     Torrents::update_hash($GroupID);
                 }
             }
         }
 
-        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.number_format($TotalAffected).'</div>';
+        echo "\n".'<div class="box pad center"><strong>Success!</strong> Affected entries: '.\Gazelle\Text::float($TotalAffected).'</div>';
 
         if ($_GET['list']) {
             ?>
@@ -331,4 +333,4 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
 
 echo '</div>';
 
-View::show_footer();
+View::footer();

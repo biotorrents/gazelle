@@ -1,24 +1,32 @@
 <?php
-#declare(strict_types=1);
 
-// Error out on invalid requests (before caching)
-if (isset($_GET['details'])) {
-    if (in_array($_GET['details'], array('ul','dl','numul','uls','dls'))) {
-        $Details = $_GET['details'];
-    } else {
-        error(404);
-    }
-} else {
-    $Details = 'all';
+declare(strict_types=1);
+
+
+/**
+ * top10 users
+ */
+
+$app = \Gazelle\App::go();
+
+enforce_login();
+if (!check_perms('site_top10')) {
+    error(403);
 }
 
-View::show_header('Top 10 Users');
+$get = Http::query("get");
+$limit = intval($get["limit"] ?? Top10::$defaultLimit);
+
+
+
+
+View::header('Top 10 Users');
 ?>
 
 <div>
   <div class="header">
     <h2>Top 10 Users</h2>
-    <?php Top10View::render_linkbox("users"); ?>
+    <?php Top10::render_linkbox("users"); ?>
 
   </div>
   <?php
@@ -46,86 +54,87 @@ $BaseQuery = "
     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
   GROUP BY u.ID";
 
-  if ($Details == 'all' || $Details == 'ul') {
-      if (!$TopUserUploads = $Cache->get_value('topuser_ul_'.$Limit)) {
-          $DB->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
-          $TopUserUploads = $DB->to_array();
-          $Cache->cache_value('topuser_ul_'.$Limit, $TopUserUploads, 3600 * 12);
-      }
-      generate_user_table('Uploaders', 'ul', $TopUserUploads, $Limit);
-  }
+  $Details ??= "all";
+if ($Details == 'all' || $Details == 'ul') {
+    if (!$TopUserUploads = $app->cache->get('topuser_ul_'.$Limit)) {
+        $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");
+        $TopUserUploads = $app->dbOld->to_array();
+        $app->cache->set('topuser_ul_'.$Limit, $TopUserUploads, 3600 * 12);
+    }
+    generate_user_table('Uploaders', 'ul', $TopUserUploads, $Limit);
+}
 
-  if ($Details == 'all' || $Details == 'dl') {
-      if (!$TopUserDownloads = $Cache->get_value('topuser_dl_'.$Limit)) {
-          $DB->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
-          $TopUserDownloads = $DB->to_array();
-          $Cache->cache_value('topuser_dl_'.$Limit, $TopUserDownloads, 3600 * 12);
-      }
-      generate_user_table('Downloaders', 'dl', $TopUserDownloads, $Limit);
-  }
+if ($Details == 'all' || $Details == 'dl') {
+    if (!$TopUserDownloads = $app->cache->get('topuser_dl_'.$Limit)) {
+        $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Downloaded DESC LIMIT $Limit;");
+        $TopUserDownloads = $app->dbOld->to_array();
+        $app->cache->set('topuser_dl_'.$Limit, $TopUserDownloads, 3600 * 12);
+    }
+    generate_user_table('Downloaders', 'dl', $TopUserDownloads, $Limit);
+}
 
-  if ($Details == 'all' || $Details == 'numul') {
-      if (!$TopUserNumUploads = $Cache->get_value('topuser_numul_'.$Limit)) {
-          $DB->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
-          $TopUserNumUploads = $DB->to_array();
-          $Cache->cache_value('topuser_numul_'.$Limit, $TopUserNumUploads, 3600 * 12);
-      }
-      generate_user_table('Torrents Uploaded', 'numul', $TopUserNumUploads, $Limit);
-  }
+if ($Details == 'all' || $Details == 'numul') {
+    if (!$TopUserNumUploads = $app->cache->get('topuser_numul_'.$Limit)) {
+        $app->dbOld->prepared_query("$BaseQuery ORDER BY NumUploads DESC LIMIT $Limit;");
+        $TopUserNumUploads = $app->dbOld->to_array();
+        $app->cache->set('topuser_numul_'.$Limit, $TopUserNumUploads, 3600 * 12);
+    }
+    generate_user_table('Torrents Uploaded', 'numul', $TopUserNumUploads, $Limit);
+}
 
-  if ($Details == 'all' || $Details == 'uls') {
-      if (!$TopUserUploadSpeed = $Cache->get_value('topuser_ulspeed_'.$Limit)) {
-          $DB->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
-          $TopUserUploadSpeed = $DB->to_array();
-          $Cache->cache_value('topuser_ulspeed_'.$Limit, $TopUserUploadSpeed, 3600 * 12);
-      }
-      generate_user_table('Fastest Uploaders', 'uls', $TopUserUploadSpeed, $Limit);
-  }
+if ($Details == 'all' || $Details == 'uls') {
+    if (!$TopUserUploadSpeed = $app->cache->get('topuser_ulspeed_'.$Limit)) {
+        $app->dbOld->prepared_query("$BaseQuery ORDER BY UpSpeed DESC LIMIT $Limit;");
+        $TopUserUploadSpeed = $app->dbOld->to_array();
+        $app->cache->set('topuser_ulspeed_'.$Limit, $TopUserUploadSpeed, 3600 * 12);
+    }
+    generate_user_table('Fastest Uploaders', 'uls', $TopUserUploadSpeed, $Limit);
+}
 
-  if ($Details == 'all' || $Details == 'dls') {
-      if (!$TopUserDownloadSpeed = $Cache->get_value('topuser_dlspeed_'.$Limit)) {
-          $DB->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
-          $TopUserDownloadSpeed = $DB->to_array();
-          $Cache->cache_value('topuser_dlspeed_'.$Limit, $TopUserDownloadSpeed, 3600 * 12);
-      }
-      generate_user_table('Fastest Downloaders', 'dls', $TopUserDownloadSpeed, $Limit);
-  }
+if ($Details == 'all' || $Details == 'dls') {
+    if (!$TopUserDownloadSpeed = $app->cache->get('topuser_dlspeed_'.$Limit)) {
+        $app->dbOld->prepared_query("$BaseQuery ORDER BY DownSpeed DESC LIMIT $Limit;");
+        $TopUserDownloadSpeed = $app->dbOld->to_array();
+        $app->cache->set('topuser_dlspeed_'.$Limit, $TopUserDownloadSpeed, 3600 * 12);
+    }
+    generate_user_table('Fastest Downloaders', 'dls', $TopUserDownloadSpeed, $Limit);
+}
 
 echo '</div>';
-View::show_footer();
+View::footer();
 exit;
 
-// Generate a table based on data from most recent query to $DB
+// Generate a table based on data from most recent query to $db
 function generate_user_table($Caption, $Tag, $Details, $Limit)
 {
-    global $Time; ?>
+    ?>
   <h3>Top <?=$Limit.' '.$Caption; ?>
     <small class="top10_quantity_links">
       <?php
   switch ($Limit) {
-    case 100: ?>
-      &ndash; <a href="top10.php?type=users&amp;details=<?=$Tag?>"
+      case 100: ?>
+      &ndash; <a href="/top10?type=users&amp;details=<?=$Tag?>"
         class="brackets">Top 10</a>
       &ndash; <span class="brackets">Top 100</span>
       &ndash; <a
-        href="top10.php?type=users&amp;limit=250&amp;details=<?=$Tag?>"
+        href="/top10?type=users&amp;limit=250&amp;details=<?=$Tag?>"
         class="brackets">Top 250</a>
       <?php break;
-    case 250: ?>
-      &ndash; <a href="top10.php?type=users&amp;details=<?=$Tag?>"
+      case 250: ?>
+      &ndash; <a href="/top10?type=users&amp;details=<?=$Tag?>"
         class="brackets">Top 10</a>
       &ndash; <a
-        href="top10.php?type=users&amp;limit=100&amp;details=<?=$Tag?>"
+        href="/top10?type=users&amp;limit=100&amp;details=<?=$Tag?>"
         class="brackets">Top 100</a>
       &ndash; <span class="brackets">Top 250</span>
       <?php break;
-    default: ?>
+      default: ?>
       &ndash; <span class="brackets">Top 10</span>
       &ndash; <a
-        href="top10.php?type=users&amp;limit=100&amp;details=<?=$Tag?>"
+        href="/top10?type=users&amp;limit=100&amp;details=<?=$Tag?>"
         class="brackets">Top 100</a>
       &ndash; <a
-        href="top10.php?type=users&amp;limit=250&amp;details=<?=$Tag?>"
+        href="/top10?type=users&amp;limit=250&amp;details=<?=$Tag?>"
         class="brackets">Top 250</a>
       <?php } ?>
     </small>
@@ -155,13 +164,13 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
     </table><br />';
       return;
   }
-    $Rank = 0;
+      $Rank = 0;
     foreach ($Details as $Detail) {
         $Rank++; ?>
     <tr class="row">
       <td class="center"><?=$Rank?>
       </td>
-      <td><?=Users::format_username($Detail['ID'], false, false, false)?>
+      <td><?=User::format_username($Detail['ID'], false, false, false)?>
       </td>
       <td class="number_column"><?=Format::get_size($Detail['Uploaded'])?>
       </td>
@@ -172,9 +181,9 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
       <td class="number_column tooltip"
         title="Download speed is reported in base 2 in bytes per second, not bits per second."><?=Format::get_size($Detail['DownSpeed'])?>/s
       </td>
-      <td class="number_column"><?=number_format($Detail['NumUploads'])?>
+      <td class="number_column"><?=\Gazelle\Text::float($Detail['NumUploads'])?>
       </td>
-      <td class="number_column"><?=Format::get_ratio_html($Detail['Uploaded'], $Detail['Downloaded'])?>
+      <td class="number_column"><?=Format::get_ratio_html(intval($Detail['Uploaded']), intval($Detail['Downloaded']))?>
       </td>
       <td class="number_column"><?=time_diff($Detail['JoinDate'])?>
       </td>

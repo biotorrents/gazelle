@@ -1,7 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
-View::show_header(
+$app = \Gazelle\App::go();
+
+View::header(
     'Create a collection',
     'vendor/easymde.min',
     'vendor/easymde.min'
@@ -24,10 +26,10 @@ if (isset($Err)) { ?>
   <?php
 } ?>
   <div class="box pad">
-    <form class="create_form" name="collage" action="collages.php" method="post">
+    <form name="collage" action="collages.php" method="post">
       <input type="hidden" name="action" value="new_handle" />
       <input type="hidden" name="auth"
-        value="<?=$LoggedUser['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>" />
       <table class="layout">
         <tr id="collagename">
           <td class="label"></td>
@@ -36,11 +38,11 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=display_str($Name)?>" />
+            value="<?=\Gazelle\Text::esc($Name)?>" />
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
-                <?=$LoggedUser['Username']?>'s
+                <?=$app->user->core['username']?>'s
                 personal collection
               </strong>
             </span>
@@ -62,14 +64,14 @@ foreach ($CollageCats as $CatID => $CatName) { ?>
               <?php
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT COUNT(ID)
   FROM collages
-  WHERE UserID = '$LoggedUser[ID]'
+  WHERE UserID = '{$app->user->core['id']}'
     AND CategoryID = '0'
     AND Deleted = '0'");
-list($CollageCount) = $DB->next_record();
-if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+list($CollageCount) = $app->dbOld->next_record();
+if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
               <option value="0" <?=(($Category === '0') ? ' selected="selected"' : '')?>>Personal
               </option>
               <?php
@@ -90,7 +92,7 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
               </li>
 
               <?php
-  if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+  if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
               <li>
                 <strong>Personal</strong>
                 &ndash;
@@ -107,11 +109,10 @@ if (($CollageCount < $LoggedUser['Permissions']['MaxCollages']) && check_perms('
 
           <td>
             <?php
-new TEXTAREA_PREVIEW(
-    $Name = 'description',
-    $ID = 'description',
-    $Value = display_str($Description) ?? '',
-    $Placeholder = "Detailed description of the collection's purpose"
+View::textarea(
+    id: 'description',
+    placeholder: "Detailed description of the collection's purpose",
+    value: \Gazelle\Text::esc($Description) ?? '',
 ); ?>
           </td>
         </tr>
@@ -121,7 +122,7 @@ new TEXTAREA_PREVIEW(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=display_str($Tags)?>" />
+              value="<?=\Gazelle\Text::esc($Tags)?>" />
           </td>
         </tr>
 
@@ -129,7 +130,7 @@ new TEXTAREA_PREVIEW(
           <td colspan="2" class="center">
             <strong>
               Please ensure your collection will be allowed under the
-              <a href="rules.php?p=collages">Collection Rules</a>.
+              <a href="/rules/collages">Collection Rules</a>.
             </strong>
           </td>
         </tr>
@@ -143,4 +144,4 @@ new TEXTAREA_PREVIEW(
     </form>
   </div>
 </div>
-<?php View::show_footer();
+<?php View::footer();

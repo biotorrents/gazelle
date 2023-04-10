@@ -3,14 +3,16 @@
 User topic subscription page
 */
 
-if (!empty($LoggedUser['DisableForums'])) {
-  json_die('failure');
+$app = \Gazelle\App::go();
+
+if (!empty($app->user->extra['DisableForums'])) {
+    json_die('failure');
 }
 
-if (isset($LoggedUser['PostsPerPage'])) {
-  $PerPage = $LoggedUser['PostsPerPage'];
+if (isset($app->user->extra['PostsPerPage'])) {
+    $PerPage = $app->user->extra['PostsPerPage'];
 } else {
-  $PerPage = POSTS_PER_PAGE;
+    $PerPage = POSTS_PER_PAGE;
 }
 list($Page, $Limit) = Format::page_limit($PerPage);
 
@@ -25,25 +27,25 @@ $sql = '
     JOIN users_subscriptions AS s ON s.TopicID = t.ID
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN forums_last_read_topics AS l ON p.TopicID = l.TopicID AND l.UserID = s.UserID
-  WHERE s.UserID = '.$LoggedUser['ID'].'
+  WHERE s.UserID = '.$app->user->core['id'].'
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {
-  $sql .= '
+    $sql .= '
     AND IF(l.PostID IS NULL OR (t.IsLocked = \'1\' && t.IsSticky = \'0\'), t.LastPostID, l.PostID) < t.LastPostID';
 }
 $sql .= "
   GROUP BY t.ID
   ORDER BY t.LastPostID DESC
   LIMIT $Limit";
-$PostIDs = $DB->query($sql);
-$DB->query('SELECT FOUND_ROWS()');
-list($NumResults) = $DB->next_record();
+$PostIDs = $app->dbOld->query($sql);
+$app->dbOld->query('SELECT FOUND_ROWS()');
+list($NumResults) = $app->dbOld->next_record();
 
 if ($NumResults > $PerPage * ($Page - 1)) {
-  $DB->set_query_id($PostIDs);
-  $PostIDs = $DB->collect('ID');
-  $sql = '
+    $app->dbOld->set_query_id($PostIDs);
+    $PostIDs = $app->dbOld->collect('ID');
+    $sql = '
     SELECT
       f.ID AS ForumID,
       f.Name AS ForumName,
@@ -68,12 +70,12 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
     WHERE p.ID IN ('.implode(',', $PostIDs).')
     ORDER BY f.Name ASC, t.LastPostID DESC';
-  $DB->query($sql);
+    $app->dbOld->query($sql);
 }
 
 $JsonPosts = [];
-while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $DB->next_record()) {
-  $JsonPost = array(
+while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $app->dbOld->next_record()) {
+    $JsonPost = array(
     'forumId' => (int)$ForumID,
     'forumName' => $ForumName,
     'threadId' => (int)$TopicID,
@@ -83,10 +85,9 @@ while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $L
     'locked' => $Locked == 1,
     'new' => ($PostID < $LastPostID && !$Locked)
   );
-  $JsonPosts[] = $JsonPost;
+    $JsonPosts[] = $JsonPost;
 }
 
 json_die('success', array(
   'threads' => $JsonPosts
 ));
-?>

@@ -1,7 +1,10 @@
-<?
-$FeaturedAlbum = $Cache->get_value('featured_album');
+<?php
+
+$app = \Gazelle\App::go();
+
+$FeaturedAlbum = $app->cache->get('featured_album');
 if ($FeaturedAlbum === false) {
-  $DB->query('
+    $app->dbOld->query('
     SELECT
       fa.GroupID,
       tg.Name,
@@ -11,12 +14,11 @@ if ($FeaturedAlbum === false) {
     FROM featured_albums AS fa
       JOIN torrents_group AS tg ON tg.ID = fa.GroupID
     WHERE Ended = 0');
-  $FeaturedAlbum = $DB->next_record();
-  $Cache->cache_value('featured_album', $FeaturedAlbum, 0);
+    $FeaturedAlbum = $app->dbOld->next_record();
+    $app->cache->set('featured_album', $FeaturedAlbum, 0);
 }
-if (is_number($FeaturedAlbum['GroupID'])) {
-  $Artists = Artists::get_artist($FeaturedAlbum['GroupID']);
-?>
+if (is_numeric($FeaturedAlbum['GroupID'])) {
+    $Artists = Artists::get_artist($FeaturedAlbum['GroupID']); ?>
     <div class="box">
       <div class="head colhead_dark"><strong>Featured Album</strong></div>
       <div class="center pad">
@@ -24,13 +26,13 @@ if (is_number($FeaturedAlbum['GroupID'])) {
       </div>
       <div class="center pad">
         <a href="torrents.php?id=<?=$FeaturedAlbum['GroupID']?>" class="tooltip" title="<?=Artists::display_artists($Artists, false, false)?> - <?=$FeaturedAlbum['Name']?>">
-          <img src="<?=ImageTools::process($FeaturedAlbum['WikiImage'])?>" alt="<?=Artists::display_artists($Artists, false, false)?> - <?=$FeaturedAlbum['Name']?>" width="100%" />
+          <img src="<?=\Gazelle\Images::process($FeaturedAlbum['WikiImage'])?>" alt="<?=Artists::display_artists($Artists, false, false)?> - <?=$FeaturedAlbum['Name']?>" width="100%" />
         </a>
       </div>
       <div class="center pad">
         <a href="forums.php?action=viewthread&amp;threadid=<?=$FeaturedAlbum['ThreadID']?>"><em>Read the interview with the artist, discuss here</em></a>
       </div>
     </div>
-<?
+<?php
 }
 ?>

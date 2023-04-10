@@ -1,0 +1,34 @@
+{# title #}
+{% if newTorrent %}
+	<tr>
+		<th>
+			<label for="title" class="required">{{ db.title.name }}</label>
+		</th>
+
+		<td>
+			<input type="text" id="title" name="title" maxlength="255" placeholder="{{ db.title.desc }}" value="{{ title }}" required/>
+		</td>
+	</tr>
+
+	{# subject #}
+	<tr>
+		<th>
+			<label for="subject">{{ db.subject.name }}</label>
+		</th>
+
+		<td>
+			<input type="text" id="subject" name="subject" maxlength="255" placeholder="{{ db.subject.desc }}" value="{{ subject }}"/>
+		</td>
+	</tr>
+
+	{# object #}
+	<tr>
+		<th>
+			<label for="object">{{ db.object.name }}</label>
+		</th>
+
+		<td>
+			<input type="text" id="object" name="object" maxlength="255" placeholder="{{ db.object.desc }}" value="{{ object }}"/>
+		</td>
+	</tr>
+{% endif %}

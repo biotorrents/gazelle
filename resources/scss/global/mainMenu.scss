@@ -1,0 +1,143 @@
+nav#mainMenu {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 2rem;
+
+  #logo {
+    order: 0;
+
+    background: url("/images/logos/liquidrop-bookish-1k.png");
+    background-size: contain;
+    width: 50px;
+    min-width: 50px;
+    height: 100%;
+    min-height: 100%;
+    margin-left: 1rem;
+
+    a {
+      display: block;
+      height: 50px;
+    }
+  }
+
+  .spacer {
+    flex-grow: 666;
+  }
+
+  #universalSearch {
+    display: inline-flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    margin-bottom: 0;
+  }
+
+  #hamburger {
+    font-size: xx-large;
+
+    #toggleIcon {
+      cursor: pointer;
+    }
+  }
+}
+
+nav#subMenu {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem 5rem;
+  justify-content: space-around;
+  max-width: 1280px;
+  margin: 2rem auto;
+
+  #torrentsHeader {
+    &:before {
+      content: "🌊";
+      margin-right: 1rem;
+    }
+  }
+
+  #communityHeader {
+    &:before {
+      content: "📣";
+      margin-right: 1rem;
+    }
+  }
+
+  #userHeader {
+    &:before {
+      content: "👤";
+      margin-right: 1rem;
+    }
+  }
+
+  #moreHeader {
+    &:before {
+      content: "🔔";
+      margin-right: 1rem;
+    }
+  }
+
+  ul {
+    list-style-type: none !important;
+    margin-left: 1.5rem;
+
+    li {
+      font-size: larger;
+    }
+  }
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/**
+ * main user info bar
+ */
+
+#userInfo {
+  color: #222;
+  text-align: center;
+  margin-bottom: 5rem;
+  width: 100%;
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    display: inline;
+    margin: 0 1%;
+
+    li {
+      display: inline;
+      margin: 0 0.1rem;
+      line-height: 2rem;
+      vertical-align: middle;
+      padding: 1rem;
+    }
+  }
+}
+
+/**
+ * optional sticky header
+ */
+
+header.sticky {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 666;
+}

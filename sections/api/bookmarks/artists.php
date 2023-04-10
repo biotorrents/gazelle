@@ -1,19 +1,22 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
     if (!check_perms('users_override_paranoia')) {
         json_die('failure');
     }
-   
-    $UserID = $_GET['userid'];
-    $Sneaky = ($UserID !== $LoggedUser['ID']);
 
-    if (!is_number($UserID)) {
+    $UserID = $_GET['userid'];
+    $Sneaky = ($UserID !== $app->user->core['id']);
+
+    if (!is_numeric($UserID)) {
         json_die('failure');
     }
 
-    $DB->query("
+    $app->dbOld->query("
     SELECT
       `Username`
     FROM
@@ -21,14 +24,14 @@ if (!empty($_GET['userid'])) {
     WHERE
       `ID` = '$UserID'
     ");
-    list($Username) = $DB->next_record();
+    list($Username) = $app->dbOld->next_record();
 } else {
-    $UserID = $LoggedUser['ID'];
+    $UserID = $app->user->core['id'];
 }
 
 //$ArtistList = Bookmarks::all_bookmarks('artist', $UserID);
 
-$DB->query("
+$app->dbOld->query("
 SELECT
   ag.`ArtistID`,
   ag.`Name`
@@ -41,7 +44,7 @@ WHERE
   ba.`UserID` = $UserID
 ");
 
-$ArtistList = $DB->to_array();
+$ArtistList = $app->dbOld->to_array();
 $JsonArtists = [];
 
 foreach ($ArtistList as $Artist) {

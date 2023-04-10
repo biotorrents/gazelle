@@ -1,0 +1,179 @@
+/**
+ * base typography
+ */
+
+body {
+  background: white;
+  color: #222;
+  font-family: $notoSans;
+
+  b,
+  strong {
+    font-family: $notoSansBold;
+    font-weight: normal;
+  }
+
+  i,
+  em {
+    font-family: $notoSansItalic;
+    font-style: normal;
+  }
+}
+
+/* headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $notoSerif, serif;
+}
+
+/* links */
+a {
+  color: #222;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: $skeletonFocus;
+  text-decoration: none;
+}
+
+/* tags */
+.tags {
+  font-style: italic;
+
+  a,
+  a.search_link {
+    color: #222;
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:hover.search_link {
+    color: #222;
+    text-decoration: underline;
+  }
+}
+
+/* dupe for grouped "details" on torrents.php */
+a.search_link,
+a.brackets,
+table#taglist a {
+  color: #222;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/**
+ * blockquotes, figures, and captions
+ */
+
+blockquote {
+  margin: 2rem;
+  padding: 1rem;
+  @include transparent-border($c: purple, $a: 0.1);
+}
+
+caption {
+  font-style: italic;
+}
+
+/* code, pre */
+code,
+pre {
+  font-family: $notoMono;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+  /* word-wrap: pre; */
+
+  b,
+  strong {
+    font-family: $notoMonoBold;
+  }
+}
+
+ul {
+  margin-left: 0.5rem;
+}
+
+/* Markdown Extra new features */
+.footnotes {
+  ol {
+    margin: -0.5rem 0 0 -1rem;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* Font Awesome ugliness fix */
+.footnote-backref {
+  font-family: sans-serif;
+}
+
+/* definition lists */
+dl {
+  margin-top: 0.5rem;
+
+  dt {
+    font-variant: small-caps;
+    font-size: larger;
+  }
+
+  dd {
+    margin: 0 0 0.5rem 0.5rem;
+  }
+}
+
+textarea {
+  font-family: $notoMono;
+
+  b,
+  strong {
+    font-family: $notoMonoBold;
+  }
+}
+
+/* nobullet */
+ul.nobullet,
+.tags .tags ul.nobullet {
+  /* display: inline-block; */
+  margin: 0;
+
+  li {
+    list-style-type: none;
+  }
+}
+
+/* bullets (home page) */
+ul.stats li {
+  padding: 0 0 1px 0;
+}
+
+ul.poll li {
+  padding: 0 0 0 10px;
+  margin: 0;
+  clear: left;
+
+  .graph {
+    margin-bottom: 3px;
+    padding-left: 20px;
+  }
+}
+
+/* alerts, toolbox, etc. */
+.alertbar {
+  a {
+    color: #222;
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}

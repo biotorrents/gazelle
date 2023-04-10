@@ -1,0 +1,20 @@
+/**
+ * footer
+ */
+
+footer {
+  #footerIcons {
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 5rem;
+    justify-content: center;
+
+    a {
+      text-decoration: none;
+    }
+
+    i {
+      font-size: larger;
+    }
+  }
+}

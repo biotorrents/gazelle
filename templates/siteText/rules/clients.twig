@@ -1,0 +1,32 @@
+<h2>Client rules</h2>
+
+<p>
+    Client rules are how we maintain the integrity of our swarms.
+    We filter out disruptive and dishonest clients that may hurt the the tracker or peers.
+</p>
+
+<table class="skeletonFix">
+    <tr>
+        <th>Peer ID</th>
+        <th>Client name</th>
+    </tr>
+
+    {% for peer_id, vstring in allowedClients %}
+    <tr>
+        <td><code>{{ peer_id }}</code></td>
+        <td>{{ vstring }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h2>Further rules</h2>
+
+<p>
+    The modification of clients to bypass our client requirements (spoofing) is explicitly forbidden.
+    People caught doing this will be instantly and permanently banned.
+</p>
+
+<p>
+    Using modified clients or proxies that report incorrect stats (cheating) will result in a permanent ban.
+    Testing unstable clients by developers must first be approved by staff.
+</p>

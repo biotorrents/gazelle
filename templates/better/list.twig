@@ -1,0 +1,24 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+<h2>{{ header }}</h2>
+
+{% for item in torrentGroups %}
+
+<pre>
+{{ dump(item) }}
+</pre>
+{% endfor %}
+</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("better/sidebar.twig") }}
+
+{% endblock %}

@@ -1,24 +1,26 @@
 <?php
 #declare(strict_types = 1);
 
+$app = \Gazelle\App::go();
+
 authorize();
 
 $TorrentID = $_POST['torrentid'];
-if (!$TorrentID || !is_number($TorrentID)) {
+if (!$TorrentID || !is_numeric($TorrentID)) {
     error(404);
 }
 
-if ($Cache->get_value("torrent_{$TorrentID}_lock")) {
+if ($app->cache->get("torrent_{$TorrentID}_lock")) {
     error('Torrent cannot be deleted because the upload process is not completed yet. Please try again later.');
 }
 
-$DB->query("
+$app->dbOld->query("
   SELECT
     t.UserID,
     t.GroupID,
     t.Size,
     t.info_hash,
-    tg.Name,
+    tg.title,
     ag.Name,
     t.Time,
     COUNT(x.uid)
@@ -28,9 +30,9 @@ $DB->query("
     LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
     LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
   WHERE t.ID = '$TorrentID'");
-list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $DB->next_record(MYSQLI_NUM, false);
+list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-if ($LoggedUser['ID'] != $UploaderID && !check_perms('torrents_delete')) {
+if ($app->user->core['id'] != $UploaderID && !check_perms('torrents_delete')) {
     error(403);
 }
 
@@ -57,13 +59,13 @@ if (isset($_SESSION['logged_user']['multi_delete'])) {
 
 $InfoHash = unpack('H*', $InfoHash);
 Torrents::delete_torrent($TorrentID, $GroupID);
-Misc::write_log("Torrent $TorrentID ($Name) (".number_format($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$LoggedUser['Username'].': ' .$_POST['reason'].' '.$_POST['extra']);
-Torrents::write_group_log($GroupID, $TorrentID, $LoggedUser['ID'], 'deleted torrent ('.number_format($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
+Misc::write_log("Torrent $TorrentID ($Name) (".\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB) ('.strtoupper($InfoHash[1]).') was deleted by '.$app->user->core['username'].': ' .$_POST['reason'].' '.$_POST['extra']);
+Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], 'deleted torrent ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB, '.strtoupper($InfoHash[1]).') for reason: '.$_POST['reason'].' '.$_POST['extra'], 0);
 
-View::show_header('Torrent deleted');
+View::header('Torrent deleted');
 ?>
 <div>
   <h3>Torrent was successfully deleted.</h3>
 </div>
 
-<?php View::show_footer();
+<?php View::footer();

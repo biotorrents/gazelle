@@ -1,12 +1,15 @@
 <?php
+
 #declare(strict_types=1);
+
+$app = \Gazelle\App::go();
 
 $ENV = ENV::go();
 
 $Key = $_REQUEST['key'];
 $Type = $_REQUEST['type'];
 
-if (($Key !== $ENV->getPriv('TRACKER_SECRET')) || $_SERVER['REMOTE_ADDR'] !== $ENV->getPriv('TRACKER_HOST')) {
+if (($Key !== $ENV->getPriv('trackerSecret')) || $_SERVER['REMOTE_ADDR'] !== $ENV->getPriv('trackerHost')) {
     send_irc(DEBUG_CHAN, 'Ocelot Auth Failure '.$_SERVER['REMOTE_ADDR']);
     error(403);
 }
@@ -21,7 +24,7 @@ switch ($Type) {
         $Cond = $UserIDs = [];
         foreach ($Tokens as $Key => $Token) {
             list($UserID, $TorrentID) = explode(':', $Token);
-            if (!is_number($UserID) || !is_number($TorrentID)) {
+            if (!is_numeric($UserID) || !is_numeric($TorrentID)) {
                 continue;
             }
             $Cond[] = "(UserID = $UserID AND TorrentID = $TorrentID)";
@@ -32,23 +35,23 @@ switch ($Type) {
           UPDATE users_freeleeches
           SET Expired = TRUE
           WHERE ".implode(" OR ", $Cond);
-            $DB->query($Query);
+            $app->dbOld->query($Query);
             foreach ($UserIDs as $UserID) {
-                $Cache->delete_value("users_tokens_$UserID");
+                $app->cache->delete("users_tokens_$UserID");
             }
         }
     } else {
         $TorrentID = $_REQUEST['torrentid'];
         $UserID = $_REQUEST['userid'];
-        if (!is_number($TorrentID) || !is_number($UserID)) {
+        if (!is_numeric($TorrentID) || !is_numeric($UserID)) {
             error(403);
         }
-        $DB->query("
+        $app->dbOld->query("
         UPDATE users_freeleeches
         SET Expired = TRUE
         WHERE UserID = $UserID
           AND TorrentID = $TorrentID");
-        $Cache->delete_value("users_tokens_$UserID");
+        $app->cache->delete("users_tokens_$UserID");
     }
     break;
 }
