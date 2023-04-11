@@ -384,7 +384,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            !d($e);exit;
+            #!d($e);exit;
             return $message;
         }
 
@@ -393,7 +393,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                !d($e);exit;
+                #!d($e);exit;
                 return $message;
             }
         }
@@ -403,7 +403,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verifyU2F($userId, $twoFactor);
             } catch (Throwable $e) {
-                !d($e);exit;
+                #!d($e);exit;
                 return $message;
             }
         }
@@ -412,7 +412,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            !d($e);exit;
+            #!d($e);exit;
             return $message;
         }
     } # login

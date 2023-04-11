@@ -525,6 +525,7 @@ if (check_perms('site_torrents_notify')) {
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
         $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
     }
+    $Notify['Artists'] ??= "";
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         ?>
       <a href="artist.php?action=notify&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"

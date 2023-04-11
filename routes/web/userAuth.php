@@ -11,7 +11,7 @@ declare(strict_types=1);
 Flight::route("/login", function () {
     $app = \Gazelle\App::go();
 
-    if (!empty($app->user->core)) {
+    if ($app->user->isLoggedIn()) {
         Http::redirect();
     } else {
         require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
