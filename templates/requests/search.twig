@@ -46,16 +46,18 @@
 			</tr>
 
 			{# files #}
+			{#
 			<tr id="files">
 				<th>Files</th>
 				<td>
-					{# torrent description #}
+					{# torrent description # }
 					<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}"/>
 
-					{# file list #}
+					{# file list # }
 					<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}"/>
 				</td>
 			</tr>
+			#}
 
 			{# platforms #}
 			{#
@@ -266,15 +268,6 @@
 
 				</td>
 			</tr>
-		</table>
-	</section> {# advancedSearch #}
-
-
-	{# sort options #}
-	<section id="sortOptions">
-		<h3>Sorting options</h3>
-
-		<table class="torrentSearch">
 
 			{# category list #}
 			<tr>
@@ -372,8 +365,10 @@
 					</select>
 
 					<div class="inlineFlex">
+						{#
 						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
 						<label for="groupResults">Group&nbsp;torrents</label>
+						#}
 
 						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}/>
 						<label for="openaiContent">OpenAI&nbsp;content</label>
