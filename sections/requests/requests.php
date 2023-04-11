@@ -403,13 +403,7 @@ if (!empty($_GET['tags'])) {
             $SearchTags['include'][] = $Tag;
         }
     }
-
-    $TagFilter = Tags::tag_filter_sph($SearchTags, $TagType);
-    $TagNames = $TagFilter['input'];
-
-    if (!empty($TagFilter['predicate'])) {
-        $SphQL->where_match($TagFilter['predicate'], 'taglist', false);
-    }
+    $TagNames = null; # todo
 } elseif (!isset($_GET['tags_type']) || $_GET['tags_type'] !== '0') {
     $_GET['tags_type'] = 1;
 } else {

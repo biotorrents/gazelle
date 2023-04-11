@@ -22,7 +22,6 @@ class Requests
      * Format: array(RequestID => Associative array)
      * To see what's exactly inside each associate array, peek inside the function. It won't bite.
      */
-    // In places where the output from this is merged with sphinx filters, it will be in a different order.
     public static function get_requests($RequestIDs, $Return = true)
     {
         $app = \Gazelle\App::go();

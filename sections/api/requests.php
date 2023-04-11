@@ -58,50 +58,50 @@ if (empty($_GET['type'])) {
     }
 } else {
     switch ($_GET['type']) {
-    case 'created':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              json_die("failure");
-          }
-          $Title = "Requests created by $UserInfo[Username]";
-          $SphQL->where('userid', $UserInfo['ID']);
-      } else {
-          $Title = 'My requests';
-          $SphQL->where('userid', $app->user->core['id']);
-      }
-      break;
-    case 'voted':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              json_die("failure");
-          }
-          $Title = "Requests voted for by $UserInfo[Username]";
-          $SphQL->where('voter', $UserInfo['ID']);
-      } else {
-          $Title = 'Requests I have voted on';
-          $SphQL->where('voter', $app->user->core['id']);
-      }
-      break;
-    case 'filled':
-      if (!empty($UserInfo)) {
-          if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
-              json_die("failure");
-          }
-          $Title = "Requests filled by $UserInfo[Username]";
-          $SphQL->where('fillerid', $UserInfo['ID']);
-      } else {
-          $Title = 'Requests I have filled';
-          $SphQL->where('fillerid', $app->user->core['id']);
-      }
-      break;
-    case 'bookmarks':
-      $Title = 'Your bookmarked requests';
-      $BookmarkView = true;
-      $SphQL->where('bookmarker', $app->user->core['id']);
-      break;
-    default:
-      json_die("failure");
-  }
+        case 'created':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    json_die("failure");
+                }
+                $Title = "Requests created by $UserInfo[Username]";
+                $SphQL->where('userid', $UserInfo['ID']);
+            } else {
+                $Title = 'My requests';
+                $SphQL->where('userid', $app->user->core['id']);
+            }
+            break;
+        case 'voted':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    json_die("failure");
+                }
+                $Title = "Requests voted for by $UserInfo[Username]";
+                $SphQL->where('voter', $UserInfo['ID']);
+            } else {
+                $Title = 'Requests I have voted on';
+                $SphQL->where('voter', $app->user->core['id']);
+            }
+            break;
+        case 'filled':
+            if (!empty($UserInfo)) {
+                if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                    json_die("failure");
+                }
+                $Title = "Requests filled by $UserInfo[Username]";
+                $SphQL->where('fillerid', $UserInfo['ID']);
+            } else {
+                $Title = 'Requests I have filled';
+                $SphQL->where('fillerid', $app->user->core['id']);
+            }
+            break;
+        case 'bookmarks':
+            $Title = 'Your bookmarked requests';
+            $BookmarkView = true;
+            $SphQL->where('bookmarker', $app->user->core['id']);
+            break;
+        default:
+            json_die("failure");
+    }
 }
 
 if ($Submitted && empty($_GET['show_filled'])) {
@@ -215,12 +215,6 @@ if (!empty($_GET['tags'])) {
         } elseif ($Tag !== '') {
             $SearchTags['include'][] = $Tag;
         }
-    }
-
-    $TagFilter = Tags::tag_filter_sph($SearchTags, $TagType);
-
-    if (!empty($TagFilter['predicate'])) {
-        $SphQL->where_match($TagFilter['predicate'], 'taglist', false);
     }
 } elseif (!isset($_GET['tags_type']) || $_GET['tags_type'] !== '0') {
     $_GET['tags_type'] = 1;

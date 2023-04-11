@@ -253,51 +253,6 @@ class Tags
 
 
     /**
-     * Filters a list of include and exclude tags to be used in a Sphinx search
-     * @param array $Tags An array of tags with sub-arrays 'include' and 'exclude'
-     * @param integer $TagType Search for Any or All of these tags.
-     * @return array Array keys predicate and input
-     *               Predicate for a Sphinx 'taglist' query
-     *               Input contains clean, aliased tags. Use it in a form instead of the user submitted string
-     */
-    public static function tag_filter_sph($Tags, $TagType)
-    {
-        $QueryParts = [];
-        $Tags = Tags::remove_aliases($Tags);
-        $TagList = str_replace('_', '.', implode(', ', array_merge($Tags['include'], $Tags['exclude'])));
-
-        foreach ($Tags['include'] as &$Tag) {
-            $Tag = Sphinxql::sph_escape_string($Tag);
-        }
-
-        if (!empty($Tags['exclude'])) {
-            foreach ($Tags['exclude'] as &$Tag) {
-                $Tag = '!' . Sphinxql::sph_escape_string(substr($Tag, 1));
-            }
-        }
-
-        // 'All' tags
-        if (!isset($TagType) || $TagType == 1) {
-            $SearchWords = array_merge($Tags['include'], $Tags['exclude']);
-            if (!empty($Tags)) {
-                $QueryParts[] = implode(' ', $SearchWords);
-            }
-        }
-        // 'Any' tags
-        else {
-            if (!empty($Tags['include'])) {
-                $QueryParts[] = '( ' . implode(' | ', $Tags['include']) . ' )';
-            }
-            if (!empty($Tags['exclude'])) {
-                $QueryParts[] = implode(' ', $Tags['exclude']);
-            }
-        }
-
-        return ['input' => $TagList, 'predicate' => implode(' ', $QueryParts)];
-    }
-
-
-    /**
      * Breaks a tag down into name and namespace class
      * @param string $Tag Tag of the form 'tag' or 'tag:namespace'
      * @return array Array keys name and class
