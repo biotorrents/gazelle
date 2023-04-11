@@ -141,8 +141,6 @@ if ($GroupID) {
     $app->cache->delete("requests_group_$GroupID");
 }
 
-Requests::update_sphinx_requests($RequestID);
-
 if (!empty($ArtistForm)) {
     foreach ($ArtistForm as $Artist) {
         $app->cache->delete('artists_requests_'.$Artist['id']);

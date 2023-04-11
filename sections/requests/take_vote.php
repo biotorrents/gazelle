@@ -34,7 +34,7 @@ list($Filled) = $app->dbOld->next_record();
 
 if ($app->user->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
 
-  // Create vote!
+    // Create vote!
     $app->dbOld->query("
     INSERT IGNORE INTO requests_votes
       (RequestID, UserID, Bounty)
@@ -73,8 +73,6 @@ if ($app->user->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     WHERE ID = ".$app->user->core['id']);
     $app->cache->delete('user_stats_'.$app->user->core['id']);
 
-    Requests::update_sphinx_requests($RequestID);
-    echo 'success';
     $app->dbOld->query("
     SELECT UserID
     FROM requests_votes

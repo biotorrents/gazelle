@@ -148,7 +148,6 @@ if (isset($_POST['confirm'])) {
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
             $app->cache->delete("request_artists_$RequestID");
-            Requests::update_sphinx_requests($RequestID);
         }
     }
     if (!empty($BookmarkUsers)) {

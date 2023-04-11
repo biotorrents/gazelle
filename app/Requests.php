@@ -10,59 +10,6 @@
 class Requests
 {
     /**
-     * update_sphinx_requests
-     *
-     * Update the sphinx requests delta table for a request.
-     *
-     * @param $RequestID
-     */
-    public static function update_sphinx_requests($RequestID)
-    {
-        $app = \Gazelle\App::go();
-
-        $QueryID = $app->dbOld->get_query_id();
-        $app->dbOld->query("
-        SELECT REPLACE(t.Name, '.', '_')
-        FROM tags AS t
-          JOIN requests_tags AS rt ON t.ID = rt.TagID
-          WHERE rt.RequestID = $RequestID");
-
-        $TagList = $app->dbOld->collect(0, false);
-        $TagList = db_string(implode(' ', $TagList));
-
-        $app->dbOld->query("
-        REPLACE INTO sphinx_requests_delta (
-          ID, UserID, TimeAdded, LastVote, CategoryID, Title, TagList,
-          CatalogueNumber, FillerID, TorrentID,
-          TimeFilled, Visible, Votes, Bounty)
-        SELECT
-          ID, r.UserID, UNIX_TIMESTAMP(TimeAdded) AS TimeAdded,
-          UNIX_TIMESTAMP(LastVote) AS LastVote, CategoryID, Title, '$TagList',
-          CatalogueNumber, FillerID, TorrentID,
-          UNIX_TIMESTAMP(TimeFilled) AS TimeFilled, Visible,
-          COUNT(rv.UserID) AS Votes, SUM(rv.Bounty) >> 10 AS Bounty
-        FROM requests AS r
-          LEFT JOIN requests_votes AS rv ON rv.RequestID = r.ID
-        WHERE ID = $RequestID
-          GROUP BY r.ID");
-
-        $app->dbOld->query("
-        UPDATE sphinx_requests_delta
-        SET ArtistList = (
-          SELECT GROUP_CONCAT(ag.Name SEPARATOR ' ')
-          FROM requests_artists AS ra
-            JOIN artists_group AS ag ON ag.ArtistID = ra.ArtistID
-          WHERE ra.RequestID = $RequestID
-            GROUP BY NULL
-        )
-          WHERE ID = $RequestID");
-
-        $app->dbOld->set_query_id($QueryID);
-        $app->cache->delete("request_$RequestID");
-    }
-
-
-    /**
      * get_requests
      *
      * Function to get data from an array of $RequestIDs. Order of keys doesn't matter (let's keep it that way).
