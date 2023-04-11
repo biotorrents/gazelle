@@ -239,8 +239,8 @@ class Twig # extends Twig\Environment
         $twig->addFilter(new Twig\TwigFilter("hhmmss", function ($seconds) {
             return sprintf(
                 "%02dm %02ds", # mm:ss
-                    #"%02d:%02d:%02d", # hh:mm:ss
-                    #($seconds / 3600), # hh
+                #"%02d:%02d:%02d", # hh:mm:ss
+                #($seconds / 3600), # hh
                 (intval($seconds / 60) % 60), # mm
                 ($seconds % 60) # ss
             );
@@ -283,8 +283,20 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        # new Tags()
+        # displayTags
         $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
+            $tags = new Tags($tagList);
+
+            return new Twig\Markup(
+                $tags->format(""),
+                "UTF-8"
+            );
+        }));
+
+        # displayTagsFromArray
+        # this is extremely stupid
+        $twig->addFunction(new Twig\TwigFunction("displayTagsFromArray", function ($tagList) {
+            $tagList = implode(" ", $tagList);
             $tags = new Tags($tagList);
 
             return new Twig\Markup(

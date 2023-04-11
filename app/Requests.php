@@ -1,10 +1,12 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
  * Requests
+ *
+ * todo: turn requests into first-class objects
  */
 
 class Requests

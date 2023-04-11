@@ -121,7 +121,7 @@ $requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageS
 
 $requestData = Requests::get_requests($requestIds);
 $app->debug["time"]->stopMeasure("requests", "get request data");
-!d($requestData);exit;
+!d($requestData);
 
 
 /** tags */
