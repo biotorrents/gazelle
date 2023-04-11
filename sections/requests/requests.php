@@ -110,19 +110,18 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 }
 
 
-/** torrent group info */
+/** request info */
 
 
-# Torrents::get_groups
+# Requests::get_requests
 # this is slow, only do the current page
-$app->debug["time"]->startMeasure("browse", "get torrent groups");
-$groupIds = array_column($searchResults, "id");
-$groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
+$app->debug["time"]->startMeasure("requests", "get request data");
+$requestIds = array_column($searchResults, "id");
+$requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
 
-$torrentGroups = Requests::get_requests($groupIds);
-$app->debug["time"]->stopMeasure("browse", "get torrent groups");
-!d($torrentGroups);
-exit;
+$requestData = Requests::get_requests($requestIds);
+$app->debug["time"]->stopMeasure("requests", "get request data");
+!d($requestData);exit;
 
 
 /** tags */
@@ -133,6 +132,48 @@ $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
 
 
+/** twig template */
+
+$app->twig->display("requests/browse.twig", [
+    "title" => "Requests",
+    "js" => ["vendor/tom-select.complete.min", "browse"],
+    "css" => ["vendor/tom-select.bootstrap5.min"],
+
+    # todo: this situation
+    "categories" => $Categories,
+    "resolutions" => $Resolutions,
+
+    "xmls" => array_merge(
+        $app->env->toArray($app->env->META->Formats->GraphXml),
+        $app->env->toArray($app->env->META->Formats->GraphTxt)
+    ),
+
+    "raster" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgRaster),
+        $app->env->toArray($app->env->META->Formats->MapRaster)
+    ),
+
+    "vector" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgVector),
+        $app->env->toArray($app->env->META->Formats->MapVector)
+    ),
+
+    "extras" => array_merge(
+        $app->env->toArray($app->env->META->Formats->BinDoc),
+        $app->env->toArray($app->env->META->Formats->CpuGen),
+        $app->env->toArray($app->env->META->Formats->Plain)
+    ),
+
+    "searchResults" => $searchResults,
+    "requestData" => $requestData,
+
+    "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    "officialTags" => $officialTags,
+
+    "searchTerms" => $searchTerms,
+    "pagination" => $pagination,
+    "queryString" => $queryString,
+]);
 
 
 exit;
