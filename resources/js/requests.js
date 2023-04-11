@@ -1,3 +1,61 @@
+/**
+ * request search page
+ */
+
+(() => {
+  "use strict";
+
+  // tom select: probably a less dumb way to do this
+  var tomSelects = [
+    //new TomSelect("#sequencePlatforms"),
+    //new TomSelect("#graphPlatforms"),
+    //new TomSelect("#imagePlatforms"),
+    //new TomSelect("#documentPlatforms"),
+
+    //new TomSelect("#sequenceFormats"),
+    //new TomSelect("#imageFormats"),
+    //new TomSelect("#otherFormats"),
+    //new TomSelect("#archiveFormats"),
+
+    //new TomSelect("#scope"),
+    //new TomSelect("#leechStatus"),
+    //new TomSelect("#license"),
+
+    new TomSelect("#categories"),
+    new TomSelect("#tagList"),
+
+    new TomSelect("#orderBy"),
+    new TomSelect("#orderWay"),
+  ];
+
+  // reset the form
+  $("#resetSearchForm").on("click", () => {
+    // normal form
+    let formObject = $("#torrentSearch").get(0);
+    formObject.reset();
+
+    // text inputs
+    $("input[type=text]").map(function () {
+      this.value = "";
+    });
+
+    // number inputs
+    $("input[type=number]").map(function () {
+      this.value = "";
+    });
+
+    // tom select elements
+    tomSelects.forEach((element) => {
+      element.clear();
+    });
+  });
+})();
+
+/** legacy */
+
+/**
+ * Vote
+ */
 function Vote(amount, requestid) {
   if (typeof amount == "undefined") {
     amount = parseInt($("#amount").raw().value);
@@ -35,17 +93,17 @@ function Vote(amount, requestid) {
 
   ajax.get(
     "requests.php?action=takevote&id=" +
-      requestid +
-      "&auth=" +
-      authkey +
-      "&amount=" +
-      amount,
+    requestid +
+    "&auth=" +
+    authkey +
+    "&amount=" +
+    amount,
     function (response) {
       if (response == "bankrupt") {
         save_message(
           "You do not have sufficient upload credit to add " +
-            get_size(amount) +
-            " to this request",
+          get_size(amount) +
+          " to this request",
           true
         );
         return;
@@ -63,10 +121,10 @@ function Vote(amount, requestid) {
 
         save_message(
           "Your vote of " +
-            get_size(amount) +
-            ", adding a " +
-            get_size(amount * (1 - $("#request_tax").raw().value)) +
-            " bounty, has been added"
+          get_size(amount) +
+          ", adding a " +
+          get_size(amount * (1 - $("#request_tax").raw().value)) +
+          " bounty, has been added"
         );
         $("#button").raw().disabled = true;
       } else {
@@ -76,6 +134,9 @@ function Vote(amount, requestid) {
   );
 }
 
+/**
+ * Calculate
+ */
 function Calculate() {
   if (!$("#unit").raw()) {
     return;
@@ -122,6 +183,9 @@ function Calculate() {
   }
 }
 
+/**
+ * AddArtistField
+ */
 var ArtistCount = 1;
 function AddArtistField() {
   window.getSelection().removeAllRanges();
@@ -152,6 +216,9 @@ function AddArtistField() {
   ArtistCount++;
 }
 
+/**
+ * RemoveArtistField
+ */
 function RemoveArtistField() {
   window.getSelection().removeAllRanges();
   ArtistCount = $('input[name="artists[]"]').length;
@@ -167,6 +234,9 @@ function RemoveArtistField() {
   ArtistCount--;
 }
 
+/**
+ * add_tag
+ */
 function add_tag() {
   if ($("#tags").raw().value == "") {
     $("#tags").raw().value =
@@ -186,6 +256,9 @@ function add_tag() {
   }
 }
 
+/**
+ * Toggle
+ */
 function Toggle(id, disable) {
   var arr = document.getElementsByName(id + "[]");
   var master = $("#toggle_" + id).raw().checked;
@@ -201,6 +274,9 @@ function Toggle(id, disable) {
   }
 }
 
+/**
+ * ToggleLogCue
+ */
 function ToggleLogCue() {
   var formats = document.getElementsByName("formats[]");
   var flac = false;
@@ -217,6 +293,9 @@ function ToggleLogCue() {
   ToggleLogScore();
 }
 
+/**
+ * ToggleLogScore
+ */
 function ToggleLogScore() {
   if ($("#needlog").raw().checked) {
     $("#minlogscore_span").gshow();
@@ -225,6 +304,9 @@ function ToggleLogScore() {
   }
 }
 
+/**
+ * JavAutofill
+ */
 function JavAutofill() {
   var map = {
     cn: "javdb",

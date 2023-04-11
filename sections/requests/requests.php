@@ -136,7 +136,7 @@ $officialTags = array_column($ref, "name");
 
 $app->twig->display("requests/browse.twig", [
     "title" => "Requests",
-    "js" => ["vendor/tom-select.complete.min", "browse"],
+    "js" => ["vendor/tom-select.complete.min", "requests"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
     # todo: this situation

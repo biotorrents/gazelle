@@ -1,38 +1,14 @@
 {##
- # main torrent search form
+ # main request search form
  #}
 
-<h2>Torrents</h2>
+<h2>Requests</h2>
 
 {# the form itself #}
 <form id="torrentSearch" name="torrentSearch" method="get">
 
-
-	{# simple search form #}
-	<section id="simpleSearch">
-		<div id="searchFormHeader">
-			<h3>Simple search</h3>
-			<a id="showComplexSearch" class="button button-orange u-pull-right">show complex search</a>
-		</div>
-
-		<table class="torrentSearch">
-
-			{# universal search #}
-			<tr>
-				<td>
-					<input type="text" name="simpleSearch" placeholder="Search for anything, anywhere" value="{{ searchTerms.simpleSearch }}">
-				</td>
-			</tr>
-		</table>
-	</section> {# simpleSearch #}
-
-
 	{# complex search form #}
 	<section id="complexSearch">
-		<div id="searchFormHeader">
-			<h3>Complex search</h3>
-			<a id="showSimpleSearch" class="button button-orange u-pull-right">show simple search</a>
-		</div>
 
 		<table class="torrentSearch">
 
@@ -40,8 +16,8 @@
 			<tr id="essentials">
 				<th>Essentials</th>
 				<td>
-					{# torrent title / organism / strain or variety #}
-					<input type="text" name="complexSearch" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.complexSearch }}"/>
+					{# request title / organism / strain or variety #}
+					<input type="text" name="complexSearch" placeholder="Request title / organism / strain or variety" value="{{ searchTerms.complexSearch }}"/>
 				</td>
 			</tr>
 
@@ -82,11 +58,12 @@
 			</tr>
 
 			{# platforms #}
+			{#
 			<tr id="platforms">
 				<th title="Start typing to filter the lists">Platforms</th>
 				<td>
 
-					{# sequences #}
+					{# sequences # }
 					<select id="sequencePlatforms" name="platforms[]" placeholder="Sequences" multiple>
 						{% for item in env.META.Platforms.Sequences %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
@@ -95,7 +72,7 @@
 						{% endfor %}
 					</select>
 
-					{# graphs #}
+					{# graphs # }
 					<select id="graphPlatforms" name="platforms[]" placeholder="Graphs" multiple>
 						{% for item in env.META.Platforms.Graphs %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
@@ -104,7 +81,7 @@
 						{% endfor %}
 					</select>
 
-					{# images #}
+					{# images # }
 					<select id="imagePlatforms" name="platforms[]" placeholder="Images" multiple>
 						{% for item in env.META.Platforms.Images %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
@@ -113,7 +90,7 @@
 						{% endfor %}
 					</select>
 
-					{# documents #}
+					{# documents # }
 					<select id="documentPlatforms" name="platforms[]" placeholder="Documents" multiple>
 						{% for item in env.META.Platforms.Documents %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
@@ -124,13 +101,15 @@
 
 				</td>
 			</tr>
+			#}
 
 			{# formats #}
+			{#
 			<tr id="formats">
 				<th title="Start typing to filter the lists">Formats</th>
 				<td>
 
-					{# sequenceFormats #}
+					{# sequenceFormats # }
 					<select id="sequenceFormats" name="formats[]" placeholder="Sequences" multiple>
 						<option disabled>Nucleotides</option>
 						{% for key, value in env.META.Formats.Sequences %}
@@ -147,7 +126,7 @@
 						{% endfor %}
 					</select>
 
-					{# imageFormats #}
+					{# imageFormats # }
 					<select id="imageFormats" name="formats[]" placeholder="Images" multiple>
 						<option disabled>Raster</option>
 						{% for key, value in raster %}
@@ -164,7 +143,7 @@
 						{% endfor %}
 					</select>
 
-					{# otherFormats #}
+					{# otherFormats # }
 					<select id="otherFormats" name="formats[]" placeholder="Other" multiple>
 
 						<option disabled>Structured data/XML</option>
@@ -182,7 +161,7 @@
 						{% endfor %}
 					</select>
 
-					{# archiveFormats: todo #}
+					{# archiveFormats: todo # }
 					<select id="archiveFormats" name="archives[]" placeholder="Archives" multiple>
 						{% for key, value in env.META.Formats.Archives %}
 							<option value="{{ key }}" {{ (key in searchTerms.archives) ? "selected" : "" }}>
@@ -193,13 +172,15 @@
 
 				</td>
 			</tr>
+			#}
 
 			{# misc #}
+			{#
 			<tr id="misc">
 				<th>Misc</th>
 				<td>
 
-					{# leech status #}
+					{# leech status # }
 					<select name="leechStatus" id="leechStatus">
 						<option value="">Leech status</option>
 
@@ -216,7 +197,7 @@
 						</option>
 					</select>
 
-					{# scope #}
+					{# scope # }
 					<select name="scopes[]" id="scope" multiple>
 						<option value="">Scope</option>
 						{% for item in resolutions %}
@@ -226,7 +207,7 @@
 						{% endfor %}
 					</select>
 
-					{# license #}
+					{# license # }
 					<select name="licenses[]" id="license" multiple>
 						<option value="">License</option>
 
@@ -237,7 +218,7 @@
 						{% endfor %}
 					</select>
 
-					{# alignment #}
+					{# alignment # }
 					<input type="radio" name="alignment" id="yesAlighed" value="1" {{ (searchTerms.alignment == "1") ? "checked" : "" }}/>
 					<label for="yesAlighed">Aligned</label>
 
@@ -246,10 +227,11 @@
 
 				</td>
 			</tr>
+			#}
 
-			{# size #}
+			{# bounty #}
 			<tr id="size">
-				<th>Size</th>
+				<th>Bounty</th>
 				<td>
 
 					{# file size #}
