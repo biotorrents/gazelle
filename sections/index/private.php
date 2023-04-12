@@ -69,7 +69,7 @@ if (!$freeleeches) {
 
 
 # sidebar stats
-$stats = new Stats();
+$stats = new \Gazelle\Stats();
 $activeUsers = $stats->activeUsers();
 $torrentAggregates = $stats->torrentAggregates();
 $trackerAggregates = $stats->trackerAggregates();
