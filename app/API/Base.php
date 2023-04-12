@@ -186,7 +186,6 @@ class Base
             return [
                 "debug" => [
                     "queries"  => $app->debug->get_queries(),
-                    "searches" => $app->debug->get_sphinxql_queries(),
                 ],
             ];
         } else {

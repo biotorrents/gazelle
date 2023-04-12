@@ -39,7 +39,6 @@ class Tools
             $app->cache->set('ip_bans_'.$A, $IPBans, 0);
         }
 
-        #$debug->log_var($IPBans, 'IP bans for class '.$A);
         foreach ($IPBans as $Index => $IPBan) {
             list($ID, $FromIP, $ToIP) = $IPBan;
             if ($IPNum >= $FromIP && $IPNum <= $ToIP) {

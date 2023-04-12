@@ -81,7 +81,6 @@ if ($ENV->dev) {
     /**
      * DebugBar trial, missing important collectors:
      *
-     *   - Sphinx
      *   - Ocelot
      *   - MySQL
      *   - Cache

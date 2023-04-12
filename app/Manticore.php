@@ -6,12 +6,6 @@ declare(strict_types=1);
 /**
  * Gazelle\Manticore
  *
- * Deprecates these legacy classes:
- *  - Sphinxql
- *  - SphinxqlQuery
- *  - SphinxqlResult
- *  - TorrentSearch
- *
  * @see https://github.com/FoolCode/SphinxQL-Query-Builder
  * @see https://manual.manticoresearch.com/Introduction
  * @see https://github.com/biotorrents/gazelle/issues/41
