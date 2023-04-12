@@ -100,6 +100,11 @@ class Cache # extends \Redis
             throw new \Exception("unable to establish PhpRedis cache connection");
         }
 
+        # avoid key collisions on development
+        if ($app->env->dev) {
+            $this->cachePrefix = "development:";
+        }
+
         # set options
         $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
         $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefix);
