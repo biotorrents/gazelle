@@ -121,7 +121,7 @@ $requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageS
 
 $requestData = Requests::get_requests($requestIds);
 $app->debug["time"]->stopMeasure("requests", "get request data");
-!d($requestData);
+#!d($requestData);
 
 
 /** tags */
@@ -139,10 +139,7 @@ $app->twig->display("requests/browse.twig", [
     "js" => ["vendor/tom-select.complete.min", "requests"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
-    # todo: this situation
-    "categories" => $Categories,
-    "resolutions" => $Resolutions,
-
+    /*
     "xmls" => array_merge(
         $app->env->toArray($app->env->META->Formats->GraphXml),
         $app->env->toArray($app->env->META->Formats->GraphTxt)
@@ -163,11 +160,12 @@ $app->twig->display("requests/browse.twig", [
         $app->env->toArray($app->env->META->Formats->CpuGen),
         $app->env->toArray($app->env->META->Formats->Plain)
     ),
+    */
 
     "searchResults" => $searchResults,
     "requestData" => $requestData,
 
-    "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    #"bookmarks" => Bookmarks::all_bookmarks('torrent'),
     "officialTags" => $officialTags,
 
     "searchTerms" => $searchTerms,

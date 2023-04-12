@@ -80,14 +80,25 @@
 	</td>
 
 		{# timeAdded #}
-	<td class="nobr" title="{{ item.TimeAdded }}">
+	<td class="center nobr" title="{{ item.TimeAdded }}">
   {{ item.TimeAdded|relativeTime }}
   </td>
 
 		{# lastVote #}
-	<td class="nobr" title="{{ item.LastVote }}">
+	<td class="center nobr" title="{{ item.LastVote }}">
   {{ item.LastVote|relativeTime }}
   </td>
+
+		{# filled #}
+		{% if item.TimeFilled is not empty %}
+	<td class="center nobr" title="{{ item.TimeFilled }}">
+  {{ item.TimeFilled|relativeTime }}
+  </td>
+		{% else %}
+	<td class="center nobr" title="Not filled">
+	❌
+	  </td>
+		{% endif %}
 
 
 

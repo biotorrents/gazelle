@@ -17,7 +17,7 @@ declare(strict_types=1);
 
 
 enforce_login();
-$RequestTax = 0.1;
+$RequestTax = 0.15;
 
 // Minimum and default amount of upload to remove from the user when they vote.
 // Also change in static/js/requests.js
