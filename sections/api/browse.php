@@ -2,6 +2,9 @@
 
 #declare(strict_types=1);
 
+# TODO: REWRITE THIS TO USE MANTICORE
+
+/*
 $app = \Gazelle\App::go();
 
 $get = Http::request("get");
@@ -136,3 +139,4 @@ json_print('success', [
   'pages' => ceil($NumResults / TORRENTS_PER_PAGE),
   'results' => $JsonGroups
 ]);
+*/

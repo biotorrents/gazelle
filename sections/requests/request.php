@@ -142,7 +142,7 @@ $encoded_artist = urlencode($encoded_artist);
         <?php
     } else { ?>
         <img style="width: 100%;"
-          src="<?=staticServer?>common/noartwork.png"
+          src="<?=staticServer?>/images/noartwork.png"
           alt="<?=$CategoryName?>" class="tooltip"
           title="<?=$CategoryName?>" height="220" border="0" />
         <?php } ?>

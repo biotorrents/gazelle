@@ -489,11 +489,6 @@ class Torrents
             $app->cache->delete('shop_freeleech_list');
         }
 
-        // Tells Sphinx that the group is removed
-        $app->dbOld->query("
-        REPLACE INTO sphinx_delta (ID, Time)
-        VALUES (?, UNIX_TIMESTAMP())", $ID);
-
         $app->cache->delete("torrent_download_$ID");
         $app->cache->delete("torrent_group_$GroupID");
         $app->cache->delete("torrents_details_$GroupID");
@@ -658,7 +653,7 @@ class Torrents
     /**
      * update_hash
      *
-     * Update the cache and sphinx delta index to keep everything up-to-date.
+     * Update the cache to keep everything up-to-date.
      *
      * @param int $GroupID
      */
@@ -905,6 +900,7 @@ class Torrents
         }
 
         # Alignned/Annotated
+        $Data["Censored"] ??= 0;
         if ($Data['Censored'] === 1) {
             $Info[] = ($HTMLy)
                 ? '<a class="search_link" href="torrents.php?action=advanced&censored=1">Aligned</a>'
@@ -920,6 +916,11 @@ class Torrents
           $Info[] = $Data['Version'];
         }
         */
+
+        $Data['IsLeeching'] ??= 0;
+        $Data['IsSeeding'] ??= 0;
+        $Data['IsSnatched'] ??= 0;
+        $Data['FreeTorrent'] ??= '0';
 
         if ($Data['IsLeeching']) {
             $Info[] = $HTMLy ? Format::torrent_label('Leeching', 'important_text_semi') : 'Leeching';
@@ -945,6 +946,7 @@ class Torrents
             $Info[] = $HTMLy ? Format::torrent_label('Neutral Leech', 'bold') : 'Neutral Leech';
         }
 
+        $Data['PersonalFL'] ??= null;
         if ($Data['PersonalFL']) {
             $Info[] = $HTMLy ? Format::torrent_label('Personal Freeleech', 'important_text_alt') : 'Personal Freeleech';
         }

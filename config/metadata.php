@@ -26,6 +26,7 @@ $Categories = [
   "Machine Data",
 ];
 $GroupedCategories = $Categories;
+ENV::setPub("CATEGORIES", $Categories);
 
 # Plain Formats
 $PlainFormats = [

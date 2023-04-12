@@ -294,7 +294,7 @@ foreach ($GroupIDs as $GroupID) {
 <div class="collage_image image_group_<?=$GroupID?>">
   <a href="torrents.php?id=<?=$GroupID?>">
     <?php if (!$picture) {
-        $picture = staticServer.'common/noartwork.png';
+        $picture = staticServer.'/images/noartwork.png';
     } ?>
     <img class="tooltip_interactive"
       src="<?=\Gazelle\Images::process($picture, 'thumb')?>"

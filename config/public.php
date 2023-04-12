@@ -15,6 +15,13 @@ if (!$env->dev) {
     Kint\Kint::$enabled_mode = false;
 }
 
+# https://stackify.com/display-php-errors/
+if ($env->dev) {
+    ini_set("display_errors", 1);
+    ini_set("display_startup_errors", 1);
+    error_reporting(E_ALL);
+}
+
 # allow the site encryption key to be set without an account
 # (should only be used for initial setup)
 ENV::setPub("enablePublicEncryptionKey", false);
@@ -163,53 +170,6 @@ else {
     ENV::setPub(
         "ANNOUNCE_URLS",
         $env->convert($AnnounceURLs)
-    );
-}
-
-
-/**
- * search
- *
- * THIS IS GOING AWAY!
- */
-
-# SphinxqlQuery needs constants to work
-# $app->env breaks the torrent and request pages
-# cuz the constructor uses constants lol
-define("SPHINXQL_HOST", "127.0.0.1");
-define("SPHINXQL_PORT", 9306);
-define("SPHINXQL_SOCK", false);
-define("SPHINX_MAX_MATCHES", 1000); # must be <= server max_matches (default 1000)
-
-
-/**
- * memcached
- *
- * Very important to run two instances,
- * one each for development and production.
- */
-
-# production
-if (!$env->dev) {
-    ENV::setPriv(
-        "MEMCACHED_SERVERS",
-        [[
-          "host" => "unix:///var/run/memcached/memcached.sock",
-          "port" => 0,
-          "buckets" => 1
-        ]]
-    );
-}
-
-# development
-else {
-    ENV::setPriv(
-        "MEMCACHED_SERVERS",
-        [[
-          "host" => "unix:///var/run/memcached/memcached-dev.sock",
-          "port" => 0,
-          "buckets" => 1
-        ]]
     );
 }
 

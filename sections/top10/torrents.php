@@ -38,11 +38,13 @@ if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
         }
     }
 
+    /*
     if ($_GET['category']) {
         if (in_array($_GET['category'], $Categories)) {
             $Where[] = "g.CategoryID = '".(array_search($_GET['category'], $Categories)+1)."'";
         }
     }
+    */
 } else {
     // Error out on invalid requests (before caching)
     if (isset($_GET['details'])) {
@@ -93,7 +95,9 @@ if (check_perms('site_advanced_top10')) {
                     <td>
                         <select name="category" style="width: auto;" class="ft_format">
                             <option value="">Any</option>
-                            <?php foreach ($Categories as $CategoryName) { ?>
+                            <?php
+                            $Categories = $app->env->CATEGORIES;
+    foreach ($Categories as $CategoryName) { ?>
                             <option
                                 value="<?=\Gazelle\Text::esc($CategoryName)?>"
                                 <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=\Gazelle\Text::esc($CategoryName)?>
@@ -426,8 +430,10 @@ View::footer();
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 {
     $app = \Gazelle\App::go();
+    $Categories = $app->env->CATEGORIES;
 
-    global $user, $Categories, $ReleaseTypes, $GroupBy; ?>
+
+    global $user, $ReleaseTypes, $GroupBy; ?>
 <h3>Top <?="$Limit $Caption"?>
     <?php if (empty($_GET['advanced'])) { ?>
     <small class="top10_quantity_links">

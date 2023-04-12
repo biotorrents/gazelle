@@ -245,7 +245,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = staticServer.'common/noartwork.png';
+        $picture = staticServer.'/images/noartwork.png';
     } ?>
 
     <img class="tooltip"
@@ -308,7 +308,7 @@ View::header($Title, 'browse,collage,wall');
 <!--content-->
 <?php
   View::footer();
-} ?>
+  } ?>
 
 <div class="sidebar one-third column">
   <div class="box box_info box_statistics_bookmarked_torrents">
@@ -332,24 +332,24 @@ View::header($Title, 'browse,collage,wall');
     <div class="head"><strong>Top Artists</strong></div>
     <div class="pad">
       <?php
-  $Indent = "\t\t\t\t";
-  if (count($ArtistCount) > 0) {
-      echo "$Indent<ol style=\"padding-left: 5px;\">\n";
-      $i = 0;
-      foreach ($ArtistCount as $ID => $Artist) {
-          $i++;
-          if ($i > 10) {
-              break;
-          } ?>
+    $Indent = "\t\t\t\t";
+if (count($ArtistCount) > 0) {
+    echo "$Indent<ol style=\"padding-left: 5px;\">\n";
+    $i = 0;
+    foreach ($ArtistCount as $ID => $Artist) {
+        $i++;
+        if ($i > 10) {
+            break;
+        } ?>
       <li><a href="artist.php?id=<?=$ID?>"><?=\Gazelle\Text::esc($Artist['name'])?></a> (<?=$Artist['count']?>)</li>
       <?php
-      }
-      echo "$Indent</ol>\n";
-  } else {
-      echo "$Indent<ul class=\"nobullet\" style=\"padding-left: 5px;\">\n";
-      echo "$Indent\t<li>There are no artists to display.</li>\n";
-      echo "$Indent</ul>\n";
-  }
+    }
+    echo "$Indent</ol>\n";
+} else {
+    echo "$Indent<ul class=\"nobullet\" style=\"padding-left: 5px;\">\n";
+    echo "$Indent\t<li>There are no artists to display.</li>\n";
+    echo "$Indent</ul>\n";
+}
 ?>
     </div>
   </div>
@@ -363,10 +363,10 @@ if ($CollageCovers !== 0) { ?>
       data-wall-min="2">
       <?php
   $Page1 = array_slice($Collage, 0, $CollageCovers);
-  foreach ($Page1 as $Group) {
-      echo $Group;
-  }
-?>
+    foreach ($Page1 as $Group) {
+        echo $Group;
+    }
+    ?>
     </div>
   </div>
   <?php if ($NumGroups > $CollageCovers) { ?>

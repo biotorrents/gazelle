@@ -141,18 +141,10 @@ if ($GroupID) {
     $app->cache->delete("requests_group_$GroupID");
 }
 
-Requests::update_sphinx_requests($RequestID);
-
 if (!empty($ArtistForm)) {
     foreach ($ArtistForm as $Artist) {
         $app->cache->delete('artists_requests_'.$Artist['id']);
     }
 }
-
-$SphQL = new SphinxqlQuery();
-$SphQL->raw_query("
-    UPDATE requests, requests_delta
-    SET torrentid = 0, fillerid = 0
-    WHERE id = $RequestID", false);
 
 Http::redirect("requests.php?action=view&id=$RequestID");
