@@ -65,7 +65,7 @@ if ($UnRead == '1') {
 
 View::header(
     "View conversation $Subject",
-    'comments,inbox,vendor/easymde.min',
+    'inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 
@@ -151,8 +151,8 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
           <td class="label"><label for="sticky">Sticky</label></td>
           <td>
             <input type="checkbox" id="sticky" name="sticky" <?php if ($Sticky) {
-    echo ' checked="checked"' ;
-} ?> />
+                echo ' checked="checked"' ;
+            } ?> />
           </td>
           <td class="label"><label for="mark_unread">Mark as unread</label></td>
           <td>
@@ -171,7 +171,7 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
     </div>
   </form>
   <?php
-$app->dbOld->query("
+            $app->dbOld->query("
   SELECT SupportFor
   FROM users_info
   WHERE UserID = ".$app->user->core['id']);

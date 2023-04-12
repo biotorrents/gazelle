@@ -73,7 +73,7 @@ list($NumComments, $Page, $Thread, $LastRead) = Comments::load('requests', $Requ
 
 View::header(
     "View request: $Title",
-    'comments,requests,subscriptions,vendor/easymde.min',
+    'requests,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

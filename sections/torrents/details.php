@@ -195,7 +195,7 @@ list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $Grou
 // Start output
 View::header(
     $Title,
-    'browse,comments,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
+    'browse,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

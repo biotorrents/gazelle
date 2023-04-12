@@ -26,7 +26,7 @@ list($Page, $Limit) = Format::page_limit($PerPage);
 $UserInfo = User::user_info($UserID);
 extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', 'Title', 'Avatar', 'Donor', 'Warned'))));
 
-View::header("Post history for $Username", 'subscriptions,comments');
+View::header("Post history for $Username", 'subscriptions');
 
 $ViewingOwn = ($UserID == $app->user->core['id']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
