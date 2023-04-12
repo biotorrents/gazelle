@@ -139,6 +139,10 @@ $app->twig->display("requests/browse.twig", [
     "js" => ["vendor/tom-select.complete.min", "requests"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
+    # todo: this situation
+    "categories" => $Categories,
+    "resolutions" => $Resolutions,
+
     /*
     "xmls" => array_merge(
         $app->env->toArray($app->env->META->Formats->GraphXml),
