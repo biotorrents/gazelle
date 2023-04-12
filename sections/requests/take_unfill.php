@@ -147,10 +147,4 @@ if (!empty($ArtistForm)) {
     }
 }
 
-$SphQL = new SphinxqlQuery();
-$SphQL->raw_query("
-    UPDATE requests, requests_delta
-    SET torrentid = 0, fillerid = 0
-    WHERE id = $RequestID", false);
-
 Http::redirect("requests.php?action=view&id=$RequestID");

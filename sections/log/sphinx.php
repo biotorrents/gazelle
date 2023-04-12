@@ -2,6 +2,9 @@
 
 #declare(strict_types=1);
 
+# TODO: TURN THIS INTO A NORMAL DATABASE SEARCH
+
+/*
 $app = \Gazelle\App::go();
 
 $debug = Debug::go();
@@ -81,3 +84,4 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         $Log = $app->dbOld->query("SET @nothing = 0");
     }
 }
+*/

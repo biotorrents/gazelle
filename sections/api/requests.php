@@ -2,7 +2,9 @@
 
 #declare(strict_types=1);
 
-# todo: Go through line by line
+# TODO: REWRITE THIS USING MANTICORE
+
+/*
 $SphQL = new SphinxqlQuery();
 $SphQL->select('id, votes, bounty')->from('requests, requests_delta');
 
@@ -362,3 +364,4 @@ if ($NumResults == 0) {
     'results'     => $JsonResults
   ));
 }
+*/

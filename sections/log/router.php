@@ -23,7 +23,7 @@ if (!defined('LOG_ENTRIES_PER_PAGE')) {
 }
 
 View::header("Site log");
-include serverRoot.'/sections/log/sphinx.php';
+#include serverRoot.'/sections/log/sphinx.php';
 ?>
 
 <div>
@@ -52,11 +52,11 @@ include serverRoot.'/sections/log/sphinx.php';
     <div class="linkbox">
         <?php
   $Pages = Format::get_pages($Page, $TotalMatches, LOG_ENTRIES_PER_PAGE, 9);
-  echo $Pages;
-  ?>
+      echo $Pages;
+      ?>
     </div>
     <?php
-}
+  }
 ?>
 
     <div class="box">
@@ -81,7 +81,7 @@ include serverRoot.'/sections/log/sphinx.php';
                 <td colspan="2">Nothing found!</td>
             </tr>
             <?php
-  }
+            }
 
 $Usernames = [];
 while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
@@ -96,71 +96,71 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
         }
 
         switch ($MessageParts[$i]) {
-        case 'Torrent':
-        case 'torrent':
-            $TorrentID = $MessageParts[$i + 1];
-            if (is_numeric($TorrentID)) {
-                $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?torrentid=$TorrentID'>$TorrentID</a>";
+            case 'Torrent':
+            case 'torrent':
+                $TorrentID = $MessageParts[$i + 1];
+                if (is_numeric($TorrentID)) {
+                    $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?torrentid=$TorrentID'>$TorrentID</a>";
+                    $i++;
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
+                break;
+
+            case 'Request':
+            case 'request':
+                $RequestID = $MessageParts[$i + 1];
+                if (is_numeric($RequestID)) {
+                    $Message = $Message.' '.$MessageParts[$i]." <a href='requests.php?action=view&amp;id=$RequestID'>$RequestID</a>";
+                    $i++;
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
+                break;
+
+            case 'Artist':
+            case 'artist':
+                $ArtistID = $MessageParts[$i + 1];
+                if (is_numeric($ArtistID)) {
+                    $Message = $Message.' '.$MessageParts[$i]." <a href='artist.php?id=$ArtistID'>$ArtistID</a>";
+                    $i++;
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
+                break;
+
+            case 'group':
+            case 'Group':
+                $GroupID = $MessageParts[$i + 1];
+                if (is_numeric($GroupID)) {
+                    $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?id=$GroupID'>$GroupID</a>";
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
                 $i++;
-            } else {
-                $Message = $Message.' '.$MessageParts[$i];
-            }
-            break;
+                break;
 
-      case 'Request':
-      case 'request':
-          $RequestID = $MessageParts[$i + 1];
-          if (is_numeric($RequestID)) {
-              $Message = $Message.' '.$MessageParts[$i]." <a href='requests.php?action=view&amp;id=$RequestID'>$RequestID</a>";
-              $i++;
-          } else {
-              $Message = $Message.' '.$MessageParts[$i];
-          }
-          break;
+            case 'By':
+            case 'by':
+                $UserID = 0;
+                $User = '';
+                $URL = '';
+                if ($MessageParts[$i + 1] === 'user') {
+                    $i++;
+                    if (is_numeric($MessageParts[$i + 1])) {
+                        $UserID = $MessageParts[++$i];
+                    }
+                    $URL = "user $UserID (<a href='user.php?id=$UserID'>".substr($MessageParts[++$i], 1, -1).'</a>)';
+                } elseif (in_array($MessageParts[$i - 1], ['deleted', 'uploaded', 'edited', 'created', 'recovered'])) {
+                    $User = $MessageParts[++$i];
+                    if (substr($User, -1) === ':') {
+                        $User = substr($User, 0, -1);
+                        $Colon = true;
+                    }
 
-      case 'Artist':
-      case 'artist':
-          $ArtistID = $MessageParts[$i + 1];
-          if (is_numeric($ArtistID)) {
-              $Message = $Message.' '.$MessageParts[$i]." <a href='artist.php?id=$ArtistID'>$ArtistID</a>";
-              $i++;
-          } else {
-              $Message = $Message.' '.$MessageParts[$i];
-          }
-          break;
-
-      case 'group':
-      case 'Group':
-          $GroupID = $MessageParts[$i + 1];
-          if (is_numeric($GroupID)) {
-              $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?id=$GroupID'>$GroupID</a>";
-          } else {
-              $Message = $Message.' '.$MessageParts[$i];
-          }
-          $i++;
-          break;
-
-      case 'By':
-      case 'by':
-          $UserID = 0;
-          $User = '';
-          $URL = '';
-          if ($MessageParts[$i + 1] === 'user') {
-              $i++;
-              if (is_numeric($MessageParts[$i + 1])) {
-                  $UserID = $MessageParts[++$i];
-              }
-              $URL = "user $UserID (<a href='user.php?id=$UserID'>".substr($MessageParts[++$i], 1, -1).'</a>)';
-          } elseif (in_array($MessageParts[$i - 1], ['deleted', 'uploaded', 'edited', 'created', 'recovered'])) {
-              $User = $MessageParts[++$i];
-              if (substr($User, -1) === ':') {
-                  $User = substr($User, 0, -1);
-                  $Colon = true;
-              }
-
-              if (!isset($Usernames[$User])) {
-                  $app->dbOld->query(
-                      "
+                    if (!isset($Usernames[$User])) {
+                        $app->dbOld->query(
+                            "
                   SELECT
                     `ID`
                   FROM
@@ -168,19 +168,19 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                   WHERE
                     `Username` = ?
                   ",
-                      $User
-                  );
+                            $User
+                        );
 
-                  list($UserID) = $app->dbOld->next_record();
-                  $Usernames[$User] = $UserID ? $UserID : '';
-              } else {
-                  $UserID = $Usernames[$User];
-              }
+                        list($UserID) = $app->dbOld->next_record();
+                        $Usernames[$User] = $UserID ? $UserID : '';
+                    } else {
+                        $UserID = $Usernames[$User];
+                    }
 
-              $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>".($Colon ? ':' : '') : $User;
-              if (in_array($MessageParts[$i - 2], ['uploaded', 'edited'])) {
-                  $app->dbOld->query(
-                      "
+                    $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>".($Colon ? ':' : '') : $User;
+                    if (in_array($MessageParts[$i - 2], ['uploaded', 'edited'])) {
+                        $app->dbOld->query(
+                            "
                   SELECT
                     `UserID`,
                     `Anonymous`
@@ -189,59 +189,59 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                   WHERE
                     `ID` = ?
                   ",
-                      $MessageParts[1]
-                  );
+                            $MessageParts[1]
+                        );
 
-                  if ($app->dbOld->has_results()) {
-                      list($UploaderID, $AnonTorrent) = $app->dbOld->next_record();
-                      if ($AnonTorrent && $UploaderID === $UserID) {
-                          $URL = '<em>Anonymous</em>';
-                      }
-                  }
-              }
-              $app->dbOld->set_query_id($Log);
-          }
-          $Message = "$Message by $URL";
-          break;
+                        if ($app->dbOld->has_results()) {
+                            list($UploaderID, $AnonTorrent) = $app->dbOld->next_record();
+                            if ($AnonTorrent && $UploaderID === $UserID) {
+                                $URL = '<em>Anonymous</em>';
+                            }
+                        }
+                    }
+                    $app->dbOld->set_query_id($Log);
+                }
+                $Message = "$Message by $URL";
+                break;
 
-      case 'Uploaded':
-      case 'uploaded':
-          if ($Color === false) {
-              $Color = 'green';
-          }
-          $Message = $Message.' '.$MessageParts[$i];
-          break;
+            case 'Uploaded':
+            case 'uploaded':
+                if ($Color === false) {
+                    $Color = 'green';
+                }
+                $Message = $Message.' '.$MessageParts[$i];
+                break;
 
-      case 'Deleted':
-      case 'deleted':
-          if ($Color === false || $Color === 'green') {
-              $Color = 'red';
-          }
-          $Message = $Message.' '.$MessageParts[$i];
-          break;
+            case 'Deleted':
+            case 'deleted':
+                if ($Color === false || $Color === 'green') {
+                    $Color = 'red';
+                }
+                $Message = $Message.' '.$MessageParts[$i];
+                break;
 
-      case 'Edited':
-      case 'edited':
-          if ($Color === false) {
-              $Color = 'blue';
-          }
-          $Message = $Message.' '.$MessageParts[$i];
-          break;
+            case 'Edited':
+            case 'edited':
+                if ($Color === false) {
+                    $Color = 'blue';
+                }
+                $Message = $Message.' '.$MessageParts[$i];
+                break;
 
-      case 'Un-filled':
-      case 'un-filled':
-          if ($Color === false) {
-              $Color = '';
-          }
-          $Message = $Message.' '.$MessageParts[$i];
-          break;
+            case 'Un-filled':
+            case 'un-filled':
+                if ($Color === false) {
+                    $Color = '';
+                }
+                $Message = $Message.' '.$MessageParts[$i];
+                break;
 
-      case 'Marked':
-      case 'marked':
-          if ($i === 1) {
-              $User = $MessageParts[$i - 1];
-              if (!isset($Usernames[$User])) {
-                  $app->dbOld->query("
+            case 'Marked':
+            case 'marked':
+                if ($i === 1) {
+                    $User = $MessageParts[$i - 1];
+                    if (!isset($Usernames[$User])) {
+                        $app->dbOld->query("
                   SELECT
                     `ID`
                   FROM
@@ -250,34 +250,34 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                     `Username` = _utf8 '".db_string($User)."' COLLATE utf8_bin
                   ");
 
-                  list($UserID) = $app->dbOld->next_record();
-                  $Usernames[$User] = $UserID ? $UserID : '';
-                  $app->dbOld->set_query_id($Log);
-              } else {
-                  $UserID = $Usernames[$User];
-              }
+                        list($UserID) = $app->dbOld->next_record();
+                        $Usernames[$User] = $UserID ? $UserID : '';
+                        $app->dbOld->set_query_id($Log);
+                    } else {
+                        $UserID = $Usernames[$User];
+                    }
 
-              $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>" : $User;
-              $Message = $URL.' '.$MessageParts[$i];
-          } else {
-              $Message = $Message.' '.$MessageParts[$i];
-          }
-          break;
+                    $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>" : $User;
+                    $Message = $URL.' '.$MessageParts[$i];
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
+                break;
 
-      case 'Collage':
-      case 'collage':
-          $CollageID = $MessageParts[$i + 1];
-          if (is_numeric($CollageID)) {
-              $Message = $Message.' '.$MessageParts[$i]." <a href='collages.php?id=$CollageID'>$CollageID</a>";
-              $i++;
-          } else {
-              $Message = $Message.' '.$MessageParts[$i];
-          }
-          break;
+            case 'Collage':
+            case 'collage':
+                $CollageID = $MessageParts[$i + 1];
+                if (is_numeric($CollageID)) {
+                    $Message = $Message.' '.$MessageParts[$i]." <a href='collages.php?id=$CollageID'>$CollageID</a>";
+                    $i++;
+                } else {
+                    $Message = $Message.' '.$MessageParts[$i];
+                }
+                break;
 
-      default:
-        $Message = $Message.' '.$MessageParts[$i];
-    }
+            default:
+                $Message = $Message.' '.$MessageParts[$i];
+        }
     } ?>
 
             <tr class="row" id="log_<?=$ID?>">
