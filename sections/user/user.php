@@ -787,7 +787,7 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
   <?php
 }
 
-
+/*
 // Requests
 if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')) {
     $SphQL = new SphinxqlQuery();
@@ -881,6 +881,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
   <?php
     }
 }
+*/
 
 $IsFLS = isset($user['ExtraClasses'][FLS_TEAM]);
 if (check_perms('users_mod', $Class) || $IsFLS) {

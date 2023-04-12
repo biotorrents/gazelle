@@ -100,53 +100,10 @@ class Debug # extends DebugBar\StandardDebugBar
      */
 
 
-    /**
-     * log_var
-     */
-    public function log_var($Var, $VarName = false)
-    {
-        /*
-          $BackTrace = debug_backtrace();
-          $ID = \Gazelle\Text::random(5);
-
-          if (!$VarName) {
-              $VarName = $ID;
-          }
-
-          $File = array("path" => substr($BackTrace[0]["file"], strlen(serverRoot)), "line" => $BackTrace[0]["line"]);
-          $this->LoggedVars[$ID] = array($VarName => array("bt" => $File, "data" => $Var));
-          */
-    }
-
-
     /*****************
      * Data wrappers *
      *****************/
 
-
-    /**
-     * get_sphinxql_queries
-     */
-    public function get_sphinxql_queries()
-    {
-        /*
-          if (class_exists("Sphinxql")) {
-              return Sphinxql::$Queries;
-          }
-          */
-    }
-
-    /**
-     * get_sphinxql_time
-     */
-    public function get_sphinxql_time()
-    {
-        /*
-          if (class_exists("Sphinxql")) {
-              return Sphinxql::$Time;
-          }
-          */
-    }
 
     /**
      * get_ocelot_requests
@@ -254,51 +211,6 @@ class Debug # extends DebugBar\StandardDebugBar
     <td>
         <?=\Gazelle\Text::esc($Location)?>
     </td>
-  </tr>
-  <?php
-    } ?>
-</table>
-<?php
-*/
-    }
-
-    /**
-     * sphinx_table
-     */
-    public function sphinx_table($Queries = false)
-    {
-        /*
-          $Header = "Searches";
-          if (!is_array($Queries)) {
-              $Queries = $this->get_sphinxql_queries();
-              $Header .= " (".\Gazelle\Text::float($this->get_sphinxql_time(), 5)." ms)";
-          }
-
-          if (empty($Queries)) {
-              return;
-          }
-          $Header = " ".\Gazelle\Text::float(count($Queries))." $Header:"; ?>
-
-<table class="layout">
-  <tr>
-    <td>
-        <strong>
-          <a href="#" onclick="$(this).parents(".layout").next("#debug_sphinx").gtoggle(); return false;"
-            class="brackets">View</a>
-          <?=$Header?>
-        </strong>
-    </td>
-  </tr>
-</table>
-<table id="debug_sphinx" class="debug_table hidden">
-  <?php
-    foreach ($Queries as $Query) {
-          list($Params, $Time) = $Query; ?>
-  <tr class="valign_top">
-    <td class="debug_data debug_sphinx_data">
-        <pre><?=str_replace("\t", "  ", $Params)?></pre>
-    </td>
-    <td class="debug_info debug_sphinx_time" style="width: 130px;"><?=\Gazelle\Text::float($Time, 5)?> ms</td>
   </tr>
   <?php
     } ?>

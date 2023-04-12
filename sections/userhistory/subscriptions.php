@@ -96,7 +96,6 @@ $Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
 $app->dbOld->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 
-#$debug->log_var($Results, 'Results');
 
 $TorrentGroups = $Requests = [];
 foreach ($Results as $Result) {

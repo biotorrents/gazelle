@@ -352,6 +352,4 @@ if ($NewRequest) {
     $app->cache->delete("request_artists_$RequestID");
 }
 
-Requests::update_sphinx_requests($RequestID);
-
 Http::redirect("requests.php?action=view&id=$RequestID");

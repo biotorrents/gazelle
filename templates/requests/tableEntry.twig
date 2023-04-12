@@ -1,0 +1,130 @@
+{##
+ # search results table entry
+ #}
+
+{# request entry (similar to torrent groups) #}
+<tr>
+
+	{# category icon #}
+	<td class="center">
+		{{item.CategoryID|categoryIcon }}
+	</td>
+
+
+	{# title #}
+	<td class="tableGroup">
+<div class="flexColumn">
+
+		{# title link #}
+		<a class="torrentTitle" href="/requests.php?action=view&id={{ item.ID }}" {# open tag #}
+
+    {% if item.Image %}
+        data-cover="{{ item.Image }}" {# open tag #}
+    {% endif %}
+
+    dir="ltr">
+			{{ item.Title|raw }}
+		</a>
+
+		<div class="flexRow">
+			{# subject #}
+			{% if item.Title2 %}
+				<span class="tooltip subjectObject" title="Organism">{{ "<em>#{item.Title2}</em>"|raw }}
+					{# object #}
+					{{ (item.TitleJP) ? item.TitleJP : "" }}
+				</span>
+			{% endif %}
+
+			{# identifier #}
+			{% if item.CatalogueNumber %}
+				<span class="tooltip identifier" title="Identifier">{{ item.CatalogueNumber }}</span>
+			{% endif %}
+
+			{# workgroup #}
+			{#
+			{% if item.workgroup %}
+				<span class="tooltip workgroup" title="Workgroup">{{ item.workgroup|raw }}</span>
+			{% endif %}
+			#}
+
+			{# location #}
+			{#
+			{% if item.location %}
+				<span class="tooltip location" title="Location">{{ item.location|raw }}</span>
+			{% endif %}
+			#}
+		</div>
+
+		{# tags #}
+		{% if item.Tags is not empty %}
+			<div class="tooltip tagList" title="Tags">{{ displayTagsFromArray(item.Tags)|raw }}</div>
+		{% endif %}
+
+		{# creators #}
+		{#
+		{% if item.Artists is not empty %}
+			<div class="tooltip creatorList" title="Creators">{{ displayCreators(item.Artists)|raw }}</div>
+		{% endif %}
+		#}
+
+		{#
+		{% if extra_info|default(false) %}
+		  <br />
+		  <span class="torrent_info">
+		    {{ extra_info|raw }}
+		  </span>
+		{% endif %}
+		#}
+
+</div>
+	</td>
+
+		{# timeAdded #}
+	<td class="center nobr" title="{{ item.TimeAdded }}">
+  {{ item.TimeAdded|relativeTime }}
+  </td>
+
+		{# lastVote #}
+	<td class="center nobr" title="{{ item.LastVote }}">
+  {{ item.LastVote|relativeTime }}
+  </td>
+
+		{# filled #}
+		{% if item.TimeFilled is not empty %}
+	<td class="center nobr" title="{{ item.TimeFilled }}">
+  {{ item.TimeFilled|relativeTime }}
+  </td>
+		{% else %}
+	<td class="center nobr" title="Not filled">
+	❌
+	  </td>
+		{% endif %}
+
+
+
+	{# timeAdded # }
+	<td></td>
+
+
+	{# data size # }
+	<td></td>
+
+
+	{# file count # }
+	<td></td>
+
+
+	{# seeders # }
+	<td></td>
+
+
+	{# leechers # }
+	<td></td>
+
+
+	{# snatches # }
+	<td></td>
+  #}
+
+</tr>
+

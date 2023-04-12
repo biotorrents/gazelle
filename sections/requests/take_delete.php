@@ -61,12 +61,6 @@ $app->dbOld->query("
   WHERE RequestID = '$RequestID'");
 $app->cache->delete("request_artists_$RequestID");
 
-$app->dbOld->query("
-  REPLACE INTO sphinx_requests_delta
-    (ID)
-  VALUES
-    ($RequestID)");
-
 if ($UserID != $app->user->core['id']) {
     Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
 }

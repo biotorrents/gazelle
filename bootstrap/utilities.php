@@ -281,7 +281,6 @@ function add_json_info($Json)
         $Json = array_merge($Json, [
             'debug' => [
                 'queries' => $debug->get_queries(),
-                'searches' => $debug->get_sphinxql_queries()
             ],
         ]);
     }

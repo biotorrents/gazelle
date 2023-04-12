@@ -2,6 +2,9 @@
 
 #declare(strict_types=1);
 
+# TODO: TURN THIS INTO A NORMAL DATABASE SEARCH
+
+/*
 $app = \Gazelle\App::go();
 
 $debug = Debug::go();
@@ -36,7 +39,6 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         // This is a lot faster than SQL_CALC_FOUND_ROWS
         $SphQL = new SphinxqlQuery();
         $Result = $SphQL->select('id')->from('log, log_delta')->limit(0, 1, 1)->query();
-        #$debug->log_var($Result, '$Result');
         $TotalMatches = min(SPHINX_MAX_MATCHES, $Result->get_meta('total_found'));
     } else {
         $TotalMatches = $NumResults + $Offset;
@@ -52,7 +54,6 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
     ->limit($Offset, LOG_ENTRIES_PER_PAGE, $Offset + LOG_ENTRIES_PER_PAGE);
 
     $Result = $SphQL->query();
-    #$debug->log_var($Result, '$Result');
     $debug['messages']->info('finished sphinxql query');
 
     if ($QueryStatus = $Result->Errno) {
@@ -81,3 +82,4 @@ if (empty($_GET['search']) || trim($_GET['search']) === '') {
         $Log = $app->dbOld->query("SET @nothing = 0");
     }
 }
+*/

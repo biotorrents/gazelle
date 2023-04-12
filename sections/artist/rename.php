@@ -115,7 +115,6 @@ if (!$TargetAliasID) {
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
             $app->cache->delete("request_artists_$RequestID"); // Delete request artist cache
-            Requests::update_sphinx_requests($RequestID);
         }
     }
     $TargetArtistID = $ArtistID;
@@ -177,7 +176,6 @@ if (!$TargetAliasID) {
     if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
             $app->cache->delete("request_artists_$RequestID");
-            Requests::update_sphinx_requests($RequestID);
         }
     }
 
@@ -216,7 +214,6 @@ if (!$TargetAliasID) {
       if (!empty($Requests)) {
         foreach ($Requests as $RequestID) {
           $app->cache->delete("request_artists_$RequestID");
-          Requests::update_sphinx_requests($RequestID);
         }
       }
     }*/

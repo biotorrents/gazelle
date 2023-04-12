@@ -1,9 +1,197 @@
 <?php
-#declare(strict_types=1);
 
-$SphQL = new SphinxqlQuery();
-$SphQL->select('id, votes, bounty')->from('requests');
-#$SphQL->select('id, votes, bounty')->from('requests, requests_delta');
+declare(strict_types=1);
+
+/**
+ * request search page
+ */
+
+$app = \Gazelle\App::go();
+
+$get = Http::query("get");
+$searchTerms = [
+    "simpleSearch" => $get["simpleSearch"] ?? null,
+    "complexSearch" => $get["complexSearch"] ?? null,
+
+    "numbers" => $get["numbers"] ?? null,
+    "year" => $get["year"] ?? null,
+
+    "location" => $get["location"] ?? null,
+    "creator" => $get["creator"] ?? null,
+
+    "description" => $get["description"] ?? null,
+    "fileList" => $get["fileList"] ?? null,
+
+    "platforms" => $get["platforms"] ?? [],
+    "formats" => $get["formats"] ?? [],
+    "archives" => $get["archives"] ?? [],
+
+    "scopes" => $get["scopes"] ?? [],
+    "alignment" => $get["alignment"] ?? null,
+    "leechStatus" => $get["leechStatus"] ?? null,
+    "licenses" => $get["licenses"] ?? [],
+
+    "sizeMin" => $get["sizeMin"] ?? null,
+    "sizeMax" => $get["sizeMax"] ?? null,
+    "sizeUnit" => $get["sizeUnit"] ?? null,
+
+    "categories" => $get["categories"] ?? [],
+    "tagList" => $get["tagList"] ?? [],
+    "tagsType" => $get["tagsType"] ?? null,
+
+    "orderBy" => $get["orderBy"] ?? "timeAdded",
+    "orderWay" => $get["orderWay"] ?? "desc",
+    "groupResults" => $get["groupResults"] ?? $app->user->siteOptions["torrentGrouping"],
+
+    "page" => $get["page"] ?? 1,
+
+    "openaiContent" => $get["openaiContent"] ?? $app->user->siteOptions["openaiContent"],
+];
+
+# build query string (saving/sharing)
+foreach ($get as $key => $value) {
+    if (empty($value)) {
+        unset($get[$key]);
+    }
+}
+
+$get["page"] ??= null;
+unset($get["page"]);
+
+$queryString = http_build_query($get);
+#!d($queryString);
+
+# search manticore
+$manticore = new \Gazelle\Manticore();
+$searchResults = $manticore->search("requests", $get);
+$resultCount = count($searchResults);
+#!d($searchResults);
+
+
+/** pagination */
+
+
+$pagination = [];
+
+# resultCount and pageSize
+$pagination["resultCount"] = count($searchResults);
+$pagination["pageSize"] = $app->user->extra["siteOptions"]["searchPagination"] ?? 20;
+
+# current page
+$pagination["currentPage"] = intval($searchTerms["page"] ?? 1);
+if (empty($pagination["currentPage"]) || $pagination["currentPage"] !== abs($pagination["currentPage"])) {
+    $pagination["currentPage"] = 1;
+}
+
+# last page
+$pagination["lastPage"] = ceil($pagination["resultCount"] / $pagination["pageSize"]);
+if ($pagination["currentPage"] > $pagination["lastPage"]) {
+    $pagination["currentPage"] = $pagination["lastPage"];
+}
+
+# previous page
+$pagination["previousPage"] = $pagination["currentPage"] - 1;
+if (empty($pagination["previousPage"]) || abs($pagination["previousPage"]) !== $pagination["previousPage"]) {
+    $pagination["previousPage"] = 1;
+}
+
+# next page
+$pagination["nextPage"] = $pagination["currentPage"] + 1;
+
+# first page
+$pagination["firstPage"] = 1;
+
+# offset and limit
+$pagination["offset"] = intval(($pagination["currentPage"] - 1) * $pagination["pageSize"]);
+$pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
+
+if ($pagination["limit"] > $pagination["resultCount"]) {
+    $pagination["limit"] = $pagination["resultCount"];
+}
+
+
+/** request info */
+
+
+# Requests::get_requests
+# this is slow, only do the current page
+$app->debug["time"]->startMeasure("requests", "get request data");
+$requestIds = array_column($searchResults, "id");
+$requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
+
+$requestData = Requests::get_requests($requestIds);
+$app->debug["time"]->stopMeasure("requests", "get request data");
+#!d($requestData);
+
+
+/** tags */
+
+
+$query = "select name from tags where tagType = 'genre' order by name";
+$ref = $app->dbNew->multi($query, []);
+$officialTags = array_column($ref, "name");
+
+
+/** twig template */
+
+$app->twig->display("requests/browse.twig", [
+    "title" => "Requests",
+    "js" => ["vendor/tom-select.complete.min", "requests"],
+    "css" => ["vendor/tom-select.bootstrap5.min"],
+
+    # todo: this situation
+    "categories" => $Categories,
+    "resolutions" => $Resolutions,
+
+    /*
+    "xmls" => array_merge(
+        $app->env->toArray($app->env->META->Formats->GraphXml),
+        $app->env->toArray($app->env->META->Formats->GraphTxt)
+    ),
+
+    "raster" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgRaster),
+        $app->env->toArray($app->env->META->Formats->MapRaster)
+    ),
+
+    "vector" => array_merge(
+        $app->env->toArray($app->env->META->Formats->ImgVector),
+        $app->env->toArray($app->env->META->Formats->MapVector)
+    ),
+
+    "extras" => array_merge(
+        $app->env->toArray($app->env->META->Formats->BinDoc),
+        $app->env->toArray($app->env->META->Formats->CpuGen),
+        $app->env->toArray($app->env->META->Formats->Plain)
+    ),
+    */
+
+    "searchResults" => $searchResults,
+    "requestData" => $requestData,
+
+    #"bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    "officialTags" => $officialTags,
+
+    "searchTerms" => $searchTerms,
+    "pagination" => $pagination,
+    "queryString" => $queryString,
+]);
+
+
+exit;
+
+
+/** OLD */
+
+
+
+try {
+    $SphQL = new SphinxqlQuery();
+    $SphQL->select('id, votes, bounty')->from('requests');
+    #$SphQL->select('id, votes, bounty')->from('requests, requests_delta');
+} catch (\Throwablle $e) {
+    error('SphinxQL error: ' . $e->getMessage());
+}
 
 $SortOrders = [
   'votes' => 'votes',
@@ -217,13 +405,7 @@ if (!empty($_GET['tags'])) {
             $SearchTags['include'][] = $Tag;
         }
     }
-
-    $TagFilter = Tags::tag_filter_sph($SearchTags, $TagType);
-    $TagNames = $TagFilter['input'];
-
-    if (!empty($TagFilter['predicate'])) {
-        $SphQL->where_match($TagFilter['predicate'], 'taglist', false);
-    }
+    $TagNames = null; # todo
 } elseif (!isset($_GET['tags_type']) || $_GET['tags_type'] !== '0') {
     $_GET['tags_type'] = 1;
 } else {
@@ -299,7 +481,11 @@ if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $SphQL->limit(0, REQUESTS_PER_PAGE, REQUESTS_PER_PAGE);
 }
 
-$SphQLResult = $SphQL->query();
+try {
+    $SphQLResult = $SphQL->query();
+} catch (Throwable $e) {
+    error($e->getMessage());
+}
 $NumResults = (int)$SphQLResult->get_meta('total_found');
 if ($NumResults > 0) {
     $SphRequests = $SphQLResult->to_array('id');

@@ -1,0 +1,86 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+{# include the main search form #}
+{% include "requests/search.twig" %}
+
+{# no results message #}
+{% if pagination.resultCount == 0 %}
+	<div class="alertbar warning halfwide">
+		<h3>No search results :(</h3>
+		<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+	</div>
+{% else %}
+  {# resultCount and pagination controls #}
+  <div id="searchResultsHeader">
+  <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
+
+<div id="paginationControls">
+
+  {% if pagination.currentPage != pagination.firstPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+  {% endif %}
+
+  {% if pagination.currentPage > pagination.previousPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+  {% endif %}
+
+  {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+    {% endif %}
+
+	  {% if pagination.currentPage != pagination.lastPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+     {% endif %}
+ 
+  </div>
+  </div>
+{% endif %}
+
+
+{# start the results table #}
+<table id="requestSearchResults">
+
+{# start results table headings #}
+{# todo: this can be reorganized to suck less #}
+<tr>
+
+	{# category icon #}
+	<th class="categoryColumn" />
+
+	{# title #}
+	<th>Request&nbsp;title</th>
+
+	{# timeAdded #}
+	<th class="center">Time&nbsp;added</th>
+
+	{# last vote #}
+	<th class="center">Last&nbsp;vote</th>
+
+	{# filled #}
+	<th class="center">Filled</th>
+
+</tr>
+{# end results table headings #}
+
+{# start the results themselves #}
+{% for item in requestData %}
+
+{% include "requests/tableEntry.twig" with item %}
+
+{% endfor %}
+
+{# end the results table #}
+</table>
+
+{# todo: share search #}
+{# <a id="searchParamsPermalink" class="button">link this search</a> #}
+
+{# todo: download all this page #}
+{# <a id="downloadAllThisPage" class="button">download all this page</a> #}
+
+{# back to top: lazy af #}
+<a href="#searchResultsHeader" class="button">back to top</a>
+
+{% endblock %}

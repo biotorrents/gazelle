@@ -185,8 +185,4 @@ foreach ($ArtistIDs as $ArtistID) {
     $app->cache->delete("artists_requests_".$ArtistID[0]);
 }
 
-Requests::update_sphinx_requests($RequestID);
-$SphQL = new SphinxqlQuery();
-$SphQL->raw_query("UPDATE requests, requests_delta SET torrentid = $TorrentID, fillerid = $FillerID WHERE id = $RequestID", false);
-
 Http::redirect("requests.php?action=view&id=$RequestID");
