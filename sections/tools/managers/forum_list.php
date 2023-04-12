@@ -17,7 +17,7 @@ function class_list($Selected = 0)
         if ($Selected == $Level) {
             $Return .= ' selected="selected"';
         }
-        $Return .= '>'.Format::cut_string($Name, 20, 1)."</option>\n";
+        $Return .= '>'.\Gazelle\Text::limit($Name, 20)."</option>\n";
     }
     reset($Classes);
     return $Return;
@@ -90,8 +90,8 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     foreach ($ForumCats as $CurCat => $CatName) {
         ?>
           <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) {
-            echo ' selected="selected"';
-        } ?>><?=$CatName?></option>
+              echo ' selected="selected"';
+          } ?>><?=$CatName?></option>
 <?php
     } ?>
         </select>
@@ -140,10 +140,10 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
-  foreach ($ForumCats as $CurCat => $CatName) { ?>
+foreach ($ForumCats as $CurCat => $CatName) { ?>
           <option value="<?=$CurCat?>"<?php if ($CurCat == $CategoryID) {
-      echo ' selected="selected"';
-  } ?>><?=$CatName?></option>
+              echo ' selected="selected"';
+          } ?>><?=$CatName?></option>
 <?php } ?>
         </select>
       </td>

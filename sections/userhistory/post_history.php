@@ -225,7 +225,7 @@ if (empty($Results)) {
       <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
         <span class="u-pull-left">
           <?=time_diff($AddedTime) ?>
-          in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=\Gazelle\Text::esc($ThreadTitle)?>"><?=Format::cut_string($ThreadTitle, 75)?></a>
+          in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=\Gazelle\Text::esc($ThreadTitle)?>"><?=\Gazelle\Text::limit($ThreadTitle, 75)?></a>
 <?php
     if ($ViewingOwn) {
         if ((!$Locked || $Sticky) && (!$LastRead || $LastRead < $LastPostID)) { ?>

@@ -175,7 +175,7 @@ if (isset($_POST['delete'])) {
     'IsSticky' => $Sticky,
     'Ranking' => $Ranking,
     'IsLocked' => $Locked,
-    'Title' => Format::cut_string($RawTitle, 150, 1, 0),
+    'Title' => \Gazelle\Text::limit($RawTitle, 150),
     'ForumID' => $ForumID
     );
     $app->cacheOld->update_row(false, $UpdateArray);

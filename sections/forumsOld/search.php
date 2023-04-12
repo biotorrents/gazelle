@@ -139,18 +139,18 @@ if (empty($ThreadID)) {
         <td><strong>Search In</strong></td>
         <td>
           <input type="radio" name="type" id="type_title" value="title" <?php if ($Type == 'title') {
-        echo ' checked="checked"';
-    } ?> />
+              echo ' checked="checked"';
+          } ?> />
           <label for="type_title">Titles</label>&nbsp;&nbsp;
           <input type="radio" name="type" id="type_body" value="body" <?php if ($Type == 'body') {
-        echo ' checked="checked"';
-    } ?> />
+              echo ' checked="checked"';
+          } ?> />
           <label for="type_body">Body</label>
         </td>
       </tr>
       <tr id="post_created_row" <?php if ($Type == 'title') {
-        echo "class='hidden'";
-    } ?>>
+          echo "class='hidden'";
+      } ?>>
         <td><strong>Post created:</strong></td>
         <td>
           After:
@@ -186,7 +186,7 @@ if (empty($ThreadID)) {
                 if ($Columns % 5) { ?>
             <td colspan="<?=(5 - ($Columns % 5))?>"></td>
             <?php
-        } ?>
+                } ?>
       </tr>
       <?php
             }
@@ -211,8 +211,8 @@ if (empty($ThreadID)) {
             value="<?=$Forum['ID']?>"
             data-category="forum_category_<?=$i?>"
             id="forum_<?=$Forum['ID']?>" <?php if (isset($_GET['forums']) && in_array($Forum['ID'], $_GET['forums'])) {
-            echo ' checked="checked"';
-        } ?> />
+                echo ' checked="checked"';
+            } ?> />
           <label
             for="forum_<?=$Forum['ID']?>"><?=htmlspecialchars($Forum['Name'])?></label>
         </td>
@@ -353,8 +353,8 @@ echo $Pages;
     </tr>
     <?php }
 
-while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $ThreadCreatedTime) = $app->dbOld->next_record()) {
-    // Print results?>
+    while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $ThreadCreatedTime) = $app->dbOld->next_record()) {
+        // Print results?>
     <tr class="row">
       <td>
         <a
@@ -362,16 +362,16 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
       </td>
       <td>
         <?php if (empty($ThreadID)) { ?>
-        <a href="forums.php?action=viewthread&amp;threadid=<?=$ID?>"><?=Format::cut_string($Title, 80); ?></a>
+        <a href="forums.php?action=viewthread&amp;threadid=<?=$ID?>"><?=\Gazelle\Text::limit($Title, 80); ?></a>
         <?php } else { ?>
-        <?=Format::cut_string($Title, 80); ?>
+        <?=\Gazelle\Text::limit($Title, 80); ?>
         <?php
-  }
-    if ($Type == 'body') { ?>
+        }
+        if ($Type == 'body') { ?>
         <a data-toggle-target="#post_<?=$PostID?>_text">(Show)</a>
         <span class="u-pull-right tooltip last_read" title="Jump to post"><a href="forums.php?action=viewthread&amp;threadid=<?=$ID?><?php if (!empty($PostID)) {
-        echo "&amp;postid=$PostID#post$PostID";
-    } ?>"></a></span>
+            echo "&amp;postid=$PostID#post$PostID";
+        } ?>"></a></span>
         <?php } ?>
       </td>
       <td>
@@ -387,7 +387,7 @@ while (list($ID, $Title, $ForumID, $ForumName, $LastTime, $PostID, $Body, $Threa
       </td>
     </tr>
     <?php }
-}
+    }
 ?>
   </table>
 
