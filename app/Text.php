@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 /**
  *
- * \Gazelle\Text
+ * Gazelle\Text
  *
  * Text parsing and escaping.
  *

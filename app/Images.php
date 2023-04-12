@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * \Gazelle\Images
+ * Gazelle\Images
  *
  * Thumbnail aide, mostly.
  *

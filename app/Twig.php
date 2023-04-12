@@ -202,7 +202,7 @@ class Twig # extends Twig\Environment
             return $app->user->cant($permission);
         }));
 
-        # \Gazelle\Images::process
+        # Gazelle\Images::process
         $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
             return new Twig\Markup(
                 \Gazelle\Images::process($uri, $thumbnail),
@@ -227,7 +227,7 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        # \Gazelle\Text::parse
+        # Gazelle\Text::parse
         $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
             return new Twig\Markup(
                 \Gazelle\Text::parse($string),

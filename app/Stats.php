@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Plausible Stats API
+ * Stats
+ *
+ * Plausible Stats API and database stats.
+ *
  * @see https://plausible.io/docs
  */
 
