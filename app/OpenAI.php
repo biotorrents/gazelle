@@ -120,17 +120,17 @@ class OpenAI
      *
      * @see https://beta.openai.com/docs/api-reference/completions
      *
-     * @param int $groupId
+     * @param int $id
      * @return array
      */
-    public function summarize(int $groupId): array
+    public function summarize(int $id): array
     {
         $app = \Gazelle\App::go();
 
-        $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$groupId}");
+        $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$id}");
 
         # return cached if available
-        $cacheKey = "{$this->cachePrefix}_summary_{$groupId}";
+        $cacheKey = "{$this->cachePrefix}_summary_{$id}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -139,10 +139,10 @@ class OpenAI
 
         # get the torrent group description
         $query = "select description from torrents_group where id = ?";
-        $description = $app->dbNew->single($query, [$groupId]);
+        $description = $app->dbNew->single($query, [$id]);
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or description empty");
+            throw new \Exception("groupId {$id} not found or description empty");
         }
 
         # process the description
@@ -159,7 +159,7 @@ class OpenAI
 
             # cast to an array and save to the database
             $response = $response->toArray();
-            $this->insertResponse($groupId, "summary", $response);
+            $this->insertResponse($id, "summary", $response);
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
@@ -177,17 +177,17 @@ class OpenAI
      *
      * @see https://beta.openai.com/docs/api-reference/completions
      *
-     * @param int $groupId
+     * @param int $id
      * @return array
      */
-    public function keywords(int $groupId): array
+    public function keywords(int $id): array
     {
         $app = \Gazelle\App::go();
 
-        $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$groupId}");
+        $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$id}");
 
         # return cached if available
-        $cacheKey = "{$this->cachePrefix}_keywords_{$groupId}";
+        $cacheKey = "{$this->cachePrefix}_keywords_{$id}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -196,16 +196,16 @@ class OpenAI
 
         # try to get a tl;dr summary
         $query = "select text from openai where groupId = ? and type = ?";
-        $description = $app->dbNew->single($query, [$groupId, "summary"]);
+        $description = $app->dbNew->single($query, [$id, "summary"]);
 
         # get a description if no summary exists
         if (!$description || empty($description)) {
             $query = "select description from torrents_group where id = ?";
-            $description = $app->dbNew->single($query, [$groupId]);
+            $description = $app->dbNew->single($query, [$id]);
         }
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or description empty");
+            throw new \Exception("groupId {$id} not found or description empty");
         }
 
         # process the description
@@ -222,7 +222,7 @@ class OpenAI
 
             # cast to an array and save to the database
             $response = $response->toArray();
-            $this->insertResponse($groupId, "keywords", $response);
+            $this->insertResponse($id, "keywords", $response);
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
@@ -260,7 +260,7 @@ class OpenAI
                 insert into torrents_tags (tagId, groupId, userId) values (?, ?, ?)
                 on duplicate key update tagId = tagId
             ";
-            $app->dbNew->do($query, [$tagId, $groupId, 0]);
+            $app->dbNew->do($query, [$tagId, $id, 0]);
         }
 
         $app->cache->set($cacheKey, $response, $this->cacheDuration);
@@ -291,12 +291,12 @@ class OpenAI
      *
      * Write an OpenAI API response to the database.
      *
-     * @param int $groupId
+     * @param int $id
      * @param string $type
      * @param array $response
      * @return void
      */
-    private function insertResponse(int $groupId, string $type, array $response): void
+    private function insertResponse(int $id, string $type, array $response): void
     {
         $app = \Gazelle\App::go();
 
@@ -308,7 +308,7 @@ class OpenAI
         # format the data
         $data = [
             "jobId" => $response["id"],
-            "groupId" => $groupId,
+            "groupId" => $id,
             "object" => $response["object"],
             "created" => \Carbon\Carbon::createFromTimestamp($response["created"])->toDateTimeString(),
             "model" => $response["model"],
@@ -325,7 +325,7 @@ class OpenAI
 
         # get the failCount
         $query = "select failCount from openai where groupId = ? and type = ?";
-        $failCount = $app->dbNew->single($query, [$groupId, $type]) ?? 0;
+        $failCount = $app->dbNew->single($query, [$id, $type]) ?? 0;
         $data["failCount"] = $failCount;
 
         # increment on an error
