@@ -109,18 +109,35 @@ class Database extends \PDO
 
 
     /**
-     * id
+     * getId
+     *
+     * Get the string representation of a binary uuid.
+     *
+     * @param string $binary uuid v7 binary
+     * @return string uuid v7 string
+     *
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
+     */
+    public function getId(string $binary): string
+    {
+        return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
+    }
+
+
+    /**
+     * setId
      *
      * Generate a unique id suitable for a database key.
      *
-     * @return string time-ordered uuid v4
+     * @return string uuid v7 binary
      *
-     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_orderedUuid
-     * @see https://tomharrisonjr.com/uuid-or-guid-as-primary-keys-be-careful-7b2aa3dcb439
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
      */
-    public function id(): string
+    public function setId(): string
     {
-        return \Illuminate\Support\Str::orderedUuid()->toString();
+        return \Ramsey\Uuid\Uuid::uuid7()->getBytes();
     }
 
 
@@ -128,7 +145,7 @@ class Database extends \PDO
      * slug
      *
      * Generate a hashed slug from a string, e.g.,
-     * $app->db->slug($title) => "my-title-fLpX6t48"
+     * $app->db->slug($title) => "my-title-d4dce101"
      *
      * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
      * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_slug
@@ -139,10 +156,15 @@ class Database extends \PDO
         $string = \Illuminate\Support\Str::words($string, 10, "");
         $slug = \Illuminate\Support\Str::slug($string);
 
-        $hash = bin2hex(random_bytes(8));
-        #$hash = substr(hash($this->algorithm, $string), 0, 8);
+        $hash = bin2hex(random_bytes(4));
+        $good = "{$slug}-{$hash}";
 
-        return "{$slug}-{$hash}";
+        # lazy af
+        if (strlen($good) > 255) {
+            throw new \Exception("slug too long");
+        }
+
+        return $good;
     }
 
 

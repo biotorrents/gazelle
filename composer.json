@@ -61,6 +61,7 @@
     "orpheusnet/bencode-torrent": "^1.2",
     "paragonie/anti-csrf": "^2.3",
     "povils/figlet": "*",
+    "ramsey/uuid": "^4",
     "robthree/twofactorauth": "^1.8.2",
     "snipe/banbuilder": "^2.3",
     "spatie/once": "^3.1",

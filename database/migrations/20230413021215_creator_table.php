@@ -24,10 +24,12 @@ final class CreatorTable extends AbstractMigration
         # https://api.semanticscholar.org/api-docs/graph#tag/Author-Data/operation/get_graph_get_author
         $query = "
             CREATE TABLE IF NOT EXISTS `creators` (
-                `id` INT NOT NULL AUTO_INCREMENT,
+                `id` BIGINT NOT NULL AUTO_INCREMENT,
+                `uuid` BINARY(16) NOT NULL,
                 `orcid` VARCHAR(32) DEFAULT NULL,
-                `semanticScholarId` INT DEFAULT NULL,
+                `semanticScholarId` BIGINT DEFAULT NULL,
                 `name` VARCHAR(255) NOT NULL,
+                `slug` VARCHAR(255) NOT NULL,
                 `description` TEXT DEFAULT NULL,
                 `aliases` JSON DEFAULT NULL,
                 `affiliations` JSON DEFAULT NULL,
@@ -36,10 +38,11 @@ final class CreatorTable extends AbstractMigration
                 `citationCount` INT DEFAULT NULL,
                 `hIndex` INT DEFAULT NULL,
                 `created` DATETIME DEFAULT NOW(),
-                `updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
+                `updated` DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
                 `deleted` DATETIME DEFAULT NULL,
-                KEY `id` (`id`,`orcid`,`semanticScholarId`) USING BTREE,
-                PRIMARY KEY (`id`)
+                KEY `id` (`id`,`uuid`,`orcid`,`semanticScholarId`) USING BTREE,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY (`uuid`)
             );
         ";
         $app->dbNew->do($query, []);
@@ -50,8 +53,11 @@ final class CreatorTable extends AbstractMigration
 
         # loop through it
         foreach ($ref as $row) {
-            $query = "insert into creators (name) values (?)";
-            $app->dbNew->do($query, [ $row["name"] ]);
+            $uuid = $app->dbNew->setId();
+            $slug = $app->dbNew->slug($row["name"]);
+
+            $query = "insert into creators (uuid, name, slug) values (?, ?, ?)";
+            $app->dbNew->do($query, [$uuid, $row["name"], $slug]);
         }
     }
 }
