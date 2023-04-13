@@ -76,8 +76,22 @@ else {
  * cache
  */
 
-ENV::setPriv("redisHost", "localhost");
+ENV::setPub("redisClusterEnabled", true);
+
+# this should be an array of at least three "host:port" strings
+# https://redis.io/docs/management/scaling/#create-a-redis-cluster
+ENV::setPriv("redisNodes", [
+    "",
+    "",
+    "",
+]);
+
+# single redis server (not a cluster)
+ENV::setPriv("redisHost", "");
 ENV::setPriv("redisPort", 6379);
+
+ENV::setPriv("redisUsername", "");
+ENV::setPriv("redisPassphrase", "");
 
 
 /**

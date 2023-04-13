@@ -35,6 +35,9 @@ class Cache # extends \Redis
     # are we in a transaction?
     private $transactionMode = false;
 
+    # are we running a cluster or a single server?
+    private $clusterMode = null;
+
 
     /**
      * __functions
@@ -88,16 +91,52 @@ class Cache # extends \Redis
     {
         $app = \Gazelle\App::go();
 
-        # establish connection
-        $redis = new \Redis();
-        $redis->connect(
-            $app->env->getPriv("redisHost"),
-            $app->env->getPriv("redisPort"),
-        );
+        # https://github.com/phpredis/phpredis/blob/develop/cluster.md
+        if ($app->env->redisClusterEnabled) {
+            $this->redis = new \RedisCluster(
+                null,
+                $app->env->getPriv("redisNodes"),
+                1.5,
+                1.5,
+                true,
+                $app->env->getPriv("redisPassphrase")
+            );
 
-        # failure
-        if (!$redis->isConnected()) {
-            throw new \Exception("unable to establish PhpRedis cache connection");
+            # failure
+            if (empty($this->masters())) {
+                throw new \Exception("unable to establish PhpRedis cache connection");
+            }
+
+            # set cluster mode
+            $this->clusterMode = true;
+        }
+
+        # single redis server (not a cluster)
+        if (!$app->env->redisClusterEnabled) {
+            $this->redis = new \Redis();
+            $this->redis->connect(
+                $app->env->getPriv("redisHost"),
+                $app->env->getPriv("redisPort"),
+            );
+
+            # authentication
+            $redisUsername = $app->env->getPriv("redisUsername") ?? null;
+            $redisPassphrase = $app->env->getPriv("redisPassphrase") ?? null;
+
+            if ($redisUsername && $redisPassphrase) {
+                $this->redis->auth([
+                    $redisUsername,
+                    $redisPassphrase,
+                ]);
+            }
+
+            # failure
+            if (!$this->redis->isConnected()) {
+                throw new \Exception("unable to establish PhpRedis cache connection");
+            }
+
+            # set cluster mode
+            $this->clusterMode = false;
         }
 
         # avoid key collisions on development
@@ -106,11 +145,8 @@ class Cache # extends \Redis
         }
 
         # set options
-        $redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
-        $redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefix);
-
-        # done
-        $this->redis = $redis;
+        $this->redis->setOption(\Redis::OPT_SERIALIZER, \Redis::SERIALIZER_JSON);
+        $this->redis->setOption(\Redis::OPT_PREFIX, $this->cachePrefix);
     }
 
 
@@ -192,7 +228,7 @@ class Cache # extends \Redis
      */
     public function exists(string $key): bool
     {
-        return $this->redis->exists($key);
+        return boolval($this->redis->exists($key));
     }
 
 
@@ -242,6 +278,13 @@ class Cache # extends \Redis
      */
     public function decrement(string $key, int $value = 1): int
     {
+        # cast to an int
+        $unsafe = $this->redis->get($key);
+        $safe = intval($unsafe);
+
+        # set the integer value
+        $this->redis->set($key, $safe);
+
         return $this->redis->decrBy($key, $value);
     }
 
@@ -279,13 +322,40 @@ class Cache # extends \Redis
     /**
      * flush
      *
+     * Flush the keys from a given node.
+     *
+     * @param int $node the node to flush
      * @return bool true on success, false on failure
      *
      * @see https://github.com/phpredis/phpredis#flushall
      */
-    public function flush(): bool
+    public function flush(int $node = 1): bool
     {
-        return $this->redis->flushAll();
+        return $this->redis->flushAll($node);
+    }
+
+
+    /**
+     * flushAll
+     *
+     * Flush the keys from all nodes.
+     *
+     * @return ?array the status of each node flush
+     *
+     * @see https://github.com/phpredis/phpredis#flushall
+     */
+    public function flushAll(): ?array
+    {
+        if (!$this->clusterMode) {
+            return null;
+        }
+
+        $return = [];
+        foreach ($this->masters() as $node => $master) {
+            $return[$node] = $this->redis->flushAll($node);
+        }
+
+        return $return;
     }
 
 
@@ -300,7 +370,7 @@ class Cache # extends \Redis
      * @see https://github.com/phpredis/phpredis#info
      * @see https://redis.io/commands/info/
      */
-    public function info(string $pattern = ""): array
+    public function info(string $pattern = "*"): array
     {
         return $this->redis->info($pattern);
     }
@@ -329,7 +399,12 @@ class Cache # extends \Redis
      */
     public function slowLog(int $limit = 10): array
     {
-        return $this->redis->slowLog("get", $limit);
+        $slowLog = $this->redis->slowLog("get", $limit);
+        if (!empty($slowLog)) {
+            return $slowLog;
+        }
+
+        return [];
     }
 
 
@@ -354,9 +429,9 @@ class Cache # extends \Redis
      *
      * @see https://github.com/phpredis/phpredis#dbsize
      */
-    public function count(): int
+    public function count(int $node = 1): int
     {
-        return $this->redis->dbSize();
+        return $this->redis->dbSize($node);
     }
 
 
@@ -368,7 +443,7 @@ class Cache # extends \Redis
      *
      * @see https://github.com/phpredis/phpredis#ping
      */
-    public function ping(string $message = ""): string
+    public function ping(string $message = "hello"): string
     {
         return $this->redis->ping($message);
     }
@@ -386,6 +461,21 @@ class Cache # extends \Redis
     public function raw(string $command, array $arguments = []): mixed
     {
         return $this->redis->rawCommand($command, ...$arguments);
+    }
+
+
+    /**
+     * masters
+     *
+     * @return ?array the cluster masters
+     */
+    public function masters(): ?array
+    {
+        if (!$this->clusterMode) {
+            return null;
+        }
+
+        return $this->redis->_masters();
     }
 
 
