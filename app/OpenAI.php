@@ -64,10 +64,18 @@ class OpenAI
     private $cacheDuration = "1 day";
 
     # database tables for content to act on
-    private $tables = [
+    private $contentType = null;
+
+    private $summaryTables = [
         "collage" => "collages",
         "group" => "torrents_group",
         "request" => "requests",
+    ];
+
+    private $keywordTables = [
+        "collage" => null, # collages aren't tagged
+        "group" => "torrents_tags",
+        "request" => "requests_tags",
     ];
 
 
@@ -83,10 +91,21 @@ class OpenAI
     {
         $app = \Gazelle\App::go();
 
+        # sorry, it's disabled
         if (!$app->env->enableOpenAi) {
             throw new \Exception("OpenAI support is disabled in the app config");
         }
 
+        # set the content to operate on
+        $options["contentType"] ??= "group";
+        $this->contentType = $options["contentType"];
+
+        # invalid contentType passed
+        if (!array_key_exists($this->contentType, $this->summaryTables)) {
+            throw new \Exception("invalid contentType: {$this->contentType}");
+        }
+
+        # instantiate the client
         $openAiApi = $app->env->getPriv("openAiApi");
         $this->client = \OpenAI::client($openAiApi["secretKey"]);
     }
@@ -127,10 +146,10 @@ class OpenAI
     {
         $app = \Gazelle\App::go();
 
-        $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$id}");
+        $app->debug["time"]->startMeasure("summarize", "openai: summarize {$this->contentType} {$id}");
 
         # return cached if available
-        $cacheKey = "{$this->cachePrefix}_summary_{$id}";
+        $cacheKey = "{$this->cachePrefix}:summary:{$this->contentType}:{$id}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -138,11 +157,12 @@ class OpenAI
         }
 
         # get the torrent group description
-        $query = "select description from torrents_group where id = ?";
+        $table = $this->summaryTables[$this->contentType];
+        $query = "select description from {$table} where id = ?";
         $description = $app->dbNew->single($query, [$id]);
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$id} not found or description empty");
+            throw new \Exception("{$this->contentType} {$id} not found or description empty");
         }
 
         # process the description
@@ -184,10 +204,10 @@ class OpenAI
     {
         $app = \Gazelle\App::go();
 
-        $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$id}");
+        $app->debug["time"]->startMeasure("keywords", "openai: keywords for {$this->contentType} {$id}");
 
         # return cached if available
-        $cacheKey = "{$this->cachePrefix}_keywords_{$id}";
+        $cacheKey = "{$this->cachePrefix}:keywords:{$this->contentType}:{$id}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -195,17 +215,19 @@ class OpenAI
         }
 
         # try to get a tl;dr summary
-        $query = "select text from openai where groupId = ? and type = ?";
+        $column = $this->determineColumn($this->contentType);
+        $query = "select text from openai where {$column} = ? and type = ?";
         $description = $app->dbNew->single($query, [$id, "summary"]);
 
         # get a description if no summary exists
         if (!$description || empty($description)) {
-            $query = "select description from torrents_group where id = ?";
+            $table = $this->summaryTables[$this->contentType];
+            $query = "select description from {$table} where id = ?";
             $description = $app->dbNew->single($query, [$id]);
         }
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$id} not found or description empty");
+            throw new \Exception("{$this->contentType} {$id} not found or description empty");
         }
 
         # process the description
@@ -256,8 +278,9 @@ class OpenAI
             $tagId = $app->dbNew->pdo->lastInsertId();
 
             # insert into torrents_tags
+            $table = $this->keywordTables[$this->contentType];
             $query = "
-                insert into torrents_tags (tagId, groupId, userId) values (?, ?, ?)
+                insert into {$table} (tagId, groupId, userId) values (?, ?, ?)
                 on duplicate key update tagId = tagId
             ";
             $app->dbNew->do($query, [$tagId, $id, 0]);
@@ -291,6 +314,8 @@ class OpenAI
      *
      * Write an OpenAI API response to the database.
      *
+     * todo: make this work with other content types
+     *
      * @param int $id
      * @param string $type
      * @param array $response
@@ -310,7 +335,7 @@ class OpenAI
             "jobId" => $response["id"],
             "groupId" => $id,
             "object" => $response["object"],
-            "created" => \Carbon\Carbon::createFromTimestamp($response["created"])->toDateTimeString(),
+            "created" => \Carbon\Carbon::parse($response["created"])->toDateTimeString(),
             "model" => $response["model"],
             "text" => \Gazelle\Text::oneLine($response["choices"][0]["text"]),
             "index" => $response["choices"][0]["index"],
@@ -357,5 +382,28 @@ class OpenAI
 
         # do it
         $app->dbNew->do($query, $data);
+    }
+
+
+    /**
+     * determineColumn
+     *
+     * Determine the column name for a given content type.
+     */
+    private function determineColumn(): string
+    {
+        switch ($this->contentType) {
+            case "collage":
+                return "collageId";
+
+            case "group":
+                return "groupId";
+
+            case "request":
+                return "requestId";
+
+            default:
+                throw new \Exception("unknown content type {$this->contentType}");
+        }
     }
 } # class
