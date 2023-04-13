@@ -229,6 +229,12 @@ class Database extends \PDO
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
+            # binary uuid v7 handling
+            $row["uuid"] ??= null;
+            if ($row["uuid"]) {
+                $row["uuid"] = $this->getId($row["uuid"]);
+            }
+
             foreach ($row as $key => $value) {
                 $app->cache->set($cacheKey, $value, $this->cacheDuration);
                 return $value;
@@ -255,6 +261,12 @@ class Database extends \PDO
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
+            # binary uuid v7 handling
+            $row["uuid"] ??= null;
+            if ($row["uuid"]) {
+                $row["uuid"] = $this->getId($row["uuid"]);
+            }
+
             $app->cache->set($cacheKey, $row, $this->cacheDuration);
             return $row;
         }
@@ -304,6 +316,14 @@ class Database extends \PDO
 
         $statement = $this->do($query, $arguments);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        # binary uuid v7 handling
+        foreach ($ref as $key => $row) {
+            $row["uuid"] ??= null;
+            if ($row["uuid"]) {
+                $ref[$key]["uuid"] = $this->getId($row["uuid"]);
+            }
+        }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
