@@ -7,11 +7,8 @@ declare(strict_types=1);
  * Gazelle\Database
  *
  * The blunt singleton, for your procedural code.
- * @see https://phpdelusions.net/pdo/pdo_wrapper
  *
- * Also uses the Laravel Eloquent ORM for migrations.
- * Maybe for models, I'm not really sold on this idea.
- * @see https://laravel.com/docs/9.x/eloquent
+ * @see https://phpdelusions.net/pdo/pdo_wrapper
  */
 
 namespace Gazelle;
@@ -108,7 +105,7 @@ class Database extends \PDO
     }
 
 
-    /** */
+    /** identifiers */
 
 
     /**
@@ -149,12 +146,15 @@ class Database extends \PDO
     }
 
 
+    /** query operations */
+
+
     /**
      * do
      *
      * For update, insert, etc.
      */
-    public function do(string $query, array $args = [])
+    public function do(string $query, array $arguments = [])
     {
         $app = \Gazelle\App::go();
 
@@ -171,12 +171,12 @@ class Database extends \PDO
         $statement = $this->pdo->prepare($query);
 
         # no params
-        if (empty($args)) {
+        if (empty($arguments)) {
             return $this->pdo->query($query);
         }
 
         # execute
-        $statement->execute($args);
+        $statement->execute($arguments);
 
         # errors
         $errors = $this->pdo->errorInfo();
@@ -194,16 +194,16 @@ class Database extends \PDO
      *
      * Gets a single value.
      */
-    public function single(string $query, array $args = [])
+    public function single(string $query, array $arguments = [])
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
@@ -220,16 +220,16 @@ class Database extends \PDO
      *
      * Gets a single row.
      */
-    public function row(string $query, array $args = [])
+    public function row(string $query, array $arguments = [])
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
@@ -244,21 +244,21 @@ class Database extends \PDO
      *
      * Gets a single column.
      */
-    public function column(string $query, string $column, array $args = [])
+    public function column(string $query, string $column, array $arguments = [])
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
         /*
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $ref = $statement->fetchColumn();
         */
 
-        $ref = $this->multi($query, $args);
+        $ref = $this->multi($query, $arguments);
         $ref = array_column($ref, $column);
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -271,16 +271,16 @@ class Database extends \PDO
      *
      * Gets all results.
      */
-    public function multi(string $query, array $args = []): array
+    public function multi(string $query, array $arguments = []): array
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -307,9 +307,9 @@ class Database extends \PDO
      *
      * Gets the number of rows.
      */
-    public function rowCount(string $query, array $args = []): int
+    public function rowCount(string $query, array $arguments = []): int
     {
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $rowCount = $statement->rowCount();
 
         return $rowCount;
@@ -321,9 +321,9 @@ class Database extends \PDO
      *
      * Gets the number of columns.
      */
-    public function columnCount(string $query, array $args = []): int
+    public function columnCount(string $query, array $arguments = []): int
     {
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments);
         $columnCount = $statement->columnCount();
 
         return $columnCount;
