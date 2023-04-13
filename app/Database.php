@@ -108,6 +108,47 @@ class Database extends \PDO
     }
 
 
+    /** */
+
+
+    /**
+     * id
+     *
+     * Generate a unique id suitable for a database key.
+     *
+     * @return string time-ordered uuid v4
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_orderedUuid
+     * @see https://tomharrisonjr.com/uuid-or-guid-as-primary-keys-be-careful-7b2aa3dcb439
+     */
+    public function id(): string
+    {
+        return \Illuminate\Support\Str::orderedUuid()->toString();
+    }
+
+
+    /**
+     * slug
+     *
+     * Generate a hashed slug from a string, e.g.,
+     * $app->db->slug($title) => "my-title-fLpX6t48"
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_slug
+     *
+     */
+    public function slug(string $string): string
+    {
+        $string = \Illuminate\Support\Str::words($string, 10, "");
+        $slug = \Illuminate\Support\Str::slug($string);
+
+        $hash = bin2hex(random_bytes(8));
+        #$hash = substr(hash($this->algorithm, $string), 0, 8);
+
+        return "{$slug}-{$hash}";
+    }
+
+
     /**
      * do
      *
