@@ -29,7 +29,9 @@ declare(strict_types=1);
 CREATE TABLE `openai` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `jobId` VARCHAR(128) NOT NULL,
-    `groupId` INT NOT NULL,
+    `collageId` INT,
+    `groupId` INT,
+    `requestId` INT,
     `object` VARCHAR(32),
     `created` DATETIME DEFAULT NOW(),
     `updated` DATETIME DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP,
@@ -44,7 +46,7 @@ CREATE TABLE `openai` (
     `failCount` TINYINT DEFAULT 0,
     `json` JSON,
     `type` VARCHAR(16),
-    PRIMARY KEY (`id`,`jobId`,`groupId`)
+    PRIMARY KEY (`id`,`jobId`,`collageId`,`groupId`,`requestId`),
 );
  */
 
@@ -60,6 +62,13 @@ class OpenAI
     # cache settings
     private $cachePrefix = "openai:";
     private $cacheDuration = "1 day";
+
+    # database tables for content to act on
+    private $tables = [
+        "collage" => "collages",
+        "group" => "torrents_group",
+        "request" => "requests",
+    ];
 
 
     /**
