@@ -470,7 +470,7 @@ class Torrents
             $app->cache->decrement('num_torrent_reportsv2', $Reports);
         }
 
-        unlink(torrentStore.'/'.$ID.'.torrent');
+        unlink($app->env->torrentStore.'/'.$ID.'.torrent');
         $app->dbOld->query("
         DELETE FROM torrents_bad_tags
           WHERE TorrentID = ?", $ID);
@@ -724,6 +724,8 @@ class Torrents
      */
     public static function regenerate_filelist($TorrentID)
     {
+        $app = \Gazelle\App::go();
+
         $QueryID = $app->dbOld->get_query_id();
 
         $app->dbOld->query("
@@ -732,7 +734,7 @@ class Torrents
           WHERE ID = ?", $TorrentID);
         if ($app->dbOld->has_results()) {
             list($GroupID) = $app->dbOld->next_record(MYSQLI_NUM, false);
-            $Contents = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+            $Contents = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
                 $FilePath = (isset($Tor->Dec['info']['files']) ? \Gazelle\Text::utf8($Tor->get_name()) : '');

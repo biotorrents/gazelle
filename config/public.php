@@ -96,13 +96,7 @@ ENV::setPub(
       : "/var/www/html/dev.torrents.bio") # development
 );
 
-# where torrent files are stored, e.g., /var/www/torrents-dev/
-( # old format
-    !$env->dev
-        ? define("torrentStore", "/var/www/torrents") # production
-        : define("torrentStore", "/var/www/torrents-dev") # development
-);
-
+# where torrent files are stored, e.g., /var/www/torrents
 ENV::setPub(
     "torrentStore",
     (!$env->dev
@@ -314,7 +308,7 @@ ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));
 
 
 /**
- * Services
+ * services
  *
  * Public APIs, domains, etc.
  * Not intended for private API keys.
@@ -327,9 +321,6 @@ ENV::setPub(
     "SCI_HUB",
     ["ren", "tw", "se"]
 );
-
-# IP Geolocation
-ENV::setPub("IP_GEO", "https://tools.keycdn.com/geo.json?host=");
 
 
 /**
