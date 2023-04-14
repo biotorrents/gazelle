@@ -41,10 +41,6 @@ else {
  * database
  */
 
-# enable or disable eloquent support
-# https://laravel.com/docs/9.x/eloquent
-#ENV::setPub("enableEloquent", true);
-
 # common info
 ENV::setPriv("sqlHost", "");
 ENV::setPriv("sqlPort", 3306);

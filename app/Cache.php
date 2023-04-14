@@ -103,7 +103,7 @@ class Cache # extends \Redis
             );
 
             # failure
-            if (empty($this->masters())) {
+            if (empty($this->info())) {
                 throw new \Exception("unable to establish PhpRedis cache connection");
             }
 
