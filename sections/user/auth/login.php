@@ -15,7 +15,7 @@ if ($app->user->isLoggedIn()) {
 }
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+#Http::csrf();
 
 # libraries
 $auth = new Auth();

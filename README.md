@@ -18,6 +18,7 @@ If you want to scale horizontally, the software supports both
 [Redis clusters](app/Cache.php) and
 [database server replication](app/Database.php).
 Please note that Redis clusters expect at least three nodes.
+This lower limit is inherent to Redis' cluster implementation.
 
 ## Full stack search engine rewrite
 
@@ -172,4 +173,4 @@ She proudly puts the forbidden share symbols on her hat and belt, and is now one
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
 [Download the high resolution version.](public/images/mascotFullVersion.png)
 
-[tysontan.com](https://tysontan.com) / <tysontan@mail.com>
+[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@tysontanx](https://twitter.com/tysontanx)
