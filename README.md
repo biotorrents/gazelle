@@ -54,10 +54,11 @@ Passphrase hashing is all done with `PASSWORD_DEFAULT`, ready for Argon2id.
 
 I tested this extensively and determined that prehashing passphrases was no good.
 Not only it is impossible upgrade the algorithm, e.g., from `sha256` to `sha3-512`,
-but prehashing lowers the total entropy of long strings even if binary is used.
+but prehashing lowers the total entropy of long strings even if binary is used throughout.
 
-Test it yourself with 72 random bytes of data, e.g.,
-`Ç4†bÌ˚π∆Â±©c%Ç?ãìÿäÛ*nÇYKÕu«+TLå¶’¨x¯Õ°ÁôŒ‹ßAS~ËzSDuh<£õ‡*—(vÈË∂`.
+Test it yourself with 72 bytes of random binary data (the max supported by bcrypt) and a Shannon entropy calculator.
+There's something to be said for prehashing passphrases such as `qwerty123`, however.
+BioGazelle enforces a 15-character minimum passphrase length and imposes no other limitations.
 
 ## OpenAI integration
 
