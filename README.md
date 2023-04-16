@@ -11,7 +11,7 @@ and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
 
-## Built to scale
+## Built to scale, micro or maco
 
 BioGazelle is pretty fast out of the box, on a single budget VPS.
 If you want to scale horizontally, the software supports both
@@ -38,11 +38,11 @@ The Gazelle frontend itself uses a
 API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
-
-## Routing system
-
-BioGazelle uses the Flight router to define app routes.
-Features include clean URIs and centralized middleware.
+[Internal API calls](app/API/Internal.php)
+for Ajax use a special token that can safely be exposed to the frontend.
+It based on hashing a
+[rotating server secret](crontab/siteApiSecret.php)
+concatenated with a secure session cookie.
 
 ## OpenAI integration
 
@@ -123,6 +123,9 @@ Besides that, BioGazelle has several passive developments in progress:
 BioGazelle takes cues from the best-of-breed PHP framework Laravel.
 The source code is reorganized along Laravel's lines while maintaining the comfy familiarity of OT/WCD Gazelle.
 The app logic, config, and Git repo lies outside the web root for enhanced security.
+
+BioGazelle uses the Flight router to define app routes.
+Features include clean URIs and centralized middleware.
 An ongoing project involves modernizing the app based on Laravel's excellent tools.
 
 ## Decent debugging
