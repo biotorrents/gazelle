@@ -20,9 +20,9 @@ class Database extends \PDO
     private static $instance;
 
     # database meta
-    private $source = null;
-    private $replicas = [];
-    private $last = null;
+    public $source = null;
+    public $replicas = [];
+    public $last = null;
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
