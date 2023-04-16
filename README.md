@@ -40,9 +40,24 @@ API tokens can be generated in the
 and used with the JSON API.
 [Internal API calls](app/API/Internal.php)
 for Ajax use a special token that can safely be exposed to the frontend.
-It based on hashing a
+It's based on hashing a
 [rotating server secret](crontab/siteApiSecret.php)
 concatenated with a secure session cookie.
+
+## Secure authentication system
+
+The user handling, including registration, logins, etc.,
+has been rewritten into a unified system in the
+[Auth class](app/Auth.php).
+The system acts as an oracle that takes inputs and returns messages.
+Passphrase hashing is all done with `PASSWORD_DEFAULT`, ready for Argon2id.
+
+I tested this extensively and determined that prehashing passphrases was no good.
+Not only it is impossible upgrade the algorithm, e.g., from `sha256` to `sha3-512`,
+but prehashing lowers the total entropy of long strings even if binary is used.
+
+Test it yourself with 72 random bytes of data, e.g.,
+`Ç4†bÌ˚π∆Â±©c%Ç?ãìÿäÛ*nÇYKÕu«+TLå¶’¨x¯Õ°ÁôŒ‹ßAS~ËzSDuh<£õ‡*—(vÈË∂`.
 
 ## OpenAI integration
 
