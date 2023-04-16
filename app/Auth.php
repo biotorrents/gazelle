@@ -53,7 +53,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $this->library = new Delight\Auth\Auth(
-                databaseConnection: $app->dbNew->pdo,
+                databaseConnection: $app->dbNew->source,
                 throttling: $throttling
             );
 

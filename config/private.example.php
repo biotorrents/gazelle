@@ -41,30 +41,81 @@ else {
  * database
  */
 
-# common info
-ENV::setPriv("sqlHost", "");
-ENV::setPriv("sqlPort", 3306);
-
-# leave set even if using TCP due to DB::class strict mode
-ENV::setPriv("sqlSocket", "");
-
-# TLS client certs
-ENV::setPriv("sqlCert", "");
-ENV::setPriv("sqlKey", "");
-ENV::setPriv("sqlCertAuthority", "");
+# enable database replication support
+ENV::setPub("databaseReplicationEnabled", true);
 
 # production
 if (!$env->dev) {
-    ENV::setPriv("sqlDatabase", "");
-    ENV::setPriv("sqlUsername", "");
-    ENV::setPriv("sqlPassphrase", "");
+    # source: or the settings for only one database
+    ENV::setPriv("databaseSource", [
+        "host" => "",
+        "port" => 3306,
+        "socket" => null,
+
+        "username" => "",
+        "passphrase" => "",
+
+        "database" => "",
+        "charset" => "",
+    ]);
+
+    # replicas: array of structures as above
+    ENV::setPriv("databaseReplicas", [
+        "manticore" => [
+            "host" => "",
+            "port" => 3306,
+            "socket" => null,
+
+            "username" => "",
+            "passphrase" => "",
+
+            "database" => "",
+            "charset" => "",
+        ],
+
+        /*
+        "anotherLabel" => [
+            "host" => "",
+            "port" => 3306,
+            "socket" => null,
+
+            "username" => "",
+            "passphrase" => "",
+
+            "database" => "",
+            "charset" => "",
+        ],
+        */
+    ]);
 }
 
 # development
 else {
-    ENV::setPriv("sqlDatabase", "");
-    ENV::setPriv("sqlUsername", "");
-    ENV::setPriv("sqlPassphrase", "");
+    ENV::setPriv("databaseSource", [
+        "host" => "",
+        "port" => 3306,
+        "socket" => null,
+
+        "username" => "",
+        "passphrase" => "",
+
+        "database" => "",
+        "charset" => "",
+    ]);
+
+    ENV::setPriv("databaseReplicas", [
+        "manticore" => [
+            "host" => "",
+            "port" => 3306,
+            "socket" => null,
+
+            "username" => "",
+            "passphrase" => "",
+
+            "database" => "",
+            "charset" => "",
+        ],
+    ]);
 }
 
 
@@ -72,20 +123,23 @@ else {
  * cache
  */
 
+# enable redis cluster support
 ENV::setPub("redisClusterEnabled", true);
 
 # this should be an array of at least three "host:port" strings
 # https://redis.io/docs/management/scaling/#create-a-redis-cluster
 ENV::setPriv("redisNodes", [
-    "",
-    "",
-    "",
+    "", # dev.torrents.bio
+    "", # web.torernts.bio
+    "", # database.torrents.bio
+    "", # manticore.torrents.bio
 ]);
 
 # single redis server (not a cluster)
 ENV::setPriv("redisHost", "");
 ENV::setPriv("redisPort", 6379);
 
+# redis authentication
 ENV::setPriv("redisUsername", "");
 ENV::setPriv("redisPassphrase", "");
 

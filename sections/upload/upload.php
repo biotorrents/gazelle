@@ -24,7 +24,7 @@ $sourceKey = User::uploadSource();
 
 # tagList
 $query = "select name from tags where tagType = ? order by name";
-$tagList = $app->dbNew->column($query, "name", ["genre"]);
+$tagList = $app->dbNew->column("name", $query, ["genre"]);
 
 
 

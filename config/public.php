@@ -85,15 +85,15 @@ ENV::setPub("webRoot", "/var/www");
 # e.g., /var/www/html/dev.torrents.bio
 ( # old format
     !$env->dev
-        ? define("serverRoot", "/var/www/html/torrents.bio") # production
-        : define("serverRoot", "/var/www/html/dev.torrents.bio") # development
+        ? define("serverRoot", "/var/www/html/gazelle") # production
+        : define("serverRoot", "/var/www/html/gazelle") # development
 );
 
 ENV::setPub(
     "serverRoot",
     (!$env->dev
-      ? "/var/www/html/torrents.bio" # production
-      : "/var/www/html/dev.torrents.bio") # development
+      ? "/var/www/html/gazelle" # production
+      : "/var/www/html/gazelle") # development
 );
 
 # where torrent files are stored, e.g., /var/www/torrents
@@ -101,7 +101,7 @@ ENV::setPub(
     "torrentStore",
     (!$env->dev
         ? "/var/www/torrents" # production
-        : "/var/www/torrents-dev") # development);
+        : "/var/www/torrents") # development);
 );
 
 # allows you to run static content off another server
