@@ -34,7 +34,7 @@ The Gazelle frontend itself uses a
 
 ## Bearer token authorization
 
-[API Docs](https://docs.torrents.bio).
+[Read the API documentation.](https://docs.torrents.bio)
 API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
