@@ -91,6 +91,7 @@ class Twig # extends Twig\Environment
         # debug
         if ($app->env->dev) {
             $twig->addExtension(new Twig\Extension\DebugExtension());
+            $twig->addGlobal("git", Debug::gitInfo());
         }
 
         # globals: app and env
@@ -145,9 +146,15 @@ class Twig # extends Twig\Environment
             "form_token",
             function ($lock_to = null) {
                 static $csrf;
+
                 if ($csrf === null) {
-                    $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                    try {
+                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                    } catch (Throwable $e) {
+                        return;
+                    }
                 }
+
                 return $csrf->insertToken($lock_to, false);
             },
             [ "is_safe" => ["html"] ]

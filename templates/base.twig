@@ -226,6 +226,26 @@
 
 	<body class="{{ bodyStyles }}">
 
+	{# git info if on development #}
+	{% if env.dev %}
+		<div id="gitInfo">
+			<strong>branch:</strong>
+			<a href="https://github.com/biotorrents/gazelle/tree/{{ git.branch}}" target="_blank">{{ git.branch}}</a>
+
+			<strong>commit:</strong>
+			<a href="https://github.com/biotorrents/gazelle/commit/{{ git.commit }}" target="_blank">{{ git.commit }}</a>
+
+			<strong>date:</strong>
+			{{ git.date }}
+
+			<strong>message:</strong>
+			{{ git.message }}
+
+			<strong>author:</strong>
+			<a href="https://github.com/biotorrents/gazelle/commits?author={{ git.author }}" target="_blank">{{ git.author }}</a>
+		</div>
+	{% endif %}
+
 		<header id="top">
 			{% if authenticated %}
 				{# private #}
