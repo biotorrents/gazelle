@@ -26,8 +26,8 @@ class Cache # extends \Redis
     private $redis = null;
 
     # global default cache settings
-    private $cachePrefix = "gazelle:"; # e.g., gazelle:stats:overview
-    private $cacheDuration = 3600; # one hour, if not otherwise specified
+    private $cachePrefix = "gazelle:"; # e.g., gazelle:development:stats:overview
+    private $cacheDuration = 3600; # default one hour, if not otherwise specified
 
     # torrent group cache version
     public $groupVersion = "2023-04-01";
@@ -139,9 +139,11 @@ class Cache # extends \Redis
             $this->clusterMode = false;
         }
 
-        # avoid key collisions on development
-        if ($app->env->dev) {
-            $this->cachePrefix = "development:";
+        # avoid key collisions
+        if (!$app->env->dev) {
+            $this->cachePrefix = $this->cachePrefix . "production:";
+        } else {
+            $this->cachePrefix = $this->cachePrefix . "development:";
         }
 
         # set options

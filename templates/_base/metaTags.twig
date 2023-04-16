@@ -11,12 +11,6 @@
 <meta name="robots" content="none" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-{# gazelle user meta tags #}
-{% if authenticated %}
-<meta name="userId" content="{{ user.core.id }}" />
-<meta name="authKey" content="{{ user.extra.AuthKey }}" />
-{% endif %}
-
 {# https://developers.facebook.com/tools/debug/ #}
 <meta property="og:description" content="{{ env.siteDescription }}" />
 <meta property="og:image" content="{{ env.staticServer }}/images/logos/liquidrop-bookish.png" />

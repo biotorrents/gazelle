@@ -82,7 +82,6 @@ class Twig # extends Twig\Environment
                 "auto_reload" => true,
                 "autoescape" => "name",
                 # don't cache in the dev environment
-                #"cache" => "{$app->env->webRoot}/cache/twig",
                 "cache" => (!$app->env->dev) ? "{$app->env->webRoot}/cache/twig" : false,
                 "debug" => $app->env->dev,
                 "strict_variables" => true,

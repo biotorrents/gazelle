@@ -36,14 +36,12 @@
   ],
   "require": {
     "php": "^8.2",
-    "ext-blake3": "*",
     "ext-curl": "*",
     "ext-gd": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",
     "ext-pdo": "*",
     "ext-redis": "*",
-    "ext-snuffleupagus": "*",
     "ext-zip": "*",
     "abraham/twitteroauth": "^4.0.1",
     "cartalyst/sentinel": "^6.0",
@@ -76,7 +74,7 @@
     "kint-php/kint": "^4.2.3",
     "maximebf/debugbar": "^1.18.2",
     "phplucidframe/console-table": "^1.2.4",
-    "phpunit/phpunit": "^9.6.6",
+    "phpunit/phpunit": "^9.6.7",
     "psy/psysh": "^0.11.15",
     "robmorgan/phinx": "^0.13.4"
   },
