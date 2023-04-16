@@ -11,7 +11,7 @@ and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
 
-## Built to scale, micro or maco
+## Built to scale, micro or macro
 
 BioGazelle is pretty fast out of the box, on a single budget VPS.
 If you want to scale horizontally, the software supports both
