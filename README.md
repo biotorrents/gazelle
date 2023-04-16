@@ -170,5 +170,6 @@ She proudly puts the forbidden share symbols on her hat and belt, and is now one
 ## Tyson Tan
 
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
+[Download the high resolution version.](public/images/mascotFullVersion.png)
 
 [tysontan.com](https://tysontan.com) / <tysontan@mail.com>
