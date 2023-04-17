@@ -18,7 +18,8 @@ If you want to scale horizontally, the software supports both
 [Redis clusters](app/Cache.php) and
 [database server replication](app/Database.php).
 Please note that Redis clusters expect at least three nodes.
-This lower limit is inherent to Redis' cluster implementation.
+This lower limit is inherent to Redis'
+[cluster implementation](https://redis.io/docs/management/scaling/).
 
 ## Full stack search engine rewrite
 
@@ -31,6 +32,9 @@ from scratch, based on AnimeBytes' example.
 The Gazelle frontend itself uses a
 [rewritten browse.php controller](sections/torrents/browse.php) and a
 [brand new Twig template](templates/torrents/search.twig).
+Oh yeah, the
+[PHP backend class](app/Manticore.php)
+is also completely rewritten, replacing at least four legacy classes.
 
 ## Bearer token authorization
 
@@ -39,10 +43,15 @@ API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
 [Internal API calls](app/API/Internal.php)
-for Ajax use a special token that can safely be exposed to the frontend.
+for Ajax and such use a special token that can safely be exposed to the frontend.
 It's based on hashing a
 [rotating server secret](crontab/siteApiSecret.php)
 concatenated with a secure session cookie.
+
+The session cookies themselves are tight, btw.
+No JavaScript access, scoped to the same site, long length, etc.
+This kind of stuff is in the
+[low level Http class](app/Http.php).
 
 ## Secure authentication system
 
@@ -73,24 +82,27 @@ It's possible to disable AI content display in the user settings, btw.
 
 BioGazelle supports an array of
 [unobtrusive fonts](resources/scss/assets/fonts.scss)
-with the appropriate bold/italic glyphs and monospace.
+with the appropriate glyphs for bold, italic, and monospace.
 These options are available to every theme.
-Font Awesome 5 is also universally available.
-[Download the fonts](https://torrents.bio/fonts.tgz).
+Font Awesome 5 is also universally available, as is the
+[entire Material Design color palette](resources/scss/assets/colors.scss).
+[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
 Also, there are two simple color modes,
 [calm mode and dark mode](resources/scss/global/colors.scss),
 that I like to think are pleasing to the eye.
 
 ## Markdown and BBcode support
 
+BioGazelle uses the
 [SimpleMDE markdown editor](https://simplemde.com)
-with extended custom editor interface.
+with a reasonably extended
+[custom editor interface](templates/_base/textarea.twig).
 All the Markdown Extra features supported by
 [Parsedown Extra](https://github.com/erusev/parsedown-extra)
-are documented and the useful ones exposed in the editor interface.
-The default recursive regex BBcode parser is replaced by
+are documented and the useful ones are exposed in the editor.
+The default recursive regex BBcode parser (yuck) is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
-Parsed texts are cached for speed.
+Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 
 ## App singleton
 
@@ -100,6 +112,8 @@ uses extensible ArrayObjects with by the
 Also, the whole app is always instantly available:
 the config, database, cache, current user, Twig engine, etc.,
 are accessible with a simple call to `Gazelle\App::go()`.
+All such objects use the same quick and easy go → factory → thing API.
+Just in case you need to extend some core object without headaches.
 
 ## Twig template system
 
@@ -169,6 +183,7 @@ This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 - the codebase runs on PHP8 with minimal warnings
 - all database queries that are rewritten are usually simpler
 - no need to think about cache collisions across environments
+- a small amount of Eloquent models for core schema objects
 
 ## Features inherited from Oppaitime
 
