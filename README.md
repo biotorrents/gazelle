@@ -62,7 +62,7 @@ BioGazelle enforces a 15-character minimum passphrase length and imposes no othe
 
 ## OpenAI integration
 
-One of BioGazelle's major goals is to place data in context using
+One of BioGazelle's goals is to place data in context using
 [OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
 to generate tl;dr summaries and tags from torrent descriptions.
 Just paste your abstract into the torrent group description
@@ -71,7 +71,7 @@ It's possible to disable AI content display in the user settings, btw.
 
 ## Good typography
 
-BioTorrents.de supports an array of
+BioGazelle supports an array of
 [unobtrusive fonts](resources/scss/assets/fonts.scss)
 with the appropriate bold/italic glyphs and monospace.
 These options are available to every theme.
@@ -117,7 +117,7 @@ No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
-BioTorrents.de has
+BioGazelle has
 [real lawyer-vetted policies](templates/siteText/legal).
 In the process of matching the tech to the legal word,
 we dropped support for a number of compromising features:
@@ -149,7 +149,12 @@ An ongoing project involves modernizing the app based on Laravel's excellent too
 BioGazelle seeks to be easy and fun to develop.
 We're collecting the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
-There's just a dev mode that spits everything out, and a prod mode that doesn't.
+There's just a development mode that spits everything out, and a production mode that doesn't.
+
+The entire app is also available on the command line for cron jobs, development, and fun.
+Good for BioGazelle, good for America!
+Just run `php shell` from the repository root to get up and running.
+This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 
 ## Minor changes
 
@@ -159,10 +164,11 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - integrated diceware passphrase generator
 - semantic HTML5 templates and layouts (WIP)
 - single entry point for app init
-- Laravel-inspired shell (`php shell`)
 - dead simple PDO database wrapper, fully parameterized
 - polite copy; the site says "please" and "thank you"
 - the codebase runs on PHP8 with minimal warnings
+- all database queries that are rewritten are usually simpler
+- no need to think about cache collisions across environments
 
 ## Features inherited from Oppaitime
 
@@ -172,7 +178,7 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - [resource proxying](https://github.com/biotorrents/image-host) that's expanded to support WebP and JPEG XL
 - [site schedule](sections/schedule) system for running certain tasks via cron
 - bonus points and the [corresponding store section](sections/store)
-- native HTTP/2 support with the expectation of TLSv1.2+
+- native HTTP/2 support with the expectation of TLSv1.3+
 - custom stylesheet modifications on a per-user basis
 
 # Gracie Gazelle
@@ -192,4 +198,4 @@ She proudly puts the forbidden share symbols on her hat and belt, and is now one
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
 [Download the high resolution version.](public/images/mascotFullVersion.png)
 
-[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@tysontanx](https://twitter.com/tysontanx)
+[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@TysonTanX](https://twitter.com/tysontanx)
