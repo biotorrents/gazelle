@@ -70,20 +70,13 @@
                 var siteOptions = JSON.parse("{{ siteOptions|json_encode|escape('js') }}");
 			</script>
 
-			{# todo: app.js with vite #}
-			{# <script src="/js/app.min.js"></script> #}
-
 			{# start libraries #}
 
 			{# jquery #}
 			<script src="/js/vendor/jquery.min.js"> </script>
-			<script src="/js/vendor/jquery-ui.min.js"></script>
 
 			{# lodash #}
-			<script src="/js/vendor/lodash.min.js"></script>
-
-			{# instantpage #}
-			<script src="/js/vendor/instantpage.min.js"></script>
+			<script src="/js/vendor/lodash.js"></script>
 
 			{# smart quotes #}
 			<script src="/js/vendor/smartquotes.min.js"></script>
@@ -330,6 +323,9 @@
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
+
+		{# https://instant.page #}
+		<script src="/js/vendor/instant.page.js" type="module"></script>
 
 	</body>
 

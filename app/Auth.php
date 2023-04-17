@@ -719,6 +719,11 @@ class Auth # extends Delight\Auth\Auth
     {
         $message = "Unable to log out: please manually clear cookies";
 
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
+        if (!headers_sent()) {
+            header("Clear-Site-Data: '*'");
+        }
+
         try {
             # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
