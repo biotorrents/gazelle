@@ -156,7 +156,8 @@ The app logic, config, and Git repo lies outside the web root for enhanced secur
 
 BioGazelle uses the Flight router to define app routes.
 Features include clean URIs and centralized middleware.
-An ongoing project involves modernizing the app based on Laravel's excellent tools.
+An ongoing project involves modernizing the app based on Laravel's excellent tools,
+with help from other personally-vetted libraries that may be lighter.
 
 ## Decent debugging
 
