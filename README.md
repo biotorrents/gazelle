@@ -13,6 +13,9 @@ and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
 
+Please find a running list of major software improvements below.
+This list is by no means exhaustive; it's a best hits compilation.
+
 ## Built to scale, micro or macro
 
 BioGazelle is pretty fast out of the box, on a single budget VPS.
