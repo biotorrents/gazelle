@@ -74,10 +74,10 @@ BioGazelle enforces a 15-character minimum passphrase length and imposes no othe
 ## OpenAI integration
 
 One of BioGazelle's goals is to place data in context using
-[OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
-to generate tl;dr summaries and tags from torrent descriptions.
+[OpenAI's completions API](app/OpenAI.php)
+to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
-and get a succinct natural language summary with torrent and SEO tags.
+and get a succinct natural language summary with tags.
 It's possible to disable AI content display in the user settings, btw.
 
 ## Good typography
