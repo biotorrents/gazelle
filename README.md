@@ -5,7 +5,9 @@ This software is twice removed from the original
 It's based on the security hardened PHP7 fork
 [Oppaitime Gazelle](https://github.com/biotorrents/oppaiMirror).
 It shares several features with
-[Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
+[Orpheus Gazelle](https://github.com/OPSnet/Gazelle)
+and incorporates certain innovations by
+[AnimeBytes](https://github.com/anniemaybytes).
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
