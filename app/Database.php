@@ -125,6 +125,9 @@ class Database extends \PDO
             throw new \Exception($e->getMessage());
         }
 
+        # set the last host to the source
+        $this->last = $this->source;
+
         # bail out if replicas aren't defined
         if (!$app->env->databaseReplicationEnabled || empty($replicas)) {
             return;
@@ -145,9 +148,6 @@ class Database extends \PDO
                 throw new \Exception($e->getMessage());
             }
         }
-
-        # set the last host to the source
-        $this->last = $this->source;
     }
 
 
