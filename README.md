@@ -15,6 +15,7 @@ and render insightful views using data from robust external sources.
 
 Please find a running list of major software improvements below.
 This list is by no means exhaustive; it's a best hits compilation.
+The points are presented in no particular order.
 
 ## Built to scale, micro or macro
 
@@ -139,7 +140,7 @@ No more mixed PHP code and HTML markup!
 BioGazelle has
 [real lawyer-vetted policies](templates/siteText/legal).
 In the process of matching the tech to the legal word,
-we dropped support for a number of compromising features:
+I dropped support for a number of compromising features:
 
 - Bitcoin, PayPal, and currency exchange API and system calls;
 - Bitcoin addresses, user donation history, and similar metadata; and
@@ -167,7 +168,7 @@ with help from other personally-vetted libraries that may be lighter.
 ## Decent debugging
 
 BioGazelle seeks to be easy and fun to develop.
-We're collecting the old debug class monstrosity into a nice little bar.
+I collected the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
 There's just a development mode that spits everything out, and a production mode that doesn't.
 
