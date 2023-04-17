@@ -5,11 +5,17 @@ This software is twice removed from the original
 It's based on the security hardened PHP7 fork
 [Oppaitime Gazelle](https://github.com/biotorrents/oppaiMirror).
 It shares several features with
-[Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
+[Orpheus Gazelle](https://github.com/OPSnet/Gazelle)
+and incorporates certain innovations by
+[AnimeBytes](https://github.com/anniemaybytes).
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
+
+Please find a running list of major software improvements below.
+This list is by no means exhaustive; it's a best hits compilation.
+The points are presented in no particular order.
 
 ## Built to scale, micro or macro
 
@@ -18,7 +24,8 @@ If you want to scale horizontally, the software supports both
 [Redis clusters](app/Cache.php) and
 [database server replication](app/Database.php).
 Please note that Redis clusters expect at least three nodes.
-This lower limit is inherent to Redis' cluster implementation.
+This lower limit is inherent to Redis'
+[cluster implementation](https://redis.io/docs/management/scaling/).
 
 ## Full stack search engine rewrite
 
@@ -31,6 +38,9 @@ from scratch, based on AnimeBytes' example.
 The Gazelle frontend itself uses a
 [rewritten browse.php controller](sections/torrents/browse.php) and a
 [brand new Twig template](templates/torrents/search.twig).
+Oh yeah, the
+[PHP backend class](app/Manticore.php)
+is also completely rewritten, replacing at least four legacy classes.
 
 ## Bearer token authorization
 
@@ -39,10 +49,15 @@ API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
 [Internal API calls](app/API/Internal.php)
-for Ajax use a special token that can safely be exposed to the frontend.
+for Ajax and such use a special token that can safely be exposed to the frontend.
 It's based on hashing a
 [rotating server secret](crontab/siteApiSecret.php)
 concatenated with a secure session cookie.
+
+The session cookies themselves are tight, btw.
+No JavaScript access, scoped to the same site, long length, etc.
+This kind of stuff is in the
+[low level Http class](app/Http.php).
 
 ## Secure authentication system
 
@@ -62,35 +77,38 @@ BioGazelle enforces a 15-character minimum passphrase length and imposes no othe
 
 ## OpenAI integration
 
-One of BioGazelle's major goals is to place data in context using
-[OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
-to generate tl;dr summaries and tags from torrent descriptions.
+One of BioGazelle's goals is to place data in context using
+[OpenAI's completions API](app/OpenAI.php)
+to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
-and get a succinct natural language summary with torrent and SEO tags.
+and get a succinct natural language summary with tags.
 It's possible to disable AI content display in the user settings, btw.
 
 ## Good typography
 
-BioTorrents.de supports an array of
+BioGazelle supports an array of
 [unobtrusive fonts](resources/scss/assets/fonts.scss)
-with the appropriate bold/italic glyphs and monospace.
+with the appropriate glyphs for bold, italic, and monospace.
 These options are available to every theme.
-Font Awesome 5 is also universally available.
-[Download the fonts](https://torrents.bio/fonts.tgz).
+Font Awesome 5 is also universally available, as is the
+[entire Material Design color palette](resources/scss/assets/colors.scss).
+[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
 Also, there are two simple color modes,
 [calm mode and dark mode](resources/scss/global/colors.scss),
 that I like to think are pleasing to the eye.
 
 ## Markdown and BBcode support
 
+BioGazelle uses the
 [SimpleMDE markdown editor](https://simplemde.com)
-with extended custom editor interface.
+with a reasonably extended
+[custom editor interface](templates/_base/textarea.twig).
 All the Markdown Extra features supported by
 [Parsedown Extra](https://github.com/erusev/parsedown-extra)
-are documented and the useful ones exposed in the editor interface.
-The default recursive regex BBcode parser is replaced by
+are documented and the useful ones are exposed in the editor.
+The default recursive regex BBcode parser (yuck) is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
-Parsed texts are cached for speed.
+Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 
 ## App singleton
 
@@ -100,6 +118,8 @@ uses extensible ArrayObjects with by the
 Also, the whole app is always instantly available:
 the config, database, cache, current user, Twig engine, etc.,
 are accessible with a simple call to `Gazelle\App::go()`.
+All such objects use the same quick and easy go → factory → thing API.
+Just in case you need to extend some core object without headaches.
 
 ## Twig template system
 
@@ -117,10 +137,10 @@ No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
-BioTorrents.de has
+BioGazelle has
 [real lawyer-vetted policies](templates/siteText/legal).
 In the process of matching the tech to the legal word,
-we dropped support for a number of compromising features:
+I dropped support for a number of compromising features:
 
 - Bitcoin, PayPal, and currency exchange API and system calls;
 - Bitcoin addresses, user donation history, and similar metadata; and
@@ -142,14 +162,20 @@ The app logic, config, and Git repo lies outside the web root for enhanced secur
 
 BioGazelle uses the Flight router to define app routes.
 Features include clean URIs and centralized middleware.
-An ongoing project involves modernizing the app based on Laravel's excellent tools.
+An ongoing project involves modernizing the app based on Laravel's excellent tools,
+with help from other personally-vetted libraries that may be lighter.
 
 ## Decent debugging
 
 BioGazelle seeks to be easy and fun to develop.
-We're collecting the old debug class monstrosity into a nice little bar.
+I collected the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
-There's just a dev mode that spits everything out, and a prod mode that doesn't.
+There's just a development mode that spits everything out, and a production mode that doesn't.
+
+The entire app is also available on the command line for cron jobs, development, and fun.
+Good for BioGazelle, good for America!
+Just run `php shell` from the repository root to get up and running.
+This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 
 ## Minor changes
 
@@ -158,11 +184,12 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - configurable HTTP status code errors
 - integrated diceware passphrase generator
 - semantic HTML5 templates and layouts (WIP)
-- single entry point for app init
-- Laravel-inspired shell (`php shell`)
 - dead simple PDO database wrapper, fully parameterized
 - polite copy; the site says "please" and "thank you"
 - the codebase runs on PHP8 with minimal warnings
+- all database queries that are rewritten are usually simpler
+- no need to think about cache collisions across environments
+- a small amount of Eloquent models for core schema objects
 
 ## Features inherited from Oppaitime
 
@@ -172,7 +199,7 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 - [resource proxying](https://github.com/biotorrents/image-host) that's expanded to support WebP and JPEG XL
 - [site schedule](sections/schedule) system for running certain tasks via cron
 - bonus points and the [corresponding store section](sections/store)
-- native HTTP/2 support with the expectation of TLSv1.2+
+- native HTTP/2 support with the expectation of TLSv1.3+
 - custom stylesheet modifications on a per-user basis
 
 # Gracie Gazelle
@@ -181,7 +208,7 @@ There's just a dev mode that spits everything out, and a prod mode that doesn't.
 
 Gracie is a veteran pirate of the digital ocean.
 On land, predators form companies to hunt down prey.
-But in the lawless water, the prey attack the predators' transports.
+But in the lawless water, the prey attacks the predators' transports.
 Gracie steals resources from the rich and shares them with the poor and isolated people.
 Her great eyesight sees through the darkest corners of the internet for her next target.
 Her charisma attracts countless salty goats to join her fleet.
@@ -192,4 +219,4 @@ She proudly puts the forbidden share symbols on her hat and belt, and is now one
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
 [Download the high resolution version.](public/images/mascotFullVersion.png)
 
-[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@tysontanx](https://twitter.com/tysontanx)
+[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@TysonTanX](https://twitter.com/tysontanx)
