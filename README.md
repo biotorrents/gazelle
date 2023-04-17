@@ -178,7 +178,6 @@ This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 - configurable HTTP status code errors
 - integrated diceware passphrase generator
 - semantic HTML5 templates and layouts (WIP)
-- single entry point for app init
 - dead simple PDO database wrapper, fully parameterized
 - polite copy; the site says "please" and "thank you"
 - the codebase runs on PHP8 with minimal warnings
@@ -203,7 +202,7 @@ This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 
 Gracie is a veteran pirate of the digital ocean.
 On land, predators form companies to hunt down prey.
-But in the lawless water, the prey attack the predators' transports.
+But in the lawless water, the prey attacks the predators' transports.
 Gracie steals resources from the rich and shares them with the poor and isolated people.
 Her great eyesight sees through the darkest corners of the internet for her next target.
 Her charisma attracts countless salty goats to join her fleet.
