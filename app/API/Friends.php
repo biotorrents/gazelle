@@ -49,7 +49,7 @@ class Friends extends Base
             $app->dbNew->do($query, [$app->user->core["id"], $userId, $comment]);
 
             $query = "select * from users_friends where id = ?";
-            $row = $app->dbNew->row($query, [$app->dbNew->pdo->lastInsertId()]);
+            $row = $app->dbNew->row($query, [$app->dbNew->source->lastInsertId()]);
 
             self::success($row);
         } catch (\Throwable $e) {
@@ -101,7 +101,7 @@ class Friends extends Base
             }
 
             $query = "select * from users_friends where id = ?";
-            $row = $app->dbNew->row($query, [$app->dbNew->pdo->lastInsertId()]);
+            $row = $app->dbNew->row($query, [$app->dbNew->source->lastInsertId()]);
 
             $query = "delete from users_friends where userId = ? and friendId = ?";
             $app->dbNew->do($query, [$app->user->core["id"], $userId]);
