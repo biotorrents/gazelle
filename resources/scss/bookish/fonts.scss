@@ -20,6 +20,17 @@ body {
   }
 }
 
+/* font variants */
+body {
+  font-variant: oldstyle-nums;
+}
+
+code,
+pre,
+tt {
+  font-variant: normal;
+}
+
 /* headings */
 h1,
 h2,
@@ -70,6 +81,7 @@ table#taglist a {
     text-decoration: underline;
   }
 }
+
 
 /**
  * blockquotes, figures, and captions
@@ -152,10 +164,6 @@ ul.nobullet,
 }
 
 /* bullets (home page) */
-ul.stats li {
-  padding: 0 0 1px 0;
-}
-
 ul.poll li {
   padding: 0 0 0 10px;
   margin: 0;

@@ -176,8 +176,9 @@ summary {
   &:hover {
     position: relative;
 
-    &:before {
+    &:after {
       background-color: #222;
+      border-radius: 4px;
       box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
       box-sizing: border-box;
       color: white;

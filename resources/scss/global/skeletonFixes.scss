@@ -52,6 +52,7 @@ h6 {
 
 /* correct content/sidebar overflow */
 @media (min-width: 550px) {
+
   .column,
   .columns {
     margin-left: 0 !important;
@@ -75,7 +76,7 @@ legend {
 /* tables usually containing forms */
 table {
   tr {
-    &:last-child > * {
+    &:last-child>* {
       border: none;
     }
   }

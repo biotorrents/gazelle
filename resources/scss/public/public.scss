@@ -1,6 +1,7 @@
 /**
  * header
  */
+
 header {
   height: 4.2rem;
   line-height: 4.2rem;
@@ -25,9 +26,11 @@ header {
   }
 }
 
+
 /**
  * logo
  */
+
 figure#publicLogo {
   margin-bottom: 0;
   margin-top: 10rem;
@@ -44,9 +47,11 @@ figure#publicLogo {
   }
 }
 
+
 /**
  * forms
  */
+
 form {
   display: flex;
   flex-flow: column wrap;
@@ -60,6 +65,7 @@ form {
     list-style: none !important;
   }
 }
+
 
 /**
  * misc
