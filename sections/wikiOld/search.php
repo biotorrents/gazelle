@@ -162,7 +162,7 @@ $app->dbOld->set_query_id($RS);
       </table>
     </form>
   </div>
-  <br />
+  <br>
 
   <?php
   $Pages = Format::get_pages($Page, $NumResults, ARTICLES_PER_PAGE);

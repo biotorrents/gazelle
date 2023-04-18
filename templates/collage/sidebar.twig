@@ -101,7 +101,7 @@ collage by {{ user_id|user_url }}
 <div class="box comment">
     <div class="head">
         {{ comment.author_id|user_url }} {{ comment.added|time_diff }}
-        <br />
+        <br>
         <a href="reports.php?action=report&amp;type=collages_comment&amp;id={{ comment.id }}" class="brackets">Report</a>
     </div>
     <div class="pad">{{ comment.body|raw }}</div>

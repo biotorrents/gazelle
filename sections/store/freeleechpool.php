@@ -140,7 +140,7 @@ View::footer();
                 <?=bonusPoints?>
                 in the Freeleech Pool
             </strong>
-            <br /><br />
+            <br><br>
             <input type="text" name="donation" value="">
             <input type="submit" value="Donate">
         </form>

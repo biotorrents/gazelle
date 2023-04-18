@@ -116,7 +116,7 @@ if (!empty($_GET['date'])) {
         $app->cache->set("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
-  <br />
+  <br>
   <div class="pad box">
     <h3>Top 10 for <?=($Type == 'day' ? $Date : "the first week after $Date")?>
     </h3>
@@ -211,7 +211,7 @@ if (!empty($_GET['date'])) {
       <?php
   } // foreach ($Details as $Detail)
     ?>
-    </table><br />
+    </table><br>
   </div>
 </div>
 <?php

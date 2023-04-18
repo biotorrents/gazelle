@@ -672,8 +672,8 @@ class Validate
 
         # too long paths
         if (count($tooLongPaths) > 0) {
-            $names = implode("<br />", $tooLongPaths);
-            $this->errors[$key][] = "the torrent contained one or more files with too long a name:<br /> {$names}";
+            $names = implode("<br>", $tooLongPaths);
+            $this->errors[$key][] = "the torrent contained one or more files with too long a name:<br> {$names}";
         }
 
         # last $data additions

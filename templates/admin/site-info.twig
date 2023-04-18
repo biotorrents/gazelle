@@ -24,14 +24,14 @@ div#phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 <div class="thin">
     <h3>OS</h3>
     <div class="box pad">
-        <span style="width: 70px; display: inline-block">Uptime:</span> {{ uptime.uptime|raw }} <br />
-        <span style="width: 70px; display: inline-block">Idle time:</span> {{ uptime.idletime|raw }} <br /><br />
+        <span style="width: 70px; display: inline-block">Uptime:</span> {{ uptime.uptime|raw }} <br>
+        <span style="width: 70px; display: inline-block">Idle time:</span> {{ uptime.idletime|raw }} <br><br>
 
-        <span style="width: 100px; display: inline-block">User:</span> {{ uid }} <br />
-        <span style="width: 100px; display: inline-block">Group:</span> {{ euid }} <br />
-        <span style="width: 100px; display: inline-block">Effective User:</span> {{ euid }} <br />
-        <span style="width: 100px; display: inline-block">Effective Group:</span> {{ euid }} <br />
-        <br /><tt>openssl_random_pseudo_bytes()</tt>:&nbsp;
+        <span style="width: 100px; display: inline-block">User:</span> {{ uid }} <br>
+        <span style="width: 100px; display: inline-block">Group:</span> {{ euid }} <br>
+        <span style="width: 100px; display: inline-block">Effective User:</span> {{ euid }} <br>
+        <span style="width: 100px; display: inline-block">Effective Group:</span> {{ euid }} <br>
+        <br><tt>openssl_random_pseudo_bytes()</tt>:&nbsp;
 {%- if openssl_strong -%}
             <span style="color:lime;">Strong</span>
 {%- else -%}
@@ -40,21 +40,21 @@ div#phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
     </div>
     <h3>Timestamps</h3>
     <div class="box pad">
-        <span style="width: 50px; display: inline-block">PHP:</span> {{ timestamp_php }}<br />
+        <span style="width: 50px; display: inline-block">PHP:</span> {{ timestamp_php }}<br>
         <span style="width: 50px; display: inline-block">DB:</span> {{ timestamp_db }}
     </div>
 
     <h3>PHP</h3>
     <div class="box pad">
-        PHP Version: {{ php_version }} <br />
-        <a onclick="toggle_display('phpinfo')" href='javascript:void(0)'>Toggle PHP Info</a><br />
+        PHP Version: {{ php_version }} <br>
+        <a onclick="toggle_display('phpinfo')" href='javascript:void(0)'>Toggle PHP Info</a><br>
         <div id="phpinfo">{{ phpinfo|raw }}</div>
     </div>
 
     <h3>Git</h3>
     <div class="box pad">
-        <span style="width: 150px; display: inline-block;">Branch:</span> {{ git_branch }}<br />
-        <span style="width: 150px; display: inline-block;">Local Hash:</span> {{ git_hash }}<br />
+        <span style="width: 150px; display: inline-block;">Branch:</span> {{ git_branch }}<br>
+        <span style="width: 150px; display: inline-block;">Local Hash:</span> {{ git_hash }}<br>
         <span style="width: 150px; display: inline-block;">Remote Hash:</span> {{ git_hash_remote }}
     </div>
 
@@ -73,7 +73,7 @@ div#phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 
     <h3>Composer</h3>
     <div class="box pad">
-        Composer Version: {{ composer_version }}<br />
+        Composer Version: {{ composer_version }}<br>
         <table>
             <tr class="colhead">
                 <td>Package</td>
@@ -92,7 +92,7 @@ div#phpinfo hr {width: 934px; background-color: #ccc; border: 0; height: 1px;}
 
     <h3>Phinx</h3>
     <div class="box pad">
-        {{ phinx.version }}<br />
+        {{ phinx.version }}<br>
         <table>
             <tr class='colhead'>
                 <td>Status</td>

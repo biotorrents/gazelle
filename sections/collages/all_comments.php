@@ -50,7 +50,7 @@ View::header(
       <?php
 $Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9);
 if ($Pages) {
-    echo '<br /><br />' . $Pages;
+    echo '<br><br>' . $Pages;
 }
 ?>
     </div>

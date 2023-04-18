@@ -42,7 +42,7 @@ list($NumResults) = $app->dbOld->next_record();
 <div class="header">
   <h2>Email Blacklist</h2>
 </div>
-<br />
+<br>
 <form action="tools.php" method="post">
   <input type="hidden" name="action" value="email_blacklist">
   <input type="email" name="email" size="30" placeholder="Email">
@@ -50,7 +50,7 @@ list($NumResults) = $app->dbOld->next_record();
   <input type="submit" class="button-primary" value="Search">
 </form>
 <div class="linkbox pager">
-  <br />
+  <br>
 <?php
   $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
 echo $Pages;
@@ -87,7 +87,7 @@ echo $Pages;
         <input type="email" name="email" value="<?=\Gazelle\Text::esc($Result['Email'])?>" size="30">
       </td>
       <td><input type="text" name="comment" value="<?=\Gazelle\Text::esc($Result['Comment'])?>" size="50"></td>
-      <td><?=User::format_username($Result ['UserID'], false, false, false)?><br /><?=time_diff($Result ['Time'], 1)?></td>
+      <td><?=User::format_username($Result ['UserID'], false, false, false)?><br><?=time_diff($Result ['Time'], 1)?></td>
       <td>
         <input type="submit" name="submit" class="button-primary" value="Edit">
         <input type="submit" name="submit" value="Delete">
@@ -98,7 +98,7 @@ echo $Pages;
   } ?>
 </table>
 <div class="linkbox pager">
-  <br />
+  <br>
   <?=$Pages?>
 </div>
 <?php View::footer(); ?>

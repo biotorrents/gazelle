@@ -25,12 +25,12 @@ View::header('Staff PMs', 'staffpm');
 <?php } ?>
     </div>
   </div>
-  <br />
-  <br />
+  <br>
+  <br>
   <div id="commonresponses" class="center">
-    <br />
+    <br>
     <div id="ajax_message_0" class="hidden center alertbar"></div>
-    <br />
+    <br>
     <div class="center">
       <h3>Create new response:</h3>
     </div>
@@ -47,13 +47,13 @@ View::header('Staff PMs', 'staffpm');
             onblur="if (this.value == '') { this.value = 'New message'; }"
             rows="10" cols="87"
             id="response_message_0">New message</textarea>
-          <br />
+          <br>
           <input type="button" value="Save" id="save_0" onclick="SaveMessage(0);">
         </div>
       </form>
     </div>
-    <br />
-    <br />
+    <br>
+    <br>
     <div class="center">
       <h3>Edit old responses:</h3>
     </div>
@@ -66,9 +66,9 @@ $app->dbOld->query("
   ORDER BY ID DESC");
 while (list($ID, $Message, $Name) = $app->dbOld->next_record()) {
     ?>
-    <br />
+    <br>
     <div id="ajax_message_<?=$ID?>" class="hidden center alertbar"></div>
-    <br />
+    <br>
     <div id="response_<?=$ID?>" class="box">
       <form class="send_form" name="response" id="response_form_<?=$ID?>" action="">
         <div class="head">
@@ -81,7 +81,7 @@ while (list($ID, $Message, $Name) = $app->dbOld->next_record()) {
             <?=\Gazelle\Text::parse($Message)?>
           </div>
           <textarea rows="10" cols="87" id="response_message_<?=$ID?>" name="message"><?=\Gazelle\Text::esc($Message)?></textarea>
-          <br />
+          <br>
           <input type="button" value="Toggle preview" onclick="PreviewResponse(<?=$ID?>);">
           <input type="button" value="Delete" onclick="DeleteMessage(<?=$ID?>);">
           <input type="button" value="Save" id="save_<?=$ID?>" onclick="SaveMessage(<?=$ID?>);">

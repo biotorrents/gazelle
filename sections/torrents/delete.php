@@ -213,7 +213,7 @@ if (check_perms('admin_reports')) {
             <?=$LinkName?>
             <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
             uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
-            <br />
+            <br>
 <?php $app->dbOld->query("
         SELECT r.ID
         FROM reportsv2 AS r
@@ -330,7 +330,7 @@ $TypeList = $Types['master'] + $Types[$CategoryID];
         </tr>
       </table>
     </form>
-    <br />
+    <br>
   </div>
 </div>
 <?php

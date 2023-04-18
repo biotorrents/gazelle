@@ -75,7 +75,7 @@
 				{% for freeleech in freeleeches %}
 					<li>
 						<a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}"> {{ blog.Title }}</a>
-					<br/>
+					<br>
 
 					<span class="u-pull-left">
 						{{ topic.Username }}
@@ -292,11 +292,11 @@
 								                <span class="left_poll"></span>
 								                <span class="center_poll" style="width: {{ vote.ratio|number_format(2) }}%;"></span>
 								                <span class="right_poll"></span>
-								                <br />
+								                <br>
 								            </li>
 								        {% endfor %}
 								        </ul>
-								        <strong>Votes:</strong> {{ poll.votes_total|number_format }}<br />
+								        <strong>Votes:</strong> {{ poll.votes_total|number_format }}<br>
 								    {% else %}
 								        <div id="poll_container">
 								        <form class="vote_form" name="poll" id="poll" action="">
@@ -305,14 +305,14 @@
 								            <input type="hidden" name="threadid" value="{{ poll_thread_id }}">
 								        {% for id, vote in poll.tally %}
 								            <input type="radio" name="vote" id="answer_{{ id }}" value="{{ id }}">
-								            <label for="answer_{{ id }}">{{ vote.answer }}</label><br />
+								            <label for="answer_{{ id }}">{{ vote.answer }}</label><br>
 								        {% endfor %}
-								            <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br>
+								            <br><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br><br>
 								            <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );" value="Vote">
 								        </form>
 								        </div>
 								    {% endif %}
-								        <br /><strong>Topic:</strong> <a href="forums.php?action=viewthread&amp;threadid={{ poll_thread_id }}">Visit</a>
+								        <br><strong>Topic:</strong> <a href="forums.php?action=viewthread&amp;threadid={{ poll_thread_id }}">Visit</a>
 								    </div>
 								</div>
 								{% endif -%}
@@ -329,7 +329,7 @@
 			{% for blog in blog %}
 				<li>
 					<a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}"> {{ blog.Title }}</a>
-				<br/>
+				<br>
 
 				<span class="u-pull-left">
 					{{ topic.Username }}
@@ -351,7 +351,7 @@
 		{% for topic in topic.suggested_topics %}
 			<li>
 				<a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-				<br/>
+				<br>
 				{{ topic.last_posted_at|relativeTime }}
 			</li>
 		{% endfor %}

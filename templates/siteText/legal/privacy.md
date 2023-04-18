@@ -112,13 +112,13 @@ the personal data we hold on you,
 or you'd like to exercise your data protection rights,
 please don't hesitate to contact us.
 
-**Address**<br />
-Data Protection Officer<br />
-Omics Tools LLC<br />
-30 N Gould St Ste 4000<br />
+**Address**<br>
+Data Protection Officer<br>
+Omics Tools LLC<br>
+30 N Gould St Ste 4000<br>
 Sheridan, WY 82801
 
-**Email**<br />
+**Email**<br>
 privacy at torrents dot bio
 
 Please use

@@ -112,7 +112,7 @@ echo $Pages;
           unread first</a>
         <?php } ?>
       </span>
-      <br />
+      <br>
       <input type="search" name="search"
         placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>">
     </div>

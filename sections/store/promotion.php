@@ -185,7 +185,7 @@ View::header('Store'); ?>
   </h2>
   <div class="box">
     <p>
-      <?=isset($Err) ? "Error: ".implode("<br />Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
+      <?=isset($Err) ? "Error: ".implode("<br>Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

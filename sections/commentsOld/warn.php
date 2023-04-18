@@ -62,7 +62,7 @@ View::header('Warn User');
           <td>
             <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90"
               rows="8"><?=$PostBody?></textarea>
-            <br />
+            <br>
             <input type="submit" id="submit_button" value="Warn user" tabindex="1">
           </td>
         </tr>

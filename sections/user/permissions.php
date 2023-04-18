@@ -68,7 +68,7 @@ function display_perm($Key, $Title)
     if (isset($Permissions[$Key]) && $Permissions[$Key]) {
         $Perm .= ' checked="checked"';
     }
-    $Perm .= " /> <label for=\"$Key\">$Title</label><br />";
+    $Perm .= " /> <label for=\"$Key\">$Title</label><br>";
     echo "$Perm\n";
 }
 
@@ -102,7 +102,7 @@ View::header("$Username &gt; Permissions");
     class, then you can select or deselect the one or two things you want to change. <strong>DO NOT DESELECT
       EVERYTHING.</strong> If you need further clarification, ask a developer before using this tool.</p>
 </div>
-<br />
+<br>
 <form class="manage_form" name="permissions" id="permissionsform" method="post" action="">
   <table class="permission_head skeletonFix">
     <tr>

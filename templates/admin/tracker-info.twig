@@ -11,8 +11,8 @@
             <div class="pad">
                 <form method="get" action="">
                     <input type="hidden" name="action" value="ocelot_info">
-                    <label for="userid">Get stats for user (id or @username)</label><br /><br />
-                    <input type="text" id="userid" name="userid" placeholder="User ID" value="{{ user_id }}" /><br /><br>
+                    <label for="userid">Get stats for user (id or @username)</label><br><br>
+                    <input type="text" id="userid" name="userid" placeholder="User ID" value="{{ user_id }}" /><br><br>
                     <input type="submit" value="Go">
                 </form>
             </div>
@@ -23,9 +23,9 @@
             <div class="head"><strong>Numbers and such</strong></div>
             <div class="pad">
 {% if peer_stats %}
-                User ID: {{ user_id }}<br />
-                Leeching: {{ peer_stats[0]|number_format }}<br />
-                Seeding: {{ peer_stats[1]|number_format }}<br />
+                User ID: {{ user_id }}<br>
+                Leeching: {{ peer_stats[0]|number_format }}<br>
+                Seeding: {{ peer_stats[1]|number_format }}<br>
 {% elseif main_stats %}
     {% for key, value in main_stats %}
                 {%- if value == "Uptime:" -%}
@@ -35,7 +35,7 @@
                 {%- else -%}
                     {{ value|number_format }}
                 {%- endif %}
-                {{ key }}<br />
+                {{ key }}<br>
     {% endfor %}
 {% elseif announce_key %}
                 Failed to get stats for user {{ user_id }}

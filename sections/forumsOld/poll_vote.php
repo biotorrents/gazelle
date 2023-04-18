@@ -87,7 +87,7 @@ if (!empty($Votes)) {
 
 if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
     ?>
-<span class="error">Please select an option.</span><br />
+<span class="error">Please select an option.</span><br>
 <form class="vote_form" name="poll" id="poll" action="">
   <input type="hidden" name="action" value="poll">
   <input type="hidden" name="auth"
@@ -98,10 +98,10 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
   <?php for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
   <input type="radio" name="vote" id="answer_<?=$i?>"
     value="<?=$i?>">
-  <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br />
+  <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br>
   <?php } ?>
-  <br /><input type="radio" name="vote" id="answer_0" value="0"> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show
-    the results!</label><br /><br />
+  <br><input type="radio" name="vote" id="answer_0" value="0"> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show
+    the results!</label><br><br>
   <input type="button"
     onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response });"
     value="Vote">
@@ -174,6 +174,6 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
         }
     } ?>
 </ul>
-<br /><strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?>
+<br><strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?>
 <?php
 }

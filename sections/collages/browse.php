@@ -308,21 +308,21 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
     }
       if (check_perms('site_collages_create') || check_perms('site_collages_personal') || check_perms('site_collages_recover')) {
           ?>
-    <br />
+    <br>
     <?php
       } ?>
     <a href="collages.php?userid=<?=$app->user->core['id']?>"
       class="brackets">Collections you started</a>
     <a href="collages.php?userid=<?=$app->user->core['id']?>&amp;contrib=1"
       class="brackets">Collections you contributed to</a>
-    <br /><br />
+    <br><br>
     <?php
   } else { ?>
     <a href="bookmarks.php?type=torrents" class="brackets">Torrents</a>
     <a href="bookmarks.php?type=artists" class="brackets">Artists</a>
     <a href="bookmarks.php?type=collages" class="brackets">Collections</a>
     <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
-    <br />
+    <br>
     <?php
   }
   $Pages = Format::get_pages($Page, $NumResults, COLLAGES_PER_PAGE, 9);

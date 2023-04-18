@@ -48,15 +48,15 @@ if ($IsFilled) {
 $Extra = "";
 
 if (!empty($Request['Title2']) && $Request['Title2'] != $Title) {
-    $Extra .= '<br />' . $Request['Title2'];
+    $Extra .= '<br>' . $Request['Title2'];
 }
 
 if (!empty($Request['TitleJP']) && $Request['TitleJP'] != $Title) {
-    $Extra .= '<br />' . $Request['TitleJP'];
+    $Extra .= '<br>' . $Request['TitleJP'];
 }
 
 if (!empty($Request['CatalogueNumber'])) {
-    $Extra .= "<br />[$Request[CatalogueNumber]]";
+    $Extra .= "<br>[$Request[CatalogueNumber]]";
 }
 
 $DisplayLink .= $Extra;
@@ -300,7 +300,7 @@ if (!$ViewerVote) {
             <td>
               These units are in base 2, not base 10, e.g., there are 1,024 MiB in 1 GiB.
               <strong>The system deducts <?= ($RequestTax * 100) ?>% as tax.</strong>
-              <br />
+              <br>
 
               <input type="text" id="amount_box" size="8" onchange="Calculate();">
               <select id="unit" name="unit" onchange="Calculate();">
@@ -383,7 +383,7 @@ if (!$ViewerVote) {
                     value="<?=$RequestID?>">
                   <input type="text" size="50" name="link" <?=(!empty($Link) ? " value='$Link'" : '')?>
                   />
-                  <br />
+                  <br>
                   <strong>Should be the permalink [PL] of the torrent</strong>
                 </div>
                 <?php if (check_perms('site_moderate_requests')) { ?>

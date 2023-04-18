@@ -29,7 +29,7 @@ foreach ($ReportType['report_messages'] as $Message) {
 }
 ?>
 </ul>
-<br />
+<br>
 <table class="layout" cellpadding="3" cellspacing="1" border="0" width="100%">
 <?php
 if (array_key_exists('image', $ReportType['report_fields'])) {

@@ -1097,7 +1097,7 @@ if (check_perms('users_mod', $Class)) { ?>
             for="perm_<?=$PermID?>"
             style="margin-right: 10px;"><?=$PermName?></label>
           <?php if ($i % 3 == 0) {
-              echo "\t\t\t\t<br />\n";
+              echo "\t\t\t\t<br>\n";
           }
       } ?>
         </td>
@@ -1224,7 +1224,7 @@ if (!$DisablePoints) {
             watch</label> |
           <input type="checkbox" name="ResetPasskey" id="ResetPasskey"> <label for="ResetPasskey">Passkey</label> |
           <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey"> <label for="ResetAuthkey">Authkey</label> |
-          <br />
+          <br>
           <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList"> <label for="ResetSnatchList">Snatch
             list</label> |
           <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList"> <label
@@ -1264,7 +1264,7 @@ if (!$DisablePoints) {
             value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
           <?php $i++;
             if ($i % 8 == 0) {
-                echo "<br />";
+                echo "<br>";
             }
         } ?>
         </td>
@@ -1388,7 +1388,7 @@ if (!$DisablePoints) {
           <?php } ?> /> <label for="DisableIRC">IRC</label> |
           <input type="checkbox" name="DisablePM" id="DisablePM" <?php if ($DisablePM==1) { ?> checked="checked"
           <?php } ?> /> <label for="DisablePM">PM</label> |
-          <br /><br />
+          <br><br>
 
           <input type="checkbox" name="DisableLeech" id="DisableLeech" <?php if ($DisableLeech==0) { ?> checked="checked"
           <?php } ?> /> <label for="DisableLeech">Leech</label> |
@@ -1403,7 +1403,7 @@ if (!$DisablePoints) {
           <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints==1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisablePoints"><?=bonusPoints?></label>
-          <br /><br />
+          <br><br>
 
           <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging==1) { ?>
           checked="checked"

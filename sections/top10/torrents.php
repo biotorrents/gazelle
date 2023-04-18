@@ -499,7 +499,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         </td>
     </tr>
 </table>
-<br />
+<br>
 <?php
     return;
   }
@@ -511,7 +511,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     </td>
 </tr>
 </table>
-<br />
+<br>
 <?php
     return;
     }
@@ -556,7 +556,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         if (empty($GroupBy)) {
             # Year
             if ($Year) {
-                $Label = '<br />📅&nbsp;';
+                $Label = '<br>📅&nbsp;';
                 $DisplayName .= $Label."<a href='torrents.php?action=search&year=$Year'>$Year</a>";
             }
 
@@ -600,7 +600,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
             /*
             if ($ExtraInfo !== '') {
-                $ExtraInfo = "<br />$ExtraInfo";
+                $ExtraInfo = "<br>$ExtraInfo";
             }
             */
         }
@@ -671,6 +671,6 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     } // foreach ($Details as $Detail)
     ?>
 </table>
-<br />
+<br>
 <?php
 }

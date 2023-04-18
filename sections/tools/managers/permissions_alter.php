@@ -8,7 +8,7 @@ function display_perm($Key, $Title)
     if (!empty($Values[$Key])) {
         $Perm .= ' checked="checked"';
     }
-    $Perm .= " /> <label for=\"$Key\">$Title</label><br />";
+    $Perm .= " /> <label for=\"$Key\">$Title</label><br>";
     echo "$Perm\n";
 }
 

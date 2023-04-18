@@ -47,7 +47,7 @@ define('MODE_DELETE', 2);
       </tr>
     </table>
   </form>
-  <br />
+  <br>
   <?php
 if (isset($_GET['tag']) || isset($_GET['replace'])) {
 

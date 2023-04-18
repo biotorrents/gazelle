@@ -336,7 +336,7 @@ View::textarea(
 
           <td>
             If this request matches a torrent group <strong>already existing</strong> on the site,
-            please indicate that here.<br />
+            please indicate that here.<br>
             <code><?= site_url() ?>torrents.php?id=</code>
 
             <input type="text" name="groupid"
@@ -359,7 +359,7 @@ View::textarea(
           </td>
 
           <td>
-            <a href="torrents.php?id=<?= $GroupID ?>"><?= site_url() ?>torrents.php?id=<?= $GroupID ?></a><br />
+            <a href="torrents.php?id=<?= $GroupID ?>"><?= site_url() ?>torrents.php?id=<?= $GroupID ?></a><br>
             This request <?= ($NewRequest ? 'will be' : 'is') ?>
             associated with the above torrent group.
             <?php if (!$NewRequest) { ?>

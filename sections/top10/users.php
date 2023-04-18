@@ -161,7 +161,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
         Found no users matching the criteria
       </td>
     </tr>
-    </table><br />';
+    </table><br>';
       return;
   }
       $Rank = 0;
@@ -190,6 +190,6 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
     </tr>
     <?php
     } ?>
-  </table><br />
+  </table><br>
   <?php
 }

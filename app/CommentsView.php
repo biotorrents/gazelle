@@ -103,8 +103,8 @@ class CommentsView
       <div id="content<?=$PostID?>">
         <?=\Gazelle\Text::parse($Body)?>
         <?php if ($EditedUserID) { ?>
-        <br />
-        <br />
+        <br>
+        <br>
         <div class="last_edited">
           <?php if (check_perms('site_admin_forums')) { ?>
           <a href="#content<?=$PostID?>"

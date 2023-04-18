@@ -191,7 +191,7 @@ if (isset($_POST['confirm'])) {
     <p>Please confirm that you wish to make <a
         href="artist.php?id=<?=$ArtistID?>"><?=\Gazelle\Text::esc($ArtistName)?> (<?=$ArtistID?>)</a> into a non-redirecting alias of <a
         href="artist.php?id=<?=$NewArtistID?>"><?=\Gazelle\Text::esc($NewArtistName)?> (<?=$NewArtistID?>)</a>.</p>
-    <br />
+    <br>
     <input type="submit" value="Confirm">
   </div>
 </form>

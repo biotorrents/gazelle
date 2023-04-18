@@ -63,7 +63,7 @@ $app->dbOld->set_query_id($RS);
     <?=\Gazelle\Text::float($Results)?> unused invites have been sent.
   </p>
 </div>
-<br />
+<br>
 
 <div>
   <form class="search_form" name="invites" action="" method="get">

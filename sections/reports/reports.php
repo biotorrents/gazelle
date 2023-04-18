@@ -214,7 +214,7 @@ echo $Pages;
 
             <div id="notes_div_<?=$ReportID?>" style="display: <?=empty($Notes) ? 'none' : 'block'; ?>;">
               <textarea cols="50" rows="3" id="notes_<?=$ReportID?>"><?=$Notes?></textarea>
-              <br />
+              <br>
               <input type="submit" onclick="saveNotes(<?=$ReportID?>)" value="Save">
             </div>
           </td>

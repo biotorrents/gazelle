@@ -4,7 +4,7 @@
 {%- else %}
     {%- for a in list -%}
         {%- if not loop.first -%}
-        <br />
+        <br>
         {% endif -%}
         {{ a.name }}
     {%- endfor %}
@@ -118,7 +118,7 @@
 <tr>
     <td colspan="2">
     {% for arg in args %}
-        {{ arg }}{% if not loop.last %}<br />{% endif %}
+        {{ arg }}{% if not loop.last %}<br>{% endif %}
     {% endfor %}
     </td>
 <tr>
@@ -161,32 +161,32 @@
         </td>
         <td class="vertical-align: top;">
         {% for tag in r.filter.info.tag|sort %}
-            {{ tag }}{% if not loop.last %}<br />{% endif %}
+            {{ tag }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">
         {% for notTag in r.filter.info.notTag|sort %}
-            {{ notTag }}{% if not loop.last %}<br />{% endif %}
+            {{ notTag }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">
         {% for format in r.filter.info.format|sort %}
-            {{ format }}{% if not loop.last %}<br />{% endif %}
+            {{ format }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">
         {% for encoding in r.filter.info.encoding|sort %}
-            <span style="white-space: nowrap">{{ encoding }}</span>{% if not loop.last %}<br />{% endif %}
+            <span style="white-space: nowrap">{{ encoding }}</span>{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">
         {% for media in r.filter.info.media|sort %}
-            {{ media }}{% if not loop.last %}<br />{% endif %}
+            {{ media }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">
         {% for user in r.filter.info.user|sort %}
-            {{ user|user_url }}{% if not loop.last %}<br />{% endif %}
+            {{ user|user_url }}{% if not loop.last %}<br>{% endif %}
         {% endfor %}
         </td>
         <td class="vertical-align: top;">{{ r.filter.info.exclude_va }}</td>
@@ -217,7 +217,7 @@
                     </td>
                     <td>
                         <input type="text" name="notifiedid" value="{{ notified_id }}">&nbsp;(To limit results to one person)
-                        <br />Use <tt>@name</tt> for a username, otherwise (numeric) user ID.
+                        <br>Use <tt>@name</tt> for a username, otherwise (numeric) user ID.
                     </td>
                     </td>
                 </tr>

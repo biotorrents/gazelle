@@ -131,6 +131,6 @@ $app->cache->delete("forums_edits_$PostID");
 // This gets sent to the browser, which echoes it in place of the old body
 echo \Gazelle\Text::parse($Body);
 ?>
-<br /><br />
+<br><br>
 <div class="last_edited">Last edited by <a
     href="user.php?id=<?=$app->user->core['id']?>"><?=$app->user->core['username']?></a> Just now</div>

@@ -181,7 +181,7 @@ foreach ($GroupIDs as $GroupID) {
         // Viewing a type that does not require grouping
         $Data = current($Torrents);
         #$ExtraInfo = Torrents::torrent_info($Data, true, true);
-        #$DisplayName .= "<br />$ExtraInfo";
+        #$DisplayName .= "<br>$ExtraInfo";
 
         $DisplayName = $twig->render(
             'torrents/display_name.html',
@@ -356,7 +356,7 @@ View::header(
       <?php if (check_perms('site_collages_create')) { ?>
       <a href="collages.php?action=new" class="brackets">New collection</a>
       <?php } ?>
-      <br /><br />
+      <br><br>
       <?php if (check_perms('site_collages_subscribe')) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
@@ -635,7 +635,7 @@ foreach ($CommentList as $Comment) {
       <div class="head">
         <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
-        <br />
+        <br>
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>

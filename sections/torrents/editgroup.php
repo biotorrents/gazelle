@@ -95,7 +95,7 @@ View::header(
     </h3>
 
     <input type="text" name="image" size="80" value="<?=$Image?>">
-    <br /><br />
+    <br><br>
 
     <h3>
       Torrent Group Description
@@ -123,7 +123,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
     </h3>
 
     <input type="text" name="summary" size="80">
-    <br />
+    <br>
 
     <div class="center pad">
       <input type="submit" value="Submit">
@@ -199,7 +199,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
           <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
           <?php
   for ($i = 1; $i < count($Artists); $i++) {
-      echo '<br /><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'">';
+      echo '<br><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'">';
   } ?>
         </td>
       </tr>

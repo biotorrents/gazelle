@@ -165,7 +165,7 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
       <div id="quickpost">
         <h3>Subject</h3>
         <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>">
-        <br />
+        <br>
         <h3>Body</h3>
         <textarea id="body" name="body" cols="95" rows="10"><?=(!empty($Body) ? $Body : '')?></textarea>
       </div>

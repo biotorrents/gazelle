@@ -49,7 +49,7 @@ View::header('Tracker info');
       <div class="pad">
         <form method="get" action="">
           <input type="hidden" name="action" value="ocelot_info">
-          <span class="label">Get stats for user</span><br />
+          <span class="label">Get stats for user</span><br>
           <input type="text" name="userid" placeholder="User ID" value="<?Format::form('userid')?>">
           <input type="submit" value="Go">
         </form>
@@ -67,9 +67,9 @@ View::header('Tracker info');
         <?php
 if (!empty($UserPeerStats)) {
     ?>
-        User ID: <?=$_GET['userid']?><br />
-        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br />
-        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br />
+        User ID: <?=$_GET['userid']?><br>
+        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br>
+        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br>
         <?php
 } elseif (!empty($MainStats)) {
     foreach ($MainStats as $Key => $Value) {
@@ -81,7 +81,7 @@ if (!empty($UserPeerStats)) {
                 $Value = \Gazelle\Text::float($Value);
             }
         } ?>
-        <?="$Value $Key<br />\n"?>
+        <?="$Value $Key<br>\n"?>
         <?php
     }
 } elseif (isset($TorrentPass)) {

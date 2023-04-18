@@ -31,8 +31,8 @@ $StaffPMs = $app->dbOld->query(
       <a data-toggle-target="#compose" class="brackets">Compose new</a>
     </div>
   </div>
-  <br />
-  <br />
+  <br>
+  <br>
   <?php View::parse('generic/reply/staffpm.php', array('Hidden' => true)); ?>
   <div class="box pad" id="inbox">
 <?php
@@ -72,7 +72,7 @@ if (!$app->dbOld->has_results()) {
             // First resolved PM
             ?>
       </table>
-      <br />
+      <br>
       <h3>Resolved messages</h3>
       <table class="message_table checkboxes">
         <tr class="colhead">

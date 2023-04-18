@@ -19,7 +19,7 @@
     {% for freeleech in freeleeches %}
     <li>
         <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
-        <br />
+        <br>
 
         <span class="u-pull-left">
             {{ topic.Username }}
@@ -103,7 +103,7 @@ if (count($Freeleeches)) {
     {% for blog in blog %}
     <li>
         <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
-        <br />
+        <br>
 
         <span class="u-pull-left">
             {{ topic.Username }}
@@ -127,7 +127,7 @@ if (count($Freeleeches)) {
     {% for topic in topic.suggested_topics %}
     <li>
         <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}

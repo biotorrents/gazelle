@@ -100,7 +100,7 @@ View::header($Name, 'browse,collage,recommend');
       <?php if (check_perms('site_collages_create')) { ?>
       <a href="collages.php?action=new" class="brackets">New collage</a>
       <?php } ?>
-      <br /><br />
+      <br><br>
       <?php if (check_perms('site_collages_subscribe')) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
@@ -258,7 +258,7 @@ foreach ($CommentList as $Comment) {
       <div class="head">
         <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
-        <br />
+        <br>
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>

@@ -171,7 +171,7 @@ function get_support()
 function printSectionDiv($ClassName)
 {
     ?>
-</div><br />
+</div><br>
 <div class='box pad'>
   <h2 style='text-align: left;'><?=$ClassName?>
   </h2>

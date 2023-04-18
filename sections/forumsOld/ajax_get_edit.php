@@ -62,8 +62,8 @@ if ($Depth != 0) {
 }
 ?>
 <?=\Gazelle\Text::parse($Body)?>
-<br />
-<br />
+<br>
+<br>
 
 <?php if ($Depth < count($Edits)) { ?>
 <a href="#edit_info_<?=$PostID?>"

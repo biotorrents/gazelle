@@ -92,18 +92,18 @@
     {% if loop.last %}
         {% if can_ban %}
     <tr>
-        <td><br />Ban Reason</td>
+        <td><br>Ban Reason</td>
         <td colspan="9">
-            <br />
+            <br>
             <input type="text" name="reason" size="40">
-            <br />When banning, this reason will be recorded for each checked IP address.
+            <br>When banning, this reason will be recorded for each checked IP address.
         </td>
     </tr>
         {% endif %}
     <tr>
         <td colspan="10">
             <input type="checkbox" id="resolve" name="resolve"{{ checked(resolve) }}
-            />&nbsp;<label for="resolve">Resolve IP addresses (may be slow)</label><br />
+            />&nbsp;<label for="resolve">Resolve IP addresses (may be slow)</label><br>
             <input type="submit" name="submit" value="Update">
         </td>
     </tr>

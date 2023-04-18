@@ -34,7 +34,7 @@ if (isset($_REQUEST['addtokens'])) {
     while (list($UserID) = $app->dbOld->next_record()) {
         $app->cache->delete("user_info_heavy_$UserID");
     }
-    $message = '<strong>' . \Gazelle\Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br /><br />';
+    $message = '<strong>' . \Gazelle\Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br><br>';
 } elseif (isset($_REQUEST['cleartokens'])) {
     authorize();
     $Tokens = $_REQUEST['numtokens'];
@@ -83,20 +83,20 @@ View::header('Add tokens sitewide');
   <form class="add_form" name="fltokens" action="" method="post">
     <input type="hidden" name="action" value="tokens">
     <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-    Tokens to add: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br>
-    <label for="leechdisabled">Grant tokens to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" /><br /><br>
+    Tokens to add: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br><br>
+    <label for="leechdisabled">Grant tokens to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" /><br><br>
     <input type="submit" name="addtokens" class="button-primary" value="Add tokens">
   </form>
 </div>
-<br />
+<br>
 <div class="box pad" style="margin-left: auto; margin-right: auto; text-align: center; max-width: 40%;">
   <?=$message?>
   <form class="manage_form" name="fltokens" action="" method="post">
     <input type="hidden" name="action" value="tokens">
     <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-    Tokens to set: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br>
+    Tokens to set: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br><br>
     <span id="droptokens" class=""><label for="onlydrop">Only affect users with at least this many tokens: </label><input type="checkbox" id="onlydrop" name="onlydrop" value="1" onchange="$('#disabled').gtoggle(); return true;" /></span><br>
-    <span id="disabled" class=""><label for="leechdisabled">Also add tokens (as needed) to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" onchange="$('#droptokens').gtoggle(); return true;" /></span><br /><br>
+    <span id="disabled" class=""><label for="leechdisabled">Also add tokens (as needed) to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" onchange="$('#droptokens').gtoggle(); return true;" /></span><br><br>
     <input type="submit" name="cleartokens" value="Set token total">
   </form>
 </div>

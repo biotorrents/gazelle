@@ -72,8 +72,8 @@ if ($ConvID = (int)$_GET['id']) {
     } ?>
     </div>
   </div>
-  <br />
-  <br />
+  <br>
+  <br>
   <div id="inbox">
     <?php
   // Get messages
@@ -126,7 +126,7 @@ if ($ConvID = (int)$_GET['id']) {
         </div>
         <div id="common_answers_body" class="body">Select an answer from the drop-down to view it.</div>
       </div>
-      <br />
+      <br>
       <div class="center">
         <select id="common_answers_select" onchange="UpdateMessage();">
           <option id="first_common_response">Select a message</option>
@@ -172,7 +172,7 @@ if ($ConvID = (int)$_GET['id']) {
                   name: 'message',
               );
           } ?>
-          <br />
+          <br>
           <?php
   // Assign to
   if ($IsStaff) {
@@ -265,7 +265,7 @@ if ($ConvID = (int)$_GET['id']) {
           <?php
           }
     if (check_perms('users_give_donor')) { ?>
-          <br />
+          <br>
           <input type="button" value="Make Donor" data-toggle-target="#make_donor_form">
           <?php } ?>
         </form>
@@ -278,10 +278,10 @@ if ($ConvID = (int)$_GET['id']) {
             <input type="hidden" name="id" value="<?=$ConvID?>">
             <strong>Amount: </strong>
             <input type="text" name="donation_amount" onkeypress="return isNumberKey(event);">
-            <br />
+            <br>
             <strong>Reason: </strong>
             <input type="text" name="donation_reason">
-            <br />
+            <br>
             <select name="donation_source">
               <option value="Flattr">Flattr</option>
             </select>

@@ -729,12 +729,12 @@ View::header($Title, 'requests');
                     }
 
                     $FullName .= "dir='ltr'>$Title</span></a>";
-                    $FullName .= "<br />$ArtistLink";
+                    $FullName .= "<br>$ArtistLink";
 
                     $ExtraInfo = '';
 
                     if (!empty($Request['CatalogueNumber'])) {
-                        $Label = '<br />🔑&nbsp;';
+                        $Label = '<br>🔑&nbsp;';
                         $ExtraInfo .= $Label.$Request['CatalogueNumber'];
                     }
 

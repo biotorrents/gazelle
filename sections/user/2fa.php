@@ -145,11 +145,11 @@ View::header("2FA Settings", 'u2f');
       <form method="post">
         <input type="hidden" name="type" value="PGP">
         Public Key
-        <br />
+        <br>
 
         <textarea name="publickey" id="publickey" spellcheck="false" cols="64"
           rows="8"><?=\Gazelle\Text::esc($PublicKey)?></textarea>
-        <br />
+        <br>
 
         <button type="submit" name="type" value="PGP">Update Public Key</button>
       </form>
@@ -176,11 +176,11 @@ if (empty($TwoFactor)) {
           value="<?=$TwoFASecret?>" readonly><br>
         <img
           src="<?=$TwoFA->getQRCodeImageAsDataUri($ENV->siteName.':'.$app->user->core['username'], $TwoFASecret)?>" />
-        <br />
+        <br>
 
         <input type="text" size="20" maxlength="6" pattern="[0-9]{0,6}" name="twofa" id="twofa"
           placeholder="Verification Code" autocomplete="off">
-        <br /><br />
+        <br><br>
 
         <button type="submit" name="type" value="2FA-E">Enable 2FA</button>
       </form>

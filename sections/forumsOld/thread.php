@@ -337,9 +337,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <?php
             } ?>
     </ul>
-    <br />
+    <br>
 
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br /><br />
+    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br><br>
     <?php
         } else {
             //Staff forum, output voters, not percentages
@@ -392,12 +392,12 @@ if ($ThreadInfo['NoPoll'] == 0) {
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
-    <br />
+    <br>
     <strong>Votes:</strong> <?=\Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=\Gazelle\Text::float($TotalVotes)?> total
-    <br />
+    <br>
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>
-    <br /><br />
+    <br><br>
     <?php
       } ?>
     <a href="#"
@@ -424,17 +424,17 @@ if ($ThreadInfo['NoPoll'] == 0) {
           </li>
           <?php } ?>
           <li>
-            <br />
+            <br>
             <input type="radio" name="vote" id="answer_0" value="0"> <label
-              for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br />
+              for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br>
           </li>
         </ul>
         <?php if ($ForumID == STAFF_FORUM) { ?>
         <a href="#"
           onclick="AddPollOption(<?=$ThreadID?>); return false;"
           class="brackets">+</a>
-        <br />
-        <br />
+        <br>
+        <br>
         <?php } ?>
         <input type="button" class="button-primary"
           onclick="ajax.post('index.php','poll',function(response) { $('#poll_container').raw().innerHTML = response});"
@@ -591,8 +591,8 @@ foreach ($Thread as $Key => $Post) {
       <div id="content<?=$PostID?>">
         <?=\Gazelle\Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
-        <br />
-        <br />
+        <br>
+        <br>
         <div class="last_edited">
           <?php if (check_perms('site_admin_forums')) { ?>
           <a href="#content<?=$PostID?>"
@@ -643,7 +643,7 @@ if (check_perms('site_moderate_forums')) {
       WHERE TopicID = $ThreadID
       ORDER BY ID ASC");
     $Notes = $app->dbOld->to_array(); ?>
-<br />
+<br>
 <h3 id="thread_notes">Notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
 <form action="forums.php" method="post">
   <input type="hidden" name="action" value="take_topic_notes">
@@ -677,7 +677,7 @@ if (check_perms('site_moderate_forums')) {
     </tr>
   </table>
 </form>
-<br />
+<br>
 <h3>Edit</h3>
 <form class="edit_form" name="forum_thread" action="forums.php" method="post">
   <div>

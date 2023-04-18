@@ -49,7 +49,7 @@ View::header(
       <div id="quickpost">
         <h3>Subject</h3>
         <input type="text" class="required" name="subject" size="95"
-          value="<?=(!empty($Subject) ? $Subject : '')?>"><br />
+          value="<?=(!empty($Subject) ? $Subject : '')?>"><br>
         <h3>Body</h3>
         <?php
 View::textarea(

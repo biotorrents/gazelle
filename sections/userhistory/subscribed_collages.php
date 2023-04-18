@@ -54,13 +54,13 @@ $CollageSubs = $app->dbOld->to_array();
       <?php
 if ($ShowAll) {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscribed_collages&amp;showall=0" class="brackets">Only display collections with
         new additions</a>&nbsp;&nbsp;&nbsp;
       <?php
 } else {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscribed_collages&amp;showall=1" class="brackets">Show all subscribed
         collections</a>&nbsp;&nbsp;&nbsp;
       <?php

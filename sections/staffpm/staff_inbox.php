@@ -110,8 +110,8 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
       <a href="staffpm.php?view=resolved" class="brackets">View resolved</a>
     </div>
   </div>
-  <br />
-  <br />
+  <br>
+  <br>
   <div class="linkbox">
     <?=$Pages?>
   </div>

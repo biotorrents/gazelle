@@ -114,11 +114,11 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
       <strong>Single Tag Freeleech</strong>
-      <br />
+      <br>
       <input id="tag_name" type="text" name="tag" placeholder="Tag" value="">
-      <br />
+      <br>
       <input id="tag_duration" type="number" name="duration" placeholder="Duration (hours)" value="">
-      <br />
+      <br>
       <input type="submit" class="button-primary" value="RELEASE THE LEECH">
     </form>
   </div>
@@ -129,9 +129,9 @@ if (isset($_POST['type'])) {
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
       <strong>Global Freeleech</strong>
-      <br />
+      <br>
       <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="">
-      <br />
+      <br>
       <input type="submit" class="button-primary" value="RELEASE THE LEECH">
   </div>
 </div>

@@ -114,12 +114,12 @@ if ($app->dbOld->has_results()) {
 
   <tr class="<?=$RowClass?>">
     <td>
-      <?=User::format_username($UserID, true, true, true, true)?><br />
+      <?=User::format_username($UserID, true, true, true, true)?><br>
       <?=User::format_username($InviterID, true, true, true, true)?>
     </td>
 
     <td>
-      <?=Format::get_ratio_html($Uploaded, $Downloaded)?><br />
+      <?=Format::get_ratio_html($Uploaded, $Downloaded)?><br>
       <?=Format::get_ratio_html($InviterUploaded, $InviterDownloaded)?>
     </td>
 
@@ -145,7 +145,7 @@ if ($app->dbOld->has_results()) {
     </td>
 
     <td>
-      <?=time_diff($Joined)?><br />
+      <?=time_diff($Joined)?><br>
       <?=time_diff($InviterJoined)?>
     </td>
   </tr>

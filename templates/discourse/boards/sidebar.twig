@@ -26,7 +26,7 @@
     {% for topic in latestTopics %}
     <li>
         <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}
@@ -43,7 +43,7 @@
     {% for topic in topic.suggested_topics %}
     <li>
         <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}

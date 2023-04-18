@@ -72,7 +72,7 @@ while (list($ID, $Title, $Date, $UserID) = $app->dbOld->next_record()) { ?>
       <input type="search" name="search" size="80">
       <input value="Search" type="submit" class="hidden button-primary">
     </form>
-    <br />
+    <br>
 
     <p>Additionally, you can manually browse through the articles by their first letter.</p>
     <span>

@@ -22,7 +22,7 @@ if (!check_perms('site_collages_renamepersonal') && $Category === '0') {
 if (isset($Err)) { ?>
   <div class="save_message error"><?=$Err?>
   </div>
-  <br />
+  <br>
   <?php
 } ?>
   <div class="box pad">
@@ -77,7 +77,7 @@ if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_p
               <?php
 } ?>
             </select>
-            <br />
+            <br>
             <ul>
               <li>
                 <strong>Theme</strong>

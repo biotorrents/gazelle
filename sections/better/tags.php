@@ -118,7 +118,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
 
     $ExtraInfo = Torrents::torrent_info($Torrents[$TorrentID]);
     if ($ExtraInfo) {
-        $DisplayName .= "<br />$ExtraInfo";
+        $DisplayName .= "<br>$ExtraInfo";
     } ?>
 
     <tr

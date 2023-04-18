@@ -17,7 +17,7 @@ $app = \Gazelle\App::go();
     </h3>
 
     <input size="95" type="text" name="subject" id="subject">
-    <br />
+    <br>
 
     <h3>
       <label for="message">Message</label>

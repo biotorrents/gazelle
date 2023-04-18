@@ -173,7 +173,7 @@ $app->dbOld->prepared_query("
           <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>
           uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
-          <br />
+          <br>
           <div style="text-align: right;">was reported by <a
               href="user.php?id=<?=$ReporterID?>"><?=$ReporterName?></a> <?=time_diff($ReportedTime)?> for the reason: <strong><?=$ReportType['title']?></strong></div>
           <?php $app->dbOld->prepared_query("
@@ -317,7 +317,7 @@ $app->dbOld->prepared_query("
                 } else {
                     $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
                 } ?>
-          <?=($First ? '' : '<br />')?>
+          <?=($First ? '' : '<br>')?>
           <?=$ExtraLinkName?>
           <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
             title="Download" class="brackets tooltip">DL</a>

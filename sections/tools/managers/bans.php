@@ -118,7 +118,7 @@ $app->dbOld->set_query_id($Bans);
     </table>
   </form>
 </div>
-<br />
+<br>
 
 <h3>Manage</h3>
 <div class="linkbox">

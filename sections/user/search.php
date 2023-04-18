@@ -71,7 +71,7 @@ View::header('User search');
       </tr>
     </table>
   </form>
-  <br />
+  <br>
   <div class="box pad center">
     <table style="width: 400px; margin: 0px auto;">
       <tr class="colhead">

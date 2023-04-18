@@ -172,7 +172,7 @@ switch ($Short) {
       </td>
     </tr>
   </table>
-  <br />
+  <br>
 
   <div class="box pad center">
     <p><strong>It will greatly increase the turnover rate of the updates if you can fill in as much of the following
@@ -209,8 +209,8 @@ switch ($Short) {
           </td>
         </tr>
       </table>
-      <br />
-      <br />
+      <br>
+      <br>
       <input type="submit" value="Submit report">
     </form>
   </div>
@@ -315,7 +315,7 @@ if (empty($NoReason)) {
         value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="id" value="<?=$ID?>">
       <input type="hidden" name="type" value="<?=$Short?>">
-      <textarea class="required" rows="10" cols="95" name="reason"></textarea><br /><br />
+      <textarea class="required" rows="10" cols="95" name="reason"></textarea><br><br>
       <input type="submit" value="Submit report">
     </form>
   </div>

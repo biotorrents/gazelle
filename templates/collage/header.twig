@@ -5,7 +5,7 @@
 {% if can_create %}
         <a href="collages.php?action=new" class="brackets">New collage</a>
 {% endif %}
-        <br /><br />
+        <br><br>
 {% if can_sub %}
         <a href="#" id="subscribelink{{ id }}" class="brackets" onclick="CollageSubscribe({{ id }}); return false;">{{ subbed ? 'Unsubscribe' : 'Subscribe' }}</a>
 {% endif %}

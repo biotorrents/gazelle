@@ -171,7 +171,7 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
         if ($Thread === null) {
             error(404);
         } ?>
-    <br />
+    <br>
 
     <a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"
       class="brackets"><?=\Gazelle\Text::esc($Thread['Title'])?></a>

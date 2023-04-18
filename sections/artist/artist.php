@@ -227,7 +227,7 @@ foreach ($TorrentList as $Group) {
         # Year
         # Sh!t h4x; Year is mandatory
         if ($GroupYear) {
-            $Label = '<br />📅&nbsp;';
+            $Label = '<br>📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
 
@@ -389,7 +389,7 @@ foreach ($TorrentList as $Group) {
         # Year
         # Sh!t h4x; Year is mandatory
         if ($GroupYear) {
-            $Label = '<br />📅&nbsp;';
+            $Label = '<br>📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
 
@@ -446,7 +446,7 @@ foreach ($TorrentList as $Group) {
                 href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
                 class="tooltip" title="Report">RP</a> ]
             </span>
-            <br />
+            <br>
             <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
             <span class="remove_bookmark u-pull-right">
               <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
@@ -463,7 +463,7 @@ foreach ($TorrentList as $Group) {
             <?php } ?>
           </div>
           <?=$DisplayName?>
-          <br />
+          <br>
           <div style="display: inline;" class="torrent_info">
             <?=$ExtraInfo?>
             <?php if ($Reported) { ?>

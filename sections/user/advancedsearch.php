@@ -769,7 +769,7 @@ foreach ($Secondaries as $Class) {
             value="<?=\Gazelle\Text::esc($_GET['downloaded2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Only display users that have a disabled account linked by IP address">
-          <label for="disabled_ip">Disabled accounts<br />linked by IP:</label>
+          <label for="disabled_ip">Disabled accounts<br>linked by IP:</label>
         </td>
         <td>
           <input type="checkbox" name="disabled_ip" id="disabled_ip" <?php if ($_GET['disabled_ip']) {

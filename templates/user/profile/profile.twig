@@ -722,7 +722,7 @@ if (check_perms('users_mod', $Class)) { ?>
             for="perm_<?=$PermID?>"
             style="margin-right: 10px;"><?=$PermName?></label>
           <?php if ($i % 3 == 0) {
-            echo "\t\t\t\t<br />\n";
+            echo "\t\t\t\t<br>\n";
         }
     } ?>
         </td>
@@ -849,7 +849,7 @@ if (!$DisablePoints) {
             watch</label> |
           <input type="checkbox" name="ResetPasskey" id="ResetPasskey"> <label for="ResetPasskey">Passkey</label> |
           <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey"> <label for="ResetAuthkey">Authkey</label> |
-          <br />
+          <br>
           <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList"> <label for="ResetSnatchList">Snatch
             list</label> |
           <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList"> <label

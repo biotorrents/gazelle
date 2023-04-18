@@ -62,7 +62,7 @@ if ($AS) {
     View::header();
     echo '<div class="box">';
 }
-$ASBreak = $AS ? '<br />' : "\n";
+$ASBreak = $AS ? '<br>' : "\n";
 
 $app->dbOld->query("
 SELECT

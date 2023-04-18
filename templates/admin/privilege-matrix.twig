@@ -1,6 +1,6 @@
 <table width="100%">
     <tr class="colhead">
-        <td rowspan="2" style="vertical-align: bottom">Primary Class {{ star|raw }} <br /><br />Privilege</td>
+        <td rowspan="2" style="vertical-align: bottom">Primary Class {{ star|raw }} <br><br>Privilege</td>
 {% for c in class_list %}
         <td style="padding: 0;"><div class="rot90-container"><div class="rot90">
             <a href="tools.php?action=permissions&amp;id={{ c.id }}">{{ c.name }}</a>
@@ -22,7 +22,7 @@
     </tr>
 {% endfor %}
 </table>
-<br />
+<br>
 
 <div class="box pad">Any privileges marked <span style="color: orangered">in
 red</span> are orphaned privileges that were found in the database
