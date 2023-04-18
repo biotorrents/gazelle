@@ -58,7 +58,6 @@ if (count($GroupIDs) > 0) {
 
 View::header(
     "Manage collection $Name",
-    'vendor/jquery.tablesorter.min,sort'
 );
 
 ?>
@@ -105,27 +104,27 @@ View::header(
       <?php
 
   $Number = 0;
-  foreach ($GroupIDs as $GroupID) {
-      if (!isset($TorrentList[$GroupID])) {
-          continue;
-      }
-      $Group = $TorrentList[$GroupID];
-      extract(Torrents::array_group($Group));
-      list(, $UserID, $Username, $Sort, $CatNum) = array_values($CollageDataList[$GroupID]);
+foreach ($GroupIDs as $GroupID) {
+    if (!isset($TorrentList[$GroupID])) {
+        continue;
+    }
+    $Group = $TorrentList[$GroupID];
+    extract(Torrents::array_group($Group));
+    list(, $UserID, $Username, $Sort, $CatNum) = array_values($CollageDataList[$GroupID]);
 
-      $Number++;
+    $Number++;
 
-      $DisplayName = '';
-      if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
-          unset($ExtendedArtists[2]);
-          unset($ExtendedArtists[3]);
-          $DisplayName .= Artists::display_artists($ExtendedArtists, true, false);
-      } elseif (count($Artists) > 0) {
-          $DisplayName .= Artists::display_artists($Artists, true, false);
-      }
-      $GroupNameLang = $title ? $title : ($subject ? $subject : $object);
-      $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
-      $GroupYear = $GroupYear > 0 ? $GroupYear : ''; ?>
+    $DisplayName = '';
+    if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
+        unset($ExtendedArtists[2]);
+        unset($ExtendedArtists[3]);
+        $DisplayName .= Artists::display_artists($ExtendedArtists, true, false);
+    } elseif (count($Artists) > 0) {
+        $DisplayName .= Artists::display_artists($Artists, true, false);
+    }
+    $GroupNameLang = $title ? $title : ($subject ? $subject : $object);
+    $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
+    $GroupYear = $GroupYear > 0 ? $GroupYear : ''; ?>
       <tr class="drag row" id="li_<?=$GroupID?>">
         <form class="manage_form" name="collage" action="collages.php" method="post">
           <td>
@@ -159,7 +158,7 @@ View::header(
         </form>
       </tr>
       <?php
-  } ?>
+} ?>
     </tbody>
   </table>
   <div class="drag_drop_save hidden">

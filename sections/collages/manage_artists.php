@@ -38,7 +38,6 @@ $Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 View::header(
     "Manage collage $Name",
-    'vendor/jquery.tablesorter.min,sort'
 ); ?>
 
 <div>
@@ -105,8 +104,8 @@ View::header(
     <tbody>
       <?php
   $Number = 0;
-  foreach ($Artists as $Artist) {
-      $Number++; ?>
+foreach ($Artists as $Artist) {
+    $Number++; ?>
       <tr class="drag row"
         id="li_<?=$Artist['ArtistID']?>">
         <form class="manage_form" name="collage" action="collages.php" method="post">
@@ -136,7 +135,7 @@ View::header(
         </form>
       </tr>
       <?php
-  } ?>
+} ?>
     </tbody>
   </table>
   <div class="drag_drop_save hidden">

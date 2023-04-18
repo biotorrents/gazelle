@@ -5,9 +5,10 @@
 (() => {
   "use strict";
 
-  // jquery ui tooltips
-  // https://jqueryui.com/tooltip/
-  $(document).tooltip();
+
+  /**
+   * third party libraries
+   */
 
   // smart quotes
   // https://smartquotes.js.org
@@ -106,11 +107,49 @@
       });
       return this;
     },
-  });
-  // end jquery extensions
-})();
+  }); // end jquery extensions
+
+
+  /**
+   * main menu
+   */
+
+  // toggle menu
+  $("#subMenu").hide();
+  $("#hamburger").on("click", function () {
+    $("#subMenu").toggle();
+    $("#hamburger").toggleClass("active");
+
+    // change icon
+    let isActive = $("#hamburger").hasClass("active");
+    if (isActive) {
+      $("#toggleIcon").html("<i class='fal fa-times'></i>");
+    } else {
+      $("#toggleIcon").html("<i class='fal fa-bars'></i>");
+
+    }
+
+    // close on esc
+    $(document).on('keydown', function (event) {
+      if (event.key == "Escape") {
+        $("#subMenu").hide();
+        $("#hamburger").removeClass("active");
+        $("#toggleIcon").html("<i class='fal fa-bars'></i>");
+      }
+    });
+
+    // change the search bar target
+    // https://stackoverflow.com/a/16750165
+    $("#searchWhat").on("change", function () {
+      let action = $(this).val();
+      $("#universalSearch").attr("action", action + ".php");
+    });
+  }); // end main menu
+})(); // end iife
+
 
 /** legacy */
+
 
 /**
  * get_size
@@ -121,6 +160,7 @@ function get_size(size) {
   var exts = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
   return size.toFixed(2) + (exts[steps] || "");
 }
+
 
 /**
  * ratio
@@ -147,6 +187,7 @@ function ratio(a, b) {
   return '<span class="' + rc + '">' + (a / b - 0.005).toFixed(2) + "</span>";
 }
 
+
 /**
  * save_message
  */
@@ -156,6 +197,7 @@ function save_message(message, err = false) {
   messageDiv.innerHTML = message;
   $("#content").raw().insertBefore(messageDiv, $("#content").raw().firstChild);
 }
+
 
 /**
  * toggleChecks
@@ -174,6 +216,7 @@ function toggleChecks(formElem, masterElem, elemSelector) {
     });
   }
 }
+
 
 /**
  * lightbox
@@ -268,6 +311,7 @@ window.onkeydown = function (e) {
   }
 };
 
+
 /**
  * resize
  */
@@ -278,6 +322,7 @@ function resize(id) {
       Math.min(1000, textarea.scrollHeight + textarea.style.fontSize) + "px";
   }
 }
+
 
 /**
  * add_selection
@@ -305,6 +350,7 @@ function add_selection() {
   }
 }
 
+
 /**
  * remove_selection
  */
@@ -312,6 +358,7 @@ function remove_selection(index) {
   $("#list" + index).remove();
   $("#opt" + index).raw().disabled = "";
 }
+
 
 /**
  * preload
@@ -373,6 +420,7 @@ function getCover(event) {
   }
 }
 
+
 /**
  * ungetCover
  */
@@ -381,6 +429,7 @@ function ungetCover(event) {
   coverCont.style.display = "none";
   document.removeEventListener("mousemove", coverListener);
 }
+
 
 /**
  * iife
