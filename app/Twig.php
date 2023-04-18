@@ -137,7 +137,7 @@ class Twig # extends Twig\Environment
 
         # session internal api key
         $frontendKey = implode(".", [
-            Http::getCookie("sessionId"),
+            Http::readCookie("sessionId"),
             $app->env->getPriv("siteApiSecret"),
         ]);
 
@@ -145,7 +145,7 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("frontendHash", $frontendHash);
 
         # query
-        $query = Http::query();
+        $query = Http::request();
         $twig->addGlobal("query", $query);
         #!d($twig->getGlobals());exit;
 

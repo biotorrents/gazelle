@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 
 # workaround for main navigation search
 $get["search"] ??= null;

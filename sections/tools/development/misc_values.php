@@ -17,7 +17,7 @@ if (!check_perms("admin_manage_permissions") && !check_perms("users_mod")) {
 }
 
 # query
-$post = Http::query("post");
+$post = Http::request("post");
 $post["databaseKey"] ??= null;
 
 # create

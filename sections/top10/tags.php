@@ -14,7 +14,7 @@ if (!check_perms("site_top10")) {
     error(403);
 }
 
-$get = Http::query("get");
+$get = Http::request("get");
 $limit = intval($get["limit"] ?? Top10::$defaultLimit);
 
 $torrentTags = Top10::torrentTags($limit);

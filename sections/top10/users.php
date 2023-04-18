@@ -14,7 +14,7 @@ if (!check_perms('site_top10')) {
     error(403);
 }
 
-$get = Http::query("get");
+$get = Http::request("get");
 $limit = intval($get["limit"] ?? Top10::$defaultLimit);
 
 
@@ -54,7 +54,7 @@ $BaseQuery = "
     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
   GROUP BY u.ID";
 
-  $Details ??= "all";
+$Details ??= "all";
 if ($Details == 'all' || $Details == 'ul') {
     if (!$TopUserUploads = $app->cache->get('topuser_ul_'.$Limit)) {
         $app->dbOld->prepared_query("$BaseQuery ORDER BY u.Uploaded DESC LIMIT $Limit;");

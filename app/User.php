@@ -93,9 +93,9 @@ class User
         $this->auth = new Auth();
 
         # untrusted input
-        $sessionId = Http::getCookie("sessionId") ?? null;
-        $userId = Http::getCookie("userId") ?? null;
-        $server = Http::query("server") ?? null;
+        $sessionId = Http::readCookie("sessionId") ?? null;
+        $userId = Http::readCookie("userId") ?? null;
+        $server = Http::request("server") ?? null;
 
         # unauthenticated
         if (!$sessionId) {
@@ -109,7 +109,7 @@ class User
         $userId = $app->dbNew->single($query, [$sessionId, $now]);
 
         # double check
-        if (intval($userId) !== intval(Http::getCookie("userId"))) {
+        if (intval($userId) !== intval(Http::readCookie("userId"))) {
             return false;
         }
 

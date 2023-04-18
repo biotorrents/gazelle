@@ -30,7 +30,7 @@ function enforce_login()
     $app = \Gazelle\App::go();
 
     if (empty($app->user->core)) {
-        Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
+        Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
 }

@@ -43,7 +43,7 @@ class Json
         # get the token off the headers
         if (empty($token)) {
             # escape bearer token
-            $server = Http::query("server");
+            $server = Http::request("server");
 
             # no header present
             if (empty($server["HTTP_AUTHORIZATION"])) {

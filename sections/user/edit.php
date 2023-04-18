@@ -14,8 +14,8 @@ $app = \Gazelle\App::go();
 Http::csrf();
 
 # request vars
-$get = Http::query("get");
-$post = Http::query("post");
+$get = Http::request("get");
+$post = Http::request("post");
 
 # 2fa libraries
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);

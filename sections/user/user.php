@@ -13,8 +13,8 @@ $app = \Gazelle\App::go();
 Http::csrf();
 
 # request vars
-$get = Http::query("get");
-$post = Http::query("post");
+$get = Http::request("get");
+$post = Http::request("post");
 
 $get["id"] ??= null;
 $userId = \Gazelle\Esc::int($get["id"]);

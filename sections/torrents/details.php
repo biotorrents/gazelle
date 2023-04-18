@@ -9,7 +9,7 @@
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 $groupId = intval($get["id"] ?? 0);
 $revisionId = intval($get["revisionId"] ?? 0);
 
