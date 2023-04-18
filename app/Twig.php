@@ -88,10 +88,18 @@ class Twig # extends Twig\Environment
             ]
         );
 
-        # debug
+        # debug stuff
         if ($app->env->dev) {
             $twig->addExtension(new Twig\Extension\DebugExtension());
-            $twig->addGlobal("git", Debug::gitInfo());
+
+            # last commit banner
+            $twig->addGlobal(
+                "git",
+                json_decode(
+                    file_get_contents("{$app->env->webRoot}/gitInfo.json"),
+                    true
+                )
+            );
         }
 
         # globals: app and env

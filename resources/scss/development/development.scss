@@ -37,7 +37,7 @@ body.development {
   }
 
   /* also, add a banner with the current git branch */
-  div#gitInfo {
+  #gitInfo {
     background: red;
     color: white;
     position: sticky;
@@ -45,6 +45,19 @@ body.development {
     top: 0;
     width: 100%;
     z-index: 666;
+
+    a {
+      color: white;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    span {
+      margin: 0 2rem;
+      white-space: nowrap;
+    }
   }
 
   /* DebugBar icon fix */

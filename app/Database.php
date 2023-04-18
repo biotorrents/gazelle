@@ -354,9 +354,8 @@ class Database extends \PDO
      * @param string $query
      * @param array $arguments
      * @param ?string $hostname
-     * @return array
      */
-    public function row(string $query, array $arguments = [], ?string $hostname = null): array
+    public function row(string $query, array $arguments = [], ?string $hostname = null)
     {
         $app = \Gazelle\App::go();
 
@@ -390,9 +389,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $arguments
      * @param ?string $hostname
-     * @return array
+     * @return ?array
      */
-    public function column(string $column, string $query, array $arguments = [], ?string $hostname = null): array
+    public function column(string $column, string $query, array $arguments = [], ?string $hostname = null): ?array
     {
         $app = \Gazelle\App::go();
 
