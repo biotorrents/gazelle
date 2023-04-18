@@ -195,7 +195,7 @@ list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $Grou
 // Start output
 View::header(
     $Title,
-    'browse,comments,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
+    'browse,torrent,recommend,cover_art,subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -642,7 +642,7 @@ foreach ($TorrentList as $Torrent) {
 
     $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->user->extra['AuthKey']."&amp;torrent_pass=".$app->user->extra['torrent_pass'];
     if (!($TorrentFileName = $app->cache->get('torrent_file_name_'.$TorrentID))) {
-        $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
         $app->cache->set('torrent_file_name_'.$TorrentID, $TorrentFileName);

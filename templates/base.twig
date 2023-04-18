@@ -70,20 +70,13 @@
                 var siteOptions = JSON.parse("{{ siteOptions|json_encode|escape('js') }}");
 			</script>
 
-			{# todo: app.js with vite #}
-			{# <script src="/js/app.min.js"></script> #}
-
 			{# start libraries #}
 
 			{# jquery #}
 			<script src="/js/vendor/jquery.min.js"> </script>
-			<script src="/js/vendor/jquery-ui.min.js"></script>
 
 			{# lodash #}
-			<script src="/js/vendor/lodash.min.js"></script>
-
-			{# instantpage #}
-			<script src="/js/vendor/instantpage.min.js"></script>
+			<script src="/js/vendor/lodash.core.min.js"></script>
 
 			{# smart quotes #}
 			<script src="/js/vendor/smartquotes.min.js"></script>
@@ -93,12 +86,12 @@
 				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
 			{% endif %}
 
-			{# easymde #}
+			{# easymde and highlight.js #}
 			<script src="/js/vendor/easymde.min.js"></script>
 			<script src="/js/vendor/highlight.min.js"></script>
 
 			{# tom select #}
-			<script src="/js/vendor/tom-select.complete.min.js"></script>
+			<script src="/js/vendor/tom-select.base.min.js"></script>
 
 			{# end libraries #}
 
@@ -118,16 +111,14 @@
 		{# start stylesheets block #}
 		{% block stylesheets %}
 
-			{# todo: app.css with vite #}
-			{# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
 
 			{# start libraries #}
 
-			{# skeleton, normalize, and jquery #}
-			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css"> <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
-			<link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
+			{# skeleton and normalize #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
+			<link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
 
-			{# easymde #}
+			{# easymde and highlight.js #}
 			<link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css"/>
 			<link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css"/>
 
@@ -226,6 +217,26 @@
 
 	<body class="{{ bodyStyles }}">
 
+	{# git info if on development #}
+	{% if env.dev %}
+		<div id="gitInfo">
+			<span>
+				<strong>author:</strong>
+				<a href="https://github.com/biotorrents/gazelle/commits?author={{ git.author }}" target="_blank">{{ git.author }}</a>
+			</span>
+
+			<span>
+				<strong>branch:</strong>
+				<a href="https://github.com/biotorrents/gazelle/tree/{{ git.branch}}" target="_blank">{{ git.branch}}</a>
+			</span>
+
+			<span>
+				<strong>commit:</strong>
+				<a href="https://github.com/biotorrents/gazelle/commit/{{ git.commit }}" target="_blank">{{ git.commit }}</a>
+			</span>
+		</div>
+	{% endif %}
+
 		<header id="top">
 			{% if authenticated %}
 				{# private #}
@@ -300,9 +311,6 @@
 			{# gazelle global #}
 			<script src="/js/global.js"></script>
 
-			{# main menu #}
-			<script src="/js/menus.js"></script>
-
 			{# extra js #}
 			{# todo: figure out a way to not defer vendor scripts #}
 			{% if js is defined %}
@@ -310,6 +318,9 @@
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
+
+		{# https://instant.page #}
+		<script src="/js/vendor/instantpage.min.js" type="module"></script>
 
 	</body>
 

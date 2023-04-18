@@ -28,7 +28,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
 $ENV = ENV::go();
 View::header(
     "Forums $ENV->crumb ".$Forum['Name']." $ENV->crumb New Topic",
-    'comments,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

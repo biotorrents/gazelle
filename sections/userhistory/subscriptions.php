@@ -207,7 +207,7 @@ if (!$NumResults) {
               $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . \Gazelle\Text::esc($Result['ForumName']) . '</a> &gt; ' .
                 '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] .
                   '" class="tooltip" title="' . \Gazelle\Text::esc($Result['Name']) . '">' .
-                  \Gazelle\Text::esc(Format::cut_string($Result['Name'], 75)) .
+                  \Gazelle\Text::esc(\Gazelle\Text::limit($Result['Name'], 75)) .
                 '</a>';
               $JumpLink = 'forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
               break;

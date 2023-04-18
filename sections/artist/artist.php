@@ -501,7 +501,7 @@ $TorrentDisplayList = ob_get_clean();
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('artist', $ArtistID);
 
-View::header($Name, 'browse,requests,comments,recommend,subscriptions');
+View::header($Name, 'browse,requests,recommend,subscriptions');
 ?>
 <div>
   <div class="header">

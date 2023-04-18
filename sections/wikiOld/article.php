@@ -67,12 +67,12 @@ View::header($Title, 'wiki');
     <div class="linkbox">
       <a href="wiki.php?action=create" class="brackets">Create</a>
 
-      <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
+      <?php # if ($Edit <= $app->user->extra['EffectiveClass']) {?>
       <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>"
         class="brackets">Edit</a>
       <a href="wiki.php?action=revisions&amp;id=<?=$ArticleID?>"
         class="brackets">History</a>
-      <?php # } ?>
+      <?php # }?>
 
       <?php if (check_perms('admin_manage_wiki') && $_GET['id'] !== INDEX_ARTICLE) { ?>
       <a href="wiki.php?action=delete&amp;id=<?=$ArticleID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>"
@@ -133,7 +133,7 @@ if ($Aliases !== $Title) {
     foreach ($AliasArray as $AliasItem) {
         ?>
             <li id="alias_<?=$AliasItem?>"><a
-                href="wiki.php?action=article&amp;name=<?=$AliasItem?>"><?=Format::cut_string($AliasItem, 20, 1)?></a>
+                href="wiki.php?action=article&amp;name=<?=$AliasItem?>"><?=\Gazelle\Text::limit($AliasItem, 20)?></a>
 
               <?php
               if (check_perms('admin_manage_wiki')) { ?>
@@ -143,10 +143,10 @@ if ($Aliases !== $Title) {
                 href="user.php?id=<?=$UserArray[$i]?>"
                 class="brackets tooltip" title="View user">U</a>
               <?php
-            } ?>
+              } ?>
             </li>
             <?php
-            $i++;
+              $i++;
     }
 }
 ?>
@@ -155,7 +155,7 @@ if ($Aliases !== $Title) {
       </ul>
     </div>
 
-    <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
+    <?php # if ($Edit <= $app->user->extra['EffectiveClass']) {?>
     <div class="box box_addalias">
       <div style="padding: 5px;">
 
@@ -173,7 +173,7 @@ if ($Aliases !== $Title) {
 
       </div>
     </div>
-    <?php # } ?>
+    <?php # }?>
   </div>
 
   <div class="main_column two-thirds column">

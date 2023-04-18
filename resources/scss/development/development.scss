@@ -4,7 +4,6 @@
  */
 
 body.development {
-  /*
   font-family: $comicNeue, sans-serif !important;
 
   b,
@@ -36,7 +35,30 @@ body.development {
   .button-purple {
     font-family: $comicNeue, sans-serif;
   }
-  */
+
+  /* also, add a banner with the current git branch */
+  #gitInfo {
+    background: red;
+    color: white;
+    position: sticky;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: 666;
+
+    a {
+      color: white;
+
+      &:hover {
+        color: white;
+      }
+    }
+
+    span {
+      margin: 0 2rem;
+      white-space: nowrap;
+    }
+  }
 
   /* DebugBar icon fix */
   a.phpdebugbar-tab i {

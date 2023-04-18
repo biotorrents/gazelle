@@ -15,14 +15,26 @@ class Creator extends Base
     #use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
     # the table associated with the model
-    protected $table = "artists_group";
+    protected $table = "creators";
 
     # the primary key associated with the table
-    protected $primaryKey = "ArtistID";
+    protected $primaryKey = "id";
 
     # indicates if the model should be timestamped
     public $timestamps = false;
 
     # the attributes that aren't mass assignable
-    protected $guarded = ["ArtistID"];
+    protected $guarded = ["id"];
+
+
+    /** relationships */
+
+
+    /**
+     * groups
+     */
+    public function groups()
+    {
+        return $this->hasMany(Group::class, "id", "groupId");
+    }
 } # class

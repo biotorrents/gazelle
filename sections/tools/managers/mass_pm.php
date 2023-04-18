@@ -49,7 +49,6 @@ View::header(
       <input type="checkbox" name="from_system" id="from_system" />Send as System
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
-        <input type="button" value="Preview" onclick="Quick_Preview();" />
         <input type="submit" class="button-primary" value="Send message" />
       </div>
     </div>

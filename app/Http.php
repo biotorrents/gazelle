@@ -56,13 +56,17 @@ class Http
      */
     public static function csrf()
     {
-        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
-        if (!empty($_POST)) {
-            if ($csrf->validateRequest()) {
-                return true;
-            } else {
-                self::response(403);
+        try {
+            $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+            if (!empty($_POST)) {
+                if ($csrf->validateRequest()) {
+                    return true;
+                } else {
+                    self::response(403);
+                }
             }
+        } catch (\Throwable $e) {
+            return;
         }
     }
 

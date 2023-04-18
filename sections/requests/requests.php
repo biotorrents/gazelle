@@ -9,6 +9,13 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 $get = Http::query("get");
+
+# workaround for main navigation search
+$get["search"] ??= null;
+if ($get["search"]) {
+    $get["complexSearch"] = $get["search"];
+}
+
 $searchTerms = [
     "simpleSearch" => $get["simpleSearch"] ?? null,
     "complexSearch" => $get["complexSearch"] ?? null,

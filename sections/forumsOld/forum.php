@@ -167,22 +167,22 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
   <div class="linkbox">
     <strong>Forum Specific Rules</strong>
     <?php foreach ($Forums[$ForumID]['SpecificRules'] as $ThreadIDs) {
-    $Thread = Forums::get_thread_info($ThreadIDs);
-    if ($Thread === null) {
-        error(404);
-    } ?>
+        $Thread = Forums::get_thread_info($ThreadIDs);
+        if ($Thread === null) {
+            error(404);
+        } ?>
     <br />
 
     <a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"
       class="brackets"><?=\Gazelle\Text::esc($Thread['Title'])?></a>
     <?php
-} ?>
+    } ?>
   </div>
   <?php } ?>
 
   <div class="linkbox pager">
     <?php
-$Pages = Format::get_pages($Page, $Forums[$ForumID]['NumTopics'], TOPICS_PER_PAGE, 9);
+    $Pages = Format::get_pages($Page, $Forums[$ForumID]['NumTopics'], TOPICS_PER_PAGE, 9);
 echo $Pages;
 ?>
   </div>
@@ -206,8 +206,8 @@ if (count($Forum) === 0) {
   </tr>
   <?php
 } else {
-        // forums_last_read_topics is a record of the last post a user read in a topic, and what page that was on
-        $app->dbOld->query("
+    // forums_last_read_topics is a record of the last post a user read in a topic, and what page that was on
+    $app->dbOld->query("
     SELECT
       l.TopicID,
       l.PostID,
@@ -222,51 +222,51 @@ if (count($Forum) === 0) {
     WHERE l.TopicID IN (".implode(', ', array_keys($Forum)).')
       AND l.UserID = \''.$app->user->core['id'].'\'');
 
-        // Turns the result set into a multi-dimensional array, with
-        // forums_last_read_topics.TopicID as the key.
-        // This is done here so we get the benefit of the caching, and we
-        // don't have to make a database query for each topic on the page
-        $LastRead = $app->dbOld->to_array('TopicID');
+    // Turns the result set into a multi-dimensional array, with
+    // forums_last_read_topics.TopicID as the key.
+    // This is done here so we get the benefit of the caching, and we
+    // don't have to make a database query for each topic on the page
+    $LastRead = $app->dbOld->to_array('TopicID');
 
-        //---------- Begin printing
+    //---------- Begin printing
 
-        foreach ($Forum as $Topic) {
-            list($TopicID, $Title, $AuthorID, $Locked, $Sticky, $PostCount, $LastID, $LastTime, $LastAuthorID) = array_values($Topic);
-            // Build list of page links
-            // Only do this if there is more than one page
-            $PageLinks = [];
-            $ShownEllipses = false;
-            $PagesText = '';
-            $TopicPages = ceil($PostCount / $PerPage);
+    foreach ($Forum as $Topic) {
+        list($TopicID, $Title, $AuthorID, $Locked, $Sticky, $PostCount, $LastID, $LastTime, $LastAuthorID) = array_values($Topic);
+        // Build list of page links
+        // Only do this if there is more than one page
+        $PageLinks = [];
+        $ShownEllipses = false;
+        $PagesText = '';
+        $TopicPages = ceil($PostCount / $PerPage);
 
-            if ($TopicPages > 1) {
-                $PagesText = ' (';
-                for ($i = 1; $i <= $TopicPages; $i++) {
-                    if ($TopicPages > 4 && ($i > 2 && $i <= $TopicPages - 2)) {
-                        if (!$ShownEllipses) {
-                            $PageLinks[] = '-';
-                            $ShownEllipses = true;
-                        }
-                        continue;
+        if ($TopicPages > 1) {
+            $PagesText = ' (';
+            for ($i = 1; $i <= $TopicPages; $i++) {
+                if ($TopicPages > 4 && ($i > 2 && $i <= $TopicPages - 2)) {
+                    if (!$ShownEllipses) {
+                        $PageLinks[] = '-';
+                        $ShownEllipses = true;
                     }
-                    $PageLinks[] = "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;page=$i\">$i</a>";
+                    continue;
                 }
-                $PagesText .= implode(' ', $PageLinks);
-                $PagesText .= ')';
+                $PageLinks[] = "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;page=$i\">$i</a>";
             }
+            $PagesText .= implode(' ', $PageLinks);
+            $PagesText .= ')';
+        }
 
-            // handle read/unread posts - the reason we can't cache the whole page
-            if ((!$Locked || $Sticky) && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID) && strtotime($LastTime) > $app->user->extra['CatchupTime'])) {
-                $Read = 'unread';
-            } else {
-                $Read = 'read';
-            }
-            if ($Locked) {
-                $Read .= '_locked';
-            }
-            if ($Sticky) {
-                $Read .= '_sticky';
-            } ?>
+        // handle read/unread posts - the reason we can't cache the whole page
+        if ((!$Locked || $Sticky) && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID) && strtotime($LastTime) > $app->user->extra['CatchupTime'])) {
+            $Read = 'unread';
+        } else {
+            $Read = 'read';
+        }
+        if ($Locked) {
+            $Read .= '_locked';
+        }
+        if ($Sticky) {
+            $Read .= '_sticky';
+        } ?>
   <tr class="row">
     <td
       class="<?=$Read?> <?=$Tooltip?>"
@@ -276,12 +276,12 @@ if (count($Forum) === 0) {
       <span class="u-pull-left last_topic">
         <?php
     $TopicLength = 75 - (2 * count($PageLinks));
-            unset($PageLinks);
-            $Title = \Gazelle\Text::esc($Title);
-            $DisplayTitle = $Title; ?>
+        unset($PageLinks);
+        $Title = \Gazelle\Text::esc($Title);
+        $DisplayTitle = $Title; ?>
         <strong>
           <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>"
-            class="tooltip" data-title-plain="<?=$Title?>"><?=Format::cut_string($DisplayTitle, $TopicLength) ?></a>
+            class="tooltip" data-title-plain="<?=$Title?>"><?=\Gazelle\Text::limit($DisplayTitle, $TopicLength) ?></a>
         </strong>
         <?=$PagesText?>
       </span>
@@ -306,8 +306,8 @@ if (count($Forum) === 0) {
     </td>
   </tr>
   <?php
-        }
-    } ?>
+    }
+} ?>
 </table>
 
 <div class="breadcrumbs">

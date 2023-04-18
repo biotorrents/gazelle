@@ -53,7 +53,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $this->library = new Delight\Auth\Auth(
-                databaseConnection: $app->dbNew->pdo,
+                databaseConnection: $app->dbNew->source,
                 throttling: $throttling
             );
 
@@ -384,7 +384,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            #!d($e);exit;
+            return $e->getMessage();
             return $message;
         }
 
@@ -393,7 +393,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                return $e->getMessage();
                 return $message;
             }
         }
@@ -403,7 +403,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verifyU2F($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                return $e->getMessage();
                 return $message;
             }
         }
@@ -412,7 +412,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            #!d($e);exit;
+            return $e->getMessage();
             return $message;
         }
     } # login
@@ -718,6 +718,11 @@ class Auth # extends Delight\Auth\Auth
     public function logout()
     {
         $message = "Unable to log out: please manually clear cookies";
+
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
+        if (!headers_sent()) {
+            header("Clear-Site-Data: '*'");
+        }
 
         try {
             # you can destroy the entire session by calling a second method

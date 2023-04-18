@@ -82,16 +82,24 @@ class Twig # extends Twig\Environment
                 "auto_reload" => true,
                 "autoescape" => "name",
                 # don't cache in the dev environment
-                #"cache" => "{$app->env->webRoot}/cache/twig",
-                "cache" => (!$app->env->dev) ? "{$app->env->webRoot}/cache/twig" : false,
+                "cache" => (!$app->env->dev) ? "{$app->env->webRoot}/cache" : false,
                 "debug" => $app->env->dev,
                 "strict_variables" => true,
             ]
         );
 
-        # debug
+        # debug stuff
         if ($app->env->dev) {
             $twig->addExtension(new Twig\Extension\DebugExtension());
+
+            # last commit banner
+            $twig->addGlobal(
+                "git",
+                json_decode(
+                    file_get_contents("{$app->env->webRoot}/gitInfo.json"),
+                    true
+                )
+            );
         }
 
         # globals: app and env
@@ -146,9 +154,15 @@ class Twig # extends Twig\Environment
             "form_token",
             function ($lock_to = null) {
                 static $csrf;
+
                 if ($csrf === null) {
-                    $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                    try {
+                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+                    } catch (Throwable $e) {
+                        return;
+                    }
                 }
+
                 return $csrf->insertToken($lock_to, false);
             },
             [ "is_safe" => ["html"] ]
@@ -202,7 +216,7 @@ class Twig # extends Twig\Environment
             return $app->user->cant($permission);
         }));
 
-        # \Gazelle\Images::process
+        # Gazelle\Images::process
         $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
             return new Twig\Markup(
                 \Gazelle\Images::process($uri, $thumbnail),
@@ -227,7 +241,7 @@ class Twig # extends Twig\Environment
             );
         }));
 
-        # \Gazelle\Text::parse
+        # Gazelle\Text::parse
         $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
             return new Twig\Markup(
                 \Gazelle\Text::parse($string),

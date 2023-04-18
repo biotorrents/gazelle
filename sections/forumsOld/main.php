@@ -73,7 +73,7 @@ foreach ($Forums as $Forum) {
         <span class="u-pull-left last_topic">
           <a href="forums.php?action=viewthread&amp;threadid=<?=$LastTopicID?>"
             class="tooltip"
-            data-title-plain="<?=\Gazelle\Text::esc($LastTopic)?>"><?=\Gazelle\Text::esc(Format::cut_string($LastTopic, 50, 1))?></a>
+            data-title-plain="<?=\Gazelle\Text::esc($LastTopic)?>"><?=\Gazelle\Text::esc(\Gazelle\Text::limit($LastTopic, 50))?></a>
         </span>
 
         <?php if (!empty($LastRead[$LastTopicID])) { ?>

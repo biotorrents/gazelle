@@ -31,12 +31,12 @@ heart. -A9
 */
 
 if (
-  !isset($_REQUEST['artistid'])
-  || !isset($_REQUEST['preference'])
-  || !is_numeric($_REQUEST['preference'])
-  || !is_numeric($_REQUEST['artistid'])
-  || $_REQUEST['preference'] > 2
-  || count($_REQUEST['list']) === 0
+    !isset($_REQUEST['artistid'])
+    || !isset($_REQUEST['preference'])
+    || !is_numeric($_REQUEST['preference'])
+    || !is_numeric($_REQUEST['artistid'])
+    || $_REQUEST['preference'] > 2
+    || count($_REQUEST['list']) === 0
 ) {
     error(0);
 }
@@ -88,7 +88,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
         $GroupID = $GroupIDs[$TorrentID];
         $Download =& $Downloads[$GroupID];
         $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);

@@ -31,7 +31,7 @@ list($Name) = $app->dbOld->next_record();
 // Start printing
 View::header(
     "Comments for collage $Name",
-    'comments,subscriptions,vendor/easymde.min',
+    'subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>

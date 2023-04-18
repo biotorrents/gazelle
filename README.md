@@ -1,15 +1,31 @@
-# 🧫 BioGazelle
+# 🧪 BioGazelle
 
 This software is twice removed from the original
 [What.cd Gazelle](https://github.com/WhatCD/Gazelle).
 It's based on the security hardened PHP7 fork
 [Oppaitime Gazelle](https://github.com/biotorrents/oppaiMirror).
 It shares several features with
-[Orpheus Gazelle](https://github.com/OPSnet/Gazelle).
+[Orpheus Gazelle](https://github.com/OPSnet/Gazelle)
+and incorporates certain innovations by
+[AnimeBytes](https://github.com/anniemaybytes).
 The goal is to organize a functional database with pleasant interfaces,
 and render insightful views using data from robust external sources.
 
 # Changelog: Bio ← OT
+
+Please find a running list of major software improvements below.
+This list is by no means exhaustive; it's a best hits compilation.
+The points are presented in no particular order.
+
+## Built to scale, micro or macro
+
+BioGazelle is pretty fast out of the box, on a single budget VPS.
+If you want to scale horizontally, the software supports both
+[Redis clusters](app/Cache.php) and
+[database server replication](app/Database.php).
+Please note that Redis clusters expect at least three nodes.
+This lower limit is inherent to Redis'
+[cluster implementation](https://redis.io/docs/management/scaling/).
 
 ## Full stack search engine rewrite
 
@@ -19,76 +35,95 @@ the successor to Sphinx.
 This upgrade also involved a
 [rewrite of the search configuration](utilities/config/manticore.conf)
 from scratch, based on AnimeBytes' example.
-The Gazelle frontend itself uses
-[a rewritten browse.php controller](sections/torrents/browse.php)
-and
-[a brand new Twig template](templates/torrents/search.twig).
+The Gazelle frontend itself uses a
+[rewritten browse.php controller](sections/torrents/browse.php) and a
+[brand new Twig template](templates/torrents/search.twig).
+Oh yeah, the
+[PHP backend class](app/Manticore.php)
+is also completely rewritten, replacing at least four legacy classes.
 
 ## Bearer token authorization
 
-[API Docs](https://docs.torrents.bio).
+[Read the API documentation.](https://docs.torrents.bio)
 API tokens can be generated in the
 [user security settings](sections/user/token.php)
 and used with the JSON API.
+[Internal API calls](app/API/Internal.php)
+for Ajax and such use a special token that can safely be exposed to the frontend.
+It's based on hashing a
+[rotating server secret](crontab/siteApiSecret.php)
+concatenated with a secure session cookie.
 
-## Routing system
+The session cookies themselves are tight, btw.
+No JavaScript access, scoped to the same site, long length, etc.
+This kind of stuff is in the
+[low level Http class](app/Http.php).
 
-BioGazelle uses the Flight router to define app routes.
-Features include clean URIs and centralized middleware.
+## Secure authentication system
 
-## New database and cache
+The user handling, including registration, logins, etc.,
+has been rewritten into a unified system in the
+[Auth class](app/Auth.php).
+The system acts as an oracle that takes inputs and returns messages.
+Passphrase hashing is all done with `PASSWORD_DEFAULT`, ready for Argon2id.
 
-There's a new database wrapper that's simple and sensible in
-[the database class](app/Database.php).
-Likewise, the cache class is upgraded to
-[Redis](app/Cache.php).
+I tested this extensively and determined that prehashing passphrases was no good.
+Not only it is impossible upgrade the algorithm, e.g., from `sha256` to `sha3-512`,
+but prehashing lowers the total entropy of long strings even if binary is used throughout.
+
+Test it yourself with 72 bytes of random binary data (the max supported by bcrypt) and a Shannon entropy calculator.
+There's something to be said for prehashing passphrases such as `qwerty123`, however.
+BioGazelle enforces a 15-character minimum passphrase length and imposes no other limitations.
 
 ## OpenAI integration
 
-One of BioGazelle's major goals is to place data in context.
-It uses
-[OpenAI's completions API](https://beta.openai.com/docs/api-reference/completions)
-to generate tl;dr summaries and tags from torrent descriptions.
+One of BioGazelle's goals is to place data in context using
+[OpenAI's completions API](app/OpenAI.php)
+to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
-and get a succinct natural language summary with torrent and SEO tags.
+and get a succinct natural language summary with tags.
 It's possible to disable AI content display in the user settings, btw.
 
 ## Good typography
 
-BioTorrents.de supports an array of
+BioGazelle supports an array of
 [unobtrusive fonts](resources/scss/assets/fonts.scss)
-with the appropriate bold/italic glyphs and monospace.
+with the appropriate glyphs for bold, italic, and monospace.
 These options are available to every theme.
-Font Awesome 5 is also universally available.
-[Download the fonts](https://torrents.bio/fonts.tgz).
+Font Awesome 5 is also universally available, as is the
+[entire Material Design color palette](resources/scss/assets/colors.scss).
+[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
 Also, there are two simple color modes,
 [calm mode and dark mode](resources/scss/global/colors.scss),
 that I like to think are pleasing to the eye.
 
 ## Markdown and BBcode support
 
+BioGazelle uses the
 [SimpleMDE markdown editor](https://simplemde.com)
-with extended custom editor interface.
+with a reasonably extended
+[custom editor interface](templates/_base/textarea.twig).
 All the Markdown Extra features supported by
 [Parsedown Extra](https://github.com/erusev/parsedown-extra)
-are documented and the useful ones exposed in the editor interface.
-The default recursive regex BBcode parser is replaced by
+are documented and the useful ones are exposed in the editor.
+The default recursive regex BBcode parser (yuck) is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
-Parsed texts are cached for speed.
+Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 
 ## App singleton
 
-[The site configuration](config/public.php)
+[The main site configuration](config/public.php)
 uses extensible ArrayObjects with by the
 [ENV special class](app/ENV.php).
 Also, the whole app is always instantly available:
 the config, database, cache, current user, Twig engine, etc.,
-are accessible with a simple call to `\Gazelle\App::go()`.
+are accessible with a simple call to `Gazelle\App::go()`.
+All such objects use the same quick and easy go → factory → thing API.
+Just in case you need to extend some core object without headaches.
 
 ## Twig template system
 
-BioGazelle's
-[Twig interface](app/Twig.php)
+[BioGazelle's Twig interface](app/Twig.php)
 takes cues from OPS's extended filters and functions.
 Twig provides a security benefit by escaping rendered output,
 and a secondary benefit of clarifying the PHP running the site sections.
@@ -102,16 +137,16 @@ No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
-BioTorrents.de has
+BioGazelle has
 [real lawyer-vetted policies](templates/siteText/legal).
 In the process of matching the tech to the legal word,
-we dropped support for a number of compromising features:
+I dropped support for a number of compromising features:
 
 - Bitcoin, PayPal, and currency exchange API and system calls;
 - Bitcoin addresses, user donation history, and similar metadata; and
 - IP address and geolocation, email address, passphrase, and passkey history.
 
-Besides that, BioTorrents has several passive developments in progress:
+Besides that, BioGazelle has several passive developments in progress:
 
 - prepare all queries with parameterized statements;
 - declare strict mode at the top of every PHP and JS file;
@@ -124,83 +159,64 @@ Besides that, BioTorrents has several passive developments in progress:
 BioGazelle takes cues from the best-of-breed PHP framework Laravel.
 The source code is reorganized along Laravel's lines while maintaining the comfy familiarity of OT/WCD Gazelle.
 The app logic, config, and Git repo lies outside the web root for enhanced security.
-An ongoing project involves modernizing the app based on Laravel's excellent tools.
+
+BioGazelle uses the Flight router to define app routes.
+Features include clean URIs and centralized middleware.
+An ongoing project involves modernizing the app based on Laravel's excellent tools,
+with help from other personally-vetted libraries that may be lighter.
 
 ## Decent debugging
 
 BioGazelle seeks to be easy and fun to develop.
-We're collecting the old debug class monstrosity into a nice little bar.
+I collected the old debug class monstrosity into a nice little bar.
 There's also no more `DEBUG_MODE` or random permissions.
-There's just a dev mode that spits everything out, and a prod mode that doesn't.
+There's just a development mode that spits everything out, and a production mode that doesn't.
+
+The entire app is also available on the command line for cron jobs, development, and fun.
+Good for BioGazelle, good for America!
+Just run `php shell` from the repository root to get up and running.
+This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 
 ## Minor changes
 
-- Database crypto bumped up to AES-256
-- Good subresource integrity support
-- Configurable HTTP status code errors
-- Integrated diceware passphrase generator
-- TLS database connections
-- Semantic HTML5 themes (WIP)
-- Single entry point for app init
-- Laravel-inspired shell (`php shell`)
-- Dead simple PDO database wrapper, fully parameterized
-- Simple and fast Redis cache (WIP)
-- Polite copy; the site says "please" and "thank you"
-- The codebase runs on PHP8 with minimal warnings
+- database crypto bumped up to AES-256
+- good subresource integrity support
+- configurable HTTP status code errors
+- integrated diceware passphrase generator
+- semantic HTML5 templates and layouts (WIP)
+- dead simple PDO database wrapper, fully parameterized
+- polite copy; the site says "please" and "thank you"
+- the codebase runs on PHP8 with minimal warnings
+- all database queries that are rewritten are usually simpler
+- no need to think about cache collisions across environments
+- a small amount of Eloquent models for core schema objects
 
-# Changelog: OT ← WCD
+## Features inherited from Oppaitime
 
-## Integrated Database Encryption
+- [integrated database encryption via APCu](app/Crypto.php)
+- 2FA (QR code) and U2F (hardware key) support for user accounts
+- unique torrent `info_hash` support with a randomized `source`
+- [resource proxying](https://github.com/biotorrents/image-host) that's expanded to support WebP and JPEG XL
+- [site schedule](sections/schedule) system for running certain tasks via cron
+- bonus points and the [corresponding store section](sections/store)
+- native HTTP/2 support with the expectation of TLSv1.3+
+- custom stylesheet modifications on a per-user basis
 
-Using a database key [provided by staff](sections/tools/misc/database_key.php) and only ever stored as a hash in memory (via APCu), the [integrated database encryption](classes/crypto.class.php) is used to encrypt sensitive user data like IP addresses, emails, and private messages regardless of the underlying system gazelle is running on.
-
-The rest of gazelle must be aware that some of the data it fetches from the DB is encrypted, and must have a fallback if that data is unavailable (the key is not in memory). You will see plenty of `if (!apcu_exists('DBKEY')) {` in this codebase.
-
-## Two-Factor Authentication
-
-Despite our other (less intrusive) methods of protecting user accounts being more than sufficient for virtually all feasible attacks, we also ship optional 2FA should users feel the need to enable it.
-
-## Universal 2nd Factor
-
-Support for physical U2F tokens has also been added as an optional alternative to normal 2FA. U2F allows users to protect their account with something less likely to be lost or erased than 2FA keys stored on a phone.
-
-## Unique Infohashes
-
-Upon upload, torrent files are modified to contain a "source" field in the info dict containing the concatination of the site name and some generated junk data (unique per-torrent). This prevents infohash collisions with torrents cross-seeded from other sites in the same client, and also helps protect against some not particularly likely peer-leaking attacks.
-
-## Resource Proxying
-
-All external resources that may appear on a page are fetched and served by the server running gazelle. This prevents the leak of user information to third parties hosting content that has been included on a page through an image tag or similar.
-
-## Scheduler
-
-The [scheduler](sections/schedule) has been broken up into more manageable parts and has additional selective runtime features for manual execution.
-
-## Bonus Points
-
-Like most gazelle forks, we've added a [bonus point system](sections/schedule/hourly/bonus_points.php) and [store](sections/store).
-
-## Modern password hashing
-
-We use modern PHP password hashing features that automatically rehash your password when a better hashing algorithm is made available and employ prehashing to allow you to use a secure password of any length. Original gazelle would effectively truncate your password after around 72 characters (if the tracker even allowed you to use a password that long). This codebase does not have the same problem, and allows passwords of virtually unlimited length (over 30,000 characters by default) that remain useful after a few tens of characters.
-
-## Minor Changes
-
-- When a torrent is trumped, the new torrent is made freeleech to users who snatched the old torrent for a few days.
-- Sends headers to tell cloudflare to use HTTP/2 Server Push for most resources.
-- Support for optional per-user stylesheet additions and tweaks
-- This codebase expects to run over https only.
-
-# Mascot
+# Gracie Gazelle
 
 ![Gracie Gazelle](public/images/mascot.png)
 
-**Gracie Gazelle**
+Gracie is a veteran pirate of the digital ocean.
+On land, predators form companies to hunt down prey.
+But in the lawless water, the prey attacks the predators' transports.
+Gracie steals resources from the rich and shares them with the poor and isolated people.
+Her great eyesight sees through the darkest corners of the internet for her next target.
+Her charisma attracts countless salty goats to join her fleet.
+She proudly puts the forbidden share symbols on her hat and belt, and is now one of the most wanted women in the world.
 
-Gracie is a veteran pirate of the Digital Ocean. On land, predators form companies to hunt down prey. But in the lawless water, prey attack the predators' transports. Gracies steals resources from the rich and shares them with the poor and isolated people. Her great eyesight sees through the darkest corners of the Internet for her next target. Her charisma attracts countless salty goats to join her fleet. She proudly puts the forbidden share symbols on her hat and belt, and is now one of the most wanted women in the world.
-
-High resolution downloads [here](https://git.oppaiti.me/Oppaitime/Gazelle/issues/34#issuecomment-99)
+## Tyson Tan
 
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
+[Download the high resolution version.](public/images/mascotFullVersion.png)
 
-Contact: [tysontan.com](https://tysontan.com) / <tysontan@mail.com>
+[tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@TysonTanX](https://twitter.com/tysontanx)

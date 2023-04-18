@@ -163,3 +163,31 @@ details {
 summary {
   font-weight: bold;
 }
+
+
+/**
+ * pure css tooltips to remove jquery ui
+ *
+ * https://codepen.io/zmmbreeze/pen/kxWgvQ
+ * https://www.w3schools.com/css/css_tooltip.asp
+ */
+
+.tooltip {
+  &:hover {
+    position: relative;
+
+    &:before {
+      background-color: #222;
+      box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
+      box-sizing: border-box;
+      color: white;
+      content: attr(title);
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      position: absolute;
+      top: 100%;
+      white-space: nowrap;
+      z-index: 666;
+    }
+  }
+}

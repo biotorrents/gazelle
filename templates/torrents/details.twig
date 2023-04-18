@@ -109,7 +109,7 @@
 	<section>
 		<h3>Description</h3>
 
-		{{ description|parse }}
+		{{ description|raw }}
 
         {# plz be my ai gf #}
         {% if openAiDescription and user.siteOptions.openaiContent %}
