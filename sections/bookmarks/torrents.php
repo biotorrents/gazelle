@@ -275,7 +275,7 @@ if ($CollageCovers > 0) {
     }
 }
 
-View::header($Title, 'browse,collage,wall');
+View::header($Title, 'browse,collage');
 ?>
 
 <div>
