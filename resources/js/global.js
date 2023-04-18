@@ -117,7 +117,7 @@
   // toggle menu
   $("#subMenu").hide();
   $("#hamburger").on("click", function () {
-    $("#subMenu").toggle();
+    $("#subMenu").toggle(100);
     $("#hamburger").toggleClass("active");
 
     // change icon
@@ -132,7 +132,7 @@
     // close on esc
     $(document).on('keydown', function (event) {
       if (event.key == "Escape") {
-        $("#subMenu").hide();
+        $("#subMenu").hide(100);
         $("#hamburger").removeClass("active");
         $("#toggleIcon").html("<i class='fal fa-bars'></i>");
       }
