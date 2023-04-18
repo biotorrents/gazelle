@@ -79,10 +79,10 @@ $app->dbOld->set_query_id($QueryID);
 ?>
 
 <form action="" method="post" class="box pad">
-  <input type="hidden" name="action" value="registration_log" />
-  Joined after: <input type="date" name="after_date" />
-  Joined before: <input type="date" name="before_date" />
-  <input type="submit" class="button-primary" />
+  <input type="hidden" name="action" value="registration_log">
+  Joined after: <input type="date" name="after_date">
+  Joined before: <input type="date" name="before_date">
+  <input type="submit" class="button-primary">
 </form>
 
 <?php

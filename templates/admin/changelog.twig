@@ -8,8 +8,8 @@
         </div>
         <div class="pad">
             <form method="post" action="">
-                <input type="hidden" name="perform" value="add" />
-                <input type="hidden" name="auth" value="{{ auth }}" />
+                <input type="hidden" name="perform" value="add">
+                <input type="hidden" name="auth" value="{{ auth }}">
                 <div class="field_div" id="cl_message">
                     <span class="label">Commit message:</span>
                     <br />
@@ -18,10 +18,10 @@
                 <div class="field_div" id="cl_author">
                     <span class="label">Author:</span>
                     <br />
-                    <input type="text" name="author" value="{{ author }}" />
+                    <input type="text" name="author" value="{{ author }}">
                 </div>
                 <div class="submit_div" id="cl_submit">
-                    <input type="submit" value="Submit" />
+                    <input type="submit" value="Submit">
                 </div>
             </form>
         </div>
@@ -34,9 +34,9 @@
     {% if is_mod %}
             <span style="float: right;">
                 <form id="delete_{{ change.id }}" method="post" action="">
-                    <input type="hidden" name="perform" value="remove" />
-                    <input type="hidden" name="auth" value="{{ auth }}" />
-                    <input type="hidden" name="change_id" value="{{ change.id }}" />
+                    <input type="hidden" name="perform" value="remove">
+                    <input type="hidden" name="auth" value="{{ auth }}">
+                    <input type="hidden" name="change_id" value="{{ change.id }}">
                 </form>
                 <a href="#" onclick="$('#delete_{{ change.id }}').raw().submit(); return false;" class="brackets">Delete</a>
             </span>

@@ -179,7 +179,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
   <div class="box pad">
     <form class="search_form" name="collages" action="" method="get">
       <div>
-        <input type="hidden" name="action" value="search" />
+        <input type="hidden" name="action" value="search">
       </div>
 
       <table cellpadding="6" cellspacing="1" border="0" class="skeletonFix" width="100%">
@@ -187,7 +187,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="search" name="search" size="60" placeholder="Search terms"
-              value="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : '')?>" />
+              value="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : '')?>">
           </td>
         </tr>
 
@@ -195,7 +195,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
           <td class="label"></td>
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=(!empty($_GET['tags']) ? \Gazelle\Text::esc($_GET['tags']) : '')?>" />
+              value="<?=(!empty($_GET['tags']) ? \Gazelle\Text::esc($_GET['tags']) : '')?>">
             &ensp;
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?Format::selected(
     'tags_type',
@@ -235,7 +235,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
       ?>/> Names&nbsp;&nbsp;
             <input type="radio" name="type" value="description" <?php if ($Type==='description') {
                 echo 'checked="checked" ' ;
-            } ?>/> Descriptions
+            } ?>> Descriptions
           </td>
         </tr>
         <tr id="order_by">
@@ -262,7 +262,7 @@ View::header(($BookmarkView) ? 'Your bookmarked collections' : 'Collections');
         </tr>
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" class="button-primary" value="Search" />
+            <input type="submit" class="button-primary" value="Search">
           </td>
         </tr>
       </table>

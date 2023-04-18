@@ -101,18 +101,18 @@ $app->dbOld->set_query_id($Bans);
       <tr>
         <td class="label"><label for="ip">IP address:</label></td>
         <td>
-          <input type="hidden" name="action" value="ip_ban" />
+          <input type="hidden" name="action" value="ip_ban">
           <input type="search" id="ip" name="ip" size="20"
-            value="<?=(!empty($_GET['ip']) ? \Gazelle\Text::esc($_GET['ip']) : '')?>" />
+            value="<?=(!empty($_GET['ip']) ? \Gazelle\Text::esc($_GET['ip']) : '')?>">
         </td>
         <td class="label"><label for="notes">Notes:</label></td>
         <td>
-          <input type="hidden" name="action" value="ip_ban" />
+          <input type="hidden" name="action" value="ip_ban">
           <input type="search" id="notes" name="notes" size="60"
-            value="<?=(!empty($_GET['notes']) ? \Gazelle\Text::esc($_GET['notes']) : '')?>" />
+            value="<?=(!empty($_GET['notes']) ? \Gazelle\Text::esc($_GET['notes']) : '')?>">
         </td>
         <td>
-          <input type="submit" class="button-primary" value="Search" />
+          <input type="submit" class="button-primary" value="Search">
         </td>
       </tr>
     </table>
@@ -135,18 +135,18 @@ $app->dbOld->set_query_id($Bans);
   </tr>
   <tr class="row">
     <form name="ban" action="" method="post">
-      <input type="hidden" name="action" value="ip_ban" />
+      <input type="hidden" name="action" value="ip_ban">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <td colspan="2">
-        <input type="text" size="12" name="start" />
-        <input type="text" size="12" name="end" />
+        <input type="text" size="12" name="start">
+        <input type="text" size="12" name="end">
       </td>
       <td>
-        <input type="text" size="72" name="notes" />
+        <input type="text" size="72" name="notes">
       </td>
       <td>
-        <input type="submit" name="submit" class="button-primary" value="Create" />
+        <input type="submit" name="submit" class="button-primary" value="Create">
       </td>
     </form>
   </tr>
@@ -156,22 +156,22 @@ while (list($ID, $Start, $End, $Reason) = $app->dbOld->next_record()) {
     $End = long2ip($End); ?>
   <tr class="row">
     <form class="manage_form" name="ban" action="" method="post">
-      <input type="hidden" name="id" value="<?=$ID?>" />
-      <input type="hidden" name="action" value="ip_ban" />
+      <input type="hidden" name="id" value="<?=$ID?>">
+      <input type="hidden" name="action" value="ip_ban">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <td colspan="2">
         <input type="text" size="12" name="start"
           value="<?=$Start?>" />
-        <input type="text" size="12" name="end" value="<?=$End?>" />
+        <input type="text" size="12" name="end" value="<?=$End?>">
       </td>
       <td>
         <input type="text" size="72" name="notes"
-          value="<?=$Reason?>" />
+          value="<?=$Reason?>">
       </td>
       <td>
-        <input type="submit" name="submit" value="Edit" />
-        <input type="submit" name="submit" value="Delete" />
+        <input type="submit" name="submit" value="Edit">
+        <input type="submit" name="submit" value="Delete">
       </td>
     </form>
   </tr>

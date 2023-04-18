@@ -199,16 +199,16 @@ foreach ($UserAdditions as $UserID => $Additions) {
             class="brackets">Batch add</a></span></div>
       <div class="pad add_artist_container">
         <form class="add_form" name="artist" action="collages.php" method="post">
-          <input type="hidden" name="action" value="add_artist" />
+          <input type="hidden" name="action" value="add_artist">
           <input type="hidden" name="auth"
-            value="<?=$app->user->extra['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>">
           <input type="hidden" name="collageid"
-            value="<?=$CollageID?>" />
+            value="<?=$CollageID?>">
           <div>
-            <input type="text" id="artist" size="20" name="url" />
+            <input type="text" id="artist" size="20" name="url">
           </div>
           <div class="submit_div">
-            <input type="submit" value="Add" />
+            <input type="submit" value="Add">
           </div>
           <span style="font-style: italic;">Enter the URL of an artist on the site.</span>
         </form>
@@ -216,16 +216,16 @@ foreach ($UserAdditions as $UserID => $Additions) {
 
       <div class="pad hidden add_artist_container">
         <form class="add_form" name="artists" action="collages.php" method="post">
-          <input type="hidden" name="action" value="add_artist_batch" />
+          <input type="hidden" name="action" value="add_artist_batch">
           <input type="hidden" name="auth"
-            value="<?=$app->user->extra['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>">
           <input type="hidden" name="collageid"
-            value="<?=$CollageID?>" />
+            value="<?=$CollageID?>">
           <div>
             <textarea name="urls" rows="5" cols="25" style="white-space: nowrap;"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" value="Add" />
+            <input type="submit" value="Add">
           </div>
           <span style="font-style: italic;">Enter the URLs of artists on the site, one per line.</span>
         </form>
@@ -281,17 +281,17 @@ if (!$app->user->extra['DisablePosting']) {
       <div class="head"><strong>Comment</strong></div>
       <form class="send_form" name="comment" id="quickpostform" onsubmit="quickpostform.submit_button.disabled = true;"
         action="comments.php" method="post">
-        <input type="hidden" name="action" value="take_post" />
-        <input type="hidden" name="page" value="collages" />
+        <input type="hidden" name="action" value="take_post">
+        <input type="hidden" name="page" value="collages">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="pageid" value="<?=$CollageID?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="pageid" value="<?=$CollageID?>">
         <div class="pad">
           <div>
             <textarea name="body" cols="24" rows="5"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" id="submit_button" value="Post" />
+            <input type="submit" id="submit_button" value="Post">
           </div>
         </div>
       </form>
@@ -361,7 +361,7 @@ if ($CollageCovers !== 0) {
       </span>
     </div>
 
-    <script type="text/javascript">
+    <script>
       //<![CDATA[
       collageShow.init( <?=json_encode($CollagePages)?> );
       //]]>

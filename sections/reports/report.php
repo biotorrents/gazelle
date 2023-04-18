@@ -18,114 +18,114 @@ $Type = $Types[$Short];
 $ID = $_GET['id'];
 
 switch ($Short) {
-  case 'user':
-    $app->dbOld->query("
+    case 'user':
+        $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Username) = $app->dbOld->next_record();
-    break;
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Username) = $app->dbOld->next_record();
+        break;
 
-  case 'request_update':
-    $NoReason = true;
-    $app->dbOld->query("
+    case 'request_update':
+        $NoReason = true;
+        $app->dbOld->query("
       SELECT Title, Description, TorrentID, CategoryID, Year
       FROM requests
       WHERE ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Name, $Desc, $Filled, $CategoryID, $Year) = $app->dbOld->next_record();
-    if ($Filled || ($CategoryID != 0 && ($Categories[$CategoryID - 1] != 'Music' || $Year != 0))) {
-        error(403);
-    }
-    break;
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Name, $Desc, $Filled, $CategoryID, $Year) = $app->dbOld->next_record();
+        if ($Filled || ($CategoryID != 0 && ($Categories[$CategoryID - 1] != 'Music' || $Year != 0))) {
+            error(403);
+        }
+        break;
 
-  case 'request':
-    $app->dbOld->query("
+    case 'request':
+        $app->dbOld->query("
       SELECT Title, Description, TorrentID
       FROM requests
       WHERE ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Name, $Desc, $Filled) = $app->dbOld->next_record();
-    break;
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Name, $Desc, $Filled) = $app->dbOld->next_record();
+        break;
 
-  case 'collage':
-    $app->dbOld->query("
+    case 'collage':
+        $app->dbOld->query("
       SELECT Name, Description
       FROM collages
       WHERE ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Name, $Desc) = $app->dbOld->next_record();
-    break;
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Name, $Desc) = $app->dbOld->next_record();
+        break;
 
-  case 'thread':
-    $app->dbOld->query("
+    case 'thread':
+        $app->dbOld->query("
       SELECT ft.Title, ft.ForumID, um.Username
       FROM forums_topics AS ft
         JOIN users_main AS um ON um.ID = ft.AuthorID
       WHERE ft.ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Title, $ForumID, $Username) = $app->dbOld->next_record();
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Title, $ForumID, $Username) = $app->dbOld->next_record();
+        $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $app->dbOld->next_record();
-    if (!empty($app->user->extra['DisableForums'])
-        || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
-        || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
-        error(403);
-    }
-    break;
+        list($MinClassRead) = $app->dbOld->next_record();
+        if (!empty($app->user->extra['DisableForums'])
+            || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
+            || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
+            error(403);
+        }
+        break;
 
-  case 'post':
-    $app->dbOld->query("
+    case 'post':
+        $app->dbOld->query("
       SELECT fp.Body, fp.TopicID, um.Username
       FROM forums_posts AS fp
         JOIN users_main AS um ON um.ID = fp.AuthorID
       WHERE fp.ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Body, $TopicID, $Username) = $app->dbOld->next_record();
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Body, $TopicID, $Username) = $app->dbOld->next_record();
+        $app->dbOld->query("
       SELECT ForumID
       FROM forums_topics
       WHERE ID = $TopicID");
-    list($ForumID) = $app->dbOld->next_record();
-    $app->dbOld->query("
+        list($ForumID) = $app->dbOld->next_record();
+        $app->dbOld->query("
       SELECT MinClassRead
       FROM forums
       WHERE ID = $ForumID");
-    list($MinClassRead) = $app->dbOld->next_record();
-    if (!empty($app->user->extra['DisableForums'])
-        || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
-        || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
-        error(403);
-    }
-    break;
+        list($MinClassRead) = $app->dbOld->next_record();
+        if (!empty($app->user->extra['DisableForums'])
+            || ($MinClassRead > $app->user->extra['EffectiveClass'] && (!isset($app->user->extra['CustomForums'][$ForumID]) || $app->user->extra['CustomForums'][$ForumID] == 0))
+            || (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] == 0)) {
+            error(403);
+        }
+        break;
 
-  case 'comment':
-    $app->dbOld->query("
+    case 'comment':
+        $app->dbOld->query("
       SELECT c.Body, um.Username
       FROM comments AS c
         JOIN users_main AS um ON um.ID = c.AuthorID
       WHERE c.ID = $ID");
-    if (!$app->dbOld->has_results()) {
-        error(404);
-    }
-    list($Body, $Username) = $app->dbOld->next_record();
-    break;
+        if (!$app->dbOld->has_results()) {
+            error(404);
+        }
+        list($Body, $Username) = $app->dbOld->next_record();
+        break;
 }
 
 View::header('Report a '.$Type['title']);
@@ -149,13 +149,13 @@ View::header('Report a '.$Type['title']);
   <?php
 
 switch ($Short) {
-  case 'user':
-?>
+    case 'user':
+        ?>
   <p>You are reporting the user <strong><?=\Gazelle\Text::esc($Username)?></strong></p>
   <?php
-    break;
-  case 'request_update':
-?>
+            break;
+    case 'request_update':
+        ?>
   <p>You are reporting the request:</p>
   <table class="box">
     <tr class="colhead">
@@ -178,16 +178,16 @@ switch ($Short) {
     <p><strong>It will greatly increase the turnover rate of the updates if you can fill in as much of the following
         details as possible.</strong></p>
     <form id="report_form" name="report" action="" method="post">
-      <input type="hidden" name="action" value="takereport" />
+      <input type="hidden" name="action" value="takereport">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="id" value="<?=$ID?>" />
-      <input type="hidden" name="type" value="<?=$Short?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="id" value="<?=$ID?>">
+      <input type="hidden" name="type" value="<?=$Short?>">
       <table class="layout">
         <tr>
           <td class="label">Year (required)</td>
           <td>
-            <input type="text" size="4" name="year" class="required" />
+            <input type="text" size="4" name="year" class="required">
           </td>
         </tr>
         <tr>
@@ -211,13 +211,13 @@ switch ($Short) {
       </table>
       <br />
       <br />
-      <input type="submit" value="Submit report" />
+      <input type="submit" value="Submit report">
     </form>
   </div>
   <?php
-    break;
-  case 'request':
-?>
+            break;
+    case 'request':
+        ?>
   <p>You are reporting the request:</p>
   <table class="box">
     <tr class="colhead">
@@ -235,9 +235,9 @@ switch ($Short) {
     </tr>
   </table>
   <?php
-    break;
-  case 'collage':
-?>
+            break;
+    case 'collage':
+        ?>
   <p>You are reporting the collection:</p>
   <table class="box">
     <tr class="colhead">
@@ -252,9 +252,9 @@ switch ($Short) {
     </tr>
   </table>
   <?php
-    break;
-  case 'thread':
-?>
+            break;
+    case 'thread':
+        ?>
   <p>You are reporting the thread:</p>
   <table>
     <tr class="colhead">
@@ -269,9 +269,9 @@ switch ($Short) {
     </tr>
   </table>
   <?php
-    break;
-  case 'post':
-?>
+            break;
+    case 'post':
+        ?>
   <p>You are reporting the post:</p>
   <table>
     <tr class="colhead">
@@ -286,9 +286,9 @@ switch ($Short) {
     </tr>
   </table>
   <?php
-    break;
-  case 'comment':
-?>
+            break;
+    case 'comment':
+        ?>
   <p>You are reporting the <?=$Types[$Short]['title']?>:</p>
   <table class="box">
     <tr class="colhead">
@@ -303,20 +303,20 @@ switch ($Short) {
     </tr>
   </table>
   <?php
-  break;
+          break;
 }
 if (empty($NoReason)) {
     ?>
   <h3>Reason</h3>
   <div class="box pad center">
     <form name="report" id="report_form" action="" method="post">
-      <input type="hidden" name="action" value="takereport" />
+      <input type="hidden" name="action" value="takereport">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="id" value="<?=$ID?>" />
-      <input type="hidden" name="type" value="<?=$Short?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="id" value="<?=$ID?>">
+      <input type="hidden" name="type" value="<?=$Short?>">
       <textarea class="required" rows="10" cols="95" name="reason"></textarea><br /><br />
-      <input type="submit" value="Submit report" />
+      <input type="submit" value="Submit report">
     </form>
   </div>
   <?php

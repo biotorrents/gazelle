@@ -8,7 +8,7 @@
 	{% endif %}
 
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
-		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ groupDetails.title }}" title="{{ groupDetails.title }}"/>
+		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ groupDetails.title }}" title="{{ groupDetails.title }}">
 	</figure>
 
 
@@ -31,9 +31,9 @@
     {# add new picture #}
     {% if can("site_edit_wiki") %}
     <form>
-        <input type="hidden" name="groupId" value="{{ groupId }}" />
+        <input type="hidden" name="groupId" value="{{ groupId }}">
 
-        <input type="text" name="pictureLocation" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg" />
+        <input type="text" name="pictureLocation" placeholder="e.g., https://i.imgur.com/ZL9dsY8.jpg">
 
         <a class="button button-primary" id="addNewPicture">add new picture</a>
     </form>
@@ -199,9 +199,9 @@
 {# add new #}
 {% if can("torrents_add_artist") %}
 <form>
-<input type="hidden" name="groupId" value="{{ groupId }}" />
+<input type="hidden" name="groupId" value="{{ groupId }}">
 
-<input type="text" id="creatorName" placeholder="e.g., {{ randomCreator() }}" />
+<input type="text" id="creatorName" placeholder="e.g., {{ randomCreator() }}">
 
 <a class="button button-primary" id="addNewCreator">new creator</a>
 </form>
@@ -256,9 +256,9 @@
 
 {# add new #}
 <form>
-<input type="hidden" name="groupId" value="{{ groupId }}" />
+<input type="hidden" name="groupId" value="{{ groupId }}">
 
-<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}" />
+<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}">
 
 <a class="button button-primary" id="addNewTag">new tag</a>
 </form>

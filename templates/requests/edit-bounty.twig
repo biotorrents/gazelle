@@ -22,9 +22,9 @@
 
         <form action="" method="post" id="request_form">
             <div>
-                <input type="hidden" name="id" value="{{ id }}" />
-                <input type="hidden" name="auth" value="{{ auth }}" />
-                <input type="hidden" name="action" value="takebounty" />
+                <input type="hidden" name="id" value="{{ id }}">
+                <input type="hidden" name="auth" value="{{ auth }}">
+                <input type="hidden" name="action" value="takebounty">
             </div>
 
             <table class="layout">
@@ -39,14 +39,14 @@
                 <tr>
                     <td>{{ b.UserID|user_full }}</td>
                     <td title="{{ b.Bounty|number_format }}">{{ b.bounty_size }}</td>
-                    <td><input type="radio" title="No change" name="action-{{ b.UserID }}" value="keep" checked="checked" /></td>
-                    <td><input type="radio" title="Refund" name="action-{{ b.UserID }}" value="refund" /></td>
-                    <td><input type="radio" title="Remove (Danger!)" name="action-{{ b.UserID }}" value="remove" />&nbsp;<input type="checkbox" name="check-{{ b.UserID }}" /></td>
+                    <td><input type="radio" title="No change" name="action-{{ b.UserID }}" value="keep" checked="checked"></td>
+                    <td><input type="radio" title="Refund" name="action-{{ b.UserID }}" value="refund"></td>
+                    <td><input type="radio" title="Remove (Danger!)" name="action-{{ b.UserID }}" value="remove" />&nbsp;<input type="checkbox" name="check-{{ b.UserID }}"></td>
                 </tr>
 {% endfor %}
                 <tr>
                     <td colspan="5">
-                        <input type="submit" id="button" value="Edit bounty" />
+                        <input type="submit" id="button" value="Edit bounty">
                     </td>
                 </tr>
             </table>

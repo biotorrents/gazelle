@@ -130,21 +130,20 @@ if (check_perms('admin_manage_blog')) {
         name="blog_post" action="blog.php" method="post">
         <div class="pad">
             <input type="hidden" name="action"
-                value="<?=empty($_GET['action']) ? 'takenewblog' : 'takeeditblog'?>" />
+                value="<?=empty($_GET['action']) ? 'takenewblog' : 'takeeditblog'?>">
             <input type="hidden" name="auth"
-                value="<?=$app->user->extra['AuthKey']?>" />
+                value="<?=$app->user->extra['AuthKey']?>">
             <?php if (!empty($_GET['action']) && $_GET['action'] == 'editblog') { ?>
             <input type="hidden" name="blogid"
-                value="<?=$BlogID; ?>" />
+                value="<?=$BlogID; ?>">
             <?php } ?>
             <h3>Title</h3>
-            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>
-            /><br />
+            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>><br />
             <h3>Body</h3>
             <textarea name="body" cols="95"
                 rows="15"><?=!empty($Body) ? \Gazelle\Text::esc($Body) : ''; ?></textarea>
             <br />
-            <input type="checkbox" value="1" name="important" id="important" checked="checked" /><label
+            <input type="checkbox" value="1" name="important" id="important" checked="checked"><label
                 for="important">Important</label><br />
             <h3>Thread ID</h3>
             <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.\Gazelle\Text::esc($ThreadID).'"' : ''; ?>

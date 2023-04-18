@@ -44,13 +44,13 @@
     <div class="box pad">
     <h2>Inspection</h2>
     <form class="manage_form" name="cache" method="get" action="">
-        <input type="hidden" name="action" value="clear_cache" />
+        <input type="hidden" name="action" value="clear_cache">
         <p>View or flush keys (separated by spaces). Remember to check the checkbox to validate that you really want to flush content.</p>
         <textarea cols="80" rows="8" name="key" id="key" class="inputtext">{{ key }}</textarea><br />
-        <span style="padding: 0 0"><input type="submit" name="view" value="View" /></span>
-        <span style="padding: 0 20px"><input type="submit" name="json" value="View as JSON" /></span>
+        <span style="padding: 0 0"><input type="submit" name="view" value="View"></span>
+        <span style="padding: 0 20px"><input type="submit" name="json" value="View as JSON"></span>
 {% if can_flush %}
-        <span style="padding: 0 15px"><input type="checkbox" name="check" /> <input type="submit" name="flush" value="Flush" /></span>
+        <span style="padding: 0 15px"><input type="checkbox" name="check" /> <input type="submit" name="flush" value="Flush"></span>
 {% endif %}
     </form>
     </div>
@@ -59,7 +59,7 @@
     <h2>Bulk eraser</h2>
         <p>Flush collections. Warning: may be so slow as to cause a gateway timeout, but the process will complete.</p>
         <form class="manage_form" name="cache" action="">
-        <input type="hidden" name="action" value="clear_cache" />
+        <input type="hidden" name="action" value="clear_cache">
         <table>
             <tr>
 {% for name in namespace|keys %}
@@ -69,7 +69,7 @@
 {% for list in namespace %}
                 <td style="vertical-align: top">
     {% for field, shape in list %}
-                    <label><input type="checkbox" name="{{ field }}" id="flush-{{ field }}" checked="checked" /> {{ shape|replace({'%d': '*'}) }}</label>
+                    <label><input type="checkbox" name="{{ field }}" id="flush-{{ field }}" checked="checked"> {{ shape|replace({'%d': '*'}) }}</label>
                     <br />
     {% endfor %}
                 </td>
@@ -88,7 +88,7 @@
             <tr>
 {% for name in namespace|keys %}
                 <td align="center">
-                    <input type="submit" name="flush-{{ name }}" value="Flush checked" /></span>
+                    <input type="submit" name="flush-{{ name }}" value="Flush checked"></span>
                 </td>
 {% endfor %}
             </tr>

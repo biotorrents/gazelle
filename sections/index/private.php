@@ -199,7 +199,7 @@ if ($TopicID) {
           <?php } else { ?>
           <div id="poll_container">
             <form class="vote_form" name="poll" id="poll" action="">
-              <input type="hidden" name="action" value="poll" />
+              <input type="hidden" name="action" value="poll">
               <input type="hidden" name="auth"
                 value="<?=$app->user->extra['AuthKey']?>" />
               <input type="hidden" name="topicid"
@@ -209,7 +209,7 @@ if ($TopicID) {
                 value="<?=$i?>" />
               <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br />
               <?php } ?>
-              <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
+              <br /><input type="radio" name="vote" id="answer_0" value="0"> <label
                 for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
               <input type="button"
                 onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );"

@@ -265,7 +265,7 @@ var lightbox = {
     }
     if (!hasA) {
       $("#lightbox").gshow().listen("click", lightbox.unbox).raw().innerHTML =
-        '<img src="' + image.src + '" alt="" />';
+        '<img src="' + image.src + '" alt="">';
       $("#curtain").gshow().listen("click", lightbox.unbox);
     }
   },
@@ -279,7 +279,7 @@ var lightbox = {
       hasA = true;
     }
     if (!hasA) {
-      $("#lightbox").raw().innerHTML = '<img src="' + image.src + '" alt="" />';
+      $("#lightbox").raw().innerHTML = '<img src="' + image.src + '" alt="">';
     }
   },
 

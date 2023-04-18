@@ -180,19 +180,19 @@ if (isset($_POST['confirm'])) {
   <h2>Confirm merge</h2>
 </div>
 <form class="merge_form" name="artist" action="artist.php" method="post">
-  <input type="hidden" name="action" value="change_artistid" />
+  <input type="hidden" name="action" value="change_artistid">
   <input type="hidden" name="auth"
-    value="<?=$app->user->extra['AuthKey']?>" />
-  <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
+    value="<?=$app->user->extra['AuthKey']?>">
+  <input type="hidden" name="artistid" value="<?=$ArtistID?>">
   <input type="hidden" name="newartistid"
-    value="<?=$NewArtistID?>" />
-  <input type="hidden" name="confirm" value="1" />
+    value="<?=$NewArtistID?>">
+  <input type="hidden" name="confirm" value="1">
   <div style="text-align: center;">
     <p>Please confirm that you wish to make <a
         href="artist.php?id=<?=$ArtistID?>"><?=\Gazelle\Text::esc($ArtistName)?> (<?=$ArtistID?>)</a> into a non-redirecting alias of <a
         href="artist.php?id=<?=$NewArtistID?>"><?=\Gazelle\Text::esc($NewArtistName)?> (<?=$NewArtistID?>)</a>.</p>
     <br />
-    <input type="submit" value="Confirm" />
+    <input type="submit" value="Confirm">
   </div>
 </form>
 <?php

@@ -35,16 +35,16 @@ View::header('Warn');
     <form class="send_form" name="warning" action="" onsubmit="quickpostform.submit_button.disabled = true;"
       method="post">
 
-      <input type="hidden" name="postid" value="<?=$PostID?>" />
-      <input type="hidden" name="userid" value="<?=$UserID?>" />
-      <input type="hidden" name="key" value="<?=$Key?>" />
-      <input type="hidden" name="action" value="take_warn" />
+      <input type="hidden" name="postid" value="<?=$PostID?>">
+      <input type="hidden" name="userid" value="<?=$UserID?>">
+      <input type="hidden" name="key" value="<?=$Key?>">
+      <input type="hidden" name="action" value="take_warn">
 
       <table class="layout" align="center">
         <tr>
           <td class="label">Reason:</td>
           <td>
-            <input type="text" name="reason" size="60" />
+            <input type="text" name="reason" size="60">
           </td>
         </tr>
 
@@ -77,7 +77,7 @@ View::header('Warn');
             <textarea id="body" style="width: 95%;" tabindex="1" onkeyup="resize('body');" name="body" cols="90"
               rows="8"><?=$PostBody?></textarea>
             <br />
-            <input type="submit" id="submit_button" class="button-primary" value="Warn user" tabindex="1" />
+            <input type="submit" id="submit_button" class="button-primary" value="Warn user" tabindex="1">
           </td>
         </tr>
       </table>

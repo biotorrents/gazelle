@@ -24,8 +24,8 @@
 {%    endif %}
 {%    if show_warn %}
                 <form class="manage_form hidden" name="user" id="warn{{ id }}" action="comments.php" method="post">
-                    <input type="hidden" name="action" value="warn" />
-                    <input type="hidden" name="postid" value="{{ id }}" />
+                    <input type="hidden" name="action" value="warn">
+                    <input type="hidden" name="postid" value="{{ id }}">
                 </form>
                 - <a href="#" onclick="$('#warn{{ id }}').raw().submit(); return false;" class="brackets">Warn</a>
 {%     endif %}

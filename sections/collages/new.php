@@ -27,9 +27,9 @@ if (isset($Err)) { ?>
 } ?>
   <div class="box pad">
     <form name="collage" action="collages.php" method="post">
-      <input type="hidden" name="action" value="new_handle" />
+      <input type="hidden" name="action" value="new_handle">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <table class="layout">
         <tr id="collagename">
           <td class="label"></td>
@@ -38,7 +38,7 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=\Gazelle\Text::esc($Name)?>" />
+            value="<?=\Gazelle\Text::esc($Name)?>">
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
@@ -122,7 +122,7 @@ View::textarea(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=\Gazelle\Text::esc($Tags)?>" />
+              value="<?=\Gazelle\Text::esc($Tags)?>">
           </td>
         </tr>
 
@@ -137,7 +137,7 @@ View::textarea(
 
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" class="button-primary" value="Create" />
+            <input type="submit" class="button-primary" value="Create">
           </td>
         </tr>
       </table>

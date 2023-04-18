@@ -89,14 +89,14 @@ if ($_POST['id']) {
   </div>
 <?php } ?>
   <form class="manage_form" name="user" action="" method="post">
-    <input type="hidden" id="action" name="action" value="manipulate_tree" />
-    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+    <input type="hidden" id="action" name="action" value="manipulate_tree">
+    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
     <table class="layout">
       <tr>
         <td class="label"><strong>UserID</strong></td>
-        <td><input type="search" size="10" name="id" id="id" /></td>
+        <td><input type="search" size="10" name="id" id="id"></td>
         <td class="label"><strong>Mandatory comment!</strong></td>
-        <td><input type="search" size="40" name="comment" id="comment" /></td>
+        <td><input type="search" size="40" name="comment" id="comment"></td>
       </tr>
       <tr>
         <td class="label"><strong>Action: </strong></td>
@@ -116,7 +116,7 @@ if ($_POST['id']) {
           } ?>>Disable invites privileges</option>
           </select>
         </td>
-        <td align="left"><input type="submit" class="button-primary" value="Go" /></td>
+        <td align="left"><input type="submit" class="button-primary" value="Go"></td>
       </tr>
     </table>
   </form>

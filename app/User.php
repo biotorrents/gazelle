@@ -638,7 +638,7 @@ class User
           : '';
 
         $Str .= ($IsEnabled && $UserInfo['Enabled'] === 2)
-          ? '<a href="/rules"><img src="'.staticServer.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
+          ? '<a href="/rules"><img src="'.staticServer.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip"></a>'
           : '';
 
         if ($Class) {
@@ -746,11 +746,11 @@ class User
             #if (!self::hasAvatarsEnabled() || empty($uri)) {
             $uri = "/images/avatars/default.png";
 
-            return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120' />";
+            return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120'>";
         }
 
         # return the user's avatar
-        return "<img src='{$uri}' alt='avatar for {$username}' title='avatar for {$username}' width='120' />";
+        return "<img src='{$uri}' alt='avatar for {$username}' title='avatar for {$username}' width='120'>";
     }
 
 

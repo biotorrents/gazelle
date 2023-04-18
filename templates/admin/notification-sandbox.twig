@@ -200,7 +200,7 @@
 {% endif %}
 <div class="box pad">
     <form class="send_form" action="" method="post">
-        <input type="hidden" name="action" value="notification_sandbox" />
+        <input type="hidden" name="action" value="notification_sandbox">
         <table class="layout">
             <tbody>
                 <tr>
@@ -208,7 +208,7 @@
                         <label for="torrentid">Torrent ID</label>
                     </td>
                     <td>
-                        <input type="text" name="torrentid" value="{{ torrent.ID }}" /> (<b>not</b> group ID!)
+                        <input type="text" name="torrentid" value="{{ torrent.ID }}"> (<b>not</b> group ID!)
                     </td>
                 <tr>
                 </tr>
@@ -216,14 +216,14 @@
                         <label for="torrentid">optional notified User ID</label>
                     </td>
                     <td>
-                        <input type="text" name="notifiedid" value="{{ notified_id }}" />&nbsp;(To limit results to one person)
+                        <input type="text" name="notifiedid" value="{{ notified_id }}">&nbsp;(To limit results to one person)
                         <br />Use <tt>@name</tt> for a username, otherwise (numeric) user ID.
                     </td>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <input type="submit" value="Submit" />
+        <input type="submit" value="Submit">
     </form>
 </div>
 </div>

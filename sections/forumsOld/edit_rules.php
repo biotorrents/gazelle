@@ -67,11 +67,11 @@ View::header();
     <tr>
       <form class="add_form" name="forum_rules" action="" method="post">
         <td>
-          <input name="new_thread" type="text" size="8" />
+          <input name="new_thread" type="text" size="8">
         </td>
 
         <td>
-          <input type="submit" name="add" class="button-primary" value="Add thread" />
+          <input type="submit" name="add" class="button-primary" value="Add thread">
         </td>
       </form>
 
@@ -84,8 +84,8 @@ View::header();
       <td>
         <form class="delete_form" name="forum_rules" action="" method="post">
           <input type="hidden" name="threadid"
-            value="<?=$ThreadID?>" />
-          <input type="submit" name="del" value="Delete link" />
+            value="<?=$ThreadID?>">
+          <input type="submit" name="del" value="Delete link">
         </form>
       </td>
     </tr>

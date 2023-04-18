@@ -973,8 +973,8 @@ if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
 }
 if (check_perms('users_mod', $Class)) { ?>
   <form class="manage_form" name="user" id="form" action="user.php" method="post">
-    <input type="hidden" name="action" value="moderate" />
-    <input type="hidden" name="userid" value="<?=$userId?>" />
+    <input type="hidden" name="action" value="moderate">
+    <input type="hidden" name="userid" value="<?=$userId?>">
     <input type="hidden" name="auth"
       value="<?=$user['AuthKey']?>" />
 
@@ -996,7 +996,7 @@ if (check_perms('users_mod', $Class)) { ?>
           style="width: 98%;"><?=\Gazelle\Text::esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
-        <script type="text/javascript">
+        <script>
           resize('admincomment');
         </script>
       </div>
@@ -1181,7 +1181,7 @@ if (!$DisablePoints) {
       <tr>
         <td class="label tooltip" title="Enter a username.">Merge stats <strong>from:</strong></td>
         <td>
-          <input type="text" size="40" name="MergeStatsFrom" />
+          <input type="text" size="40" name="MergeStatsFrom">
         </td>
       </tr>
       <tr>
@@ -1220,14 +1220,14 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Reset:</td>
         <td>
-          <input type="checkbox" name="ResetRatioWatch" id="ResetRatioWatch" /> <label for="ResetRatioWatch">Ratio
+          <input type="checkbox" name="ResetRatioWatch" id="ResetRatioWatch"> <label for="ResetRatioWatch">Ratio
             watch</label> |
-          <input type="checkbox" name="ResetPasskey" id="ResetPasskey" /> <label for="ResetPasskey">Passkey</label> |
-          <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey" /> <label for="ResetAuthkey">Authkey</label> |
+          <input type="checkbox" name="ResetPasskey" id="ResetPasskey"> <label for="ResetPasskey">Passkey</label> |
+          <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey"> <label for="ResetAuthkey">Authkey</label> |
           <br />
-          <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList" /> <label for="ResetSnatchList">Snatch
+          <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList"> <label for="ResetSnatchList">Snatch
             list</label> |
-          <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList" /> <label
+          <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList"> <label
             for="ResetDownloadList">Download list</label>
         </td>
       </tr>
@@ -1330,7 +1330,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This message *will* be sent to the user in the warning PM!">Warning reason:
         </td>
         <td>
-          <input type="text" class="wide_input_text" name="WarnReason" />
+          <input type="text" class="wide_input_text" name="WarnReason">
         </td>
       </tr>
       <?php } ?>
@@ -1423,7 +1423,7 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Hacked:</td>
         <td>
-          <input type="checkbox" name="SendHackedMail" id="SendHackedMail" />
+          <input type="checkbox" name="SendHackedMail" id="SendHackedMail">
           <label for="SendHackedMail">Send hacked account email</label>
         </td>
       </tr>
@@ -1461,7 +1461,7 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">User reason:</td>
         <td>
-          <input type="text" class="wide_input_text" name="UserReason" />
+          <input type="text" class="wide_input_text" name="UserReason">
         </td>
       </tr>
       <tr>
@@ -1491,11 +1491,11 @@ if (!$DisablePoints) {
       </tr>
       <tr>
         <td class="label">Reset session:</td>
-        <td><input type="checkbox" name="ResetSession" id="ResetSession" /></td>
+        <td><input type="checkbox" name="ResetSession" id="ResetSession"></td>
       </tr>
       <tr>
         <td class="label">Log out:</td>
-        <td><input type="checkbox" name="LogOut" id="LogOut" /></td>
+        <td><input type="checkbox" name="LogOut" id="LogOut"></td>
       </tr>
     </table>
     <?php
@@ -1516,7 +1516,7 @@ if (!$DisablePoints) {
 
       <tr>
         <td align="right" colspan="2">
-          <input type="submit" class="button-primary" value="Save changes" />
+          <input type="submit" class="button-primary" value="Save changes">
         </td>
       </tr>
     </table>

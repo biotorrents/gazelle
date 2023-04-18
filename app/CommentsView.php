@@ -65,7 +65,7 @@ class CommentsView
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
         <?php }
-      if (check_perms('site_moderate_forums')) { ?>
+        if (check_perms('site_moderate_forums')) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>
@@ -75,18 +75,18 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-      if (check_perms('users_warn') && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
-          ?>
+        if (check_perms('users_warn') && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
+            ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">
-          <input type="hidden" name="action" value="warn" />
-          <input type="hidden" name="postid" value="<?=$PostID?>" />
+          <input type="hidden" name="action" value="warn">
+          <input type="hidden" name="postid" value="<?=$PostID?>">
         </form>
         - <a href="#"
           onclick="$('#warn<?=$PostID?>').raw().submit(); return false;"
           class="brackets">Warn</a>
         <?php
-      } ?>
+        } ?>
         &nbsp;
         <a href="#">&uarr;</a>
         <?php } ?>

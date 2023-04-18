@@ -3,7 +3,7 @@
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="text" id="search" name="search" placeholder="Search the site" />
+    <input type="text" id="search" name="search" placeholder="Search the site">
 
     {# select which site area to search # }
     <select id="search_what" name="search_what">
@@ -54,7 +54,7 @@
     <div class="center pad">
         <a href="torrents.php?id={{ featured_showcase.GroupID }}" class="tooltip" title="{{
             featured_showcase.artist_name }} - {{  featured_showcase.Name }}">
-            <img src="{{ featured_showcase.image|raw }}" alt="{{ featured_showcase.artist_name }} - {{ featured_showcase.Name }}" width="100%" />
+            <img src="{{ featured_showcase.image|raw }}" alt="{{ featured_showcase.artist_name }} - {{ featured_showcase.Name }}" width="100%">
         </a>
     </div>
 </div>
@@ -300,15 +300,15 @@
 								    {% else %}
 								        <div id="poll_container">
 								        <form class="vote_form" name="poll" id="poll" action="">
-								            <input type="hidden" name="action" value="poll" />
-								            <input type="hidden" name="auth" value="{{ auth }}" />
-								            <input type="hidden" name="threadid" value="{{ poll_thread_id }}" />
+								            <input type="hidden" name="action" value="poll">
+								            <input type="hidden" name="auth" value="{{ auth }}">
+								            <input type="hidden" name="threadid" value="{{ poll_thread_id }}">
 								        {% for id, vote in poll.tally %}
-								            <input type="radio" name="vote" id="answer_{{ id }}" value="{{ id }}" />
+								            <input type="radio" name="vote" id="answer_{{ id }}" value="{{ id }}">
 								            <label for="answer_{{ id }}">{{ vote.answer }}</label><br />
 								        {% endfor %}
-								            <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
-								            <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );" value="Vote" />
+								            <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br>
+								            <input type="button" onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response } );" value="Vote">
 								        </form>
 								        </div>
 								    {% endif %}

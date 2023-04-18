@@ -59,9 +59,9 @@ View::header('Official Tags Manager');
 <div style="text-align: center;">
   <div style="display: inline-block;">
     <form class="manage_form" name="tags" method="post" action="">
-      <input type="hidden" name="action" value="official_tags" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="doit" value="1" />
+      <input type="hidden" name="action" value="official_tags">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="doit" value="1">
       <table class="tags_table layout box slight_margin">
         <tr class="colhead_dark">
           <td style="font-weight: bold; text-align: center;">Remove</td>
@@ -94,13 +94,13 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
         list($TagID3, $TagName3, $TagUses3) = $Tags[2 * ceil($TagCount / 3) + $i];
     } ?>
         <tr class="row">
-          <td style="text-align: center;"><input type="checkbox" name="oldtags[]" value="<?=$TagID1?>" /></td>
+          <td style="text-align: center;"><input type="checkbox" name="oldtags[]" value="<?=$TagID1?>"></td>
           <td><?=$TagName1?></td>
           <td style="text-align: center;"><?=\Gazelle\Text::float($TagUses1)?></td>
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID2) { ?>
-            <input type="checkbox" name="oldtags[]" value="<?=$TagID2?>" />
+            <input type="checkbox" name="oldtags[]" value="<?=$TagID2?>">
 <?php } ?>
           </td>
           <td><?=$TagName2?></td>
@@ -108,7 +108,7 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
           <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
           <td style="text-align: center;">
 <?php if ($TagID3) { ?>
-            <input type="checkbox" name="oldtags[]" value="<?=$TagID3?>" />
+            <input type="checkbox" name="oldtags[]" value="<?=$TagID3?>">
 <?php } ?>
           </td>
           <td><?=$TagName3?></td>
@@ -119,12 +119,12 @@ for ($i = 0; $i < $TagCount / 3; $i++) {
 ?>
         <tr class="row">
           <td colspan="11">
-            <label for="newtag">New official tag: </label><input type="text" name="newtag" />
+            <label for="newtag">New official tag: </label><input type="text" name="newtag">
           </td>
         </tr>
         <tr style="border-top: thin solid;">
           <td colspan="11" style="text-align: center;">
-            <input type="submit" class="button-primary" value="Submit changes" />
+            <input type="submit" class="button-primary" value="Submit changes">
           </td>
         </tr>
 

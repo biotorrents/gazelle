@@ -28,11 +28,11 @@
     <ul class="nobullet">
         <li>
             <form class="add_form" name="similar_artists" action="artist.php" method="post">
-                <input type="hidden" name="action" value="add_similar" />
-                <input type="hidden" name="auth" value="{{ auth }}" />
-                <input type="hidden" name="artistid" value="{{ artist_id }}" />
-                <input type="text" autocomplete="off" id="artistsimilar" name="artistname" size="20"{% if autocomplete %} data-gazelle-autocomplete="true"{% endif %} />
-                <input type="submit" value="+" />
+                <input type="hidden" name="action" value="add_similar">
+                <input type="hidden" name="auth" value="{{ auth }}">
+                <input type="hidden" name="artistid" value="{{ artist_id }}">
+                <input type="text" autocomplete="off" id="artistsimilar" name="artistname" size="20"{% if autocomplete %} data-gazelle-autocomplete="true"{% endif %}>
+                <input type="submit" value="+">
             </form>
         </li>
     </ul>

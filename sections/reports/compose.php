@@ -159,19 +159,19 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
   </div>
   <form class="send_form" name="message" action="reports.php" method="post" id="messageform">
     <div class="box pad">
-      <input type="hidden" name="action" value="takecompose" />
-      <input type="hidden" name="toid" value="<?=$ToID?>" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+      <input type="hidden" name="action" value="takecompose">
+      <input type="hidden" name="toid" value="<?=$ToID?>">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
       <div id="quickpost">
         <h3>Subject</h3>
-        <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>" />
+        <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>">
         <br />
         <h3>Body</h3>
         <textarea id="body" name="body" cols="95" rows="10"><?=(!empty($Body) ? $Body : '')?></textarea>
       </div>
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
-        <input type="submit" value="Send message" />
+        <input type="submit" value="Send message">
       </div>
     </div>
   </form>

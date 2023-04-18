@@ -400,7 +400,7 @@ if ($CollageCovers !== 0) { ?>
     </span>
   </div>
 
-  <script type="text/javascript">
+  <script>
     $(() => collageShow.init( <?=json_encode($CollagePages)?> ));
   </script>
   <?php

@@ -206,9 +206,9 @@ function user_dupes_table($UserID)
         $Dupes = [];
     } ?>
 <form class="manage_form" name="user" method="post" id="linkedform" action="">
-  <input type="hidden" name="action" value="dupes" />
-  <input type="hidden" name="dupeaction" value="update" />
-  <input type="hidden" name="userid" value="<?=$UserID?>" />
+  <input type="hidden" name="action" value="dupes">
+  <input type="hidden" name="dupeaction" value="update">
+  <input type="hidden" name="userid" value="<?=$UserID?>">
   <input type="hidden" id="auth" name="auth"
     value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" id="form_comment_hash" name="form_comment_hash"
@@ -268,8 +268,8 @@ function user_dupes_table($UserID)
     </table>
     <div class="pad hidden linkedaccounts">
       <label for="target">Link this user with: </label>
-      <input type="text" name="target" id="target" />
-      <input type="submit" value="Update" id="submitlink" />
+      <input type="text" name="target" id="target">
+      <input type="submit" value="Update" id="submitlink">
     </div>
   </div>
 </form>

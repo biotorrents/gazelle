@@ -109,30 +109,30 @@ if (isset($_POST['type'])) {
   </div>
   <div class="box text-align: center;">
     <form action="tools.php" method="POST">
-      <input type="hidden" name="action" value="freeleech" />
+      <input type="hidden" name="action" value="freeleech">
       <input type="hidden" name="type" value="tag">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <strong>Single Tag Freeleech</strong>
       <br />
-      <input id="tag_name" type="text" name="tag" placeholder="Tag" value="" />
+      <input id="tag_name" type="text" name="tag" placeholder="Tag" value="">
       <br />
-      <input id="tag_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />
+      <input id="tag_duration" type="number" name="duration" placeholder="Duration (hours)" value="">
       <br />
-      <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
+      <input type="submit" class="button-primary" value="RELEASE THE LEECH">
     </form>
   </div>
   <div class="box text-align: center;">
     <form action="tools.php" method="POST">
-      <input type="hidden" name="action" value="freeleech" />
-      <input type="hidden" name="type" value="global" />
+      <input type="hidden" name="action" value="freeleech">
+      <input type="hidden" name="type" value="global">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <strong>Global Freeleech</strong>
       <br />
-      <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="" />
+      <input id="global_duration" type="number" name="duration" placeholder="Duration (hours)" value="">
       <br />
-      <input type="submit" class="button-primary" value="RELEASE THE LEECH" />
+      <input type="submit" class="button-primary" value="RELEASE THE LEECH">
   </div>
 </div>
 <?php View::footer();

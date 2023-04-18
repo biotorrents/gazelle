@@ -53,18 +53,18 @@ View::header('Edit artist');
   </div>
   <div class="box pad">
     <form class="edit_form" name="artist" action="artist.php" method="post">
-      <input type="hidden" name="action" value="edit" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
+      <input type="hidden" name="action" value="edit">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="artistid" value="<?=$ArtistID?>">
       <div>
         <h3>Image:</h3>
-        <input type="text" name="image" size="92" value="<?=$Image?>" /><br />
+        <input type="text" name="image" size="92" value="<?=$Image?>" /><br>
         <h3>Information:</h3>
         <textarea name="body" cols="91" rows="20"><?=$Body?></textarea> <br />
         <h3>Edit summary:</h3>
-        <input type="text" name="summary" size="92" /><br />
+        <input type="text" name="summary" size="92"><br>
         <div style="text-align: center;">
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Submit">
         </div>
       </div>
     </form>
@@ -73,13 +73,13 @@ View::header('Edit artist');
   <h2>Rename</h2>
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">
-      <input type="hidden" name="action" value="rename" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
+      <input type="hidden" name="action" value="rename">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="artistid" value="<?=$ArtistID?>">
       <div>
-        <input type="text" name="name" size="92" value="<?=$Name?>" />
+        <input type="text" name="name" size="92" value="<?=$Name?>">
         <div style="text-align: center;">
-          <input type="submit" value="Rename" />
+          <input type="submit" value="Rename">
         </div>
       </div>
     </form>
@@ -88,17 +88,17 @@ View::header('Edit artist');
 <?php /* <h2>Make into non-redirecting alias</h2>
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
-      <input type="hidden" name="action" value="change_artistid" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
+      <input type="hidden" name="action" value="change_artistid">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="artistid" value="<?=$ArtistID?>">
       <div>
         <p>Merges this artist ("<?=$Name?>") into the artist specified below (without redirection), so that ("<?=$Name?>") and its aliases will appear as a non-redirecting alias of the artist entered in the text box below.</p><br />
         <div style="text-align: center;">
-          <label for="newartistid">Artist ID:</label>&nbsp;<input type="text" id="newartistid" name="newartistid" size="40" value="" /><br />
+          <label for="newartistid">Artist ID:</label>&nbsp;<input type="text" id="newartistid" name="newartistid" size="40" value="" /><br>
           <strong>OR</strong><br />
-          <label for="newartistid">Artist name:</label>&nbsp;<input type="text" id="newartistname" name="newartistname" size="40" value="" />
+          <label for="newartistid">Artist name:</label>&nbsp;<input type="text" id="newartistname" name="newartistname" size="40" value="">
           <br /><br />
-          <input type="submit" value="Change artist ID" />
+          <input type="submit" value="Change artist ID">
         </div>
       </div>
     </form>
@@ -139,21 +139,21 @@ View::header('Edit artist');
     <div class="pad">
       <p>This redirects artist names as they are written (e.g. when new torrents are uploaded or artists added). All uses of this new alias will be redirected to the alias ID you enter here. Use for common misspellings, inclusion of diacritical marks, etc.</p>
       <form class="add_form" name="aliases" action="artist.php" method="post">
-        <input type="hidden" name="action" value="add_alias" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="artistid" value="<?=$ArtistID?>" />
+        <input type="hidden" name="action" value="add_alias">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="artistid" value="<?=$ArtistID?>">
         <div>
           <span class="label"><strong>Name:</strong></span>
           <br />
-          <input type="text" name="name" size="40" value="<?=$Name?>" />
+          <input type="text" name="name" size="40" value="<?=$Name?>">
         </div>
         <div>
           <span class="label"><strong>Writes redirect to (enter an Alias ID; leave blank or enter "0" for no redirect):</strong></span>
           <br />
-          <input type="text" name="redirect" size="40" value="<?=$DefaultRedirectID?>" /><br />
+          <input type="text" name="redirect" size="40" value="<?=$DefaultRedirectID?>" /><br>
         </div>
         <div class="submit_div">
-          <input type="submit" value="Add alias" />
+          <input type="submit" value="Add alias">
         </div>
       </form>
     </div>

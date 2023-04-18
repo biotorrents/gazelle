@@ -63,10 +63,10 @@ function Load(reportid) {
 function ErrorBox(reportid, message) {
   $("#all_reports").prepend(
     '<div class="box pad center" id="error_box">Message from report ' +
-      reportid +
-      ": " +
-      message +
-      '\n<input type="button" value="Hide Errors" onclick="HideErrors();" /></div>'
+    reportid +
+    ": " +
+    message +
+    '\n<input type="button" value="Hide Errors" onclick="HideErrors();"></div>'
   );
 }
 

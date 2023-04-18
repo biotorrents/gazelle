@@ -76,7 +76,7 @@ if (check_perms('site_advanced_top10')) {
     ?>
     <div class="box pad">
         <form class="search_form" name="torrents" action="" method="get">
-            <input type="hidden" name="advanced" value="1" />
+            <input type="hidden" name="advanced" value="1">
             <table cellpadding="6" cellspacing="1" border="0" class="layout" width="100%">
                 <tr id="tagfilter">
                     <td class="label">Tags (comma-separated)</td>
@@ -84,10 +84,8 @@ if (check_perms('site_advanced_top10')) {
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
                             echo \Gazelle\Text::esc($_GET['tags']);
                         } ?>" />&nbsp;
-                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>
-                        /><label for="rdoAll"> All</label>&nbsp;&nbsp;
-                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>
-                        /><label for="rdoAny"> Any</label>
+                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>><label for="rdoAll"> All</label>&nbsp;&nbsp;
+                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>><label for="rdoAny"> Any</label>
                     </td>
                 </tr>
                 <tr>
@@ -108,7 +106,7 @@ if (check_perms('site_advanced_top10')) {
                 </tr>
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" class="button-primary" value="Search" />
+                        <input type="submit" class="button-primary" value="Search">
                     </td>
                 </tr>
             </table>

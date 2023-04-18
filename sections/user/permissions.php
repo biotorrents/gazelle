@@ -74,7 +74,7 @@ function display_perm($Key, $Title)
 
 View::header("$Username &gt; Permissions");
 ?>
-<script type="text/javascript">
+<script>
   //<![CDATA[
   function reset() {
     for (i = 0; i < $('#permissionsform').raw().elements.length; i++) {
@@ -112,7 +112,7 @@ View::header("$Username &gt; Permissions");
       </td>
     </tr>
   </table>
-  <input type="hidden" name="action" value="permissions" />
+  <input type="hidden" name="action" value="permissions">
   <input type="hidden" name="auth"
     value="<?=$app->user->extra['AuthKey']?>" />
   <input type="hidden" name="id"

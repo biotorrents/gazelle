@@ -472,7 +472,7 @@ foreach ($Categories as $CatKey => $CatName) {
           <?= \Gazelle\Text::float($TorrentCount) ?>
           Results
         </span>
-        <input type="submit" class="button-primary" value="Search" />
+        <input type="submit" class="button-primary" value="Search">
       </div>
     </form>
   </div>

@@ -41,7 +41,7 @@ $UsersOnly = $_GET['usersonly'];
 
 View::header("Tracker IP address history for $Username");
 ?>
-<script type="text/javascript">
+<script>
   function ShowIPs(rowname) {
     $('tr[name="' + rowname + '"]').gtoggle();
   }

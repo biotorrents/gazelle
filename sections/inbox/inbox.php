@@ -94,13 +94,10 @@ echo $Pages;
     name="<?=($Section === 'sentbox' ? 'sentbox' : 'inbox')?>"
     action="inbox.php" method="get" id="searchbox">
     <div>
-      <input type="hidden" name="action" value="<?=$Section?>" />
-      <input type="radio" name="searchtype" value="user" <?=(empty($_GET['searchtype']) || $_GET['searchtype'] === 'user' ? ' checked="checked"' : '')?>
-      /> User
-      <input type="radio" name="searchtype" value="subject" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'subject' ? ' checked="checked"' : '')?>
-      /> Subject
-      <input type="radio" name="searchtype" value="message" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?>
-      /> Message
+      <input type="hidden" name="action" value="<?=$Section?>">
+      <input type="radio" name="searchtype" value="user" <?=(empty($_GET['searchtype']) || $_GET['searchtype'] === 'user' ? ' checked="checked"' : '')?>> User
+      <input type="radio" name="searchtype" value="subject" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'subject' ? ' checked="checked"' : '')?>> Subject
+      <input type="radio" name="searchtype" value="message" <?=(!empty($_GET['searchtype']) && $_GET['searchtype'] === 'message' ? ' checked="checked"' : '')?>> Message
       <span class="u-pull-right">
         <?php // provide a temporary toggle for sorting PMs
     $ToggleTitle = 'Temporary toggle switch for sorting PMs. To permanently change the sorting behavior, edit the setting in your profile.';
@@ -117,20 +114,20 @@ echo $Pages;
       </span>
       <br />
       <input type="search" name="search"
-        placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>" />
+        placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>">
     </div>
   </form>
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">
-    <input type="hidden" name="action" value="masschange" />
+    <input type="hidden" name="action" value="masschange">
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
-    <input type="submit" name="read" class="button-primary" value="Mark as read" />
-    <input type="submit" name="unread" value="Mark as unread" />
-    <input type="submit" name="delete" value="Delete message(s)" />
+      value="<?=$app->user->extra['AuthKey']?>">
+    <input type="submit" name="read" class="button-primary" value="Mark as read">
+    <input type="submit" name="unread" value="Mark as unread">
+    <input type="submit" name="delete" value="Delete message(s)">
 
     <table class="message_table checkboxes">
       <tr class="colhead">
-        <td width="10"><input type="checkbox" onclick="toggleChecks('messageform', this);" /></td>
+        <td width="10"><input type="checkbox" onclick="toggleChecks('messageform', this);"></td>
         <td width="50%">Subject</td>
         <td><?=($Section === 'sentbox' ? 'Receiver' : 'Sender')?>
         </td>
@@ -187,9 +184,9 @@ echo $Pages;
         $app->user->extra['PostsPerPage'] ??= 20;
       $MsgLimit = ($app->user->extra['PostsPerPage']) ? $app->user->extra['PostsPerPage'] : MESSAGES_PER_PAGE;
       if ($Count > $MsgLimit) { ?>
-    <input type="submit" name="read" class="button-primary" value="Mark as read" />
-    <input type="submit" name="unread" value="Mark as unread" />
-    <input type="submit" name="delete" value="Delete message(s)" />
+    <input type="submit" name="read" class="button-primary" value="Mark as read">
+    <input type="submit" name="unread" value="Mark as unread">
+    <input type="submit" name="delete" value="Delete message(s)">
     <?php } ?>
   </form>
   <?php } ?>

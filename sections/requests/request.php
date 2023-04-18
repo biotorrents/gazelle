@@ -302,36 +302,36 @@ if (!$ViewerVote) {
               <strong>The system deducts <?= ($RequestTax * 100) ?>% as tax.</strong>
               <br />
 
-              <input type="text" id="amount_box" size="8" onchange="Calculate();" />
+              <input type="text" id="amount_box" size="8" onchange="Calculate();">
               <select id="unit" name="unit" onchange="Calculate();">
                 <option value="mb">MiB</option>
                 <option value="gb">GiB</option>
               </select>
-              <input type="button" value="Preview" onclick="Calculate();" />
+              <input type="button" value="Preview" onclick="Calculate();">
             </td>
           </tr>
           <tr>
             <td class="label">New Stats</td>
             <td>
               <form class="add_form" name="request" action="requests.php" method="get" id="request_form">
-                <input type="hidden" name="action" value="vote" />
+                <input type="hidden" name="action" value="vote">
                 <input type="hidden" name="auth"
-                  value="<?=$app->user->extra['AuthKey']?>" />
+                  value="<?=$app->user->extra['AuthKey']?>">
                 <input type="hidden" id="request_tax"
-                  value="<?=$RequestTax?>" />
+                  value="<?=$RequestTax?>">
                 <input type="hidden" id="requestid" name="id"
-                  value="<?=$RequestID?>" />
+                  value="<?=$RequestID?>">
                 <input type="hidden" id="auth" name="auth"
-                  value="<?=$app->user->extra['AuthKey']?>" />
-                <input type="hidden" id="amount" name="amount" value="0" />
+                  value="<?=$app->user->extra['AuthKey']?>">
+                <input type="hidden" id="amount" name="amount" value="0">
                 <input type="hidden" id="current_uploaded"
-                  value="<?=$app->user->extra['Uploaded']?>" />
+                  value="<?=$app->user->extra['Uploaded']?>">
                 <input type="hidden" id="current_downloaded"
-                  value="<?=$app->user->extra['Downloaded']?>" />
+                  value="<?=$app->user->extra['Downloaded']?>">
                 <input type="hidden" id="current_rr"
-                  value="<?=(float)$app->user->extra['RequiredRatio']?>" />
+                  value="<?=(float)$app->user->extra['RequiredRatio']?>">
                 <input id="total_bounty" type="hidden"
-                  value="<?=$RequestVotes['TotalBounty']?>" />
+                  value="<?=$RequestVotes['TotalBounty']?>">
 
                 <ul>
                   <!-- todo: Return this feature
@@ -341,7 +341,7 @@ if (!$ViewerVote) {
                   <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded']) ?></span>
                   </li>
                 </ul>
-                <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();" />
+                <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();">
               </form>
             </td>
           </tr>
@@ -376,11 +376,11 @@ if (!$ViewerVote) {
             <td>
               <form class="edit_form" name="request" action="" method="post">
                 <div>
-                  <input type="hidden" name="action" value="takefill" />
+                  <input type="hidden" name="action" value="takefill">
                   <input type="hidden" name="auth"
-                    value="<?=$app->user->extra['AuthKey']?>" />
+                    value="<?=$app->user->extra['AuthKey']?>">
                   <input type="hidden" name="requestid"
-                    value="<?=$RequestID?>" />
+                    value="<?=$RequestID?>">
                   <input type="text" size="50" name="link" <?=(!empty($Link) ? " value='$Link'" : '')?>
                   />
                   <br />
@@ -393,7 +393,7 @@ if (!$ViewerVote) {
                 </div>
                 <?php } ?>
                 <div class="submit_div">
-                  <input type="submit" class="button-primary" value="Fill" />
+                  <input type="submit" class="button-primary" value="Fill">
                 </div>
               </form>
             </td>

@@ -19,8 +19,8 @@ declare(strict_types=1);
  * They're used to construct the $_POST.
  *
  * e.g.,
- * <input name="thread" value="123" />
- * <input name="groupid" value="321" />
+ * <input name="thread" value="123">
+ * <input name="groupid" value="321">
  *
  * Globals are required as this template is included within a
  * function scope.
@@ -84,14 +84,14 @@ if (!isset($InputTitle)) {
       data-autosave-text="quickpost"
       <?php } ?>>
 
-      <input type="hidden" name="action" value="<?=$InputAction?>" />
+      <input type="hidden" name="action" value="<?=$InputAction?>">
 
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
 
       <input type="hidden" name="<?=$InputName?>"
         data-autosave-id="<?=$InputID?>"
-        value="<?=$InputID?>" />
+        value="<?=$InputID?>">
 
       <div id="quickreplytext">
         <?php
@@ -155,7 +155,7 @@ if (!isset($InputTitle)) {
               $app->user->extra['Avatar'],
               $app->user->core['Username']
           )
-          ?>
+              ?>
           </td>
           <?php } ?>
 
@@ -184,14 +184,14 @@ if (!isset($InputTitle)) {
   if (isset($ForumID)) {
       if (!Subscriptions::has_subscribed($InputID)) { ?>
         <input id="subscribebox" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''?>
-        tabindex="2" />
+        tabindex="2">
         <label for="subscribebox">Subscribe</label>
         <?php
       }
 
       if ($ThreadInfo['LastPostAuthorID'] === $app->user->core["id"]
           && (check_perms('site_forums_double_post'))) { ?>
-        <input id="mergebox" type="checkbox" name="merge" tabindex="2" />
+        <input id="mergebox" type="checkbox" name="merge" tabindex="2">
         <label for="mergebox">Merge</label>
         <?php
       }
@@ -199,9 +199,9 @@ if (!isset($InputTitle)) {
 
         <input type="button" value="Preview"
           class="hidden button_preview_<?=$ReplyText->getID()?>"
-          tabindex="1" />
+          tabindex="1">
 
-        <input type="submit" class="button-primary" value="Post" id="submit_button" tabindex="1" />
+        <input type="submit" class="button-primary" value="Post" id="submit_button" tabindex="1">
       </div>
     </form>
   </div>

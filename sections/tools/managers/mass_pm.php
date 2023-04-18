@@ -22,9 +22,9 @@ View::header(
   </div>
   <form class="send_form" name="message" action="tools.php" method="post" id="messageform">
     <div class="box pad">
-      <input type="hidden" name="action" value="take_mass_pm" />
+      <input type="hidden" name="action" value="take_mass_pm">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <div id="quickpost">
         <h3>Class</h3>
         <select id="class_id" name="class_id">
@@ -42,14 +42,14 @@ View::header(
 ?>
         </select>
         <h3>Subject</h3>
-        <input type="text" class="required" name="subject" size="95" /><br />
+        <input type="text" class="required" name="subject" size="95" /><br>
         <h3>Body</h3>
         <textarea id="body" class="required" name="body" cols="95" rows="10" onkeyup="resize('body')"></textarea>
       </div>
-      <input type="checkbox" name="from_system" id="from_system" />Send as System
+      <input type="checkbox" name="from_system" id="from_system">Send as System
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
-        <input type="submit" class="button-primary" value="Send message" />
+        <input type="submit" class="button-primary" value="Send message">
       </div>
     </div>
   </form>

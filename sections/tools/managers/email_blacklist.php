@@ -44,16 +44,16 @@ list($NumResults) = $app->dbOld->next_record();
 </div>
 <br />
 <form action="tools.php" method="post">
-  <input type="hidden" name="action" value="email_blacklist" />
-  <input type="email" name="email" size="30" placeholder="Email" />
-  <input type="search" name="comment" size="60" placeholder="Comment" />
-  <input type="submit" class="button-primary" value="Search" />
+  <input type="hidden" name="action" value="email_blacklist">
+  <input type="email" name="email" size="30" placeholder="Email">
+  <input type="search" name="comment" size="60" placeholder="Comment">
+  <input type="submit" class="button-primary" value="Search">
 </form>
 <div class="linkbox pager">
   <br />
 <?php
   $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
-  echo $Pages;
+echo $Pages;
 ?>
 </div>
 <table>
@@ -68,11 +68,11 @@ list($NumResults) = $app->dbOld->next_record();
   </tr>
   <tr class="row">
     <form class="add_form" name="email_blacklist" action="tools.php" method="post">
-      <input type="hidden" name="action" value="email_blacklist_alter" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <td><input type="text" name="email" size="30" /></td>
-      <td colspan="2"><input type="text" name="comment" size="50" /></td>
-      <td><input type="submit" class="button-primary" value="Create" /></td>
+      <input type="hidden" name="action" value="email_blacklist_alter">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <td><input type="text" name="email" size="30"></td>
+      <td colspan="2"><input type="text" name="comment" size="50"></td>
+      <td><input type="submit" class="button-primary" value="Create"></td>
     </form>
   </tr>
 <?php
@@ -81,16 +81,16 @@ list($NumResults) = $app->dbOld->next_record();
   <tr>
     <form class="manage_form" name="email_blacklist" action="tools.php" method="post">
       <td>
-        <input type="hidden" name="action" value="email_blacklist_alter" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="id" value="<?=$Result['ID']?>" />
-        <input type="email" name="email" value="<?=\Gazelle\Text::esc($Result['Email'])?>" size="30" />
+        <input type="hidden" name="action" value="email_blacklist_alter">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="id" value="<?=$Result['ID']?>">
+        <input type="email" name="email" value="<?=\Gazelle\Text::esc($Result['Email'])?>" size="30">
       </td>
-      <td><input type="text" name="comment" value="<?=\Gazelle\Text::esc($Result['Comment'])?>" size="50" /></td>
+      <td><input type="text" name="comment" value="<?=\Gazelle\Text::esc($Result['Comment'])?>" size="50"></td>
       <td><?=User::format_username($Result ['UserID'], false, false, false)?><br /><?=time_diff($Result ['Time'], 1)?></td>
       <td>
-        <input type="submit" name="submit" class="button-primary" value="Edit" />
-        <input type="submit" name="submit" value="Delete" />
+        <input type="submit" name="submit" class="button-primary" value="Edit">
+        <input type="submit" name="submit" value="Delete">
       </td>
     </form>
   </tr>

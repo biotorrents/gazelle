@@ -89,22 +89,22 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
     ?>
 <span class="error">Please select an option.</span><br />
 <form class="vote_form" name="poll" id="poll" action="">
-  <input type="hidden" name="action" value="poll" />
+  <input type="hidden" name="action" value="poll">
   <input type="hidden" name="auth"
-    value="<?=$app->user->extra['AuthKey']?>" />
+    value="<?=$app->user->extra['AuthKey']?>">
   <input type="hidden" name="large"
-    value="<?=\Gazelle\Text::esc($_POST['large'])?>" />
-  <input type="hidden" name="topicid" value="<?=$TopicID?>" />
+    value="<?=\Gazelle\Text::esc($_POST['large'])?>">
+  <input type="hidden" name="topicid" value="<?=$TopicID?>">
   <?php for ($i = 1, $il = count($Answers); $i <= $il; $i++) { ?>
   <input type="radio" name="vote" id="answer_<?=$i?>"
-    value="<?=$i?>" />
+    value="<?=$i?>">
   <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answers[$i])?></label><br />
   <?php } ?>
-  <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show
+  <br /><input type="radio" name="vote" id="answer_0" value="0"> <label for="answer_0">Blank&#8202;&mdash;&#8202;Show
     the results!</label><br /><br />
   <input type="button"
     onclick="ajax.post('index.php', 'poll', function(response) { $('#poll_container').raw().innerHTML = response });"
-    value="Vote" />
+    value="Vote">
 </form>
 <?php
 } else {

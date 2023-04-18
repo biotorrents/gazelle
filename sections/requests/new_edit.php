@@ -62,19 +62,19 @@ if (!$NewRequest) {
     }
 }
 
-  if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
-      $app->dbOld->query("
+if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
+    $app->dbOld->query("
         SELECT Name
         FROM artists_group
         WHERE artistid = ".$_GET['artistid']."
         LIMIT 1");
-      list($ArtistName) = $app->dbOld->next_record();
-      $ArtistForm = array(
-      1 => array(array('name' => trim($ArtistName))),
+    list($ArtistName) = $app->dbOld->next_record();
+    $ArtistForm = array(
+    1 => array(array('name' => trim($ArtistName))),
     );
-  } elseif ($NewRequest && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
-      $ArtistForm = Artists::get_artist($_GET['groupid']);
-      $app->dbOld->query("
+} elseif ($NewRequest && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
+    $ArtistForm = Artists::get_artist($_GET['groupid']);
+    $app->dbOld->query("
         SELECT
         tg.`title`,
         tg.`subject`,
@@ -90,12 +90,12 @@ if (!$NewRequest) {
         JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
         JOIN `tags` AS t ON t.`ID` = tt.`TagID`
         WHERE tg.`id` = ".$_GET['groupid']);
-      if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
-          $GroupID = trim($_REQUEST['groupid']);
-          $CategoryName = $Categories[$CategoryID - 1];
-          $Disabled = 'readonly="readonly"';
-      }
-  }
+    if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
+        $GroupID = trim($_REQUEST['groupid']);
+        $CategoryName = $Categories[$CategoryID - 1];
+        $Disabled = 'readonly="readonly"';
+    }
+}
 
 View::header(
     ($NewRequest ? 'Create Request' : 'Edit Request'),
@@ -201,7 +201,7 @@ View::header(
           <td>
             <input type="text" id="title_rj" name="title_rj" size="45"
               value="<?= (!empty($Title2) ? $Title2 : '') ?>"
-              <?= $Disabled ?>/>
+              <?= $Disabled ?>>
           </td>
         </tr>
 
@@ -214,7 +214,7 @@ View::header(
           <td>
             <input type="text" id="title_jp" name="title_jp" size="45"
               value="<?= !empty($TitleJP) ? $TitleJP : '' ?>"
-              <?= $Disabled ?>/>
+              <?= $Disabled ?>>
           </td>
         </tr>
         <?php } # Ends if NewRequest line 123?>
@@ -234,7 +234,7 @@ View::header(
     if (!empty($ArtistForm)) {
         $First = true;
         foreach ($ArtistForm as $Artist) { ?>
-            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=\Gazelle\Text::esc($Artist['name']) ?>" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" value="<?=\Gazelle\Text::esc($Artist['name']) ?>" <?=$Disabled?>>
 
             <?php
             if (empty($Disabled)) {
@@ -242,12 +242,12 @@ View::header(
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
             <a class="remove_artist_button brackets" onclick="RemoveArtistField()">&minus;</a>
             <?php
-              }
+                }
                 $First = false;
             }
         }
     } else { ?>
-            <input type="text" id="artist_0" name="artists[]" size="45" <?=$Disabled?>/>
+            <input type="text" id="artist_0" name="artists[]" size="45" <?=$Disabled?>>
 
             <?php if (empty($Disabled)) { ?>
             <a class="add_artist_button brackets" onclick="AddArtistField()">+</a>
@@ -283,17 +283,17 @@ View::header(
           <td>
             <?php
               $GenreTags = $app->cache->get('genre_tags');
-                if (!$GenreTags) {
-                    $app->dbOld->query('
+if (!$GenreTags) {
+    $app->dbOld->query('
                     SELECT Name
                     FROM tags
                     WHERE TagType = \'genre\'
                     ORDER BY Name');
-                    $GenreTags = $app->dbOld->collect('Name');
-                    $app->cache->set('genre_tags', $GenreTags, 3600 * 6);
-                }
+    $GenreTags = $app->dbOld->collect('Name');
+    $app->cache->set('genre_tags', $GenreTags, 3600 * 6);
+}
 
-                if (!empty($Disabled)) { ?>
+if (!empty($Disabled)) { ?>
             <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;" disabled="disabled">
               <?php } else { ?>
               <select id="genre_tags" name="genre_tags" onchange="add_tag(); return false;">
@@ -319,11 +319,11 @@ View::header(
 
           <td>
             <?php
-                View::textarea(
-                    id: 'req_desc',
-                    name: 'description',
-                    value: $Request['Description'] ?? '',
-                ); ?>
+View::textarea(
+    id: 'req_desc',
+    name: 'description',
+    value: $Request['Description'] ?? '',
+); ?>
           </td>
         </tr>
 
@@ -346,11 +346,11 @@ View::header(
         </tr>
 
         <?php
-          } elseif (!empty($GroupID)
+        } elseif (!empty($GroupID)
             #&& ($CategoryID !== 5) # ?
             #&& ($CategoryID !== 0) # ?
-            ) {
-              ?>
+        ) {
+            ?>
 
         <!-- Torrent group admin -->
         <tr>
@@ -377,7 +377,7 @@ View::header(
 
         <!-- Bounty -->
         <?php
-          } if ($NewRequest) { ?>
+        } if ($NewRequest) { ?>
         <tr id="voting">
           <td class="label">
             Bounty
@@ -386,7 +386,7 @@ View::header(
           <td>
             <input type="text" id="amount_box" size="8"
               value="<?= (!empty($Bounty) ? $Bounty : '100') ?>"
-              onchange="Calculate();" />
+              onchange="Calculate();">
 
             <select id="unit" name="unit" onchange="Calculate();">
               <option value="mb" <?= (!empty($_POST['unit']) && $_POST['unit'] === 'mb' ? ' selected="selected"' : '') ?>>MB
@@ -396,7 +396,7 @@ View::header(
               </option>
             </select>
 
-            <input type="button" value="Preview" onclick="Calculate();" />
+            <input type="button" value="Preview" onclick="Calculate();">
             <strong>
               The system deducts <?= ($RequestTax * 100) ?>% as tax
             </strong>
@@ -411,13 +411,13 @@ View::header(
 
           <td>
             <input type="hidden" id="amount" name="amount"
-              value="<?= (!empty($Bounty) ? $Bounty : '100') ?>" />
+              value="<?= (!empty($Bounty) ? $Bounty : '100') ?>">
 
             <input type="hidden" id="current_uploaded"
-              value="<?= $app->user->extra['BytesUploaded'] ?>" />
+              value="<?= $app->user->extra['BytesUploaded'] ?>">
 
             <input type="hidden" id="current_downloaded"
-              value="<?= $app->user->extra['BytesDownloaded'] ?>" />
+              value="<?= $app->user->extra['BytesDownloaded'] ?>">
 
             <ul>
               <!-- todo: Return this feature
@@ -442,13 +442,13 @@ View::header(
         <!-- Submit -->
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" id="button" class="button-primary" value="Create" disabled="disabled" />
+            <input type="submit" id="button" class="button-primary" value="Create" disabled="disabled">
           </td>
         </tr>
         <?php } else { ?>
         <tr>
           <td colspan="2" class="center">
-            <input type="submit" id="button" class="button-primary" value="Edit" />
+            <input type="submit" id="button" class="button-primary" value="Edit">
           </td>
         </tr>
         <?php } ?>

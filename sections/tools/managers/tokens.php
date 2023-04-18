@@ -69,7 +69,7 @@ if (isset($_REQUEST['addtokens'])) {
 }
 
 
-  View::header('Add tokens sitewide');
+View::header('Add tokens sitewide');
 
 ?>
 <div class="header">
@@ -81,23 +81,23 @@ if (isset($_REQUEST['addtokens'])) {
 <div class="box pad" style="margin-left: auto; margin-right: auto; text-align: center; max-width: 40%;">
   <?=$message?>
   <form class="add_form" name="fltokens" action="" method="post">
-    <input type="hidden" name="action" value="tokens" />
-    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-    Tokens to add: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br />
-    <label for="leechdisabled">Grant tokens to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" /><br /><br />
-    <input type="submit" name="addtokens" class="button-primary" value="Add tokens" />
+    <input type="hidden" name="action" value="tokens">
+    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+    Tokens to add: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br>
+    <label for="leechdisabled">Grant tokens to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" /><br /><br>
+    <input type="submit" name="addtokens" class="button-primary" value="Add tokens">
   </form>
 </div>
 <br />
 <div class="box pad" style="margin-left: auto; margin-right: auto; text-align: center; max-width: 40%;">
   <?=$message?>
   <form class="manage_form" name="fltokens" action="" method="post">
-    <input type="hidden" name="action" value="tokens" />
-    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-    Tokens to set: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br />
-    <span id="droptokens" class=""><label for="onlydrop">Only affect users with at least this many tokens: </label><input type="checkbox" id="onlydrop" name="onlydrop" value="1" onchange="$('#disabled').gtoggle(); return true;" /></span><br />
-    <span id="disabled" class=""><label for="leechdisabled">Also add tokens (as needed) to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" onchange="$('#droptokens').gtoggle(); return true;" /></span><br /><br />
-    <input type="submit" name="cleartokens" value="Set token total" />
+    <input type="hidden" name="action" value="tokens">
+    <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+    Tokens to set: <input type="text" name="numtokens" size="5" style="text-align: right;" value="0" /><br /><br>
+    <span id="droptokens" class=""><label for="onlydrop">Only affect users with at least this many tokens: </label><input type="checkbox" id="onlydrop" name="onlydrop" value="1" onchange="$('#disabled').gtoggle(); return true;" /></span><br>
+    <span id="disabled" class=""><label for="leechdisabled">Also add tokens (as needed) to leech disabled users: </label><input type="checkbox" id="leechdisabled" name="leechdisabled" value="1" onchange="$('#droptokens').gtoggle(); return true;" /></span><br /><br>
+    <input type="submit" name="cleartokens" value="Set token total">
   </form>
 </div>
 <?php

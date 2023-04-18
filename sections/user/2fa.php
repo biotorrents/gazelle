@@ -234,9 +234,9 @@ if (empty($TwoFactor)) {
         <input type="hidden" name="u2f-sigs"
           value='<?=json_encode($U2FSigs)?>' />
 
-        <input type="hidden" name="u2f-response" />
+        <input type="hidden" name="u2f-response">
 
-        <input type="hidden" value="U2F-E" />
+        <input type="hidden" value="U2F-E">
       </form>
 
       <p>
@@ -259,9 +259,9 @@ if (empty($TwoFactor)) {
         <input type="hidden" name="u2f-sigs"
           value='<?=json_encode($U2FSigs)?>' />
 
-        <input type="hidden" name="u2f-response" />
+        <input type="hidden" name="u2f-response">
 
-        <input type="hidden" value="U2F-E" />
+        <input type="hidden" value="U2F-E">
 
         <p>
           Universal Two Factor is enabled.

@@ -440,7 +440,7 @@ View::header('User search');
 ?>
 <div>
   <form class="search_form" name="users" action="user.php" method="get">
-    <input type="hidden" name="action" value="search" />
+    <input type="hidden" name="action" value="search">
     <table class="layout">
       <tr>
         <td class="label nobr">Username:</td>
@@ -987,7 +987,7 @@ foreach ($Secondaries as $Class) {
       </tr>
       <tr>
         <td colspan="6" class="center">
-          <input type="submit" value="Search users" />
+          <input type="submit" value="Search users">
         </td>
       </tr>
     </table>

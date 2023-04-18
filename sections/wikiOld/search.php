@@ -86,8 +86,8 @@ $app->dbOld->set_query_id($RS);
   <div>
     <form action="" method="get">
       <div>
-        <input type="hidden" name="action" value="search" />
-        <input type="hidden" name="nojump" value="1" />
+        <input type="hidden" name="action" value="search">
+        <input type="hidden" name="nojump" value="1">
       </div>
 
       <table cellpadding="6" cellspacing="1" border="0" class="layout border" width="100%">
@@ -156,7 +156,7 @@ $app->dbOld->set_query_id($RS);
 
         <tr>
           <td colspan="4" class="center">
-            <input type="submit" class="button-primary" value="Search" />
+            <input type="submit" class="button-primary" value="Search">
           </td>
         </tr>
       </table>

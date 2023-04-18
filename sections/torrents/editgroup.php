@@ -83,18 +83,18 @@ View::header(
 
 <div class="box pad">
   <form class="edit_form" name="torrent_group" action="torrents.php" method="post">
-    <input type="hidden" name="action" value="takegroupedit" />
+    <input type="hidden" name="action" value="takegroupedit">
 
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>">
 
-    <input type="hidden" name="groupid" value="<?=$group_id?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>">
 
     <h3>
       Picture
     </h3>
 
-    <input type="text" name="image" size="80" value="<?=$Image?>" />
+    <input type="text" name="image" size="80" value="<?=$Image?>">
     <br /><br />
 
     <h3>
@@ -122,11 +122,11 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
       Edit Summary
     </h3>
 
-    <input type="text" name="summary" size="80" />
+    <input type="text" name="summary" size="80">
     <br />
 
     <div class="center pad">
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit">
     </div>
   </form>
 </div>
@@ -142,12 +142,12 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
 <div class="box pad">
   <form class="edit_form" name="screenshots_form" action="torrents.php" method="post">
-    <input type="hidden" name="action" value="screenshotedit" />
+    <input type="hidden" name="action" value="screenshotedit">
 
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>">
 
-    <input type="hidden" name="groupid" value="<?=$group_id?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>">
 
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
@@ -165,7 +165,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
     </table>
 
     <div class="center pad">
-      <input type="submit" value="Submit" />
+      <input type="submit" value="Submit">
     </div>
   </form>
 </div>
@@ -180,12 +180,12 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
 <div class="box pad">
   <form class="edit_form" name="torrent_group" action="torrents.php" method="post">
-    <input type="hidden" name="action" value="nonwikiedit" />
+    <input type="hidden" name="action" value="nonwikiedit">
 
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
+      value="<?=$app->user->extra['AuthKey']?>">
 
-    <input type="hidden" name="groupid" value="<?=$group_id?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>">
 
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
       <tr>
@@ -195,11 +195,11 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td id="idolfields">
           <input type="text" id="idols_0" name="idols[]" size="45"
-            value="<?=$Artists[0]['name']?>" />
+            value="<?=$Artists[0]['name']?>">
           <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
           <?php
   for ($i = 1; $i < count($Artists); $i++) {
-      echo '<br /><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'"/>';
+      echo '<br /><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'">';
   } ?>
         </td>
       </tr>
@@ -255,13 +255,13 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
         </td>
 
         <td>
-          <input type="checkbox" id="unfreeleech" name="unfreeleech" />
+          <input type="checkbox" id="unfreeleech" name="unfreeleech">
           <label for="unfreeleech"> Reset</label>
 
-          <input type="checkbox" id="freeleech" name="freeleech" />
+          <input type="checkbox" id="freeleech" name="freeleech">
           <label for="freeleech"> Freeleech</label>
 
-          <input type="checkbox" id="neutralleech" name="neutralleech" />
+          <input type="checkbox" id="neutralleech" name="neutralleech">
           <label for="neutralleech"> Neutral Leech</label>
 
           because
@@ -282,7 +282,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
     </table>
 
     <div class="center pad">
-      <input type="submit" value="Edit" />
+      <input type="submit" value="Edit">
     </div>
   </form>
 </div>
@@ -297,12 +297,12 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 <div class="box pad">
   <form class="rename_form" name="torrent_group" action="torrents.php" method="post">
     <table cellpadding="3" cellspacing="1" border="0" class="layout" width="100%">
-      <input type="hidden" name="action" value="rename" />
+      <input type="hidden" name="action" value="rename">
 
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
 
-      <input type="hidden" name="groupid" value="<?=$group_id?>" />
+      <input type="hidden" name="groupid" value="<?=$group_id?>">
 
       <tr>
         <td class="label">
@@ -311,7 +311,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td>
           <input type="text" name="name" size="70"
-            value="<?=$title?>" />
+            value="<?=$title?>">
         </td>
       </tr>
 
@@ -322,7 +322,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td>
           <input type="text" name="subject" size="70"
-            value="<?=$subject?>" />
+            value="<?=$subject?>">
         </td>
       </tr>
 
@@ -333,13 +333,13 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td>
           <input type="text" name="namejp" size="70"
-            value="<?=$object?>" />
+            value="<?=$object?>">
         </td>
       </tr>
     </table>
 
     <div class="center pad">
-      <input type="submit" value="Rename" />
+      <input type="submit" value="Rename">
     </div>
   </form>
 </div>
@@ -353,20 +353,20 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
 <div class="box pad">
   <form class="merge_form" name="torrent_group" action="torrents.php" method="post">
-    <input type="hidden" name="action" value="merge" />
+    <input type="hidden" name="action" value="merge">
 
     <input type="hidden" name="auth"
       value="<?=$app->user->extra['AuthKey']?>" />
 
-    <input type="hidden" name="groupid" value="<?=$group_id?>" />
+    <input type="hidden" name="groupid" value="<?=$group_id?>">
 
     <h3>
       Target torrent group ID
-      <input type="text" name="targetgroupid" size="10" />
+      <input type="text" name="targetgroupid" size="10">
     </h3>
 
     <div class="center pad">
-      <input type="submit" value="Merge" />
+      <input type="submit" value="Merge">
     </div>
   </form>
 </div>

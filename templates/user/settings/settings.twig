@@ -16,8 +16,8 @@
 
   {# hidden fields #}
   	{{ form_token(query.server.REQUEST_URI) }}
-  <input type="hidden" name="userId" value="{{ user.core.id }}" />
-  <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}" />
+  <input type="hidden" name="userId" value="{{ user.core.id }}">
+  <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}">
 
   {# site appearance settings #}
   <section id="siteAppearanceSettings">
@@ -66,7 +66,7 @@
           <th>External stylesheet URI</th>
 
           <td>
-            <input type="text" id="styleUri" name="styleUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ siteOptions.styleUri }}" />
+            <input type="text" id="styleUri" name="styleUri" placeholder="e.g., https://{{ env.siteDomain }}/css/bookish.css" value="{{ siteOptions.styleUri }}">
           </td>
         </tr>
 
@@ -118,7 +118,7 @@
           <th>Calm mode</th>
 
           <td>
-                <input type="checkbox" id="calmMode" name="calmMode" value="true" {{ (siteOptions.calmMode) ? "checked" : "" }} />
+                <input type="checkbox" id="calmMode" name="calmMode" value="true" {{ (siteOptions.calmMode) ? "checked" : "" }}>
                 <label for="calmMode">Use a warm, higher contrast grayscale</label>
          </td>
         </tr>
@@ -128,7 +128,7 @@
           <th>Dark mode</th>
 
           <td>
-                <input type="checkbox" id="darkMode" name="darkMode" value="true" {{ (siteOptions.darkMode) ? "checked" : "" }} />
+                <input type="checkbox" id="darkMode" name="darkMode" value="true" {{ (siteOptions.darkMode) ? "checked" : "" }}>
                 <label for="darkMode">Use inverted, lower contrast colors</label>
          </td>
         </tr>
@@ -150,12 +150,12 @@
           <th>Default search type</th>
 
           <td>
-                <input type="radio" id="searchTypeSimple" name="searchType" value="simple" {{ (siteOptions.searchType == "simple") ? "checked" : "" }} />
+                <input type="radio" id="searchTypeSimple" name="searchType" value="simple" {{ (siteOptions.searchType == "simple") ? "checked" : "" }}>
                 <label for="searchTypeSimple">Simple</label>
 
                 &emsp;
 
-                <input type="radio" id="searchTypeComplex" name="searchType" value="complex" {{ (siteOptions.searchType == "complex") ? "checked" : "" }} />
+                <input type="radio" id="searchTypeComplex" name="searchType" value="complex" {{ (siteOptions.searchType == "complex") ? "checked" : "" }}>
                 <label for="searchTypeComplex">Complex</label>
           </td>
         </tr>
@@ -165,7 +165,7 @@
           <th>Torrent grouping</th>
 
           <td>
-              <input type="checkbox" id="torrentGrouping" name="torrentGrouping" {{ (siteOptions.torrentGrouping == true) ? "checked" : "" }} />
+              <input type="checkbox" id="torrentGrouping" name="torrentGrouping" {{ (siteOptions.torrentGrouping == true) ? "checked" : "" }}>
               <label for="torrentGrouping">Enable torrent grouping</label>
           </td>
         </tr>
@@ -175,12 +175,12 @@
           <th>Torrent group display</th>
 
           <td>
-            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="open" {{ (siteOptions.torrentGrouping == "open") ? "checked" : "" }} />
+            <input type="radio" id="torrentGroupingOpen" name="torrentGrouping" value="open" {{ (siteOptions.torrentGrouping == "open") ? "checked" : "" }}>
             <label for="torrent_grouping_open">Open</label>
 
             &emsp;
 
-             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="closed" {{ (siteOptions.torrentGrouping == "closed") ? "checked" : "" }} />
+             <input type="radio" id="torrentGroupingClosed" name="torrentGrouping" value="closed" {{ (siteOptions.torrentGrouping == "closed") ? "checked" : "" }}>
              <label for="torrent_grouping_closed">Closed</label>
           </td>
         </tr>
@@ -190,7 +190,7 @@
           <th>Snatched torrents indicator</th>
 
           <td>
-            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.showSnatched == true) ? "checked" : "" }} />
+            <input type="checkbox" id="showSnatched" name="showSnatched" {{ (siteOptions.showSnatched == true) ? "checked" : "" }}>
             <label for="showSnatched">Enable snatched torrents indicator</label>
           </td>
         </tr>
@@ -200,12 +200,12 @@
           <th>Cover art (torrents)</th>
 
           <td>
-             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.coverArtTorrents == true) ? "checked" : "" }} />
+             <input type="checkbox" id="coverArtTorrents" name="coverArtTorrents" {{ (siteOptions.coverArtTorrents == true) ? "checked" : "" }}>
             <label for="coverArtTorrents">Enable cover artwork</label>
 
             <br />
 
-            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.coverArtTorrentsExtra == true) ? "checked" : "" }} />
+            <input type="checkbox" id="coverArtTorrentsExtra" name="coverArtTorrentsExtra" {{ (siteOptions.coverArtTorrentsExtra == true) ? "checked" : "" }}>
             <label for="coverArtTorrentsExtra">Enable additional cover artwork</label>
           </td>
         </tr>
@@ -281,7 +281,7 @@
           <th>OpenAI content</th>
 
           <td>
-              <input type="checkbox" id="openaiContent" name="openaiContent" {{ (siteOptions.openaiContent == true) ? "checked" : "" }} />
+              <input type="checkbox" id="openaiContent" name="openaiContent" {{ (siteOptions.openaiContent == true) ? "checked" : "" }}>
               <label for="openaiContent">Enable OpenAI content in search and display</label>
           </td>
         </tr>
@@ -293,7 +293,7 @@
             <strong>Text file downloads</strong>
         </td>
         <td>
-            <input type="checkbox" name="downloadalt" id="downloadalt"{{ checked(download_text) }} />
+            <input type="checkbox" name="downloadalt" id="downloadalt"{{ checked(download_text) }}>
             <label for="downloadalt">Enable downloading torrent files as text files</label>
         </td>
     </tr>
@@ -337,7 +337,7 @@
           <th>Inbox sorting</th>
 
           <td>
-            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.listUnreadsFirst == true) ? "checked" : "" }} />
+            <input type="checkbox" id="listUnreadsFirst" name="listUnreadsFirst" {{ (siteOptions.listUnreadsFirst == true) ? "checked" : "" }}>
             <label for="listUnreadsFirst">List unread private messages first</label>
           </td>
         </tr>
@@ -347,7 +347,7 @@
           <th>Avatar display (posts)</th>
 
           <td>
-            <input type="checkbox" id="userAvatars" name="userAvatars" {{ (siteOptions.userAvatars == true) ? "checked" : "" }} />
+            <input type="checkbox" id="userAvatars" name="userAvatars" {{ (siteOptions.userAvatars == true) ? "checked" : "" }}>
             <label for="userAvatars">Enable custom user avatars</label>
           </td>
         </tr>
@@ -370,7 +370,7 @@
             {% for badgeId, displayed in badges %}
 
           <span class="flexItem">
-            <input type="checkbox" name="badges[]" value="{{ badgeId }}" {{ (displayed) ? "checked" : "" }} />
+            <input type="checkbox" name="badges[]" value="{{ badgeId }}" {{ (displayed) ? "checked" : "" }}>
             &nbsp;
             <label>{{ displayBadge(badgeId) }}</label>
           </span>
@@ -387,7 +387,7 @@
           <th>Donor icon</th>
 
           <td>
-            <input type="checkbox" id="donorIcon" name="donorIcon" {{ (siteOptions.donorIcon == true) ? "checked" : "" }} />
+            <input type="checkbox" id="donorIcon" name="donorIcon" {{ (siteOptions.donorIcon == true) ? "checked" : "" }}>
             <label for="donorIcon">
             Show a donor icon ❤️ next to your name
             </label>
@@ -408,7 +408,7 @@
           <th>Automatic thread subscriptions</th>
 
           <td>
-            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.autoSubscribe == true) ? "checked" : "" }} />
+            <input type="checkbox" id="autoSubscribe" name="autoSubscribe" {{ (siteOptions.autoSubscribe == true) ? "checked" : "" }}>
             <label for="autoSubscribe">Enable automatic thread subscriptions</label>
           </td>
         </tr>
@@ -418,7 +418,7 @@
           <th>Unseeded torrent alerts</th>
 
           <td>
-            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (siteOptions.unseededAlerts == true) ? "checked" : "" }} />
+            <input type="checkbox" id="unseededAlerts" name="unseededAlerts" {{ (siteOptions.unseededAlerts == true) ? "checked" : "" }}>
             <label for="unseededAlerts">Enable unseeded torrent alerts</label>
           </td>
         </tr>
@@ -439,7 +439,7 @@
           <th>Avatar URI</th>
 
           <td>
-            <input type="text" id="avatar" name="avatar" placeholder="e.g., https://i.imgur.com/wJgDWzd.png" value="{{ user.extra.Avatar }}" />
+            <input type="text" id="avatar" name="avatar" placeholder="e.g., https://i.imgur.com/wJgDWzd.png" value="{{ user.extra.Avatar }}">
           </td>
         </tr>
 
@@ -448,7 +448,7 @@
           <th>Profile title</th>
 
           <td>
-            <input type="text" id="profileTitle" name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}" />
+            <input type="text" id="profileTitle" name="profileTitle" placeholder="e.g., I am the greatest man that ever lived" value="{{ user.extra.InfoTitle }}">
           </td>
         </tr>
 
@@ -469,25 +469,25 @@
 
           <td>
             {# recent snatches #}
-            <input type="checkbox" id="recentSnatches" name="recentSnatches" {{ (siteOptions.recentSnatches == true) ? "checked" : "" }} />
+            <input type="checkbox" id="recentSnatches" name="recentSnatches" {{ (siteOptions.recentSnatches == true) ? "checked" : "" }}>
             <label for="recentSnatches">Show snatches</label>
 
             <br />
 
         {# recent uploads #}
-            <input type="checkbox" id="recentUploads" name="recentUploads" {{ (siteOptions.recentUploads == true) ? "checked" : "" }} />
+            <input type="checkbox" id="recentUploads" name="recentUploads" {{ (siteOptions.recentUploads == true) ? "checked" : "" }}>
             <label for="recentUploads">Show uploads</label>
 
             <br />
 
              {# recent requests #}
-            <input type="checkbox" id="recentRequests" name="recentRequests" {{ (siteOptions.recentRequests == true) ? "checked" : "" }} />
+            <input type="checkbox" id="recentRequests" name="recentRequests" {{ (siteOptions.recentRequests == true) ? "checked" : "" }}>
             <label for="recentRequests">Show requests</label>
 
             <br />
 
         {# recent collages #}
-            <input type="checkbox" id="recentCollages" name="recentCollages" {{ (siteOptions.recentCollages == true) ? "checked" : "" }} />
+            <input type="checkbox" id="recentCollages" name="recentCollages" {{ (siteOptions.recentCollages == true) ? "checked" : "" }}>
             <label for="recentCollages">Show collages</label>
 
           </td>
@@ -500,25 +500,25 @@
 
           <td>
             {# community stats #}
-            <input type="checkbox" id="communityStats" name="communityStats" {{ (siteOptions.communityStats == true) ? "checked" : "" }} />
+            <input type="checkbox" id="communityStats" name="communityStats" {{ (siteOptions.communityStats == true) ? "checked" : "" }}>
             <label for="communityStats">Show community stats</label>
 
             <br />
 
         {# torrent stats #}
-            <input type="checkbox" id="torrentStats" name="torrentStats" {{ (siteOptions.torrentStats == true) ? "checked" : "" }} />
+            <input type="checkbox" id="torrentStats" name="torrentStats" {{ (siteOptions.torrentStats == true) ? "checked" : "" }}>
             <label for="torrentStats">Show torrent stats</label>
 
             <br />
 
              {# percentile rankings #}
-            <input type="checkbox" id="percentileStats" name="percentileStats" {{ (siteOptions.percentileStats == true) ? "checked" : "" }} />
+            <input type="checkbox" id="percentileStats" name="percentileStats" {{ (siteOptions.percentileStats == true) ? "checked" : "" }}>
             <label for="percentileStats">Show percentile rankings</label>
 
             <br />
 
         {# request stats #}
-            <input type="checkbox" id="requestStats" name="requestStats" {{ (siteOptions.requestStats == true) ? "checked" : "" }} />
+            <input type="checkbox" id="requestStats" name="requestStats" {{ (siteOptions.requestStats == true) ? "checked" : "" }}>
             <label for="requestStats">Show request stats</label>
 
           </td>
@@ -546,9 +546,9 @@ $DownloadChecked = checked(!in_array('downloaded', $Paranoia));
 $RatioChecked = checked(!in_array('ratio', $Paranoia));
 ?>
 
-            <label><input type="checkbox" name="p_uploaded" onchange="AlterParanoia();" <?=$UploadChecked?> /> Uploaded</label>&ensp;
-            <label><input type="checkbox" name="p_downloaded" onchange="AlterParanoia();" <?=$DownloadChecked?> /> Downloaded</label>&ensp;
-            <label><input type="checkbox" name="p_ratio" onchange="AlterParanoia();" <?=$RatioChecked?> /> Ratio</label>
+            <label><input type="checkbox" name="p_uploaded" onchange="AlterParanoia();" <?=$UploadChecked?>> Uploaded</label>&ensp;
+            <label><input type="checkbox" name="p_downloaded" onchange="AlterParanoia();" <?=$DownloadChecked?>> Downloaded</label>&ensp;
+            <label><input type="checkbox" name="p_ratio" onchange="AlterParanoia();" <?=$RatioChecked?>> Ratio</label>
           </td>
 
         <!-- Required Ratio -->
@@ -600,11 +600,11 @@ $RatioChecked = checked(!in_array('ratio', $Paranoia));
 
           <td>
 
-            <label><input type="checkbox" name="p_requestsfilled_count" onchange="AlterParanoia();" <?=$RequestsFilledCountChecked?> /> Show
+            <label><input type="checkbox" name="p_requestsfilled_count" onchange="AlterParanoia();" <?=$RequestsFilledCountChecked?>> Show
               count</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsfilled_bounty" onchange="AlterParanoia();" <?=$RequestsFilledBountyChecked?> /> Show
+            <label><input type="checkbox" name="p_requestsfilled_bounty" onchange="AlterParanoia();" <?=$RequestsFilledBountyChecked?>> Show
               bounty</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsfilled_list" onchange="AlterParanoia();" <?=$RequestsFilledListChecked?> /> Show list</label>
+            <label><input type="checkbox" name="p_requestsfilled_list" onchange="AlterParanoia();" <?=$RequestsFilledListChecked?>> Show list</label>
           </td>
         </tr>
 
@@ -616,11 +616,11 @@ $RatioChecked = checked(!in_array('ratio', $Paranoia));
 
           <td>
 
-            <label><input type="checkbox" name="p_requestsvoted_count" onchange="AlterParanoia();" <?=$RequestsVotedCountChecked?> /> Show
+            <label><input type="checkbox" name="p_requestsvoted_count" onchange="AlterParanoia();" <?=$RequestsVotedCountChecked?>> Show
               count</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsvoted_bounty" onchange="AlterParanoia();" <?=$RequestsVotedBountyChecked?> /> Show
+            <label><input type="checkbox" name="p_requestsvoted_bounty" onchange="AlterParanoia();" <?=$RequestsVotedBountyChecked?>> Show
               bounty</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsvoted_list" onchange="AlterParanoia();" <?=$RequestsVotedListChecked?> /> Show list</label>
+            <label><input type="checkbox" name="p_requestsvoted_list" onchange="AlterParanoia();" <?=$RequestsVotedListChecked?>> Show list</label>
           </td>
         </tr>
 
@@ -764,15 +764,15 @@ END PARANOIA CLUSTERFUCK #}
          </p>
 
         <p>
-          <img src="{{ twoFactorImage }}" />
+          <img src="{{ twoFactorImage }}">
         </p>
 
         <p>
-          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly>
         </p>
 
           <p>
-          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
+          <input type="text" id="twoFactorCode" name="twoFactorCode" pattern="[0-9]{6}" placeholder="e.g., {{ twoFactorPlaceHolder }}">
           </p>
 
           <p>
@@ -789,16 +789,16 @@ END PARANOIA CLUSTERFUCK #}
         </p>
 
         <p>
-          <img src="{{ twoFactorImage }}" />
+          <img src="{{ twoFactorImage }}">
         </p>
 
         <p>
-          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly />
+          <input type="text" id="twoFactorSecret" name="twoFactorSecret" value="{{ twoFactorSecret }}" readonly>
         </p>
 
 
         <p>
-        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., {{ twoFactorPlaceHolder }}" />
+        <input type="text" id="twoFactorCode" name="twoFactorCode" placeholder="e.g., {{ twoFactorPlaceHolder }}">
         <a id="deleteTwoFactor" class="button button-primary">disable 2fa</a>
         </p>
         </div>
@@ -827,9 +827,9 @@ END PARANOIA CLUSTERFUCK #}
         <input type="hidden" name="u2f-sigs"
           value='<?=json_encode($U2FSigs)?>' />
 
-        <input type="hidden" name="u2f-response" />
+        <input type="hidden" name="u2f-response">
 
-        <input type="hidden" value="U2F-E" />
+        <input type="hidden" value="U2F-E">
       </form>
 
       <p>
@@ -852,9 +852,9 @@ END PARANOIA CLUSTERFUCK #}
         <input type="hidden" name="u2f-sigs"
           value='<?=json_encode($U2FSigs)?>' />
 
-        <input type="hidden" name="u2f-response" />
+        <input type="hidden" name="u2f-response">
 
-        <input type="hidden" value="U2F-E" />
+        <input type="hidden" value="U2F-E">
 
         <p>
           Universal Two Factor is enabled.
@@ -932,7 +932,7 @@ END PARANOIA CLUSTERFUCK #}
           You must remove and add fresh copies of torrents to your client.
           </p>
 
-           <input type="checkbox" id="resetPassKey" name="resetPassKey" />
+           <input type="checkbox" id="resetPassKey" name="resetPassKey">
           <label for="resetPassKey">Generate a new passkey for tracker authentication?</label>
 
           </td>
@@ -953,7 +953,7 @@ END PARANOIA CLUSTERFUCK #}
           They must be between 8 and 32 characters long.
           </p>
 
-          <input type="text" id="ircKey" name="ircKey" minlength="8" maxlength="32" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}" />
+          <input type="text" id="ircKey" name="ircKey" minlength="8" maxlength="32" placeholder="e.g., {{ ircKeyPlaceholder }}" value="{{ user.extra.IRCKey }}">
 
           </td>
         </tr>
@@ -1005,7 +1005,7 @@ END PARANOIA CLUSTERFUCK #}
             <p><strong>Create a new token</strong></p>
 
             <p>
-            <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token" />
+            <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token">
             </p>
 
             <p>
@@ -1028,7 +1028,7 @@ END PARANOIA CLUSTERFUCK #}
           <th>Email address</th>
 
           <td>
-              <input type="email" id="email" name="email" placeholder="foo@bar.com" value="{{ user.core.email }}" />
+              <input type="email" id="email" name="email" placeholder="foo@bar.com" value="{{ user.core.email }}">
           </td>
         </tr>
 
@@ -1038,17 +1038,17 @@ END PARANOIA CLUSTERFUCK #}
 
           <td>
           <p>
-          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" placeholder="Enter a new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase1" id="newPassphrase1" placeholder="Enter a new passphrase">
            <strong id="passphraseStrength"></strong>
            </p>
 
 <p>
-          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" placeholder="Confirm the new passphrase" />
+          <input type="password" minlength="15" name="newPassphrase2" id="newPassphrase2" placeholder="Confirm the new passphrase">
            <strong id="passphraseMatch"></strong>
 </p>
 
 <p>
-           <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly />
+           <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly>
 </p>
 
 <p>

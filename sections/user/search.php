@@ -59,14 +59,14 @@ View::header('User search');
   <div class="linkbox pager"><?=($Pages)?></div>
 <?php } ?>
   <form class="search_form" name="users" action="user.php" method="get">
-    <input type="hidden" name="action" value="search" />
+    <input type="hidden" name="action" value="search">
     <table class="layout" width="100%">
       <tr>
         <td class="label nobr">Username:</td>
         <td>
-          <input type="text" name="username" size="60" value="<?=\Gazelle\Text::esc($_GET['username'])?>" />
+          <input type="text" name="username" size="60" value="<?=\Gazelle\Text::esc($_GET['username'])?>">
           &nbsp;
-          <input type="submit" value="Search users" />
+          <input type="submit" value="Search users">
         </td>
       </tr>
     </table>
