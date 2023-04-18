@@ -28,6 +28,7 @@ h4,
 h5,
 h6 {
   font-family: $notoSerif, serif;
+  text-shadow: 0.1rem 0.1rem 0.1rem whitesmoke;
 }
 
 /* links */
@@ -175,5 +176,20 @@ ul.poll li {
 
   a:hover {
     text-decoration: underline;
+  }
+}
+
+/* button selectors from skeleton */
+.button,
+button,
+input[type=button],
+input[type=reset],
+input[type=submit] {
+  box-shadow: 0.25rem 0.25rem 0.5rem whitesmoke;
+}
+
+.EasyMDEContainer {
+  * {
+    box-shadow: none;
   }
 }
