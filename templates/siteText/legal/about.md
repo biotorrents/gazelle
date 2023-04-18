@@ -16,7 +16,8 @@ It also plays well with institutional repositories and can efficiently mirror th
 A mature software product and draft publication are expected by Easter 2024.
 Thank you for your curiosity, patience, and support as we grow the service.
 
-**Email**<br>
+### Email
+
 hello at torrents dot bio
 
 Please use
