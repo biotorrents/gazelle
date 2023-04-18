@@ -77,3 +77,23 @@ tr.unreadpm {
 a.brackets {
   margin: 0 0.25rem;
 }
+
+/* button selectors from skeleton */
+.button,
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  box-shadow: 0.25rem 0.25rem 0.5rem whitesmoke;
+  transition: background-color 0.1s;
+
+  &:hover {
+    transition: background-color 0.1s;
+  }
+}
+
+.EasyMDEContainer {
+  * {
+    box-shadow: none;
+  }
+}

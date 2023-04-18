@@ -39,6 +39,7 @@ body.development {
   /* also, add a banner with the current git branch */
   #gitInfo {
     background: red;
+    box-shadow: 0.5rem 0.5rem 0.5rem whitesmoke;
     color: white;
     position: sticky;
     text-align: center;
