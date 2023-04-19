@@ -343,7 +343,7 @@ if ($CollageCovers) {
 
 View::header(
     $Name,
-    'browse,collage,recommend,wall'
+    'browse,collage,recommend'
 );
 ?>
 

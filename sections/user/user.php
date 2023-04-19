@@ -121,7 +121,7 @@ $app->twig->display("user/profile/profile.twig", [
   "sidebar" => true,
 
   #"css" => [""],
-  "js" => ["user", "requests", "wall", "vendor/chart.min"],
+  "js" => ["user", "requests", "vendor/chart.min"],
 
   "data" => $data,
   "siteOptions" => $data["extra"]["siteOptions"],
