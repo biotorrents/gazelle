@@ -42,9 +42,9 @@
     {% for user in list %}
         <tr class="row{{ cycle(['a', 'b'], loop.index0) }}">
             <td>
-                {{ user.id|user_full }}
+                {{ user.id }}
                 <br>
-                {{ user.inviter.id|user_full }}
+                {{ user.inviter.id }}
             </td>
             <td style="vertical-align: top">
                 {{- user.activityStats.BytesUploaded|octet_size -}}

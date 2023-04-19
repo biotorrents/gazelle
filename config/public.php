@@ -26,6 +26,9 @@ if ($env->dev) {
 # (should only be used for initial setup)
 ENV::setPub("enablePublicEncryptionKey", false);
 
+# is there an apcu database key loaded?
+ENV::setPub("apcuKey", apcu_exists("DBKEY"));
+
 
 /**
  * site identity

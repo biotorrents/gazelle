@@ -83,7 +83,7 @@
                 {%- if is_fmod -%}
                     <a href="#content{{ p.post_id }}" onclick="LoadEdit({{ p.post_id }}, 1);">&laquo;</a>
                 {%- endif %}
-                    Last edited by {{ p.edited_user_id|user_url }} {{ p.edited_time|time_diff }}
+                    Last edited by {{ p.edited_user_id }} {{ p.edited_time|time_diff }}
                     </span>
             {%- endif %}
                 </div>

@@ -10,7 +10,7 @@
         </tr>
     {% for user_id, permission in list %}
         <tr>
-            <td>{{ user_id|user_full }}</td>
+            <td>{{ user_id }}</td>
             <td>
                 <ul class="nobullet">
         {% for name, value in permission %}

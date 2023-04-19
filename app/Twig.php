@@ -464,13 +464,6 @@ class Twig # extends Twig\Environment
         ));
 
         $twig->addFilter(new Twig\TwigFilter(
-            "plural",
-            function ($number) {
-                return plural($number);
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
             "time_diff",
             function ($time) {
                 return new Twig\Markup(time_diff($time), "UTF-8");
@@ -483,36 +476,6 @@ class Twig # extends Twig\Environment
                 return ucfirst($text);
             }
         ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "ucfirstall",
-            function ($text) {
-                return implode(" ", array_map(function ($w) {
-                    return ucfirst($w);
-                }, explode(" ", $text)));
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "user_url",
-            function ($userId) {
-                return new Twig\Markup(User::format_username($userId, false, false, false), "UTF-8");
-            }
-        ));
-
-        $twig->addFilter(new Twig\TwigFilter(
-            "user_full",
-            function ($userId) {
-                return new Twig\Markup(User::format_username($userId, true, true, true, true), "UTF-8");
-            }
-        ));
-
-        $twig->addFunction(new Twig\TwigFunction("donor_icon", function ($icon, $userId) {
-            return new Twig\Markup(
-                \Gazelle\Images::process($icon, false, "donoricon", $userId),
-                "UTF-8"
-            );
-        }));
 
         # Format::get_ratio_html
         $twig->addFunction(new Twig\TwigFunction("ratio", function ($up, $down) {

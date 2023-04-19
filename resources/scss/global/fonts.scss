@@ -179,10 +179,11 @@ summary {
     &:after {
       background-color: #222;
       border-radius: 4px;
-      box-shadow: 0.25rem 0.25rem 0.25rem rgba(0, 0, 0, 0.5);
+      box-shadow: 0.25rem 0.25rem 0.25rem lightgray;
       box-sizing: border-box;
       color: white;
       content: attr(title);
+      left: 0;
       margin-top: 0.5rem;
       padding: 0.5rem 1rem;
       position: absolute;

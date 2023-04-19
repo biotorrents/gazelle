@@ -84,7 +84,7 @@ button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
-  box-shadow: 0.25rem 0.25rem 0.5rem whitesmoke;
+  box-shadow: 0.1rem 0.1rem 0.25rem lightgray;
   transition: background-color 0.1s;
 
   &:hover {

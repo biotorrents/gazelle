@@ -8,7 +8,7 @@
     <tr class="colhead_dark">
         <td colspan="{{ show_avatar ? 2 : 1 }}">
             <div style="float: left;"><a class="post_id" href="{{ url }}">#{{ id }}</a>
-                <strong>{{ author.id|user_full }}</strong> {{ added_time|time_diff }} {{ heading|raw }}
+                <strong>{{ author.id|xx }}</strong> {{ added_time|time_diff }} {{ heading|raw }}
                 <span id="postcontrol-{{ id }}">
                 - <a href="#quickpost" onclick="Quote('{{ id }}','{{ author.username }}', true);" class="brackets">Quote</a>
 {%    if show_edit %}
@@ -49,7 +49,7 @@
 {%    if is_admin %}
                 <a href="#content{{ id }}" onclick="LoadEdit('{{ page }}', {{ id }}, 1); return false;">&laquo;</a>
 {%    endif %}
-                Last edited by {{ editor.id|user_url }} {{ edit_time|time_diff }}</span>
+                Last edited by {{ editor.id }} {{ edit_time|time_diff }}</span>
 {% endif %}
             </div>
         </td>

@@ -220,6 +220,22 @@
 
 	<body class="{{ bodyStyles }}">
 
+
+	{# start header block #}
+	{% block header %}
+
+	{# start header #}
+
+		{# there's no crypto key loaded! #}
+	{% if not env.apcuKey %}
+		<div id="systemError">
+			<strong>Error!</strong>
+			Couldn't detect an APCu key to decrypt the database.
+			Certain user account functionality is degraded.
+		</div>
+	{% endif %}
+
+
 	{# git info if on development #}
 	{% if env.dev %}
 		<div id="gitInfo">
@@ -251,10 +267,11 @@
 			{% endif %}
 		</header>
 
+		{% endblock %}
+
 
 		<main class="container">
 			<div class="row">
-
 
 				{# splash logo #}
 				{% if not authenticated %}

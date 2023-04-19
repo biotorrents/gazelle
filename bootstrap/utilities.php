@@ -731,8 +731,6 @@ function permissions_form()
         </table>
       </div>
       
-      <div class="submit_container">
         <input type="submit" name="submit" class ="button-primary" value="Save Permission Class">
-      </div>
   HTML;
 }

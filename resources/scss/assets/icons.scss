@@ -251,6 +251,30 @@ img.icon {
   max-height: 1.5rem;
 }
 
+/* donor */
+.donor {
+  &:after {
+    content: "❤️";
+    margin-left: 0.5rem;
+  }
+}
+
+/* warned */
+.warned {
+  &:after {
+    content: "⚠️";
+    margin-left: 0.5rem;
+  }
+}
+
+/* banned */
+.banned {
+  &:after {
+    content: "🚫";
+    margin-left: 0.5rem;
+  }
+}
+
 
 /**
  * loading spinner element

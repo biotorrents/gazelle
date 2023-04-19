@@ -430,7 +430,7 @@ Results ordered <select name="order">
         </tr>
 {% for u in page %}
         <tr class="row{{ cycle(['a', 'b'], loop.index0) }}">
-            <td>{{ u.user_id|user_full }}</td>
+            <td>{{ u.user_id }}</td>
             <td>{{ u.email }}</td>
             <td>{{ u.join_date|time_diff }}</td>
             <td>{{ u.last_access|time_diff }}</td>

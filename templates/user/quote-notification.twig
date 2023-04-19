@@ -25,7 +25,7 @@
         <tr class="colhead_dark notify_{{ quote.page }}">
             <td colspan="2">
                 <span style="float: left;">{{ quote.title }}: {{ quote.link|raw }}
-                    &rsaquo; Quoted by {{ quote.quoter_id|user_url }} {{ quote.date|time_diff }}
+                    &rsaquo; Quoted by {{ quote.quoter_id }} {{ quote.date|time_diff }}
                     {% if quote.unread %} <span class="new">(New!)</span>{% endif %}
                 </span>
                 <span style="float: left;" class="tooltip last_read" title="Jump to quote"> <a href="{{ quote.jump|raw }}"></a></span>

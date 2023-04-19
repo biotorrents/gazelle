@@ -13,7 +13,7 @@
     {% if loop.first %}
             <tr>
     {% endif %}
-                <td align="left">{{ u.user_id|user_full }}
+                <td align="left">{{ u.user_id }}
                 <a href="user.php?action=dupes&amp;dupeaction=remove&amp;auth={{ auth }}&amp;userid={{ user_id }}&amp;removeid={{ u.user_id }}" onclick="return confirm('Are you sure you wish to remove {{ u.username }} from this group?');" class="brackets tooltip" title="Remove linked account">X</a>
                 </td>
     {% if not loop.last %}

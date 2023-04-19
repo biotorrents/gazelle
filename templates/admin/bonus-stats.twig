@@ -1,5 +1,5 @@
 {% macro user(list, index) %}
-    {% if list[index] is defined %}{{ list[index].user_id|user_url }}{% else %}&nbsp;{% endif %}
+    {% if list[index] is defined %}{{ list[index].user_id }}{% else %}&nbsp;{% endif %}
 {% endmacro %}
 
 {% macro total(list, index) %}
