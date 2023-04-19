@@ -187,7 +187,7 @@
 <td class="right">
 {% if can("torrents_edit") %}
 
-<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">×</a>
+<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
 
 {% endif %}
 </td>
@@ -224,7 +224,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">×</a>
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
 {% endif %}
 
 </td>
@@ -242,7 +242,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">×</a>
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
 {% endif %}
 
 </td>
