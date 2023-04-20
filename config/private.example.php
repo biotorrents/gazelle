@@ -181,6 +181,17 @@ ENV::setPriv("manticoreMaxMatches", 1000); # must be <= server max_matches (defa
 
 
 /**
+ * site email
+ */
+
+ENV::setPriv("emailHost", "");
+ENV::setPriv("emailPort", 587);
+
+ENV::setPriv("emailUsername", "");
+ENV::setPriv("emailPassphrase", "");
+
+
+/**
  * Plausible Stats API
  * @see https://plausible.io/docs/stats-api
  */
