@@ -190,6 +190,7 @@ This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 - all database queries that are rewritten are usually simpler
 - no need to think about cache collisions across environments
 - a small amount of Eloquent models for core schema objects
+- authenticated email over STARTTLS with external server support
 
 ## Features inherited from Oppaitime
 

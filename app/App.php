@@ -25,8 +25,8 @@ class App
     # the rest of the globals
     public $cache = null;
 
-    public $dbNew = null; # new
-    public $dbOld = null; # old
+    public $dbNew = null;
+    public $dbOld = null;
 
     public $debug = null;
     public $twig = null;
@@ -88,8 +88,8 @@ class App
         $this->cache = \Gazelle\Cache::go();
 
         # database
-        $this->dbNew = \Gazelle\Database::go(); # new
-        $this->dbOld = new \DatabaseOld(); # old
+        $this->dbNew = \Gazelle\Database::go();
+        $this->dbOld = new \DatabaseOld();
 
         # debug
         $this->debug = \Debug::go();
@@ -102,7 +102,7 @@ class App
     }
 
 
-    /** NON-SINGLETON METHODS */
+    /** non-singleton methods */
 
 
     /**
@@ -124,6 +124,8 @@ class App
      * @param string $subject
      * @param string $body
      * @param bool $isHtml
+     *
+     * @see https://github.com/PHPMailer/PHPMailer
      */
     public static function email(string $to, string $subject, string $body, bool $isHtml = false)
     {
