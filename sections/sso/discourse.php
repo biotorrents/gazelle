@@ -65,11 +65,6 @@ $parameters = [
     "email" => $app->user->core["email"],
     "external_id" => $app->user->core["uuid"],
 ];
-$parameters = [
-    "nonce" => "abcd",
-    "email" => "me@fuck.com",
-    "external_id" => "dshjgds-dsjkha-wadjhsdf",
-];
 
 # base64 encode payload
 $payload = http_build_query($parameters);
