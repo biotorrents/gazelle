@@ -1,11 +1,24 @@
+<h3>Search</h3>
+<section>
+
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="text" id="search" name="search" placeholder="Search the forums">
+    <input type="text" id="query" name="query" placeholder="Search the boards">
+
+    <input type="submit" id="search" name="search" value="search" class="button-primary">
 </form>
+
+<p>
+    Please consult the 
+    <a href="https://docs.discourse.org/#tag/Search/operation/search" class="external" target="_blank">advanced search syntax</a>
+</p>
+
+</section>
 
 
 <h3>Actions</h3>
+<section>
 
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
@@ -17,9 +30,12 @@
     <input type="button" id="subscribe" name="subscribe" value="subscribe">
 </form>
 
+</section>
+
 
 {% if latestTopics is defined %}
 <h3>Latest</h3>
+<section>
 
 <ul>
 
@@ -32,11 +48,14 @@
     {% endfor %}
 
 </ul>
+
+</section>
 {% endif %}
 
 
 {% if topic.suggested_topics is defined %}
 <h3>Suggested</h3>
+<section>
 
 <ul>
 
@@ -49,10 +68,13 @@
     {% endfor %}
 
 </ul>
+
+</section>
 {% endif %}
 
 
 <h3>Rules</h3>
+<section>
 
 <p>
     Please consider reading through the
@@ -60,3 +82,5 @@
     before participating in the boards.
     Thanks!
 </p>
+
+</section>

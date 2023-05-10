@@ -13,6 +13,7 @@ $categories = $discourse->listCategories();
 $categories = array_column($categories, "categories");
 $categories = array_shift($categories);
 
+/*
 # unset functional
 $showThese = ["Uncategorized", "Marketplace", "Staff"];
 foreach ($categories as $key => $category) {
@@ -20,6 +21,7 @@ foreach ($categories as $key => $category) {
         unset($categories[$key]);
     }
 }
+*/
 
 # sort on position
 usort($categories, function ($a, $b) {

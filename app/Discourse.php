@@ -37,15 +37,22 @@ class Discourse
     {
         $app = \Gazelle\App::go();
 
+        # discourse integration disabled
         if (!$app->env->enableDiscourse) {
-            throw new Exception("you must set \$app.env.enableDiscourse = true in config/private.php");
+            throw new Exception("discourse integration disabled");
+        }
+
+        # no connectSecret set
+        $connectSecret = $app->env->getPriv("connectSecret") ?? null;
+        if (!$connectSecret) {
+            throw new Exception("no connectSecret set");
         }
 
         try {
             $this->baseUri = $app->env->discourseUri;
             $this->token = $app->env->getPriv("discourseKey");
             $this->username = "system"; # todo
-            $this->connectSecret = $app->env->getPriv("connectSecret");
+            $this->connectSecret = $connectSecret;
         } catch (Throwable $e) {
             return $e->getMessage();
         }
