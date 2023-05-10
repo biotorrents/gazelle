@@ -53,7 +53,7 @@ final class CreatorTable extends AbstractMigration
 
         # loop through it
         foreach ($ref as $row) {
-            $uuid = $app->dbNew->setId();
+            $uuid = $app->dbNew->uuid();
             $slug = $app->dbNew->slug($row["name"]);
 
             $query = "insert into creators (uuid, name, slug) values (?, ?, ?)";

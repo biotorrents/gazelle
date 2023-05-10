@@ -200,7 +200,23 @@ class Database extends \PDO
 
 
     /**
-      * getId
+     * uuid
+     *
+     * Generate a unique id suitable for a database key.
+     *
+     * @return string uuid v7 binary
+     *
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
+     */
+    public function uuid(): string
+    {
+        return \Ramsey\Uuid\Uuid::uuid7()->getBytes();
+    }
+
+
+    /**
+      * readUuid
       *
       * Get the string representation of a binary uuid.
       *
@@ -210,25 +226,9 @@ class Database extends \PDO
       * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
       * @see https://uuid.ramsey.dev/en/stable/database.html
       */
-    public function getId(string $binary): string
+    private function readUuid(string $binary): string
     {
         return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
-    }
-
-
-    /**
-     * setId
-     *
-     * Generate a unique id suitable for a database key.
-     *
-     * @return string uuid v7 binary
-     *
-     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
-     * @see https://uuid.ramsey.dev/en/stable/database.html
-     */
-    public function setId(): string
-    {
-        return \Ramsey\Uuid\Uuid::uuid7()->getBytes();
     }
 
 
@@ -258,6 +258,44 @@ class Database extends \PDO
         }
 
         return $good;
+    }
+
+
+    /**
+     * translateBinary
+     *
+     * Translates a binary field to a string representation.
+     *
+     * @param array $row single database row
+     * @return array translated row
+     */
+    private function translateBinary(array $row)
+    {
+        # uuid v7
+        $row["uuid"] ??= null;
+        if ($row["uuid"]) {
+            $row["uuid"] = $this->readUuid($row["uuid"]);
+        }
+
+        # peer_id
+        $row["peer_id"] ??= null;
+        if ($row["peer_id"]) {
+            $row["peer_id"] = bin2hex($row["peer_id"]);
+        }
+
+        # infoHash
+        $row["infoHash"] ??= null;
+        if ($row["infoHash"]) {
+            $row["infoHash"] = bin2hex($row["infoHash"]);
+        }
+
+        # legacy PascalCase
+        $row["InfoHash"] ??= null;
+        if ($row["InfoHash"]) {
+            $row["InfoHash"] = bin2hex($row["InfoHash"]);
+        }
+
+        return $row;
     }
 
 
@@ -332,11 +370,8 @@ class Database extends \PDO
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
-            # binary uuid v7 handling
-            $row["uuid"] ??= null;
-            if ($row["uuid"]) {
-                $row["uuid"] = $this->getId($row["uuid"]);
-            }
+            # translate binary
+            $row = $this->translateBinary($row);
 
             foreach ($row as $key => $value) {
                 $app->cache->set($cacheKey, $value, $this->cacheDuration);
@@ -368,11 +403,8 @@ class Database extends \PDO
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
-            # binary uuid v7 handling
-            $row["uuid"] ??= null;
-            if ($row["uuid"]) {
-                $row["uuid"] = $this->getId($row["uuid"]);
-            }
+            # translate binary
+            $row = $this->translateBinary($row);
 
             $app->cache->set($cacheKey, $row, $this->cacheDuration);
             return $row;
@@ -406,10 +438,16 @@ class Database extends \PDO
         */
 
         $ref = $this->multi($query, $arguments, $hostname);
-        $ref = array_column($ref, $column);
+        foreach ($ref as $key => $row) {
+            # translate binary
+            $ref[$key] = $this->translateBinary($row);
+        }
 
-        $app->cache->set($cacheKey, $ref, $this->cacheDuration);
-        return $ref;
+        # technically incorrect variable name
+        $row = array_column($ref, $column);
+
+        $app->cache->set($cacheKey, $row, $this->cacheDuration);
+        return $row;
     }
 
 
@@ -435,12 +473,9 @@ class Database extends \PDO
         $statement = $this->do($query, $arguments, $hostname);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
-        # binary uuid v7 handling
         foreach ($ref as $key => $row) {
-            $row["uuid"] ??= null;
-            if ($row["uuid"]) {
-                $ref[$key]["uuid"] = $this->getId($row["uuid"]);
-            }
+            # translate binary
+            $ref[$key] = $this->translateBinary($row);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
