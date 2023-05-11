@@ -51,23 +51,6 @@ Oh yeah, the
 [PHP backend class](app/Manticore.php)
 is also completely rewritten, replacing at least four legacy classes.
 
-## Bearer token authorization
-
-[Read the API documentation.](https://docs.torrents.bio)
-API tokens can be generated in the
-[user security settings](sections/user/token.php)
-and used with the JSON API.
-[Internal API calls](app/API/Internal.php)
-for Ajax and such use a special token that can safely be exposed to the frontend.
-It's based on hashing a
-[rotating server secret](crontab/siteApiSecret.php)
-concatenated with a secure session cookie.
-
-The session cookies themselves are tight, btw.
-No JavaScript access, scoped to the same site, long length, etc.
-This kind of stuff is in the
-[low level Http class](app/Http.php).
-
 ## Secure authentication system
 
 The user handling, including registration, logins, etc.,
@@ -84,6 +67,23 @@ Test it yourself with 72 bytes of random binary data (the max supported by bcryp
 There's something to be said for prehashing passphrases such as `qwerty123`, however.
 BioGazelle enforces a 15-character minimum passphrase length and imposes no other limitations.
 
+### Bearer token authorization
+
+[Read the API documentation.](https://docs.torrents.bio)
+API tokens can be generated in the
+[user security settings](sections/user/token.php)
+and used with the JSON API.
+[Internal API calls](app/API/Internal.php)
+for Ajax and such use a special token that can safely be exposed to the frontend.
+It's based on hashing a
+[rotating server secret](crontab/siteApiSecret.php)
+concatenated with a secure session cookie.
+
+The session cookies themselves are tight, btw.
+No JavaScript access, scoped to the same site, long length, etc.
+This kind of stuff is in the
+[low level Http class](app/Http.php).
+
 ## OpenAI integration
 
 One of BioGazelle's goals is to place data in context using
@@ -92,19 +92,6 @@ to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
 and get a succinct natural language summary with tags.
 It's possible to disable AI content display in the user settings, btw.
-
-## Good typography
-
-BioGazelle supports an array of
-[unobtrusive fonts](resources/scss/assets/fonts.scss)
-with the appropriate glyphs for bold, italic, and monospace.
-These options are available to every theme.
-Font Awesome 5 is also universally available, as is the
-[entire Material Design color palette](resources/scss/assets/colors.scss).
-[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
-Also, there are two simple color modes,
-[calm mode and dark mode](resources/scss/global/colors.scss),
-that I like to think are pleasing to the eye.
 
 ## Markdown and BBcode support
 
@@ -119,16 +106,18 @@ The default recursive regex BBcode parser (yuck) is replaced by
 [Vanilla NBBC](https://github.com/vanilla/nbbc).
 Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 
-## App singleton
+### Good typography
 
-[The main site configuration](config/public.php)
-uses extensible ArrayObjects with by the
-[ENV special class](app/ENV.php).
-Also, the whole app is always instantly available:
-the config, database, cache, current user, Twig engine, etc.,
-are accessible with a simple call to `Gazelle\App::go()`.
-All such objects use the same quick and easy go → factory → thing API.
-Just in case you need to extend some core object without headaches.
+BioGazelle supports an array of
+[unobtrusive fonts](resources/scss/assets/fonts.scss)
+with the appropriate glyphs for bold, italic, and monospace.
+These options are available to every theme.
+Font Awesome 5 is also universally available, as is the
+[entire Material Design color palette](resources/scss/assets/colors.scss).
+[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
+Also, there are two simple color modes,
+[calm mode and dark mode](resources/scss/global/colors.scss),
+that I like to think are pleasing to the eye.
 
 ## Twig template system
 
@@ -174,7 +163,18 @@ Features include clean URIs and centralized middleware.
 An ongoing project involves modernizing the app based on Laravel's excellent tools,
 with help from other personally-vetted libraries that may be lighter.
 
-## Decent debugging
+### App singleton
+
+[The main site configuration](config/public.php)
+uses extensible ArrayObjects with by the
+[ENV special class](app/ENV.php).
+Also, the whole app is always instantly available:
+the config, database, cache, current user, Twig engine, etc.,
+are accessible with a simple call to `Gazelle\App::go()`.
+All such objects use the same quick and easy go → factory → thing API.
+Just in case you need to extend some core object without headaches.
+
+### Decent debugging
 
 BioGazelle seeks to be easy and fun to develop.
 I collected the old debug class monstrosity into a nice little bar.
