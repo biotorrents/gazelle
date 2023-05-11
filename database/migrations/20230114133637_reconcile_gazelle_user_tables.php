@@ -23,7 +23,7 @@ final class ReconcileGazelleUserTables extends AbstractMigration
 
         # todo: move everything into a users_extra table later
         # the existing schema has significance for ocelot
-        $query = "alter table users_main add column userId int";
+        $query = "alter table users_main add column if not exists userId int";
         $app->dbNew->do($query, []);
     }
 }

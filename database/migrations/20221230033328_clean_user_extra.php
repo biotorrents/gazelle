@@ -23,22 +23,22 @@ final class CleanUserExtra extends AbstractMigration
 
         $query = "
             alter table users_info
-            drop column viewAvatars,
-            drop column disableAvatar,
-            drop column disableInvites,
-            drop column disablePosting,
-            drop column disableForums,
-            drop column disableIrc,
-            drop column disableTagging,
-            drop column disableUpload,
-            drop column disableWiki,
-            drop column disablePm,
-            drop column disablePoints,
-            drop column disablePromotion,
-            drop column disableRequests,
-            drop column restrictedForums,
-            drop column permittedForums,
-            drop column unseededAlerts
+            drop column if exists viewAvatars,
+            drop column if exists disableAvatar,
+            drop column if exists disableInvites,
+            drop column if exists disablePosting,
+            drop column if exists disableForums,
+            drop column if exists disableIrc,
+            drop column if exists disableTagging,
+            drop column if exists disableUpload,
+            drop column if exists disableWiki,
+            drop column if exists disablePm,
+            drop column if exists disablePoints,
+            drop column if exists disablePromotion,
+            drop column if exists disableRequests,
+            drop column if exists restrictedForums,
+            drop column if exists permittedForums,
+            drop column if exists unseededAlerts
         ";
 
         # we have permissions, dude

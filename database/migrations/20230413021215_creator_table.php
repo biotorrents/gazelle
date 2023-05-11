@@ -22,6 +22,9 @@ final class CreatorTable extends AbstractMigration
         $app = \Gazelle\App::go();
 
         # https://api.semanticscholar.org/api-docs/graph#tag/Author-Data/operation/get_graph_get_author
+        $query = "drop table if exists creators";
+        $app->dbNew->do($query, []);
+
         $query = "
             CREATE TABLE IF NOT EXISTS `creators` (
                 `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -51,6 +54,7 @@ final class CreatorTable extends AbstractMigration
         $query = "select artistId, name from artists_group order by artistId asc";
         $ref = $app->dbNew->multi($query, []);
 
+        /*
         # loop through it
         foreach ($ref as $row) {
             $uuid = $app->dbNew->uuid();
@@ -59,5 +63,6 @@ final class CreatorTable extends AbstractMigration
             $query = "insert into creators (uuid, name, slug) values (?, ?, ?)";
             $app->dbNew->do($query, [$uuid, $row["name"], $slug]);
         }
+        */
     }
 }

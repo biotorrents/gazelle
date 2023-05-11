@@ -21,7 +21,7 @@ final class StupidPassphraseShim extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        $query = "alter table users_info add column isPassphraseMigrated bool default 0";
+        $query = "alter table users_info add column if not exists isPassphraseMigrated bool default 0";
         $app->dbNew->do($query, []);
     }
 }

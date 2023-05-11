@@ -275,24 +275,32 @@ class Database extends \PDO
         $row["uuid"] ??= null;
         if ($row["uuid"]) {
             $row["uuid"] = $this->readUuid($row["uuid"]);
+        } else {
+            unset($row["uuid"]);
         }
 
         # peer_id
         $row["peer_id"] ??= null;
         if ($row["peer_id"]) {
             $row["peer_id"] = bin2hex($row["peer_id"]);
+        } else {
+            unset($row["peer_id"]);
         }
 
         # infoHash
         $row["infoHash"] ??= null;
         if ($row["infoHash"]) {
             $row["infoHash"] = bin2hex($row["infoHash"]);
+        } else {
+            unset($row["infoHash"]);
         }
 
         # legacy PascalCase
         $row["InfoHash"] ??= null;
         if ($row["InfoHash"]) {
             $row["InfoHash"] = bin2hex($row["InfoHash"]);
+        } else {
+            unset($row["InfoHash"]);
         }
 
         return $row;
