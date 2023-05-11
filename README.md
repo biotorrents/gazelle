@@ -34,7 +34,8 @@ BioGazelle is in the process of migrating to
 to enable useful content-agnostic operations such as tagging and AI integration.
 This will consolidate the database and allow for powerful cross-object association.
 The UUIDs are stored as binary strings for index speed and to minimize disk usage.
-By the way, *all* binary data is transparently converted by the database wrapper.
+By the way, *all* binary data is transparently converted by the
+[database wrapper](app/Database.php).
 
 ## Full stack search engine rewrite
 
@@ -62,21 +63,23 @@ Passphrase hashing is all done with `PASSWORD_DEFAULT`, ready for Argon2id.
 I tested this extensively and determined that prehashing passphrases was no good.
 Not only it is impossible upgrade the algorithm, e.g., from `sha256` to `sha3-512`,
 but prehashing lowers the total entropy of long strings even if binary is used throughout.
+Test it yourself with 72 bytes of random binary data (the `bcrypt` max) and an entropy calculator.
 
-Test it yourself with 72 bytes of random binary data (the max supported by bcrypt) and a Shannon entropy calculator.
-There's something to be said for prehashing passphrases such as `qwerty123`, however.
 BioGazelle enforces a 15-character minimum passphrase length and imposes no other limitations.
+This is consistent with the list of
+[OWASP best practices](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html).
+In fact, the whole class is informed by this document.
 
 ### Bearer token authorization
 
 [Read the API documentation.](https://docs.torrents.bio)
 API tokens can be generated in the
-[user security settings](sections/user/token.php)
+[user security settings](templates/user/settings/settings.twig)
 and used with the JSON API.
 [Internal API calls](app/API/Internal.php)
 for Ajax and such use a special token that can safely be exposed to the frontend.
 It's based on hashing a
-[rotating server secret](crontab/siteApiSecret.php)
+[rotating server secret](utilities/crontab/siteApiSecret.php)
 concatenated with a secure session cookie.
 
 The session cookies themselves are tight, btw.
@@ -91,9 +94,23 @@ One of BioGazelle's goals is to place data in context using
 to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
 and get a succinct natural language summary with tags.
-It's possible to disable AI content display in the user settings, btw.
+It's possible to disable AI content display in the user settings.
 
-## Markdown and BBcode support
+## Twig template system
+
+[BioGazelle's Twig interface](app/Twig.php)
+takes cues from OPS's extended filters and functions.
+Twig provides a security benefit by escaping rendered output,
+and a secondary benefit of clarifying the PHP running the site sections.
+Everything you could need is a globally available template variable.
+
+A quick note about template inheritance.
+Everything extends a clean HTML5 base template.
+Torrent, collections, requests, etc., and their respective sidebars
+are implemented as semantic HTML5 in easily digestible chunks of content.
+No more mixed PHP code and HTML markup!
+
+### Markdown and BBcode support
 
 BioGazelle uses the
 [SimpleMDE markdown editor](https://simplemde.com)
@@ -118,20 +135,6 @@ Font Awesome 5 is also universally available, as is the
 Also, there are two simple color modes,
 [calm mode and dark mode](resources/scss/global/colors.scss),
 that I like to think are pleasing to the eye.
-
-## Twig template system
-
-[BioGazelle's Twig interface](app/Twig.php)
-takes cues from OPS's extended filters and functions.
-Twig provides a security benefit by escaping rendered output,
-and a secondary benefit of clarifying the PHP running the site sections.
-Everything you could need is a globally available template variable.
-
-A quick note about template inheritance.
-Everything extends a clean HTML5 base template.
-Torrent, collections, requests, etc., and their respective sidebars
-are implemented as semantic HTML5 in easily digestible chunks of content.
-No more mixed PHP code and HTML markup!
 
 ## Active data minimization
 
