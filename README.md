@@ -27,6 +27,13 @@ Please note that Redis clusters expect at least three nodes.
 This lower limit is inherent to Redis'
 [cluster implementation](https://redis.io/docs/management/scaling/).
 
+### Universal database id's
+
+BioGazelle is in the process of migrating to
+[UUID v7 primary keys](https://uuid.ramsey.dev/en/stable/rfc4122/version7.html)
+to enable useful content-agnostic operations such as tagging and AI integration.
+This will consolidate the database and allow for powerful cross-object association.
+
 ## Full stack search engine rewrite
 
 Data indexing is important, so BioGazelle has upgraded to
