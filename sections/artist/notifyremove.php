@@ -28,18 +28,6 @@ if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === f
 }
 list($ID, $Artists) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-$app->dbOld->prepared_query("
-  SELECT Name
-  FROM artists_alias
-  WHERE ArtistID = '$ArtistID'
-    AND Redirect = 0");
-
-while (list($Alias) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-    while (stripos($Artists, "|$Alias|") !== false) {
-        $Artists = str_ireplace("|$Alias|", '|', $Artists);
-    }
-}
-
 if ($Artists == '|') {
     $app->dbOld->prepared_query("
     DELETE FROM users_notify_filters

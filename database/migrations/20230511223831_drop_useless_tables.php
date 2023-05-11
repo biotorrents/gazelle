@@ -31,7 +31,7 @@ final class DropUselessTables extends AbstractMigration
                 forums_specific_rules,
                 library_contest,
                 reports_email_blacklist,
-                users_warnings_forums,
+                users_warnings_forums
         ";
         $app->dbNew->do($query, []);
     }

@@ -20,17 +20,7 @@ if ($ArtistID && !is_numeric($ArtistID)) {
 }
 
 if (empty($ArtistID)) {
-    if (!empty($_GET['artistname'])) {
-        $Name = db_string(trim($_GET['artistname']));
-        $app->dbOld->query("
-      SELECT ArtistID
-      FROM artists_alias
-      WHERE Name LIKE '$Name'");
-        if (!(list($ArtistID) = $app->dbOld->next_record(MYSQLI_NUM, false))) {
-            json_die('failure');
-        }
-        // If we get here, we got the ID!
-    }
+    json_die('failure');
 }
 
 if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
@@ -47,17 +37,6 @@ if ($Data) {
     list($Name, $Image, $Body) = current($Data);
 } else {
     if ($RevisionID) {
-        /*
-          $sql = "
-            SELECT
-              a.Name,
-              wiki.Image,
-              wiki.body,
-              a.VanityHouse
-            FROM wiki_artists AS wiki
-              LEFT JOIN artists_group AS a ON wiki.RevisionID = a.RevisionID
-            WHERE wiki.RevisionID = '$RevisionID' ";
-        */
         $sql = "
       SELECT
         a.Name,
@@ -67,17 +46,6 @@ if ($Data) {
         LEFT JOIN artists_group AS a ON wiki.RevisionID = a.RevisionID
       WHERE wiki.RevisionID = '$RevisionID' ";
     } else {
-        /*
-          $sql = "
-            SELECT
-              a.Name,
-              wiki.Image,
-              wiki.body,
-              a.VanityHouse
-            FROM artists_group AS a
-              LEFT JOIN wiki_artists AS wiki ON wiki.RevisionID = a.RevisionID
-            WHERE a.ArtistID = '$ArtistID' ";
-        */
         $sql = "
       SELECT
         a.Name,

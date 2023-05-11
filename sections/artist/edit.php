@@ -1,4 +1,6 @@
 <?php
+#declare(strict_types = 1);
+
 /************************************************************************
 ||------------|| Edit artist wiki page ||------------------------------||
 
@@ -18,17 +20,6 @@ if (!is_numeric($ArtistID)) {
 }
 
 // Get the artist name and the body of the last revision
-/*
-$app->dbOld->query("
-  SELECT
-    Name,
-    Image,
-    Body,
-    VanityHouse
-  FROM artists_group AS a
-    LEFT JOIN wiki_artists ON wiki_artists.RevisionID = a.RevisionID
-  WHERE a.ArtistID = '$ArtistID'");
-*/
 $app->dbOld->query("
   SELECT
     Name,
@@ -85,7 +76,7 @@ View::header('Edit artist');
     </form>
   </div>
 
-<?php /* <h2>Make into non-redirecting alias</h2>
+  <h2>Make into non-redirecting alias</h2>
   <div class="box pad">
     <form class="merge_form" name="artist" action="artist.php" method="post">
       <input type="hidden" name="action" value="change_artistid">
@@ -106,36 +97,7 @@ View::header('Edit artist');
 
   <h2>Artist aliases</h2>
   <div class="box pad">
-    <h3>List of existing artist aliases</h3>
-    <div class="pad">
-      <ul>
-
-<?php
-  $app->dbOld->query("
-    SELECT AliasID, Name, UserID, Redirect
-    FROM artists_alias
-    WHERE ArtistID = '$ArtistID'");
-  while (list($AliasID, $AliasName, $User, $Redirect) = $app->dbOld->next_record(MYSQLI_NUM, true)) {
-    if ($AliasName == $Name) {
-      $DefaultRedirectID = $AliasID;
-    }
-?>
-        <li>
-          <span class="tooltip" title="Alias ID"><?=$AliasID?></span>. <span class="tooltip" title="Alias name"><?=$AliasName?></span>
-<?php if ($User) { ?>
-          <a href="user.php?id=<?=$User?>" title="Alias creator" class="brackets tooltip">User</a>
-<?php }
-    if ($Redirect) { ?>
-          (writes redirect to <span class="tooltip" title="Target alias ID"><?=$Redirect?></span>)
-<?php } ?>
-          <a href="artist.php?action=delete_alias&amp;aliasid=<?=$AliasID?>&amp;auth=<?=$app->user->extra['AuthKey']?>" title="Delete this alias" class="brackets tooltip">X</a>
-        </li>
-<?php }
-?>
-      </ul>
-    </div>
-    <br>
-    <h3>Add a new artist alias</h3>
+   <h3>Add a new artist alias</h3>
     <div class="pad">
       <p>This redirects artist names as they are written (e.g. when new torrents are uploaded or artists added). All uses of this new alias will be redirected to the alias ID you enter here. Use for common misspellings, inclusion of diacritical marks, etc.</p>
       <form class="add_form" name="aliases" action="artist.php" method="post">
@@ -157,7 +119,7 @@ View::header('Edit artist');
         </div>
       </form>
     </div>
-  </div> */ ?>
+  </div>  ?>
 <?php } ?>
 </div>
 <?php View::footer() ?>
