@@ -98,6 +98,11 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
+        # don't cache on dev
+        if ($app->env->dev) {
+            $this->cacheDuration = "0 seconds";
+        }
+
         # database variables
         $source = $app->env->getPriv("databaseSource");
         $replicas = $app->env->getPriv("databaseReplicas");

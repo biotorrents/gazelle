@@ -141,7 +141,7 @@ class User
         */
 
         # user stats
-        $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";
+        $query = "select uploaded, downloaded, requiredRatio from users_main where userId = ?";
         $stats = $app->dbNew->row($query, [$userId]);
 
         # original gazelle user info
@@ -198,7 +198,7 @@ class User
             $this->core["email"] = Crypto::decrypt($this->core["email"]);
 
             # extra: gazelle
-            $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+            $query = "select * from users_main cross join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
 

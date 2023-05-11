@@ -28,7 +28,7 @@ final class AddUuidColumns extends AbstractMigration
             $ref = $app->dbNew->column("Tables_in_gazelle_development", $query, []);
         } else {
             # quick idiot-proofing
-            throw new Exception("just being careful for now");
+            #throw new Exception("just being careful for now");
 
             $query = "show tables";
             $ref = $app->dbNew->column("Tables_in_gazelle_production", $query, []);
