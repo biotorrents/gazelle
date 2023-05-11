@@ -33,31 +33,95 @@ final class AddUuidColumns extends AbstractMigration
             $ref = $app->dbNew->column("Tables_in_gazelle_production", $query, []);
         }
 
+        # big old loop
         foreach ($ref as $row) {
-            # add a bigint column to each table
-            $query = "
-                alter table {$row}
-                add column if not exists id bigint unsigned
-                not null auto_increment primary key first
-            ";
-            $app->dbNew->do($query, []);
+            /*
+            try {
+                # drop the primary key
+                $query = "
+                    alter table {$row}
+                    drop index if exists `PRIMARY`
+                ";
 
-            # normalize the auto_increment id columns
-            $query = "
-                alter table {$row}
-                modify column id bigint unsigned
-                not null auto_increment
-            ";
-            $app->dbNew->do($query, []);
+                $app->dbNew->do($query, []);
+                #!d($query);
+            } catch (Throwable $e) {
+                !d($row . ": " . $e->getMessage());
+                continue;
+            }
+            */
 
-            # using a default value, though manual uuid v7's are preferred
-            # https://gist.github.com/happycatsmiles/e528dd9184874d2193ad3c7306b68f27
-            $query = "
-                alter table {$row}
-                add column if not exists uuid binary(16)
-                not null default unhex(replace(uuid(), '-', '')) unique key after id
-            ";
-            $app->dbNew->do($query, []);
+            try {
+                # add a bigint column to each table
+                $query = "
+                    alter table {$row}
+                    add column if not exists id bigint unsigned
+                    not null first
+                ";
+
+                $app->dbNew->do($query, []);
+                #!d($query);
+            } catch (Throwable $e) {
+                !d($row . ": " . $e->getMessage());
+                continue;
+            }
+
+            /*
+            try {
+                # normalize the auto_increment id columns
+                $query = "
+                    alter table {$row}
+                    modify column if exists id bigint unsigned
+                    not null auto_increment
+                ";
+
+                $app->dbNew->do($query, []);
+                #!d($query);
+            } catch (Throwable $e) {
+                !d($row . ": " . $e->getMessage());
+                continue;
+            }
+            */
+
+            try {
+                # using a default value, though manual uuid v7's are preferred
+                # https://gist.github.com/happycatsmiles/e528dd9184874d2193ad3c7306b68f27
+                $query = "
+                    alter table {$row}
+                    add column if not exists uuid binary(16)
+                    not null unique key after id
+                ";
+
+                /*
+                $query = "
+                    alter table {$row}
+                    add column if not exists uuid binary(16)
+                    not null default unhex(replace(uuid(), '-', '')) unique key first
+                ";
+                */
+
+                $app->dbNew->do($query, []);
+                !d($query);
+            } catch (Throwable $e) {
+                !d($row . ": " . $e->getMessage());
+                continue;
+            }
+
+            # now populate the uuid v7's
+            $query = "select * from {$row}";
+            $miniRef = $app->dbNew->multi($query, []);
+
+            foreach ($miniRef as $miniRow) {
+                $miniRow["ID"] ??= null;
+                if ($miniRow["ID"]) {
+                    $miniRow["id"] = $miniRow["ID"];
+                    unset($miniRow["ID"]);
+                }
+
+                $query = "update {$row} set uuid = ? where id = ?";
+                $app->dbNew->do($query, [ $app->dbNew->uuid(), $miniRow["id"] ]);
+                !d($query);
+            }
         }
     }
 }

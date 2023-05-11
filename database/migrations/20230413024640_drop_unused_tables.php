@@ -21,7 +21,10 @@ final class DropUnusedTables extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        $query = "drop table if exists artists_alias, artists_aliases";
+        $query = "drop table if exists artists_alias";
+        $app->dbNew->do($query, []);
+
+        $query = "drop table if exists artists_aliases";
         $app->dbNew->do($query, []);
     }
 }
