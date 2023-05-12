@@ -198,7 +198,7 @@ class User
             $this->core["email"] = Crypto::decrypt($this->core["email"]);
 
             # extra: gazelle
-            $query = "select * from users_main cross join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
+            $query = "select * from users_main join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
 
@@ -207,6 +207,7 @@ class User
             $row = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
             $this->permissions = $row ?? [];
 
+            $this->permissions["values"] ??= null;
             if ($this->permissions["values"]) {
                 $this->permissions["values"] = json_decode($this->permissions["values"], true);
             }

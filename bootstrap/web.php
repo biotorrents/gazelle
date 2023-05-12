@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 # load the app
 $app = \Gazelle\App::go();
-!d($app->user->extra);
+#!d($app->user->permissions);
 
 # query vars
 $get = Http::request("get");
