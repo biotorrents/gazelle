@@ -88,42 +88,6 @@ if (check_perms('admin_reports')) {
 
     require(serverRoot.'/sections/reportsv2/array.php');
     $ReportID = 0;
-    /*
-      $app->dbOld->query("
-          SELECT
-            tg.Name,
-            tg.ID,
-            CASE COUNT(ta.GroupID)
-              WHEN 1 THEN aa.ArtistID
-              WHEN 0 THEN '0'
-              ELSE '0'
-            END AS ArtistID,
-            CASE COUNT(ta.GroupID)
-              WHEN 1 THEN aa.Name
-              WHEN 0 THEN ''
-              ELSE 'Various Artists'
-            END AS ArtistName,
-            tg.Year,
-            tg.CategoryID,
-            t.Time,
-            t.Remastered,
-            t.RemasterTitle,
-            t.RemasterYear,
-            t.Media,
-            t.Format,
-            t.Encoding,
-            t.Size,
-            t.HasLog,
-            t.LogScore,
-            t.UserID AS UploaderID,
-            uploader.Username
-          FROM torrents AS t
-            LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
-            LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-            LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
-            LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
-          WHERE t.ID = $TorrentID");
-    */
     $app->dbOld->query("
       SELECT
         tg.Name,

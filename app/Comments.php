@@ -139,22 +139,6 @@ class Comments
             $app->cache->delete("collage_$PageID");
         }
 
-        $app->dbOld->query("
-        INSERT INTO `comments_edits`(
-          `Page`,
-          `PostID`,
-          `EditUser`,
-          `EditTime`,
-          `Body`
-        )
-        VALUES(
-          '$Page',
-          $PostID,
-          ".$app->user->core["id"].",
-          NOW(), '".db_string($OldBody)."')
-        ");
-        $app->dbOld->set_query_id($QueryID);
-
         if ($SendPM && $app->user->core["id"] !== $AuthorID) {
             // Send a PM to the user to notify them of the edit
             $PMSubject = "Your comment #$PostID has been edited";
@@ -232,14 +216,6 @@ class Comments
         $app->dbOld->query("
         DELETE
         FROM
-          `comments_edits`
-        WHERE
-          `Page` = '$Page' AND `PostID` = $PostID
-        ");
-
-        $app->dbOld->query("
-        DELETE
-        FROM
           `users_notify_quoted`
         WHERE
           `Page` = '$Page' AND `PostID` = $PostID
@@ -277,20 +253,20 @@ class Comments
     {
         $Post = (!empty($PostID) ? "&postid=$PostID#post$PostID" : '');
         switch ($Page) {
-        case 'artist':
-            return "artist.php?id=$PageID$Post";
+            case 'artist':
+                return "artist.php?id=$PageID$Post";
 
-        case 'collages':
-            return "collages.php?action=comments&collageid=$PageID$Post";
+            case 'collages':
+                return "collages.php?action=comments&collageid=$PageID$Post";
 
-        case 'requests':
-            return "requests.php?action=view&id=$PageID$Post";
+            case 'requests':
+                return "requests.php?action=view&id=$PageID$Post";
 
-        case 'torrents':
-            return "torrents.php?id=$PageID$Post";
+            case 'torrents':
+                return "torrents.php?id=$PageID$Post";
 
-        default:
-            return false;
+            default:
+                return false;
         }
     }
 

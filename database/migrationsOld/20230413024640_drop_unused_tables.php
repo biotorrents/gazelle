@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class ReconcileGazelleUserTables extends AbstractMigration
+final class DropUnusedTables extends AbstractMigration
 {
     /**
      * Change Method.
@@ -17,13 +17,14 @@ final class ReconcileGazelleUserTables extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function change(): void
     {
         $app = \Gazelle\App::go();
 
-        # todo: move everything into a users_extra table later
-        # the existing schema has significance for ocelot
-        $query = "alter table users_main add column userId int";
+        $query = "drop table if exists artists_alias";
+        $app->dbNew->do($query, []);
+
+        $query = "drop table if exists artists_aliases";
         $app->dbNew->do($query, []);
     }
 }

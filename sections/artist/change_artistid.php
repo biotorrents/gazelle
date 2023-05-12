@@ -42,16 +42,6 @@ if ($NewArtistID > 0) {
     if (!(list($NewArtistName) = $app->dbOld->next_record())) {
         error('Please enter a valid artist ID number.');
     }
-} else {
-    // Didn't give an ID, so try to grab based on the name
-    $app->dbOld->query("
-    SELECT ArtistID
-    FROM artists_alias
-    WHERE Name = '".db_string($NewArtistName)."'
-    LIMIT 1");
-    if (!(list($NewArtistID) = $app->dbOld->next_record())) {
-        error('No artist by that name was found.');
-    }
 }
 
 if ($ArtistID == $NewArtistID) {
@@ -105,12 +95,6 @@ if (isset($_POST['confirm'])) {
     $NewArtistBookmarks = $app->dbOld->collect('UserID');
     $NewArtistBookmarks[] = '0';
     $NewArtistBookmarks = implode(',', $NewArtistBookmarks);
-
-    // Merge all of this artist's aliases onto the new artist
-    $app->dbOld->query("
-    UPDATE artists_alias
-    SET ArtistID = $NewArtistID
-    WHERE ArtistID = $ArtistID");
 
     // Update the torrent groups, requests, and bookmarks
     $app->dbOld->query("
