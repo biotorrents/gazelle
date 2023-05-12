@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types = 1);
 
 $app = \Gazelle\App::go();
 
@@ -63,7 +64,6 @@ $app->dbOld->prepared_query("
     LEFT JOIN torrents AS t ON t.ID = r.TorrentID
     LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
     LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-    LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
     LEFT JOIN users_main AS resolver ON resolver.ID = r.ResolverID
     LEFT JOIN users_main AS reporter ON reporter.ID = r.ReporterID
     LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
@@ -72,24 +72,24 @@ $app->dbOld->prepared_query("
   ORDER BY ReportedTime ASC
   LIMIT 1");
 
-    if (!$app->dbOld->has_results()) {
-        error();
-    }
+if (!$app->dbOld->has_results()) {
+    error();
+}
 
-    list($ReportID, $ReporterID, $ReporterName, $TorrentID, $Type, $UserComment, $ResolverID, $ResolverName, $Status, $ReportedTime, $LastChangeTime,
-      $ModComment, $Tracks, $Images, $ExtraIDs, $Links, $LogMessage, $GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time, $Remastered, $RemasterTitle,
-      $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $app->dbOld->next_record(MYSQLI_BOTH, array("ModComment"));
+list($ReportID, $ReporterID, $ReporterName, $TorrentID, $Type, $UserComment, $ResolverID, $ResolverName, $Status, $ReportedTime, $LastChangeTime,
+    $ModComment, $Tracks, $Images, $ExtraIDs, $Links, $LogMessage, $GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time, $Remastered, $RemasterTitle,
+    $RemasterYear, $Media, $Format, $Encoding, $Size, $HasCue, $HasLog, $LogScore, $UploaderID, $UploaderName) = $app->dbOld->next_record(MYSQLI_BOTH, array("ModComment"));
 
-    if (!$GroupID) {
-        //Torrent already deleted
-        $app->dbOld->prepared_query("
+if (!$GroupID) {
+    //Torrent already deleted
+    $app->dbOld->prepared_query("
         UPDATE reportsv2
         SET
           Status = 'Resolved',
           LastChangeTime = NOW(),
           ModComment = 'Report already dealt with (torrent deleted)'
         WHERE ID = $ReportID");
-        $app->cache->decrement('num_torrent_reportsv2'); ?>
+    $app->cache->decrement('num_torrent_reportsv2'); ?>
 <div id="report<?=$ReportID?>" class="report box pad center"
   data-reportid="<?=$ReportID?>">
   <a href="reportsv2.php?view=report&amp;id=<?=$ReportID?>">Report
@@ -99,47 +99,47 @@ $app->dbOld->prepared_query("
 </div>
 <?php
       error();
-    }
-    $app->dbOld->prepared_query("
+}
+$app->dbOld->prepared_query("
       UPDATE reportsv2
       SET Status = 'InProgress',
         ResolverID = ".$app->user->core['id']."
       WHERE ID = $ReportID");
 
-    if (array_key_exists($Type, $Types[$CategoryID])) {
-        $ReportType = $Types[$CategoryID][$Type];
-    } elseif (array_key_exists($Type, $Types['master'])) {
-        $ReportType = $Types['master'][$Type];
-    } else {
-        //There was a type but it wasn't an option!
-        $Type = 'other';
-        $ReportType = $Types['master']['other'];
-    }
+if (array_key_exists($Type, $Types[$CategoryID])) {
+    $ReportType = $Types[$CategoryID][$Type];
+} elseif (array_key_exists($Type, $Types['master'])) {
+    $ReportType = $Types['master'][$Type];
+} else {
+    //There was a type but it wasn't an option!
+    $Type = 'other';
+    $ReportType = $Types['master']['other'];
+}
 
-    if ($ArtistID == 0 && empty($ArtistName)) {
-        $RawName = $GroupName.($Year ? " ($Year)" : '').($Format || $Encoding || $Media ? " [$Format/$Encoding/$Media]" : '') . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $LinkName = "<a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\">".($Format || $Encoding || $Media ? " [$Format/$Encoding/$Media]" : '') . '</a> '.($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $BBName = "[url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-    } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
-        $RawName = "Various Artists - $GroupName".($Year ? " ($Year)" : '')." [$Format/$Encoding/$Media]" . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $LinkName = "Various Artists - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Format/$Encoding/$Media]</a> ".($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $BBName = "Various Artists - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-    } else {
-        $RawName = "$ArtistName - $GroupName".($Year ? " ($Year)" : '')." [$Format/$Encoding/$Media]" . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Format/$Encoding/$Media]</a> ".($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-        $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
-    }
-  ?>
+if ($ArtistID == 0 && empty($ArtistName)) {
+    $RawName = $GroupName.($Year ? " ($Year)" : '').($Format || $Encoding || $Media ? " [$Format/$Encoding/$Media]" : '') . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $LinkName = "<a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\">".($Format || $Encoding || $Media ? " [$Format/$Encoding/$Media]" : '') . '</a> '.($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $BBName = "[url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+} elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
+    $RawName = "Various Artists - $GroupName".($Year ? " ($Year)" : '')." [$Format/$Encoding/$Media]" . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $LinkName = "Various Artists - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Format/$Encoding/$Media]</a> ".($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $BBName = "Various Artists - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+} else {
+    $RawName = "$ArtistName - $GroupName".($Year ? " ($Year)" : '')." [$Format/$Encoding/$Media]" . ($HasCue ? ' (Cue)' : '').($HasLog ? " (Log: {$LogScore}%)" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Format/$Encoding/$Media]</a> ".($HasCue ? ' (Cue)' : '').($HasLog ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID\">(Log: {$LogScore}%)</a>" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+    $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Format/$Encoding/$Media]{}[/url] ".($HasCue ? ' (Cue)' : '').($HasLog ? " [url=torrents.php?action=viewlog&amp;torrentid=$TorrentID&amp;groupid=$GroupID](Log: {$LogScore}%)[/url]" : '').' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+}
+?>
 <div id="report<?=$ReportID?>" class="report"
   data-reportid="<?=$ReportID?>">
   <form class="edit_form" name="report"
     id="reportform_<?=$ReportID?>" action="reports.php"
     method="post">
     <?php
-          /*
-          * Some of these are for takeresolve, some for the JavaScript.
-          */
-        ?>
+        /*
+        * Some of these are for takeresolve, some for the JavaScript.
+        */
+?>
     <div>
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>" />
@@ -182,9 +182,9 @@ $app->dbOld->prepared_query("
               LEFT JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.GroupID = $GroupID");
-        $GroupOthers = ($app->dbOld->record_count() - 1);
+              $GroupOthers = ($app->dbOld->record_count() - 1);
 
-        if ($GroupOthers > 0) { ?>
+              if ($GroupOthers > 0) { ?>
           <div style="text-align: right;">
             <a href="reportsv2.php?view=group&amp;id=<?=$GroupID?>">There
               <?=(($GroupOthers > 1) ? "are $GroupOthers other reports" : "is 1 other report")?>
@@ -196,9 +196,9 @@ $app->dbOld->prepared_query("
               JOIN torrents AS t ON t.ID = r.TorrentID
             WHERE r.Status != 'Resolved'
               AND t.UserID = $UploaderID");
-        $UploaderOthers = ($app->dbOld->record_count() - 1);
+                  $UploaderOthers = ($app->dbOld->record_count() - 1);
 
-        if ($UploaderOthers > 0) { ?>
+                  if ($UploaderOthers > 0) { ?>
           <div style="text-align: right;">
             <a
               href="reportsv2.php?view=uploader&amp;id=<?=$UploaderID?>">There
@@ -207,7 +207,7 @@ $app->dbOld->prepared_query("
           </div>
           <?php }
 
-        $app->dbOld->prepared_query("
+                  $app->dbOld->prepared_query("
             SELECT DISTINCT req.ID,
               req.FillerID,
               um.Username,
@@ -219,10 +219,10 @@ $app->dbOld->prepared_query("
             WHERE rep.Status != 'Resolved'
               AND req.TimeFilled > '2010-03-04 02:31:49'
               AND req.TorrentID = $TorrentID");
-        $Requests = $app->dbOld->has_results();
-        if ($Requests > 0) {
-            while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
-                ?>
+                  $Requests = $app->dbOld->has_results();
+                  if ($Requests > 0) {
+                      while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
+                          ?>
           <div style="text-align: right;">
             <strong class="important_text"><a
                 href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a
@@ -230,11 +230,11 @@ $app->dbOld->prepared_query("
                 request</a> <?=time_diff($FilledTime)?></strong>
           </div>
           <?php
-            }
-        }
-      }
-    }
-      ?>
+                      }
+                  }
+              }
+          }
+?>
         </td>
       </tr>
       <?php if ($Tracks) { ?>
@@ -252,24 +252,24 @@ $app->dbOld->prepared_query("
         <td colspan="3">
           <?php
         $Links = explode(' ', $Links);
-        foreach ($Links as $Link) {
-            ?>
+          foreach ($Links as $Link) {
+              ?>
           <a href="<?=$Link?>"><?=$Link?></a>
           <?php
-        } ?>
+          } ?>
         </td>
       </tr>
       <?php
       }
-      if ($ExtraIDs) { ?>
+if ($ExtraIDs) { ?>
       <tr>
         <td class="label">Relevant other torrents:</td>
         <td colspan="3">
           <?php
         $First = true;
-        $Extras = explode(' ', $ExtraIDs);
-        foreach ($Extras as $ExtraID) {
-            $app->dbOld->prepared_query("
+    $Extras = explode(' ', $ExtraIDs);
+    foreach ($Extras as $ExtraID) {
+        $app->dbOld->prepared_query("
                 SELECT
                   tg.Name,
                   tg.ID,
@@ -300,23 +300,22 @@ $app->dbOld->prepared_query("
                 FROM torrents AS t
                   LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
                   LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-                  LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
                   LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
                 WHERE t.ID = '$ExtraID'
                 GROUP BY tg.ID");
 
-            list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime, $ExtraRemastered, $ExtraRemasterTitle,
-              $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
+        list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime, $ExtraRemastered, $ExtraRemasterTitle,
+            $ExtraRemasterYear, $ExtraMedia, $ExtraFormat, $ExtraEncoding, $ExtraSize, $ExtraHasCue, $ExtraHasLog, $ExtraLogScore, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
 
 
-            if ($ExtraGroupName) {
-                if ($ArtistID == 0 && empty($ArtistName)) {
-                    $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
-                    $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                } else {
-                    $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                } ?>
+        if ($ExtraGroupName) {
+            if ($ArtistID == 0 && empty($ArtistName)) {
+                $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+            } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
+                $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+            } else {
+                $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ($ExtraHasLog == '1' ? " <a href=\"torrents.php?action=viewlog&amp;torrentid=$ExtraID&amp;groupid=$ExtraGroupID\">(Log: {$ExtraLogScore}%)</a>" : '').' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
+            } ?>
           <?=($First ? '' : '<br>')?>
           <?=$ExtraLinkName?>
           <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
@@ -327,29 +326,29 @@ $app->dbOld->prepared_query("
             class="brackets">Switch</a>
           <?php
             $First = false;
-            }
-        } ?>
+        }
+    } ?>
         </td>
       </tr>
       <?php
-      }
-      if ($Images) { ?>
+}
+if ($Images) { ?>
       <tr>
         <td class="label">Relevant images:</td>
         <td colspan="3">
           <?php
-        $Images = explode(' ', $Images);
-        foreach ($Images as $Image) {
-            ?>
+  $Images = explode(' ', $Images);
+    foreach ($Images as $Image) {
+        ?>
           <img style="max-width: 200px;" class="lightbox-init"
             src="<?=\Gazelle\Images::process($Image)?>"
             alt="Relevant image" />
           <?php
-        } ?>
+    } ?>
         </td>
       </tr>
       <?php
-      } ?>
+} ?>
       <tr>
         <td class="label">User comment:</td>
         <td colspan="3"><?=\Gazelle\Text::parse($UserComment)?>
@@ -376,18 +375,18 @@ $app->dbOld->prepared_query("
             onchange="ChangeResolve(<?=$ReportID?>);">
             <?php
   $TypeList = $Types['master'] + $Types[$CategoryID];
-  $Priorities = [];
-  foreach ($TypeList as $Key => $Value) {
-      $Priorities[$Key] = $Value['priority'];
-  }
-  array_multisort($Priorities, SORT_ASC, $TypeList);
+$Priorities = [];
+foreach ($TypeList as $Key => $Value) {
+    $Priorities[$Key] = $Value['priority'];
+}
+array_multisort($Priorities, SORT_ASC, $TypeList);
 
-  foreach ($TypeList as $Type => $Data) {
-      ?>
+foreach ($TypeList as $Type => $Data) {
+    ?>
             <option value="<?=$Type?>"><?=$Data['title']?>
             </option>
             <?php
-  } ?>
+} ?>
           </select>
           <span id="options<?=$ReportID?>">
             <?php if (check_perms('users_mod')) { ?>
@@ -444,13 +443,13 @@ $app->dbOld->prepared_query("
         <td>
           <input type="text" name="log_message"
             id="log_message<?=$ReportID?>" size="40" <?php if ($ExtraIDs) {
-      $Extras=explode(' ', $ExtraIDs);
-      $Value = '';
-      foreach ($Extras as $ExtraID) {
-          $Value .= site_url()."torrents.php?torrentid=$ExtraID ";
-      }
-      echo ' value="'.trim($Value).'"';
-  } ?> />
+                $Extras=explode(' ', $ExtraIDs);
+                $Value = '';
+                foreach ($Extras as $ExtraID) {
+                    $Value .= site_url()."torrents.php?torrentid=$ExtraID ";
+                }
+                echo ' value="'.trim($Value).'"';
+            } ?> />
         </td>
         <td class="label"><strong>Extra</strong> staff notes:</td>
         <td>

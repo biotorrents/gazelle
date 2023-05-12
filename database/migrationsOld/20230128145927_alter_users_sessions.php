@@ -21,7 +21,7 @@ final class AlterUsersSessions extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        $query = "alter table users_sessions drop browser, drop operatingSystem";
+        $query = "alter table if exists users_sessions drop browser, drop operatingSystem";
         $app->dbNew->do($query, []);
     }
 }

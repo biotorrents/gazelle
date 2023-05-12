@@ -27,6 +27,16 @@ Please note that Redis clusters expect at least three nodes.
 This lower limit is inherent to Redis'
 [cluster implementation](https://redis.io/docs/management/scaling/).
 
+### Universal database id's
+
+BioGazelle is in the process of migrating to
+[UUID v7 primary keys](https://uuid.ramsey.dev/en/stable/rfc4122/version7.html)
+to enable useful content-agnostic operations such as tagging and AI integration.
+This will consolidate the database and allow for powerful cross-object association.
+The UUIDs are stored as binary strings for index speed and to minimize disk usage.
+By the way, *all* binary data is transparently converted by the
+[database wrapper](app/Database.php).
+
 ## Full stack search engine rewrite
 
 Data indexing is important, so BioGazelle has upgraded to
@@ -42,23 +52,6 @@ Oh yeah, the
 [PHP backend class](app/Manticore.php)
 is also completely rewritten, replacing at least four legacy classes.
 
-## Bearer token authorization
-
-[Read the API documentation.](https://docs.torrents.bio)
-API tokens can be generated in the
-[user security settings](sections/user/token.php)
-and used with the JSON API.
-[Internal API calls](app/API/Internal.php)
-for Ajax and such use a special token that can safely be exposed to the frontend.
-It's based on hashing a
-[rotating server secret](crontab/siteApiSecret.php)
-concatenated with a secure session cookie.
-
-The session cookies themselves are tight, btw.
-No JavaScript access, scoped to the same site, long length, etc.
-This kind of stuff is in the
-[low level Http class](app/Http.php).
-
 ## Secure authentication system
 
 The user handling, including registration, logins, etc.,
@@ -70,10 +63,29 @@ Passphrase hashing is all done with `PASSWORD_DEFAULT`, ready for Argon2id.
 I tested this extensively and determined that prehashing passphrases was no good.
 Not only it is impossible upgrade the algorithm, e.g., from `sha256` to `sha3-512`,
 but prehashing lowers the total entropy of long strings even if binary is used throughout.
+Test it yourself with 72 bytes of random binary data (the `bcrypt` max) and an entropy calculator.
 
-Test it yourself with 72 bytes of random binary data (the max supported by bcrypt) and a Shannon entropy calculator.
-There's something to be said for prehashing passphrases such as `qwerty123`, however.
 BioGazelle enforces a 15-character minimum passphrase length and imposes no other limitations.
+This is consistent with the list of
+[OWASP best practices](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html).
+In fact, the whole class is informed by this document.
+
+### Bearer token authorization
+
+[Read the API documentation.](https://docs.torrents.bio)
+API tokens can be generated in the
+[user security settings](templates/user/settings/settings.twig)
+and used with the JSON API.
+[Internal API calls](app/API/Internal.php)
+for Ajax and such use a special token that can safely be exposed to the frontend.
+It's based on hashing a
+[rotating server secret](utilities/crontab/siteApiSecret.php)
+concatenated with a secure session cookie.
+
+The session cookies themselves are tight, btw.
+No JavaScript access, scoped to the same site, long length, etc.
+This kind of stuff is in the
+[low level Http class](app/Http.php).
 
 ## OpenAI integration
 
@@ -82,44 +94,7 @@ One of BioGazelle's goals is to place data in context using
 to generate tl;dr summaries and tags from content descriptions.
 Just paste your abstract into the torrent group description
 and get a succinct natural language summary with tags.
-It's possible to disable AI content display in the user settings, btw.
-
-## Good typography
-
-BioGazelle supports an array of
-[unobtrusive fonts](resources/scss/assets/fonts.scss)
-with the appropriate glyphs for bold, italic, and monospace.
-These options are available to every theme.
-Font Awesome 5 is also universally available, as is the
-[entire Material Design color palette](resources/scss/assets/colors.scss).
-[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
-Also, there are two simple color modes,
-[calm mode and dark mode](resources/scss/global/colors.scss),
-that I like to think are pleasing to the eye.
-
-## Markdown and BBcode support
-
-BioGazelle uses the
-[SimpleMDE markdown editor](https://simplemde.com)
-with a reasonably extended
-[custom editor interface](templates/_base/textarea.twig).
-All the Markdown Extra features supported by
-[Parsedown Extra](https://github.com/erusev/parsedown-extra)
-are documented and the useful ones are exposed in the editor.
-The default recursive regex BBcode parser (yuck) is replaced by
-[Vanilla NBBC](https://github.com/vanilla/nbbc).
-Parsed texts are cached for speed, using both Redis and the Twig disk cache.
-
-## App singleton
-
-[The main site configuration](config/public.php)
-uses extensible ArrayObjects with by the
-[ENV special class](app/ENV.php).
-Also, the whole app is always instantly available:
-the config, database, cache, current user, Twig engine, etc.,
-are accessible with a simple call to `Gazelle\App::go()`.
-All such objects use the same quick and easy go → factory → thing API.
-Just in case you need to extend some core object without headaches.
+It's possible to disable AI content display in the user settings.
 
 ## Twig template system
 
@@ -134,6 +109,32 @@ Everything extends a clean HTML5 base template.
 Torrent, collections, requests, etc., and their respective sidebars
 are implemented as semantic HTML5 in easily digestible chunks of content.
 No more mixed PHP code and HTML markup!
+
+### Markdown and BBcode support
+
+BioGazelle uses the
+[SimpleMDE markdown editor](https://simplemde.com)
+with a reasonably extended
+[custom editor interface](templates/_base/textarea.twig).
+All the Markdown Extra features supported by
+[Parsedown Extra](https://github.com/erusev/parsedown-extra)
+are documented and the useful ones are exposed in the editor.
+The default recursive regex BBcode parser (yuck) is replaced by
+[Vanilla NBBC](https://github.com/vanilla/nbbc).
+Parsed texts are cached for speed, using both Redis and the Twig disk cache.
+
+### Good typography
+
+BioGazelle supports an array of
+[unobtrusive fonts](resources/scss/assets/fonts.scss)
+with the appropriate glyphs for bold, italic, and monospace.
+These options are available to every theme.
+Font Awesome 5 is also universally available, as is the
+[entire Material Design color palette](resources/scss/assets/colors.scss).
+[Download the fonts to get started.](https://torrents.bio/fonts.tgz)
+Also, there are two simple color modes,
+[calm mode and dark mode](resources/scss/global/colors.scss),
+that I like to think are pleasing to the eye.
 
 ## Active data minimization
 
@@ -165,7 +166,18 @@ Features include clean URIs and centralized middleware.
 An ongoing project involves modernizing the app based on Laravel's excellent tools,
 with help from other personally-vetted libraries that may be lighter.
 
-## Decent debugging
+### App singleton
+
+[The main site configuration](config/public.php)
+uses extensible ArrayObjects with by the
+[ENV special class](app/ENV.php).
+Also, the whole app is always instantly available:
+the config, database, cache, current user, Twig engine, etc.,
+are accessible with a simple call to `Gazelle\App::go()`.
+All such objects use the same quick and easy go → factory → thing API.
+Just in case you need to extend some core object without headaches.
+
+### Decent debugging
 
 BioGazelle seeks to be easy and fun to develop.
 I collected the old debug class monstrosity into a nice little bar.

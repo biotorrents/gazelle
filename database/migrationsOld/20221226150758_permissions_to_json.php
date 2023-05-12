@@ -25,9 +25,13 @@ final class PermissionsToJson extends AbstractMigration
         $ref = $app->dbNew->multi($query, []);
 
         foreach ($ref as $row) {
-            $values = unserialize($row["values"]);
-            $values = array_keys($values);
-            $values = json_encode($values);
+            try {
+                $values = unserialize($row["values"]);
+                $values = array_keys($values);
+                $values = json_encode($values);
+            } catch (Throwable $e) {
+                continue;
+            }
 
             $query = "update permissions set `values` = ? where id = ?";
             $app->dbNew->do($query, [ $values, $row["id"] ]);

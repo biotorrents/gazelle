@@ -787,102 +787,6 @@ if ((check_perms('users_view_invites')) && $Invited > 0) {
   <?php
 }
 
-/*
-// Requests
-if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')) {
-    $SphQL = new SphinxqlQuery();
-    $SphQLResult = $SphQL->select('id, votes, bounty')
-    ->from('requests, requests_delta')
-    ->where('userid', $userId)
-    ->where('torrentid', 0)
-    ->order_by('votes', 'desc')
-    ->order_by('bounty', 'desc')
-    ->limit(0, 100, 100) // Limit to 100 requests
-    ->query();
-    if ($SphQLResult->has_results()) {
-        $SphRequests = $SphQLResult->to_array('id', MYSQLI_ASSOC); ?>
-  <div class="box" id="requests_box">
-    <div class="head">
-      Requests <span class="u-pull-right"><a data-toggle-target="#requests" class="brackets">Show</a></span>
-    </div>
-    <div id="requests" class="hidden">
-      <table cellpadding="6" cellspacing="1" border="0" width="100%">
-        <tr class="colhead_dark">
-          <td style="width: 48%;">
-            <strong>Request Name</strong>
-          </td>
-          <td>
-            <strong>Vote</strong>
-          </td>
-          <td>
-            <strong>Bounty</strong>
-          </td>
-          <td>
-            <strong>Added</strong>
-          </td>
-        </tr>
-        <?php
-    $Requests = Requests::get_requests(array_keys($SphRequests));
-        foreach ($SphRequests as $RequestID => $SphRequest) {
-            $Request = $Requests[$RequestID];
-            $VotesCount = $SphRequest['votes'];
-            $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
-            $CategoryName = $Categories[$Request['CategoryID'] - 1];
-
-            if ($CategoryName == 'Music') {
-                $ArtistForm = Requests::get_artists($RequestID);
-                $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-                $FullName = "$ArtistLink<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title] [$Request[Year]]</a>";
-            } elseif ($CategoryName == 'Audiobooks' || $CategoryName == 'Comedy') {
-                $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title] [$Request[Year]]</a>";
-            } else {
-                if (!$Request['Title']) {
-                    $Request['Title'] = $Request['Title2'];
-                }
-                if (!$Request['Title']) {
-                    $Request['Title'] = $Request['TitleJP'];
-                }
-                $FullName = "<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title]</a>";
-            } ?>
-        <tr class="row">
-          <td>
-            <?=$FullName ?>
-            <div class="tags">
-              <?php
-      $Tags = $Request['Tags'];
-            $TagList = [];
-            foreach ($Tags as $TagID => $TagName) {
-                $TagList[] = "<a href=\"requests.php?tags=$TagName\">".\Gazelle\Text::esc($TagName).'</a>';
-            }
-            $TagList = implode(', ', $TagList); ?>
-              <?=$TagList?>
-            </div>
-          </td>
-          <td>
-            <span id="vote_count_<?=$RequestID?>"><?=$VotesCount?></span>
-            <?php if (check_perms('site_vote')) { ?>
-            &nbsp;&nbsp; <a
-              href="javascript:Vote(0, <?=$RequestID?>)"
-              class="brackets">+</a>
-            <?php } ?>
-          </td>
-          <td>
-            <span id="bounty_<?=$RequestID?>"><?=Format::get_size($Bounty)?></span>
-          </td>
-          <td>
-            <?=time_diff($Request['TimeAdded']) ?>
-          </td>
-        </tr>
-        <?php
-        } ?>
-      </table>
-    </div>
-  </div>
-  <?php
-    }
-}
-*/
-
 $IsFLS = isset($user['ExtraClasses'][FLS_TEAM]);
 if (check_perms('users_mod', $Class) || $IsFLS) {
     $UserLevel = $user['EffectiveClass'];
@@ -953,24 +857,6 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 }
 
 // Displays a table of forum warnings viewable only to Forum Moderators
-if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
-    $app->dbOld->query("
-    SELECT Comment
-    FROM users_warnings_forums
-    WHERE UserID = '$userId'");
-    list($ForumWarnings) = $app->dbOld->next_record();
-    if ($app->dbOld->has_results()) {
-        ?>
-  <div class="box">
-    <div class="head">Forum warnings</div>
-    <div class="pad">
-      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($ForumWarnings)?>
-      </div>
-    </div>
-  </div>
-  <?php
-    }
-}
 if (check_perms('users_mod', $Class)) { ?>
   <form class="manage_form" name="user" id="form" action="user.php" method="post">
     <input type="hidden" name="action" value="moderate">

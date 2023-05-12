@@ -10,6 +10,9 @@ declare(strict_types=1);
 # bootstrap the app
 require_once __DIR__."/bootstrap/cli.php";
 
+# use the source database for this
+$databaseSource = $app->env->getPriv("databaseSource");
+
 # config array
 return
 [
@@ -26,22 +29,22 @@ return
         # they transparently switch databases on $app->env->dev
         "production" => [
             "adapter" => "mysql",
-            "host" => $app->env->getPriv("sqlHost"),
-            "name" => $app->env->getPriv("sqlDatabase"),
-            "user" => $app->env->getPriv("sqlUsername"),
-            "pass" => $app->env->getPriv("sqlPassphrase"),
-            "port" => $app->env->getPriv("sqlPort"),
-            "charset" => "utf8mb4",
+            "host" => $databaseSource["host"],
+            "name" => $databaseSource["database"],
+            "user" => $databaseSource["username"],
+            "pass" => $databaseSource["passphrase"],
+            "port" => $databaseSource["port"],
+            "charset" => $databaseSource["charset"],
         ],
 
         "development" => [
             "adapter" => "mysql",
-            "host" => $app->env->getPriv("sqlHost"),
-            "name" => $app->env->getPriv("sqlDatabase"),
-            "user" => $app->env->getPriv("sqlUsername"),
-            "pass" => $app->env->getPriv("sqlPassphrase"),
-            "port" => $app->env->getPriv("sqlPort"),
-            "charset" => "utf8mb4",
+            "host" => $databaseSource["host"],
+            "name" => $databaseSource["database"],
+            "user" => $databaseSource["username"],
+            "pass" => $databaseSource["passphrase"],
+            "port" => $databaseSource["port"],
+            "charset" => $databaseSource["charset"],
         ],
 
         /*

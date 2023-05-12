@@ -85,12 +85,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
       EditedTime = ?
     WHERE ID = ?", $Body, $app->user->core['id'], $SQLTime, $PostID);
 
-    //Store edit history
-    $app->dbOld->query("
-    INSERT INTO comments_edits
-      (Page, PostID, EditUser, EditTime, Body)
-    VALUES
-      ('forums', ?, ?, ?, ?)", $PostID, $app->user->core['id'], $SQLTime, $OldBody);
     $app->cache->delete("forums_edits_$PostID");
 
     //Get the catalogue it is in
@@ -108,18 +102,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         $ThreadInfo['StickyPost']['EditedTime'] = $SQLTime;
         $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
-
-    /*
-    //Edit the post in the cache
-    $app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-    $app->cacheOld->update_row($Key, [
-    'Body' => $app->cacheOld->MemcacheDBArray[$Key]['Body']."\n\n$Body",
-    'EditedUserID' => $app->user->core['id'],
-    'EditedTime' => $SQLTime,
-    'Username' => $app->user->core['username']
-  ]);
-    $app->cacheOld->commit_transaction(0);
-    */
 
 //Now we're dealing with a normal post
 } else {
@@ -229,21 +211,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         }
         $app->cache->set("forums_$ForumID", [$Forum, '', 0, $Stickies], 0);
 
-        /*
-        //Update the forum root
-        $app->cacheOld->begin_transaction('forums_list');
-        $app->cacheOld->update_row($ForumID, [
-      'NumPosts'         => '+1',
-      'LastPostID'       => $PostID,
-      'LastPostAuthorID' => $app->user->core['id'],
-      'LastPostTopicID'  => $TopicID,
-      'LastPostTime'     => $SQLTime,
-      'Title'            => $ThreadInfo['Title'],
-      'IsLocked'         => $ThreadInfo['IsLocked'],
-      'IsSticky'         => $ThreadInfo['IsSticky']
-    ]);
-        $app->cacheOld->commit_transaction(0);
-        */
     } else {
         //If there's no cache, we have no data, and if there's no data
         $app->cache->delete('forums_list');
