@@ -26,7 +26,7 @@ list($Page, $Limit) = Format::page_limit($PerPage);
 $UserInfo = User::user_info($UserID);
 extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', 'Title', 'Avatar', 'Donor', 'Warned'))));
 
-View::header("Post history for $Username", 'subscriptions,comments');
+View::header("Post history for $Username", 'subscriptions');
 
 $ViewingOwn = ($UserID == $app->user->core['id']);
 $ShowUnread = ($ViewingOwn && (!isset($_GET['showunread']) || !!$_GET['showunread']));
@@ -165,7 +165,7 @@ if ($ShowGrouped) {
 ?>
     </h2>
     <div class="linkbox">
-      <br /><br />
+      <br><br>
 <?php
 if ($ViewingOwn) {
     $UserSubscriptions = Subscriptions::get_subscriptions();
@@ -225,7 +225,7 @@ if (empty($Results)) {
       <td colspan="<?=User::hasAvatarsEnabled() ? 2 : 1 ?>">
         <span class="u-pull-left">
           <?=time_diff($AddedTime) ?>
-          in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=\Gazelle\Text::esc($ThreadTitle)?>"><?=Format::cut_string($ThreadTitle, 75)?></a>
+          in <a href="forums.php?action=viewthread&amp;threadid=<?=$TopicID?>&amp;postid=<?=$PostID?>#post<?=$PostID?>" class="tooltip" title="<?=\Gazelle\Text::esc($ThreadTitle)?>"><?=\Gazelle\Text::limit($ThreadTitle, 75)?></a>
 <?php
     if ($ViewingOwn) {
         if ((!$Locked || $Sticky) && (!$LastRead || $LastRead < $LastPostID)) { ?>
@@ -265,8 +265,8 @@ if (!$ShowGrouped) {
         <div id="content<?=$PostID?>">
           <?=\Gazelle\Text::parse($Body)?>
 <?php if ($EditedUserID) { ?>
-          <br />
-          <br />
+          <br>
+          <br>
 <?php if (check_perms('site_moderate_forums')) { ?>
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
 <?php } ?>

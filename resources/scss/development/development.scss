@@ -4,7 +4,6 @@
  */
 
 body.development {
-  /*
   font-family: $comicNeue, sans-serif !important;
 
   b,
@@ -36,7 +35,6 @@ body.development {
   .button-purple {
     font-family: $comicNeue, sans-serif;
   }
-  */
 
   /* DebugBar icon fix */
   a.phpdebugbar-tab i {
@@ -46,5 +44,33 @@ body.development {
     &:after {
       content: "\00A0";
     }
+  }
+}
+
+/**
+ * show the current git commit
+ */
+#gitInfo {
+  background: $skeletonDefault;
+  box-shadow: 0 0.5rem 1rem lightgray;
+  color: white;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 666;
+
+  a {
+    color: white;
+
+    &:hover {
+      color: white;
+    }
+  }
+
+  /* for git info */
+  span {
+    margin: 0 2rem;
+    white-space: nowrap;
   }
 }

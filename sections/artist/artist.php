@@ -227,7 +227,7 @@ foreach ($TorrentList as $Group) {
         # Year
         # Sh!t h4x; Year is mandatory
         if ($GroupYear) {
-            $Label = '<br />📅&nbsp;';
+            $Label = '<br>📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
 
@@ -389,7 +389,7 @@ foreach ($TorrentList as $Group) {
         # Year
         # Sh!t h4x; Year is mandatory
         if ($GroupYear) {
-            $Label = '<br />📅&nbsp;';
+            $Label = '<br>📅&nbsp;';
             $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
         }
 
@@ -446,7 +446,7 @@ foreach ($TorrentList as $Group) {
                 href="reportsv2.php?action=report&amp;id=<?=$TorrentID?>"
                 class="tooltip" title="Report">RP</a> ]
             </span>
-            <br />
+            <br>
             <?php if (Bookmarks::isBookmarked('torrent', $GroupID)) { ?>
             <span class="remove_bookmark u-pull-right">
               <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
@@ -463,7 +463,7 @@ foreach ($TorrentList as $Group) {
             <?php } ?>
           </div>
           <?=$DisplayName?>
-          <br />
+          <br>
           <div style="display: inline;" class="torrent_info">
             <?=$ExtraInfo?>
             <?php if ($Reported) { ?>
@@ -501,7 +501,7 @@ $TorrentDisplayList = ob_get_clean();
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('artist', $ArtistID);
 
-View::header($Name, 'browse,requests,comments,recommend,subscriptions');
+View::header($Name, 'browse,requests,recommend,subscriptions');
 ?>
 <div>
   <div class="header">
@@ -583,7 +583,7 @@ if (check_perms('site_torrents_notify')) {
       <div style="text-align: center; padding: 10px 0px;">
         <img style="max-width: 220px;" class="lightbox-init"
           src="<?=\Gazelle\Images::process($Image, 'thumb')?>"
-          alt="<?=$Name?>" />
+          alt="<?=$Name?>">
       </div>
     </div>
     <?php } ?>
@@ -594,10 +594,10 @@ if (check_perms('site_torrents_notify')) {
         <li>
           <form class="search_form" name="filelists" action="torrents.php">
             <input type="hidden" name="artistname"
-              value="<?=$Name?>" />
-            <input type="hidden" name="action" value="advanced" />
-            <input type="text" autocomplete="off" id="filelist" name="filelist" size="20" />
-            <input type="submit" value="&raquo;" />
+              value="<?=$Name?>">
+            <input type="hidden" name="action" value="advanced">
+            <input type="text" autocomplete="off" id="filelist" name="filelist" size="20">
+            <input type="submit" value="&raquo;">
           </form>
         </li>
       </ul>
@@ -621,7 +621,7 @@ if (check_perms('zip_downloader')) {
       <div class="head colhead_dark"><strong>Collector</strong></div>
       <div class="pad">
         <form class="download_form" name="zip" action="artist.php" method="post">
-          <input type="hidden" name="action" value="download" />
+          <input type="hidden" name="action" value="download">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="artistid"
@@ -679,7 +679,7 @@ $OpenGroup = false;
     } ?>>Prefer
               Bonus Tracks</option>
           </select>
-          <input type="submit" style="width: 210px;" value="Download" />
+          <input type="submit" style="width: 210px;" value="Download">
         </form>
       </div>
     </div>

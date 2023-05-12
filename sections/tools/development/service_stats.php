@@ -126,11 +126,11 @@ View::header("Service Stats"); ?>
         <td>Cache:</td>
         <td>
           <form class="delete_form" name="cache" action="" method="post">
-            <input type="hidden" name="action" value="service_stats" />
+            <input type="hidden" name="action" value="service_stats">
             <input type="hidden" name="auth"
-              value="<?=$app->user->extra['AuthKey']?>" />
-            <input type="hidden" name="global_flush" value="1" />
-            <input type="submit" class="button-primary" value="Flush" />
+              value="<?=$app->user->extra['AuthKey']?>">
+            <input type="hidden" name="global_flush" value="1">
+            <input type="submit" class="button-primary" value="Flush">
           </form>
         </td>
       </tr>

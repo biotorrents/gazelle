@@ -47,7 +47,7 @@ if ($app->user->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 
-$Title = Format::cut_string(trim($_POST['title']), 150, 1, 0);
+$Title = \Gazelle\Text::limit(trim($_POST['title']), 150);
 
 
 $ForumID = $_POST['forum'];

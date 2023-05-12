@@ -38,12 +38,12 @@
 
             {# excerpt #}
             {% if topic.excerpt is defined %}
-            <br />
+            <br>
             {{ topic.excerpt }}
             {% endif %}
 
             {% if topic.tags is not empty %}
-            <br />
+            <br>
 
             {% for tag in topic.tags %}
             <a href="/tags/{{ tag }}">{{ tag }}</a>

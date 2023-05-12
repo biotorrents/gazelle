@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class ReconcileGazelleUserTables extends AbstractMigration
+final class AlterUsersSessions extends AbstractMigration
 {
     /**
      * Change Method.
@@ -21,9 +21,7 @@ final class ReconcileGazelleUserTables extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        # todo: move everything into a users_extra table later
-        # the existing schema has significance for ocelot
-        $query = "alter table users_main add column userId int";
+        $query = "alter table if exists users_sessions drop browser, drop operatingSystem";
         $app->dbNew->do($query, []);
     }
 }

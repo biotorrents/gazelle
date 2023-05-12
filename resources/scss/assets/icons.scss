@@ -15,6 +15,7 @@ $nrcc: no-repeat center center;
   font-size: xx-large;
 }
 
+
 /**
  * category icons
  */
@@ -84,6 +85,7 @@ img.torrent_header {
   display: inline-block;
 }
 
+
 /**
  * forum icons
  */
@@ -120,11 +122,12 @@ img.torrent_header {
   background: url($posts + "locked_sticky_read.png") $nrcc;
 }
 
+
 /**
  * torrent table icons
  */
 
-/* torrentGroup icons */
+/* torrent group icons */
 .subjectObject {
   &:before {
     content: "🦠";
@@ -231,6 +234,7 @@ img.torrent_header {
   }
 }
 
+
 /**
  * badges
  */
@@ -247,6 +251,31 @@ img.icon {
   max-height: 1.5rem;
 }
 
+/* donor */
+.donor {
+  &:after {
+    content: "❤️";
+    margin-left: 0.5rem;
+  }
+}
+
+/* warned */
+.warned {
+  &:after {
+    content: "⚠️";
+    margin-left: 0.5rem;
+  }
+}
+
+/* banned */
+.banned {
+  &:after {
+    content: "🚫";
+    margin-left: 0.5rem;
+  }
+}
+
+
 /**
  * loading spinner element
  * https://css-tricks.com/single-element-loaders-the-spinner/
@@ -254,7 +283,7 @@ img.icon {
 
 /* dark */
 .loaderDark {
-  width: 1rem; /* control the size */
+  width: 1rem;
   aspect-ratio: 1;
   display: inline-grid;
   -webkit-mask: conic-gradient(from 22deg, #0003, #000);
@@ -265,7 +294,7 @@ img.icon {
 
 .loaderDark,
 .loaderDark:before {
-  --_g: linear-gradient(#222 0 0) 50%; /* update the color here */
+  --_g: linear-gradient(#222 0 0) 50%;
   background: var(--_g) / 34% 8% space no-repeat,
     var(--_g) / 8% 34% no-repeat space;
 }
@@ -287,7 +316,7 @@ img.icon {
 
 /* light */
 .loaderLight {
-  width: 1rem; /* control the size */
+  width: 1rem;
   aspect-ratio: 1;
   display: inline-grid;
   -webkit-mask: conic-gradient(from 22deg, #0003, #000);
@@ -298,7 +327,7 @@ img.icon {
 
 .loaderLight,
 .loaderLight:before {
-  --_g: linear-gradient(white 0 0) 50%; /* update the color here */
+  --_g: linear-gradient(white 0 0) 50%;
   background: var(--_g) / 34% 8% space no-repeat,
     var(--_g) / 8% 34% no-repeat space;
 }

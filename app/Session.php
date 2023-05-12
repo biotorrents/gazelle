@@ -27,7 +27,7 @@ class Session
     public function __construct(string $username = "")
     {
         # relies on cookies
-        $cookie = Http::query("cookie");
+        $cookie = Http::request("cookie");
 
         # attempt to read cookies
         $this->id = $cookie["session"] ?? null;
@@ -55,10 +55,10 @@ class Session
     public function enforceLogin()
     {
         # sanitize request
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         if (!$this->id || !$this->userId) {
-            Http::setCookie(["redirect" => $server["REQUEST_URI"]]);
+            Http::createCookie(["redirect" => $server["REQUEST_URI"]]);
             $this->logoutAll();
         }
     }
@@ -77,8 +77,8 @@ class Session
     {
         $app = \Gazelle\App::go();
 
-        $request = Http::query("request");
-        $server = Http::query("server");
+        $request = Http::request("request");
+        $server = Http::request("server");
 
         # ugly workaround for API tokens
         if (!empty($server["HTTP_AUTHORIZATION"]) && $api === true) {
@@ -160,7 +160,7 @@ class Session
     {
         $app = \Gazelle\App::go();
 
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         $attempts = $this->attempts++;
         $app->cache->set("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);

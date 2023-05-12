@@ -65,7 +65,7 @@ HTML;
         <form action="user.php?action=token&amp;do=generate&amp;user_id=$userId" method="POST">
           <input type="text" name="token_name" value="$tokenName"
           placeholder="New API token name" required />
-          <input type='submit' value='Generate' />
+          <input type='submit' value='Generate'>
         </form>
       </div>
     </div>

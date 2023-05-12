@@ -97,13 +97,6 @@ footer {
   visibility: hidden;
 }
 
-/* permissions form submit button */
-.submit_container {
-  clear: both;
-  margin: 1rem;
-  text-align: right;
-}
-
 /* textarea */
 .textarea_wrap {
   margin-bottom: 0.5rem;
@@ -239,4 +232,26 @@ img {
 /* chart.js */
 .chart {
   max-height: 50rem;
+}
+
+/**
+ * big red error banner
+ */
+#systemError {
+  background: red;
+  box-shadow: 0 0.5rem 1rem lightgray;
+  color: white;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  width: 100%;
+  z-index: 666;
+
+  a {
+    color: white;
+
+    &:hover {
+      color: white;
+    }
+  }
 }

@@ -8,7 +8,7 @@
     <tr class="colhead_dark">
         <td colspan="{{ show_avatar ? 2 : 1 }}">
             <div style="float: left;"><a class="post_id" href="{{ url }}">#{{ id }}</a>
-                <strong>{{ author.id|user_full }}</strong> {{ added_time|time_diff }} {{ heading|raw }}
+                <strong>{{ author.id|xx }}</strong> {{ added_time|time_diff }} {{ heading|raw }}
                 <span id="postcontrol-{{ id }}">
                 - <a href="#quickpost" onclick="Quote('{{ id }}','{{ author.username }}', true);" class="brackets">Quote</a>
 {%    if show_edit %}
@@ -24,8 +24,8 @@
 {%    endif %}
 {%    if show_warn %}
                 <form class="manage_form hidden" name="user" id="warn{{ id }}" action="comments.php" method="post">
-                    <input type="hidden" name="action" value="warn" />
-                    <input type="hidden" name="postid" value="{{ id }}" />
+                    <input type="hidden" name="action" value="warn">
+                    <input type="hidden" name="postid" value="{{ id }}">
                 </form>
                 - <a href="#" onclick="$('#warn{{ id }}').raw().submit(); return false;" class="brackets">Warn</a>
 {%     endif %}
@@ -43,13 +43,13 @@
             <div id="content{{ id }}">
                 {{ body|bb_format }}
 {% if editor %}
-                <br />
-                <br />
+                <br>
+                <br>
                 <span class="last_edited">
 {%    if is_admin %}
                 <a href="#content{{ id }}" onclick="LoadEdit('{{ page }}', {{ id }}, 1); return false;">&laquo;</a>
 {%    endif %}
-                Last edited by {{ editor.id|user_url }} {{ edit_time|time_diff }}</span>
+                Last edited by {{ editor.id }} {{ edit_time|time_diff }}</span>
 {% endif %}
             </div>
         </td>

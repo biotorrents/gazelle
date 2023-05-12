@@ -65,7 +65,7 @@ if ($UnRead == '1') {
 
 View::header(
     "View conversation $Subject",
-    'comments,inbox,vendor/easymde.min',
+    'inbox,vendor/easymde.min',
     'vendor/easymde.min'
 );
 
@@ -117,12 +117,12 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
   <h3>Reply</h3>
   <form class="send_form" name="reply" action="inbox.php" method="post" id="messageform">
     <div class="box pad">
-      <input type="hidden" name="action" value="takecompose" />
+      <input type="hidden" name="action" value="takecompose">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="toid"
-        value="<?=implode(',', $ReceiverIDs)?>" />
-      <input type="hidden" name="convid" value="<?=$ConvID?>" />
+        value="<?=implode(',', $ReceiverIDs)?>">
+      <input type="hidden" name="convid" value="<?=$ConvID?>">
       <?php
     $Reply = View::textarea(
         id: 'quickpost',
@@ -141,37 +141,37 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
   <h3>Manage conversation</h3>
   <form class="manage_form" name="messages" action="inbox.php" method="post">
     <div class="box pad">
-      <input type="hidden" name="action" value="takeedit" />
-      <input type="hidden" name="convid" value="<?=$ConvID?>" />
+      <input type="hidden" name="action" value="takeedit">
+      <input type="hidden" name="convid" value="<?=$ConvID?>">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
 
       <table class="layout" width="100%">
         <tr>
           <td class="label"><label for="sticky">Sticky</label></td>
           <td>
             <input type="checkbox" id="sticky" name="sticky" <?php if ($Sticky) {
-    echo ' checked="checked"' ;
-} ?> />
+                echo ' checked="checked"' ;
+            } ?>>
           </td>
           <td class="label"><label for="mark_unread">Mark as unread</label></td>
           <td>
-            <input type="checkbox" id="mark_unread" name="mark_unread" />
+            <input type="checkbox" id="mark_unread" name="mark_unread">
           </td>
           <td class="label"><label for="delete">Delete conversation</label></td>
           <td>
-            <input type="checkbox" id="delete" name="delete" />
+            <input type="checkbox" id="delete" name="delete">
           </td>
 
         </tr>
         <tr>
-          <td class="center" colspan="6"><input type="submit" value="Manage conversation" /></td>
+          <td class="center" colspan="6"><input type="submit" value="Manage conversation"></td>
         </tr>
       </table>
     </div>
   </form>
   <?php
-$app->dbOld->query("
+            $app->dbOld->query("
   SELECT SupportFor
   FROM users_info
   WHERE UserID = ".$app->user->core['id']);
@@ -181,10 +181,10 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
   <h3>Forward conversation</h3>
   <form class="send_form" name="forward" action="inbox.php" method="post">
     <div class="box pad">
-      <input type="hidden" name="action" value="forward" />
-      <input type="hidden" name="convid" value="<?=$ConvID?>" />
+      <input type="hidden" name="action" value="forward">
+      <input type="hidden" name="convid" value="<?=$ConvID?>">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <label for="receiverid">Forward to</label>
       <select id="receiverid" name="receiverid">
         <?php
@@ -197,7 +197,7 @@ if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID =
         <?php
   } ?>
       </select>
-      <input type="submit" value="Forward" />
+      <input type="submit" value="Forward">
     </div>
   </form>
   <?php

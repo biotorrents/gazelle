@@ -119,13 +119,13 @@ $Requests = Requests::get_requests($Requests);
       <?php
 if (!$ShowUnread) {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscriptions&amp;showunread=1" class="brackets">Only display subscriptions with
         unread replies</a>&nbsp;&nbsp;&nbsp;
       <?php
 } else {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscriptions&amp;showunread=0" class="brackets">Show all
         subscriptions</a>&nbsp;&nbsp;&nbsp;
       <?php
@@ -207,7 +207,7 @@ if (!$NumResults) {
               $Links = 'Forums: <a href="forums.php?action=viewforum&amp;forumid=' . $Result['ForumID'] . '">' . \Gazelle\Text::esc($Result['ForumName']) . '</a> &gt; ' .
                 '<a href="forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] .
                   '" class="tooltip" title="' . \Gazelle\Text::esc($Result['Name']) . '">' .
-                  \Gazelle\Text::esc(Format::cut_string($Result['Name'], 75)) .
+                  \Gazelle\Text::esc(\Gazelle\Text::limit($Result['Name'], 75)) .
                 '</a>';
               $JumpLink = 'forums.php?action=viewthread&amp;threadid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
               break;
@@ -271,7 +271,7 @@ if (!$NumResults) {
         <div class="content3">
           <?=\Gazelle\Text::parse($Result['LastReadBody']) ?>
           <?php if ($Result['LastReadEditedUserID']) { ?>
-          <br /><br />
+          <br><br>
           Last edited by <?=User::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
           <?=time_diff($Result['LastReadEditedTime'])?>
           <?php } ?>

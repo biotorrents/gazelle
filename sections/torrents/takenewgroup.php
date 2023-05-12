@@ -39,19 +39,19 @@ if (empty($_POST['confirm'])) {
 
   <div class="box pad">
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
-      <input type="hidden" name="action" value="newgroup" />
+      <input type="hidden" name="action" value="newgroup">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="confirm" value="true" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="confirm" value="true">
       <input type="hidden" name="torrentid"
-        value="<?=$TorrentID?>" />
+        value="<?=$TorrentID?>">
       <input type="hidden" name="oldgroupid"
-        value="<?=$OldGroupID?>" />
+        value="<?=$OldGroupID?>">
       <input type="hidden" name="artist"
-        value="<?=\Gazelle\Text::esc($_POST['artist'])?>" />
+        value="<?=\Gazelle\Text::esc($_POST['artist'])?>">
       <input type="hidden" name="title"
-        value="<?=\Gazelle\Text::esc($_POST['title'])?>" />
-      <input type="hidden" name="year" value="<?=$Year?>" />
+        value="<?=\Gazelle\Text::esc($_POST['title'])?>">
+      <input type="hidden" name="year" value="<?=$Year?>">
       <h3>You are attempting to split the torrent <a
           href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> off into a new group:</h3>
       <ul>
@@ -60,7 +60,7 @@ if (empty($_POST['confirm'])) {
           [<?=$Year?>]
         </li>
       </ul>
-      <input type="submit" value="Confirm" />
+      <input type="submit" value="Confirm">
     </form>
   </div>
 </div>

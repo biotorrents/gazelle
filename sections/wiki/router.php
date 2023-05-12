@@ -35,7 +35,7 @@ function class_list($Selected = 0)
             if ($Selected === $Class['Level']) {
                 $Return.=' selected="selected"';
             }
-            $Return.='>'.Format::cut_string($Class['Name'], 20, 1).'</option>'."\n";
+            $Return.='>'.\Gazelle\Text::limit($Class['Name'], 20).'</option>'."\n";
         }
     }
 

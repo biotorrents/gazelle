@@ -27,13 +27,13 @@ if (isset($_GET['id']) && $_GET['id'] && is_numeric($_GET['id'])) {
 } else {
     $View = $_GET['view'];
     switch ($_GET['view']) {
-    case 'old':
-      $Where = "Status = 'Resolved'";
-      break;
-    default:
-      error(404);
-      break;
-  }
+        case 'old':
+            $Where = "Status = 'Resolved'";
+            break;
+        default:
+            error(404);
+            break;
+    }
 }
 
 if (!check_perms('admin_reports')) {
@@ -87,8 +87,8 @@ $app->dbOld->set_query_id($Reports);
 <?php
 // pagination
     $Pages = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
-    echo $Pages;
-    ?>
+echo $Pages;
+?>
   </div>
 <?php
   while (list($ReportID, $SnitchID, $SnitchName, $ThingID, $Short, $ReportedTime, $Reason, $Status, $ClaimerID, $Notes, $ResolverID) = $app->dbOld->next_record()) {
@@ -107,62 +107,62 @@ $app->dbOld->set_query_id($Reports);
           <td class="center" colspan="2">
             <strong>
 <?php              switch ($Short) {
-                case 'user':
-                  $app->dbOld->query("
+    case 'user':
+        $app->dbOld->query("
                     SELECT Username
                     FROM users_main
                     WHERE ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No user with the reported ID found';
-                  } else {
-                      list($Username) = $app->dbOld->next_record();
-                      echo "<a href=\"user.php?id=$ThingID\">" . \Gazelle\Text::esc($Username) . '</a>';
-                  }
-                  break;
-                case 'request':
-                case 'request_update':
-                  $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            echo 'No user with the reported ID found';
+        } else {
+            list($Username) = $app->dbOld->next_record();
+            echo "<a href=\"user.php?id=$ThingID\">" . \Gazelle\Text::esc($Username) . '</a>';
+        }
+        break;
+    case 'request':
+    case 'request_update':
+        $app->dbOld->query("
                     SELECT Title
                     FROM requests
                     WHERE ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No request with the reported ID found';
-                  } else {
-                      list($Name) = $app->dbOld->next_record();
-                      echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
-                  }
-                  break;
-                case 'collage':
-                  $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            echo 'No request with the reported ID found';
+        } else {
+            list($Name) = $app->dbOld->next_record();
+            echo "<a href=\"requests.php?action=view&amp;id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
+        }
+        break;
+    case 'collage':
+        $app->dbOld->query("
                     SELECT Name
                     FROM collages
                     WHERE ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No collage with the reported ID found';
-                  } else {
-                      list($Name) = $app->dbOld->next_record();
-                      echo "<a href=\"collages.php?id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
-                  }
-                  break;
-                case 'thread':
-                  $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            echo 'No collage with the reported ID found';
+        } else {
+            list($Name) = $app->dbOld->next_record();
+            echo "<a href=\"collages.php?id=$ThingID\">" . \Gazelle\Text::esc($Name) . '</a>';
+        }
+        break;
+    case 'thread':
+        $app->dbOld->query("
                     SELECT Title
                     FROM forums_topics
                     WHERE ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No forum thread with the reported ID found';
-                  } else {
-                      list($Title) = $app->dbOld->next_record();
-                      echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . \Gazelle\Text::esc($Title) . '</a>';
-                  }
-                  break;
-                case 'post':
-                  if (isset($app->user->extra['PostsPerPage'])) {
-                      $PerPage = $app->user->extra['PostsPerPage'];
-                  } else {
-                      $PerPage = POSTS_PER_PAGE;
-                  }
-                  $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            echo 'No forum thread with the reported ID found';
+        } else {
+            list($Title) = $app->dbOld->next_record();
+            echo "<a href=\"forums.php?action=viewthread&amp;threadid=$ThingID\">" . \Gazelle\Text::esc($Title) . '</a>';
+        }
+        break;
+    case 'post':
+        if (isset($app->user->extra['PostsPerPage'])) {
+            $PerPage = $app->user->extra['PostsPerPage'];
+        } else {
+            $PerPage = POSTS_PER_PAGE;
+        }
+        $app->dbOld->query("
                     SELECT
                       p.ID,
                       p.Body,
@@ -175,25 +175,25 @@ $app->dbOld->set_query_id($Reports);
                       ) AS PostNum
                     FROM forums_posts AS p
                     WHERE p.ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No forum post with the reported ID found';
-                  } else {
-                      list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
-                      echo "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID\">FORUM POST ID #$PostID</a>";
-                  }
-                  break;
-                case 'comment':
-                  $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            echo 'No forum post with the reported ID found';
+        } else {
+            list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
+            echo "<a href=\"forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID\">FORUM POST ID #$PostID</a>";
+        }
+        break;
+    case 'comment':
+        $app->dbOld->query("
                     SELECT 1
                     FROM comments
                     WHERE ID = $ThingID");
-                  if (!$app->dbOld->has_results()) {
-                      echo 'No comment with the reported ID found';
-                  } else {
-                      echo "<a href=\"comments.php?action=jump&amp;postid=$ThingID\">COMMENT</a>";
-                  }
-                  break;
-              } ?>
+        if (!$app->dbOld->has_results()) {
+            echo 'No comment with the reported ID found';
+        } else {
+            echo "<a href=\"comments.php?action=jump&amp;postid=$ThingID\">COMMENT</a>";
+        }
+        break;
+} ?>
             </strong>
           </td>
         </tr>
@@ -214,8 +214,8 @@ $app->dbOld->set_query_id($Reports);
 
             <div id="notes_div_<?=$ReportID?>" style="display: <?=empty($Notes) ? 'none' : 'block'; ?>;">
               <textarea cols="50" rows="3" id="notes_<?=$ReportID?>"><?=$Notes?></textarea>
-              <br />
-              <input type="submit" onclick="saveNotes(<?=$ReportID?>)" value="Save" />
+              <br>
+              <input type="submit" onclick="saveNotes(<?=$ReportID?>)" value="Save">
             </div>
           </td>
         </tr>
@@ -223,32 +223,32 @@ $app->dbOld->set_query_id($Reports);
         <tr>
           <td class="center" colspan="2">
             <form id="report_form_<?=$ReportID?>" action="">
-              <input type="hidden" name="reportid" value="<?=$ReportID?>" />
-              <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $app->user->core['id'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve" />
+              <input type="hidden" name="reportid" value="<?=$ReportID?>">
+              <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+              <input type="submit" onclick="return resolve(<?=$ReportID?>, <?=(($ClaimerID == $app->user->core['id'] || !$ClaimerID) ? 'true' : 'false')?>)" name="submit" value="Resolve">
             </form>
           </td>
         </tr>
 <?php
-      } else {
-          $ResolverInfo = User::user_info($ResolverID); ?>
+} else {
+    $ResolverInfo = User::user_info($ResolverID); ?>
         <tr>
           <td colspan="2">
             Resolved by <a href="users.php?id=<?=$ResolverID?>"><?=$ResolverInfo['Username']?></a>
           </td>
         </tr>
 <?php
-      } ?>
+} ?>
       </table>
     </div>
 <?php
     $app->dbOld->set_query_id($Reports);
   }
-  ?>
+?>
   <div class="linkbox">
 <?php
-    echo $Pages;
-    ?>
+  echo $Pages;
+?>
   </div>
 </div>
 <?php

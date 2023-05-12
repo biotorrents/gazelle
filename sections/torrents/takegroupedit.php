@@ -39,20 +39,20 @@ if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
 
   <div class="box">
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="get">
-      <input type="hidden" name="action" value="revert" />
+      <input type="hidden" name="action" value="revert">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="confirm" value="true" />
-      <input type="hidden" name="groupid" value="<?=$group_id?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="confirm" value="true">
+      <input type="hidden" name="groupid" value="<?=$group_id?>">
       <input type="hidden" name="revisionid"
-        value="<?=$revision_id?>" />
+        value="<?=$revision_id?>">
 
       <h3>
         You are attempting to revert to the revision
         <a
           href="torrents.php?id=<?=$group_id?>&amp;revisionid=<?=$revision_id?>"><?=$revision_id?></a>.
       </h3>
-      <input type="submit" value="Confirm" />
+      <input type="submit" value="Confirm">
     </form>
   </div>
 </div>

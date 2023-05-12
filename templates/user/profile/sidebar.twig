@@ -71,12 +71,12 @@
 			<hr/>
 
 			{# gift bonus points #}
-			<input type="number" id="giftBonusPointsAmount" placeholder="{{ env.bonusPoints }}"/>
+			<input type="number" id="giftBonusPointsAmount" placeholder="{{ env.bonusPoints }}">
 
-			<input type="text" id="giftBonusPointsMessage" placeholder="Enter an optional message"/>
+			<input type="text" id="giftBonusPointsMessage" placeholder="Enter an optional message">
 
 			<label>
-				<input type="checkbox" id="giftBonusPointsAdjust" name="giftBonusPointsAdjust" value="true"/>
+				<input type="checkbox" id="giftBonusPointsAdjust" name="giftBonusPointsAdjust" value="true">
 				Adjust your gift for 15% tax?
 			</label>
 
@@ -106,49 +106,49 @@
 
 			<tr>
 				<th>Creators added</th>
-				<td title="{{ communityStats.creatorsAdded }}">
+				<td class="tooltip" title="{{ communityStats.creatorsAdded }}">
 					{{ percentileStats.creatorsAdded|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Downloaded</th>
-				<td title="{{ data.extra.Downloaded|get_size }}">
+				<td class="tooltip" title="{{ data.extra.Downloaded|get_size }}">
 					{{ percentileStats.downloaded|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Posts</th>
-				<td title="{{ communityStats.forumPosts|number_format }}">
+				<td class="tooltip" title="{{ communityStats.forumPosts|number_format }}">
 					{{ percentileStats.posts|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Requests filled</th>
-				<td title="{{ requestStats.requestsFilledCount|number_format }}">
+				<td class="tooltip" title="{{ requestStats.requestsFilledCount|number_format }}">
 					{{ percentileStats.requestsFilled|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Requests voted on</th>
-				<td title="{{ requestStats.requestsVotedBounty|get_size }}">
+				<td class="tooltip" title="{{ requestStats.requestsVotedBounty|get_size }}">
 					{{ percentileStats.requestsVoted|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Uploaded</th>
-				<td title="{{ data.extra.Uploaded|get_size }}">
+				<td class="tooltip" title="{{ data.extra.Uploaded|get_size }}">
 					{{ percentileStats.uploaded|float }}
 				</td>
 			</tr>
 
 			<tr>
 				<th>Uploads</th>
-				<td title="{{ torrentStats.uploadCount|number_format }}">
+				<td class="tooltip" title="{{ torrentStats.uploadCount|number_format }}">
 					{{ percentileStats.uploads|float }}
 				</td>
 			</tr>
@@ -203,19 +203,19 @@
 
 			{# toggle passkey #}
 			<a id="togglePassKey" class="button">toggle passkey</a>
-			<input type="text" id="displayPassKey" value="{{ data.extra.torrent_pass }}" class="monospace" readonly/>
+			<input type="text" id="displayPassKey" value="{{ data.extra.torrent_pass }}" class="monospace" readonly>
 
 			<hr/>
 
 			{# toggle authkey #}
 			<a id="toggleAuthKey" class="button">toggle authkey</a>
-			<input type="text" id="displayAuthKey" value="{{ data.extra.AuthKey }}" class="monospace" readonly/>
+			<input type="text" id="displayAuthKey" value="{{ data.extra.AuthKey }}" class="monospace" readonly>
 
 			<hr/>
 
 			{# toggle rss key #}
 			<a id="toggleRssKey" class="button">toggle rss key</a>
-			<input type="text" id="displayRssKey" value="{{ data.extra.RSS_Auth }}" class="monospace" readonly/>
+			<input type="text" id="displayRssKey" value="{{ data.extra.RSS_Auth }}" class="monospace" readonly>
 
 		</form>
 	</section>

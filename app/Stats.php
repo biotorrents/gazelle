@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 
 /**
- * Plausible Stats API
+ * Gazelle\Stats
+ *
+ * Plausible Stats API and database stats.
+ *
  * @see https://plausible.io/docs
  */
+
+namespace Gazelle;
 
 class Stats
 {
@@ -87,8 +92,8 @@ class Stats
 
 
     /**
-     * END DEFAULTS
-     * START HELPERS
+     * end defaults
+     * start helpers
      */
 
 
@@ -124,6 +129,7 @@ class Stats
      * topPages
      *
      * Similar to Top Pages on the dash.
+     *
      * @see https://plausible.io/docs/stats-api#top-pages
      */
     public function topPages(array $options = []): array
@@ -172,6 +178,7 @@ class Stats
      * sources
      *
      * Similar to Top Sources on the dash.
+     *
      * @see https://plausible.io/docs/stats-api#properties
      */
     public function sources(array $options = []): array
@@ -266,6 +273,7 @@ class Stats
      * locations
      *
      * Similar to Locations on the dash.
+     *
      * @see https://github.com/sgratzl/chartjs-chart-geo
      */
     public function locations(array $options = []): array
@@ -406,8 +414,8 @@ class Stats
 
 
     /**
-     * END PLAUSIBLE
-     * BEGIN DATABASE
+     * end plausible
+     * begin database
      */
 
 
@@ -537,7 +545,7 @@ class Stats
         ];
 
         # secondary stats: averages
-        $users["averageRatio"] = Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
+        $users["averageRatio"] = \Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
         $users["totalBuffer"] = $torrents["totalUpload"] - $torrents["totalDownload"];
         $users["averageBuffer"] = ($torrents["totalUpload"] - $torrents["totalDownload"]) / $users["count"];
 
@@ -855,8 +863,8 @@ class Stats
 
 
     /**
-     * END DATABASE
-     * START HOMEPAGE
+     * end database
+     * start homepage
      */
 
 
@@ -865,8 +873,6 @@ class Stats
      *
      * Homepage user activity stats:
      * total, limit, daily, weekly, monthly active, etc.
-     *
-     * todo: rewrite this to use the new delight-im/auth table
      */
     public function activeUsers(): array
     {
@@ -886,7 +892,6 @@ class Stats
 
         # enabled user count
         $query = "select count(id) from users where status = 0";
-        #$query = "select count(id) from users_main where enabled = 1";
         $data["userCount"] = $app->dbNew->single($query, []);
 
         # division by zero fix
@@ -896,23 +901,17 @@ class Stats
 
         # daily active users
         $query = "select count(id) from users where status = 0 and last_login > ?";
-        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeDailyCount"] = $app->dbNew->single($query, [ 3600 * 24 ]);
-        #$data["activeDailyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24) ]);
+        $data["activeDailyCount"] = $app->dbNew->single($query, [ time() - (3600 * 24) ]);
         $data["activeDailyPercent"] = $data["activeDailyCount"] / ($data["userCount"] * 100);
 
         # weekly active users
         $query = "select count(id) from users where status = 0 and last_login > ?";
-        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeWeeklyCount"] = $app->dbNew->single($query, [ 3600 * 24 * 7 ]);
-        #$data["activeWeeklyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 7) ]);
+        $data["activeWeeklyCount"] = $app->dbNew->single($query, [ time() - (3600 * 24 * 7) ]);
         $data["activeWeeklyPercent"] = $data["activeWeeklyCount"] / ($data["userCount"] * 100);
 
         # monthly active users
         $query = "select count(id) from users where status = 0 and last_login > ?";
-        #$query = "select count(id) from users_main where enabled = 1 and lastAccess > ?";
-        $data["activeMonthlyCount"] = $app->dbNew->single($query, [ 3600 * 24 * 30 ]);
-        #$data["activeMonthlyCount"] = $app->dbNew->single($query, [ time_minus(3600 * 24 * 30) ]);
+        $data["activeMonthlyCount"] = $app->dbNew->single($query, [ time() - (3600 * 24 * 30) ]);
         $data["activeMonthlyPercent"] = $data["activeMonthlyCount"] / ($data["userCount"] * 100);
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);
@@ -1010,7 +1009,7 @@ class Stats
         $data["seederCount"] = $peerStats["seeding"][1] ?? 0;
         $data["leecherCount"] = $peerStats["leeching"][1] ?? 0;
         $data["peerCount"] = $data["seederCount"] + $data["leecherCount"];
-        $data["seederLeecherRatio"] = Format::get_ratio($data["seederCount"], $data["leecherCount"]);
+        $data["seederLeecherRatio"] = \Format::get_ratio($data["seederCount"], $data["leecherCount"]);
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);
         return $data;

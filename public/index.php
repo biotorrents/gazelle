@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 
 /**
  * @see https://en.wikipedia.org/wiki/Front_controller
@@ -20,7 +16,7 @@ error_reporting(E_ALL);
 require_once __DIR__."/../vendor/autoload.php";
 
 # parse the path
-$server = Http::query("server");
+$server = Http::request("server");
 $path = pathinfo($server["SCRIPT_NAME"]);
 $file = $path["filename"];
 

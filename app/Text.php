@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 /**
  *
- * \Gazelle\Text
+ * Gazelle\Text
  *
  * Text parsing and escaping.
  *
@@ -332,4 +332,22 @@ class Text
     {
         return \Illuminate\Support\Str::uuid()->toString();
     }
+
+
+    /**
+     * limit
+     *
+     * Shorten a string.
+     *
+     * @param string $string string to cut
+     * @param int $length cut at length
+     * @return string formatted string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_limit
+     */
+    public static function limit(string $string, int $length): string
+    {
+        return \Illuminate\Support\Str::limit($string, $length);
+    }
+
 } # class

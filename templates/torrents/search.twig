@@ -41,7 +41,7 @@
 				<th>Essentials</th>
 				<td>
 					{# torrent title / organism / strain or variety #}
-					<input type="text" name="complexSearch" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.complexSearch }}"/>
+					<input type="text" name="complexSearch" placeholder="Torrent title / organism / strain or variety" value="{{ searchTerms.complexSearch }}">
 				</td>
 			</tr>
 
@@ -50,10 +50,10 @@
 				<th>Numbers</th>
 				<td>
 					{# identifier / accession number / version #}
-					<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}"/>
+					<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}">
 
 					{# year #}
-					<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}"/>
+					<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}">
 				</td>
 			</tr>
 
@@ -62,10 +62,10 @@
 				<th>People</th>
 				<td>
 					{# department or lab / location #}
-					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}"/>
+					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}">
 
 					{# creator #}
-					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creator }}"/>
+					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creator }}">
 				</td>
 			</tr>
 
@@ -74,10 +74,10 @@
 				<th>Files</th>
 				<td>
 					{# torrent description #}
-					<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}"/>
+					<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}">
 
 					{# file list #}
-					<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}"/>
+					<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}">
 				</td>
 			</tr>
 
@@ -238,10 +238,10 @@
 					</select>
 
 					{# alignment #}
-					<input type="radio" name="alignment" id="yesAlighed" value="1" {{ (searchTerms.alignment == "1") ? "checked" : "" }}/>
+					<input type="radio" name="alignment" id="yesAlighed" value="1" {{ (searchTerms.alignment == "1") ? "checked" : "" }}>
 					<label for="yesAlighed">Aligned</label>
 
-					<input type="radio" name="alignment" id="noAligned" value="0" {{ (searchTerms.alignment == "0") ? "checked" : "" }}/>
+					<input type="radio" name="alignment" id="noAligned" value="0" {{ (searchTerms.alignment == "0") ? "checked" : "" }}>
 					<label for="noAligned">Not&nbsp;aligned</label>
 
 				</td>
@@ -253,9 +253,9 @@
 				<td>
 
 					{# file size #}
-					<input type="number" name="sizeMin" placeholder="Minimum" value="{{ searchTerms.sizeMin }}"/>
+					<input type="number" name="sizeMin" placeholder="Minimum" value="{{ searchTerms.sizeMin }}">
 					&ndash;
-					<input type="number" name="sizeMax" placeholder="Maximum" value="{{ searchTerms.sizeMax }}"/>
+					<input type="number" name="sizeMax" placeholder="Maximum" value="{{ searchTerms.sizeMax }}">
 
 					{# units #}
 					<select name="sizeUnit">
@@ -322,10 +322,10 @@
 					</select>
 
 					<div class="inlineFlex">
-					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}/>
+					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}>
 					<label for="includeTags">Include&nbsp;<strong>all</strong></label>
 
-					<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (searchTerms.tagsType == "excludeTags") ? "checked" : "" }}/>
+					<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (searchTerms.tagsType == "excludeTags") ? "checked" : "" }}>
 					<label for="excludeTags">Exclude&nbsp;<strong>any</strong></label>
 
 					{#
@@ -390,10 +390,10 @@
 					</select>
 
 					<div class="inlineFlex">
-						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}/>
+						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}>
 						<label for="groupResults">Group&nbsp;torrents</label>
 
-						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}/>
+						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}>
 						<label for="openaiContent">OpenAI&nbsp;content</label>
 					</div>
 
@@ -404,9 +404,9 @@
 			<tr>
 				<th/>
 				<td id="formControls">
-					<input type="submit" value="search" class="button-primary"/>
+					<input type="submit" value="search" class="button-primary">
 
-					<input type="button" id="resetSearchForm" value="reset"/>
+					<input type="button" id="resetSearchForm" value="reset">
 				</td>
 			</tr>
 

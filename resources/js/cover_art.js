@@ -49,7 +49,7 @@
         $("#covers > div").each(function () {
           $(this).show();
           $(this).after(
-            '<span class="cover_seperator"><br /><hr /><br /></span>'
+            '<span class="cover_seperator"><br><hr /><br></span>'
           );
 
           $(".next_cover").hide();

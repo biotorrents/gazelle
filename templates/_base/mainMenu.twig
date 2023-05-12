@@ -17,17 +17,17 @@
 		<form id="universalSearch" name="universalSearch" method="get" action="torrents.php">
 
 			{# workaround for some endpoints that need &action=search #}
-			<input type="hidden" name="action" value="search"/>
+			<input type="hidden" name="action" value="search">
 
 			{# the universal search bar itself #}
-			<input type="text" id="search" name="search" size="50" placeholder="Search the site for anything"/>
+			<input type="text" id="search" name="search" size="50" placeholder="Search the site for anything">
 
 			{# select which site area to search #}
 			<select id="searchWhat" name="searchWhat" {# class="select" #}>
 				<option value="torrents" selected>Torrents</option>
 				{# <option value="artist">Creators</option> #}
 				<option value="requests">Requests</option>
-				<option value="forums">Forums</option>
+				{# <option value="forums">Forums</option> #}
 				<option value="wiki">Wiki</option>
 				<option value="log">Log</option>
 				<option value="user">Users</option>
@@ -78,7 +78,7 @@
 	<div id="community">
 		<h3 id="communityHeader">Community</h3>
 		<ul>
-			<li><a href="/forums.php">Forums</a></li>
+			{# <li><a href="/forums.php">Forums</a></li> #}
 			<li><a href="/rules">Rules</a></li>
 			<li><a href="/wiki.php">Wiki</a></li>
 			<li><a href="/comments.php">Comments</a></li>

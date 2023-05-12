@@ -2,6 +2,7 @@
 
 {% block content %}
 
+{# flavor text #}
 <p class="center mouseless">
     A platform to share <strong>biological sequence</strong>
     and <strong>medical imaging</strong> data
@@ -10,10 +11,14 @@
     {% endif %}
 </p>
 
+{# cookies disabled #}
+{#
 <p id="cookiesDisabled" class="hidden error">
     You appear to have cookies disabled.
 </p>
+#}
 
+{# javascript disabled #}
 <noscript>
     <p class="error">
         {{ env.siteName }} requires JavaScript to function properly.
@@ -21,31 +26,32 @@
     </p>
 </noscript>
 
+{# error message #}
 {% if response is not null %}
-<p class="error">
-    {{ response }}
-</p>
+    <p class="error">
+        {{ response }}
+    </p>
 {% endif %}
-
 
 {# u2f login form #}
 {% if post is not empty and post.u2f_request is defined and post.u2f_response is defined %}
-<p class="info">
-    This account is protected by a Universal Two Factor token.
-    Please insert your U2F token and press it if necessary.
-</p>
+    <p class="info">
+        This account is protected by a Universal Two Factor token.
+        Please insert your U2F token and press it if necessary.
+    </p>
 
-<form id="u2f" method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    <form id="u2f" method="post">
+        {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="hidden" name="username" value="{{ post.username }}" />
+        <input type="hidden" name="username" value="{{ post.username }}">
 
-    <input type="hidden" name="password" value="{{ post.passphrase }}" />
+        <input type="hidden" name="password" value="{{ post.passphrase }}">
 
-    <input type="hidden" name="u2f-request" value='{{ u2fAuthData }}' />
+        <input type="hidden" name="u2f-request" value="{{ u2fAuthData }}">
 
-    <input type="hidden" name="u2f-response" />
-</form>
+        <input type="hidden" name="u2f-response">
+
+    </form>
 {% endif %}
 
 {# regular login form #}
@@ -53,52 +59,50 @@
     {{ form_token(query.server.REQUEST_URI) }}
 
     {# username #}
-    <input type="text" name="username" id="username" placeholder="Username or email" autofocus="autofocus" required />
+    <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required>
 
     {# passphrase #}
-    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />
+    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required>
 
     {# twoFactor #}
-    <input type="text" name="twoFactor" id="twoFactor" placeholder="2FA" maxlength="6" pattern="[0-9]{6}" inputmode="numeric"
-        size="6" />
+    <input type="number" name="twoFactor" id="twoFactor" placeholder="2FA">
 
+    {# rememberMe #}
     <ul class="nobullet">
         <li>
-            {# rememberMe #}
             {% if post.rememberMe is defined %}
-            <input type="checkbox" name="rememberMe" id="rememberMe" value="true" checked />
+                <input type="checkbox" name="rememberMe" id="rememberMe" value="true" checked>
             {% else %}
-            <input type="checkbox" name="rememberMe" id="rememberMe" value="true" />
+                <input type="checkbox" name="rememberMe" id="rememberMe" value="true">
             {% endif %}
             <label for="rememberMe">Remember me for a week</label>
         </li>
     </ul>
 
     {# log in #}
-    <input type="submit" name="submit" id="submit" value="Log in" class="button-primary" />
+    <input type="submit" name="submit" id="submit" value="Log in" class="button-primary">
 
     {# register #}
     {% if env.openRegistration == true %}
-    <a href="/register" class="button">Register</a>
+        <a href="/register" class="button">Register</a>
     {% endif %}
 
     {# recover #}
     {% if post is not empty %}
-    <a href="/recover" class="button">Recover account</a>
+        <a href="/recover" class="button">Recover account</a>
     {% endif %}
 
 </form>
 
-
 {# flavor text #}
 {% if post is empty %}
-<ol class="center mouseless">
-    <li>…and graphs, scalars, vectors, patterns, constraints, models, and more</li>
-</ol>
-
+    <ol class="center mouseless">
+        <li>…and graphs, scalars, vectors, patterns, constraints, models, and more</li>
+    </ol>
 {% endif %}
 
 {# cookie test #}
+{#
 <script>
     document.cookie = "test=test;max-age=5";
     let value = document.cookie
@@ -111,5 +115,6 @@
         element.classList.remove("hidden");
     }
 </script>
+#}
 
 {% endblock %}

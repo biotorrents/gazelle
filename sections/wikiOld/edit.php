@@ -23,11 +23,11 @@ View::header(
 <div>
   <div class="box pad">
     <form class="edit_form" name="wiki_article" action="wiki.php" method="post">
-      <input type="hidden" name="action" value="edit" />
+      <input type="hidden" name="action" value="edit">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="id" value="<?=$ArticleID?>" />
-      <input type="hidden" name="revision" value="<?=$Revision?>" />
+      <input type="hidden" name="id" value="<?=$ArticleID?>">
+      <input type="hidden" name="revision" value="<?=$Revision?>">
 
       <div>
         <h3>Title</h3>
@@ -56,7 +56,7 @@ $ReplyText = View::textarea(
           <input type="button" value="Preview"
             class="hidden button_preview_<?=$ReplyText->getID()?>"
             tabindex="1" />
-          <input type="submit" class="button-primary" value="Submit" />
+          <input type="submit" class="button-primary" value="Submit">
         </div>
       </div>
     </form>

@@ -543,12 +543,12 @@ class TorrentFunctions
   } ?> <?=time_diff($TorrentTime); ?>
             <?php if ($Seeders === 0) {
                 if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
-            <br /><strong>Last active: <?=time_diff($LastActive);?></strong>
+            <br><strong>Last active: <?=time_diff($LastActive);?></strong>
             <?php } else { ?>
-            <br />Last active: <?=time_diff($LastActive);?>
+            <br>Last active: <?=time_diff($LastActive);?>
             <?php }
             if ($LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) { ?>
-            <br /><a
+            <br><a
                 href="torrents.php?action=reseed&amp;torrentid=<?=($TorrentID)?>&amp;groupid=<?=($GroupID)?>"
                 class="brackets">Request re-seed</a>
             <?php }

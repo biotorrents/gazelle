@@ -159,21 +159,21 @@ if (!$Sneaky
   </div>
   <div class="box">
     <form class="send_form pad" name="invite" action="user.php" method="post">
-      <input type="hidden" name="action" value="take_invite" />
+      <input type="hidden" name="action" value="take_invite">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>" />
       <div>
         <div class="label"><strong>Email Address</strong></div>
         <div class="input">
-          <input type="email" name="email" size="60" />
-          <input type="submit" value="Invite" />
+          <input type="email" name="email" size="60">
+          <input type="submit" value="Invite">
         </div>
       </div>
       <?php if (check_perms('users_invite_notes')) { ?>
       <div>
         <div class="label"><strong>Staff Note</strong></div>
         <div class="input">
-          <input type="text" name="reason" size="60" maxlength="255" />
+          <input type="text" name="reason" size="60" maxlength="255">
         </div>
       </div>
       <?php } ?>

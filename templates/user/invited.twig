@@ -1,6 +1,6 @@
 <div class="thin">
 <div class="header">
-    <h2>{{ user.id|user_url }} &rsaquo; Invites</h2>
+    <h2>{{ user.id }} &rsaquo; Invites</h2>
     <div class="linkbox">
         <a href="user.php?action=invitetree{% if not own_profile %}&amp;userid={{ user.id }}{% endif %}" class="brackets">Invite tree</a>
 {% if view_pool %}
@@ -39,20 +39,20 @@
 </div>
 <div class="box box2">
     <form class="send_form pad" name="invite" action="user.php" method="post">
-        <input type="hidden" name="action" value="take_invite" />
-        <input type="hidden" name="auth" value="{{ auth }}" />
+        <input type="hidden" name="action" value="take_invite">
+        <input type="hidden" name="auth" value="{{ auth }}">
         <div class="field_div">
             <div class="label">Email address:</div>
             <div class="input">
-                <input type="email" name="email" size="60" />
-                <input type="submit" value="Invite" />
+                <input type="email" name="email" size="60">
+                <input type="submit" value="Invite">
             </div>
         </div>
     {% if user.permitted('users_invite_notes') %}
         <div class="field_div">
             <div class="label">Staff Note:</div>
             <div class="input">
-                <input type="text" name="reason" size="60" maxlength="255" />
+                <input type="text" name="reason" size="60" maxlength="255">
             </div>
         </div>
     {% endif %}
@@ -101,7 +101,7 @@
         </tr>
 {% for u in invited %}
         <tr class="row{{ cycle(['a', 'b'], loop.index0) }}">
-            <td class="td_username">{{ u.user_id|user_full|raw }}</td>
+            <td class="td_username">{{ u.user_id }}</td>
             <td class="td_email">{{ u.email }}</td>
             <td class="td_join_date">{{ u.join_date|time_diff }}</td>
             <td class="td_last_access">{{ u.last_access|time_diff }}</td>

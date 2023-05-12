@@ -19,7 +19,7 @@ class Feed
      */
     public function authenticate(): void
     {
-        $get = Http::query("get");
+        $get = Http::request("get");
 
         if (empty($get["feed"])
             || empty($get["authkey"])

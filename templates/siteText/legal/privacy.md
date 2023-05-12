@@ -16,7 +16,7 @@ We collect and use personal data defined as
 
 We don't collect cross-origin data.
 Also, we don't access
-[browser features](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#directives)
+[browser features](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy)
 such as camera, microphone, and sensors.
 
 You directly provide us with most personal data.
@@ -86,7 +86,7 @@ When you log into our website, we save cookies to your browser's local storage.
 We use cookies to keep you signed in.
 Our secure session cookie parameters include:
 
-- one-day expiry time,
+- one-day default expiry time,
 - scoped to https://torrents.bio,
 - TLS 1.2+ transmission only,
 - unavailable to JavaScript APIs, and
@@ -103,22 +103,24 @@ If you click an external link, please read their privacy policy.
 
 ### Changes to our policy
 
-We last updated this policy on 2022-02-26.
+We last updated this policy on 2023-04-18.
 
-### How to contact us
+## How to contact us
 
 If you have questions about our policy,
 the personal data we hold on you,
 or you'd like to exercise your data protection rights,
 please don't hesitate to contact us.
 
-**Address**<br />
-Data Protection Officer<br />
-Omics Tools LLC<br />
-30 N Gould St Ste 4000<br />
+### Address
+
+Data Protection Officer<br>
+Omics Tools LLC<br>
+30 N Gould St Ste 4000<br>
 Sheridan, WY 82801
 
-**Email**<br />
+### Email
+
 privacy at torrents dot bio
 
 Please use

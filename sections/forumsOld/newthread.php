@@ -28,7 +28,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
 $ENV = ENV::go();
 View::header(
     "Forums $ENV->crumb ".$Forum['Name']." $ENV->crumb New Topic",
-    'comments,vendor/easymde.min',
+    'vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -59,9 +59,9 @@ View::header(
       <div class="pad" id="threadpoll">
         <p><strong id="pollquestion"></strong></p>
         <div id="pollanswers"></div>
-        <br /><input type="radio" name="vote" id="answer_0" value="0" /> <label
-          for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br /><br />
-        <input type="button" class="u-pull-left" value="Vote" />
+        <br><input type="radio" name="vote" id="answer_0" value="0"> <label
+          for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br><br>
+        <input type="button" class="u-pull-left" value="Vote">
       </div>
     </div>
     <?php } ?>
@@ -99,14 +99,14 @@ View::header(
   </div>
   <div class="box pad">
     <form name="forum_thread" action="" id="newthreadform" method="post">
-      <input type="hidden" name="action" value="new" />
+      <input type="hidden" name="action" value="new">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="forum" value="<?=$ForumID?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="forum" value="<?=$ForumID?>">
       <table id="newthreadtext" class="new_thread skeletonFix">
         <tr>
           <td class="label">Title</td>
-          <td><input id="title" class="required" type="text" name="title" style="width: 98%;" /></td>
+          <td><input id="title" class="required" type="text" name="title" style="width: 98%;"></td>
         </tr>
         <tr>
           <td class="label">Body</td>
@@ -122,14 +122,14 @@ View::textarea(
           <td></td>
           <td>
             <input id="subscribebox" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''?>
-            onchange="$('#subscribeboxpreview').raw().checked=this.checked;" />
+            onchange="$('#subscribeboxpreview').raw().checked=this.checked;">
             <label for="subscribebox">Subscribe to topic</label>
           </td>
         </tr>
         <?php
 if (check_perms('forums_polls_create')) {
     ?>
-        <script type="text/javascript">
+        <script>
           //<![CDATA[
           var AnswerCount = 1;
 
@@ -172,13 +172,13 @@ if (check_perms('forums_polls_create')) {
 
         <tr id="poll_question" class="hidden">
           <td class="label">Question</td>
-          <td><input type="text" name="question" id="pollquestionfield" class="required" style="width: 98%;" /></td>
+          <td><input type="text" name="question" id="pollquestionfield" class="required" style="width: 98%;"></td>
         </tr>
 
         <tr id="poll_answers" class="hidden">
           <td class="label">Answers</td>
           <td id="answer_block">
-            <input type="text" name="answers[]" class="required" style="width: 90%;" />
+            <input type="text" name="answers[]" class="required" style="width: 90%;">
             <a href="#" onclick="AddAnswerField();return false;" class="brackets">+</a>
             <a href="#" onclick="RemoveAnswerField();return false;" class="brackets">&minus;</a>
           </td>
@@ -194,9 +194,9 @@ if (check_perms('forums_polls_create')) {
       </div>
 
       <div id="buttons" class="center">
-        <input type="button" value="Preview" onclick="Newthread_Preview(1);" id="newthreadpreviewbutton" />
-        <input type="button" value="Editor" onclick="Newthread_Preview(0);" id="newthreadeditbutton" class="hidden" />
-        <input type="submit" class="submit button-primary" id="submit_button" value="Create" />
+        <input type="button" value="Preview" onclick="Newthread_Preview(1);" id="newthreadpreviewbutton">
+        <input type="button" value="Editor" onclick="Newthread_Preview(0);" id="newthreadeditbutton" class="hidden">
+        <input type="submit" class="submit button-primary" id="submit_button" value="Create">
       </div>
     </form>
   </div>

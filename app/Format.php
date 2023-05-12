@@ -24,7 +24,7 @@ class Format
      *
      * @var array Strings
      */
-    private static $TorrentLabels = array(
+    private static $torrentLabels = array(
         'default'  => 'tl_notice',
         'snatched' => 'tl_snatched',
         'seeding'  => 'tl_seeding',
@@ -41,45 +41,6 @@ class Format
 
         'uncensored' => 'tl_notice'
     );
-
-
-    /**
-     * Shorten a string
-     *
-     * @param $Str string to cut
-     * @param $Length cut at length
-     * @param $Hard force cut at length instead of at closest word
-     * @param $ShowDots Show dots at the end
-     * @return string formatted string
-     */
-    public static function cut_string($Str, $Length, $Hard = false, $ShowDots = true)
-    {
-        if (mb_strlen($Str, 'UTF-8') > $Length) {
-            if ($Hard === 0) {
-                // Not hard, cut at closest word
-                $CutDesc = mb_substr($Str, 0, $Length, 'UTF-8');
-                $DescArr = explode(' ', $CutDesc);
-
-                if (count($DescArr) > 1) {
-                    array_pop($DescArr);
-                    $CutDesc = implode(' ', $DescArr);
-                }
-
-                if ($ShowDots) {
-                    $CutDesc .= '…';
-                }
-            } else {
-                $CutDesc = mb_substr($Str, 0, $Length, 'UTF-8');
-                if ($ShowDots) {
-                    $CutDesc .= '…';
-                }
-            }
-
-            return $CutDesc;
-        } else {
-            return $Str;
-        }
-    }
 
 
     /**
@@ -480,7 +441,7 @@ class Format
 
 
     /**
-     * Modified accessor for the $TorrentLabels array
+     * Modified accessor for the $torrentLabels array
      *
      * Converts $Text to lowercase and strips non-word characters
      *
@@ -490,10 +451,10 @@ class Format
     private static function find_torrent_label_class($Text)
     {
         $Index = mb_eregi_replace('(?:[^\w\d\s]+)', '', strtolower($Text));
-        if (isset(self::$TorrentLabels[$Index])) {
-            return self::$TorrentLabels[$Index];
+        if (isset(self::$torrentLabels[$Index])) {
+            return self::$torrentLabels[$Index];
         } else {
-            return self::$TorrentLabels['default'];
+            return self::$torrentLabels['default'];
         }
     }
 
@@ -560,7 +521,7 @@ class Format
      */
     public static function relativeTime(string|int $time): string
     {
-        return Carbon\Carbon::parse($time)->diffForHumans();
+        return \Carbon\Carbon::parse($time)->diffForHumans();
     }
 
 
@@ -572,7 +533,7 @@ class Format
     public static function breadcrumbs()
     {
         $app = \Gazelle\App::go();
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         $path = explode("/", $server["REQUEST_URI"]);
         $path = array_values(array_filter($path));
@@ -608,4 +569,4 @@ class Format
 
         return $crumbs;
     }
-}
+} # class

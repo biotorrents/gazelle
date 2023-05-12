@@ -25,7 +25,7 @@ final class UsersFriendsTable extends AbstractMigration
         $app->dbNew->do($query, []);
 
         $query = "
-            CREATE TABLE `users_friends` (
+            CREATE TABLE IF NOT EXISTS `users_friends` (
                 `id` INT NOT NULL AUTO_INCREMENT,
                 `userId` INT NOT NULL,
                 `friendId` INT NOT NULL,

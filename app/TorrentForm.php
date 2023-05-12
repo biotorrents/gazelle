@@ -184,8 +184,8 @@ HTML;
         <form class="box pad" name="torrent" action="" enctype="multipart/form-data" method="post"
           onsubmit="$('#post').raw().disabled = 'disabled';">
 
-        <input type="hidden" name="submit" value="true" />
-        <input type="hidden" name="auth" value="$AuthKey" />
+        <input type="hidden" name="submit" value="true">
+        <input type="hidden" name="auth" value="$AuthKey">
 HTML;
 
         if (!$this->NewTorrent) {
@@ -194,9 +194,9 @@ HTML;
             $CategoryID = \Gazelle\Text::esc($this->Torrent['CategoryID'] - 1);
 
             $HTML .= <<<HTML
-            <input type="hidden" name="action" value="takeedit" />
-            <input type="hidden" name="torrentid" value="$TorrentID" />
-            <input type="hidden" name="type" value="$CategoryID" />
+            <input type="hidden" name="action" value="takeedit">
+            <input type="hidden" name="torrentid" value="$TorrentID">
+            <input type="hidden" name="type" value="$CategoryID">
 HTML;
         } # fi !NewTorrent
         else {
@@ -206,8 +206,8 @@ HTML;
                 $CategoryID = \Gazelle\Text::esc($this->Torrent['CategoryID'] - 1);
 
                 $HTML .= <<<HTML
-                <input type="hidden" name="groupid" value="$GroupID" />
-                <input type="hidden" name="type" value="$CategoryID" />
+                <input type="hidden" name="groupid" value="$GroupID">
+                <input type="hidden" name="type" value="$CategoryID">
 HTML;
             }
 
@@ -215,7 +215,7 @@ HTML;
             if ($this->Torrent && ($this->Torrent['RequestID'] ?? false)) {
                 $RequestID = \Gazelle\Text::esc($this->Torrent['RequestID']);
                 $HTML .=  <<<HTML
-                <input type="hidden" name="requestid"value="$RequestID" />
+                <input type="hidden" name="requestid"value="$RequestID">
 HTML;
             }
         } # else
@@ -240,7 +240,7 @@ HTML;
               </td>
 
               <td>
-                <input id="file" type="file" name="file_input" size="50" />
+                <input id="file" type="file" name="file_input" size="50">
 
                 <p>
                   Set the private flag, e.g.,
@@ -396,7 +396,7 @@ HTML;
         echo <<<HTML
               <tr>
                 <td class="center">
-                  <input id="post" type="submit" value="$Value" class="button-primary" />
+                  <input id="post" type="submit" value="$Value" class="button-primary">
                 </td>
               </tr>
             </table> <!-- torrent_form -->
@@ -525,14 +525,14 @@ HTML;
 
                     echo <<<HTML
                     <input type="text" id="artist_$Num" name="artists[]" size="45"
-                      value="$ArtistName" $Disabled />
+                      value="$ArtistName" $Disabled>
                     $AddRemoveBrackets
 HTML;
                 }
             } else {
                 echo <<<HTML
                 <input type="text" id="artist_0" name="artists[]" size="45"
-                  value="" $Disabled />
+                  value="" $Disabled>
                 $AddRemoveBrackets
 HTML;
             }
@@ -768,7 +768,7 @@ HTML;
         else {
             $TorrentMedia = $Torrent['Media'];
             echo <<<HTML
-          <input type="hidden" name="media" value="$TorrentMedia" />
+          <input type="hidden" name="media" value="$TorrentMedia">
 HTML;
         }
 
@@ -1025,7 +1025,7 @@ HTML;
                 </select>
                 <input type="text" id="tags" name="tags" size="60"
                   placeholder="Comma-seperated list of at least 5 tags"
-                  value="$TorrentTagList" />
+                  value="$TorrentTagList">
               </td>
             </tr>
 HTML;
@@ -1198,7 +1198,7 @@ HTML;
           </td>
           
           <td>
-            <input type="checkbox" name="censored" value="1" $TorrentAnnotated />
+            <input type="checkbox" name="censored" value="1" $TorrentAnnotated>
             &ensp;
             Whether the torrent contains alignments, annotations, or other structural metadata
           </td>
@@ -1219,7 +1219,7 @@ HTML;
           </td>
           
           <td>
-            <input type="checkbox" name="anonymous" value="1" $TorrentAnonymous />
+            <input type="checkbox" name="anonymous" value="1" $TorrentAnonymous>
             &ensp;
             Hide your username from other users on the torrent details page
           </td>

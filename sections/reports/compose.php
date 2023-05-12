@@ -38,70 +38,70 @@ list($ComposeToUsername) = $app->dbOld->next_record();
 if (!$ComposeToUsername) {
     error(404);
 }
-View::header('Compose', 'inbox');
+View::header('Compose');
 
 // $TypeLink is placed directly in the <textarea> when composing a PM
 switch ($Type) {
-  case 'user':
-    $app->dbOld->query("
+    case 'user':
+        $app->dbOld->query("
       SELECT Username
       FROM users_main
       WHERE ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No user with the reported ID found';
-    } else {
-        list($Username) = $app->dbOld->next_record();
-        $TypeLink = "the user [user]{$Username}[/user]";
-        $Subject = 'User Report: '.\Gazelle\Text::esc($Username);
-    }
-    break;
-  case 'request':
-  case 'request_update':
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No user with the reported ID found';
+        } else {
+            list($Username) = $app->dbOld->next_record();
+            $TypeLink = "the user [user]{$Username}[/user]";
+            $Subject = 'User Report: '.\Gazelle\Text::esc($Username);
+        }
+        break;
+    case 'request':
+    case 'request_update':
+        $app->dbOld->query("
       SELECT Title
       FROM requests
       WHERE ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No request with the reported ID found';
-    } else {
-        list($Name) = $app->dbOld->next_record();
-        $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
-        $Subject = 'Request Report: '.\Gazelle\Text::esc($Name);
-    }
-    break;
-  case 'collage':
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No request with the reported ID found';
+        } else {
+            list($Name) = $app->dbOld->next_record();
+            $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
+            $Subject = 'Request Report: '.\Gazelle\Text::esc($Name);
+        }
+        break;
+    case 'collage':
+        $app->dbOld->query("
       SELECT Name
       FROM collages
       WHERE ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No collage with the reported ID found';
-    } else {
-        list($Name) = $app->dbOld->next_record();
-        $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
-        $Subject = 'Collage Report: '.\Gazelle\Text::esc($Name);
-    }
-    break;
-  case 'thread':
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No collage with the reported ID found';
+        } else {
+            list($Name) = $app->dbOld->next_record();
+            $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
+            $Subject = 'Collage Report: '.\Gazelle\Text::esc($Name);
+        }
+        break;
+    case 'thread':
+        $app->dbOld->query("
       SELECT Title
       FROM forums_topics
       WHERE ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No forum thread with the reported ID found';
-    } else {
-        list($Title) = $app->dbOld->next_record();
-        $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".\Gazelle\Text::esc($Title).'[/url]';
-        $Subject = 'Forum Thread Report: '.\Gazelle\Text::esc($Title);
-    }
-    break;
-  case 'post':
-    if (isset($app->user->extra['PostsPerPage'])) {
-        $PerPage = $app->user->extra['PostsPerPage'];
-    } else {
-        $PerPage = POSTS_PER_PAGE;
-    }
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No forum thread with the reported ID found';
+        } else {
+            list($Title) = $app->dbOld->next_record();
+            $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".\Gazelle\Text::esc($Title).'[/url]';
+            $Subject = 'Forum Thread Report: '.\Gazelle\Text::esc($Title);
+        }
+        break;
+    case 'post':
+        if (isset($app->user->extra['PostsPerPage'])) {
+            $PerPage = $app->user->extra['PostsPerPage'];
+        } else {
+            $PerPage = POSTS_PER_PAGE;
+        }
+        $app->dbOld->query("
       SELECT
         p.ID,
         p.Body,
@@ -114,29 +114,29 @@ switch ($Type) {
         ) AS PostNum
       FROM forums_posts AS p
       WHERE p.ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No forum post with the reported ID found';
-    } else {
-        list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
-        $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
-        $Subject = 'Forum Post Report: Post ID #'.\Gazelle\Text::esc($PostID);
-    }
-    break;
-  case 'comment':
-    $app->dbOld->query("
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No forum post with the reported ID found';
+        } else {
+            list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
+            $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
+            $Subject = 'Forum Post Report: Post ID #'.\Gazelle\Text::esc($PostID);
+        }
+        break;
+    case 'comment':
+        $app->dbOld->query("
       SELECT 1
       FROM comments
       WHERE ID = ?", $ThingID);
-    if (!$app->dbOld->has_results()) {
-        $Error = 'No comment with the reported ID found';
-    } else {
-        $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
-        $Subject = 'Comment Report: ID #'.\Gazelle\Text::esc($ThingID);
-    }
-    break;
-  default:
-    error('Incorrect type');
-    break;
+        if (!$app->dbOld->has_results()) {
+            $Error = 'No comment with the reported ID found';
+        } else {
+            $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
+            $Subject = 'Comment Report: ID #'.\Gazelle\Text::esc($ThingID);
+        }
+        break;
+    default:
+        error('Incorrect type');
+        break;
 }
 if (isset($Error)) {
     error($Error);
@@ -159,20 +159,19 @@ $Body = "You reported $TypeLink for the reason:\n[quote]{$Reason}[/quote]";
   </div>
   <form class="send_form" name="message" action="reports.php" method="post" id="messageform">
     <div class="box pad">
-      <input type="hidden" name="action" value="takecompose" />
-      <input type="hidden" name="toid" value="<?=$ToID?>" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+      <input type="hidden" name="action" value="takecompose">
+      <input type="hidden" name="toid" value="<?=$ToID?>">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
       <div id="quickpost">
         <h3>Subject</h3>
-        <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>" />
-        <br />
+        <input type="text" name="subject" size="95" value="<?=(!empty($Subject) ? $Subject : '')?>">
+        <br>
         <h3>Body</h3>
         <textarea id="body" name="body" cols="95" rows="10"><?=(!empty($Body) ? $Body : '')?></textarea>
       </div>
       <div id="preview" class="hidden"></div>
       <div id="buttons" class="center">
-        <input type="button" value="Preview" onclick="Quick_Preview();" />
-        <input type="submit" value="Send message" />
+        <input type="submit" value="Send message">
       </div>
     </div>
   </form>

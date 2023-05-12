@@ -51,7 +51,7 @@
 {% for item in recentSnatches %}
 <div>
   <a href="/torrents/{{ item.id }}">
-    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%">
   </a>
 </div>
 {% endfor %}
@@ -70,7 +70,7 @@
 {% for item in recentUploads %}
 <div>
   <a href="/torrents/{{ item.id }}">
-    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%">
   </a>
 </div>
 {% endfor %}
@@ -89,7 +89,7 @@
 {% for item in recentRequests %}
 <div>
   <a href="/torrents/{{ item.id }}">
-    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%">
   </a>
 </div>
 {% endfor %}
@@ -208,7 +208,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 {% for item in recentCollages %}
 <div>
   <a href="/collages/{{ item.id }}">
-    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%" />
+    <img src="{{ processImage(item.picture, "thumb") }}" alt="{{ item.title }}" title="{{ item.title }}" width="100%">
   </a>
 </div>
 {% endfor %}
@@ -578,28 +578,10 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 }
 
 // Displays a table of forum warnings viewable only to Forum Moderators
-if ($user['Class'] == 650 && check_perms('users_warn', $Class)) {
-    $app->dbOld->query("
-    SELECT Comment
-    FROM users_warnings_forums
-    WHERE UserID = '$UserID'");
-    list($ForumWarnings) = $app->dbOld->next_record();
-    if ($app->dbOld->has_results()) {
-        ?>
-  <div class="box">
-    <div class="head">Forum warnings</div>
-    <div class="pad">
-      <div id="forumwarningslinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($ForumWarnings)?>
-      </div>
-    </div>
-  </div>
-  <?php
-    }
-}
 if (check_perms('users_mod', $Class)) { ?>
   <form class="manage_form" name="user" id="form" action="user.php" method="post">
-    <input type="hidden" name="action" value="moderate" />
-    <input type="hidden" name="userid" value="<?=$UserID?>" />
+    <input type="hidden" name="action" value="moderate">
+    <input type="hidden" name="userid" value="<?=$UserID?>">
     <input type="hidden" name="auth"
       value="<?=$user['AuthKey']?>" />
 
@@ -621,7 +603,7 @@ if (check_perms('users_mod', $Class)) { ?>
           style="width: 98%;"><?=\Gazelle\Text::esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
-        <script type="text/javascript">
+        <script>
           resize('admincomment');
         </script>
       </div>
@@ -722,7 +704,7 @@ if (check_perms('users_mod', $Class)) { ?>
             for="perm_<?=$PermID?>"
             style="margin-right: 10px;"><?=$PermName?></label>
           <?php if ($i % 3 == 0) {
-            echo "\t\t\t\t<br />\n";
+            echo "\t\t\t\t<br>\n";
         }
     } ?>
         </td>
@@ -806,7 +788,7 @@ if (!$DisablePoints) {
       <tr>
         <td class="label tooltip" title="Enter a username.">Merge stats <strong>from:</strong></td>
         <td>
-          <input type="text" size="40" name="MergeStatsFrom" />
+          <input type="text" size="40" name="MergeStatsFrom">
         </td>
       </tr>
       <tr>
@@ -845,14 +827,14 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Reset:</td>
         <td>
-          <input type="checkbox" name="ResetRatioWatch" id="ResetRatioWatch" /> <label for="ResetRatioWatch">Ratio
+          <input type="checkbox" name="ResetRatioWatch" id="ResetRatioWatch"> <label for="ResetRatioWatch">Ratio
             watch</label> |
-          <input type="checkbox" name="ResetPasskey" id="ResetPasskey" /> <label for="ResetPasskey">Passkey</label> |
-          <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey" /> <label for="ResetAuthkey">Authkey</label> |
-          <br />
-          <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList" /> <label for="ResetSnatchList">Snatch
+          <input type="checkbox" name="ResetPasskey" id="ResetPasskey"> <label for="ResetPasskey">Passkey</label> |
+          <input type="checkbox" name="ResetAuthkey" id="ResetAuthkey"> <label for="ResetAuthkey">Authkey</label> |
+          <br>
+          <input type="checkbox" name="ResetSnatchList" id="ResetSnatchList"> <label for="ResetSnatchList">Snatch
             list</label> |
-          <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList" /> <label
+          <input type="checkbox" name="ResetDownloadList" id="ResetDownloadList"> <label
             for="ResetDownloadList">Download list</label>
         </td>
       </tr>
@@ -918,7 +900,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This message *will* be sent to the user in the warning PM!">Warning reason:
         </td>
         <td>
-          <input type="text" class="wide_input_text" name="WarnReason" />
+          <input type="text" class="wide_input_text" name="WarnReason">
         </td>
       </tr>
       <?php } ?>

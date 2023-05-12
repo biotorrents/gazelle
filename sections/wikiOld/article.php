@@ -67,12 +67,12 @@ View::header($Title, 'wiki');
     <div class="linkbox">
       <a href="wiki.php?action=create" class="brackets">Create</a>
 
-      <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
+      <?php # if ($Edit <= $app->user->extra['EffectiveClass']) {?>
       <a href="wiki.php?action=edit&amp;id=<?=$ArticleID?>"
         class="brackets">Edit</a>
       <a href="wiki.php?action=revisions&amp;id=<?=$ArticleID?>"
         class="brackets">History</a>
-      <?php # } ?>
+      <?php # }?>
 
       <?php if (check_perms('admin_manage_wiki') && $_GET['id'] !== INDEX_ARTICLE) { ?>
       <a href="wiki.php?action=delete&amp;id=<?=$ArticleID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>"
@@ -87,9 +87,9 @@ View::header($Title, 'wiki');
       <div class="pad">
 
         <form class="search_form" name="articles" action="wiki.php" method="get">
-          <input type="hidden" name="action" value="search" />
-          <input type="search" placeholder="Search articles" name="search" size="20" />
-          <input value="Search" type="submit" class="hidden button-primary" />
+          <input type="hidden" name="action" value="search">
+          <input type="search" placeholder="Search articles" name="search" size="20">
+          <input value="Search" type="submit" class="hidden button-primary">
         </form>
 
         <br style="line-height: 10px;" />
@@ -133,7 +133,7 @@ if ($Aliases !== $Title) {
     foreach ($AliasArray as $AliasItem) {
         ?>
             <li id="alias_<?=$AliasItem?>"><a
-                href="wiki.php?action=article&amp;name=<?=$AliasItem?>"><?=Format::cut_string($AliasItem, 20, 1)?></a>
+                href="wiki.php?action=article&amp;name=<?=$AliasItem?>"><?=\Gazelle\Text::limit($AliasItem, 20)?></a>
 
               <?php
               if (check_perms('admin_manage_wiki')) { ?>
@@ -143,10 +143,10 @@ if ($Aliases !== $Title) {
                 href="user.php?id=<?=$UserArray[$i]?>"
                 class="brackets tooltip" title="View user">U</a>
               <?php
-            } ?>
+              } ?>
             </li>
             <?php
-            $i++;
+              $i++;
     }
 }
 ?>
@@ -155,12 +155,12 @@ if ($Aliases !== $Title) {
       </ul>
     </div>
 
-    <?php # if ($Edit <= $app->user->extra['EffectiveClass']) { ?>
+    <?php # if ($Edit <= $app->user->extra['EffectiveClass']) {?>
     <div class="box box_addalias">
       <div style="padding: 5px;">
 
         <form class="add_form" name="aliases" action="wiki.php" method="post">
-          <input type="hidden" name="action" value="add_alias" />
+          <input type="hidden" name="action" value="add_alias">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="article"
@@ -168,12 +168,12 @@ if ($Aliases !== $Title) {
           <input onfocus="if (this.value == 'Add alias') this.value='';"
             onblur="if (this.value == '') this.value='Add alias';" value="Add alias" type="text" name="alias"
             size="20" />
-          <input type="submit" value="+" />
+          <input type="submit" value="+">
         </form>
 
       </div>
     </div>
-    <?php # } ?>
+    <?php # }?>
   </div>
 
   <div class="main_column two-thirds column">

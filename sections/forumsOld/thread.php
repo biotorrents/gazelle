@@ -173,7 +173,7 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 // Start printing
 View::header(
     $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
-    'comments,subscriptions,vendor/easymde.min',
+    'subscriptions,vendor/easymde.min',
     ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
 );
 ?>
@@ -203,17 +203,17 @@ View::header(
         </h3>
 
         <form class="search_form" name="forum_thread" action="forums.php" method="get">
-          <input type="hidden" name="action" value="search" />
+          <input type="hidden" name="action" value="search">
 
           <input type="hidden" name="threadid"
-            value="<?=$ThreadID?>" />
+            value="<?=$ThreadID?>">
 
           <table class="layout border">
             <tr>
               <td></td>
 
               <td>
-                <input type="search" id="searchbox" name="search" size="70" placeholder="Search Terms" />
+                <input type="search" id="searchbox" name="search" size="70" placeholder="Search Terms">
               </td>
             </tr>
 
@@ -223,13 +223,13 @@ View::header(
               </td>
 
               <td>
-                <input type="search" id="username" name="user" size="70" placeholder="Posted By" />
+                <input type="search" id="username" name="user" size="70" placeholder="Posted By">
               </td>
             </tr>
 
             <tr>
               <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit" value="Search" />
+                <input type="submit" name="submit" value="Search">
               </td>
             </tr>
           </table>
@@ -337,9 +337,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <?php
             } ?>
     </ul>
-    <br />
+    <br>
 
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br /><br />
+    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br><br>
     <?php
         } else {
             //Staff forum, output voters, not percentages
@@ -392,12 +392,12 @@ if ($ThreadInfo['NoPoll'] == 0) {
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
-    <br />
+    <br>
     <strong>Votes:</strong> <?=\Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=\Gazelle\Text::float($TotalVotes)?> total
-    <br />
+    <br>
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>
-    <br /><br />
+    <br><br>
     <?php
       } ?>
     <a href="#"
@@ -410,35 +410,35 @@ if ($ThreadInfo['NoPoll'] == 0) {
         ?>
     <div id="poll_container">
       <form class="vote_form" name="poll" id="poll">
-        <input type="hidden" name="action" value="poll" />
+        <input type="hidden" name="action" value="poll">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="large" value="1" />
-        <input type="hidden" name="topicid" value="<?=$ThreadID?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="large" value="1">
+        <input type="hidden" name="topicid" value="<?=$ThreadID?>">
         <ul style="list-style: none;" id="poll_options">
           <?php foreach ($Answers as $i => $Answer) { //for ($i = 1, $il = count($Answers); $i <= $il; $i++) {?>
           <li>
             <input type="radio" name="vote" id="answer_<?=$i?>"
-              value="<?=$i?>" />
+              value="<?=$i?>">
             <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answer)?></label>
           </li>
           <?php } ?>
           <li>
-            <br />
-            <input type="radio" name="vote" id="answer_0" value="0" /> <label
-              for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br />
+            <br>
+            <input type="radio" name="vote" id="answer_0" value="0"> <label
+              for="answer_0">Blank&#8202;&mdash;&#8202;Show the results!</label><br>
           </li>
         </ul>
         <?php if ($ForumID == STAFF_FORUM) { ?>
         <a href="#"
           onclick="AddPollOption(<?=$ThreadID?>); return false;"
           class="brackets">+</a>
-        <br />
-        <br />
+        <br>
+        <br>
         <?php } ?>
         <input type="button" class="button-primary"
           onclick="ajax.post('index.php','poll',function(response) { $('#poll_container').raw().innerHTML = response});"
-          value="Vote" />
+          value="Vote">
       </form>
     </div>
     <?php
@@ -448,23 +448,23 @@ if ($ThreadInfo['NoPoll'] == 0) {
       if (!$Featured) {
           ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
-      <input type="hidden" name="action" value="poll_mod" />
+      <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="topicid" value="<?=$ThreadID?>" />
-      <input type="hidden" name="feature" value="1" />
-      <input type="submit" onclick="return confirm('Are you sure you want to feature this poll?');" value="Feature" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="topicid" value="<?=$ThreadID?>">
+      <input type="hidden" name="feature" value="1">
+      <input type="submit" onclick="return confirm('Are you sure you want to feature this poll?');" value="Feature">
     </form>
     <?php
       } ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
-      <input type="hidden" name="action" value="poll_mod" />
+      <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="topicid" value="<?=$ThreadID?>" />
-      <input type="hidden" name="close" value="1" />
+        value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="topicid" value="<?=$ThreadID?>">
+      <input type="hidden" name="close" value="1">
       <input type="submit"
-        value="<?=(!$Closed ? 'Close' : 'Open')?>" />
+        value="<?=(!$Closed ? 'Close' : 'Open')?>">
     </form>
     <?php
   } ?>
@@ -564,11 +564,11 @@ foreach ($Thread as $Key => $Post) {
             ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" method="post">
-          <input type="hidden" name="action" value="warn" />
-          <input type="hidden" name="postid" value="<?=$PostID?>" />
+          <input type="hidden" name="action" value="warn">
+          <input type="hidden" name="postid" value="<?=$PostID?>">
           <input type="hidden" name="userid"
-            value="<?=$AuthorID?>" />
-          <input type="hidden" name="key" value="<?=$Key?>" />
+            value="<?=$AuthorID?>">
+          <input type="hidden" name="key" value="<?=$Key?>">
         </form>
         - <a href="#"
           onclick="$('#warn<?=$PostID?>').raw().submit(); return false;"
@@ -591,8 +591,8 @@ foreach ($Thread as $Key => $Post) {
       <div id="content<?=$PostID?>">
         <?=\Gazelle\Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
-        <br />
-        <br />
+        <br>
+        <br>
         <div class="last_edited">
           <?php if (check_perms('site_admin_forums')) { ?>
           <a href="#content<?=$PostID?>"
@@ -643,13 +643,13 @@ if (check_perms('site_moderate_forums')) {
       WHERE TopicID = $ThreadID
       ORDER BY ID ASC");
     $Notes = $app->dbOld->to_array(); ?>
-<br />
+<br>
 <h3 id="thread_notes">Notes</h3> <a data-toggle-target="#thread_notes_table" class="brackets">Toggle</a>
 <form action="forums.php" method="post">
-  <input type="hidden" name="action" value="take_topic_notes" />
+  <input type="hidden" name="action" value="take_topic_notes">
   <input type="hidden" name="auth"
-    value="<?=$app->user->extra['AuthKey']?>" />
-  <input type="hidden" name="topicid" value="<?=$ThreadID?>" />
+    value="<?=$app->user->extra['AuthKey']?>">
+  <input type="hidden" name="topicid" value="<?=$ThreadID?>">
   <table class="layout border hidden" id="thread_notes_table">
     <?php
   foreach ($Notes as $Note) {
@@ -672,20 +672,20 @@ if (check_perms('site_moderate_forums')) {
           name: 'body',
       ); ?>
         </div>
-        <input type="submit" class="button-primary" value="Save" />
+        <input type="submit" class="button-primary" value="Save">
       </td>
     </tr>
   </table>
 </form>
-<br />
+<br>
 <h3>Edit</h3>
 <form class="edit_form" name="forum_thread" action="forums.php" method="post">
   <div>
-    <input type="hidden" name="action" value="mod_thread" />
+    <input type="hidden" name="action" value="mod_thread">
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
-    <input type="hidden" name="threadid" value="<?=$ThreadID?>" />
-    <input type="hidden" name="page" value="<?=$Page?>" />
+      value="<?=$app->user->extra['AuthKey']?>">
+    <input type="hidden" name="threadid" value="<?=$ThreadID?>">
+    <input type="hidden" name="page" value="<?=$Page?>">
   </div>
   <table class="layout border slight_margin">
     <tr>
@@ -694,7 +694,7 @@ if (check_perms('site_moderate_forums')) {
         <input type="checkbox" id="sticky_thread_checkbox" data-toggle-target="#ranking_row" name="sticky" <?php if ($ThreadInfo['IsSticky']) {
             echo ' checked="checked"';
         } ?>
-        tabindex="2" />
+        tabindex="2">
       </td>
     </tr>
     <tr id="ranking_row" <?=!$ThreadInfo['IsSticky'] ? ' class="hidden"' : ''?>>
@@ -702,7 +702,7 @@ if (check_perms('site_moderate_forums')) {
       <td>
         <input type="text" id="thread_ranking_textbox" name="ranking"
           value="<?=$ThreadInfo['Ranking']?>"
-          tabindex="2" />
+          tabindex="2">
       </td>
     </tr>
     <tr>
@@ -711,7 +711,7 @@ if (check_perms('site_moderate_forums')) {
         <input type="checkbox" id="locked_thread_checkbox" name="locked" <?php if ($ThreadInfo['IsLocked']) {
             echo ' checked="checked"';
         } ?>
-        tabindex="2" />
+        tabindex="2">
       </td>
     </tr>
     <tr>
@@ -719,7 +719,7 @@ if (check_perms('site_moderate_forums')) {
       <td>
         <input type="text" id="thread_title_textbox" name="title" style="width: 75%;"
           value="<?=\Gazelle\Text::esc($ThreadInfo['Title'])?>"
-          tabindex="2" />
+          tabindex="2">
       </td>
     </tr>
     <tr>
@@ -758,15 +758,15 @@ if (check_perms('site_moderate_forums')) {
     <tr>
       <td class="label"><label for="delete_thread_checkbox">Delete</label></td>
       <td>
-        <input type="checkbox" id="delete_thread_checkbox" name="delete" tabindex="2" />
+        <input type="checkbox" id="delete_thread_checkbox" name="delete" tabindex="2">
       </td>
     </tr>
     <?php } ?>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" value="Edit" tabindex="2" />
+        <input type="submit" value="Edit" tabindex="2">
         <span class="u-pull-right">
-          <input type="submit" name="trash" value="Trash" tabindex="2" />
+          <input type="submit" name="trash" value="Trash" tabindex="2">
         </span>
       </td>
     </tr>

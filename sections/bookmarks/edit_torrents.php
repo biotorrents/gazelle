@@ -20,7 +20,6 @@ list($Username) = $app->dbOld->next_record();
 
 View::header(
     'Organize Bookmarks',
-    'browse,vendor/jquery.tablesorter.min,sort'
 );
 
 $EditType = isset($_GET['type']) ? $_GET['type'] : 'torrents';

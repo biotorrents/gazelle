@@ -3,7 +3,7 @@ self::render_push_settings();
 {% macro check_popup(name, setting) %}
 {% set checked = not setting or setting in [1, 4] ? " checked=\"checked\"" : "" %}
     <label>
-        <input type="checkbox" name="notifications_{{ name }}_popup" id="notifications_{{ name }}_popup"{{ checked }} />
+        <input type="checkbox" name="notifications_{{ name }}_popup" id="notifications_{{ name }}_popup"{{ checked }}>
         Pop-up
     </label>
 {% endmacro %}
@@ -11,7 +11,7 @@ self::render_push_settings();
 {% macro check_push(name, setting) %}
 {% set checked = setting in [3, 4, 5] ? " checked=\"checked\"" : "" %}
     <label>
-        <input type="checkbox" name="notifications_{{ name }}_push" id="notifications_{{ name }}_push"{{ checked }} />
+        <input type="checkbox" name="notifications_{{ name }}_push" id="notifications_{{ name }}_push"{{ checked }}>
         Push
     </label>
 {% endmacro %}
@@ -19,7 +19,7 @@ self::render_push_settings();
 {% macro check_trad(name, setting) %}
 {% set checked = setting in [2, 5] ? " checked=\"checked\"" : "" %}
     <label>
-        <input type="checkbox" name="notifications_{{ name }}_traditional" id="notifications_{{ name }}_traditional"{{ checked }} />
+        <input type="checkbox" name="notifications_{{ name }}_traditional" id="notifications_{{ name }}_traditional"{{ checked }}>
         Traditional
     </label>
 {% endmacro %}

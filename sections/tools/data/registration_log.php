@@ -79,10 +79,10 @@ $app->dbOld->set_query_id($QueryID);
 ?>
 
 <form action="" method="post" class="box pad">
-  <input type="hidden" name="action" value="registration_log" />
-  Joined after: <input type="date" name="after_date" />
-  Joined before: <input type="date" name="before_date" />
-  <input type="submit" class="button-primary" />
+  <input type="hidden" name="action" value="registration_log">
+  Joined after: <input type="date" name="after_date">
+  Joined before: <input type="date" name="before_date">
+  <input type="submit" class="button-primary">
 </form>
 
 <?php
@@ -114,12 +114,12 @@ if ($app->dbOld->has_results()) {
 
   <tr class="<?=$RowClass?>">
     <td>
-      <?=User::format_username($UserID, true, true, true, true)?><br />
+      <?=User::format_username($UserID, true, true, true, true)?><br>
       <?=User::format_username($InviterID, true, true, true, true)?>
     </td>
 
     <td>
-      <?=Format::get_ratio_html($Uploaded, $Downloaded)?><br />
+      <?=Format::get_ratio_html($Uploaded, $Downloaded)?><br>
       <?=Format::get_ratio_html($InviterUploaded, $InviterDownloaded)?>
     </td>
 
@@ -145,7 +145,7 @@ if ($app->dbOld->has_results()) {
     </td>
 
     <td>
-      <?=time_diff($Joined)?><br />
+      <?=time_diff($Joined)?><br>
       <?=time_diff($InviterJoined)?>
     </td>
   </tr>

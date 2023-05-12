@@ -51,11 +51,11 @@ if (empty($_POST['confirm'])) {
   </div>
   <div class="box pad">
     <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
-      <input type="hidden" name="action" value="merge" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="confirm" value="true" />
-      <input type="hidden" name="groupid" value="<?=$GroupID?>" />
-      <input type="hidden" name="targetgroupid" value="<?=$NewGroupID?>" />
+      <input type="hidden" name="action" value="merge">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="confirm" value="true">
+      <input type="hidden" name="groupid" value="<?=$GroupID?>">
+      <input type="hidden" name="targetgroupid" value="<?=$NewGroupID?>">
       <h3>You are attempting to merge the group:</h3>
       <ul>
         <li><?= Artists::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></li>
@@ -64,7 +64,7 @@ if (empty($_POST['confirm'])) {
       <ul>
         <li><?= Artists::display_artists($Artists[$NewGroupID], true, false)?> - <a href="torrents.php?id=<?=$NewGroupID?>"><?=$NewName?></a></li>
       </ul>
-      <input type="submit" value="Confirm" />
+      <input type="submit" value="Confirm">
     </form>
   </div>
   </div>
@@ -86,22 +86,22 @@ if (empty($_POST['confirm'])) {
     Comments::merge('torrents', $OldGroupID, $NewGroupID);
 
     //Collages
-  $app->dbOld->query("
+    $app->dbOld->query("
     SELECT CollageID
     FROM collages_torrents
     WHERE GroupID = '$OldGroupID'"); // Select all collages that contain edited group
-  while (list($CollageID) = $app->dbOld->next_record()) {
-      $app->dbOld->query("
+    while (list($CollageID) = $app->dbOld->next_record()) {
+        $app->dbOld->query("
       UPDATE IGNORE collages_torrents
       SET GroupID = '$NewGroupID'
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'"); // Change collage group ID to new ID
-      $app->dbOld->query("
+        $app->dbOld->query("
       DELETE FROM collages_torrents
       WHERE GroupID = '$OldGroupID'
         AND CollageID = '$CollageID'");
-      $app->cache->delete("collage_$CollageID");
-  }
+        $app->cache->delete("collage_$CollageID");
+    }
     $app->cache->delete("torrent_collages_$NewGroupID");
     $app->cache->delete("torrent_collages_personal_$NewGroupID");
 

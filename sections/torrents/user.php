@@ -175,18 +175,6 @@ switch ($_GET['type']) {
         JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
         break;
 
-    case 'contest':
-        $Time = 'unix_timestamp(t.`Time`)';
-        $UserField = 't.`UserID`';
-        $ExtraWhere = "
-      AND t.`ID` IN (
-        SELECT `TorrentID`
-        FROM `library_contest`
-        WHERE `UserID` = $UserID
-      )";
-        $From = '`torrents` AS t';
-        break;
-
     case 'leeching':
         if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
@@ -414,7 +402,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked') ?>
             /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
             <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked') ?>
-            /><label for="tags_type1"> All</label><br />
+            /><label for="tags_type1"> All</label><br>
             Use !tag to exclude tags
           </td>
         </tr>
@@ -472,7 +460,7 @@ foreach ($Categories as $CatKey => $CatName) {
           <?= \Gazelle\Text::float($TorrentCount) ?>
           Results
         </span>
-        <input type="submit" class="button-primary" value="Search" />
+        <input type="submit" class="button-primary" value="Search">
       </div>
     </form>
   </div>
@@ -547,7 +535,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
           # Year
           if ($GroupYear) {
-              $Label = '<br />📅&nbsp;';
+              $Label = '<br>📅&nbsp;';
               $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
           }
 
@@ -606,7 +594,7 @@ foreach ($Categories as $CatKey => $CatName) {
             <?php
           $ExtraInfo = Torrents::torrent_info($Torrent);
           if ($ExtraInfo) {
-              echo "<br />$ExtraInfo";
+              echo "<br>$ExtraInfo";
           } ?>
             <div class="tags"><?= $TorrentTags->format('torrents.php?type='.$Action.'&amp;userid='.$UserID.'&amp;tags=') ?>
             </div>

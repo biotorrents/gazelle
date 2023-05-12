@@ -1,28 +1,28 @@
 {
   "name": "biotorrents/gazelle",
   "description": "An open platform for libre biology data",
+  "license": "ISC",
   "type": "project",
   "keywords": [
     "biological-data",
     "bittorrent-tracker"
   ],
-  "homepage": "https://torrents.bio",
   "readme": "README.md",
-  "license": "ISC",
   "authors": [
     {
       "name": "Omics Tools LLC",
       "email": "hello@torrents.bio"
     }
   ],
+  "homepage": "https://torrents.bio",
   "support": {
     "email": "hello@torrents.bio",
     "issues": "https://github.com/biotorrents/gazelle/issues",
     "forum": "https://torrents.bio/boards",
     "wiki": "https://torrents.bio/wiki",
+    "chat": "https://slack.torrents.bio",
     "source": "https://github.com/biotorrents/gazelle",
-    "docs": "https://docs.torrents.bio",
-    "chat": "https://slack.torrents.bio"
+    "docs": "https://docs.torrents.bio"
   },
   "funding": [
     {
@@ -59,7 +59,9 @@
     "openai-php/client": "^0.2.1",
     "orpheusnet/bencode-torrent": "^1.2",
     "paragonie/anti-csrf": "^2.3",
+    "phpmailer/phpmailer": "^6.8",
     "povils/figlet": "*",
+    "ramsey/uuid": "^4.7.4",
     "robthree/twofactorauth": "^1.8.2",
     "snipe/banbuilder": "^2.3",
     "spatie/once": "^3.1",
@@ -69,19 +71,22 @@
     "yubico/u2flib-server": "^1.0.2"
   },
   "require-dev": {
+    "ergebnis/composer-normalize": "^2.30.2",
     "friendsofphp/php-cs-fixer": "^3.16.0",
     "kint-php/kint": "^4.2.3",
     "maximebf/debugbar": "^1.18.2",
     "phplucidframe/console-table": "^1.2.4",
-    "phpunit/phpunit": "^9.6.6",
+    "phpunit/phpunit": "^9.6.7",
     "psy/psysh": "^0.11.15",
     "robmorgan/phinx": "^0.13.4"
   },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Gazelle\\": "app/",
       "Database\\Factories\\": "database/factories/",
-      "Database\\Seeders\\": "database/seeders/"
+      "Database\\Seeders\\": "database/seeders/",
+      "Gazelle\\": "app/"
     },
     "classmap": [
       "app/"
@@ -96,9 +101,10 @@
     }
   },
   "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true
+    },
     "optimize-autoloader": true,
     "sort-packages": true
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true
+  }
 }

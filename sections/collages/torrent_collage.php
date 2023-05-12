@@ -181,7 +181,7 @@ foreach ($GroupIDs as $GroupID) {
         // Viewing a type that does not require grouping
         $Data = current($Torrents);
         #$ExtraInfo = Torrents::torrent_info($Data, true, true);
-        #$DisplayName .= "<br />$ExtraInfo";
+        #$DisplayName .= "<br>$ExtraInfo";
 
         $DisplayName = $twig->render(
             'torrents/display_name.html',
@@ -343,7 +343,7 @@ if ($CollageCovers) {
 
 View::header(
     $Name,
-    'browse,collage,recommend,wall'
+    'browse,collage,recommend'
 );
 ?>
 
@@ -356,7 +356,7 @@ View::header(
       <?php if (check_perms('site_collages_create')) { ?>
       <a href="collages.php?action=new" class="brackets">New collection</a>
       <?php } ?>
-      <br /><br />
+      <br><br>
       <?php if (check_perms('site_collages_subscribe')) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
@@ -426,13 +426,13 @@ if (check_perms('zip_downloader')) {
       <div class="head colhead_dark"><strong>Collector</strong></div>
       <div class="pad">
         <form class="download_form" name="zip" action="collages.php" method="post">
-        <input type="hidden" name="action" value="download" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="collageid" value="<?=$CollageID?>" />
+        <input type="hidden" name="action" value="download">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="collageid" value="<?=$CollageID?>">
         <ul id="list" class="nobullet">
 <?php foreach ($ZIPList as $ListItem) { ?>
           <li id="list<?=$ListItem?>">
-            <input type="hidden" name="list[]" value="<?=$ListItem?>" />
+            <input type="hidden" name="list[]" value="<?=$ListItem?>">
             <span class="u-pull-left"><?=$ZIPOptions[$ListItem]['2']?></span>
             <span class="remove remove_collector"><a href="#" onclick="remove_selection('<?=$ListItem?>'); return false;" class="u-pull-right brackets">X</a></span>
             <br style="clear: all;" />
@@ -470,7 +470,7 @@ foreach ($ZIPOptions as $Option) {
           <option value="1"<?php if ($ZIPPrefs == 1) { echo ' selected="selected"'; } ?>>Prefer Best Seeded</option>
           <option value="2"<?php if ($ZIPPrefs == 2) { echo ' selected="selected"'; } ?>>Prefer Bonus Tracks</option>
         </select>
-        <input type="submit" style="width: 210px;" value="Download" />
+        <input type="submit" style="width: 210px;" value="Download">
         </form>
       </div>
     </div>
@@ -576,15 +576,15 @@ foreach ($UserAdditions as $UserID => $Additions) {
             class="brackets">Batch add</a></span></div>
       <div class="pad add_torrent_container">
         <form class="add_form" name="torrent" action="collages.php" method="post">
-          <input type="hidden" name="action" value="add_torrent" />
+          <input type="hidden" name="action" value="add_torrent">
           <input type="hidden" name="auth"
-            value="<?=$app->user->extra['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>">
           <input type="hidden" name="collageid"
-            value="<?=$CollageID?>" />
+            value="<?=$CollageID?>">
 
           <div class="submit_div">
-            <input type="text" size="20" name="url" />
-            <input type="submit" class="button-primary" value="Add" />
+            <input type="text" size="20" name="url">
+            <input type="submit" class="button-primary" value="Add">
           </div>
           <p>Enter the URL of a torrent group on the site.</p>
         </form>
@@ -592,18 +592,18 @@ foreach ($UserAdditions as $UserID => $Additions) {
 
       <div class="pad hidden add_torrent_container">
         <form class="add_form" name="torrents" action="collages.php" method="post">
-          <input type="hidden" name="action" value="add_torrent_batch" />
+          <input type="hidden" name="action" value="add_torrent_batch">
           <input type="hidden" name="auth"
-            value="<?=$app->user->extra['AuthKey']?>" />
+            value="<?=$app->user->extra['AuthKey']?>">
           <input type="hidden" name="collageid"
-            value="<?=$CollageID?>" />
+            value="<?=$CollageID?>">
           <div>
             <textarea name="urls" rows="5" cols="25"
               style="white-space: pre; word-wrap: normal; overflow: auto;"></textarea>
           </div>
 
           <div class="submit_div">
-            <input type="submit" value="Add" />
+            <input type="submit" value="Add">
           </div>
           <span style="font-style: italic;">Enter the URLs of torrent groups on the site, one per line.</span>
         </form>
@@ -635,7 +635,7 @@ foreach ($CommentList as $Comment) {
       <div class="head">
         <?=User::format_username($UserID, false, false, false) ?>
         <?=time_diff($CommentTime) ?>
-        <br />
+        <br>
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$CommentID?>"
           class="brackets">Report</a>
       </div>
@@ -659,17 +659,17 @@ if (!$app->user->extra['DisablePosting']) {
       <div class="head"><strong>Comment</strong></div>
       <form class="send_form" name="comment" id="quickpostform" onsubmit="quickpostform.submit_button.disabled = true;"
         action="comments.php" method="post">
-        <input type="hidden" name="action" value="take_post" />
-        <input type="hidden" name="page" value="collages" />
+        <input type="hidden" name="action" value="take_post">
+        <input type="hidden" name="page" value="collages">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="pageid" value="<?=$CollageID?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="pageid" value="<?=$CollageID?>">
         <div class="pad">
           <div>
             <textarea name="body" cols="24" rows="5"></textarea>
           </div>
           <div class="submit_div">
-            <input type="submit" id="submit_button" class="button-primary" value="Post" />
+            <input type="submit" id="submit_button" class="button-primary" value="Post">
           </div>
         </div>
       </form>
@@ -741,7 +741,7 @@ if ($CollageCovers != 0) { ?>
       </span>
     </div>
 
-    <script type="text/javascript">
+    <script>
       $(() => collageShow.init( <?=json_encode($CollagePages)?> ));
     </script>
     <?php

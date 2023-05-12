@@ -106,7 +106,7 @@ if ($ForumStaff) { ?>
           if ($CloseTable) {
               $CloseTable = false;
               // the "\t" and "\n" are used here to make the HTML look pretty
-              echo "\t\t</table>\n\t\t<br />\n";
+              echo "\t\t</table>\n\t\t<br>\n";
           }
           $CurClass = $Class;
           $CloseTable = true;

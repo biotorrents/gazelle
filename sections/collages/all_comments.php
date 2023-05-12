@@ -31,7 +31,7 @@ list($Name) = $app->dbOld->next_record();
 // Start printing
 View::header(
     "Comments for collage $Name",
-    'comments,subscriptions,vendor/easymde.min',
+    'subscriptions,vendor/easymde.min',
     'vendor/easymde.min'
 );
 ?>
@@ -50,7 +50,7 @@ View::header(
       <?php
 $Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9);
 if ($Pages) {
-    echo '<br /><br />' . $Pages;
+    echo '<br><br>' . $Pages;
 }
 ?>
     </div>

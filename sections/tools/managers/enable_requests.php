@@ -211,7 +211,7 @@ $app->dbOld->set_query_id($QueryID);
         LIMIT 50
         ");
 
-        while (list($Checked, $UserID) = $app->dbOld->next_record()) { ?>
+while (list($Checked, $UserID) = $app->dbOld->next_record()) { ?>
         <tr>
             <td>
                 <?=User::format_username($UserID)?>
@@ -222,24 +222,24 @@ $app->dbOld->set_query_id($QueryID);
             </td>
         </tr>
         <?php
-        }
-    $app->dbOld->set_query_id($QueryID); ?>
+}
+$app->dbOld->set_query_id($QueryID); ?>
     </table>
 
     <form action="" method="GET" id="search_form" <?=!isset($_GET['search']) ? 'class="hidden"' : ''?>>
-        <input type="hidden" name="action" value="enable_requests" />
+        <input type="hidden" name="action" value="enable_requests">
 
         <input type="hidden" name="view"
             value="<?=$_GET['view']?>" />
 
-        <input type="hidden" name="search" value="1" />
+        <input type="hidden" name="search" value="1">
 
         <table>
             <tr>
                 <td class="label">Username</td>
                 <td>
                     <input type="text" name="username"
-                        value="<?=$_GET['username']?>" />
+                        value="<?=$_GET['username']?>">
                 </td>
             </tr>
 
@@ -247,7 +247,7 @@ $app->dbOld->set_query_id($QueryID);
                 <td class="label">IP Address</td>
                 <td>
                     <input type="text" name="ip"
-                        value="<?=$_GET['ip']?>" />
+                        value="<?=$_GET['ip']?>">
                 </td>
             </tr>
 
@@ -271,12 +271,11 @@ $app->dbOld->set_query_id($QueryID);
                     </select>&nbsp;
 
                     <input type="date" name="submitted_timestamp1"
-                        value="<?=$_GET['submitted_timestamp1']?>" />
+                        value="<?=$_GET['submitted_timestamp1']?>">
 
                     <input type="date" id="submitted_timestamp2" name="submitted_timestamp2"
                         value="<?=$_GET['submitted_timestamp2']?>"
-                        <?=$_GET['submitted_between'] !== 'between' ? 'style="display: none;"' : ''?>
-                    />
+                        <?=$_GET['submitted_between'] !== 'between' ? 'style="display: none;"' : ''?>>
                 </td>
             </tr>
 
@@ -284,7 +283,7 @@ $app->dbOld->set_query_id($QueryID);
                 <td class="label">Handled By Username</td>
                 <td>
                     <input type="text" name="handled_username"
-                        value="<?=$_GET['handled_username']?>" />
+                        value="<?=$_GET['handled_username']?>">
                 </td>
             </tr>
 
@@ -308,12 +307,11 @@ $app->dbOld->set_query_id($QueryID);
                     </select>&nbsp;
 
                     <input type="date" name="handled_timestamp1"
-                        value="<?=$_GET['handled_timestamp1']?>" />
+                        value="<?=$_GET['handled_timestamp1']?>">
 
                     <input type="date" id="handled_timestamp2" name="handled_timestamp2"
                         value="<?=$_GET['handled_timestamp2']?>"
-                        <?=$_GET['handled_between'] !== 'between' ? 'style="display: none;"' : ''?>
-                    />
+                        <?=$_GET['handled_between'] !== 'between' ? 'style="display: none;"' : ''?>>
                 </td>
             </tr>
 
@@ -371,7 +369,7 @@ $app->dbOld->set_query_id($QueryID);
 
             <tr>
                 <td colspan=2>
-                    <input type="submit" value="Search" />
+                    <input type="submit" value="Search">
                 </td>
             </tr>
         </table>
@@ -382,14 +380,14 @@ $app->dbOld->set_query_id($QueryID);
 if ($NumResults > 0) { ?>
 <div class="linkbox">
     <?php
-    $Pages = Format::get_pages($Page, $NumResults, $RequestsPerPage);
+$Pages = Format::get_pages($Page, $NumResults, $RequestsPerPage);
     echo $Pages;
-?>
+    ?>
 </div>
 
 <table width="100%">
     <tr class="colhead">
-        <td class="center"><input type="checkbox" id="check_all" /></td>
+        <td class="center"><input type="checkbox" id="check_all"></td>
         <td>
             Username
         </td>
@@ -430,12 +428,12 @@ if ($NumResults > 0) { ?>
     </tr>
 
     <?php
-    while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $app->dbOld->next_record()) {
-        ?>
+        while (list($ID, $UserID, $Email, $IP, $UserAgent, $Timestamp, $BanReason, $CheckedBy, $HandledTimestamp, $Outcome) = $app->dbOld->next_record()) {
+            ?>
     <tr class="row" id="row_<?=$ID?>">
         <td class="center">
             <?php if (!$HandledTimestamp) { ?>
-            <input type="checkbox" id="multi" data-id="<?=$ID?>" />
+            <input type="checkbox" id="multi" data-id="<?=$ID?>">
             <?php } ?>
         </td>
 
@@ -466,16 +464,16 @@ if ($NumResults > 0) { ?>
         <?php if (!$HandledTimestamp) { ?>
         <td>
             <input class="inputtext" type="text" id="comment<?=$ID?>"
-                placeholder="Comment" />
+                placeholder="Comment">
         </td>
 
         <td>
             <input type="submit" id="outcome" value="Approve"
-                data-id="<?=$ID?>" />
+                data-id="<?=$ID?>">
             <input type="submit" id="outcome" value="Reject"
-                data-id="<?=$ID?>" />
+                data-id="<?=$ID?>">
             <input type="submit" id="outcome" value="Discard"
-                data-id="<?=$ID?>" />
+                data-id="<?=$ID?>">
         </td>
         <?php } else { ?>
         <td>
@@ -498,7 +496,7 @@ if ($NumResults > 0) { ?>
         <?php } ?>
     </tr>
     <?php
-    }
+        }
     ?>
 </table>
 
@@ -506,13 +504,13 @@ if ($NumResults > 0) { ?>
     <?php
     $Pages = Format::get_pages($Page, $NumResults, $RequestsPerPage);
     echo $Pages;
-?>
+    ?>
 </div>
 
 <div style="padding-bottom: 11px;">
-    <input type="submit" id="multi" value="Approve Selected" />
-    <input type="submit" id="multi" value="Reject Selected" />
-    <input type="submit" id="multi" value="Discard Selected" />
+    <input type="submit" id="multi" value="Approve Selected">
+    <input type="submit" id="multi" value="Reject Selected">
+    <input type="submit" id="multi" value="Discard Selected">
 </div>
 <?php } else { ?>
 <h2>

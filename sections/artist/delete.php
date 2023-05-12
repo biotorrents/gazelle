@@ -41,8 +41,8 @@ if ($app->dbOld->has_results()) {
 <div>
   There are still torrents that have <a
     href="artist.php?id=<?=$ArtistID?>" class="tooltip"
-    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
-  Please remove the artist from these torrents manually before attempting to delete.<br />
+    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br>
+  Please remove the artist from these torrents manually before attempting to delete.<br>
   <div class="box pad">
     <ul>
       <?php
@@ -72,8 +72,8 @@ if ($app->dbOld->has_results()) {
 <div>
   There are still requests that have <a
     href="artist.php?id=<?=$ArtistID?>" class="tooltip"
-    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br />
-  Please remove the artist from these requests manually before attempting to delete.<br />
+    title="View artist" dir="ltr"><?=$Name?></a> as an artist.<br>
+  Please remove the artist from these requests manually before attempting to delete.<br>
   <div class="box pad">
     <ul>
       <?php

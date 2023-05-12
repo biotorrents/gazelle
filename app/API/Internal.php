@@ -28,7 +28,7 @@ class Internal extends Base
             self::failure();
         }
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $frontendHash = $post["frontendHash"] ??= null;
 
         if (!$frontendHash) {
@@ -59,7 +59,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $post["secret"] ??= null;
         $post["code"] ??= null;
 
@@ -86,7 +86,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $post["secret"] ??= null;
         $post["code"] ??= null;
 
@@ -172,7 +172,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $post["name"] ??= null;
 
         /*
@@ -202,7 +202,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $post["tokenId"] ??= null;
 
         if (empty($post["tokenId"])) {
@@ -277,7 +277,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             \Bookmarks::create(
@@ -301,7 +301,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             \Bookmarks::delete(
@@ -330,7 +330,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             $paperId = trim($post["paperId"] ?? null);
@@ -441,7 +441,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             $post["friendId"] ??= null;
@@ -467,7 +467,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             $post["friendId"] ??= null;
@@ -493,7 +493,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
 
         try {
             $post["friendId"] ??= null;

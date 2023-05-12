@@ -27,9 +27,9 @@ View::header('Delete collage');
     </div>
     <div class="pad">
       <form class="delete_form" name="collage" action="collages.php" method="post">
-        <input type="hidden" name="action" value="take_delete" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="collageid" value="<?=$CollageID?>" />
+        <input type="hidden" name="action" value="take_delete">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="collageid" value="<?=$CollageID?>">
 <?php
 if ($CategoryID == 0) {
     ?>
@@ -41,10 +41,10 @@ if ($CategoryID == 0) {
 ?>
         <div>
           <strong>Reason: </strong>
-          <input type="text" name="reason" size="40" />
+          <input type="text" name="reason" size="40">
         </div>
         <div class="submit_div">
-          <input value="Delete" type="submit" />
+          <input value="Delete" type="submit">
         </div>
       </form>
     </div>

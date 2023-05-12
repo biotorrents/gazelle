@@ -38,7 +38,6 @@ $Artists = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC);
 
 View::header(
     "Manage collage $Name",
-    'vendor/jquery.tablesorter.min,sort'
 ); ?>
 
 <div>
@@ -68,7 +67,7 @@ View::header(
 
   <!-- Save All Changes -->
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
 
   <!-- Collage table headings -->
@@ -105,8 +104,8 @@ View::header(
     <tbody>
       <?php
   $Number = 0;
-  foreach ($Artists as $Artist) {
-      $Number++; ?>
+foreach ($Artists as $Artist) {
+    $Number++; ?>
       <tr class="drag row"
         id="li_<?=$Artist['ArtistID']?>">
         <form class="manage_form" name="collage" action="collages.php" method="post">
@@ -123,35 +122,35 @@ View::header(
           <td class="nobr"><?=User::format_username($Artist['UserID'], $$Artist['Username'], false, false, false)?>
           </td>
           <td class="nobr">
-            <input type="hidden" name="action" value="manage_artists_handle" />
+            <input type="hidden" name="action" value="manage_artists_handle">
             <input type="hidden" name="auth"
-              value="<?=$app->user->extra['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>">
             <input type="hidden" name="collageid"
-              value="<?=$CollageID?>" />
+              value="<?=$CollageID?>">
             <input type="hidden" name="artistid"
-              value="<?=$Artist['ArtistID']?>" />
-            <input type="submit" name="submit" value="Edit" />
-            <input type="submit" name="submit" value="Remove" />
+              value="<?=$Artist['ArtistID']?>">
+            <input type="submit" name="submit" value="Edit">
+            <input type="submit" name="submit" value="Remove">
           </td>
         </form>
       </tr>
       <?php
-  } ?>
+} ?>
     </tbody>
   </table>
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
   <form class="dragdrop_form hidden" name="collage" action="collages.php" method="post" id="drag_drop_collage_form">
     <div>
-      <input type="hidden" name="action" value="manage_artists_handle" />
+      <input type="hidden" name="action" value="manage_artists_handle">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="collageid"
-        value="<?=$CollageID?>" />
-      <input type="hidden" name="artistid" value="1" />
+        value="<?=$CollageID?>">
+      <input type="hidden" name="artistid" value="1">
       <input type="hidden" name="drag_drop_collage_sort_order" id="drag_drop_collage_sort_order" readonly="readonly"
-        value="" />
+        value="">
     </div>
   </form>
 </div>

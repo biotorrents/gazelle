@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
-$stats = new Stats();
+$stats = new \Gazelle\Stats();
 
 
 $economyOverTime = $stats->economyOverTime();

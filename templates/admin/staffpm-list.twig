@@ -16,9 +16,9 @@
         <tr>
             <td><a href="staffpm.php?action=viewconv&amp;id={{ pm.id }}">{{ pm.subject }}</a></td>
             <td>{{ pm.date|time_diff(2) }}</td>
-            <td>{% if assigned_to_user %}{{ pm.user_id|user_url }}{% else %}{{ pm.reader }}{% endif %}</td>
+            <td>{% if assigned_to_user %}{{ pm.user_id }}{% else %}{{ pm.reader }}{% endif %}</td>
             <td>{{ pm.replies }}</td>
-            <td>{% if pm.resolver_id %}{{ pm.resolver_id|user_url }}{% else %}(unresolved){% endif %}</td>
+            <td>{% if pm.resolver_id %}{{ pm.resolver_id }}{% else %}(unresolved){% endif %}</td>
         </tr>
     {% if loop.last %}
     </table>

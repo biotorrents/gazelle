@@ -130,27 +130,26 @@ if (check_perms('admin_manage_blog')) {
         name="blog_post" action="blog.php" method="post">
         <div class="pad">
             <input type="hidden" name="action"
-                value="<?=empty($_GET['action']) ? 'takenewblog' : 'takeeditblog'?>" />
+                value="<?=empty($_GET['action']) ? 'takenewblog' : 'takeeditblog'?>">
             <input type="hidden" name="auth"
-                value="<?=$app->user->extra['AuthKey']?>" />
+                value="<?=$app->user->extra['AuthKey']?>">
             <?php if (!empty($_GET['action']) && $_GET['action'] == 'editblog') { ?>
             <input type="hidden" name="blogid"
-                value="<?=$BlogID; ?>" />
+                value="<?=$BlogID; ?>">
             <?php } ?>
             <h3>Title</h3>
-            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>
-            /><br />
+            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>><br>
             <h3>Body</h3>
             <textarea name="body" cols="95"
                 rows="15"><?=!empty($Body) ? \Gazelle\Text::esc($Body) : ''; ?></textarea>
-            <br />
-            <input type="checkbox" value="1" name="important" id="important" checked="checked" /><label
-                for="important">Important</label><br />
+            <br>
+            <input type="checkbox" value="1" name="important" id="important" checked="checked"><label
+                for="important">Important</label><br>
             <h3>Thread ID</h3>
             <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.\Gazelle\Text::esc($ThreadID).'"' : ''; ?>
             />
             (Leave blank to create thread automatically)
-            <br /><br />
+            <br><br>
             <input id="subscribebox" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''; ?>
             tabindex="2" />
             <label for="subscribebox">Subscribe</label>
@@ -162,7 +161,7 @@ if (check_perms('admin_manage_blog')) {
         </div>
     </form>
 </div>
-<br />
+<br>
 <?php
 }
 ?>
@@ -216,7 +215,7 @@ foreach ($Blog as $BlogItem) {
         <div class="pad">
             <?=\Gazelle\Text::parse($Body)?>
             <?php if ($ThreadID) { ?>
-            <br /><br />
+            <br><br>
             <em><a
                     href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>">Discuss
                     this post here</a></em>
@@ -228,7 +227,7 @@ foreach ($Blog as $BlogItem) {
             } ?>
         </div>
     </div>
-    <br />
+    <br>
     <?php
 }
 ?>

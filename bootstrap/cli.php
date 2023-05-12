@@ -23,7 +23,7 @@ $app = \Gazelle\App::go();
 $startTime = microtime(true);
 
 # start debug info
-$server = Http::query("server");
+$server = Http::request("server");
 \Gazelle\Text::figlet($server["SCRIPT_FILENAME"], "green");
 
 # basic info

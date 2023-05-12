@@ -63,7 +63,7 @@ View::footer();
       <strong>
         Enter the title you want
       </strong>
-      <br />
+      <br>
       <input type="text" name="title" maxlength="30" value="">
       <input type="submit">
     </form>

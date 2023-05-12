@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 View::header('Manage Permissions');
 ?>
-<script type="text/javascript">//<![CDATA[
+<script>
 function confirmDelete(id) {
   if (confirm("Are you sure you want to remove this permission class?")) {
     location.href = "tools.php?action=permissions&removeid=" + id;

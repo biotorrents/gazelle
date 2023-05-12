@@ -37,10 +37,9 @@ View::header("Site log");
                 <tr>
                     <td class="label"><strong>Search for:</strong></td>
                     <td>
-                        <input type="search" name="search" size="60" <?=(!empty($_GET['search']) ? ' value="'.\Gazelle\Text::esc($_GET['search']).'"' : '')?>
-                        />
+                        <input type="search" name="search" size="60" <?=(!empty($_GET['search']) ? ' value="'.\Gazelle\Text::esc($_GET['search']).'"' : '')?>>
                         &nbsp;
-                        <input type="submit" class="button-primary" value="Search log" />
+                        <input type="submit" class="button-primary" value="Search log">
                     </td>
                 </tr>
             </table>

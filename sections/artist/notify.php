@@ -12,16 +12,6 @@ if (!check_perms('site_torrents_notify')) {
 $ArtistID = (int) $_GET['artistid'];
 Security::int($ArtistID);
 
-/*
-$app->dbOld->prepared_query("
-  SELECT GROUP_CONCAT(Name SEPARATOR '|')
-  FROM artists_alias
-  WHERE ArtistID = '$ArtistID'
-    AND Redirect = 0
-  GROUP BY ArtistID");
-list($ArtistAliases) = $app->dbOld->next_record(MYSQLI_NUM, FALSE);
-*/
-
 $app->dbOld->prepared_query("
   SELECT Name
   FROM artists_group

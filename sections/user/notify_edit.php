@@ -189,7 +189,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
         echo ' checked="checked"';
     } ?>>
           <label
-            for="<?=$Category?>_<?=$N['ID']?>"><?=$Category?></label><br />
+            for="<?=$Category?>_<?=$N['ID']?>"><?=$Category?></label><br>
           <?php } ?>
         </td>
       </tr>
