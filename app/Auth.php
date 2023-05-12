@@ -53,7 +53,7 @@ class Auth # extends Delight\Auth\Auth
 
         try {
             $this->library = new Delight\Auth\Auth(
-                databaseConnection: $app->dbNew->pdo,
+                databaseConnection: $app->dbNew->source,
                 throttling: $throttling
             );
 
@@ -71,7 +71,7 @@ class Auth # extends Delight\Auth\Auth
      * Returns a variety of different responses, unlike most.
      * We want them to register *before* they get vague messages.
      *
-     * @param array $post Http::query("post")
+     * @param array $post Http::request("post")
      * @return string|int error or userId
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
@@ -177,7 +177,7 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # http query vars
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
@@ -384,7 +384,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            #!d($e);exit;
+            return $e->getMessage();
             return $message;
         }
 
@@ -393,7 +393,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                return $e->getMessage();
                 return $message;
             }
         }
@@ -403,7 +403,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verifyU2F($userId, $twoFactor);
             } catch (Throwable $e) {
-                #!d($e);exit;
+                return $e->getMessage();
                 return $message;
             }
         }
@@ -412,7 +412,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            #!d($e);exit;
+            return $e->getMessage();
             return $message;
         }
     } # login
@@ -484,7 +484,7 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [$badHandle, $userId]);
             }
 
-            # I know it's lazy
+            # lazy af
             throw new Exception($e->getMessage());
         }
     }
@@ -719,6 +719,11 @@ class Auth # extends Delight\Auth\Auth
     {
         $message = "Unable to log out: please manually clear cookies";
 
+        # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Clear-Site-Data
+        if (!headers_sent()) {
+            header("Clear-Site-Data: '*'");
+        }
+
         try {
             # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
@@ -874,7 +879,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         $query = "
             insert into users_sessions
@@ -895,8 +900,8 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $app->dbNew->do($query, $data);
 
-        Http::setCookie([ "sessionId" => $data["sessionId"] ], $expires);
-        Http::setCookie([ "userId" => $userId ], $expires);
+        Http::createCookie([ "sessionId" => $data["sessionId"] ], $expires);
+        Http::createCookie([ "userId" => $userId ], $expires);
     }
 
 

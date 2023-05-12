@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 $snatchedOnly = $get["snatches"] ?? null;
 
 # snatched vs. all
@@ -118,7 +118,7 @@ foreach ($TorrentsInfo as $TorrentID => $Info) {
 
     $ExtraInfo = Torrents::torrent_info($Torrents[$TorrentID]);
     if ($ExtraInfo) {
-        $DisplayName .= "<br />$ExtraInfo";
+        $DisplayName .= "<br>$ExtraInfo";
     } ?>
 
     <tr

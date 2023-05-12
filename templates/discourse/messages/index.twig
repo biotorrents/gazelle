@@ -62,16 +62,16 @@
     <form method="post">
         {{ form_token(query.server.REQUEST_URI) }}
 
-        <input type="text" id="participants" name="participants" placeholder="Send the message to" value="" required />
+        <input type="text" id="participants" name="participants" placeholder="Send the message to" value="" required>
 
-        <input type="text" id="subject" name="subject" placeholder="Message subject line" value="" required />
+        <input type="text" id="subject" name="subject" placeholder="Message subject line" value="" required>
 
         {% set vars = { "id": "body", "name": "body", "placeholder": "Draft your message", "value": "" } %}
         {{ include("_base/textarea.twig", vars)|raw }}
 
-        <input type="submit" id="{{ form }}" name="{{ form }}" value="send message" class="button-primary" />
+        <input type="submit" id="{{ form }}" name="{{ form }}" value="send message" class="button-primary">
 
-        <input type="button" id="preview" name="preview" value="preview" />
+        <input type="button" id="preview" name="preview" value="preview">
     </form>
 </section>
 

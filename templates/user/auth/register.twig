@@ -4,98 +4,93 @@
 
 <h2>Register for a new account</h2>
 
+{# error message #}
 {% if response is not null %}
-<p class="error">
-    {{ response }}
-</p>
+    <p class="error">
+        {{ response }}
+    </p>
 {% endif %}
 
 {% if emailSent is not null %}
-<p class="info">
-    {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#account-creation #}
-    Thanks for registering an account at {{ env.siteName }}.
-    We emailed you an activation link to confirm your email and enable your account.
-    Please remember to read the rules, wiki, and site policies.
-</p>
 
+    <p class="info">
+        {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#account-creation #}
+        Thanks for registering an account at {{ env.siteName }}.
+        We emailed you an activation link to confirm your email and enable your account.
+        Please remember to read the rules, wiki, and site policies.
+    </p>
 
 {% else %}
 
+    {# start the registration form itself #}
+    <form name="register" id="register" method="post" autocomplete="off">
+        {{ form_token(query.server.REQUEST_URI) }}
 
-{# start the registration form itself #}
-<form name="register" id="register" method="post" autocomplete="off">
-    {{ form_token(query.server.REQUEST_URI) }}
+        {# invite #}
+        {% if query.get.invite is defined %}
+            <input type="hidden" name="invite" id="invite" value="{{ invite }}">
+        {% endif %}
 
-    {# authKey #}
-    {% if user.AuthKey is defined %}
-    <input type="hidden" name="authKey" id="authKey" value="{{ user.AuthKey }}" />
-    {% endif %}
+        {# username #}
+        {% if query.post.username is defined %}
+            <input type="text" name="username" id="username" placeholder="Username" value="{{ query.post.username }}" required>
+        {% else %}
+            <input type="text" name="username" id="username" placeholder="Username" required>
+        {% endif %}
 
-    {# invite #}
-    {% if query.get.invite is defined %}
-    <input type="hidden" name="invite" id="invite" value="{{ invite }}" />
-    {% endif %}
+        {# email #}
+        {% if query.post.email is defined %}
+            <input type="email" name="email" id="email" placeholder="Email address" value="{{ query.post.email }}" required>
+        {% else %}
+            <input type="email" name="email" id="email" placeholder="Email address" required>
+        {% endif %}
 
-    {# username #}
-    {% if query.post.username is defined %}
-    <input type="text" name="username" id="username" placeholder="Username" value="{{ query.post.username }}" required />
-    {% else %}
-    <input type="text" name="username" id="username" placeholder="Username" required />
-    {% endif %}
+        {# passphrase #}
+        <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required>
 
-    {# email #}
-    {% if query.post.email is defined %}
-    <input type="email" name="email" id="email" placeholder="Email address" value="{{ query.post.email }}" required />
-    {% else %}
-    <input type="email" name="email" id="email" placeholder="Email address" required />
-    {% endif %}
+        {# confirmPassphrase #}
+        <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase" minlength="15" required>
 
-    {# passphrase #}
-    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required />
+        {# warning #}
+        <p id="passphraseWarning" class="warning"></p>
 
-    {# confirmPassphrase #}
-    <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase" minlength="15" required />
+        {# checkboxes #}
+        <ul>
+            <li>
+                {# isAdult #}
+                {% if query.post.isAdult is defined %}
+                    <input type="checkbox" name="isAdult" id="isAdult" value="true" checked>
+                {% else %}
+                    <input type="checkbox" name="isAdult" id="isAdult" value="true">
+                {% endif %}
+                <label for="isAdult">I'm 18 years or older</label>
+            </li>
 
-    {# warning #}
-    <p id="passphraseWarning" class="warning"></p>
+            <li>
+                {# privacyConsent #}
+                {% if query.post.privacyConsent is defined %}
+                    <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" checked>
+                {% else %}
+                    <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true">
+                {% endif %}
+                <label for="privacyConsent">I consent to the <a href="/privacy">privacy policy</a></label>
+            </li>
 
-    {# checkboxes #}
-    <ul>
-        <li>
-            {# isAdult #}
-            {% if query.post.isAdult is defined %}
-            <input type="checkbox" name="isAdult" id="isAdult" value="true" checked />
-            {% else %}
-            <input type="checkbox" name="isAdult" id="isAdult" value="true" />
-            {% endif %}
-            <label for="isAdult">I'm 18 years or older</label>
-        </li>
+            <li>
+                {# ruleWikiPledge #}
+                {% if query.post.ruleWikiPledge is defined %}
+                    <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" checked>
+                {% else %}
+                    <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true">
+                {% endif %}
+                <label for="ruleWikiPledge">I'll read the site rules and wiki</label>
+            </li>
+        </ul>
 
-        <li>
-            {# privacyConsent #}
-            {% if query.post.privacyConsent is defined %}
-            <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" checked />
-            {% else %}
-            <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" />
-            {% endif %}
-            <label for="privacyConsent">I consent to the <a href="/privacy">privacy policy</a></label>
-        </li>
+        {# submit #}
+        <input type="submit" name="submit" id="submit" value="create my account" class="button-primary">
 
-        <li>
-            {# ruleWikiPledge #}
-            {% if query.post.ruleWikiPledge is defined %}
-            <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" checked />
-            {% else %}
-            <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" />
-            {% endif %}
-            <label for="ruleWikiPledge">I'll read the site rules and wiki</label>
-        </li>
-    </ul>
-
-    {# submit #}
-    <input type="submit" name="submit" id="submit" value="create my account" class="button-primary" />
-
-</form>
+    </form>
 
 {% endif %} {# if !emailSent #}
 

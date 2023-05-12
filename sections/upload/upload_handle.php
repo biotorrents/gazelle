@@ -27,8 +27,8 @@ authorize();
 enforce_login();
 
 # request vars
-$post = Http::query("post");
-$files = Http::query("files");
+$post = Http::request("post");
+$files = Http::request("files");
 
 # gazelle libraries
 $feed = new Feed();
@@ -38,7 +38,7 @@ $validate = new Validate();
 /**
  * collect the form data
  *
- * Http::query automagically escapes all this as strings
+ * Http::request automagically escapes all this as strings
  * also, we're a good boi and we use parameterized queries
  * thank god for null coalescing, it cleans this up a lot
  */
@@ -47,7 +47,7 @@ $data = [];
 
 # basic info
 $data["categoryId"] = \Gazelle\Esc::int($post["categoryId"] ?? null);
-$data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Http::query() recursive
+$data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Http::request() recursive
 #$data["torrentFile"] = $files["torrentFile"] ?? null;
 
 # torrent group

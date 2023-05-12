@@ -276,7 +276,7 @@ switch ($Action) {
         }
         break;
 }
-$Links = implode(' ', $ActionLinks) . (count($TypeLinks) ? '<br />' . implode(' ', $TypeLinks) : '');
+$Links = implode(' ', $ActionLinks) . (count($TypeLinks) ? '<br>' . implode(' ', $TypeLinks) : '');
 
 View::header($Title, 'comments');
 ?>

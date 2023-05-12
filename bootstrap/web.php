@@ -12,11 +12,12 @@ declare(strict_types=1);
 
 # load the app
 $app = \Gazelle\App::go();
+#!d($app->user->permissions);
 
 # query vars
-$get = Http::query("get");
-$post = Http::query("post");
-$server = Http::query("server");
+$get = Http::request("get");
+$post = Http::request("post");
+$server = Http::request("server");
 
 
 /** */
@@ -31,7 +32,7 @@ $document ??= "index";
 #!d($document);exit;
 
 # redirect unauthenticated to login page
-$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm"];
+$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm", "canary"];
 if (!$app->user->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;

@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+
 /**
  * Http
  *
@@ -56,26 +57,33 @@ class Http
      */
     public static function csrf()
     {
-        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
-        if (!empty($_POST)) {
-            if ($csrf->validateRequest()) {
-                return true;
-            } else {
-                self::response(403);
+        $app = \Gazelle\App::go();
+
+        try {
+            $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+            if (!empty($_POST)) {
+                if ($csrf->validateRequest()) {
+                    return true;
+                } else {
+                    # todo: this just results in a blank page
+                    self::response(403);
+                }
             }
+        } catch (\Throwable $e) {
+            return null;
         }
     }
 
 
     /**
-     * query
+     * request
      *
      * Validates and escapes request parameters.
      *
      * @param string $method the method to filter, if any
      * @return array $safe the filtered superglobal
      */
-    public static function query(string $method = ""): array
+    public static function request(string $method = ""): array
     {
         # lowercase
         $method = strtolower($method);
@@ -140,6 +148,61 @@ class Http
         }
 
         return $safe;
+    }
+
+
+    /**
+     * cookie
+     *
+     * Helper for self::request("cookie").
+     */
+    public static function cookie(): array
+    {
+        return self::request("cookie");
+    }
+
+
+    /**
+     * files
+     *
+     * Helper for self::request("files").
+     */
+    public static function files(): array
+    {
+        return self::request("files");
+    }
+
+
+    /**
+     * get
+     *
+     * Helper for self::request("get").
+     */
+    public static function get(): array
+    {
+        return self::request("get");
+    }
+
+
+    /**
+     * post
+     *
+     * Helper for self::request("post").
+     */
+    public static function post(): array
+    {
+        return self::request("post");
+    }
+
+
+    /**
+     * server
+     *
+     * Helper for self::request("server").
+     */
+    public static function server(): array
+    {
+        return self::request("server");
     }
 
 
@@ -323,52 +386,30 @@ class Http
                 break;
         }
 
-        $protocol = (isset($_SERVER["SERVER_PROTOCOL"]))
-            ? $_SERVER["SERVER_PROTOCOL"]
-            : "HTTP/2";
-
+        $protocol = $_SERVER["SERVER_PROTOCOL"] ?? "HTTP/2";
         $GLOBALS["http_response_code"] = $code;
-        header("{$protocol} {$code} {$text}");
 
+        header("{$protocol} {$code} {$text}");
         exit;
     }
 
 
-    /** cookies */
+    /** cookie crud */
 
 
     /**
-     * getCookie
-     *
-     * Untrustworthy user input.
-     * Reads from $_COOKIE superglobal.
-     *
-     * @param string $key the cookie key
-     * @return the sanitized cookie or false
-     */
-    public static function getCookie(string $key): string|bool
-    {
-        $cookie = self::query("cookie");
-
-        return (isset($cookie[self::$cookiePrefix.$key]))
-            ? $cookie[self::$cookiePrefix.$key]
-            : false;
-    }
-
-
-    /**
-     * setCookie
+     * createCookie
      *
      * Sets secure cookies from an associative array.
      * Note that $secure and $httponly are hardcoded.
      *
-     * @see https://www.php.net/manual/en/function.setcookie.php
-     *
      * @param array $cookie ["key => "value", "foo" => "bar"]
      * @param string $when strtotime format
-     * @return bool setcookie
+     * @return void setcookie
+     *
+     * @see https://www.php.net/manual/en/function.setcookie.php
      */
-    public static function setCookie(array $cookie, string $when = "tomorrow"): void
+    public static function createCookie(array $cookie, string $when = "tomorrow"): void
     {
         $app = \Gazelle\App::go();
 
@@ -397,16 +438,44 @@ class Http
 
 
     /**
+     * readCookie
+     *
+     * Untrustworthy user input.
+     * Reads from $_COOKIE superglobal.
+     *
+     * @param string $key the cookie key
+     * @return ?string the sanitized cookie
+     */
+    public static function readCookie(string $key): ?string
+    {
+        $cookie = self::request("cookie");
+
+        return $cookie[self::$cookiePrefix.$key] ?? null;
+    }
+
+
+    /**
+     * updateCookie
+     *
+     * Updates a cookie by key.
+     */
+    public static function updateCookie(array $cookie, string $when = "tomorrow"): void
+    {
+        self::createCookie($cookie, $when);
+    }
+
+
+    /**
      * deleteCookie
      *
      * Deletes a cookie by key.
      *
-     * @param string $key The cookie key
-     * @return bool self::setCookie (setcookie)
+     * @param string $key the cookie key
+     * @return bool self::createCookie
      */
     public static function deleteCookie(string $key): void
     {
-        self::setCookie([self::$cookiePrefix.$key, ""], "now");
+        self::createCookie([self::$cookiePrefix.$key, ""], "now");
     }
 
 
@@ -416,11 +485,11 @@ class Http
      * Delete all user cookies.
      * Uses the $_COOKIE superglobal.
      *
-     * @return bool self::del (setcookie)
+     * @return bool self::deleteCookie
      */
     public static function flushCookies(): void
     {
-        $cookie = self::query("cookie");
+        $cookie = self::request("cookie");
 
         foreach ($cookie as $key => $value) {
             self::deleteCookie($key);

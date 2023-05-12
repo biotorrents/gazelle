@@ -21,8 +21,8 @@ if (headers_sent()) {
 $app = \Gazelle\App::go();
 $json = new Json();
 
-$get = Http::query("get");
-$post = Http::query("post");
+$get = Http::request("get");
+$post = Http::request("post");
 
 /*
 # fail out

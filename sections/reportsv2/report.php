@@ -102,10 +102,10 @@ TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCa
 
   <form name="report" action="reportsv2.php?action=takereport" enctype="multipart/form-data" method="post" id="reportform">
     <div>
-      <input type="hidden" name="submit" value="true" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-      <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
-      <input type="hidden" name="categoryid" value="<?=$CategoryID?>" />
+      <input type="hidden" name="submit" value="true">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+      <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
+      <input type="hidden" name="categoryid" value="<?=$CategoryID?>">
     </div>
 
     <h3>Report Information</h3>
@@ -145,14 +145,14 @@ TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCa
    * The following malarky is needed so that if you get sent back here, the fields are filled in.
    */
 ?>
-        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>" />
-        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>" />
-        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>" />
-        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>" />
-        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? \Gazelle\Text::esc($_POST['extra']) : '')?>" />
+        <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>">
+        <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>">
+        <input id="track" type="hidden" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>">
+        <input id="link" type="hidden" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>">
+        <input id="extra" type="hidden" name="extra" value="<?=(!empty($_POST['extra']) ? \Gazelle\Text::esc($_POST['extra']) : '')?>">
       </div>
     </div>
-  <input type="submit" class="button-primary" value="Report" />
+  <input type="submit" class="button-primary" value="Report">
   </form>
 </div>
 <?php View::footer();

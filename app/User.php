@@ -93,9 +93,9 @@ class User
         $this->auth = new Auth();
 
         # untrusted input
-        $sessionId = Http::getCookie("sessionId") ?? null;
-        $userId = Http::getCookie("userId") ?? null;
-        $server = Http::query("server") ?? null;
+        $sessionId = Http::readCookie("sessionId") ?? null;
+        $userId = Http::readCookie("userId") ?? null;
+        $server = Http::request("server") ?? null;
 
         # unauthenticated
         if (!$sessionId) {
@@ -109,7 +109,7 @@ class User
         $userId = $app->dbNew->single($query, [$sessionId, $now]);
 
         # double check
-        if (intval($userId) !== intval(Http::getCookie("userId"))) {
+        if (intval($userId) !== intval(Http::readCookie("userId"))) {
             return false;
         }
 
@@ -141,7 +141,7 @@ class User
         */
 
         # user stats
-        $query = "select uploaded, downloaded, requiredRatio from users_main where id = ?";
+        $query = "select uploaded, downloaded, requiredRatio from users_main where userId = ?";
         $stats = $app->dbNew->row($query, [$userId]);
 
         # original gazelle user info
@@ -198,7 +198,7 @@ class User
             $this->core["email"] = Crypto::decrypt($this->core["email"]);
 
             # extra: gazelle
-            $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+            $query = "select * from users_main join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
 
@@ -207,6 +207,7 @@ class User
             $row = $app->dbNew->row($query, [ $this->extra["PermissionID"] ]);
             $this->permissions = $row ?? [];
 
+            $this->permissions["values"] ??= null;
             if ($this->permissions["values"]) {
                 $this->permissions["values"] = json_decode($this->permissions["values"], true);
             }
@@ -299,7 +300,7 @@ class User
     {
         $app = \Gazelle\App::go();
 
-        $query = "select enabled from users_main where id = ?";
+        $query = "select status from users where id = ?";
         $enabled = $app->dbNew->single($query, [ $this->core["id"] ]);
 
         return intval($enabled);
@@ -587,89 +588,69 @@ class User
 
 
     /**
-     * Returns a username string for display
+     * format_username
      *
-     * @param int $UserID
-     * @param boolean $Badges whether or not badges (donor, warned, enabled) should be shown
-     * @param boolean $IsWarned
+     * Returns a username string for display.
+     *
+     * @param ?int $userId defaults to the current user
+     * @param boolean $showBadges whether or not badges (donor, warned, enabled) should be shown
+     * @param boolean $isWarned
      * @param boolean $IsEnabled
      * @param boolean $Class whether or not to show the class
      * @param boolean $Title whether or not to show the title
      * @return HTML formatted username
      */
-    public static function format_username($UserID, $Badges = false, $IsWarned = true, $IsEnabled = true, $Class = false, $Title = false)
+    public static function format_username(?int $userId = null, $showBadges = false, $isWarnedUNUSED = false, $IsEnabledUNUSED = true, $ClassUNUSED = false, $TitleUNUSED = false)
     {
-        global $Classes;
+        $app = \Gazelle\App::go();
 
-        $UserID = intval($UserID);
-
-        # Scripts may pass strings
-        if ($UserID === 0) {
-            return 'System';
+        # current user
+        if (!$userId) {
+            $userId = $this->core["id"];
         }
 
-        $UserInfo = self::user_info($UserID);
-        if ($UserInfo['Username'] === '') {
-            return "Unknown [$UserID]";
+        # system user with id 0
+        if ($userId === 0) {
+            return "System";
         }
 
-        # Here we go
-        $Str = '';
+        # get their info
+        $query = "
+            select username, status, donor, siteOptions, warned from users
+            join users_info on users.id = users_info.userId where users.id = ?
+        ";
+        $row = $app->dbNew->row($query, [$userId]);
 
-        $Username = $UserInfo['Username'];
+        # user not found
+        if (!$row || !$row["username"]) {
+            return "Unknown [{$userId}]";
+        }
 
-        # Show donor icon?
-        $ShowDonorIcon = true;
-
-        if ($Title) {
-            $Str .= "<strong><a href='user.php?id=$UserID'>$Username</a></strong>";
+        # badges
+        if ($showBadges) {
+            $badgeHtml = Badges::displayBadges(Badges::getDisplayedBadges($userId), true);
         } else {
-            $Str .= "<a href='user.php?id=$UserID'>$Username</a>";
+            $badgeHtml = "";
         }
 
-        if ($Badges) {
-            $Str .= Badges::displayBadges(Badges::getDisplayedBadges($UserID), true);
+        # donor icon
+        $siteOptions = json_decode($row["siteOptions"], true);
+        if ($siteOptions["donorIcon"] && !empty($row["donor"])) {
+            return "<a href='/user.php?id={$userId}' class='donor'>{$row["username"]}</a>" . $badgeHtml;
         }
 
-        # Warned?
-        $Str .= ($IsWarned && $UserInfo['Warned'])
-          ? '<a href="wiki.php?action=article&amp;name=warnings"'.'><img src="'.staticServer.'common/symbols/warned.png" alt="Warned" title="Warned'.($app->user->core['id'] === $UserID ? ' - Expires '.date('Y-m-d H:i', strtotime($UserInfo['Warned']))
-          : '').'" class="tooltip" /></a>'
-          : '';
-
-        $Str .= ($IsEnabled && $UserInfo['Enabled'] === 2)
-          ? '<a href="/rules"><img src="'.staticServer.'common/symbols/disabled.png" alt="Banned" title="Disabled" class="tooltip" /></a>'
-          : '';
-
-        if ($Class) {
-            foreach (array_keys($UserInfo['ExtraClasses']) as $ExtraClass) {
-            }
-
-            if ($Title) {
-                $Str .= ' <strong>('.self::make_class_string($UserInfo['PermissionID']).')</strong>';
-            } else {
-                $Str .= ' ('.self::make_class_string($UserInfo['PermissionID']).')';
-            }
+        # warned
+        if (!empty($row["warned"])) {
+            return "<a href='/user.php?id={$userId}' class='warned'>{$row["username"]}</a>" . $badgeHtml;
         }
 
-        if ($Title) {
-            // Image proxy CTs
-            if (check_perms('site_proxy_images') && !empty($UserInfo['Title'])) {
-                $UserInfo['Title'] = preg_replace_callback(
-                    '~src=("?)(http.+?)(["\s>])~',
-                    function ($Matches) {
-                        return 'src=' . $Matches[1] . \Gazelle\Images::process($Matches[2]) . $Matches[3];
-                    },
-                    $UserInfo['Title']
-                );
-            }
-
-            if ($UserInfo['Title']) {
-                $Str .= ' <span class="user_title">('.$UserInfo['Title'].')</span>';
-            }
+        # banned
+        if ($row["status"] === 2) {
+            return "<a href='/user.php?id={$userId}' class='banned'>{$row["username"]}</a>" . $badgeHtml;
         }
 
-        return $Str;
+        # normal user
+        return "<a href='/user.php?id={$userId}'>{$row["username"]}</a>" . $badgeHtml;
     }
 
 
@@ -681,11 +662,7 @@ class User
      */
     public static function make_class_string($ClassID)
     {
-        /*
-        global $Classes;
-
-        return $Classes[$ClassID]['Name'];
-        */
+        # todo: remove
     }
 
 
@@ -746,11 +723,11 @@ class User
             #if (!self::hasAvatarsEnabled() || empty($uri)) {
             $uri = "/images/avatars/default.png";
 
-            return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120' />";
+            return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120'>";
         }
 
         # return the user's avatar
-        return "<img src='{$uri}' alt='avatar for {$username}' title='avatar for {$username}' width='120' />";
+        return "<img src='{$uri}' alt='avatar for {$username}' title='avatar for {$username}' width='120'>";
     }
 
 

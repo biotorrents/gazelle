@@ -28,8 +28,8 @@
 {% for b in list %}
     {% if loop.first %}
 <form class="manage_form" name="bans" action="" method="post">
-<input type="hidden" name="auth" value="{{ auth }}" />
-<input type="hidden" name="action" value="login_watch" />
+<input type="hidden" name="auth" value="{{ auth }}">
+<input type="hidden" name="action" value="login_watch">
 <table width="100%">
     <tr class="colhead">
         <td>{{ header.ipaddr|raw }}</td>
@@ -57,7 +57,7 @@
         </td>
         <td>
     {% if b.user_id %}
-            {{ b.user_id|user_url }}
+            {{ b.user_id }}
     {% else %}
             <i title="no user with this name">{{ b.capture }}</i>
     {% endif %}
@@ -76,35 +76,35 @@
         </td>
     {% if can_ban %}
         <td style="text-align: center">
-            <input type="radio" name="admin-{{ b.id }}" value="clear" />
+            <input type="radio" name="admin-{{ b.id }}" value="clear">
         </td>
         <td style="text-align: center">
-            <input type="radio" name="admin-{{ b.id }}" value="ban" />
+            <input type="radio" name="admin-{{ b.id }}" value="ban">
         </td>
         <td style="text-align: center">
-            <input type="radio" id="noop-{{ b.id }}" name="admin-{{ b.id }}" value="noop" checked="checked" />
+            <input type="radio" id="noop-{{ b.id }}" name="admin-{{ b.id }}" value="noop" checked="checked">
         </td>
     {% else %}
         <td>
-            <input type="checkbox" name="clear-{{ b.id }}" />
+            <input type="checkbox" name="clear-{{ b.id }}">
         </td>
     {% endif %}
     {% if loop.last %}
         {% if can_ban %}
     <tr>
-        <td><br />Ban Reason</td>
+        <td><br>Ban Reason</td>
         <td colspan="9">
-            <br />
-            <input type="text" name="reason" size="40" />
-            <br />When banning, this reason will be recorded for each checked IP address.
+            <br>
+            <input type="text" name="reason" size="40">
+            <br>When banning, this reason will be recorded for each checked IP address.
         </td>
     </tr>
         {% endif %}
     <tr>
         <td colspan="10">
             <input type="checkbox" id="resolve" name="resolve"{{ checked(resolve) }}
-            />&nbsp;<label for="resolve">Resolve IP addresses (may be slow)</label><br />
-            <input type="submit" name="submit" value="Update" />
+            />&nbsp;<label for="resolve">Resolve IP addresses (may be slow)</label><br>
+            <input type="submit" name="submit" value="Update">
         </td>
     </tr>
 </table>

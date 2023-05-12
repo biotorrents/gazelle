@@ -29,7 +29,7 @@ foreach ($ReportType['report_messages'] as $Message) {
 }
 ?>
 </ul>
-<br />
+<br>
 <table class="layout" cellpadding="3" cellspacing="1" border="0" width="100%">
 <?php
 if (array_key_exists('image', $ReportType['report_fields'])) {
@@ -39,7 +39,7 @@ if (array_key_exists('image', $ReportType['report_fields'])) {
       Image(s)<?=($ReportType['report_fields']['image'] === '1' ? ' <strong class="important_text">*</strong>' : '')?>
     </td>
     <td>
-      <input id="image" type="text" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>" />
+      <input id="image" type="text" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>">
     </td>
   </tr>
 <?php
@@ -51,7 +51,7 @@ if (array_key_exists('track', $ReportType['report_fields'])) {
       Track Number(s)<?=($ReportType['report_fields']['track'] === '1' || $ReportType['report_fields']['track'] === '2' ? ' <strong class="important_text">*</strong>' : '')?>
     </td>
     <td>
-      <input id="track" type="text" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>" /><?=($ReportType['report_fields']['track'] === '1' ? '<input id="all_tracks" type="checkbox" onclick="AllTracks()" /> All' : '')?>
+      <input id="track" type="text" name="track" size="8" value="<?=(!empty($_POST['track']) ? \Gazelle\Text::esc($_POST['track']) : '')?>" /><?=($ReportType['report_fields']['track'] === '1' ? '<input id="all_tracks" type="checkbox" onclick="AllTracks()"> All' : '')?>
     </td>
   </tr>
 <?php
@@ -63,7 +63,7 @@ if (array_key_exists('link', $ReportType['report_fields'])) {
       Link(s) to external source<?=($ReportType['report_fields']['link'] === '1' ? ' <strong class="important_text">*</strong>' : '')?>
     </td>
     <td>
-      <input id="link" type="text" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>" />
+      <input id="link" type="text" name="link" size="50" value="<?=(!empty($_POST['link']) ? \Gazelle\Text::esc($_POST['link']) : '')?>">
     </td>
   </tr>
 <?php
@@ -75,7 +75,7 @@ if (array_key_exists('sitelink', $ReportType['report_fields'])) {
       Permalink to <strong>other relevant</strong> torrent(s)<?=($ReportType['report_fields']['sitelink'] === '1' ? ' <strong class="important_text">*</strong>' : '')?>
     </td>
     <td>
-      <input id="sitelink" type="text" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>" />
+      <input id="sitelink" type="text" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>">
     </td>
   </tr>
 

@@ -35,14 +35,14 @@ class View
                 break;
 
             case 'style':
-            $HTML = "<link rel='stylesheet' href='$uri' crossorigin='anonymous' />";
-            #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
-            #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='stylesheet' href='$uri' crossorigin='anonymous'>";
+                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
                 break;
 
             case 'font':
-                $HTML = "<link rel='preload' as='font' href='$uri' crossorigin='anonymous' />";
-                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous' />";
+                $HTML = "<link rel='preload' as='font' href='$uri' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
                 break;
 
             default:

@@ -57,9 +57,9 @@ View::header('Delete torrent', 'reportsv2');
     </div>
     <div class="pad">
       <form class="delete_form" name="torrent" action="torrents.php" method="post">
-        <input type="hidden" name="action" value="takedelete" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
+        <input type="hidden" name="action" value="takedelete">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
         <div>
           <strong>Reason: </strong>
           <select name="reason">
@@ -72,8 +72,8 @@ View::header('Delete torrent', 'reportsv2');
         </div>
         <div>
           <strong>Extra info: </strong>
-          <input type="text" name="extra" size="30" />
-          <input value="Delete" type="submit" />
+          <input type="text" name="extra" size="30">
+          <input value="Delete" type="submit">
         </div>
       </form>
     </div>
@@ -88,42 +88,6 @@ if (check_perms('admin_reports')) {
 
     require(serverRoot.'/sections/reportsv2/array.php');
     $ReportID = 0;
-    /*
-      $app->dbOld->query("
-          SELECT
-            tg.Name,
-            tg.ID,
-            CASE COUNT(ta.GroupID)
-              WHEN 1 THEN aa.ArtistID
-              WHEN 0 THEN '0'
-              ELSE '0'
-            END AS ArtistID,
-            CASE COUNT(ta.GroupID)
-              WHEN 1 THEN aa.Name
-              WHEN 0 THEN ''
-              ELSE 'Various Artists'
-            END AS ArtistName,
-            tg.Year,
-            tg.CategoryID,
-            t.Time,
-            t.Remastered,
-            t.RemasterTitle,
-            t.RemasterYear,
-            t.Media,
-            t.Format,
-            t.Encoding,
-            t.Size,
-            t.HasLog,
-            t.LogScore,
-            t.UserID AS UploaderID,
-            uploader.Username
-          FROM torrents AS t
-            LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
-            LEFT JOIN torrents_artists AS ta ON ta.GroupID = tg.ID AND ta.Importance = '1'
-            LEFT JOIN artists_alias AS aa ON aa.AliasID = ta.AliasID
-            LEFT JOIN users_main AS uploader ON uploader.ID = t.UserID
-          WHERE t.ID = $TorrentID");
-    */
     $app->dbOld->query("
       SELECT
         tg.Name,
@@ -156,7 +120,7 @@ if (check_perms('admin_reports')) {
         error();
     }
     list($GroupName, $GroupID, $ArtistID, $ArtistName, $Year, $CategoryID, $Time,
-    $Media, $Size, $UploaderID, $UploaderName) = $app->dbOld->next_record();
+        $Media, $Size, $UploaderID, $UploaderName) = $app->dbOld->next_record();
 
     $Type = 'dupe'; //hardcoded default
 
@@ -189,19 +153,19 @@ if (check_perms('admin_reports')) {
         /*
         * Some of these are for takeresolve, some for the JavaScript.
         */
-      ?>
+    ?>
       <div>
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" id="reportid<?=$ReportID?>" name="reportid" value="<?=$ReportID?>" />
-        <input type="hidden" id="torrentid<?=$ReportID?>" name="torrentid" value="<?=$TorrentID?>" />
-        <input type="hidden" id="uploader<?=$ReportID?>" name="uploader" value="<?=$UploaderName?>" />
-        <input type="hidden" id="uploaderid<?=$ReportID?>" name="uploaderid" value="<?=$UploaderID?>" />
-        <input type="hidden" id="reporterid<?=$ReportID?>" name="reporterid" value="<?=$ReporterID?>" />
-        <input type="hidden" id="raw_name<?=$ReportID?>" name="raw_name" value="<?=$RawName?>" />
-        <input type="hidden" id="type<?=$ReportID?>" name="type" value="<?=$Type?>" />
-        <input type="hidden" id="categoryid<?=$ReportID?>" name="categoryid" value="<?=$CategoryID?>" />
-        <input type="hidden" id="pm_type<?=$ReportID?>" name="pm_type" value="Uploader" />
-        <input type="hidden" id="from_delete<?=$ReportID?>" name="from_delete" value="<?=$GroupID?>" />
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" id="reportid<?=$ReportID?>" name="reportid" value="<?=$ReportID?>">
+        <input type="hidden" id="torrentid<?=$ReportID?>" name="torrentid" value="<?=$TorrentID?>">
+        <input type="hidden" id="uploader<?=$ReportID?>" name="uploader" value="<?=$UploaderName?>">
+        <input type="hidden" id="uploaderid<?=$ReportID?>" name="uploaderid" value="<?=$UploaderID?>">
+        <input type="hidden" id="reporterid<?=$ReportID?>" name="reporterid" value="<?=$ReporterID?>">
+        <input type="hidden" id="raw_name<?=$ReportID?>" name="raw_name" value="<?=$RawName?>">
+        <input type="hidden" id="type<?=$ReportID?>" name="type" value="<?=$Type?>">
+        <input type="hidden" id="categoryid<?=$ReportID?>" name="categoryid" value="<?=$CategoryID?>">
+        <input type="hidden" id="pm_type<?=$ReportID?>" name="pm_type" value="Uploader">
+        <input type="hidden" id="from_delete<?=$ReportID?>" name="from_delete" value="<?=$GroupID?>">
       </div>
       <table cellpadding="5" class="box layout">
         <tr>
@@ -213,36 +177,36 @@ if (check_perms('admin_reports')) {
             <?=$LinkName?>
             <a href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>" class="brackets tooltip" title="Download">DL</a>
             uploaded by <a href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
-            <br />
+            <br>
 <?php $app->dbOld->query("
         SELECT r.ID
         FROM reportsv2 AS r
           LEFT JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.GroupID = $GroupID");
-      $GroupOthers = ($app->dbOld->has_results());
+    $GroupOthers = ($app->dbOld->has_results());
 
-      if ($GroupOthers > 0) { ?>
+    if ($GroupOthers > 0) { ?>
             <div style="text-align: right;">
               <a href="reportsv2.php?view=group&amp;id=<?=$GroupID?>">There <?=(($GroupOthers > 1) ? "are $GroupOthers reports" : "is 1 other report")?> for torrent(s) in this group</a>
             </div>
 <?php }
 
-      $app->dbOld->query("
+    $app->dbOld->query("
         SELECT t.UserID
         FROM reportsv2 AS r
           JOIN torrents AS t ON t.ID = r.TorrentID
         WHERE r.Status != 'Resolved'
           AND t.UserID = $UploaderID");
-      $UploaderOthers = ($app->dbOld->has_results());
+    $UploaderOthers = ($app->dbOld->has_results());
 
-      if ($UploaderOthers > 0) { ?>
+    if ($UploaderOthers > 0) { ?>
             <div style="text-align: right;">
               <a href="reportsv2.php?view=uploader&amp;id=<?=$UploaderID?>">There <?=(($UploaderOthers > 1) ? "are $UploaderOthers reports" : "is 1 other report")?> for torrent(s) uploaded by this user</a>
             </div>
 <?php }
 
-      $app->dbOld->query("
+    $app->dbOld->query("
         SELECT DISTINCT req.ID,
           req.FillerID,
           um.Username,
@@ -250,17 +214,17 @@ if (check_perms('admin_reports')) {
         FROM requests AS req
           JOIN users_main AS um ON um.ID = req.FillerID
         AND req.TorrentID = $TorrentID");
-      $Requests = ($app->dbOld->has_results());
-      if ($Requests > 0) {
-          while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
-              ?>
+    $Requests = ($app->dbOld->has_results());
+    if ($Requests > 0) {
+        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
+            ?>
             <div style="text-align: right;">
               <strong class="important_text"><a href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a href="requests.php?action=viewrequest&amp;id=<?=$RequestID?>">this request</a> <?=time_diff($FilledTime)?></strong>
             </div>
 <?php
-          }
-      }
-    } ?>
+        }
+    }
+} ?>
           </td>
         </tr>
 <?php // END REPORTED STUFF :|: BEGIN MOD STUFF?>
@@ -287,7 +251,7 @@ $TypeList = $Types['master'] + $Types[$CategoryID];
             <span id="options<?=$ReportID?>">
               <span class="tooltip" title="Delete torrent?">
                 <label for="delete<?=$ReportID?>"><strong>Delete</strong></label>
-                <input type="checkbox" name="delete" id="delete<?=$ReportID?>"<?=($ReportType['resolve_options']['delete'] ? ' checked="checked"' : '')?> />
+                <input type="checkbox" name="delete" id="delete<?=$ReportID?>"<?=($ReportType['resolve_options']['delete'] ? ' checked="checked"' : '')?>>
               </span>
               <span class="tooltip" title="Warning length in weeks">
                 <label for="warning<?=$ReportID?>"><strong>Warning</strong></label>
@@ -299,7 +263,7 @@ $TypeList = $Types['master'] + $Types[$CategoryID];
               </span>
               <span class="tooltip" title="Remove upload privileges?">
                 <label for="upload<?=$ReportID?>"><strong>Remove upload privileges</strong></label>
-                <input type="checkbox" name="upload" id="upload<?=$ReportID?>"<?=($ReportType['resolve_options']['upload'] ? ' checked="checked"' : '')?> />
+                <input type="checkbox" name="upload" id="upload<?=$ReportID?>"<?=($ReportType['resolve_options']['upload'] ? ' checked="checked"' : '')?>>
               </span>
             </span>
           </td>
@@ -310,27 +274,27 @@ $TypeList = $Types['master'] + $Types[$CategoryID];
             <span class="tooltip" title="Appended to the regular message unless using &quot;Send now&quot;.">
               <textarea name="uploader_pm" id="uploader_pm<?=$ReportID?>" cols="50" rows="1"></textarea>
             </span>
-            <input type="button" value="Send now" onclick="SendPM(<?=$ReportID?>);" />
+            <input type="button" value="Send now" onclick="SendPM(<?=$ReportID?>);">
           </td>
         </tr>
         <tr>
           <td class="label"><strong>Extra</strong> log message:</td>
           <td>
-            <input type="text" name="log_message" id="log_message<?=$ReportID?>" size="40" />
+            <input type="text" name="log_message" id="log_message<?=$ReportID?>" size="40">
           </td>
           <td class="label"><strong>Extra</strong> staff notes:</td>
           <td>
-            <input type="text" name="admin_message" id="admin_message<?=$ReportID?>" size="40" />
+            <input type="text" name="admin_message" id="admin_message<?=$ReportID?>" size="40">
           </td>
         </tr>
         <tr>
           <td colspan="4" style="text-align: center;">
-            <input type="button" value="Submit" onclick="TakeResolve(<?=$ReportID?>);" />
+            <input type="button" value="Submit" onclick="TakeResolve(<?=$ReportID?>);">
           </td>
         </tr>
       </table>
     </form>
-    <br />
+    <br>
   </div>
 </div>
 <?php

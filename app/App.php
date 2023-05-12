@@ -25,8 +25,8 @@ class App
     # the rest of the globals
     public $cache = null;
 
-    public $dbNew = null; # new
-    public $dbOld = null; # old
+    public $dbNew = null;
+    public $dbOld = null;
 
     public $debug = null;
     public $twig = null;
@@ -88,8 +88,8 @@ class App
         $this->cache = \Gazelle\Cache::go();
 
         # database
-        $this->dbNew = \Gazelle\Database::go(); # new
-        $this->dbOld = new \DatabaseOld(); # old
+        $this->dbNew = \Gazelle\Database::go();
+        $this->dbOld = new \DatabaseOld();
 
         # debug
         $this->debug = \Debug::go();
@@ -102,7 +102,7 @@ class App
     }
 
 
-    /** NON-SINGLETON METHODS */
+    /** non-singleton methods */
 
 
     /**
@@ -123,8 +123,11 @@ class App
      * @param string $to
      * @param string $subject
      * @param string $body
+     * @param bool $isHtml
+     *
+     * @see https://github.com/PHPMailer/PHPMailer
      */
-    public static function email(string $to, string $subject, string $body)
+    public static function email(string $to, string $subject, string $body, bool $isHtml = false)
     {
         $app = self::go();
 
@@ -133,22 +136,63 @@ class App
             return false;
         }
 
-        # wrap to 70 characters for RFC compliance
-        # https://www.php.net/manual/en/function.mail.php
-        #$body = wordwrap($body, 70, "\r\n");
+        # passing "true" enables exceptions
+        $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
 
-        $secret = \Gazelle\Text::random();
-        $headers = [
-            "Content-Language" => "en-US",
-            "Content-Transfer-Encoding" => "7bit",
-            "Content-Type" => "text/plain; charset=UTF-8; format=flowed",
-            "From" => "{$app->env->siteName} <gazelle@{$app->env->siteDomain}>",
-            "MIME-Version" => "1.0",
-            "Message-ID" => "<{$secret}@{$app->env->siteDomain}>",
-        ];
+        try {
+            # debug on development
+            $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_OFF;
+            if ($app->env->dev) {
+                $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
+            }
 
-        # send the email
-        mail($to, $subject, $body, $headers);
+            # server settings
+            $mail->isSMTP();
+            $mail->SMTPAuth = true;
+
+            $mail->Host = $app->env->getPriv("emailHost");
+            $mail->Port = $app->env->getPriv("emailPort");
+
+            $mail->Username = $app->env->getPriv("emailUsername");
+            $mail->Password = $app->env->getPriv("emailPassphrase");
+
+            # determine starttls or smtps
+            $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            if ($mail->Port === 465) {
+                # please fix your smtpd configuration
+                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+            }
+
+            # from address
+            $mail->setFrom($app->env->getPriv("emailUsername"), $app->env->siteName);
+
+            # recipient(s)
+            $mail->addAddress($to);
+
+            # potentially useful
+            #$mail->addReplyTo('info@example.com', 'Information');
+            #$mail->addCC('cc@example.com');
+            #$mail->addBCC('bcc@example.com');
+
+            # attachments
+            #$mail->addAttachment('/var/tmp/file.tar.gz');
+            #$mail->addAttachment('/tmp/image.jpg', 'new.jpg');
+
+            # content
+            $mail->isHTML($isHtml);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+
+            # create a plaintext version if needed
+            if ($isHtml) {
+                $mail->AltBody = "todo: render the html as plaintext";
+            }
+
+            # send it
+            $mail->send();
+        } catch (\Throwable $e) {
+            \Announce::slack($mail->ErrorInfo, ["debug"]);
+        }
     }
 
 

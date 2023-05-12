@@ -1,5 +1,7 @@
 <?php
 
+#declare(strict_types = 1);
+
 $app = \Gazelle\App::go();
 
 if (!check_perms('users_warn')) {
@@ -41,13 +43,6 @@ if ($Length !== 'verbal') {
     $AdminComment = date('Y-m-d') . ' - Verbally warned by ' . $app->user->core['username'] . " for $URL\nReason: $Reason\n\n";
     Tools::update_user_notes($AuthorID, $AdminComment);
 }
-$app->dbOld->query("
-  INSERT INTO users_warnings_forums
-    (UserID, Comment)
-  VALUES
-    ('$AuthorID', '" . db_string($AdminComment) . "')
-  ON DUPLICATE KEY UPDATE
-    Comment = CONCAT('" . db_string($AdminComment) . "', Comment)");
 Misc::send_pm($AuthorID, $app->user->core['id'], $Subject, $PrivateMessage);
 
 Comments::edit($PostID, $Body);

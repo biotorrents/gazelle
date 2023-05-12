@@ -26,6 +26,9 @@ if ($env->dev) {
 # (should only be used for initial setup)
 ENV::setPub("enablePublicEncryptionKey", false);
 
+# is there an apcu database key loaded?
+ENV::setPub("apcuKey", apcu_exists("DBKEY"));
+
 
 /**
  * site identity
@@ -85,29 +88,23 @@ ENV::setPub("webRoot", "/var/www");
 # e.g., /var/www/html/dev.torrents.bio
 ( # old format
     !$env->dev
-        ? define("serverRoot", "/var/www/html/torrents.bio") # production
-        : define("serverRoot", "/var/www/html/dev.torrents.bio") # development
+        ? define("serverRoot", "/var/www/html/gazelle") # production
+        : define("serverRoot", "/var/www/html/gazelle") # development
 );
 
 ENV::setPub(
     "serverRoot",
     (!$env->dev
-      ? "/var/www/html/torrents.bio" # production
-      : "/var/www/html/dev.torrents.bio") # development
+      ? "/var/www/html/gazelle" # production
+      : "/var/www/html/gazelle") # development
 );
 
-# where torrent files are stored, e.g., /var/www/torrents-dev/
-( # old format
-    !$env->dev
-        ? define("torrentStore", "/var/www/torrents") # production
-        : define("torrentStore", "/var/www/torrents-dev") # development
-);
-
+# where torrent files are stored, e.g., /var/www/torrents
 ENV::setPub(
     "torrentStore",
     (!$env->dev
         ? "/var/www/torrents" # production
-        : "/var/www/torrents-dev") # development);
+        : "/var/www/torrents") # development);
 );
 
 # allows you to run static content off another server
@@ -314,7 +311,7 @@ ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));
 
 
 /**
- * Services
+ * services
  *
  * Public APIs, domains, etc.
  * Not intended for private API keys.
@@ -327,9 +324,6 @@ ENV::setPub(
     "SCI_HUB",
     ["ren", "tw", "se"]
 );
-
-# IP Geolocation
-ENV::setPub("IP_GEO", "https://tools.keycdn.com/geo.json?host=");
 
 
 /**

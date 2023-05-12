@@ -36,14 +36,14 @@ View::header('Collage recovery!');
     </div>
     <div class="pad">
       <form class="undelete_form" name="collage" action="collages.php" method="post">
-        <input type="hidden" name="action" value="recover" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+        <input type="hidden" name="action" value="recover">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
         <div>
           <strong>Collage ID: </strong>
-          <input type="text" name="collage_id" size="8" />
+          <input type="text" name="collage_id" size="8">
         </div>
         <div class="submit_div">
-          <input value="Recover" class="button-primary" type="submit" />
+          <input value="Recover" class="button-primary" type="submit">
         </div>
       </form>
     </div>

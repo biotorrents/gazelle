@@ -36,7 +36,7 @@
             <strong>Automatic thread subscriptions</strong>
         </td>
         <td>
-            <input type="checkbox" name="autosubscribe" id="autosubscribe"{{ checked(notify.autosub) }} />
+            <input type="checkbox" name="autosubscribe" id="autosubscribe"{{ checked(notify.autosub) }}>
             <label for="autosubscribe">Enable automatic thread subscriptions</label>
         </td>
     </tr>
@@ -45,7 +45,7 @@
             <strong>Deleted seeding torrent alerts</strong>
         </td>
         <td>
-            <input type="checkbox" name="notifyondeleteseeding" id="notifyondeleteseeding"{{ checked(notify.seeded) }} />
+            <input type="checkbox" name="notifyondeleteseeding" id="notifyondeleteseeding"{{ checked(notify.seeded) }}>
             <label for="notifyondeleteseeding">Enable PM notification for deleted seeding torrents</label>
         </td>
     </tr>
@@ -54,7 +54,7 @@
             <strong>Deleted snatched torrent alerts</strong>
         </td>
         <td>
-            <input type="checkbox" name="notifyondeletesnatched" id="notifyondeletesnatched"{{ checked(notify.snatched) }} />
+            <input type="checkbox" name="notifyondeletesnatched" id="notifyondeletesnatched"{{ checked(notify.snatched) }}>
             <label for="notifyondeletesnatched">Enable PM notification for deleted snatched torrents</label>
         </td>
     </tr>
@@ -63,7 +63,7 @@
             <strong>Deleted downloaded torrent alerts</strong>
         </td>
         <td>
-            <input type="checkbox" name="notifyondeletedownloaded" id="notifyondeletedownloaded"{{ checked(notify.downloaded) }} />
+            <input type="checkbox" name="notifyondeletedownloaded" id="notifyondeletedownloaded"{{ checked(notify.downloaded) }}>
             <label for="notifyondeletedownloaded">Enable PM notification for deleted downloaded torrents</label>
         </td>
     </tr>
@@ -72,7 +72,7 @@
             <strong>Unseeded torrent alerts</strong>
         </td>
         <td>
-            <input type="checkbox" name="unseededalerts" id="unseededalerts"{{ checked(notify.unseeded) }} />
+            <input type="checkbox" name="unseededalerts" id="unseededalerts"{{ checked(notify.unseeded) }}>
             <label for="unseededalerts">Enable unseeded torrent alerts</label>
         </td>
     </tr>
@@ -91,12 +91,12 @@
             </select>
             <div id="pushsettings" style="display: none;">
                 <label id="pushservice_title" for="pushkey">API key</label>
-                <input type="text" size="50" name="pushkey" id="pushkey" value="{{ option.PushKey }}" />
+                <input type="text" size="50" name="pushkey" id="pushkey" value="{{ option.PushKey }}">
                 <label class="pushdeviceid" id="pushservice_device" for="pushdevice">Device ID</label>
                 <select class="pushdeviceid" name="pushdevice" id="pushdevice">
                     <option value="{{ option.PushDevice }}" selected="selected">{{ option.PushDevice }}</option>
                 </select>
-                <br />
+                <br>
                 <a href="user.php?action=take_push&amp;push=1&amp;userid={{ logged_user }}&amp;auth={{ auth }}" class="brackets">Test push</a>
                 <a href="wiki.php?action=article&amp;id=113" class="brackets">View wiki guide</a>
             </div>

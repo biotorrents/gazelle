@@ -79,7 +79,7 @@ View::header('Quote Notifications');
       <?=$NumResults && !empty($UnreadSQL) ? " ($NumResults new)" : '' ?>
     </h2>
     <div class="linkbox pager">
-      <br />
+      <br>
 <?php if ($UnreadSQL) { ?>
       <a href="userhistory.php?action=quote_notifications&amp;showall=1" class="brackets">Show all quotes</a>&nbsp;&nbsp;&nbsp;
 <?php } else { ?>
@@ -87,7 +87,7 @@ View::header('Quote Notifications');
 <?php } ?>
       <a href="userhistory.php?action=subscriptions" class="brackets">Show subscriptions</a>&nbsp;&nbsp;&nbsp;
       <a href="userhistory.php?action=quote_notifications&amp;catchup=1" class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
-      <br /><br />
+      <br><br>
 <?php
       $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
 echo $Pages;
@@ -97,7 +97,7 @@ echo $Pages;
 <?php if (!$NumResults) { ?>
   <div class="center">No<?=($UnreadSQL ? ' new' : '')?> quotes.</div>
 <?php } ?>
-  <br />
+  <br>
 <?php
 foreach ($Results as $Result) {
     if ($Result['Page'] == 'forums') {

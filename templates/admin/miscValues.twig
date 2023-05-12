@@ -117,24 +117,24 @@ View::header('Miscellaneous Values');
 
     <tr>
       <form name="misc_values" action="" method="post">
-        <input type="hidden" name="action" value="misc_values" />
+        <input type="hidden" name="action" value="misc_values">
         <input type="hidden" name="auth"
-          value="<?=$app->userNew->extra['AuthKey']?>" />
+          value="<?=$app->userNew->extra['AuthKey']?>">
 
         <td>
-          <input type="text" size="20" name="name" />
+          <input type="text" size="20" name="name">
         </td>
 
         <td>
-          <input type="text" size="50" name="first" />
+          <input type="text" size="50" name="first">
         </td>
 
         <td>
-          <input type="text" size="50" name="second" />
+          <input type="text" size="50" name="second">
         </td>
 
         <td>
-          <input type="submit" name="submit" class="button-primary" value="Create" />
+          <input type="submit" name="submit" class="button-primary" value="Create">
         </td>
       </form>
     </tr>
@@ -144,8 +144,8 @@ while (list($ID, $Name, $First, $Second) = $app->dbOld->next_record()) {
     ?>
     <tr>
       <form class="manage_form" name="misc_values" action="" method="post">
-        <input type="hidden" name="id" value="<?=$ID?>" />
-        <input type="hidden" name="action" value="misc_values" />
+        <input type="hidden" name="id" value="<?=$ID?>">
+        <input type="hidden" name="action" value="misc_values">
         <input type="hidden" name="auth"
           value="<?=$app->userNew->extra['AuthKey']?>" />
 
@@ -165,8 +165,8 @@ while (list($ID, $Name, $First, $Second) = $app->dbOld->next_record()) {
         </td>
 
         <td>
-          <input type="submit" name="submit" class="button-primary" value="Edit" />
-          <input type="submit" name="submit" value="Delete" />
+          <input type="submit" name="submit" class="button-primary" value="Edit">
+          <input type="submit" name="submit" value="Delete">
         </td>
       </form>
     </tr>
@@ -210,11 +210,11 @@ View::footer();
 			{{ form_token(query.server.REQUEST_URI) }}
 
 			<p>
-				<input type="text" name="databaseKey" style="width: 100%" placeholder="Enter a database encryption key" required/>
+				<input type="text" name="databaseKey" style="width: 100%" placeholder="Enter a database encryption key" required>
 			</p>
 
 			<p>
-				<input type="submit" name="update" class="button-primary" value="update"/>
+				<input type="submit" name="update" class="button-primary" value="update">
 			</p>
 
 		</form>

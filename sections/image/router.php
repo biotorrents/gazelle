@@ -28,12 +28,6 @@ if (!extension_loaded('openssl') && strtoupper($URL[4]) === 'S') {
     img_error('badprotocol');
 }
 
-/*
-if (!(preg_match("/{$app->env->regexImage}/i", $URL, $Matches) || preg_match("/$app->env->regexVideo/i", $URL, $Matches))) {
-  img_error('invalid');
-}
-*/
-
 if (isset($_GET['c'])) {
     list($Data, $FileType) = $app->cache->get('image_cache_'.md5($URL));
     $cached = true;
@@ -73,16 +67,6 @@ function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
         $dbTable = 'users_info';
         $dbColumn = 'Avatar';
         $PMSubject = 'Your avatar has been automatically reset';
-    } elseif ($Type === 'avatar2') {
-        $cacheKey = "donor_info_$UserID";
-        $dbTable = 'donor_rewards';
-        $dbColumn = 'SecondAvatar';
-        $PMSubject = 'Your second avatar has been automatically reset';
-    } elseif ($Type === 'donoricon') {
-        $cacheKey = "donor_info_$UserID";
-        $dbTable = 'donor_rewards';
-        $dbColumn = 'CustomIcon';
-        $PMSubject = 'Your donor icon has been automatically reset';
     }
 
     $UserInfo = $app->cache->get($cacheKey, true);

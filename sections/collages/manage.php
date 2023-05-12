@@ -58,7 +58,6 @@ if (count($GroupIDs) > 0) {
 
 View::header(
     "Manage collection $Name",
-    'vendor/jquery.tablesorter.min,sort'
 );
 
 ?>
@@ -85,7 +84,7 @@ View::header(
   </table>
 
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
   <table id="manage_collage_table">
     <thead>
@@ -105,27 +104,27 @@ View::header(
       <?php
 
   $Number = 0;
-  foreach ($GroupIDs as $GroupID) {
-      if (!isset($TorrentList[$GroupID])) {
-          continue;
-      }
-      $Group = $TorrentList[$GroupID];
-      extract(Torrents::array_group($Group));
-      list(, $UserID, $Username, $Sort, $CatNum) = array_values($CollageDataList[$GroupID]);
+foreach ($GroupIDs as $GroupID) {
+    if (!isset($TorrentList[$GroupID])) {
+        continue;
+    }
+    $Group = $TorrentList[$GroupID];
+    extract(Torrents::array_group($Group));
+    list(, $UserID, $Username, $Sort, $CatNum) = array_values($CollageDataList[$GroupID]);
 
-      $Number++;
+    $Number++;
 
-      $DisplayName = '';
-      if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
-          unset($ExtendedArtists[2]);
-          unset($ExtendedArtists[3]);
-          $DisplayName .= Artists::display_artists($ExtendedArtists, true, false);
-      } elseif (count($Artists) > 0) {
-          $DisplayName .= Artists::display_artists($Artists, true, false);
-      }
-      $GroupNameLang = $title ? $title : ($subject ? $subject : $object);
-      $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
-      $GroupYear = $GroupYear > 0 ? $GroupYear : ''; ?>
+    $DisplayName = '';
+    if (!empty($ExtendedArtists[1]) || !empty($ExtendedArtists[4]) || !empty($ExtendedArtists[5]) || !empty($ExtendedArtists[6])) {
+        unset($ExtendedArtists[2]);
+        unset($ExtendedArtists[3]);
+        $DisplayName .= Artists::display_artists($ExtendedArtists, true, false);
+    } elseif (count($Artists) > 0) {
+        $DisplayName .= Artists::display_artists($Artists, true, false);
+    }
+    $GroupNameLang = $title ? $title : ($subject ? $subject : $object);
+    $TorrentLink = "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\">$GroupNameLang</a>";
+    $GroupYear = $GroupYear > 0 ? $GroupYear : ''; ?>
       <tr class="drag row" id="li_<?=$GroupID?>">
         <form class="manage_form" name="collage" action="collages.php" method="post">
           <td>
@@ -146,35 +145,35 @@ View::header(
           <td class="nobr"><?=User::format_username($UserID, $Username, false, false, false)?>
           </td>
           <td class="nobr">
-            <input type="hidden" name="action" value="manage_handle" />
+            <input type="hidden" name="action" value="manage_handle">
             <input type="hidden" name="auth"
-              value="<?=$app->user->extra['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>">
             <input type="hidden" name="collageid"
-              value="<?=$CollageID?>" />
+              value="<?=$CollageID?>">
             <input type="hidden" name="groupid"
-              value="<?=$GroupID?>" />
-            <input type="submit" name="submit" value="Edit" />
-            <input type="submit" name="submit" value="Remove" />
+              value="<?=$GroupID?>">
+            <input type="submit" name="submit" value="Edit">
+            <input type="submit" name="submit" value="Remove">
           </td>
         </form>
       </tr>
       <?php
-  } ?>
+} ?>
     </tbody>
   </table>
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
   <form class="dragdrop_form hidden" name="collage" action="collages.php" method="post" id="drag_drop_collage_form">
     <div>
-      <input type="hidden" name="action" value="manage_handle" />
+      <input type="hidden" name="action" value="manage_handle">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="collageid"
-        value="<?=$CollageID?>" />
-      <input type="hidden" name="groupid" value="1" />
+        value="<?=$CollageID?>">
+      <input type="hidden" name="groupid" value="1">
       <input type="hidden" name="drag_drop_collage_sort_order" id="drag_drop_collage_sort_order" readonly="readonly"
-        value="" />
+        value="">
     </div>
   </form>
 </div>

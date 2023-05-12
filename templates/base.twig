@@ -39,7 +39,7 @@
 
 {# html #}
 <!doctype html>
-<html>
+<html lang="en">
 
 	<head>
 
@@ -68,22 +68,18 @@
 
                 // site options
                 var siteOptions = JSON.parse("{{ siteOptions|json_encode|escape('js') }}");
-			</script>
 
-			{# todo: app.js with vite #}
-			{# <script src="/js/app.min.js"></script> #}
+				// toggle animation duration
+				var toggleDuration = 100;
+			</script>
 
 			{# start libraries #}
 
 			{# jquery #}
 			<script src="/js/vendor/jquery.min.js"> </script>
-			<script src="/js/vendor/jquery-ui.min.js"></script>
 
 			{# lodash #}
-			<script src="/js/vendor/lodash.min.js"></script>
-
-			{# instantpage #}
-			<script src="/js/vendor/instantpage.min.js"></script>
+			<script src="/js/vendor/lodash.core.min.js"></script>
 
 			{# smart quotes #}
 			<script src="/js/vendor/smartquotes.min.js"></script>
@@ -93,12 +89,12 @@
 				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
 			{% endif %}
 
-			{# easymde #}
+			{# easymde and highlight.js #}
 			<script src="/js/vendor/easymde.min.js"></script>
 			<script src="/js/vendor/highlight.min.js"></script>
 
 			{# tom select #}
-			<script src="/js/vendor/tom-select.complete.min.js"></script>
+			<script src="/js/vendor/tom-select.base.min.js"></script>
 
 			{# end libraries #}
 
@@ -118,51 +114,49 @@
 		{# start stylesheets block #}
 		{% block stylesheets %}
 
-			{# todo: app.css with vite #}
-			{# <link rel="stylesheet" type="text/css" href="/css/app.min.css"> #}
 
 			{# start libraries #}
 
-			{# skeleton, normalize, and jquery #}
-			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css"> <link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
-			<link rel="stylesheet" type="text/css" href="/css/vendor/jquery-ui.min.css">
+			{# skeleton and normalize #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
+			<link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
 
-			{# easymde #}
-			<link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css"/>
-			<link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css"/>
+			{# easymde and highlight.js #}
+			<link rel="stylesheet" type="text/css" href="/css/vendor/easymde.min.css">
+			<link rel="stylesheet" type="text/css" href="/css/vendor/highlight.min.css">
 
 			{# tom select #}
-			<link rel="stylesheet" type="text/css" href="/css/vendor/tom-select.bootstrap5.min.css"/>
+			<link rel="stylesheet" type="text/css" href="/css/vendor/tom-select.bootstrap5.min.css">
 
 			{# end libraries #}
 
 			{# gazelle global #}
-			<link rel="stylesheet" type="text/css" href="/css/global.css"/>
+			<link rel="stylesheet" type="text/css" href="/css/global.css">
 
 
 			{% if authenticated %}
 				{# private #}
-				<link rel="stylesheet" type="text/css" href="/css/bookish.css"/>
-				{# <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css" />#}
+				<link rel="stylesheet" type="text/css" href="/css/bookish.css">
+				{# <link rel="stylesheet" type="text/css" href="/css/{{ userStyle }}.css">#}
 
 				    {# external stylesheet #}
 					{% if user.extra.StyleURL is defined %}
-				        <link rel="stylesheet" type="text/css" href="{{ user.extra.StyleURL }}"/>
+				        <link rel="stylesheet" type="text/css" href="{{ user.extra.StyleURL }}">
                     {% endif %}
 			{% else %}
 				{# public #}
-				<link rel="stylesheet" type="text/css" href="/css/public.css"/>
-				<link rel="stylesheet" type="text/css" href="/css/bookish.css"/>
+				<link rel="stylesheet" type="text/css" href="/css/public.css">
+				<link rel="stylesheet" type="text/css" href="/css/bookish.css">
 			{% endif %}
 
 			{% if env.dev %}
-				<link rel="stylesheet" type="text/css" href="/css/development.css"/>
+				<link rel="stylesheet" type="text/css" href="/css/development.css">
 			{% endif %}
 
 			{# extra css #}
 			{% if css is defined %}
 				{% for css in css %}
-					<link rel="stylesheet" type="text/css" href="/css/{{ css }}.css"/>
+					<link rel="stylesheet" type="text/css" href="/css/{{ css }}.css">
 				{% endfor %}
 			{% endif %}
 
@@ -226,6 +220,44 @@
 
 	<body class="{{ bodyStyles }}">
 
+
+	{# start header block #}
+	{% block header %}
+
+	{# start header #}
+
+		{# there's no crypto key loaded! #}
+	{% if not env.apcuKey %}
+		<div id="systemError">
+			<strong>Error!</strong>
+			Couldn't detect an APCu key to decrypt the database.
+			Certain user account functionality is degraded.
+		</div>
+	{% endif %}
+
+
+	{# git info if on development #}
+	{% if env.dev %}
+		<div id="gitInfo">
+			{#
+			<span>
+				<strong>author:</strong>
+				<a href="https://github.com/biotorrents/gazelle/commits?author={{ git.author }}" target="_blank">{{ git.author }}</a>
+			</span>
+			#}
+
+			<span>
+				<strong>branch:</strong>
+				<a href="https://github.com/biotorrents/gazelle/tree/{{ git.branch}}" target="_blank">{{ git.branch}}</a>
+			</span>
+
+			<span>
+				<strong>commit:</strong>
+				<a href="https://github.com/biotorrents/gazelle/commit/{{ git.commit }}" target="_blank"><samp>{{ git.commit }}</samp></a>
+			</span>
+		</div>
+	{% endif %}
+
 		<header id="top">
 			{% if authenticated %}
 				{# private #}
@@ -237,15 +269,16 @@
 			{% endif %}
 		</header>
 
+		{% endblock %}
+
 
 		<main class="container">
 			<div class="row">
 
-
 				{# splash logo #}
 				{% if not authenticated %}
 					<figure id="publicLogo">
-						<img src="/images/logos/torrents.bio.png" alt="logo" />
+						<img src="/images/logos/torrents.bio.png" alt="logo">
 					</figure>
 				{% endif %}
 
@@ -257,18 +290,18 @@
 
 
                 {# start content block #}
-				<section id="content" class="{{ layoutContent }}">
+				<div id="content" class="{{ layoutContent }}">
                     {% block content %}
                     {% endblock %}
-				</section>
+				</div>
                 {# end content block #}
 
 
 				{# start sidebar block #}
-				<section id="sidebar" class="{{ layoutSidebar }}">
+				<div id="sidebar" class="{{ layoutSidebar }}">
                     {% block sidebar %}
                     {% endblock %}
-				</section>
+				</div>
 				{# end sidebar block #}
 
 
@@ -300,9 +333,6 @@
 			{# gazelle global #}
 			<script src="/js/global.js"></script>
 
-			{# main menu #}
-			<script src="/js/menus.js"></script>
-
 			{# extra js #}
 			{# todo: figure out a way to not defer vendor scripts #}
 			{% if js is defined %}
@@ -310,6 +340,9 @@
 					<script src="/js/{{ js }}.js"></script>
 				{% endfor %}
 			{% endif %}
+
+		{# https://instant.page #}
+		<script src="/js/vendor/instantpage.min.js" type="module"></script>
 
 	</body>
 

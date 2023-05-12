@@ -123,15 +123,15 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   <form class="edit_form" name="torrent_group" action="torrents.php" method="post">
 
     <!-- Hidden values -->
-    <input type="hidden" name="action" value="editgroupid" />
+    <input type="hidden" name="action" value="editgroupid">
 
     <input type="hidden" name="auth"
       value="<?=$app->user->extra['AuthKey']?>" />
 
-    <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
+    <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
 
     <input type="hidden" name="oldgroupid"
-      value="<?=$Properties['GroupID']?>" />
+      value="<?=$Properties['GroupID']?>">
 
     <!-- Formlet table -->
     <table class="layout">
@@ -149,7 +149,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Change Group ID" />
+          <input type="submit" value="Change Group ID">
         </td>
       </tr>
     </table>
@@ -169,15 +169,15 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
   <form class="split_form" name="torrent_group" action="torrents.php" method="post">
 
     <!-- Hidden values -->
-    <input type="hidden" name="action" value="newgroup" />
+    <input type="hidden" name="action" value="newgroup">
 
     <input type="hidden" name="auth"
       value="<?=$app->user->extra['AuthKey']?>" />
 
-    <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
+    <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
 
     <input type="hidden" name="oldgroupid"
-      value="<?=$Properties['GroupID']?>" />
+      value="<?=$Properties['GroupID']?>">
 
     <!-- Formlet table -->
     <table class="layout">
@@ -189,7 +189,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="artist"
             value="<?=$Properties['ArtistName']?>"
-            size="50" />
+            size="50">
         </td>
       </tr>
 
@@ -202,7 +202,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="title"
             value="<?=$Properties['Title']?>"
-            size="50" />
+            size="50">
         </td>
       </tr>
 
@@ -215,7 +215,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="test" name="title_rj"
             value="<?=$Properties['Title2']?>"
-            size=50" />
+            size=50">
         </td>
       </tr>
 
@@ -228,7 +228,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="test" name="title_jp"
             value="<?=$Properties['TitleJP']?>"
-            size=50" />
+            size=50">
         </td>
       </tr>
 
@@ -241,14 +241,14 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="year"
             value="<?=$Properties['Year']?>"
-            size="10" />
+            size="10">
         </td>
       </tr>
 
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Split into new group" />
+          <input type="submit" value="Split into new group">
         </td>
       </tr>
     </table>
@@ -262,16 +262,16 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
 <h2>Change Category</h2>
 <div class="box pad">
   <form action="torrents.php" method="post">
-    <input type="hidden" name="action" value="changecategory" />
+    <input type="hidden" name="action" value="changecategory">
     <input type="hidden" name="auth"
       value="<?=$app->user->extra['AuthKey']?>" />
-    <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
+    <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
     <input type="hidden" name="oldgroupid"
-      value="<?=$Properties['GroupID']?>" />
+      value="<?=$Properties['GroupID']?>">
     <input type="hidden" name="oldartistid"
-      value="<?=$Properties['ArtistID']?>" />
+      value="<?=$Properties['ArtistID']?>">
     <input type="hidden" name="oldcategoryid"
-      value="<?=$Properties['CategoryID']?>" />
+      value="<?=$Properties['CategoryID']?>">
 
     <table>
       <tr>
@@ -292,7 +292,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="artist"
             value="<?=$Properties['ArtistName']?>"
-            size="50" />
+            size="50">
         </td>
       </tr>
 
@@ -301,7 +301,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="title"
             value="<?=$Properties['Title']?>"
-            size="50" />
+            size="50">
         </td>
       </tr>
 
@@ -310,20 +310,20 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
         <td>
           <input type="text" name="year"
             value="<?=$Properties['Year']?>"
-            size="10" />
+            size="10">
         </td>
       </tr>
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Change Category" />
+          <input type="submit" value="Change Category">
         </td>
       </tr>
     </table>
   </form>
 </div>
 <?php
-  } ?>
+    } ?>
 <?php
 } // if check_perms('torrents_edit')
 View::footer();

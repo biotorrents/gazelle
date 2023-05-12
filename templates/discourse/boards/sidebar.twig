@@ -1,7 +1,7 @@
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="text" id="search" name="search" placeholder="Search the forums" />
+    <input type="text" id="search" name="search" placeholder="Search the forums">
 </form>
 
 
@@ -10,11 +10,11 @@
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="button" id="create" name="create" value="new thread" class="button-primary" />
+    <input type="button" id="create" name="create" value="new thread" class="button-primary">
 
-    <input type="button" id="unread" name="unread" value="unread" class="button-orange" />
+    <input type="button" id="unread" name="unread" value="unread" class="button-orange">
 
-    <input type="button" id="subscribe" name="subscribe" value="subscribe" />
+    <input type="button" id="subscribe" name="subscribe" value="subscribe">
 </form>
 
 
@@ -26,7 +26,7 @@
     {% for topic in latestTopics %}
     <li>
         <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}
@@ -43,7 +43,7 @@
     {% for topic in topic.suggested_topics %}
     <li>
         <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}

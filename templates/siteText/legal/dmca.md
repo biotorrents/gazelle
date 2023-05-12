@@ -29,13 +29,15 @@ Omics Tools LLC reserves the right to ignore requests for unregistered works.
 We'll expeditiously disable access to the targets of valid requests.
 Our agent to receive notifications of claimed infringement is:
 
-**Address**<br />
-Copyright Manager<br />
-Omics Tools LLC<br />
-30 N Gould St Ste 4000<br />
+### Address
+
+Copyright Manager<br>
+Omics Tools LLC<br>
+30 N Gould St Ste 4000<br>
 Sheridan, WY 82801
 
-**Email**<br />
+### Email
+
 dmca at torrents dot bio
 
 Remember that under

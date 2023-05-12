@@ -9,9 +9,9 @@ Http::csrf();
 $app = \Gazelle\App::go();
 
 # variables
-$post = Http::query("post");
-$cookie = Http::query("cookie");
-$server = Http::query("server");
+$post = Http::request("post");
+$cookie = Http::request("cookie");
+$server = Http::request("server");
 
 $username = \Gazelle\Esc::username($cookie["username"]) ?? null;
 $email = \Gazelle\Esc::email($post["email"]) ?? null;

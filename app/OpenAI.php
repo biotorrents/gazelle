@@ -275,7 +275,7 @@ class OpenAI
             $app->dbNew->do($query, [$keyword, "openai", 0]);
 
             # get tagId
-            $tagId = $app->dbNew->pdo->lastInsertId();
+            $tagId = $app->dbNew->source->lastInsertId();
 
             # insert into torrents_tags
             $table = $this->keywordTables[$this->contentType];

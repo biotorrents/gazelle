@@ -151,7 +151,7 @@ $GB = 1024*1024*1024;
         <td>0.60</td>
       </tr>
     </table>
-    <br />
+    <br>
 
     <h3>
       Required ratio calculation
@@ -182,13 +182,13 @@ $GB = 1024*1024*1024;
         (0% seeded) and multiplies it by the value [1 &minus; (<var>seeding</var> / <var>snatched</var>)].
         Formatted differently, the calculation performed by the system looks like this:
 
-        <br /><br />
+        <br><br>
         <div style="text-align: center;">
           <img style="vertical-align: middle;" class="tex_img"
             src="<?=\Gazelle\Images::process('https://chart.googleapis.com/chart?cht=tx&chf=bg,s,FFFFFF00&chl=%5Ctextrm%7B%28maximum+required+ratio%29+%2A+%281-%5Cfrac%7Bseeding%7D%7Bsnatched%7D%29%7D&ext=.png')?>"
             alt="required ratio = (maximum required ratio) * (1 - (seeding / snatched))" />
         </div>
-        <br /><br />
+        <br><br>
 
         <ul>
           <li>

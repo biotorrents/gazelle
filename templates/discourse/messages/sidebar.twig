@@ -1,7 +1,7 @@
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="text" id="query" name="query" placeholder="Search your private messages" />
+    <input type="text" id="query" name="query" placeholder="Search your private messages">
 </form>
 
 
@@ -18,7 +18,7 @@
         <option value="delete">Delete</option>
     </select>
 
-    <input type="submit" id="apply" name="apply" value="apply to selected" class="button-primary" />
+    <input type="submit" id="apply" name="apply" value="apply to selected" class="button-primary">
 </form>
 
 
@@ -28,15 +28,15 @@
 <form method="post">
     {{ form_token(query.server.REQUEST_URI) }}
 
-    <input type="submit" id="inbox" name="inbox" value="inbox" class="button-primary" />
+    <input type="submit" id="inbox" name="inbox" value="inbox" class="button-primary">
 
-    <input type="submit" id="sent" name="sent" value="sent" />
+    <input type="submit" id="sent" name="sent" value="sent">
 
-    <input type="submit" id="new" name="new" value="new" class="button-red" />
+    <input type="submit" id="new" name="new" value="new" class="button-red">
 
-    <input type="submit" id="unread" name="unread" value="unread" class="button-orange" />
+    <input type="submit" id="unread" name="unread" value="unread" class="button-orange">
 
-    <input type="submit" id="archive" name="archive" value="archive" />
+    <input type="submit" id="archive" name="archive" value="archive">
 </form>
 
 
@@ -48,7 +48,7 @@
     {% for topic in latestTopics %}
     <li>
         <a href="/boards/{{ topic.categorySlug }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}
@@ -65,7 +65,7 @@
     {% for topic in topic.suggested_topics %}
     <li>
         <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br />
+        <br>
         {{ topic.last_posted_at|relativeTime }}
     </li>
     {% endfor %}

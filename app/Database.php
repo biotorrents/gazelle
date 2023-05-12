@@ -7,11 +7,9 @@ declare(strict_types=1);
  * Gazelle\Database
  *
  * The blunt singleton, for your procedural code.
- * @see https://phpdelusions.net/pdo/pdo_wrapper
  *
- * Also uses the Laravel Eloquent ORM for migrations.
- * Maybe for models, I'm not really sold on this idea.
- * @see https://laravel.com/docs/9.x/eloquent
+ * @see https://phpdelusions.net/pdo/pdo_wrapper
+ * @see https://github.com/DoctorMcKay/php-mypdoms
  */
 
 namespace Gazelle;
@@ -21,8 +19,10 @@ class Database extends \PDO
     # instance
     private static $instance;
 
-    # pdo connection
-    public $pdo = null;
+    # database meta
+    public $source = null;
+    public $replicas = [];
+    public $last = null;
 
     # hash algo for cache keys
     private $algorithm = "sha3-512";
@@ -30,6 +30,20 @@ class Database extends \PDO
     # cache settings
     private $cachePrefix = "database:";
     private $cacheDuration = "1 minute";
+
+    # commands that should only hit the source
+    private $sourceCommands = [
+        "alter",
+        "create",
+        "delete",
+        "drop",
+        "insert",
+        "load",
+        "rename",
+        "replace",
+        "truncate",
+        "update",
+    ];
 
 
     /**
@@ -59,8 +73,11 @@ class Database extends \PDO
 
     /**
      * go
+     *
+     * @param array $options the options to use
+     * @return self
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): self
     {
         if (self::$instance === null) {
             self::$instance = new self();
@@ -73,72 +90,268 @@ class Database extends \PDO
 
     /**
      * factory
+     *
+     * @param array $options the options to use
+     * @return void
      */
-    private function factory(array $options = [])
+    private function factory(array $options = []): void
     {
         $app = \Gazelle\App::go();
 
-        # vars
-        $host = $app->env->getPriv("sqlHost");
-        $port = $app->env->getPriv("sqlPort");
+        # don't cache on dev
+        if ($app->env->dev) {
+            $this->cacheDuration = "0 seconds";
+        }
 
-        $username = $app->env->getPriv("sqlUsername");
-        $password = $app->env->getPriv("sqlPassphrase");
+        # database variables
+        $source = $app->env->getPriv("databaseSource");
+        $replicas = $app->env->getPriv("databaseReplicas");
 
-        $db = $app->env->getPriv("sqlDatabase");
-        $charset = "utf8mb4";
-
-        # defaults
+        # default options
         $defaultOptions = [
             \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
             \PDO::ATTR_EMULATE_PREPARES => false,
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
         ];
 
-        # construct
+        # merge with any options passed
         $options = array_replace($defaultOptions, $options);
-        $dsn = "mysql:host={$host};dbname={$db};port={$port};charset={$charset}";
 
-        # do it
+        # construct the source dsn
+        $dsn = "mysql:host={$source["host"]};dbname={$source["database"]};port={$source["port"]};charset={$source["charset"]}";
+        if ($source["socket"]) {
+            $dsn = str_replace("port={$source["port"]}", "unix_socket={$source["socket"]}", $dsn);
+        }
+
         try {
-            $this->pdo = new \PDO($dsn, $username, $password, $options);
+            # try to instantiate the source
+            $this->source = new \PDO($dsn, $source["username"], $source["passphrase"], $options);
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
+
+        # set the last host to the source
+        $this->last = $this->source;
+
+        # bail out if replicas aren't defined
+        if (!$app->env->databaseReplicationEnabled || empty($replicas)) {
+            return;
+        }
+
+        # set up the replicas
+        foreach ($replicas as $key => $replica) {
+            # construct the replica dsn
+            $dsn = "mysql:host={$replica["host"]};dbname={$replica["database"]};port={$replica["port"]};charset={$replica["charset"]}";
+            if ($replica["socket"]) {
+                $dsn = str_replace("port={$replica["port"]}", "unix_socket={$replica["socket"]}", $dsn);
+            }
+
+            try {
+                # try to instantiate the replica
+                $this->replicas[$key] = new \PDO($dsn, $replica["username"], $replica["passphrase"], $options);
+            } catch (\Throwable $e) {
+                throw new \Exception($e->getMessage());
+            }
+        }
     }
+
+
+    /**
+     * determineHost
+     *
+     * Determine the host to use for a query.
+     *
+     * @param string $query the query to be executed
+     * @param ?string $hostname the host to use
+     * @return \PDO the host to use
+     */
+    private function determineHost(string $query = "", ?string $hostname = null): \PDO
+    {
+        # force certain queries to use the source
+        if (preg_match("/^(" . implode("|", $this->sourceCommands) . ")/i", $query)) {
+            $this->last = $this->source;
+            return $this->last;
+        }
+
+        # check for a specific host
+        if ($hostname === "source") {
+            $this->last = $this->source;
+            return $this->last;
+        }
+
+        if ($hostname === "last") {
+            $this->last = $this->last;
+            return $this->last;
+        }
+
+        if (in_array($hostname, array_keys($this->replicas))) {
+            $this->last = $this->replicas[$hostname];
+            return $this->last;
+        }
+
+        # pick a random replica
+        if (!empty($this->replicas)) {
+            $this->last = $this->replicas[array_rand($this->replicas)];
+            return $this->last;
+        }
+
+        # default to the source
+        $this->last = $this->source;
+        return $this->last;
+    }
+
+
+    /** identifiers */
+
+
+    /**
+     * uuid
+     *
+     * Generate a unique id suitable for a database key.
+     *
+     * @return string uuid v7 binary
+     *
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
+     */
+    public function uuid(): string
+    {
+        return \Ramsey\Uuid\Uuid::uuid7()->getBytes();
+    }
+
+
+    /**
+      * readUuid
+      *
+      * Get the string representation of a binary uuid.
+      *
+      * @param string $binary uuid v7 binary
+      * @return string uuid v7 string
+      *
+      * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+      * @see https://uuid.ramsey.dev/en/stable/database.html
+      */
+    private function readUuid(string $binary): string
+    {
+        return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
+    }
+
+
+    /**
+     * slug
+     *
+     * Generate a hashed slug from a string, e.g.,
+     * $app->db->slug($title) => "my-title-d4dce101"
+     *
+     * @param string $string
+     * @return string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_slug
+     */
+    public function slug(string $string): string
+    {
+        $string = \Illuminate\Support\Str::words($string, 10, "");
+        $slug = \Illuminate\Support\Str::slug($string);
+
+        $hash = bin2hex(random_bytes(4));
+        $good = "{$slug}-{$hash}";
+
+        # lazy af
+        if (strlen($good) > 255) {
+            throw new \Exception("slug too long");
+        }
+
+        return $good;
+    }
+
+
+    /**
+     * translateBinary
+     *
+     * Translates a binary field to a string representation.
+     *
+     * @param array $row single database row
+     * @return array translated row
+     */
+    private function translateBinary(array $row)
+    {
+        # uuid v7
+        $row["uuid"] ??= null;
+        if ($row["uuid"]) {
+            $row["uuid"] = $this->readUuid($row["uuid"]);
+        } else {
+            unset($row["uuid"]);
+        }
+
+        # peer_id
+        $row["peer_id"] ??= null;
+        if ($row["peer_id"]) {
+            $row["peer_id"] = bin2hex($row["peer_id"]);
+        } else {
+            unset($row["peer_id"]);
+        }
+
+        # infoHash
+        $row["infoHash"] ??= null;
+        if ($row["infoHash"]) {
+            $row["infoHash"] = bin2hex($row["infoHash"]);
+        } else {
+            unset($row["infoHash"]);
+        }
+
+        # legacy PascalCase
+        $row["InfoHash"] ??= null;
+        if ($row["InfoHash"]) {
+            $row["InfoHash"] = bin2hex($row["InfoHash"]);
+        } else {
+            unset($row["InfoHash"]);
+        }
+
+        return $row;
+    }
+
+
+    /** query operations */
 
 
     /**
      * do
      *
      * For update, insert, etc.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
+     * @return \PDOStatement
      */
-    public function do(string $query, array $args = [])
+    public function do(string $query, array $arguments = [], ?string $hostname = null): \PDOStatement
     {
         $app = \Gazelle\App::go();
 
-        # debug
-        if ($app->env->dev) {
-            /*
-            $app->debug["database"]->log(
-                $this->pdo->debugDumpParams()
-            );
-            */
-        }
+        # determine the host
+        $host = $this->determineHost($query, $hostname);
 
         # prepare
-        $statement = $this->pdo->prepare($query);
+        $statement = $host->prepare($query);
+
+        # debug: before the first return
+        if ($app->env->dev) {
+            $app->debug["database"]->log(
+                $this->meta()
+            );
+        }
 
         # no params
-        if (empty($args)) {
-            return $this->pdo->query($query);
+        if (empty($arguments)) {
+            return $host->query($query);
         }
 
         # execute
-        $statement->execute($args);
+        $statement->execute($arguments);
 
         # errors
-        $errors = $this->pdo->errorInfo();
+        $errors = $host->errorInfo();
         if ($errors[0] !== "00000") {
             throw new \Exception("{$errors[0]}: {$errors[2]}");
         }
@@ -152,20 +365,27 @@ class Database extends \PDO
      * single
      *
      * Gets a single value.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
      */
-    public function single(string $query, array $args = [])
+    public function single(string $query, array $arguments = [], ?string $hostname = null)
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
+            # translate binary
+            $row = $this->translateBinary($row);
+
             foreach ($row as $key => $value) {
                 $app->cache->set($cacheKey, $value, $this->cacheDuration);
                 return $value;
@@ -178,20 +398,27 @@ class Database extends \PDO
      * row
      *
      * Gets a single row.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
      */
-    public function row(string $query, array $args = [])
+    public function row(string $query, array $arguments = [], ?string $hostname = null)
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
 
         foreach ($ref as $row) {
+            # translate binary
+            $row = $this->translateBinary($row);
+
             $app->cache->set($cacheKey, $row, $this->cacheDuration);
             return $row;
         }
@@ -202,26 +429,38 @@ class Database extends \PDO
      * column
      *
      * Gets a single column.
+     *
+     * @param string $column
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
+     * @return ?array
      */
-    public function column(string $query, string $column, array $args = [])
+    public function column(string $column, string $query, array $arguments = [], ?string $hostname = null): ?array
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
         /*
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $ref = $statement->fetchColumn();
         */
 
-        $ref = $this->multi($query, $args);
-        $ref = array_column($ref, $column);
+        $ref = $this->multi($query, $arguments, $hostname);
+        foreach ($ref as $key => $row) {
+            # translate binary
+            $ref[$key] = $this->translateBinary($row);
+        }
 
-        $app->cache->set($cacheKey, $ref, $this->cacheDuration);
-        return $ref;
+        # technically incorrect variable name
+        $row = array_column($ref, $column);
+
+        $app->cache->set($cacheKey, $row, $this->cacheDuration);
+        return $row;
     }
 
 
@@ -229,18 +468,28 @@ class Database extends \PDO
      * multi
      *
      * Gets all results.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
+     * @return array
      */
-    public function multi(string $query, array $args = []): array
+    public function multi(string $query, array $arguments = [], ?string $hostname = null): array
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $args]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
 
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
+
+        foreach ($ref as $key => $row) {
+            # translate binary
+            $ref[$key] = $this->translateBinary($row);
+        }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
         return $ref;
@@ -254,10 +503,14 @@ class Database extends \PDO
      * lastInsertId
      *
      * Gets the last inserted id.
+     * Defaults to the source.
+     *
+     * @param ?string $name
+     * @return string|false
      */
     public function lastInsertId(?string $name = null): string|false
     {
-        return $this->pdo->lastInsertId();
+        return $this->source->lastInsertId($name);
     }
 
 
@@ -265,10 +518,15 @@ class Database extends \PDO
      * rowCount
      *
      * Gets the number of rows.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
+     * @return int
      */
-    public function rowCount(string $query, array $args = []): int
+    public function rowCount(string $query, array $arguments = [], ?string $hostname = null): int
     {
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $rowCount = $statement->rowCount();
 
         return $rowCount;
@@ -279,10 +537,15 @@ class Database extends \PDO
      * columnCount
      *
      * Gets the number of columns.
+     *
+     * @param string $query
+     * @param array $arguments
+     * @param ?string $hostname
+     * @return int
      */
-    public function columnCount(string $query, array $args = []): int
+    public function columnCount(string $query, array $arguments = [], ?string $hostname = null): int
     {
-        $statement = $this->do($query, $args);
+        $statement = $this->do($query, $arguments, $hostname);
         $columnCount = $statement->columnCount();
 
         return $columnCount;
@@ -293,47 +556,70 @@ class Database extends \PDO
      * meta
      *
      * Gets the query metadata.
+     *
+     * @param ?\PDOStatement $statement
+     * @param ?string $hostname
+     * @return array
      */
-    public function meta(\PDOStatement $statement): array
+    public function meta(?\PDOStatement $statement = null, ?string $hostname = null): array
     {
-        $meta = [ "pdo" => [], "statement" => [] ];
+        $host = $this->determineHost("", $hostname);
+        $meta = [ "attributes" => [], "pdo" => [], "statement" => [] ];
+
+        /** */
+
+        # https://www.php.net/manual/en/pdo.getattribute.php
+        $meta["attributes"] = [
+            "autocommit" => $host->getAttribute(\PDO::ATTR_AUTOCOMMIT),
+            "case" => $host->getAttribute(\PDO::ATTR_CASE),
+            "clientVersion" => $host->getAttribute(\PDO::ATTR_CLIENT_VERSION),
+            "connectionStatus" => $host->getAttribute(\PDO::ATTR_CONNECTION_STATUS),
+            "driverName" => $host->getAttribute(\PDO::ATTR_DRIVER_NAME),
+            "errmode" => $host->getAttribute(\PDO::ATTR_ERRMODE),
+            "oracleNulls" => $host->getAttribute(\PDO::ATTR_ORACLE_NULLS),
+            "persistent" => $host->getAttribute(\PDO::ATTR_PERSISTENT),
+            "serverInfo" => $host->getAttribute(\PDO::ATTR_SERVER_INFO),
+            "serverVersion" => $host->getAttribute(\PDO::ATTR_SERVER_VERSION),
+        ];
 
         /** */
 
         # https://www.php.net/manual/en/pdo.errorcode.php
-        $meta["pdo"]["errorCode"] = $this->pdo->errorCode();
+        $meta["pdo"]["errorCode"] = $host->errorCode();
 
         # https://www.php.net/manual/en/pdo.errorinfo.php
-        $meta["pdo"]["errorInfo"] = $this->pdo->errorInfo();
+        $meta["pdo"]["errorInfo"] = $host->errorInfo();
 
         # https://www.php.net/manual/en/pdo.getavailabledrivers.php
-        $meta["pdo"]["availableDrivers"] = $this->pdo->getAvailableDrivers();
+        $meta["pdo"]["availableDrivers"] = $host->getAvailableDrivers();
 
         # https://www.php.net/manual/en/pdo.intransaction.php
-        $meta["pdo"]["inTransaction"] = $this->pdo->inTransaction();
+        $meta["pdo"]["inTransaction"] = $host->inTransaction();
 
         # https://www.php.net/manual/en/pdo.lastinsertid.php
-        $meta["pdo"]["lastInsertId"] = $this->pdo->lastInsertId();
+        $meta["pdo"]["lastInsertId"] = $host->lastInsertId();
 
         /** */
 
-        # https://www.php.net/manual/en/pdostatement.columncount.php
-        $meta["statement"]["columnCount"] = $statement->columnCount();
+        if ($statement) {
+            # https://www.php.net/manual/en/pdostatement.columncount.php
+            $meta["statement"]["columnCount"] = $statement->columnCount();
 
-        # https://www.php.net/manual/en/pdostatement.debugdumpparams.php
-        $meta["statement"]["debugDumpParams"] = $statement->debugDumpParams();
+            # https://www.php.net/manual/en/pdostatement.debugdumpparams.php
+            $meta["statement"]["debugDumpParams"] = $statement->debugDumpParams();
 
-        # https://www.php.net/manual/en/pdostatement.errorcode.php
-        $meta["statement"]["errorCode"] = $statement->errorCode();
+            # https://www.php.net/manual/en/pdostatement.errorcode.php
+            $meta["statement"]["errorCode"] = $statement->errorCode();
 
-        # https://www.php.net/manual/en/pdostatement.errorinfo.php
-        $meta["statement"]["errorInfo"] = $statement->errorInfo();
+            # https://www.php.net/manual/en/pdostatement.errorinfo.php
+            $meta["statement"]["errorInfo"] = $statement->errorInfo();
 
-        # https://www.php.net/manual/en/pdostatement.getcolumnmeta.php
-        #$meta["statement"]["columnMeta"] = $statement->getColumnMeta($todo);
+            # https://www.php.net/manual/en/pdostatement.getcolumnmeta.php
+            #$meta["statement"]["columnMeta"] = $statement->getColumnMeta($todo);
 
-        # https://www.php.net/manual/en/pdostatement.rowcount.php
-        $meta["statement"]["rowCount"] = $statement->rowCount();
+            # https://www.php.net/manual/en/pdostatement.rowcount.php
+            $meta["statement"]["rowCount"] = $statement->rowCount();
+        }
 
         /** */
 
@@ -347,32 +633,44 @@ class Database extends \PDO
     /**
      * beginTransaction
      *
+     * Defaults to the source.
+     *
+     * @return bool
+     *
      * @see https://www.php.net/manual/en/pdo.begintransaction.php
      */
     public function beginTransaction(): bool
     {
-        return $this->pdo->beginTransaction();
+        return $this->source->beginTransaction();
     }
 
 
     /**
      * commit
      *
+     * Defaults to the source.
+     *
+     * @return bool
+     *
      * @see https://www.php.net/manual/en/pdo.commit.php
      */
     public function commit(): bool
     {
-        return $this->pdo->commit();
+        return $this->source->commit();
     }
 
 
     /**
      * rollBack
      *
+     * Defaults to the source.
+     *
+     * @return bool
+     *
      * @see https://www.php.net/manual/en/pdo.rollback.php
      */
     public function rollBack(): bool
     {
-        return $this->pdo->rollBack();
+        return $this->source->rollBack();
     }
 } # class

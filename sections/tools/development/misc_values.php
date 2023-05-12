@@ -17,7 +17,7 @@ if (!check_perms("admin_manage_permissions") && !check_perms("users_mod")) {
 }
 
 # query
-$post = Http::query("post");
+$post = Http::request("post");
 $post["databaseKey"] ??= null;
 
 # create
@@ -25,7 +25,8 @@ $post["databaseKey"] ??= null;
 # read
 $query = "select * from misc";
 $ref = $app->dbNew->multi($query, []);
-!d($ref);exit;
+!d($ref);
+exit;
 
 # update
 
@@ -165,24 +166,24 @@ View::header('Miscellaneous Values');
 
     <tr>
       <form name="misc_values" action="" method="post">
-        <input type="hidden" name="action" value="misc_values" />
+        <input type="hidden" name="action" value="misc_values">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
 
         <td>
-          <input type="text" size="20" name="name" />
+          <input type="text" size="20" name="name">
         </td>
 
         <td>
-          <input type="text" size="50" name="first" />
+          <input type="text" size="50" name="first">
         </td>
 
         <td>
-          <input type="text" size="50" name="second" />
+          <input type="text" size="50" name="second">
         </td>
 
         <td>
-          <input type="submit" name="submit" class="button-primary" value="Create" />
+          <input type="submit" name="submit" class="button-primary" value="Create">
         </td>
       </form>
     </tr>
@@ -192,29 +193,29 @@ while (list($ID, $Name, $First, $Second) = $app->dbOld->next_record()) {
     ?>
     <tr>
       <form class="manage_form" name="misc_values" action="" method="post">
-        <input type="hidden" name="id" value="<?=$ID?>" />
-        <input type="hidden" name="action" value="misc_values" />
+        <input type="hidden" name="id" value="<?=$ID?>">
+        <input type="hidden" name="action" value="misc_values">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
 
         <td>
           <input type="text" size="20" name="name"
-            value="<?=$Name?>" />
+            value="<?=$Name?>">
         </td>
 
         <td>
           <input type="text" size="50" name="first"
-            value="<?=$First?>" />
+            value="<?=$First?>">
         </td>
 
         <td>
           <input type="text" size="50" name="second"
-            value="<?=$Second?>" />
+            value="<?=$Second?>">
         </td>
 
         <td>
-          <input type="submit" name="submit" class="button-primary" value="Edit" />
-          <input type="submit" name="submit" value="Delete" />
+          <input type="submit" name="submit" class="button-primary" value="Edit">
+          <input type="submit" name="submit" value="Delete">
         </td>
       </form>
     </tr>

@@ -16,11 +16,11 @@ if (!check_perms("admin_manage_news")) {
 }
 
 # variables
-$get = Http::query("get");
+$get = Http::request("get");
 $get["newsId"] ??= null;
 $get["delete"] ??= null;
 
-$post = Http::query("post");
+$post = Http::request("post");
 $post["newsId"] ??= null;
 $post["formAction"] ??= null;
 $post["subject"] ??= null;

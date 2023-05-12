@@ -1,30 +1,24 @@
 #!/bin/bash
 
+
 ##
-# Simple script to compile these assets:
-#
-#  - JS with Google Closure Compiler
-#  - SCSS with SassC (Dart forthcoming)
+# compile static assets
 #
 
-# todo: Write tests for the Java environment and Google Closure Compiler binary
-# todo: Rewrite the site JS to support --compilation_level ADVANCED_OPTIMIZATIONS
-#[ ! -f './closureCompiler.jar' ] && echo "Please download Google Closure Compiler as $FILE from https://mvnrepository.com/artifact/com.google.javascript/closureCompiler"
-
-# Cascading Style Sheets
-SCSS="./scss/*.scss"
-for f in $SCSS
+# cascading style sheets
+scss="./scss/*.scss"
+for f in $scss
 do
-  echo ">>> Compiling $f..."
+  echo ">>> compiling $f..."
   basename=$(basename -s .scss $f)
-  sassc "./scss/$basename.scss" > "../public/css/$basename.css"
+  sass "./scss/$basename.scss" > "../public/css/$basename.css"
 done
 
-# JavaScript
-JS="./js/*.js"
-for f in $JS
+# javascript
+js="./js/*.js"
+for f in $js
 do
-  echo ">>> Compiling $f..."
+  echo ">>> compiling $f..."
   basename=$(basename -s .js $f)
   java -jar closureCompiler.jar \
     --compilation_level SIMPLE_OPTIMIZATIONS \

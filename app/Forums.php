@@ -243,26 +243,8 @@ class Forums
             ");
             $Forums = $app->dbOld->to_array('ID', MYSQLI_ASSOC, false);
 
-            $app->dbOld->query("
-            SELECT
-              `ForumID`,
-              `ThreadID`
-            FROM
-              `forums_specific_rules`
-            ");
-
-            $SpecificRules = [];
-            while (list($ForumID, $ThreadID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                $SpecificRules[$ForumID][] = $ThreadID;
-            }
-
-            $app->dbOld->set_query_id($QueryID);
             foreach ($Forums as $ForumID => &$Forum) {
-                if (isset($SpecificRules[$ForumID])) {
-                    $Forum['SpecificRules'] = $SpecificRules[$ForumID];
-                } else {
-                    $Forum['SpecificRules'] = [];
-                }
+                $Forum['SpecificRules'] = [];
             }
             $app->cache->set('forums_list', $Forums, 0);
         }

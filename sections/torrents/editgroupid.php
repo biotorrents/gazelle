@@ -53,12 +53,12 @@ if (empty($_POST['confirm'])) {
     </div>
     <div class="box pad">
       <form class="confirm_form" name="torrent_group" action="torrents.php" method="post">
-        <input type="hidden" name="action" value="editgroupid" />
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-        <input type="hidden" name="confirm" value="true" />
-        <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
-        <input type="hidden" name="oldgroupid" value="<?=$OldGroupID?>" />
-        <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+        <input type="hidden" name="action" value="editgroupid">
+        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+        <input type="hidden" name="confirm" value="true">
+        <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
+        <input type="hidden" name="oldgroupid" value="<?=$OldGroupID?>">
+        <input type="hidden" name="groupid" value="<?=$GroupID?>">
         <h3>You are attempting to move the torrent with ID <?=$TorrentID?> from the group:</h3>
         <ul>
           <li><?= Artists::display_artists($Artists[$OldGroupID], true, false)?> - <a href="torrents.php?id=<?=$OldGroupID?>"><?=$Name?></a></li>
@@ -67,7 +67,7 @@ if (empty($_POST['confirm'])) {
         <ul>
           <li><?= Artists::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$NewName?></a></li>
         </ul>
-        <input type="submit" value="Confirm" />
+        <input type="submit" value="Confirm">
       </form>
     </div>
   </div>

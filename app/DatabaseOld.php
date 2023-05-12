@@ -160,9 +160,6 @@ class DatabaseOld
     private $Server;
     private $Port;
     private $Socket;
-    private $Key;
-    private $Cert;
-    private $CA;
 
 
     /**
@@ -170,18 +167,18 @@ class DatabaseOld
      */
     public function __construct()
     {
-        $ENV = ENV::go();
+        $app = \Gazelle\App::go();
 
-        $this->Database = $ENV->getPriv('sqlDatabase');
-        $this->User = $ENV->getPriv('sqlUsername');
-        $this->Pass = $ENV->getPriv('sqlPassphrase');
-        $this->Server = $ENV->getPriv('sqlHost');
-        $this->Port = $ENV->getPriv('sqlPort');
-        $this->Socket = $ENV->getPriv('sqlSocket');
+        # database variables
+        $source = $app->env->getPriv("databaseSource");
+        $replicas = $app->env->getPriv("databaseReplicas");
 
-        $this->Key = $ENV->getPriv('sqlKey');
-        $this->Cert = $ENV->getPriv('sqlCert');
-        $this->CA = $ENV->getPriv('sqlCertAuthority');
+        $this->Database = $source["database"];
+        $this->User = $source["username"];
+        $this->Pass = $source["passphrase"];
+        $this->Server = $source["host"];
+        $this->Port = $source["port"];
+        $this->Socket = $source["socket"];
     }
 
 
@@ -221,17 +218,6 @@ class DatabaseOld
         if (!$this->LinkID) {
             $this->LinkID = mysqli_init();
 
-            /*
-            mysqli_ssl_set(
-                $this->LinkID,
-                $this->Key,
-                $this->Cert,
-                $this->CA,
-                null,
-                null
-            );
-            */
-
             mysqli_real_connect(
                 $this->LinkID,
                 $this->Server,
@@ -240,8 +226,6 @@ class DatabaseOld
                 $this->Database,
                 $this->Port,
                 $this->Socket,
-                # Needed for self-signed certs
-                MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
             );
 
             if (!$this->LinkID) {

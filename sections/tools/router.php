@@ -24,7 +24,7 @@ $app = \Gazelle\App::go();
  */
 
 $ENV = ENV::go();
-#!d(Http::query());exit;
+#!d(Http::request());exit;
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];

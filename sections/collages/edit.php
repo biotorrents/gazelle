@@ -41,35 +41,35 @@ if (!empty($Err)) {
   </div>
   <div class="box pad">
     <form class="edit_form" name="collage" action="collages.php" method="post">
-      <input type="hidden" name="action" value="edit_handle" />
+      <input type="hidden" name="action" value="edit_handle">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="collageid"
-        value="<?=$CollageID?>" />
+        value="<?=$CollageID?>">
       <table id="edit_collage" class="layout collage_edit">
         <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"
-              value="<?=$Name?>" /></td>
+              value="<?=$Name?>"></td>
         </tr>
         <?php
-  }
+        }
 if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
         <tr>
           <td class="label"><strong>Category</strong></td>
           <td>
             <select name="category">
               <?php
-  foreach ($CollageCats as $CatID => $CatName) {
-      if (!check_perms('site_collages_delete') && $CatID == 0) {
-          // Only mod-type get to make things personal
-          continue;
-      } ?>
+        foreach ($CollageCats as $CatID => $CatName) {
+            if (!check_perms('site_collages_delete') && $CatID == 0) {
+                // Only mod-type get to make things personal
+                continue;
+            } ?>
               <option value="<?=$CatID?>" <?=$CatID == $CategoryID ? ' selected="selected"' : ''?>><?=$CatName?>
               </option>
               <?php
-  } ?>
+        } ?>
             </select>
           </td>
         </tr>
@@ -78,16 +78,16 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
           <td class="label">Description</td>
           <td>
             <?php
-      View::textarea(
-          id: 'description',
-          value: \Gazelle\Text::esc($Description) ?? '',
-      ); ?>
+            View::textarea(
+                id: 'description',
+                value: \Gazelle\Text::esc($Description) ?? '',
+            ); ?>
           </td>
         </tr>
         <tr>
           <td class="label">Tags</td>
           <td><input type="text" name="tags" size="60"
-              value="<?=$TagList?>" /></td>
+              value="<?=$TagList?>"></td>
         </tr>
         <?php if ($CategoryID == 0) { // CategoryID == 0 is for "personal" collages?>
         <tr>
@@ -98,27 +98,27 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
             /></td>
         </tr>
         <?php
-  }
+        }
 if (check_perms('site_collages_delete')) { ?>
         <tr>
           <td class="label">Locked</td>
-          <td><input type="checkbox" name="locked" <?=$Locked ? 'checked="checked" ' : ''?>/>
+          <td><input type="checkbox" name="locked" <?=$Locked ? 'checked="checked" ' : ''?>>
           </td>
         </tr>
         <tr>
           <td class="label">Max groups</td>
           <td><input type="text" name="maxgroups" size="5"
-              value="<?=$MaxGroups?>" /></td>
+              value="<?=$MaxGroups?>"></td>
         </tr>
         <tr>
           <td class="label">Max groups per user</td>
           <td><input type="text" name="maxgroupsperuser" size="5"
-              value="<?=$MaxGroupsPerUser?>" /></td>
+              value="<?=$MaxGroupsPerUser?>"></td>
         </tr>
 
         <?php } ?>
         <tr>
-          <td colspan="2" class="center"><input type="submit" class="button-primary" value="Edit" /></td>
+          <td colspan="2" class="center"><input type="submit" class="button-primary" value="Edit"></td>
         </tr>
       </table>
     </form>

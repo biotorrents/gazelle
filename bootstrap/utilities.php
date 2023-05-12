@@ -30,7 +30,7 @@ function enforce_login()
     $app = \Gazelle\App::go();
 
     if (empty($app->user->core)) {
-        Http::setCookie(['redirect' => $_SERVER['REQUEST_URI']]);
+        Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
 }
@@ -731,8 +731,6 @@ function permissions_form()
         </table>
       </div>
       
-      <div class="submit_container">
-        <input type="submit" name="submit" class ="button-primary" value="Save Permission Class" />
-      </div>
+        <input type="submit" name="submit" class ="button-primary" value="Save Permission Class">
   HTML;
 }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class StupidPassphraseShim extends AbstractMigration
+final class ReconcileGazelleUserTables extends AbstractMigration
 {
     /**
      * Change Method.
@@ -21,7 +21,9 @@ final class StupidPassphraseShim extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        $query = "alter table users_info add column isPassphraseMigrated bool default 0";
+        # todo: move everything into a users_extra table later
+        # the existing schema has significance for ocelot
+        $query = "alter table users_main add column if not exists userId int";
         $app->dbNew->do($query, []);
     }
 }

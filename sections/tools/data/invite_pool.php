@@ -63,7 +63,7 @@ $app->dbOld->set_query_id($RS);
     <?=\Gazelle\Text::float($Results)?> unused invites have been sent.
   </p>
 </div>
-<br />
+<br>
 
 <div>
   <form class="search_form" name="invites" action="" method="get">
@@ -74,11 +74,11 @@ $app->dbOld->set_query_id($RS);
         </td>
 
         <td>
-          <input type="hidden" name="action" value="invite_pool" />
+          <input type="hidden" name="action" value="invite_pool">
           <input type="email" name="search" size="60"
-            value="<?=\Gazelle\Text::esc($Search)?>" />
+            value="<?=\Gazelle\Text::esc($Search)?>">
           &nbsp;
-          <input type="submit" class="button-primary" value="Search log" />
+          <input type="submit" class="button-primary" value="Search log">
         </td>
       </tr>
     </table>
@@ -88,7 +88,7 @@ $app->dbOld->set_query_id($RS);
 <div class="linkbox">
   <?php
   $Pages = Format::get_pages($Page, $Results, INVITES_PER_PAGE, 11) ;
-  echo $Pages;
+echo $Pages;
 ?>
 </div>
 
@@ -132,12 +132,12 @@ $app->dbOld->set_query_id($RS);
     <?php if (check_perms('users_edit_invites')) { ?>
     <td>
       <form class="delete_form" name="invite" action="" method="post">
-        <input type="hidden" name="action" value="invite_pool" />
+        <input type="hidden" name="action" value="invite_pool">
         <input type="hidden" name="auth"
-          value="<?=$app->user->extra['AuthKey']?>" />
+          value="<?=$app->user->extra['AuthKey']?>">
         <input type="hidden" name="invitekey"
-          value="<?=\Gazelle\Text::esc($InviteKey)?>" />
-        <input type="submit" value="Delete" />
+          value="<?=\Gazelle\Text::esc($InviteKey)?>">
+        <input type="submit" value="Delete">
       </form>
     </td>
     <?php } ?>

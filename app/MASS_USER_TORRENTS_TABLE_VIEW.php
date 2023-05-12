@@ -161,11 +161,11 @@ class MASS_USER_TORRENTS_TABLE_VIEW
     <?php $this->buttons(); ?>
 
     <div>
-      <input type="hidden" name="action" value="mass_edit" />
+      <input type="hidden" name="action" value="mass_edit">
       <input type="hidden" name="type"
-        value="<?=\Gazelle\Text::esc($this->EditType)?>" />
+        value="<?=\Gazelle\Text::esc($this->EditType)?>">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
     </div>
   </form>
 </div>
@@ -214,7 +214,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
     <input class="sort_numbers" type="text"
       name="sort[<?=$GroupID?>]"
       value="<?=$Sort?>"
-      id="sort_<?=$GroupID?>" size="4" />
+      id="sort_<?=$GroupID?>" size="4">
   </td>
 
   <td>
@@ -238,7 +238,7 @@ class MASS_USER_TORRENTS_TABLE_VIEW
   </td>
 
   <td class="center">
-    <input type="checkbox" name="remove[<?=$GroupID?>]" value="" />
+    <input type="checkbox" name="remove[<?=$GroupID?>]" value="">
   </td>
 </tr>
 <?php
@@ -276,9 +276,9 @@ class MASS_USER_TORRENTS_TABLE_VIEW
     { ?>
 <div class="drag_drop_save">
   <input type="submit" name="update" value="Update ranking" title="Save your rank"
-    class="tooltip save_sortable_collage" />
+    class="tooltip save_sortable_collage">
   <input type="submit" name="delete" value="Delete checked" title="Remove items"
-    class="tooltip save_sortable_collage" />
+    class="tooltip save_sortable_collage">
 </div>
 <?php
     }

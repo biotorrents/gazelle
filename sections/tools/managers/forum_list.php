@@ -62,7 +62,7 @@ $app->dbOld->query('
   ORDER BY CategoryID, Sort ASC');
 ?>
 <div class="header">
-  <script type="text/javacript">document.getElementByID('content').style.overflow = 'visible';</script>
+  <script>document.getElementByID('content').style.overflow = 'visible';</script>
   <h2>Forum control panel</h2>
 </div>
 <table width="100%">
@@ -81,9 +81,9 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
     ?>
   <tr class="row">
     <form class="manage_form" name="forums" action="" method="post">
-      <input type="hidden" name="id" value="<?=$ID?>" />
-      <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+      <input type="hidden" name="id" value="<?=$ID?>">
+      <input type="hidden" name="action" value="forum_alter">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
@@ -97,13 +97,13 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
         </select>
       </td>
       <td>
-        <input type="text" size="3" name="sort" value="<?=$Sort?>" />
+        <input type="text" size="3" name="sort" value="<?=$Sort?>">
       </td>
       <td>
-        <input type="text" size="10" name="name" value="<?=$Name?>" />
+        <input type="text" size="10" name="name" value="<?=$Name?>">
       </td>
       <td>
-        <input type="text" size="20" name="description" value="<?=$Description?>" />
+        <input type="text" size="20" name="description" value="<?=$Description?>">
       </td>
       <td>
         <select name="minclassread">
@@ -121,8 +121,8 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
         </select>
       </td>
       <td>
-        <input type="submit" name="submit" value="Edit" />
-        <input type="submit" name="submit" value="Delete" />
+        <input type="submit" name="submit" value="Edit">
+        <input type="submit" name="submit" value="Delete">
       </td>
 
     </form>
@@ -135,8 +135,8 @@ while (list($ID, $CategoryID, $Sort, $Name, $Description, $MinClassRead, $MinCla
   </tr>
   <tr class="row">
     <form name="forum" action="" method="post">
-      <input type="hidden" name="action" value="forum_alter" />
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
+      <input type="hidden" name="action" value="forum_alter">
+      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
       <td>
         <select name="categoryid">
 <?php reset($ForumCats);
@@ -148,13 +148,13 @@ foreach ($ForumCats as $CurCat => $CatName) { ?>
         </select>
       </td>
       <td>
-        <input type="text" size="3" name="sort" />
+        <input type="text" size="3" name="sort">
       </td>
       <td>
-        <input type="text" size="10" name="name" />
+        <input type="text" size="10" name="name">
       </td>
       <td>
-        <input type="text" size="20" name="description" />
+        <input type="text" size="20" name="description">
       </td>
       <td>
         <select name="minclassread">
@@ -172,7 +172,7 @@ foreach ($ForumCats as $CurCat => $CatName) { ?>
         </select>
       </td>
       <td>
-        <input type="submit" value="Create" />
+        <input type="submit" value="Create">
       </td>
 
     </form>

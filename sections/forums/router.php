@@ -80,11 +80,6 @@ if (!empty($_POST['action'])) {
             require serverRoot.'/sections/forumsOld/thread.php';
             break;
 
-        case 'ajax_get_edit':
-            // Page that switches edits for mods
-            require serverRoot.'/sections/forumsOld/ajax_get_edit.php';
-            break;
-
         case 'new':
             // Create a new thread
             require serverRoot.'/sections/forumsOld/newthread.php';
@@ -126,10 +121,6 @@ if (!empty($_POST['action'])) {
 
         case 'sticky_post':
             require serverRoot.'/sections/forumsOld/sticky_post.php';
-            break;
-
-        case 'edit_rules':
-            require serverRoot.'/sections/forumsOld/edit_rules.php';
             break;
 
         case 'thread_subscribe':

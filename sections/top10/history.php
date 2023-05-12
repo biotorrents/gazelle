@@ -32,14 +32,14 @@ View::header('Top 10 Torrents history!');
   </div>
   <div class="pad box">
     <form class="search_form" name="top10" method="get" action="">
-      <input type="hidden" name="type" value="history" />
+      <input type="hidden" name="type" value="history">
       <h3>Search for a date! (After 2010-09-05)</h3>
       <table class="layout">
         <tr>
           <td class="label">Date</td>
           <td><input type="text" id="date" name="date"
               value="<?=!empty($_GET['date']) ? \Gazelle\Text::esc($_GET['date']) : 'YYYY-MM-DD'?>"
-              onfocus="if ($('#date').raw().value == 'YYYY-MM-DD') { $('#date').raw().value = ''; }" /></td>
+              onfocus="if ($('#date').raw().value == 'YYYY-MM-DD') { $('#date').raw().value = ''; }"></td>
         </tr>
         <tr>
           <td class="label">Type</td>
@@ -50,7 +50,7 @@ View::header('Top 10 Torrents history!');
         </tr>
         <tr>
           <td colspan="2">
-            <input type="submit" value="Submit" />
+            <input type="submit" value="Submit">
           </td>
         </tr>
       </table>
@@ -116,7 +116,7 @@ if (!empty($_GET['date'])) {
         $app->cache->set("top10_history_$SQLTime", $Details, 3600 * 24);
     } ?>
 
-  <br />
+  <br>
   <div class="pad box">
     <h3>Top 10 for <?=($Type == 'day' ? $Date : "the first week after $Date")?>
     </h3>
@@ -211,7 +211,7 @@ if (!empty($_GET['date'])) {
       <?php
   } // foreach ($Details as $Detail)
     ?>
-    </table><br />
+    </table><br>
   </div>
 </div>
 <?php

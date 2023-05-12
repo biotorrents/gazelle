@@ -533,7 +533,7 @@ class Format
     public static function breadcrumbs()
     {
         $app = \Gazelle\App::go();
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         $path = explode("/", $server["REQUEST_URI"]);
         $path = array_values(array_filter($path));

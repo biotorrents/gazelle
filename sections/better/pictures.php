@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 $snatchedOnly = $get["snatches"] ?? null;
 
 # snatched vs. all

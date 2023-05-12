@@ -33,8 +33,8 @@ View::header("Revisions of ".$Title);
   </div>
 
   <form action="wiki.php" method="get">
-    <input type="hidden" name="action" id="action" value="compare" />
-    <input type="hidden" name="id" id="id" value="<?=$ArticleID?>" />
+    <input type="hidden" name="action" id="action" value="compare">
+    <input type="hidden" name="id" id="id" value="<?=$ArticleID?>">
 
     <table>
       <tr class="colhead">
@@ -91,18 +91,18 @@ while (list($Revision, $Title, $AuthorID, $Date) = $app->dbOld->next_record()) {
         </td>
 
         <td>
-          <input type="radio" name="old" value="<?=$Revision?>" />
+          <input type="radio" name="old" value="<?=$Revision?>">
         </td>
 
         <td>
-          <input type="radio" name="new" value="<?=$Revision?>" />
+          <input type="radio" name="new" value="<?=$Revision?>">
         </td>
       </tr>
       <?php } ?>
 
       <tr>
         <td class="center" colspan="6">
-          <input type="submit" class="button-primary" value="Compare" />
+          <input type="submit" class="button-primary" value="Compare">
         </td>
       </tr>
     </table>

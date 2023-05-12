@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class UpdateSessionsTable extends AbstractMigration
+final class DropUnusedTables extends AbstractMigration
 {
     /**
      * Change Method.
@@ -17,23 +17,14 @@ final class UpdateSessionsTable extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function change(): void
     {
         $app = \Gazelle\App::go();
 
-        $query = "drop table users_sessions";
+        $query = "drop table if exists artists_alias";
         $app->dbNew->do($query, []);
 
-        $query = "
-            CREATE TABLE `users_sessions` (
-                `userId` INT NOT NULL,
-                `sessionId` VARCHAR(128) NOT NULL,
-                `expires` DATETIME NOT NULL,
-                `ipAddress` VARCHAR(128),
-                `userAgent` TEXT,
-                PRIMARY KEY (`userId`,`sessionId`)
-            );
-        ";
+        $query = "drop table if exists artists_aliases";
         $app->dbNew->do($query, []);
     }
 }

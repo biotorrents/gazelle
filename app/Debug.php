@@ -94,15 +94,26 @@ class Debug # extends DebugBar\StandardDebugBar
 
 
     /**
+     * gitInfo
      *
-     * OLD CLASS STARTS HERE
+     * Prints out some information about the current git commit.
      *
+     * @return array
      */
+    public static function gitInfo(): array
+    {
+        return [
+            "branch" => system("git branch --show-current"),
+            "commit" => system("git rev-parse HEAD"),
+            "date" => system("git show -s --format=%ci HEAD"),
+            "message" => system("git show -s --format=%s HEAD"),
+            "author" => system("git show -s --format=%an HEAD"),
+            "email" => system("git show -s --format=%ae HEAD"),
+        ];
+    }
 
 
-    /*****************
-     * Data wrappers *
-     *****************/
+    /** old */
 
 
     /**
@@ -116,11 +127,6 @@ class Debug # extends DebugBar\StandardDebugBar
           }
           */
     }
-
-
-    /*********************
-     * Output formatting *
-     *********************/
 
 
     /**
@@ -170,6 +176,7 @@ class Debug # extends DebugBar\StandardDebugBar
 <?php
 */
     }
+
 
     /**
      * error_table
@@ -221,10 +228,14 @@ class Debug # extends DebugBar\StandardDebugBar
 } # class
 
 
+/** */
+
+
 /**
- * Simple included files collector
+ * FilesCollector
  *
  * Returns includes in reverse order and a file count.
+ *
  * @see https://github.com/barryvdh/laravel-debugbar/blob/master/src/DataCollector/FilesCollector.php
  */
 
@@ -256,6 +267,7 @@ class FilesCollector extends DataCollector implements Renderable
         ];
     }
 
+
     /**
      * getWidgets
      */
@@ -278,6 +290,7 @@ class FilesCollector extends DataCollector implements Renderable
         ];
     }
 
+
     /**
      * getName
      */
@@ -288,10 +301,14 @@ class FilesCollector extends DataCollector implements Renderable
 } # class
 
 
+/** */
+
+
 /**
- * Database query collector
+ * DatabaseCollector
  *
  * Basically a simplified version of MessagesCollector.
+ *
  * @see https://github.com/maximebf/php-debugbar/blob/master/src/DebugBar/DataCollector/MessagesCollector.php
  */
 
@@ -314,6 +331,7 @@ class DatabaseCollector extends DataCollector implements Renderable
         ];
     }
 
+
     /**
      * getMessages
      */
@@ -333,6 +351,7 @@ class DatabaseCollector extends DataCollector implements Renderable
         return $messages;
     }
 
+
     /**
      * log
      */
@@ -341,6 +360,10 @@ class DatabaseCollector extends DataCollector implements Renderable
         return $this->addMessage($message);
     }
 
+
+    /**
+     * addMessage
+     */
     public function addMessage($message, $isString = true)
     {
         $messageText = $message;
@@ -365,6 +388,7 @@ class DatabaseCollector extends DataCollector implements Renderable
         ];
     }
 
+
     /**
      * getWidgets
      */
@@ -387,11 +411,21 @@ class DatabaseCollector extends DataCollector implements Renderable
         ];
     }
 
+
     /**
      * getName
      */
     public function getName()
     {
         return "database";
+    }
+
+
+    /**
+     * isHtmlVarDumperUsed
+     */
+    public function isHtmlVarDumperUsed()
+    {
+        return false;
     }
 } # class

@@ -23,35 +23,35 @@ if (empty($_GET['type'])) {
     error(0);
 } else {
     switch ($_GET['type']) {
-    case 'uploads':
-      if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
-          error(403);
-      }
-      $SQL = "WHERE t.UserID = '$UserID'";
-      $Month = "t.Time";
-      break;
-    case 'snatches':
-      if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
-          error(403);
-      }
-      $SQL = "
+        case 'uploads':
+            if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
+                error(403);
+            }
+            $SQL = "WHERE t.UserID = '$UserID'";
+            $Month = "t.Time";
+            break;
+        case 'snatches':
+            if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
+                error(403);
+            }
+            $SQL = "
           JOIN xbt_snatched AS x ON t.ID = x.fid
         WHERE x.uid = '$UserID'";
-      $Month = "FROM_UNIXTIME(x.tstamp)";
-      break;
-    case 'seeding':
-      if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
-          error(403);
-      }
-      $SQL = "
+            $Month = "FROM_UNIXTIME(x.tstamp)";
+            break;
+        case 'seeding':
+            if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
+                error(403);
+            }
+            $SQL = "
           JOIN xbt_files_users AS xfu ON t.ID = xfu.fid
         WHERE xfu.uid = '$UserID'
           AND xfu.remaining = 0";
-      $Month = "FROM_UNIXTIME(xfu.mtime)";
-      break;
-    default:
-      error(0);
-  }
+            $Month = "FROM_UNIXTIME(xfu.mtime)";
+            break;
+        default:
+            error(0);
+    }
 }
 
 $DownloadsQ = $app->dbOld->query("
@@ -78,7 +78,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
         $Download =& $Downloads[$TorrentID];
         // unzip(1) corrupts files if an emdash is present. Replace them.
         $Download['Artist'] = str_replace('&ndash;', '-', Artists::display_artists($Artists[$Download['GroupID']], false, true, false));

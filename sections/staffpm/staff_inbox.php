@@ -14,37 +14,37 @@ $LevelCap = 1000;
 // Setup for current view mode
 $SortStr = 'IF(AssignedToUser = '.$app->user->core['id'].', 0, 1) ASC, ';
 switch ($View) {
-  case 'unanswered':
-    $ViewString = 'Unanswered';
-    $Status = "Unanswered";
-    break;
-  case 'open':
-    $ViewString = 'Unresolved';
-    $Status = "Open', 'Unanswered";
-    $SortStr = '';
-    break;
-  case 'resolved':
-    $ViewString = 'Resolved';
-    $Status = "Resolved";
-    $SortStr = '';
-    break;
-  case 'my':
-    $ViewString = 'Your Unanswered';
-    $Status = "Unanswered";
-    break;
-  default:
-    $Status = "Unanswered";
-    $ViewString = 'Unanswered';
-
-    /*
-    if ($UserLevel >= $Classes[MOD]['Level'] || $UserLevel == $Classes[FORUM_MOD]['Level']) {
-        $ViewString = 'Your Unanswered';
-    } else {
-        // FLS
+    case 'unanswered':
         $ViewString = 'Unanswered';
-    }
-    */
-    break;
+        $Status = "Unanswered";
+        break;
+    case 'open':
+        $ViewString = 'Unresolved';
+        $Status = "Open', 'Unanswered";
+        $SortStr = '';
+        break;
+    case 'resolved':
+        $ViewString = 'Resolved';
+        $Status = "Resolved";
+        $SortStr = '';
+        break;
+    case 'my':
+        $ViewString = 'Your Unanswered';
+        $Status = "Unanswered";
+        break;
+    default:
+        $Status = "Unanswered";
+        $ViewString = 'Unanswered';
+
+        /*
+        if ($UserLevel >= $Classes[MOD]['Level'] || $UserLevel == $Classes[FORUM_MOD]['Level']) {
+            $ViewString = 'Your Unanswered';
+        } else {
+            // FLS
+            $ViewString = 'Unanswered';
+        }
+        */
+        break;
 }
 
 $WhereCondition = "
@@ -110,8 +110,8 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
       <a href="staffpm.php?view=resolved" class="brackets">View resolved</a>
     </div>
   </div>
-  <br />
-  <br />
+  <br>
+  <br>
   <div class="linkbox">
     <?=$Pages?>
   </div>
@@ -120,18 +120,18 @@ $Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 
 if (!$app->dbOld->has_results()) {
     // No messages
-?>
+    ?>
     <h2>No messages</h2>
     <?php
 } else {
     // Messages, draw table
     if ($ViewString != 'Resolved' && $IsStaff) {
         // Open multiresolve form
-?>
+        ?>
     <form class="manage_form" name="staff_messages" method="post" action="staffpm.php" id="messageform">
-      <input type="hidden" name="action" value="multiresolve" />
+      <input type="hidden" name="action" value="multiresolve">
       <input type="hidden" name="view"
-        value="<?=strtolower($View)?>" />
+        value="<?=strtolower($View)?>">
       <?php
     }
 
@@ -140,7 +140,7 @@ if (!$app->dbOld->has_results()) {
         class="message_table<?=($ViewString != 'Resolved' && $IsStaff) ? ' checkboxes' : '' ?>">
         <tr class="colhead">
           <?php if ($ViewString != 'Resolved' && $IsStaff) { ?>
-          <td width="10"><input type="checkbox" onclick="toggleChecks('messageform', this);" /></td>
+          <td width="10"><input type="checkbox" onclick="toggleChecks('messageform', this);"></td>
           <?php } ?>
           <td>Subject</td>
           <td>Sender</td>
@@ -156,7 +156,7 @@ if (!$app->dbOld->has_results()) {
   // List messages
   while (list($ID, $Subject, $UserID, $Status, $Level, $AssignedToUser, $Date, $Unread, $NumReplies, $ResolverID) = $app->dbOld->next_record()) {
 
-    //$UserInfo = User::user_info($UserID);
+      //$UserInfo = User::user_info($UserID);
       $UserStr = User::format_username($UserID, true, true, true, true);
 
       // Get assigned
@@ -209,11 +209,11 @@ if (!$app->dbOld->has_results()) {
       </table>
       <?php if ($ViewString != 'Resolved' && $IsStaff) { ?>
       <div class="submit_div">
-        <input type="submit" value="Resolve selected" />
+        <input type="submit" value="Resolve selected">
       </div>
     </form>
     <?php
-  }
+      }
 } //if (!$app->dbOld->has_results())
 ?>
   </div>
