@@ -57,10 +57,10 @@ View::header($Username.' &gt; Sessions');
         <td class="nobr"><strong>Last activity</strong></td>
         <td>
           <form class="manage_form" name="sessions" action="" method="post">
-            <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-            <input type="hidden" name="all" value="1" />
-            <input type="submit" value="Log out all" />
+            <input type="hidden" name="action" value="sessions">
+            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+            <input type="hidden" name="all" value="1">
+            <input type="submit" value="Log out all">
           </form>
         </td>
       </tr>
@@ -75,10 +75,10 @@ View::header($Username.' &gt; Sessions');
         <td><?=time_diff($LastUpdate)?></td>
         <td>
           <form class="delete_form" name="session" action="" method="post">
-            <input type="hidden" name="action" value="sessions" />
-            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-            <input type="hidden" name="session" value="<?=$ThisSessionID?>" />
-            <input type="submit" value="<?=(($ThisSessionID == $SessionID) ? 'Current" disabled="disabled' : 'Log out') ?>" />
+            <input type="hidden" name="action" value="sessions">
+            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+            <input type="hidden" name="session" value="<?=$ThisSessionID?>">
+            <input type="submit" value="<?=(($ThisSessionID == $SessionID) ? 'Current" disabled="disabled' : 'Log out') ?>">
           </form>
         </td>
       </tr>

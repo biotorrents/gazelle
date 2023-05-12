@@ -17,7 +17,7 @@ if (!check_perms("admin_whitelist")) {
 }
 
 # query
-$post = Http::query("post");
+$post = Http::request("post");
 #!d($post);
 
 # create

@@ -35,7 +35,7 @@
             Found no users matching the criteria
         </td>
     </tr>
-</table><br />
+</table><br>
 {% else %}
     {% for row in results %}
     <tr class="row{{ row.rank % 2 ? 'a' : 'b' }}">
@@ -52,6 +52,6 @@
         <td class="number_column">{{ row.join_date|raw }}</td>
     </tr>
     {% endfor %}
-</table><br />
+</table><br>
 {% endif %}
 

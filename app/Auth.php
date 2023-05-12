@@ -71,7 +71,7 @@ class Auth # extends Delight\Auth\Auth
      * Returns a variety of different responses, unlike most.
      * We want them to register *before* they get vague messages.
      *
-     * @param array $post Http::query("post")
+     * @param array $post Http::request("post")
      * @return string|int error or userId
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
@@ -177,7 +177,7 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # http query vars
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
@@ -484,7 +484,7 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [$badHandle, $userId]);
             }
 
-            # I know it's lazy
+            # lazy af
             throw new Exception($e->getMessage());
         }
     }
@@ -879,7 +879,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $server = Http::query("server");
+        $server = Http::request("server");
 
         $query = "
             insert into users_sessions
@@ -900,8 +900,8 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $app->dbNew->do($query, $data);
 
-        Http::setCookie([ "sessionId" => $data["sessionId"] ], $expires);
-        Http::setCookie([ "userId" => $userId ], $expires);
+        Http::createCookie([ "sessionId" => $data["sessionId"] ], $expires);
+        Http::createCookie([ "userId" => $userId ], $expires);
     }
 
 

@@ -1,9 +1,9 @@
-<br />
+<br>
 <div class="thin">
     <h2>Missing</h2>
     {% include 'better/links.twig' only %}
     <form class="search_form" name="missing" action="" method="get">
-        <input type="hidden" name="method" value="missing" />
+        <input type="hidden" name="method" value="missing">
         <table cellpadding="6" cellspacing="1" border="0" class="border" width="100%">
             <tr>
                 <td class="label"><strong>Filter</strong></td>
@@ -30,10 +30,10 @@
             <tr>
                 <td class="label"><strong>Search</strong></td>
                 <td>
-                    <input type="search" name="search" size="60" value="{{ search }}" />
+                    <input type="search" name="search" size="60" value="{{ search }}">
                 </td>
             </tr>
-            <tr><td>&nbsp;</td><td><input type="submit" value="Search" /></td></tr>
+            <tr><td>&nbsp;</td><td><input type="submit" value="Search"></td></tr>
         </table>
     </form>
     {{ paginator.linkbox|raw }}

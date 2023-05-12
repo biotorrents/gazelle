@@ -48,10 +48,10 @@ View::header('Tracker info');
 
       <div class="pad">
         <form method="get" action="">
-          <input type="hidden" name="action" value="ocelot_info" />
-          <span class="label">Get stats for user</span><br />
-          <input type="text" name="userid" placeholder="User ID" value="<?Format::form('userid')?>" />
-          <input type="submit" value="Go" />
+          <input type="hidden" name="action" value="ocelot_info">
+          <span class="label">Get stats for user</span><br>
+          <input type="text" name="userid" placeholder="User ID" value="<?Format::form('userid')?>">
+          <input type="submit" value="Go">
         </form>
       </div>
     </div>
@@ -67,37 +67,37 @@ View::header('Tracker info');
         <?php
 if (!empty($UserPeerStats)) {
     ?>
-        User ID: <?=$_GET['userid']?><br />
-        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br />
-        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br />
+        User ID: <?=$_GET['userid']?><br>
+        Leeching: <?=$UserPeerStats[0] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[0])?><br>
+        Seeding: <?=$UserPeerStats[1] === false ? "hidden" : \Gazelle\Text::float($UserPeerStats[1])?><br>
         <?php
 } elseif (!empty($MainStats)) {
-        foreach ($MainStats as $Key => $Value) {
-            if (is_numeric($Value)) {
-                if (substr($Key, 0, 6) === "bytes ") {
-                    $Value = Format::get_size($Value);
-                    $Key = substr($Key, 6);
-                } else {
-                    $Value = \Gazelle\Text::float($Value);
-                }
-            } ?>
-        <?="$Value $Key<br />\n"?>
+    foreach ($MainStats as $Key => $Value) {
+        if (is_numeric($Value)) {
+            if (substr($Key, 0, 6) === "bytes ") {
+                $Value = Format::get_size($Value);
+                $Key = substr($Key, 6);
+            } else {
+                $Value = \Gazelle\Text::float($Value);
+            }
+        } ?>
+        <?="$Value $Key<br>\n"?>
         <?php
-        }
-    } elseif (isset($TorrentPass)) {
-        ?>
+    }
+} elseif (isset($TorrentPass)) {
+    ?>
         Failed to get stats for user <?=$_GET['userid']?>
         <?php
-    } elseif (isset($_GET['userid'])) {
-        ?>
+} elseif (isset($_GET['userid'])) {
+    ?>
         User <?=\Gazelle\Text::esc($_GET['userid'])?>
         doesn't exist
         <?php
-    } else {
-        ?>
+} else {
+    ?>
         Failed to get tracker info
         <?php
-    }
+}
 ?>
       </div>
     </div>

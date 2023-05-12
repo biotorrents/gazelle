@@ -10,8 +10,8 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 # variables
-$get = Http::query("get");
-$server = Http::query("server");
+$get = Http::request("get");
+$server = Http::request("server");
 
 $authKey = $get["authkey"] ?? null;
 $passKey = $get["torrent_pass"] ?? null;

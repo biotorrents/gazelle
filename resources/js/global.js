@@ -117,7 +117,7 @@
   // toggle menu
   $("#subMenu").hide();
   $("#hamburger").on("click", function () {
-    $("#subMenu").toggle();
+    $("#subMenu").toggle(toggleDuration);
     $("#hamburger").toggleClass("active");
 
     // change icon
@@ -132,7 +132,7 @@
     // close on esc
     $(document).on('keydown', function (event) {
       if (event.key == "Escape") {
-        $("#subMenu").hide();
+        $("#subMenu").hide(toggleDuration);
         $("#hamburger").removeClass("active");
         $("#toggleIcon").html("<i class='fal fa-bars'></i>");
       }
@@ -265,7 +265,7 @@ var lightbox = {
     }
     if (!hasA) {
       $("#lightbox").gshow().listen("click", lightbox.unbox).raw().innerHTML =
-        '<img src="' + image.src + '" alt="" />';
+        '<img src="' + image.src + '" alt="">';
       $("#curtain").gshow().listen("click", lightbox.unbox);
     }
   },
@@ -279,7 +279,7 @@ var lightbox = {
       hasA = true;
     }
     if (!hasA) {
-      $("#lightbox").raw().innerHTML = '<img src="' + image.src + '" alt="" />';
+      $("#lightbox").raw().innerHTML = '<img src="' + image.src + '" alt="">';
     }
   },
 

@@ -53,11 +53,11 @@ if (!check_perms('site_moderate_requests')) {
   </div>
 
   <form class="send_form" name="mass_message" action="torrents.php" method="post">
-    <input type="hidden" name="action" value="takemasspm" />
+    <input type="hidden" name="action" value="takemasspm">
     <input type="hidden" name="auth"
-      value="<?=$app->user->extra['AuthKey']?>" />
-    <input type="hidden" name="torrentid" value="<?=$TorrentID?>" />
-    <input type="hidden" name="groupid" value="<?=$GroupID?>" />
+      value="<?=$app->user->extra['AuthKey']?>">
+    <input type="hidden" name="torrentid" value="<?=$TorrentID?>">
+    <input type="hidden" name="groupid" value="<?=$GroupID?>">
 
     <table class="layout">
       <tr>
@@ -66,7 +66,7 @@ if (!check_perms('site_moderate_requests')) {
         </td>
 
         <td>
-          <input type="text" name="subject" value="" size="60" />
+          <input type="text" name="subject" value="" size="60">
         </td>
       </tr>
 
@@ -82,7 +82,7 @@ if (!check_perms('site_moderate_requests')) {
 
       <tr>
         <td colspan="2" class="center">
-          <input type="submit" value="Send Mass PM" />
+          <input type="submit" value="Send Mass PM">
         </td>
       </tr>
     </table>

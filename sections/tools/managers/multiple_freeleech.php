@@ -89,14 +89,14 @@ if (isset($_POST['torrents'])) {
 <div>
     <div class="box pad box">
 <?php if (isset($Err)) { ?>
-        <strong class="important_text"><?=$Err?></strong><br />
+        <strong class="important_text"><?=$Err?></strong><br>
 <?php } ?>
         Paste a list of collage or torrent group URLs
     </div>
     <div class="box pad">
         <form class="send_form" action="" method="post">
-            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-            <textarea name="torrents" style="width: 95%; height: 200px;"><?=$_POST['torrents']?></textarea><br /><br />
+            <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+            <textarea name="torrents" style="width: 95%; height: 200px;"><?=$_POST['torrents']?></textarea><br><br>
             Mark torrents as:&nbsp;
             <select name="freeleechtype">
                 <option value="1" <?=$_POST['freeleechtype'] == '1' ? 'selected' : ''?>>FL</option>
@@ -105,17 +105,17 @@ if (isset($_POST['torrents'])) {
             </select>
             &nbsp;for reason&nbsp;<select name="freeleechreason">
 <?php $FL = array('N/A', 'Staff Pick', 'Perma-FL', 'Vanity House');
-        foreach ($FL as $Key => $FLType) { ?>
+foreach ($FL as $Key => $FLType) { ?>
                             <option value="<?=$Key?>" <?=$_POST['freeleechreason'] == $Key ? 'selected' : ''?>><?=$FLType?></option>
 <?php } ?>
-            </select><br /><br />
-            <input type="checkbox" name="NLOver" checked />&nbsp;NL Torrents over <input type="text" name="size" value="<?=isset($_POST['size']) ? $_POST['size'] : '1'?>" size=1 />
+            </select><br><br>
+            <input type="checkbox" name="NLOver" checked />&nbsp;NL Torrents over <input type="text" name="size" value="<?=isset($_POST['size']) ? $_POST['size'] : '1'?>" size=1>
             <select name="scale">
                 <option value="k" <?=$_POST['scale'] == 'k' ? 'selected' : ''?>>KB</option>
                 <option value="m" <?=$_POST['scale'] == 'm' ? 'selected' : ''?>>MB</option>
                 <option value="g" <?=!isset($_POST['scale']) || $_POST['scale'] == 'g' ? 'selected' : ''?>>GB</option>
-            </select><br /><br />
-            <input type="submit" class="button-primary" value="Submit" />
+            </select><br><br>
+            <input type="submit" class="button-primary" value="Submit">
         </form>
     </div>
 </div>

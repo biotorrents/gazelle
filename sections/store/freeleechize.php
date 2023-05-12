@@ -115,7 +115,7 @@ View::footer();
       <strong>
         Enter the URL of the torrent you wish to make freeleech for 24 hours:
       </strong>
-      <br />
+      <br>
       <input type="text" name="torrent" value="">
       <input type="submit">
     </form>

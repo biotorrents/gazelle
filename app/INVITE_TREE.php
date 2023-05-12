@@ -275,7 +275,7 @@ class INVITE_TREE
                 echo '</p>';
             }
         } ?>
-        <br />
+        <br>
         <?=$Tree?>
 </div>
 

@@ -4,46 +4,47 @@
 
 <h2>Disabled account</h2>
 
+{# account disabled message #}
 <p class="warning">
     Your account has been disabled.
     This is either due to inactivity or rule violation(s).
 </p>
 
+{# error message #}
 {% if response is not null %}
-<p class="error">
-    {{ response }}
-</p>
-
+    <p class="error">
+        {{ response }}
+    </p>
 {% else %}
-<p class="info">
-    Thanks for confirming your account.
-    Please enjoy the site!
+    <p class="info">
+        Thanks for confirming your account.
+        Please enjoy the site!
 
-    <a href="/rules" class="button-primary">Rules</a>
-    <a href="/wiki" class="button">Wiki</a>
-</p>
-
+        <a href="/rules" class="button-primary">Rules</a>
+        <a href="/wiki" class="button">Wiki</a>
+    </p>
 {% endif %}
 
 {# account enable form #}
 {% if env.FEATURE_EMAIL_REENABLE is defined and response is not null %}
-<p>
-    If you believe your account was in good standing and was disabled for inactivity,
-    you may request it be re-enabled via email using the form below.
-    Most requests are handled within minutes.
-</p>
+    <p>
+        If you believe your account was in good standing and was disabled for inactivity,
+        you may request it be re-enabled via email using the form below.
+        Most requests are handled within minutes.
+    </p>
 
-<form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    <form method="post">
+        {{ form_token(query.server.REQUEST_URI) }}
 
-    {% if username is defined %}
-    <input type="hidden" name="username" id="username" value="{{ username }}" />
-    {% endif %}
+        {% if username is defined %}
+            <input type="hidden" name="username" id="username" value="{{ username }}">
+        {% endif %}
 
-    <input type="email" name="email" id="email" placeholder="Email address" required />
+        <input type="email" name="email" id="email" placeholder="Email address" required>
 
-    <input type="submit" value="Submit" class="button-primary" />
-</form>
+        <input type="submit" value="Submit" class="button-primary">
+
+    </form>
 {% endif %}
 
 {% endblock %}

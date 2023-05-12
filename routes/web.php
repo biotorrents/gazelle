@@ -15,7 +15,7 @@ declare(strict_types=1);
 Flight::route("/universalSearch", function () {
     $app = \Gazelle\App::go();
 
-    $get = Http::query("get");
+    $get = Http::request("get");
     $searchWhat = $get["searchWhat"] ?? "torrents";
     $queryString = http_build_query($get);
 

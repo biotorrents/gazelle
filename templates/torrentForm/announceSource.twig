@@ -10,12 +10,12 @@
 			<tr>
 				<td>
 					{% for item in announceUris %}
-						<input type="text" value="{{ item }}/{{ user.extra.torrent_pass }}/announce" onclick="this.select()" readonly/>
+						<input type="text" value="{{ item }}/{{ user.extra.torrent_pass }}/announce" onclick="this.select()" readonly>
 					{% endfor %}
 				</td>
 
 				<td>
-					<input type="text" value="{{ sourceKey }}" onclick="this.select()" readonly/>
+					<input type="text" value="{{ sourceKey }}" onclick="this.select()" readonly>
 				</td>
 			</tr>
 		</table>

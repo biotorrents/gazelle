@@ -64,21 +64,21 @@ while (list($IP, $Attempts, $Banned, $BannedUntil) = array_shift($AllAttempts)) 
       </td>
       <td>
         <form class="manage_form" name="bans" action="" method="post">
-          <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-          <input type="hidden" name="ip" value="<?=$IP?>" />
-          <input type="hidden" name="action" value="login_watch" />
-          <input type="submit" name="submit" value="Unban" />
+          <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+          <input type="hidden" name="ip" value="<?=$IP?>">
+          <input type="hidden" name="action" value="login_watch">
+          <input type="submit" name="submit" value="Unban">
         </form>
       </td>
 <?php if (check_perms('admin_manage_ipbans')) { ?>
       <td>
         <form class="manage_form" name="bans" action="" method="post">
-          <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>" />
-          <input type="hidden" name="action" value="ip_ban" />
-          <input type="hidden" name="start" value="<?=$IP?>" />
-          <input type="hidden" name="end" value="<?=$IP?>" />
-          <input type="hidden" name="notes" value="Banned per <?=$Attempts?> bans on login watch." />
-          <input type="submit" name="submit" value="IP Ban" />
+          <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
+          <input type="hidden" name="action" value="ip_ban">
+          <input type="hidden" name="start" value="<?=$IP?>">
+          <input type="hidden" name="end" value="<?=$IP?>">
+          <input type="hidden" name="notes" value="Banned per <?=$Attempts?> bans on login watch.">
+          <input type="submit" name="submit" value="IP Ban">
         </form>
       </td>
 <?php } ?>

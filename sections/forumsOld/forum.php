@@ -113,13 +113,13 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
           <table cellpadding="6" cellspacing="1" border="0" class="layout border">
             <tr>
               <td>
-                <input type="hidden" name="action" value="search" />
+                <input type="hidden" name="action" value="search">
                 <input type="hidden" name="forums[]"
-                  value="<?=$ForumID?>" />
+                  value="<?=$ForumID?>">
               </td>
 
               <td>
-                <input type="search" id="searchbox" name="search" size="60" placeholder="Search terms" />
+                <input type="search" id="searchbox" name="search" size="60" placeholder="Search terms">
               </td>
             </tr>
 
@@ -129,10 +129,10 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
               </td>
 
               <td>
-                <input type="radio" name="type" id="type_title" value="title" checked="checked" />
+                <input type="radio" name="type" id="type_title" value="title" checked="checked">
                 <label for="type_title">Title</label>&ensp;
 
-                <input type="radio" name="type" id="type_body" value="body" />
+                <input type="radio" name="type" id="type_body" value="body">
                 <label for="type_body">Body</label>
               </td>
             </tr>
@@ -141,13 +141,13 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
               <td></td>
 
               <td>
-                <input type="search" id="username" name="user" placeholder="Posted By" size="60" />
+                <input type="search" id="username" name="user" placeholder="Posted By" size="60">
               </td>
             </tr>
 
             <tr>
               <td colspan="2" style="text-align: center;">
-                <input type="submit" name="submit" class="button-primary" value="Search" />
+                <input type="submit" name="submit" class="button-primary" value="Search">
               </td>
             </tr>
           </table>
@@ -171,7 +171,7 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
         if ($Thread === null) {
             error(404);
         } ?>
-    <br />
+    <br>
 
     <a href="forums.php?action=viewthread&amp;threadid=<?=$ThreadIDs?>"
       class="brackets"><?=\Gazelle\Text::esc($Thread['Title'])?></a>

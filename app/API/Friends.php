@@ -25,7 +25,7 @@ class Friends extends Base
 
         self::checkToken($app->user->core["id"]);
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);
         $comment = \Gazelle\Esc::string($post["comment"]);
 
@@ -85,7 +85,7 @@ class Friends extends Base
 
         self::checkToken($app->user->core["id"]);
 
-        $post = \Http::query("post");
+        $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);
 
         if (empty($userId)) {

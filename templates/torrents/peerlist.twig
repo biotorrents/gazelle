@@ -13,7 +13,7 @@
 {% for peer in list %}
     <tr>
     {% if is_admin or peer.user_id == user_id %}
-        <td>{{ peer.user_id|user_url }}</td>
+        <td>{{ peer.user_id }}</td>
     {% else %}
         <td>Peer</td>
     {% endif %}

@@ -440,7 +440,7 @@ View::header('User search');
 ?>
 <div>
   <form class="search_form" name="users" action="user.php" method="get">
-    <input type="hidden" name="action" value="search" />
+    <input type="hidden" name="action" value="search">
     <table class="layout">
       <tr>
         <td class="label nobr">Username:</td>
@@ -769,7 +769,7 @@ foreach ($Secondaries as $Class) {
             value="<?=\Gazelle\Text::esc($_GET['downloaded2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Only display users that have a disabled account linked by IP address">
-          <label for="disabled_ip">Disabled accounts<br />linked by IP:</label>
+          <label for="disabled_ip">Disabled accounts<br>linked by IP:</label>
         </td>
         <td>
           <input type="checkbox" name="disabled_ip" id="disabled_ip" <?php if ($_GET['disabled_ip']) {
@@ -987,7 +987,7 @@ foreach ($Secondaries as $Class) {
       </tr>
       <tr>
         <td colspan="6" class="center">
-          <input type="submit" value="Search users" />
+          <input type="submit" value="Search users">
         </td>
       </tr>
     </table>

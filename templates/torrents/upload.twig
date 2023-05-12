@@ -21,27 +21,27 @@
 
 		{# hidden fields #}
 		{{ form_token(query.server.REQUEST_URI) }}
-		<input type="hidden" name="submit" value="true"/>
-		<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}"/>
+		<input type="hidden" name="submit" value="true">
+		<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
 
 		{% if not newTorrent %}
-			<input type="hidden" name="action" value="update"/>
+			<input type="hidden" name="action" value="update">
 		{% endif %}
 
 		{% if data and data.categoryId %}
-			<input type="hidden" name="categoryId" value="{{ data.categoryId }}"/>
+			<input type="hidden" name="categoryId" value="{{ data.categoryId }}">
 		{% endif %}
 
 		{% if data and data.groupId %}
-			<input type="hidden" name="groupId" value="{{ data.groupId }}"/>
+			<input type="hidden" name="groupId" value="{{ data.groupId }}">
 		{% endif %}
 
 		{% if data and data.requestId %}
-			<input type="hidden" name="requestId" value="{{ data.requestId }}"/>
+			<input type="hidden" name="requestId" value="{{ data.requestId }}">
 		{% endif %}
 
 		{% if data and data.torrentId %}
-			<input type="hidden" name="torrentId" value="{{ data.torrentId }}"/>
+			<input type="hidden" name="torrentId" value="{{ data.torrentId }}">
 		{% endif %}
 
 
@@ -208,7 +208,7 @@
 
 		{# form controls #}
 		<div id="formControls">
-			<input id="submit" name="submit" type="submit" value="{{ submitType }}" class="button-primary"/>
+			<input id="submit" name="submit" type="submit" value="{{ submitType }}" class="button-primary">
 			<a href="#top" class="button">top</a>
 		</div>
 

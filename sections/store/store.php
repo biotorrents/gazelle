@@ -263,7 +263,7 @@ View::header('Store');
         </td>
       </tr>
     </table>
-    <br />
+    <br>
 
     <h4>Badges</h4>
     <table width="100%" class="store_table">

@@ -87,9 +87,9 @@ View::header($Title, 'wiki');
       <div class="pad">
 
         <form class="search_form" name="articles" action="wiki.php" method="get">
-          <input type="hidden" name="action" value="search" />
-          <input type="search" placeholder="Search articles" name="search" size="20" />
-          <input value="Search" type="submit" class="hidden button-primary" />
+          <input type="hidden" name="action" value="search">
+          <input type="search" placeholder="Search articles" name="search" size="20">
+          <input value="Search" type="submit" class="hidden button-primary">
         </form>
 
         <br style="line-height: 10px;" />
@@ -160,7 +160,7 @@ if ($Aliases !== $Title) {
       <div style="padding: 5px;">
 
         <form class="add_form" name="aliases" action="wiki.php" method="post">
-          <input type="hidden" name="action" value="add_alias" />
+          <input type="hidden" name="action" value="add_alias">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="article"
@@ -168,7 +168,7 @@ if ($Aliases !== $Title) {
           <input onfocus="if (this.value == 'Add alias') this.value='';"
             onblur="if (this.value == '') this.value='Add alias';" value="Add alias" type="text" name="alias"
             size="20" />
-          <input type="submit" value="+" />
+          <input type="submit" value="+">
         </form>
 
       </div>

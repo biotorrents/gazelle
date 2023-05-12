@@ -9,7 +9,7 @@
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 $groupId = intval($get["id"] ?? 0);
 $revisionId = intval($get["revisionId"] ?? 0);
 
@@ -356,7 +356,7 @@ $Index++;
         <div class="body">
           <form class="add_form" name="covers" id="add_covers_form" action="torrents.php" method="post">
             <div id="add_cover">
-              <input type="hidden" name="action" value="add_cover_art" />
+              <input type="hidden" name="action" value="add_cover_art">
               <input type="hidden" name="auth"
                 value="<?=$app->user->extra['AuthKey']?>" />
               <input type="hidden" name="groupid"
@@ -393,14 +393,14 @@ $Index++;
         $DeletedTag = $app->cache->get("deleted_tags_$GroupID".'_'.$app->user->core['id']);
 if (!empty($DeletedTag)) { ?>
         <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
-          <input type="hidden" name="action" value="add_tag" />
+          <input type="hidden" name="action" value="add_tag">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           <input type="hidden" name="groupid"
             value="<?=$GroupID?>" />
           <input type="hidden" name="tagname"
             value="<?=$DeletedTag?>" />
-          <input type="hidden" name="undo" value="true" />
+          <input type="hidden" name="undo" value="true">
         </form>
         <a class="brackets" href="#" onclick="$('#undo_tag_delete_form').raw().submit(); return false;">Undo delete</a>
         <?php } ?>
@@ -708,14 +708,14 @@ foreach ($TorrentList as $Torrent) {
   } ?> <?=time_diff($TorrentTime); ?>
                 <?php if ($Seeders === 0) {
                     if ($LastActive && time() - strtotime($LastActive) >= 1209600) { ?>
-                <br /><strong>Last active: <?=time_diff($LastActive); ?></strong>
+                <br><strong>Last active: <?=time_diff($LastActive); ?></strong>
                 <?php } else { ?>
-                <br />Last active: <?=time_diff($LastActive); ?>
+                <br>Last active: <?=time_diff($LastActive); ?>
                 <?php }
                 }
 
     if (($Seeders === 0 && $LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) || check_perms('users_mod')) { ?>
-                <br /><a
+                <br><a
                   href="torrents.php?action=reseed&amp;torrentid=<?=$TorrentID?>&amp;groupid=<?=$GroupID?>"
                   class="brackets">Request re-seed</a>
                 <?php } ?>
@@ -814,7 +814,7 @@ HTML;
 
               <!-- todo pcs: Both tags must be on the same line -->
               <!--
-              <input type="button" class="spoilerButton" value="Show BibTeX" /><pre class="hidden">
+              <input type="button" class="spoilerButton" value="Show BibTeX"><pre class="hidden">
                 <?= null#$BibtexCitation?>
               </pre>
             </div>
@@ -1076,9 +1076,9 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
 
                 /* todo: Bring this back
                 if (check_perms('users_mod')) {
-                  ?><img class='tooltip lightbox-init' title='<?=User::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
+                  ?><img class='tooltip lightbox-init' title='<?=User::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>"><?php
                 } else {
-                  ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>" /><?php
+                  ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>"><?php
                 }
                 */
             }

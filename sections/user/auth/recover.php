@@ -15,8 +15,8 @@ Http::csrf();
 $auth = new Auth();
 
 # variables
-$post = Http::query("post");
-$server = Http::query("server");
+$post = Http::request("post");
+$server = Http::request("server");
 
 $email = \Gazelle\Esc::email($post["email"]) ?? null;
 $ip = \Gazelle\Esc::ip($server["REMOTE_ADDR"]) ?? null;

@@ -21,11 +21,11 @@ final class UpdateSessionsTable extends AbstractMigration
     {
         $app = \Gazelle\App::go();
 
-        $query = "drop table users_sessions";
+        $query = "drop table if exists users_sessions";
         $app->dbNew->do($query, []);
 
         $query = "
-            CREATE TABLE `users_sessions` (
+            CREATE TABLE IF NOT EXISTS `users_sessions` (
                 `userId` INT NOT NULL,
                 `sessionId` VARCHAR(128) NOT NULL,
                 `expires` DATETIME NOT NULL,

@@ -21,37 +21,37 @@ define('MODE_DELETE', 2);
 <div>
   <h3>Merge/Rename/Delete Tags</h3>
   <form action="tools.php" method="get" name="tagform" id="tagform" onsubmit="return formVal();">
-    <input type="hidden" name="action" value="edit_tags" />
+    <input type="hidden" name="action" value="edit_tags">
     <table>
       <tr>
         <td class="label">
           Tag:
         </td>
         <td>
-          <input type="text" name="tag" id="tag" />
+          <input type="text" name="tag" id="tag">
         </td>
         <td class="label">
           Rename to/merge with tag (empty to delete):
         </td>
         <td>
-          <input type="text" name="replace" id="replace" />
+          <input type="text" name="replace" id="replace">
         </td>
         <td class="label">
-          <input type="checkbox" name="list" id="list" checked="checked" /> <label for="list">List affected rows</label>
+          <input type="checkbox" name="list" id="list" checked="checked"> <label for="list">List affected rows</label>
         </td>
       </tr>
       <tr>
         <td class="center" colspan="5">
-          <input type="submit" class="button-primary" value="Process Tag" />
+          <input type="submit" class="button-primary" value="Process Tag">
         </td>
       </tr>
     </table>
   </form>
-  <br />
+  <br>
   <?php
 if (isset($_GET['tag']) || isset($_GET['replace'])) {
 
-  // validate input
+    // validate input
     $Err = $Val->ValidateForm($_GET);
     if ($Err) {
         echo '

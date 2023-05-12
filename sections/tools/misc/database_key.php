@@ -17,7 +17,7 @@ if (!check_perms("site_debug")) {
 }
 
 # query
-$post = Http::query("post");
+$post = Http::request("post");
 $post["databaseKey"] ??= null;
 
 # update

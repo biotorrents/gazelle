@@ -85,7 +85,7 @@ function generate_user_table($Caption, $Results, $Limit)
         Found no users matching the criteria
       </td>
     </tr>
-    </table><br />';
+    </table><br>';
   }
 
       $Position = 0;

@@ -340,7 +340,7 @@ if (count($Reports) === 0) {
                 title="Download" class="brackets tooltip">DL</a>
               uploaded by <a
                 href="user.php?id=<?=$UploaderID?>"><?=$UploaderName?></a> <?=time_diff($Time)?>
-              <br />
+              <br>
               <?php if ($ReporterName == '') {
     $ReporterName = 'System';
 } ?>
@@ -480,7 +480,7 @@ if (count($Reports) === 0) {
                 } else {
                     $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [//$ExtraMedia]</a>  (".\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
                 } ?>
-              <?=($First ? '' : '<br />')?>
+              <?=($First ? '' : '<br>')?>
               <?=$ExtraLinkName?>
               <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                 title="Download" class="brackets tooltip">DL</a>

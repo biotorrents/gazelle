@@ -25,7 +25,7 @@
               );
             });
             loaded = true;
-            $("#recommendation_status").html("<br />");
+            $("#recommendation_status").html("<br>");
           },
         });
       }
@@ -38,7 +38,7 @@
       } else if ($.inArray(friend, sent) == -1) {
         $("#send_recommendation").removeAttr("disabled");
       }
-      $("#recommendation_status").html("<br />");
+      $("#recommendation_status").html("<br>");
     });
 
     $("#send_recommendation").click(function () {

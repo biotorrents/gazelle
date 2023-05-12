@@ -16,7 +16,7 @@ declare(strict_types=1);
 require_once __DIR__."/../vendor/autoload.php";
 
 # parse the path
-$server = Http::query("server");
+$server = Http::request("server");
 $path = pathinfo($server["SCRIPT_NAME"]);
 $file = $path["filename"];
 

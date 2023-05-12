@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class StupidPassphraseShim extends AbstractMigration
+final class DropUselessTables extends AbstractMigration
 {
     /**
      * Change Method.
@@ -17,11 +17,22 @@ final class StupidPassphraseShim extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function change(): void
     {
         $app = \Gazelle\App::go();
 
-        $query = "alter table users_info add column isPassphraseMigrated bool default 0";
+        $query = "
+            drop table if exists
+                artists_alias,
+                artists_aliases,
+                comments_edits,
+                donations,
+                donor_rewards,
+                forums_specific_rules,
+                library_contest,
+                reports_email_blacklist,
+                users_warnings_forums
+        ";
         $app->dbNew->do($query, []);
     }
 }

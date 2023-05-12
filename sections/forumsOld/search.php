@@ -103,20 +103,20 @@ View::header('Forums &gt; Search', 'forum_search');
 
 <div class="box">
   <form class="search_form" name="forums" action="" method="get">
-    <input type="hidden" name="action" value="search" />
+    <input type="hidden" name="action" value="search">
     <table cellpadding="6" cellspacing="1" border="0" class="layout border" width="100%">
       <tr>
         <td><strong>Search Terms</strong></td>
         <td>
           <input type="search" name="search" size="70"
-            value="<?=\Gazelle\Text::esc($Search)?>" />
+            value="<?=\Gazelle\Text::esc($Search)?>">
         </td>
       </tr>
       <tr>
         <td><strong>Posted By</strong></td>
         <td>
           <input type="search" name="user" placeholder="Username" size="70"
-            value="<?=\Gazelle\Text::esc($User)?>" />
+            value="<?=\Gazelle\Text::esc($User)?>">
         </td>
       </tr>
       <tr>
@@ -125,11 +125,11 @@ View::header('Forums &gt; Search', 'forum_search');
           After
           <input type="text" name="thread_created_after" id="thread_created_after" placeholder="YYYY-MM-DD"
             pattern="[1-2][0-9]{3}-[0-9]{2}-[0-9]{2}"
-            value="<?=$ThreadAfterDate?>" />&nbsp;&nbsp;
+            value="<?=$ThreadAfterDate?>">&nbsp;&nbsp;
           Before
           <input type="text" name="thread_created_before" id="thread_created_before" placeholder="YYYY-MM-DD"
             pattern="[1-2][0-9]{3}-[0-9]{2}-[0-9]{2}"
-            value="<?=$ThreadBeforeDate?>" />
+            value="<?=$ThreadBeforeDate?>">
         </td>
       </tr>
       <?php
@@ -140,11 +140,11 @@ if (empty($ThreadID)) {
         <td>
           <input type="radio" name="type" id="type_title" value="title" <?php if ($Type == 'title') {
               echo ' checked="checked"';
-          } ?> />
+          } ?>>
           <label for="type_title">Titles</label>&nbsp;&nbsp;
           <input type="radio" name="type" id="type_body" value="body" <?php if ($Type == 'body') {
               echo ' checked="checked"';
-          } ?> />
+          } ?>>
           <label for="type_body">Body</label>
         </td>
       </tr>
@@ -155,10 +155,10 @@ if (empty($ThreadID)) {
         <td>
           After:
           <input type="text" class="date_picker" name="post_created_after" id="post_created_after"
-            value="<?=$PostAfterDate?>" />
+            value="<?=$PostAfterDate?>">
           Before:
           <input type="text" class="date_picker" name="post_created_before" id="post_created_before"
-            value="<?=$PostBeforeDate?>" />
+            value="<?=$PostBeforeDate?>">
         </td>
       </tr>
       <tr>
@@ -225,13 +225,13 @@ if (empty($ThreadID)) {
     </table>
     <?php
 } else { ?>
-    <input type="hidden" name="threadid" value="<?=$ThreadID?>" />
+    <input type="hidden" name="threadid" value="<?=$ThreadID?>">
     <?php } ?>
     </td>
     </tr>
     <tr>
       <td colspan="2" class="center">
-        <input type="submit" class="button-primary" value="Search" />
+        <input type="submit" class="button-primary" value="Search">
       </td>
     </tr>
     </table>

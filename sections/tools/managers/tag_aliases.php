@@ -58,16 +58,16 @@ if (check_perms('users_mod')) {
   <tr />
   <tr>
     <form class="add_form" name="aliases" method="post" action="">
-      <input type="hidden" name="newalias" value="1" />
+      <input type="hidden" name="newalias" value="1">
       <td>
-        <input type="text" name="aliastag" />
+        <input type="text" name="aliastag">
       </td>
       <td>
-        <input type="text" name="badtag" />
+        <input type="text" name="badtag">
       </td>
 <?php if (check_perms('users_mod')) { ?>
       <td>
-        <input type="submit" class="button-primary" value="Add alias" />
+        <input type="submit" class="button-primary" value="Add alias">
       </td>
 <?php } ?>
     </form>
@@ -81,18 +81,18 @@ while (list($ID, $BadTag, $AliasTag) = $app->dbOld->next_record()) {
     ?>
   <tr>
     <form class="manage_form" name="aliases" method="post" action="">
-      <input type="hidden" name="changealias" value="1" />
-      <input type="hidden" name="aliasid" value="<?=$ID?>" />
+      <input type="hidden" name="changealias" value="1">
+      <input type="hidden" name="aliasid" value="<?=$ID?>">
       <td>
-        <input type="text" name="aliastag" value="<?=$AliasTag?>" />
+        <input type="text" name="aliastag" value="<?=$AliasTag?>">
       </td>
       <td>
-        <input type="text" name="badtag" value="<?=$BadTag?>" />
+        <input type="text" name="badtag" value="<?=$BadTag?>">
       </td>
 <?php if (check_perms('users_mod')) { ?>
       <td>
-        <input type="submit" name="save" class="button-primary" value="Save alias" />
-        <input type="submit" name="delete" value="Delete alias" />
+        <input type="submit" name="save" class="button-primary" value="Save alias">
+        <input type="submit" name="delete" value="Delete alias">
       </td>
 <?php } ?>
     </form>

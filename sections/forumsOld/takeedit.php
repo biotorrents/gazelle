@@ -1,4 +1,5 @@
 <?php
+#declare(strict_types = 1);
 
 $app = \Gazelle\App::go();
 
@@ -91,26 +92,6 @@ $app->dbOld->query("
     EditedTime = '$SQLTime'
   WHERE ID = '$PostID'");
 
-/*
-$CatalogueID = floor((POSTS_PER_PAGE * $Page - POSTS_PER_PAGE) / THREAD_CATALOGUE);
-$app->cacheOld->begin_transaction("thread_$TopicID"."_catalogue_$CatalogueID");
-if ($app->cacheOld->MemcacheDBArray[$Key]['ID'] != $PostID) {
-  $app->cacheOld->cancel_transaction();
-  $app->cache->delete("thread_$TopicID"."_catalogue_$CatalogueID"); //just clear the cache for would be cache-screwer-uppers
-} else {
-  $app->cacheOld->update_row($Key, array(
-    'ID'=>$app->cacheOld->MemcacheDBArray[$Key]['ID'],
-    'AuthorID'=>$app->cacheOld->MemcacheDBArray[$Key]['AuthorID'],
-    'AddedTime'=>$app->cacheOld->MemcacheDBArray[$Key]['AddedTime'],
-    'Body'=>$Body, //Don't url decode.
-    'EditedUserID'=>$app->user->core['id'],
-    'EditedTime'=>$SQLTime,
-    'Username'=>$app->user->core['username']
-    ));
-  $app->cacheOld->commit_transaction(3600 * 24 * 5);
-}
-*/
-
 $ThreadInfo = Forums::get_thread_info($TopicID);
 if ($ThreadInfo === null) {
     error(404);
@@ -122,15 +103,10 @@ if ($ThreadInfo['StickyPostID'] == $PostID) {
     $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
 }
 
-$app->dbOld->query("
-  INSERT INTO comments_edits
-    (Page, PostID, EditUser, EditTime, Body)
-  VALUES
-    ('forums', $PostID, $UserID, '$SQLTime', '".db_string($OldBody)."')");
-$app->cache->delete("forums_edits_$PostID");
+app->cache->delete("forums_edits_$PostID");
 // This gets sent to the browser, which echoes it in place of the old body
 echo \Gazelle\Text::parse($Body);
 ?>
-<br /><br />
+<br><br>
 <div class="last_edited">Last edited by <a
     href="user.php?id=<?=$app->user->core['id']?>"><?=$app->user->core['username']?></a> Just now</div>

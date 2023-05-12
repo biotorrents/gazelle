@@ -124,9 +124,9 @@ class Badges
         */
 
         if ($tooltip) {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' title='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}' />";
+            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' title='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>";
         } else {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}' />"; # no title
+            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>"; # no title
         }
 
         return $html;

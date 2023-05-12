@@ -165,7 +165,7 @@ if ($ShowGrouped) {
 ?>
     </h2>
     <div class="linkbox">
-      <br /><br />
+      <br><br>
 <?php
 if ($ViewingOwn) {
     $UserSubscriptions = Subscriptions::get_subscriptions();
@@ -265,8 +265,8 @@ if (!$ShowGrouped) {
         <div id="content<?=$PostID?>">
           <?=\Gazelle\Text::parse($Body)?>
 <?php if ($EditedUserID) { ?>
-          <br />
-          <br />
+          <br>
+          <br>
 <?php if (check_perms('site_moderate_forums')) { ?>
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
 <?php } ?>

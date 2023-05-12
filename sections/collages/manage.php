@@ -84,7 +84,7 @@ View::header(
   </table>
 
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
   <table id="manage_collage_table">
     <thead>
@@ -145,15 +145,15 @@ foreach ($GroupIDs as $GroupID) {
           <td class="nobr"><?=User::format_username($UserID, $Username, false, false, false)?>
           </td>
           <td class="nobr">
-            <input type="hidden" name="action" value="manage_handle" />
+            <input type="hidden" name="action" value="manage_handle">
             <input type="hidden" name="auth"
-              value="<?=$app->user->extra['AuthKey']?>" />
+              value="<?=$app->user->extra['AuthKey']?>">
             <input type="hidden" name="collageid"
-              value="<?=$CollageID?>" />
+              value="<?=$CollageID?>">
             <input type="hidden" name="groupid"
-              value="<?=$GroupID?>" />
-            <input type="submit" name="submit" value="Edit" />
-            <input type="submit" name="submit" value="Remove" />
+              value="<?=$GroupID?>">
+            <input type="submit" name="submit" value="Edit">
+            <input type="submit" name="submit" value="Remove">
           </td>
         </form>
       </tr>
@@ -162,18 +162,18 @@ foreach ($GroupIDs as $GroupID) {
     </tbody>
   </table>
   <div class="drag_drop_save hidden">
-    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage" />
+    <input type="button" name="submit" value="Save All Changes" class="save_sortable_collage">
   </div>
   <form class="dragdrop_form hidden" name="collage" action="collages.php" method="post" id="drag_drop_collage_form">
     <div>
-      <input type="hidden" name="action" value="manage_handle" />
+      <input type="hidden" name="action" value="manage_handle">
       <input type="hidden" name="auth"
-        value="<?=$app->user->extra['AuthKey']?>" />
+        value="<?=$app->user->extra['AuthKey']?>">
       <input type="hidden" name="collageid"
-        value="<?=$CollageID?>" />
-      <input type="hidden" name="groupid" value="1" />
+        value="<?=$CollageID?>">
+      <input type="hidden" name="groupid" value="1">
       <input type="hidden" name="drag_drop_collage_sort_order" id="drag_drop_collage_sort_order" readonly="readonly"
-        value="" />
+        value="">
     </div>
   </form>
 </div>

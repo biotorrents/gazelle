@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$get = Http::query("get");
+$get = Http::request("get");
 
 # workaround for main navigation search
 $get["search"] ??= null;
@@ -541,16 +541,16 @@ View::header($Title, 'requests');
     <?php } else { ?>
     <form class="search_form" name="requests" action="" method="get">
         <?php if ($BookmarkView) { ?>
-        <input type="hidden" name="action" value="view" />
-        <input type="hidden" name="type" value="requests" />
+        <input type="hidden" name="action" value="view">
+        <input type="hidden" name="type" value="requests">
         <?php } elseif (isset($_GET['type'])) { ?>
         <input type="hidden" name="type"
-            value="<?=$_GET['type']?>" />
+            value="<?=$_GET['type']?>">
         <?php } ?>
-        <input type="hidden" name="submit" value="true" />
+        <input type="hidden" name="submit" value="true">
         <?php if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) { ?>
         <input type="hidden" name="userid"
-            value="<?=$_GET['userid']?>" />
+            value="<?=$_GET['userid']?>">
         <?php } ?>
         <div class="box pad">
             <table cellpadding="6" cellspacing="1" border="0" class="layout torrent_requests" width="100%">
@@ -585,7 +585,7 @@ View::header($Title, 'requests');
                 <tr>
                   <td class="label"><!-- Requested By --></td>
                     <td>
-                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=\Gazelle\Text::esc($_GET['requester'])?>" />
+                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=\Gazelle\Text::esc($_GET['requester'])?>">
                     </td>
                 </tr>
                 */ ?>
@@ -621,7 +621,7 @@ View::header($Title, 'requests');
                             name="filter_cat[<?=($CatKey + 1) ?>]"
                             id="cat_<?=($CatKey + 1) ?>" value="1"
                             <?php if (isset($_GET['filter_cat'][$CatKey + 1])) { ?>
-                        checked="checked"<?php } ?> />
+                        checked="checked"<?php } ?>>
                         <label for="cat_<?=($CatKey + 1) ?>"><?=$CatName?></label>
                     </td>
                     <?php if ($x % 7 === 0) { ?>
@@ -635,7 +635,7 @@ View::header($Title, 'requests');
             <table class="layout">
                 <tr>
                     <td colspan="2" class="center">
-                        <input type="submit" class="button-primary" value="Search" />
+                        <input type="submit" class="button-primary" value="Search">
                     </td>
                 </tr>
             </table>
@@ -729,12 +729,12 @@ View::header($Title, 'requests');
                     }
 
                     $FullName .= "dir='ltr'>$Title</span></a>";
-                    $FullName .= "<br />$ArtistLink";
+                    $FullName .= "<br>$ArtistLink";
 
                     $ExtraInfo = '';
 
                     if (!empty($Request['CatalogueNumber'])) {
-                        $Label = '<br />🔑&nbsp;';
+                        $Label = '<br>🔑&nbsp;';
                         $ExtraInfo .= $Label.$Request['CatalogueNumber'];
                     }
 

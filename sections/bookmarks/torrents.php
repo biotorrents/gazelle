@@ -102,7 +102,7 @@ foreach ($GroupIDs as $GroupID) {
     <span style="text-align: right;" class="u-pull-right">
       <?=time_diff($AddedTime); ?>
       <?php if (!$Sneaky) { ?>
-      <br />
+      <br>
       <a href="#group_<?=$GroupID?>" class="brackets remove_bookmark"
         onclick="Unbookmark('torrent', <?=$GroupID?>, ''); return false;">Remove
         bookmark</a>
@@ -275,7 +275,7 @@ if ($CollageCovers > 0) {
     }
 }
 
-View::header($Title, 'browse,collage,wall');
+View::header($Title, 'browse,collage');
 ?>
 
 <div>
@@ -291,7 +291,7 @@ View::header($Title, 'browse,collage,wall');
       <a href="bookmarks.php?type=collages" class="brackets">Collections</a>
       <a href="bookmarks.php?type=requests" class="brackets">Requests</a>
       <?php if (count($TorrentList) > 0) { ?>
-      <br /><br />
+      <br><br>
       <a href="bookmarks.php?action=remove_snatched&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets"
         onclick="return confirm('Are you sure you want to remove the bookmarks for all items you\'ve snatched?');">Remove
@@ -400,7 +400,7 @@ if ($CollageCovers !== 0) { ?>
     </span>
   </div>
 
-  <script type="text/javascript">
+  <script>
     $(() => collageShow.init( <?=json_encode($CollagePages)?> ));
   </script>
   <?php

@@ -3,6 +3,7 @@
  * to its best no-fuss advantage
  */
 
+
 /**
  * set heading font size
  * here are the (huge) defaults
@@ -52,6 +53,7 @@ h6 {
 
 /* correct content/sidebar overflow */
 @media (min-width: 550px) {
+
   .column,
   .columns {
     margin-left: 0 !important;
@@ -75,7 +77,7 @@ legend {
 /* tables usually containing forms */
 table {
   tr {
-    &:last-child > * {
+    &:last-child>* {
       border: none;
     }
   }
@@ -90,47 +92,12 @@ table.skeletonFix {
   */
 }
 
-/*
-input,
-textarea,
-select,
-fieldset {
-  margin-bottom: 0 !important;
-}
-*/
-
 /* easymde button fix */
 div.editor-toolbar {
   button {
     font-size: revert;
     line-height: revert;
   }
-}
-
-/* block elements */
-/*
-pre,
-blockquote,
-dl,
-figure,
-table,
-ul,
-ol,
-form {
-  margin-bottom: 0 !important;
-}
-*/
-
-/* inline code */
-code {
-  padding: 0 !important;
-}
-
-/* poll options */
-ul#poll_options {
-  list-style: none !important;
-  margin-left: 0 !important;
-  margin-bottom: 0.5rem !important;
 }
 
 /* nested lists */
@@ -159,6 +126,7 @@ input[type="reset"],
 input[type="submit"] {
   font-weight: normal !important;
 }
+
 
 /**
  * extra button colors

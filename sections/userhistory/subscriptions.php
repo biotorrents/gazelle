@@ -119,13 +119,13 @@ $Requests = Requests::get_requests($Requests);
       <?php
 if (!$ShowUnread) {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscriptions&amp;showunread=1" class="brackets">Only display subscriptions with
         unread replies</a>&nbsp;&nbsp;&nbsp;
       <?php
 } else {
     ?>
-      <br /><br />
+      <br><br>
       <a href="userhistory.php?action=subscriptions&amp;showunread=0" class="brackets">Show all
         subscriptions</a>&nbsp;&nbsp;&nbsp;
       <?php
@@ -271,7 +271,7 @@ if (!$NumResults) {
         <div class="content3">
           <?=\Gazelle\Text::parse($Result['LastReadBody']) ?>
           <?php if ($Result['LastReadEditedUserID']) { ?>
-          <br /><br />
+          <br><br>
           Last edited by <?=User::format_username($Result['LastReadEditedUserID'], false, false, false) ?>
           <?=time_diff($Result['LastReadEditedTime'])?>
           <?php } ?>
