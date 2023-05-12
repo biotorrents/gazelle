@@ -22,7 +22,7 @@ class Auth # extends Delight\Auth\Auth
 
     # 2fa libraries
     private $twoFactor = null;
-    private $u2f = null;
+    private $webAuthn = null;
 
     # seconds * minutes * hours * days
     private $shortRemember = 60 * 60 * 24 * 1;
@@ -58,7 +58,7 @@ class Auth # extends Delight\Auth\Auth
             );
 
             $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-            $this->u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
+            #$this->webAuthn = new u2flib_server\U2F("https://{$app->env->siteDomain}"); # needs its own class
         } catch (Throwable $e) {
             return $e->getMessage();
         }
