@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Gazelle\WebAuthn;
 
+use ParagonIE\ConstantTime\Base64UrlSafe;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
-use ParagonIE\ConstantTime\Base64UrlSafe;
 
 /**
  * Gazelle\WebAuthn\CredentialSourceRepository
@@ -26,7 +26,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn where credentialId = ?";
+        $query = "select json from webauthn where credentialId = ? and deleted_at is not null";
         $ref = $app->dbNew->single($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredentialId) ]);
 
         if (!$ref) {
@@ -51,7 +51,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn where userId = ?";
+        $query = "select json from webauthn where userId = ? and deleted_at is not null";
         $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
 
         $return = [];
@@ -76,19 +76,31 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         # use the jsonSerialize method to get the data
         $publicKeyCredentialSource = $publicKeyCredentialSource->jsonSerialize();
 
-        # insert the credential source
-        $query = "
-            insert into webauthn
-                (uuid, userId, credentialId, type, transports, attestationType,
-                trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
-            values
-                (:uuid, :userId, :credentialId, :type, :transports, :attestationType,
-                :trustPath, :aaguid, :credentialPublicKey, :userHandle, :counter, :json)
-        ";
+        # prevent zeroing out the userId on login
+        if ($app->user->isLoggedIn()) {
+            # yes userId
+            $query = "
+                insert into webauthn
+                    (uuid, userId, credentialId, type, transports, attestationType,
+                    trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
+                values
+                    (:uuid, :userId, :credentialId, :type, :transports, :attestationType,
+                    :trustPath, :aaguid, :credentialPublicKey, :userHandle, :counter, :json)
+            ";
+        } else {
+            # no userId
+            $query = "
+                replace into webauthn
+                    (uuid, credentialId, type, transports, attestationType,
+                    trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
+                values
+                    (:uuid, :credentialId, :type, :transports, :attestationType,
+                    :trustPath, :aaguid, :credentialPublicKey, :userHandle, :counter, :json)
+            ";
+        }
 
         $variables = [
             "uuid" => $app->dbNew->uuid() ?? null,
-            "userId" => $app->user->core["uuid"] ?? null,
             "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
             "type" => $publicKeyCredentialSource["type"] ?? null,
             "transports" => $publicKeyCredentialSource["transports"] ?? null,
@@ -102,12 +114,17 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         ];
 
         # massage some of the variables
-        $variables["userId"] = "";
-        #$variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
         $variables["transports"] = json_encode($variables["transports"]);
         $variables["trustPath"] = json_encode($variables["trustPath"]);
         $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
         $variables["json"] = json_encode($variables["json"]);
+
+        # check login status and set userId
+        if ($app->user->isLoggedIn()) {
+            $variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
+        } else {
+            unset($variables["userId"]);
+        }
 
         $app->dbNew->do($query, $variables);
     }

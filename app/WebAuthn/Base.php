@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Gazelle\WebAuthn;
 
-use ParagonIE\ConstantTime\Base64UrlSafe;
 use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\ECDSA\ES256;
 use Cose\Algorithm\Signature\ECDSA\ES256K;
@@ -19,6 +18,7 @@ use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
 use Cose\Algorithms;
+use ParagonIE\ConstantTime\Base64UrlSafe;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
