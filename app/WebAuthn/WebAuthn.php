@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gazelle;
+namespace Gazelle\WebAuthn;
 
 use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\ECDSA\ES256;
@@ -37,7 +37,7 @@ use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
- * Gazelle\WebAuthn
+ * Gazelle\WebAuthn\WebAuthn
  *
  * WebAuthn server for FIDO2 authentication.
  * I really hope someone uses this feature.
@@ -50,6 +50,10 @@ use Webauthn\PublicKeyCredentialUserEntity;
 
 class WebAuthn
 {
+    # the relying party
+    # https://webauthn-doc.spomky-labs.com/prerequisites/the-relying-party
+    private $relyingParty = null;
+
     # public key credential source repository
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#public-key-credential-source-repository
     private $publicKeyCredentialSourceRepository = null;
@@ -98,9 +102,17 @@ class WebAuthn
     {
         $app = \Gazelle\App::go();
 
+        # the relying party
+        # the relying party corresponds to the application that will ask for the user to interact with the authenticator
+        PublicKeyCredentialRpEntity::create(
+            $app->env->siteName, # the application name
+            $app->env->siteDomain, # the application id = the domain
+            null # the application icon = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V...
+        );
+
         # public key credential source repository
         # you can implement the required methods the way you want: Doctrine ORM, file storage...
-        $this->publicKeyCredentialSourceRepository = "get it from the database";
+        $this->publicKeyCredentialSourceRepository = new \Gazelle\WebAuthn\CredentialSourceRepository();
 
         # token binding handler
         # at the time of writing, we recommend to ignore this feature
@@ -194,13 +206,6 @@ class WebAuthn
     {
         $app = \Gazelle\App::go();
 
-        # RP entity, i.e., the application
-        $rpEntity = PublicKeyCredentialRpEntity::create(
-            $app->env->siteName, # name
-            $app->env->siteDomain, # id (fqdn?)
-            null # icon
-        );
-
         # user entity
         $userEntity = PublicKeyCredentialUserEntity::create(
             "@cypher-Angel-3000", # name
@@ -230,7 +235,7 @@ class WebAuthn
 
         $publicKeyCredentialCreationOptions =
             PublicKeyCredentialCreationOptions::create(
-                $rpEntity,
+                $this->relyingParty,
                 $userEntity,
                 $challenge,
                 $publicKeyCredentialParametersList,
