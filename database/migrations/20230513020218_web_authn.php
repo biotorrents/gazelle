@@ -22,7 +22,7 @@ final class WebAuthn extends AbstractMigration
         $app = \Gazelle\App::go();
 
         /**
-         * webauthn_sources
+         * webauthn
          *
          * return new self(
          *   Base64::decodeUrlSafe($data['publicKeyCredentialId']),
@@ -39,7 +39,7 @@ final class WebAuthn extends AbstractMigration
          *
          * @see https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php
          */
-        $table = $this->table("webauthn_sources");
+        $table = $this->table("webauthn");
         $table
             ->addColumn("uuid", "binary", [
                 "length" => 16,
@@ -94,6 +94,7 @@ final class WebAuthn extends AbstractMigration
          *
          * @see https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialUserEntity.php
          */
+        /*
         $table = $this->table("webauthn_users");
         $table
             ->addColumn("uuid", "binary", [
@@ -121,5 +122,6 @@ final class WebAuthn extends AbstractMigration
             ->addIndex(["userId", "displayName", "credentialId"], ["unique" => true])
 
             ->create();
+            */
     }
 }

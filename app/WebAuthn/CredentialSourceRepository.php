@@ -7,6 +7,7 @@ namespace Gazelle\WebAuthn;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
+use ParagonIE\ConstantTime\Base64UrlSafe;
 
 /**
  * Gazelle\WebAuthn\CredentialSourceRepository
@@ -25,8 +26,8 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn_sources where credentialId = ?";
-        $ref = $app->dbNew->single($query, [$publicKeyCredentialId]);
+        $query = "select json from webauthn where credentialId = ?";
+        $ref = $app->dbNew->single($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredentialId) ]);
 
         if (!$ref) {
             return null;
@@ -37,7 +38,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             return null;
         }
 
-        return self::createFromArray($data);
+        return PublicKeyCredentialSource::createFromArray($data);
     }
 
 
@@ -50,20 +51,13 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        /*
-        # todo: debug
-        $testJson = $app->dbNew->single("select json from webauthn_sources where id = 5");
-        $decoded = json_decode($testJson, true);
-        return [PublicKeyCredentialSource::createFromArray($decoded)];
-        */
-
-        $query = "select json from webauthn_sources where userId = ?";
+        $query = "select json from webauthn where userId = ?";
         $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
 
         $return = [];
         foreach ($ref as $row) {
-            $data = json_decode($row, true);
-            $return[] = self::createFromArray($data);
+            $data = json_decode($row["json"], true);
+            $return[] = PublicKeyCredentialSource::createFromArray($data);
         }
 
         return $return;
@@ -84,7 +78,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         # insert the credential source
         $query = "
-            insert into webauthn_sources
+            insert into webauthn
                 (uuid, userId, credentialId, type, transports, attestationType,
                 trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
             values
@@ -108,7 +102,8 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         ];
 
         # massage some of the variables
-        $variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
+        $variables["userId"] = "";
+        #$variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
         $variables["transports"] = json_encode($variables["transports"]);
         $variables["trustPath"] = json_encode($variables["trustPath"]);
         $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);

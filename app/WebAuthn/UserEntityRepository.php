@@ -24,36 +24,20 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
     {
         $app = \Gazelle\App::go();
 
-        # todo: debug
-        return PublicKeyCredentialUserEntity::create(
-            "ohm", # name
-            "ceb43154-f05a-11ed-8954-96000218b74c", # id
-            "ohm", # display name
-            null # icon
-        );
-
         # get the uuid v7 from the username
         $query = "select uuid from users where username = ?";
-        $ref = $app->dbNew->single($query, [$username]);
+        $userId = $app->dbNew->single($query, [$username]);
 
-        if (!$ref) {
+        if (!$userId) {
             return null;
         }
 
-        # get the user entity from the uuid v7
-        $query = "select json from webauthn_users where userId = ?";
-        $ref = $app->dbNew->single($query, [ $app->dbNew->uuidBinary($ref) ]);
-
-        if (!$ref) {
-            return null;
-        }
-
-        $data = json_decode($ref, true);
-        if (!$data) {
-            return null;
-        }
-
-        return self::createFromArray($data);
+        return PublicKeyCredentialUserEntity::create(
+            $username, # name
+            $app->dbNew->uuidBinary($userId), # id
+            $username, # display name
+            null # icon
+        );
     }
 
 
@@ -66,19 +50,28 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn_users where userId = ?";
-        $ref = $app->dbNew->single($query, [$userHandle]);
+        # get the userId from the userHandle
+        $query = "select userId from webauthn where userHandle = ?";
+        $userId = $app->dbNew->single($query, [$userHandle]);
 
-        if (!$ref) {
+        if (!$userId) {
             return null;
         }
 
-        $data = json_decode($ref, true);
-        if (!$data) {
+        # get the username from the userId
+        $query = "select username from users where uuid = ?";
+        $username = $app->dbNew->single($query, [ $app->dbNew->uuidBinary($userId) ]);
+
+        if (!$username) {
             return null;
         }
 
-        return self::createFromArray($data);
+        return PublicKeyCredentialUserEntity::create(
+            $username, # name
+            $app->dbNew->uuidBinary($userId), # id
+            $username, # display name
+            null # icon
+        );
     }
 
 
@@ -91,7 +84,9 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
      */
     public function generateNextUserEntityId(): string
     {
-        return \Ramsey\Uuid\Uuid::uuid7()->toString();
+        $app = \Gazelle\App::go();
+
+        return $app->dbNew->uuid();
     }
 
 
@@ -103,6 +98,10 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
      */
     public function saveUserEntity(PublicKeyCredentialUserEntity $userEntity): void
     {
+        throw new \Exception("not implemented");
+
+        /** */
+
         $app = \Gazelle\App::go();
 
         # does it already exist?

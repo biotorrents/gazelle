@@ -155,13 +155,13 @@ class Internal extends Base
     /**
      * webAuthnAssertionRequest
      */
-    public static function webAuthnAssertionRequest($username): void
+    public static function webAuthnAssertionRequest(string $username): void
     {
         $app = \Gazelle\App::go();
 
         try {
             $userEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
-            $userEntity = $userEntityRepository->findOneByUsername("ohm");
+            $userEntity = $userEntityRepository->findOneByUsername($username);
 
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $request = $webAuthn->assertionRequest($userEntity);
@@ -184,6 +184,9 @@ class Internal extends Base
 
         # get the raw request
         $assertionRequest = file_get_contents("php://input");
+
+        $webAuthn = new \Gazelle\WebAuthn\Base();
+        $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
 
         try {
             $webAuthn = new \Gazelle\WebAuthn\Base();

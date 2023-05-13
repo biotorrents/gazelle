@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gazelle\WebAuthn;
 
+use ParagonIE\ConstantTime\Base64UrlSafe;
 use Cose\Algorithm\Manager;
 use Cose\Algorithm\Signature\ECDSA\ES256;
 use Cose\Algorithm\Signature\ECDSA\ES256K;
@@ -94,6 +95,11 @@ class Base
     # cryptographic challenges
     # https://www.w3.org/TR/webauthn-2/#sctn-cryptographic-challenges
     private $challengeLength = 32;
+
+    # public key credential request timeout
+    # if the user verification is preferred or required, the range is 300 to 600 seconds (5 to 10 minutes)
+    # https://www.w3.org/TR/webauthn-2/#dom-publickeycredentialcreationoptions-timeout
+    private $timeout = 300;
 
 
     /**
@@ -240,13 +246,19 @@ class Base
             PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ED512),
         ];
 
+        # https://webauthn-doc.spomky-labs.com/pure-php/advanced-behaviours/authentication-without-username
+        $authenticatorSelectionCriteria = AuthenticatorSelectionCriteria::create()
+            ->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED)
+            ->setResidentKey(AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED);
+
         $publicKeyCredentialCreationOptions =
             PublicKeyCredentialCreationOptions::create(
                 $this->relyingParty,
                 $userEntity,
                 $challenge,
                 $publicKeyCredentialParametersList,
-            );
+            )
+            ->setAuthenticatorSelection($authenticatorSelectionCriteria);
 
         # the options object can be converted into JSON and sent to the authenticator using the API
         # https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API
@@ -316,7 +328,7 @@ class Base
         # if no exception is thrown, the response is valid
         # you can store the public key credential source and associate it to the user entity
         $this->publicKeyCredentialSourceRepository->saveCredentialSource($publicKeyCredentialSource);
-        $this->UserEntityRepository->saveUserEntity($userEntity);
+        #$this->UserEntityRepository->saveUserEntity($userEntity);
 
         return $publicKeyCredentialSource;
     }
@@ -370,6 +382,7 @@ class Base
                 random_bytes($this->challengeLength) # challenge
             )
             ->allowCredentials(...$allowedCredentials) # important!
+            ->setTimeout($this->timeout)
             ->setUserVerification(
                 PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
             );
@@ -419,13 +432,17 @@ class Base
             throw new \Exception("unable to instantiate an AuthenticatorAssertionResponse object");
         }
 
+        # get the userHandle
+        $query = "select userHandle from webauthn where credentialId = ?";
+        $userHandle = $app->dbNew->single($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredential->getRawId()) ]);
+
         # if no exception is thrown, the response is valid and you can continue the authentication of the user
         $publicKeyCredentialSource = $this->authenticatorAssertionResponseValidator->check(
             $publicKeyCredential->getRawId(),
             $authenticatorAssertionResponse,
             $publicKeyCredentialRequestOptions,
             $app->env->siteDomain, # "my-application.com"
-            $userHandle
+            Base64UrlSafe::decode($userHandle) ?? null
         );
 
         return $publicKeyCredentialSource;

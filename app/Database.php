@@ -238,6 +238,15 @@ class Database extends \PDO
 
 
     /**
+     * binaryUuid
+     */
+    public function binaryUuid(string $string): string
+    {
+        return $this->uuidBinary($string);
+    }
+
+
+    /**
      * uuidString
      *
      * Get the string representation of a binary uuid.
@@ -251,6 +260,15 @@ class Database extends \PDO
     public function uuidString(string $binary): string
     {
         return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
+    }
+
+
+    /**
+     * stringUuid
+     */
+    public function stringUuid(string $binary): string
+    {
+        return $this->uuidString($binary);
     }
 
 
