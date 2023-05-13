@@ -51,6 +51,11 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
+        # todo: debug
+        $test = $app->dbNew->single("select json from webauthn_sources where id = 6");
+        $decode = json_decode($test, true);
+        return [PublicKeyCredentialSource::createFromArray($decode)];
+
         $query = "select json from webauthn_sources where userId = ?";
         $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
 

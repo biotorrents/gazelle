@@ -157,23 +157,23 @@ class Internal extends Base
      */
     public static function webAuthnAssertionRequest(): void
     {
-        /*
         $app = \Gazelle\App::go();
 
-        self::validateFrontendHash();
-
-        $post = \Http::request("post");
-        $userId = $post["userId"] ??= null;
+        #self::validateFrontendHash();
 
         try {
-            $webAuthn = new \Gazelle\WebAuthn\Base();
-            $request = $webAuthn->assertionRequest($userId);
+            $userEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
+            $userEntity = $userEntityRepository->findOneByUsername("ohm");
 
-            self::success($request);
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $request = $webAuthn->assertionRequest($userEntity);
+
+            # return the raw request
+            print $request;
+            exit;
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
-        */
     }
 
 
@@ -182,6 +182,22 @@ class Internal extends Base
      */
     public static function webAuthnAssertionResponse(): void
     {
+        $app = \Gazelle\App::go();
+
+        #self::validateFrontendHash();
+
+        # get the raw request
+        $assertionRequest = file_get_contents("php://input");
+        self::success($assertionRequest);
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
+
+            self::success($response);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 

@@ -13,7 +13,7 @@ use Webauthn\PublicKeyCredentialUserEntity;
  * @see https://webauthn-doc.spomky-labs.com/prerequisites/user-entity-repository#user-entity-repository
  */
 
-class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
+class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
 {
     /**
      * findOneByUsername
@@ -23,6 +23,14 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
     public function findOneByUsername(string $username): ?PublicKeyCredentialUserEntity
     {
         $app = \Gazelle\App::go();
+
+        # todo: debug
+        return PublicKeyCredentialUserEntity::create(
+            "ohm", # name
+            "ceb43154-f05a-11ed-8954-96000218b74c", # id
+            "ohm", # display name
+            null # icon
+        );
 
         # get the uuid v7 from the username
         $query = "select uuid from users where username = ?";
@@ -34,7 +42,7 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
 
         # get the user entity from the uuid v7
         $query = "select json from webauthn_users where userId = ?";
-        $ref = $app->dbNew->single($query, [$ref]);
+        $ref = $app->dbNew->single($query, [ $app->dbNew->uuidBinary($ref) ]);
 
         if (!$ref) {
             return null;

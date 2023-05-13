@@ -57,6 +57,7 @@ class Base
     # public key credential source repository
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#public-key-credential-source-repository
     private $publicKeyCredentialSourceRepository = null;
+    private $UserEntityRepository = null;
 
     # token binding handler
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#token-binding-handler
@@ -114,6 +115,7 @@ class Base
         # public key credential source repository
         # you can implement the required methods the way you want: Doctrine ORM, file storage...
         $this->publicKeyCredentialSourceRepository = new \Gazelle\WebAuthn\CredentialSourceRepository();
+        $this->UserEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
         #!d($this->publicKeyCredentialSourceRepository);exit;
 
         # token binding handler
@@ -314,9 +316,18 @@ class Base
             $app->env->siteDomain # "my-application.com"
         );
 
+        # create a user entity
+        $userEntity = PublicKeyCredentialUserEntity::create(
+            $app->user->core["username"], # name
+            $app->user->core["uuid"], # id
+            $app->user->core["username"], # display name
+            null # icon
+        );
+
         # if no exception is thrown, the response is valid
         # you can store the public key credential source and associate it to the user entity
         $this->publicKeyCredentialSourceRepository->saveCredentialSource($publicKeyCredentialSource);
+        $this->UserEntityRepository->saveUserEntity($userEntity);
 
         return $publicKeyCredentialSource;
     }
@@ -356,13 +367,14 @@ class Base
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#allowed-credentials
 
         # list of registered PublicKeyCredentialDescriptor classes associated to the user
-        $registeredAuthenticators = $publicKeyCredentialSourceRepository->findAllForUserEntity($userEntity);
+        $registeredAuthenticators = $this->publicKeyCredentialSourceRepository->findAllForUserEntity($userEntity);
         $allowedCredentials = array_map(
             static function (PublicKeyCredentialSource $credential): PublicKeyCredentialDescriptor {
                 return $credential->getPublicKeyCredentialDescriptor();
             },
             $registeredAuthenticators
         );
+        #!d($allowedCredentials);exit;
 
         # public key credential request options
         $publicKeyCredentialRequestOptions =
@@ -373,6 +385,7 @@ class Base
                 PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
             );
 
+        $_SESSION["publicKeyCredentialRequestOptions"] = $publicKeyCredentialRequestOptions;
         return json_encode($publicKeyCredentialRequestOptions->jsonSerialize());
     }
 
@@ -406,6 +419,8 @@ class Base
         # data loading
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#data-loading
         $publicKeyCredential = $this->publicKeyCredentialLoader->load($assertionRequest);
+        $publicKeyCredentialRequestOptions = $_SESSION["publicKeyCredentialRequestOptions"];
+        #!d($publicKeyCredential);exit;
 
         # response verification
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#response-verification

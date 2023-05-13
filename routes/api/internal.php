@@ -22,7 +22,7 @@ Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "de
 Flight::route("GET /api/internal/webAuthn/creationRequest", ["Gazelle\API\Internal", "webAuthnCreationRequest"]);
 Flight::route("POST /api/internal/webAuthn/creationResponse", ["Gazelle\API\Internal", "webAuthnCreationResponse"]);
 
-Flight::route("POST /api/internal/webAuthn/assertionRequest", ["Gazelle\API\Internal", "webAuthnAssertionRequest"]);
+Flight::route("GET /api/internal/webAuthn/assertionRequest", ["Gazelle\API\Internal", "webAuthnAssertionRequest"]);
 Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\API\Internal", "webAuthnAssertionResponse"]);
 
 # suggest a passphrase

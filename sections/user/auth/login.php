@@ -37,6 +37,7 @@ if (!empty($post)) {
 
 # twig template
 $app->twig->display("user/auth/login.twig", [
+    "js" => ["vendor/simplewebauthn.min", "webAuthnAssert"],
     "response" => $response ?? null,
     "post" => $post ?? null,
     "u2fAuthData" => $u2fAuthData ?? null,

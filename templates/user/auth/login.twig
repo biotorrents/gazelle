@@ -83,8 +83,9 @@
     {# log in #}
     <input type="submit" name="submit" id="submit" value="Log in" class="button-primary">
 
-    <input type="submit" value="webauthn login" class="button-orange">
+    <a id="assertWebAuthn" class="button button-orange">webauthn login</a>
     {# <button type="submit" {{ stimulus_action("@web-auth/webauthn-stimulus/webauthn", "signin") }}> #}
+    <p id="webAuthnResponse"></p>
 
     {# register #}
     {% if env.openRegistration == true %}
