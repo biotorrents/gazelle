@@ -155,11 +155,9 @@ class Internal extends Base
     /**
      * webAuthnAssertionRequest
      */
-    public static function webAuthnAssertionRequest(): void
+    public static function webAuthnAssertionRequest($username): void
     {
         $app = \Gazelle\App::go();
-
-        #self::validateFrontendHash();
 
         try {
             $userEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
@@ -184,11 +182,8 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        #self::validateFrontendHash();
-
         # get the raw request
         $assertionRequest = file_get_contents("php://input");
-        self::success($assertionRequest);
 
         try {
             $webAuthn = new \Gazelle\WebAuthn\Base();

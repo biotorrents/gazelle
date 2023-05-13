@@ -8,12 +8,6 @@ declare(strict_types=1);
  * yeah, we getting crudded
  */
 
-/*
-Flight::route("/api/internal/foo", function () {
-    #require_once "bar";
-});
-*/
-
 # 2fa (totp)
 Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\API\Internal", "createTwoFactor"]);
 Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "deleteTwoFactor"]);
@@ -22,7 +16,9 @@ Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "de
 Flight::route("GET /api/internal/webAuthn/creationRequest", ["Gazelle\API\Internal", "webAuthnCreationRequest"]);
 Flight::route("POST /api/internal/webAuthn/creationResponse", ["Gazelle\API\Internal", "webAuthnCreationResponse"]);
 
-Flight::route("GET /api/internal/webAuthn/assertionRequest", ["Gazelle\API\Internal", "webAuthnAssertionRequest"]);
+Flight::route("GET /api/internal/webAuthn/assertionRequest/@username", function (string $username) {
+    return \Gazelle\API\Internal::webAuthnAssertionRequest($username);
+});
 Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\API\Internal", "webAuthnAssertionResponse"]);
 
 # suggest a passphrase

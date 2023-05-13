@@ -7,7 +7,6 @@ namespace Gazelle\WebAuthn;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
-use ParagonIE\ConstantTime\Base64UrlSafe;
 
 /**
  * Gazelle\WebAuthn\CredentialSourceRepository
@@ -29,12 +28,12 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $query = "select json from webauthn_sources where credentialId = ?";
         $ref = $app->dbNew->single($query, [$publicKeyCredentialId]);
 
-        if (!$ref || empty($ref)) {
+        if (!$ref) {
             return null;
         }
 
         $data = json_decode($ref, true);
-        if (!$data || empty($data)) {
+        if (!$data) {
             return null;
         }
 
@@ -51,10 +50,12 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
+        /*
         # todo: debug
-        $test = $app->dbNew->single("select json from webauthn_sources where id = 6");
-        $decode = json_decode($test, true);
-        return [PublicKeyCredentialSource::createFromArray($decode)];
+        $testJson = $app->dbNew->single("select json from webauthn_sources where id = 5");
+        $decoded = json_decode($testJson, true);
+        return [PublicKeyCredentialSource::createFromArray($decoded)];
+        */
 
         $query = "select json from webauthn_sources where userId = ?";
         $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
@@ -80,7 +81,6 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         # use the jsonSerialize method to get the data
         $publicKeyCredentialSource = $publicKeyCredentialSource->jsonSerialize();
-        #!d($publicKeyCredentialSource);exit;
 
         # insert the credential source
         $query = "
