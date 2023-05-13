@@ -381,6 +381,7 @@ class Base
             PublicKeyCredentialRequestOptions::create(
                 random_bytes($this->challengeLength) # challenge
             )
+            ->allowCredentials(...$allowedCredentials)
             ->setUserVerification(
                 PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
             );
