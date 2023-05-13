@@ -17,13 +17,21 @@ use Cose\Algorithm\Signature\RSA\PS512;
 use Cose\Algorithm\Signature\RSA\RS256;
 use Cose\Algorithm\Signature\RSA\RS384;
 use Cose\Algorithm\Signature\RSA\RS512;
+use Cose\Algorithms;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
 use Webauthn\AuthenticatorAssertionResponseValidator;
+use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
+use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\PublicKeyCredentialCreationOptions;
+use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialLoader;
+use Webauthn\PublicKeyCredentialParameters;
+use Webauthn\PublicKeyCredentialRpEntity;
+use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
  * Gazelle\WebAuthn
@@ -81,6 +89,8 @@ class WebAuthn
      */
     public function __construct(array $options = [])
     {
+        $app = \Gazelle\App::go();
+
         # public key credential source repository
         # you can implement the required methods the way you want: Doctrine ORM, file storage...
         $this->publicKeyCredentialSourceRepository = "get it from the database";
@@ -145,5 +155,152 @@ class WebAuthn
             $this->extensionOutputCheckerHandler,
             $this->algorithmManager
         );
+    }
+
+
+    /** register authenticators */
+
+
+    /**
+     * creationRequest
+     *
+     * To associate a device to a user, you need to instantiate a Webauthn\PublicKeyCredentialCreationOptions object.
+     *
+     * It will need:
+     *
+     * - the relying party
+     * - the user data
+     * - a challenge (random binary string)
+     * - a list of supported public key parameters, i.e., an algorithm list (at least one)
+     *
+     * Optionally, you can customize the following parameters:
+     *
+     * - a timeout
+     * - a list of public key credential to exclude from the registration process
+     * - the authenticator selection criteria
+     * - attestation conveyance preference
+     * - extensions
+     *
+     * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#creation-request
+     */
+    public function creationRequest(): string
+    {
+        $app = \Gazelle\App::go();
+
+        # RP entity, i.e., the application
+        $rpEntity = PublicKeyCredentialRpEntity::create(
+            $app->env->siteName, # name
+            $app->env->siteDomain, # id (fqdn?)
+            null # icon
+        );
+
+        # user entity
+        $userEntity = PublicKeyCredentialUserEntity::create(
+            "@cypher-Angel-3000", # name
+            "123e4567-e89b-12d3-a456-426655440000", # id (uuid?)
+            "Mighty Mike", # display name (username?)
+            null # icon (avatar?)
+        );
+
+        # challenge
+        $challenge = random_bytes(16);
+
+        # public key credential parameters
+        $publicKeyCredentialParametersList = [
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ES256),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ES256K),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ES384),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ES512),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_RS256),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_RS384),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_RS512),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_PS256),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_PS384),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_PS512),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ED256),
+            PublicKeyCredentialParameters::create("public-key", Algorithms::COSE_ALGORITHM_ED512),
+        ];
+
+        $publicKeyCredentialCreationOptions =
+            PublicKeyCredentialCreationOptions::create(
+                $rpEntity,
+                $userEntity,
+                $challenge,
+                $publicKeyCredentialParametersList,
+            );
+
+        # the options object can be converted into JSON and sent to the authenticator using the API
+        # https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API
+
+        # it is important to store the user entity and the options object (e.g., in the session) for the next step
+        # the data will be needed to check the response from the device
+        return $publicKeyCredentialCreationOptions->jsonSerialize();
+    }
+
+
+    /**
+     * creationResponse
+     *
+     * What you receive must be a JSON object that looks like as follows:
+     *
+     * {
+     *   "id": "KVb8CnwDjpgAo[...]op61BTLaa0tczXvz4JrQ23usxVHA8QJZi3L9GZLsAtkcVvWObA",
+     *   "type": "public-key",
+     *   "rawId": "KVb8CnwDjpgAo[...]rQ23usxVHA8QJZi3L9GZLsAtkcVvWObA==",
+     *   "response": {
+     *     "clientDataJSON": "eyJjaGFsbGVuZ2UiOiJQbk1hVjBVTS[...]1iUkdHLUc4Y3BDSdGUifQ==",
+     *     "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSj[...]YcGhf"
+     *   }
+     * }
+     *
+     * There are two steps to perform with this object:
+     *
+     * - load the data
+     * - verify it with the creation options set above
+     *
+     * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#creation-response
+     */
+    public function creationResponse(string $creationRequest)
+    {
+        $app = \Gazelle\App::go();
+
+        # data loading
+        # https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#data-loading
+        $publicKeyCredential = $this->publicKeyCredentialLoader->load($creationRequest);
+
+        # response verification
+        # https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#response-verification
+        $authenticatorAttestationResponse = $publicKeyCredential->getResponse();
+        if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
+            # e.g., process here with a redirection to the public key creation page.
+            throw new \Exception("oops");
+        }
+
+        # the authenticator attestation response validator service will check everything for you:
+        # challenge, origin, attestation statement, and much more
+        $publicKeyCredentialSource = $this->authenticatorAttestationResponseValidator->check(
+            $authenticatorAttestationResponse,
+            $publicKeyCredentialCreationOptions,
+            $app->env->siteDomain # "my-application.com"
+        );
+
+        # if no exception is thrown, the response is valid
+        # you can store the public key credential source and associate it to the user entity
+        /*
+        $query = "
+            replace into webauthn (foo, bar, baz)
+            values (:foo, :bar, :baz)
+        ";
+
+        $variables = [
+            "foo" => $publicKeyCredentialSource->getPublicKeyCredentialId(),
+            "bar" => $publicKeyCredentialSource->getUserHandle(),
+            "baz" => $publicKeyCredentialSource->getPublicKeyCredential(),
+        ];
+
+        $app->dbNew->do($query, $variables);
+        */
+
+        return $publicKeyCredentialSource;
     }
 } # class
