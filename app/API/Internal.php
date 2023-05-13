@@ -47,7 +47,7 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** 2fa */
 
 
     /**
@@ -102,6 +102,90 @@ class Internal extends Base
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** webauthn */
+
+
+    /**
+     * webAuthnCreationRequest
+     */
+    public static function webAuthnCreationRequest(): void
+    {
+        $app = \Gazelle\App::go();
+
+        #self::validateFrontendHash();
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $request = $webAuthn->creationRequest();
+
+            # return the raw request
+            print $request;
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * webAuthnCreationResponse
+     */
+    public static function webAuthnCreationResponse(): void
+    {
+        $app = \Gazelle\App::go();
+
+        #self::validateFrontendHash();
+
+        # get the raw request
+        $creationRequest = file_get_contents("php://input");
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $response = $webAuthn->creationResponse($creationRequest)->jsonSerialize();
+
+            self::success($response);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * webAuthnAssertionRequest
+     */
+    public static function webAuthnAssertionRequest(): void
+    {
+        /*
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::request("post");
+        $userId = $post["userId"] ??= null;
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $request = $webAuthn->assertionRequest($userId);
+
+            self::success($request);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+        */
+    }
+
+
+    /**
+     * webAuthnAssertionResponse
+     */
+    public static function webAuthnAssertionResponse(): void
+    {
+    }
+
+
+    /** */
 
 
     /**

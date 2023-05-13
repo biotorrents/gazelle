@@ -170,7 +170,7 @@ if (!empty($post)) {
 
 $app->twig->display("user/settings/settings.twig", [
  "css" => ["vendor/easymde.min"],
- "js" => ["user", "vendor/easymde.min"],
+ "js" => ["user", "vendor/simplewebauthn.min", "webauthn", "vendor/easymde.min"],
  "sidebar" => true,
 
  "badges" => $badges,

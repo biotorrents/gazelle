@@ -213,21 +213,20 @@ class Base
      *
      * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#creation-request
      */
-    public function creationRequest(int $userId): string
+    public function creationRequest(): string
     {
         $app = \Gazelle\App::go();
 
-        # get gazelle user data
-        $user = $app->user->readProfile($userId);
-        if (!$user) {
-            throw new \Exception("invalid userId");
+        # not logged in
+        if (!$app->user->isLoggedIn()) {
+            throw new \Exception("you must be logged in to register a security device");
         }
 
-        # user entity
+        # create a user entity
         $userEntity = PublicKeyCredentialUserEntity::create(
-            $user["core"]["username"], # name
-            $user["core"]["uuid"], # id
-            $user["core"]["username"], # display name
+            $app->user->core["username"], # name
+            $app->user->core["uuid"], # id
+            $app->user->core["username"], # display name
             null # icon
         );
 
@@ -263,6 +262,7 @@ class Base
 
         # it is important to store the user entity and the options object (e.g., in the session) for the next step
         # the data will be needed to check the response from the device
+        $_SESSION["publicKeyCredentialCreationOptions"] = $publicKeyCredentialCreationOptions;
         return json_encode($publicKeyCredentialCreationOptions->jsonSerialize());
     }
 
@@ -289,13 +289,14 @@ class Base
      *
      * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#creation-response
      */
-    public function creationResponse(string $creationRequest)
+    public function creationResponse($creationRequest)
     {
         $app = \Gazelle\App::go();
 
         # data loading
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#data-loading
         $publicKeyCredential = $this->publicKeyCredentialLoader->load($creationRequest);
+        $publicKeyCredentialCreationOptions = $_SESSION["publicKeyCredentialCreationOptions"];
 
         # response verification
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#response-verification
@@ -315,20 +316,7 @@ class Base
 
         # if no exception is thrown, the response is valid
         # you can store the public key credential source and associate it to the user entity
-        /*
-        $query = "
-            replace into webauthn (foo, bar, baz)
-            values (:foo, :bar, :baz)
-        ";
-
-        $variables = [
-            "foo" => $publicKeyCredentialSource->getPublicKeyCredentialId(),
-            "bar" => $publicKeyCredentialSource->getUserHandle(),
-            "baz" => $publicKeyCredentialSource->getPublicKeyCredential(),
-        ];
-
-        $app->dbNew->do($query, $variables);
-        */
+        $this->publicKeyCredentialSourceRepository->saveCredentialSource($publicKeyCredentialSource);
 
         return $publicKeyCredentialSource;
     }

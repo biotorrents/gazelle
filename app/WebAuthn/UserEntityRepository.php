@@ -114,8 +114,11 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
         $variables = [
             "userId" => $userEntity->getId(),
             "displayName" => $userEntity->getDisplayName(),
-            "json" => json_encode($userEntity->jsonSerialize()),
+            "json" => $userEntity->jsonSerialize(),
         ];
+
+        # massage some of the variables
+        $variables["json"] = json_encode($variables["json"]);
 
         $app->dbNew->do($query, $variables);
     }

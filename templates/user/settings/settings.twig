@@ -1,5 +1,6 @@
 {% extends "base.twig" %}
 
+{#
 {{
     stimulus_controller(
         '@web-auth/webauthn-stimulus/webauthn',
@@ -9,6 +10,7 @@
         }
     )
 }}
+#}
 
 {% block content %}
 
@@ -825,6 +827,7 @@ END PARANOIA CLUSTERFUCK #}
 
           {# this is a mess: just open a popup #}
           <td>
+          <p id="webAuthnResponse"></p>
           <a id="enrollWebAuthn" class="button button-primary" target="_blank">enroll device</a>
           {#
     <div class="pad">

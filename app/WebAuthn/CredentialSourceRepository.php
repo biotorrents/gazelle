@@ -7,6 +7,7 @@ namespace Gazelle\WebAuthn;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
+use ParagonIE\ConstantTime\Base64UrlSafe;
 
 /**
  * Gazelle\WebAuthn\CredentialSourceRepository
@@ -28,12 +29,12 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $query = "select json from webauthn_sources where credentialId = ?";
         $ref = $app->dbNew->single($query, [$publicKeyCredentialId]);
 
-        if (!$ref) {
+        if (!$ref || empty($ref)) {
             return null;
         }
 
         $data = json_decode($ref, true);
-        if (!$data) {
+        if (!$data || empty($data)) {
             return null;
         }
 
@@ -72,8 +73,9 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        # get the descriptor (contains the userId, etc.)
-        $publicKeyCredentialDescriptor = $publicKeyCredentialSource->getPublicKeyCredentialDescriptor();
+        # use the jsonSerialize method to get the data
+        $publicKeyCredentialSource = $publicKeyCredentialSource->jsonSerialize();
+        #!d($publicKeyCredentialSource);exit;
 
         # insert the credential source
         $query = "
@@ -87,18 +89,25 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         $variables = [
             "uuid" => $app->dbNew->uuid() ?? null,
-            "userId" => $publicKeyCredentialDescriptor->getId() ?? null,
-            "credentialId" => $publicKeyCredentialSource->getPublicKeyCredentialId() ?? null,
-            "type" => $publicKeyCredentialSource->getType() ?? null,
-            "transports" => json_encode($publicKeyCredentialId->getTransports() ?? null),
-            "attestationType" => $publicKeyCredentialSource->getAttestationType() ?? null,
-            "trustPath" => $publicKeyCredentialSource->getTrustPath() ?? null,
-            "aaguid" => $publicKeyCredentialSource->getAaguid()->toBinary() ?? null,
-            "credentialPublicKey" => $publicKeyCredentialSource->getCredentialPublicKey() ?? null,
-            "userHandle" => $publicKeyCredentialSource->getUserHandle() ?? null,
-            "counter" => $publicKeyCredentialSource->getCounter() ?? null,
-            "json" => json_encode($publicKeyCredentialSource->jsonSerialize() ?? null),
+            "userId" => $app->user->core["uuid"] ?? null,
+            "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
+            "type" => $publicKeyCredentialSource["type"] ?? null,
+            "transports" => $publicKeyCredentialSource["transports"] ?? null,
+            "attestationType" => $publicKeyCredentialSource["attestationType"] ?? null,
+            "trustPath" => $publicKeyCredentialSource["trustPath"] ?? null,
+            "aaguid" => $publicKeyCredentialSource["aaguid"] ?? null,
+            "credentialPublicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
+            "userHandle" => $publicKeyCredentialSource["userHandle"] ?? null,
+            "counter" => $publicKeyCredentialSource["counter"] ?? null,
+            "json" => $publicKeyCredentialSource ?? null,
         ];
+
+        # massage some of the variables
+        $variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
+        $variables["transports"] = json_encode($variables["transports"]);
+        $variables["trustPath"] = json_encode($variables["trustPath"]);
+        $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
+        $variables["json"] = json_encode($variables["json"]);
 
         $app->dbNew->do($query, $variables);
     }

@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@simplewebauthn/browser": "^7.2.0",
     "chart.js": "^4.1.1",
     "chartjs-chart-geo": "^4.1.1",
     "chartjs-chart-graph": "^4.1.0",
