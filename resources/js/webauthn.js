@@ -8,7 +8,7 @@
     const { startRegistration } = SimpleWebAuthnBrowser;
 
     // <button>
-    const elemBegin = document.getElementById("enrollWebAuthn");
+    const elemBegin = document.getElementById("createWebAuthn");
     // <span>/<p>/etc...
     const elemSuccess = document.getElementById("webAuthnResponse");
     // <span>/<p>/etc...

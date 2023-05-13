@@ -33,27 +33,6 @@
     </p>
 {% endif %}
 
-{# u2f login form #}
-{% if post is not empty and post.u2f_request is defined and post.u2f_response is defined %}
-    <p class="info">
-        This account is protected by a Universal Two Factor token.
-        Please insert your U2F token and press it if necessary.
-    </p>
-
-    <form id="u2f" method="post">
-        {{ form_token(query.server.REQUEST_URI) }}
-
-        <input type="hidden" name="username" value="{{ post.username }}">
-
-        <input type="hidden" name="password" value="{{ post.passphrase }}">
-
-        <input type="hidden" name="u2f-request" value="{{ u2fAuthData }}">
-
-        <input type="hidden" name="u2f-response">
-
-    </form>
-{% endif %}
-
 {# regular login form #}
 <form name="login" id="login" method="post">
 {# <form name="login" id="login" method="post" {{ stimulus_controller("@web-auth/webauthn-stimulus/webauthn") }}> #}

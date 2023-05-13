@@ -58,7 +58,6 @@ class Auth # extends Delight\Auth\Auth
             );
 
             $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-            #$this->webAuthn = new u2flib_server\U2F("https://{$app->env->siteDomain}"); # needs its own class
         } catch (Throwable $e) {
             return $e->getMessage();
         }
@@ -332,8 +331,6 @@ class Auth # extends Delight\Auth\Auth
 
         # 2fa code needs to be a string (RobThree)
         $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
-        $u2fRequest = $data["u2f-request"] ?? null;
-        $u2fResponse = $data["u2f-response"] ?? null;
 
         $query = "select id from users where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
@@ -398,16 +395,6 @@ class Auth # extends Delight\Auth\Auth
             }
         }
 
-        # gazelle u2f
-        if (!empty($u2fRequest) && !empty($u2fResponse)) {
-            try {
-                $this->verifyU2F($userId, $twoFactor);
-            } catch (Throwable $e) {
-                return $e->getMessage();
-                return $message;
-            }
-        }
-
         # gazelle session
         try {
             $this->createSession($userId, $rememberMe);
@@ -437,55 +424,6 @@ class Auth # extends Delight\Auth\Auth
         # failed to verify
         if (!$this->twoFactor->verifyCode($twoFactorSecret, $twoFactorCode)) {
             throw new Exception("Unable to verify the 2FA token");
-        }
-    }
-
-
-    /**
-     * verifyU2F
-     */
-    public function verifyU2F(int $userId, $request, $response): void
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select * from u2f where userId = ? and twoFactor is not null";
-        $ref = $app->dbNew->row($query, [$userId]);
-
-        if (empty($ref)) {
-            throw new Exception("U2F data not found");
-        }
-
-        # todo: needs to be an array of objects
-        $payload = [
-            "keyHandle" => $ref["KeyHandle"],
-            "publicKey" => $ref["PublicKey"],
-            "certificate" => $ref["Certificate"],
-            "counter" => $ref["Counter"],
-            "valid" => $ref["Valid"],
-        ];
-
-        try {
-            $response = $u2f->doAuthenticate(json_decode($post["u2f-request"]), $payload, json_decode($post["u2f-response"]));
-            $u2fAuthData = json_encode($u2f->getAuthenticateData($response));
-            #!d($response, $u2fAuthData);
-
-            if (boolval($response->valid) !== true) {
-                throw new Exception("Unable to validate the U2F token");
-            }
-
-            $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
-            $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
-        } catch (Throwable $e) {
-            # hardcoded u2f library exception here?
-            if ($e->getMessage() === "Counter too low.") {
-                $badHandle = json_decode($post["u2f-response"], true)["keyHandle"];
-
-                $query = "update u2f set valid = 0 where keyHandle = ? and userId = ?";
-                $app->dbNew->do($query, [$badHandle, $userId]);
-            }
-
-            # lazy af
-            throw new Exception($e->getMessage());
         }
     }
 

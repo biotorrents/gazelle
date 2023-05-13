@@ -8,7 +8,6 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
-#!d($app->user->extra);exit;
 
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
@@ -19,54 +18,9 @@ $post = Http::request("post");
 
 # 2fa libraries
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-$u2f = null;
-#$u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
 # bearer tokens
 $bearerTokens = Auth::readBearerToken();
-
-
-/** gpg/2fa/u2f stuff */
-
-
-/*
-# pgp
-$post["pgpPublicKey"] ??= null;
-if ($post["pgpPublicKey"]) {
-    try {
-        $app->user->createPGP($post["pgpPublicKey"]);
-    } catch (Throwable $e) {
-        # do something with the error
-        !d($e->getMessage());
-    }
-}
-*/
-
-# 2fa
-/*
-# done with ajax
-$post["twoFactorSecret"] ??= null;
-$post["twoFactorCode"] ??= null;
-
-if ($post["twoFactorSecret"] && $post["twoFactorCode"]) {
-    try {
-        $app->user->create2FA($post["twoFactorSecret"], $post["twoFactorCode"]);
-    } catch (Throwable $e) {
-        # do something with the error
-        !d($e->getMessage());
-    }
-}
-
-$post["twoFactorDelete"] ??= null;
-if ($post["twoFactorDelete"]) {
-    try {
-        $app->user->delete2FA();
-    } catch (Throwable $e) {
-        # do something with the error
-        !d($e->getMessage());
-    }
-}
-*/
 
 # no settings exist
 if (empty($app->user->extra["TwoFactor"])) {
@@ -90,34 +44,9 @@ if (!empty($app->user->extra["TwoFactor"])) {
     }
 }
 
-# u2f
-/*
-# done with ajax
-$post["u2fRequest"] ??= null;
-$post["u2fResponse"] ??= null;
-
-if ($post["u2fRequest"] && $post["u2fResponse"]) {
-    try {
-        $app->user->createU2F($post["u2fRequest"], $post["u2fResponse"]);
-    } catch (Throwable $e) {
-        # do something with the error
-        !d($e->getMessage());
-    }
-}
-
-$post["u2fDelete"] ??= null;
-if ($post["u2fDelete"]) {
-    try {
-        $app->user->deleteU2F();
-    } catch (Throwable $e) {
-        # do something with the error
-        !d($e->getMessage());
-    }
-}
-*/
-
 
 /** stylesheets, paranoia, options */
+
 
 # badges
 $badges = Badges::getBadges($app->user->core["id"]);
@@ -136,7 +65,7 @@ $siteOptions = $app->user->extra["siteOptions"];
 #!d($siteOptions);exit;
 
 
-/** legacy code */
+/** legacy code (delete when ready) */
 
 
 $DonorRank = null;
@@ -150,8 +79,8 @@ $Rewards = null;
 $ProfileRewards = null;
 
 
+/** form handling */
 
-/** BEGIN THE ACTUAL FORM HANDLING */
 
 if (!empty($post)) {
     try {
@@ -163,95 +92,28 @@ if (!empty($post)) {
     }
 }
 
-
-/**
- * VIEW THE TWIG TEMPLATE HERE
- */
-
+# twig template
 $app->twig->display("user/settings/settings.twig", [
- "css" => ["vendor/easymde.min"],
- "js" => ["user", "vendor/simplewebauthn.min", "webauthn", "vendor/easymde.min"],
- "sidebar" => true,
+    "css" => ["vendor/easymde.min"],
+    "js" => ["user", "vendor/simplewebauthn.min", "webAuthnCreate", "vendor/easymde.min"],
+    "sidebar" => true,
 
- "badges" => $badges,
- "stylesheets" => $stylesheets,
- "siteOptions" => $siteOptions,
+    "badges" => $badges,
+    "stylesheets" => $stylesheets,
+    "siteOptions" => $siteOptions,
 
- # 2fa (totp)
- "twoFactorSecret" => $twoFactorSecret ?? null,
- "twoFactorImage" => $twoFactorImage ?? null,
+    # 2fa (totp)
+    "twoFactorSecret" => $twoFactorSecret ?? null,
+    "twoFactorImage" => $twoFactorImage ?? null,
 
- "bearerTokens" => $bearerTokens,
+    "bearerTokens" => $bearerTokens,
 
- # random placeholders
- "twoFactorPlaceHolder" => random_int(100000, 999999),
- "ircKeyPlaceholder" => \Gazelle\Text::random(32),
+    # random placeholders
+    "twoFactorPlaceHolder" => random_int(100000, 999999),
+    "ircKeyPlaceholder" => \Gazelle\Text::random(32),
 
- # notifications manager (legacy)
- #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->user->core["id"])),
+    # notifications manager (legacy)
+    #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->user->core["id"])),
 
- "error" => $error ?? null,
+    "error" => $error ?? null,
 ]);
-
-exit;
-
-
-
-
-
-
-
-
-
-
-
-
-/** TAKE_EDIT STUFF BELOW */
-
-
-// Begin Badge settings
-if (!empty($_POST['badges'])) {
-    $BadgeIDs = array_slice($_POST['badges'], 0, 5);
-} else {
-    $BadgeIDs = [];
-}
-
-$NewBadges = [];
-$BadgesChanged = false;
-$Badges = User::user_info($UserID)['Badges'];
-
-foreach ($Badges as $BadgeID => $OldDisplayed) {
-    if (in_array($BadgeID, $BadgeIDs)) { // Is the current badge in the list of badges the user wants to display?
-        $Displayed = true;
-        $DisplayedBadgeIDs[] = $BadgeID;
-
-        if ($OldDisplayed == 0) { // The user wants to display a badge that wasn't displayed before
-            $BadgesChanged = true;
-        }
-    } else { // The user no longer wants to display a badge that was displayed before
-        $Displayed = false;
-        $BadgesChanged = true;
-    }
-    $NewBadges[$BadgeID] = $Displayed ? '1' : '0';
-}
-// End Badge settings
-
-
-
-
-
-
-if ($BadgesChanged) {
-    $app->dbOld->query("
-      UPDATE users_badges
-      SET Displayed = 0
-      WHERE UserID = ?", $UserID);
-
-    if (!empty($BadgeIDs)) {
-        $app->dbOld->query("
-          UPDATE users_badges
-          SET Displayed = 1
-          WHERE UserID = $UserID
-            AND BadgeID IN (".db_string(implode(',', $BadgeIDs)).")");
-    }
-}

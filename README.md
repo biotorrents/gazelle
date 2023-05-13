@@ -95,7 +95,7 @@ But we took it up a notch by upgrading this system to use the
 instead of the deprecated FIDO U2F standard.
 [This specification](https://webauthn.guide)
 is well supported in all major browsers, and it doesn't require a $50 dongle:
-use a hardware key, smartphone fingerprint reader, or just generate a key in the browser.
+use a hardware key, a smartphone fingerprint or QR code reader, or just generate a key in the browser.
 The underlying library is the canonical
 [web-auth/webauthn-lib](https://github.com/web-auth/webauthn-lib).
 
