@@ -213,16 +213,22 @@ class Base
      *
      * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#creation-request
      */
-    public function creationRequest(): string
+    public function creationRequest(int $userId): string
     {
         $app = \Gazelle\App::go();
 
+        # get gazelle user data
+        $user = $app->user->readProfile($userId);
+        if (!$user) {
+            throw new \Exception("invalid userId");
+        }
+
         # user entity
         $userEntity = PublicKeyCredentialUserEntity::create(
-            "@cypher-Angel-3000", # name
-            "123e4567-e89b-12d3-a456-426655440000", # id (uuid?)
-            "Mighty Mike", # display name (username?)
-            null # icon (avatar?)
+            $user["core"]["username"], # name
+            $user["core"]["uuid"], # id
+            $user["core"]["username"], # display name
+            null # icon
         );
 
         # challenge
@@ -257,7 +263,7 @@ class Base
 
         # it is important to store the user entity and the options object (e.g., in the session) for the next step
         # the data will be needed to check the response from the device
-        return $publicKeyCredentialCreationOptions->jsonSerialize();
+        return json_encode($publicKeyCredentialCreationOptions);
     }
 
 
@@ -354,7 +360,7 @@ class Base
      *
      * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#assertion-request
      */
-    public function assertionRequest()
+    public function assertionRequest(PublicKeyCredentialUserEntity $userEntity): string
     {
         $app = \Gazelle\App::go();
 
@@ -379,7 +385,7 @@ class Base
                 PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
             );
 
-        return $publicKeyCredentialRequestOptions->jsonSerialize();
+        return json_encode($publicKeyCredentialRequestOptions);
     }
 
 

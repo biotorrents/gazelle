@@ -1344,9 +1344,17 @@ class User
      *
      * Gets an external user's profile.
      */
-    public function readProfile(int $userId): array
+    public function readProfile(int $userId): ?array
     {
         $app = \Gazelle\App::go();
+
+        # quick sanity check
+        $query = "select 1 from users where id = ?";
+        $good = $app->dbNew->single($query, [$userId]);
+
+        if (!$good) {
+            return null;
+        }
 
         # return basically $this
         $data = [ "core" => [], "extra" => [], "permissions" => [] ];
