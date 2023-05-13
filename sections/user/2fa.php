@@ -7,7 +7,8 @@ $app = \Gazelle\App::go();
 $db = $app->dbOld;
 
 $TwoFA = new RobThree\Auth\TwoFactorAuth($ENV->siteName);
-$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
+$U2F = null;
+#$U2F = new \u2flib_server\U2F("https://$ENV->siteDomain");
 
 if ($Type = $_POST['type'] ?? false) {
     if ($Type === 'PGP') {

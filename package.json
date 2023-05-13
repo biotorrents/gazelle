@@ -11,10 +11,11 @@
     "tom-select": "^2.2.2"
   },
   "devDependencies": {
+    "@hotwired/stimulus": "^3.2.1",
+    "@symfony/stimulus-bridge": "^3.2.2",
     "@symfony/webpack-encore": "^4.3.0",
     "sass": "^1.62.1",
     "sass-loader": "^13.2.2",
-    "webpack": "^5.82.1",
     "webpack-notifier": "^1.15.0"
   },
   "scripts": {

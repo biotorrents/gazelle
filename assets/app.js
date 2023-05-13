@@ -1,3 +1,7 @@
+/**
+ * https://symfony.com/doc/current/frontend/encore/installation.html
+ */
+
 // assets/app.js
 /*
  * Welcome to your app's main JavaScript file!

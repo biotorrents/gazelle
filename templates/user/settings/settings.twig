@@ -1,5 +1,15 @@
 {% extends "base.twig" %}
 
+{{
+    stimulus_controller(
+        '@web-auth/webauthn-stimulus/webauthn',
+        {
+            requestResultUrl: "/api/webauthn/request/result",
+            requestOptionsUrl: "/api/webauthn/request/options",
+        }
+    )
+}}
+
 {% block content %}
 
 <div class="header">
@@ -784,7 +794,7 @@ END PARANOIA CLUSTERFUCK #}
         {% else %}
         <div id="twoFactorEnabled">
         <p>
-          Note that TOTP (authenticator app) and U2F (hardware key) are mutually exclusive!
+          Note that TOTP (authenticator app) and FIDO2 (hardware key) are mutually exclusive!
           Two factor authentication is enabled for your account, with this secret:
         </p>
 
@@ -809,13 +819,13 @@ END PARANOIA CLUSTERFUCK #}
         </tr>
 
 
-        {# u2f #}
+        {# webauthn #}
         <tr>
-          <th>Universal two factor (U2F)</th>
+          <th>WebAuthn (FIDO2)</th>
 
           {# this is a mess: just open a popup #}
           <td>
-          <a href="/user/settings/u2f" class="button button-primary" target="_blank">manage u2f settings</a>
+          <a id="enrollWebAuthn" class="button button-primary" target="_blank">enroll device</a>
           {#
     <div class="pad">
       <?php if (sizeof($U2FRegs) === 0) { ?>
