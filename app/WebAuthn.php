@@ -22,6 +22,7 @@ use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
+use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
@@ -30,7 +31,9 @@ use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
 use Webauthn\PublicKeyCredentialLoader;
 use Webauthn\PublicKeyCredentialParameters;
+use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
+use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
@@ -82,6 +85,10 @@ class WebAuthn
     # authenticator assertion response validator
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#authenticator-assertion-response-validator
     private $authenticatorAssertionResponseValidator = null;
+
+    # cryptographic challenges
+    # https://www.w3.org/TR/webauthn-2/#sctn-cryptographic-challenges
+    private $challengeLength = 32;
 
 
     /**
@@ -203,7 +210,7 @@ class WebAuthn
         );
 
         # challenge
-        $challenge = random_bytes(16);
+        $challenge = random_bytes($this->challengeLength);
 
         # public key credential parameters
         $publicKeyCredentialParametersList = [
@@ -272,7 +279,7 @@ class WebAuthn
         # https://webauthn-doc.spomky-labs.com/pure-php/authenticator-registration#response-verification
         $authenticatorAttestationResponse = $publicKeyCredential->getResponse();
         if (!$authenticatorAttestationResponse instanceof AuthenticatorAttestationResponse) {
-            # e.g., process here with a redirection to the public key creation page.
+            # e.g., process here with a redirection to the public key creation page
             throw new \Exception("oops");
         }
 
@@ -300,6 +307,112 @@ class WebAuthn
 
         $app->dbNew->do($query, $variables);
         */
+
+        return $publicKeyCredentialSource;
+    }
+
+
+    /** authenticate your users */
+
+
+    /**
+     * assertionRequest
+     *
+     * To perform a user authentication using a security device, you need to instantiate a Webauthn\PublicKeyCredentialRequestOptions object.
+     *
+     * Let's say you want to authenticate the user we used earlier.
+     * This options object will need:
+     *
+     * - a challenge (random binary string)
+     * - the list with the allowed credentials (may be an option in certain circumstances)
+     *
+     * Optionally, you can customize the following parameters:
+     *
+     * - a timeout
+     * - the relying party id, i.e., your application domain
+     * - the user verification requirement
+     * - extensions
+     *
+     * The PublicKeyCredentialRequestOptions object is designed to be easily serialized into a JSON object.
+     * This will ease the integration into an HTML page or through an API endpoint.
+     *
+     * @see https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#assertion-request
+     */
+    public function assertionRequest()
+    {
+        $app = \Gazelle\App::go();
+
+        # allowed credentials
+        # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#allowed-credentials
+
+        # list of registered PublicKeyCredentialDescriptor classes associated to the user
+        $registeredAuthenticators = $publicKeyCredentialSourceRepository->findAllForUserEntity($userEntity);
+        $allowedCredentials = array_map(
+            static function (PublicKeyCredentialSource $credential): PublicKeyCredentialDescriptor {
+                return $credential->getPublicKeyCredentialDescriptor();
+            },
+            $registeredAuthenticators
+        );
+
+        # public key credential request options
+        $publicKeyCredentialRequestOptions =
+            PublicKeyCredentialRequestOptions::create(
+                random_bytes($this->challengeLength) # challenge
+            )
+            ->setUserVerification(
+                PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
+            );
+
+        return $publicKeyCredentialRequestOptions->jsonSerialize();
+    }
+
+
+    /**
+     * assertionResponse
+     *
+     * What you receive must be a JSON object that looks like as follows:
+     *
+     * {
+     *   "id": "KVb8CnwDjpgAo[...]op61BTLaa0tczXvz4JrQ23usxVHA8QJZi3L9GZLsAtkcVvWObA",
+     *   "type": "public-key",
+     *   "rawId": "KVb8CnwDjpgAo[...]rQ23usxVHA8QJZi3L9GZLsAtkcVvWObA==",
+     *   "response": {
+     *     "clientDataJSON": "eyJjaGFsbGVuZ2UiOiJQbk1hVjBVTS[...]1iUkdHLUc4Y3BDSdGUifQ==",
+     *     "authenticatorData": "Y0EWbxTqi9hWTO[...]4aust69iUIzlwBfwABDw==",
+     *     "signature": "MEQCIHpmdruQLs[...]5uwbtlPNOFM2oTusx2eg==",
+     *     "userHandle": ""
+     *   }
+     * }
+     *
+     * There are two steps to perform with this object:
+     *
+     * - load the data
+     * - verify the loaded data against the assertion options set above
+     */
+    public function assertionResponse(string $assertionRequest)
+    {
+        $app = \Gazelle\App::go();
+
+        # data loading
+        # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#data-loading
+        $publicKeyCredential = $this->publicKeyCredentialLoader->load($assertionRequest);
+
+        # response verification
+        # https://webauthn-doc.spomky-labs.com/pure-php/authenticate-your-users#response-verification
+        $authenticatorAssertionResponse = $publicKeyCredential->getResponse();
+        if (!$authenticatorAssertionResponse instanceof AuthenticatorAssertionResponse) {
+            # e.g., process here with a redirection to the public key login/MFA page
+            throw new \Exception("oops");
+        }
+
+        # if no exception is thrown, the response is valid and you can continue the authentication of the user
+        $publicKeyCredentialSource = $this->authenticatorAssertionResponseValidator->check(
+            $publicKeyCredential->getRawId(),
+            $authenticatorAssertionResponse,
+            $publicKeyCredentialRequestOptions,
+            $app->env->siteDomain, # "my-application.com"
+            $userHandle
+        );
 
         return $publicKeyCredentialSource;
     }
