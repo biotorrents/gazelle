@@ -22,6 +22,12 @@ class CredentialSourceRepository
      */
     public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource
     {
+        $app = \Gazelle\App::go();
+
+        $query = "select * from webauthn where publicKey = ?";
+        $ref = $app->dbNew->single($query, [$publicKeyCredentialId]);
+
+        return $ref;
     }
 
 
@@ -32,6 +38,12 @@ class CredentialSourceRepository
      */
     public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array
     {
+        $app = \Gazelle\App::go();
+
+        $query = "select * from webauthn where userId = ?";
+        $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
+
+        return $ref;
     }
 
 
@@ -42,5 +54,19 @@ class CredentialSourceRepository
      */
     public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void
     {
+        $app = \Gazelle\App::go();
+
+        $query = "
+            insert into webauthn (foo, bar, baz)
+            values (:foo, :bar, :baz)
+        ";
+
+        $variables = [
+            "foo" => "bar",
+            "bar" => "baz",
+            "baz" => "qux",
+        ];
+
+        $app->dbNew->do($query, $variables);
     }
 } # class
