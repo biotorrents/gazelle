@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Gazelle\WebAuthn;
 
+use Webauthn\Bundle\Repository\PublicKeyCredentialUserEntityRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
@@ -12,7 +13,7 @@ use Webauthn\PublicKeyCredentialUserEntity;
  * @see https://webauthn-doc.spomky-labs.com/prerequisites/user-entity-repository#user-entity-repository
  */
 
-class UserEntityRepository
+class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
 {
     /**
      * findOneByUsername

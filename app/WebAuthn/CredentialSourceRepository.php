@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gazelle\WebAuthn;
 
 use Webauthn\PublicKeyCredentialSource;
+use Webauthn\PublicKeyCredentialSourceRepository;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
@@ -13,7 +14,7 @@ use Webauthn\PublicKeyCredentialUserEntity;
  * @see https://webauthn-doc.spomky-labs.com/prerequisites/credential-source-repository
  */
 
-class CredentialSourceRepository
+class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 {
     /**
      * findOneByCredentialId

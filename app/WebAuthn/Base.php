@@ -37,7 +37,7 @@ use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
- * Gazelle\WebAuthn\WebAuthn
+ * Gazelle\WebAuthn\Base
  *
  * WebAuthn server for FIDO2 authentication.
  * I really hope someone uses this feature.
@@ -48,7 +48,7 @@ use Webauthn\PublicKeyCredentialUserEntity;
  * @see https://webauthn.guide
  */
 
-class WebAuthn
+class Base
 {
     # the relying party
     # https://webauthn-doc.spomky-labs.com/prerequisites/the-relying-party
@@ -104,40 +104,47 @@ class WebAuthn
 
         # the relying party
         # the relying party corresponds to the application that will ask for the user to interact with the authenticator
-        PublicKeyCredentialRpEntity::create(
+        $this->relyingParty = PublicKeyCredentialRpEntity::create(
             $app->env->siteName, # the application name
             $app->env->siteDomain, # the application id = the domain
             null # the application icon = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAMAAAC6V...
         );
+        #!d($this->relyingParty);exit;
 
         # public key credential source repository
         # you can implement the required methods the way you want: Doctrine ORM, file storage...
         $this->publicKeyCredentialSourceRepository = new \Gazelle\WebAuthn\CredentialSourceRepository();
+        #!d($this->publicKeyCredentialSourceRepository);exit;
 
         # token binding handler
         # at the time of writing, we recommend to ignore this feature
         $this->tokenBindingHandler = null;
+        #!d($this->tokenBindingHandler);exit;
 
         # attestation statement support manager
         # you should not ask for the attestation statement unless you are working on an application that requires a high level of trust
-        $this->attestationStatementSupportManager = AttestationStatementSupportManager::create()
-            ->add(NoneAttestationStatementSupport::create());
+        $this->attestationStatementSupportManager = AttestationStatementSupportManager::create();
+        $this->attestationStatementSupportManager->add(NoneAttestationStatementSupport::create());
+        #!d($this->attestationStatementSupportManager);exit;
 
         # attestation object loader
         # this object will load the attestation statements received from the devices
         $this->attestationObjectLoader = AttestationObjectLoader::create(
             $this->attestationStatementSupportManager
         );
+        #!d($this->attestationObjectLoader);exit;
 
         # public key credential loader
         # this object will load the public key using from the attestation object
         $this->publicKeyCredentialLoader = PublicKeyCredentialLoader::create(
             $this->attestationObjectLoader
         );
+        #!d($this->publicKeyCredentialLoader);exit;
 
         # extension output checker handler
         # if you use extensions, you may need to check the value returned by the security devices
         $this->extensionOutputCheckerHandler = ExtensionOutputCheckerHandler::create();
+        #!d($this->extensionOutputCheckerHandler);exit;
 
         # algorithm manager
         # we recommend the use of the following algorithms to cover all types of authenticators
@@ -156,6 +163,7 @@ class WebAuthn
                 Ed256::create(),
                 Ed512::create(),
             );
+        #!d($this->algorithmManager);exit;
 
         # authenticator attestation response validator
         # this object is what you will directly use when receiving attestation responses (authenticator registration)
@@ -165,6 +173,7 @@ class WebAuthn
             $this->tokenBindingHandler,
             $this->extensionOutputCheckerHandler
         );
+        #!d($this->authenticatorAttestationResponseValidator);exit;
 
         # authenticator assertion response validator
         # this object is what you will directly use when receiving assertion responses (user authentication)
@@ -174,6 +183,8 @@ class WebAuthn
             $this->extensionOutputCheckerHandler,
             $this->algorithmManager
         );
+        #!d($this->authenticatorAssertionResponseValidator);exit;
+
     }
 
 
