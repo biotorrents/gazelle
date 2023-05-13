@@ -66,9 +66,11 @@
     "snipe/banbuilder": "^2.3",
     "spatie/once": "^3.1",
     "symfony/http-foundation": "^6.2.10",
+    "symfony/webpack-encore-bundle": "^1.16.1",
     "twig/twig": "^3.6.0",
     "vanilla/nbbc": "^2.4",
-    "web-auth/webauthn-lib": "^4.5.2"
+    "web-auth/webauthn-lib": "^4.5.2",
+    "web-auth/webauthn-stimulus": "^4.5.2"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.31.0",

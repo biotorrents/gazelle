@@ -55,14 +55,15 @@
 {% endif %}
 
 {# regular login form #}
-<form name="login" id="login" method="post" autocomplete="off">
+<form name="login" id="login" method="post">
+{# <form name="login" id="login" method="post" {{ stimulus_controller("@web-auth/webauthn-stimulus/webauthn") }}> #}
     {{ form_token(query.server.REQUEST_URI) }}
 
     {# username #}
-    <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" required>
+    <input type="text" name="username" id="username" placeholder="Username" autofocus="autofocus" autocomplete="username webauthn" required>
 
     {# passphrase #}
-    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" required>
+    <input type="password" name="passphrase" id="passphrase" placeholder="Passphrase" minlength="15" autocomplete="password" required>
 
     {# twoFactor #}
     <input type="number" name="twoFactor" id="twoFactor" placeholder="2FA">
@@ -81,6 +82,9 @@
 
     {# log in #}
     <input type="submit" name="submit" id="submit" value="Log in" class="button-primary">
+
+    <input type="submit" value="webauthn login" class="button-orange">
+    {# <button type="submit" {{ stimulus_action("@web-auth/webauthn-stimulus/webauthn", "signin") }}> #}
 
     {# register #}
     {% if env.openRegistration == true %}

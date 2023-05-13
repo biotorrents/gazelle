@@ -8,13 +8,19 @@
     "highlight.js": "^11.7.0",
     "instant.page": "^5.1.1",
     "jquery": "^3.6.3",
-    "jquery-ui": "^1.13.2",
     "tom-select": "^2.2.2"
   },
   "devDependencies": {
-    "laravel-mix": "^6.0.49",
-    "resolve-url-loader": "^5.0.0",
-    "sass": "^1.57.1",
-    "sass-loader": "^12.1.0"
+    "@symfony/webpack-encore": "^4.3.0",
+    "sass": "^1.62.1",
+    "sass-loader": "^13.2.2",
+    "webpack": "^5.82.1",
+    "webpack-notifier": "^1.15.0"
+  },
+  "scripts": {
+    "dev-server": "encore dev-server",
+    "dev": "encore dev",
+    "watch": "encore dev --watch",
+    "build": "encore production --progress"
   }
 }

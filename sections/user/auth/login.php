@@ -19,7 +19,7 @@ Http::csrf();
 # libraries
 $auth = new Auth();
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-$u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
+#$u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
 
 # variables
 $post = Http::request("post");
