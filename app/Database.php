@@ -284,6 +284,14 @@ class Database extends \PDO
             unset($row["uuid"]);
         }
 
+        # webauthn
+        $row["aaguid"] ??= null;
+        if ($row["aaguid"]) {
+            $row["aaguid"] = $this->readUuid($row["aaguid"]);
+        } else {
+            unset($row["aaguid"]);
+        }
+
         # peer_id
         $row["peer_id"] ??= null;
         if ($row["peer_id"]) {

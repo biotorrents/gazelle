@@ -22,6 +22,30 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
      */
     public function findOneByUsername(string $username): ?PublicKeyCredentialUserEntity
     {
+        $app = \Gazelle\App::go();
+
+        # get the uuid v7 from the username
+        $query = "select uuid from users where username = ?";
+        $ref = $app->dbNew->single($query, [$username]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        # get the user entity from the uuid v7
+        $query = "select json from webauthn_users where userId = ?";
+        $ref = $app->dbNew->single($query, [$ref]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = json_decode($ref, true);
+        if (!$data) {
+            return null;
+        }
+
+        return self::createFromArray($data);
     }
 
 
@@ -32,6 +56,21 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
      */
     public function findOneByUserHandle(string $userHandle): ?PublicKeyCredentialUserEntity
     {
+        $app = \Gazelle\App::go();
+
+        $query = "select json from webauthn_users where userId = ?";
+        $ref = $app->dbNew->single($query, [$userHandle]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = json_decode($ref, true);
+        if (!$data) {
+            return null;
+        }
+
+        return self::createFromArray($data);
     }
 
 
@@ -56,5 +95,28 @@ class UserEntityRepository implements PublicKeyCredentialUserEntityRepository
      */
     public function saveUserEntity(PublicKeyCredentialUserEntity $userEntity): void
     {
+        $app = \Gazelle\App::go();
+
+        # does it already exist?
+        $query = "select 1 from webauthn_users where userId = ?";
+        $bad = $app->dbNew->single($query, [ $userEntity->getId() ]);
+
+        if ($bad) {
+            throw new \Exception("user entity already exists");
+        }
+
+        # insert the user entity
+        $query = "
+            insert into webauthn_users (userId, displayName, json)
+            values (:userId, :displayName, :json)
+        ";
+
+        $variables = [
+            "userId" => $userEntity->getId(),
+            "displayName" => $userEntity->getDisplayName(),
+            "json" => json_encode($userEntity->jsonSerialize()),
+        ];
+
+        $app->dbNew->do($query, $variables);
     }
 } # class

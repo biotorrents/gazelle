@@ -263,7 +263,7 @@ class Base
 
         # it is important to store the user entity and the options object (e.g., in the session) for the next step
         # the data will be needed to check the response from the device
-        return json_encode($publicKeyCredentialCreationOptions);
+        return json_encode($publicKeyCredentialCreationOptions->jsonSerialize());
     }
 
 
@@ -385,7 +385,7 @@ class Base
                 PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED
             );
 
-        return json_encode($publicKeyCredentialRequestOptions);
+        return json_encode($publicKeyCredentialRequestOptions->jsonSerialize());
     }
 
 

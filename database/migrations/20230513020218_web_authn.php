@@ -22,22 +22,24 @@ final class WebAuthn extends AbstractMigration
         $app = \Gazelle\App::go();
 
         /**
-         * return [
-         *   'publicKeyCredentialId' => Base64UrlSafe::encodeUnpadded($this->publicKeyCredentialId),
-         *   'type' => $this->type,
-         *   'transports' => $this->transports,
-         *   'attestationType' => $this->attestationType,
-         *   'trustPath' => $this->trustPath->jsonSerialize(),
-         *   'aaguid' => $this->aaguid->__toString(),
-         *   'credentialPublicKey' => Base64UrlSafe::encodeUnpadded($this->credentialPublicKey),
-         *   'userHandle' => Base64UrlSafe::encodeUnpadded($this->userHandle),
-         *   'counter' => $this->counter,
-         *   'otherUI' => $this->otherUI,
-         * ];
+         * webauthn_sources
+         *
+         * return new self(
+         *   Base64::decodeUrlSafe($data['publicKeyCredentialId']),
+         *   $data['type'],
+         *   $data['transports'],
+         *   $data['attestationType'],
+         *   TrustPathLoader::loadTrustPath($data['trustPath']),
+         *   $uuid,
+         *   Base64::decodeUrlSafe($data['credentialPublicKey']),
+         *   Base64::decodeUrlSafe($data['userHandle']),
+         *   $data['counter'],
+         *   $data['otherUI'] ?? null
+         * );
          *
          * @see https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php
          */
-        $table = $this->table("webauthn");
+        $table = $this->table("webauthn_sources");
         $table
             ->addColumn("uuid", "binary", [
                 "length" => 16,
@@ -50,10 +52,13 @@ final class WebAuthn extends AbstractMigration
                 "null" => false,
             ])
 
-            ->addColumn("relyingPartyId", "string", ["limit" => 64, "default" => $app->env->siteDomain])
+            # https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php
+            ->addColumn("credentialId", "string", ["limit" => 128, "null" => false])
+            ->addColumn("type", "string", ["limit" => 64, "null" => true])
+            ->addColumn("transports", "json", ["null" => true])
 
             # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#supported-attestation-statement-types
-            ->addColumn("attestationType", "enum", [
+            ->addColumn("attestationType", "enum", ["values" => [
                 "androidKey",
                 "androidSafetyNet",
                 "apple",
@@ -61,18 +66,15 @@ final class WebAuthn extends AbstractMigration
                 "none",
                 "packed",
                 "trustedPlatformModule",
-            ], ["default" => "none"])
+            ], "default" => "none", "null" => true])
 
-            ->addColumn("credentialId", "string", ["limit" => 128])
-            ->addColumn("credentialPublicKey", "text")
-            ->addColumn("certificateChain", "text", ["null" => true])
-            ->addColumn("certificate", "text")
-            ->addColumn("certificateIssuer", "string", ["limit" => 128])
-            ->addColumn("certificateSubject", "string", ["limit" => 128])
-            ->addColumn("signatureCounter", "smallinteger")
-            ->addColumn("aaguid", "binary", ["length" => 16, "null" => true])
-            ->addColumn("rootValid", "boolean", ["default" => false])
-            ->addColumn("json", "json")
+            # https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php
+            ->addColumn("trustPath", "text", ["null" => true])
+            ->addColumn("aaguid", "binary", ["length" => 16, "null" => false])
+            ->addColumn("credentialPublicKey", "text", ["null" => false])
+            ->addColumn("userHandle", "string", ["limit" => 128, "null" => false])
+            ->addColumn("counter", "smallinteger", ["null" => true])
+            ->addColumn("json", "json", ["null" => false])
 
             # add datetimes (phinx uses timestamps by default)
             ->addColumn("created_at", "datetime", ["default" => "CURRENT_TIMESTAMP"])
@@ -81,7 +83,42 @@ final class WebAuthn extends AbstractMigration
 
             # add indices
             ->addIndex("uuid", ["unique" => true])
-            ->addIndex("userId", ["userId", "credentialId", "aaguid"], ["unique" => true])
+            ->addIndex(["uuid", "userId", "credentialId", "aaguid"], ["unique" => true])
+
+            ->create();
+
+        /**
+         * webauthn_users
+         *
+         * return new self($json['name'], $id, $json['displayName'], $json['icon'] ?? null);
+         *
+         * @see https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialUserEntity.php
+         */
+        $table = $this->table("webauthn_users");
+        $table
+            ->addColumn("uuid", "binary", [
+                "length" => 16,
+                "default" => Phinx\Util\Literal::from("unhex(replace(uuid(), '-', ''))"),
+                "null" => false,
+            ])
+
+            ->addColumn("userId", "binary", [
+                "length" => 16,
+                "null" => false,
+            ])
+
+            ->addColumn("displayName", "string", ["limit" => 32, "null" => true])
+            ->addColumn("credentialId", "string", ["limit" => 128, "null" => false])
+            ->addColumn("json", "json", ["null" => false])
+
+            # add datetimes (phinx uses timestamps by default)
+            ->addColumn("created_at", "datetime", ["default" => "CURRENT_TIMESTAMP"])
+            ->addColumn("updated_at", "datetime", ["null" => true, "update" => "CURRENT_TIMESTAMP"])
+            ->addColumn("deleted_at", "datetime", ["null" => true])
+
+            # add indices
+            ->addIndex("uuid", ["unique" => true])
+            ->addIndex(["userId", "displayName", "credentialId"], ["unique" => true])
 
             ->create();
     }
