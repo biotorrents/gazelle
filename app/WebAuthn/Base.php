@@ -58,7 +58,7 @@ class Base
     # public key credential source repository
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#public-key-credential-source-repository
     private $publicKeyCredentialSourceRepository = null;
-    private $UserEntityRepository = null;
+    private $userEntityRepository = null;
 
     # token binding handler
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#token-binding-handler
@@ -120,7 +120,7 @@ class Base
         # public key credential source repository
         # you can implement the required methods the way you want: Doctrine ORM, file storage...
         $this->publicKeyCredentialSourceRepository = new \Gazelle\WebAuthn\CredentialSourceRepository();
-        $this->UserEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
+        $this->userEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
 
         # token binding handler
         # at the time of writing, we recommend to ignore this feature
@@ -328,7 +328,7 @@ class Base
         # if no exception is thrown, the response is valid
         # you can store the public key credential source and associate it to the user entity
         $this->publicKeyCredentialSourceRepository->saveCredentialSource($publicKeyCredentialSource);
-        #$this->UserEntityRepository->saveUserEntity($userEntity);
+        #$this->userEntityRepository->saveUserEntity($userEntity);
 
         return $publicKeyCredentialSource;
     }

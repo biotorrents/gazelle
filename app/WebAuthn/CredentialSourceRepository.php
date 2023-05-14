@@ -82,20 +82,20 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             $query = "
                 insert into webauthn
                     (uuid, userId, credentialId, type, transports, attestationType,
-                    trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
+                    trustPath, aaguid, publicKey, userHandle, counter, json)
                 values
                     (:uuid, :userId, :credentialId, :type, :transports, :attestationType,
-                    :trustPath, :aaguid, :credentialPublicKey, :userHandle, :counter, :json)
+                    :trustPath, :aaguid, :publicKey, :userHandle, :counter, :json)
             ";
         } else {
             # no userId
             $query = "
                 replace into webauthn
                     (uuid, credentialId, type, transports, attestationType,
-                    trustPath, aaguid, credentialPublicKey, userHandle, counter, json)
+                    trustPath, aaguid, publicKey, userHandle, counter, json)
                 values
                     (:uuid, :credentialId, :type, :transports, :attestationType,
-                    :trustPath, :aaguid, :credentialPublicKey, :userHandle, :counter, :json)
+                    :trustPath, :aaguid, :publicKey, :userHandle, :counter, :json)
             ";
         }
 
@@ -107,7 +107,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             "attestationType" => $publicKeyCredentialSource["attestationType"] ?? null,
             "trustPath" => $publicKeyCredentialSource["trustPath"] ?? null,
             "aaguid" => $publicKeyCredentialSource["aaguid"] ?? null,
-            "credentialPublicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
+            "publicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
             "userHandle" => $publicKeyCredentialSource["userHandle"] ?? null,
             "counter" => $publicKeyCredentialSource["counter"] ?? null,
             "json" => $publicKeyCredentialSource ?? null,
@@ -123,6 +123,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         if ($app->user->isLoggedIn()) {
             $variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
         } else {
+            $variables["userId"] ??= null;
             unset($variables["userId"]);
         }
 

@@ -22,7 +22,6 @@ class Auth # extends Delight\Auth\Auth
 
     # 2fa libraries
     private $twoFactor = null;
-    private $webAuthn = null;
 
     # seconds * minutes * hours * days
     private $shortRemember = 60 * 60 * 24 * 1;

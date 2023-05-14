@@ -71,7 +71,7 @@ final class WebAuthn extends AbstractMigration
             # https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php
             ->addColumn("trustPath", "text", ["null" => true])
             ->addColumn("aaguid", "binary", ["length" => 16, "null" => false])
-            ->addColumn("credentialPublicKey", "text", ["null" => false])
+            ->addColumn("publicKey", "text", ["null" => false])
             ->addColumn("userHandle", "string", ["limit" => 128, "null" => false])
             ->addColumn("counter", "smallinteger", ["null" => true])
             ->addColumn("json", "json", ["null" => false])
