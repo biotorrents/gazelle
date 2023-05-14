@@ -317,19 +317,12 @@ class Base
             $app->env->siteDomain # "my-application.com"
         );
 
-        # create a user entity
-        $userEntity = PublicKeyCredentialUserEntity::create(
-            $app->user->core["username"], # name
-            $app->dbNew->uuidBinary($app->user->core["uuid"]), # id
-            $app->user->core["username"], # display name
-            null # icon
-        );
-
         # if no exception is thrown, the response is valid
         # you can store the public key credential source and associate it to the user entity
         $this->publicKeyCredentialSourceRepository->saveCredentialSource($publicKeyCredentialSource);
-        #$this->userEntityRepository->saveUserEntity($userEntity);
 
+        # clean up and return
+        unset($_SESSION["publicKeyCredentialCreationOptions"]);
         return $publicKeyCredentialSource;
     }
 
@@ -445,6 +438,8 @@ class Base
             Base64UrlSafe::decode($userHandle) ?? null
         );
 
+        # clean up and return
+        unset($_SESSION["publicKeyCredentialRequestOptions"]);
         return $publicKeyCredentialSource;
     }
 } # class
