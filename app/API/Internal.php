@@ -187,12 +187,25 @@ class Internal extends Base
         # get the raw request
         $assertionRequest = file_get_contents("php://input");
 
-        $webAuthn = new \Gazelle\WebAuthn\Base();
-        $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
-
         try {
+            # webauthn
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
+
+            # gazelle auth
+            $auth = new \Auth();
+
+            # get the userId to log in as
+            $query = "
+                select users.id from users
+                join webauthn where webauthn.credentialId = ?
+                and webauthn.deleted_at is null
+            ";
+            $userId = $app->dbNew->single($query, [ $response["publicKeyCredentialId"] ]);
+
+            # try to login
+            $auth->library->admin()->logInAsUserById($userId);
+            $auth->createSession($userId); # todo: rememberMe?
 
             # return the raw response
             print json_encode($response);

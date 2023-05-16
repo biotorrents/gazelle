@@ -33,9 +33,11 @@
     </p>
 {% endif %}
 
+{# webauthn response #}
+<p id="webAuthnResponse"></p>
+
 {# regular login form #}
 <form name="login" id="login" method="post">
-{# <form name="login" id="login" method="post" {{ stimulus_controller("@web-auth/webauthn-stimulus/webauthn") }}> #}
     {{ form_token(query.server.REQUEST_URI) }}
 
     {# username #}
@@ -62,9 +64,8 @@
     {# log in #}
     <input type="submit" name="submit" id="submit" value="Log in" class="button-primary">
 
+    {# webauthn  login #}
     <a id="assertWebAuthn" class="button button-orange">webauthn login</a>
-    {# <button type="submit" {{ stimulus_action("@web-auth/webauthn-stimulus/webauthn", "signin") }}> #}
-    <p id="webAuthnResponse"></p>
 
     {# register #}
     {% if env.openRegistration == true %}

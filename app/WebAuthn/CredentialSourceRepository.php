@@ -78,7 +78,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         # prevent zeroing out the userId on login
         if ($app->user->isLoggedIn()) {
-            # yes userId
+            # yes userId: create
             $query = "
                 insert into webauthn
                     (uuid, userId, credentialId, type, transports, attestationType,
@@ -87,47 +87,60 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
                     (:uuid, :userId, :credentialId, :type, :transports, :attestationType,
                     :trustPath, :aaguid, :publicKey, :userHandle, :counter, :json)
             ";
+
+            $variables = [
+                "uuid" => $app->dbNew->uuid() ?? null,
+                "userId" => $app->dbNew->uuidBinary($app->user->core["uuid"]) ?? null,
+                "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
+                "type" => $publicKeyCredentialSource["type"] ?? null,
+                "transports" => $publicKeyCredentialSource["transports"] ?? null,
+                "attestationType" => $publicKeyCredentialSource["attestationType"] ?? null,
+                "trustPath" => $publicKeyCredentialSource["trustPath"] ?? null,
+                "aaguid" => $publicKeyCredentialSource["aaguid"] ?? null,
+                "publicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
+                "userHandle" => $publicKeyCredentialSource["userHandle"] ?? null,
+                "counter" => $publicKeyCredentialSource["counter"] ?? null,
+                "json" => $publicKeyCredentialSource ?? null,
+            ];
+
+            # massage some of the variables
+            $variables["transports"] = json_encode($variables["transports"]);
+            $variables["trustPath"] = json_encode($variables["trustPath"]);
+            $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
+            $variables["json"] = json_encode($variables["json"]);
+
+            $app->dbNew->do($query, $variables);
         } else {
-            # no userId
+            # no userId: update
             $query = "
-                replace into webauthn
-                    (uuid, credentialId, type, transports, attestationType,
-                    trustPath, aaguid, publicKey, userHandle, counter, json)
-                values
-                    (:uuid, :credentialId, :type, :transports, :attestationType,
-                    :trustPath, :aaguid, :publicKey, :userHandle, :counter, :json)
+                update webauthn set
+                    type = :type, transports = :transports, attestationType = :attestationType,
+                    trustPath = :trustPath, aaguid = :aaguid, publicKey = :publicKey,
+                    userHandle = :userHandle, counter = :counter, json = :json
+                where credentialId = :credentialId
             ";
+
+            $variables = [
+                "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
+                "type" => $publicKeyCredentialSource["type"] ?? null,
+                "transports" => $publicKeyCredentialSource["transports"] ?? null,
+                "attestationType" => $publicKeyCredentialSource["attestationType"] ?? null,
+                "trustPath" => $publicKeyCredentialSource["trustPath"] ?? null,
+                "aaguid" => $publicKeyCredentialSource["aaguid"] ?? null,
+                "publicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
+                "userHandle" => $publicKeyCredentialSource["userHandle"] ?? null,
+                "counter" => $publicKeyCredentialSource["counter"] ?? null,
+                "json" => $publicKeyCredentialSource ?? null,
+            ];
+
+            # massage some of the variables
+            $variables["transports"] = json_encode($variables["transports"]);
+            $variables["trustPath"] = json_encode($variables["trustPath"]);
+            $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
+            $variables["json"] = json_encode($variables["json"]);
+
+            $app->dbNew->do($query, $variables);
         }
-
-        $variables = [
-            "uuid" => $app->dbNew->uuid() ?? null,
-            "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
-            "type" => $publicKeyCredentialSource["type"] ?? null,
-            "transports" => $publicKeyCredentialSource["transports"] ?? null,
-            "attestationType" => $publicKeyCredentialSource["attestationType"] ?? null,
-            "trustPath" => $publicKeyCredentialSource["trustPath"] ?? null,
-            "aaguid" => $publicKeyCredentialSource["aaguid"] ?? null,
-            "publicKey" => $publicKeyCredentialSource["credentialPublicKey"] ?? null,
-            "userHandle" => $publicKeyCredentialSource["userHandle"] ?? null,
-            "counter" => $publicKeyCredentialSource["counter"] ?? null,
-            "json" => $publicKeyCredentialSource ?? null,
-        ];
-
-        # massage some of the variables
-        $variables["transports"] = json_encode($variables["transports"]);
-        $variables["trustPath"] = json_encode($variables["trustPath"]);
-        $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
-        $variables["json"] = json_encode($variables["json"]);
-
-        # check login status and set userId
-        if ($app->user->isLoggedIn()) {
-            $variables["userId"] = $app->dbNew->uuidBinary($app->user->core["uuid"]);
-        } else {
-            $variables["userId"] ??= null;
-            unset($variables["userId"]);
-        }
-
-        $app->dbNew->do($query, $variables);
     }
 
 
@@ -176,6 +189,6 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $app = \Gazelle\App::go();
 
         $query = "update webauthn set deleted_at = now() where credentialId = ?";
-        $app->dbNew->do($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredentialId) ]);
+        $app->dbNew->do($query, [ $publicKeyCredentialId ]);
     }
 } # class

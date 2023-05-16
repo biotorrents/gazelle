@@ -7,57 +7,71 @@
 
     const { startAuthentication } = SimpleWebAuthnBrowser;
 
-    const elemBegin = document.getElementById("assertWebAuthn");
-    const elemSuccess = document.getElementById("webAuthnResponse");
-    const elemError = document.getElementById("webAuthnResponse");
+    const assertWebAuthn = document.getElementById("assertWebAuthn");
+    const webAuthnResponse = document.getElementById("webAuthnResponse");
 
     // start authentication when the user clicks a button
-    elemBegin.addEventListener("click", async () => {
-        // grab the username
-        const username = $("#username").val();
+    assertWebAuthn.addEventListener("click", async () => {
+        // reset success/error messages
+        webAuthnResponse.innerText = "";
+
+        // grab the username from the form for now (todo: webauthn autofill)
+        // https://simplewebauthn.dev/docs/packages/browser/#browsersupportswebauthnautofill
+        let username = $("#username").val();
         if (!username) {
-            elemError.innerHTML = "please fill out the username field before attempting a WebAuthn login";
+            webAuthnResponse.classList.remove("success");
+            webAuthnResponse.classList.add("failure");
+
+            webAuthnResponse.innerText = "Please fill out the username field before attempting a WebAuthn login";
+
             return;
         }
 
-        // reset success/error messages
-        elemSuccess.innerHTML = "";
-        elemError.innerHTML = "";
-
         // GET authentication options from the endpoint that calls
         // @simplewebauthn/server -> generateAuthenticationOptions()
-        const resp = await fetch("/api/internal/webAuthn/assertionRequest/" + username);
+        const assertionRequest = await fetch("/api/internal/webAuthn/assertionRequest/" + username);
 
-        let asseResp;
+        let assertionRequestJson;
         try {
             // pass the options to the authenticator and wait for a response
-            asseResp = await startAuthentication(await resp.json());
+            assertionRequestJson = await startAuthentication(await assertionRequest.json());
         } catch (error) {
             // some basic error handling
-            elemError.innerText = error;
+            webAuthnResponse.classList.remove("success");
+            webAuthnResponse.classList.add("failure");
+
+            webAuthnResponse.innerText = error;
+
             throw error;
         }
 
         // POST the response to the endpoint that calls
         // @simplewebauthn/server -> verifyAuthenticationResponse()
-        const verificationResp = await fetch("/api/internal/webAuthn/assertionResponse", {
+        const assertionResponse = await fetch("/api/internal/webAuthn/assertionResponse", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(asseResp),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(assertionRequestJson),
         });
 
         // wait for the results of verification
-        const verificationJSON = await verificationResp.json();
+        const assertionResponseJson = await assertionResponse.json();
 
         // show UI appropriate for the `verified` status
-        if (verificationJSON && verificationJSON.verified) {
-            elemSuccess.innerHTML = "Success!";
+        if (assertionResponseJson && assertionResponseJson.publicKeyCredentialId) {
+            // redirect to homepage
+            setTimeout(function () {
+                webAuthnResponse.classList.remove("failure");
+                webAuthnResponse.classList.add("success");
+
+                webAuthnResponse.innerText = "Success! Logging you in...";
+                window.location = "/";
+            }, 1000);
         } else {
-            elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-                verificationJSON,
-            )}</pre>`;
+            // show an error message
+            webAuthnResponse.classList.remove("success");
+            webAuthnResponse.classList.add("failure");
+
+            webAuthnResponse.innerText = assertionResponseJson.data;
         }
     });
 })();

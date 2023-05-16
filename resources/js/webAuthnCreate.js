@@ -7,30 +7,31 @@
 
     const { startRegistration } = SimpleWebAuthnBrowser;
 
-    const elemBegin = document.getElementById("createWebAuthn");
-    const elemSuccess = document.getElementById("webAuthnResponse");
-    const elemError = document.getElementById("webAuthnResponse");
+    const createWebAuthn = document.getElementById("createWebAuthn");
+    const webAuthnResponse = document.getElementById("webAuthnResponse");
 
     // start registration when the user clicks a button
-    elemBegin.addEventListener("click", async () => {
+    createWebAuthn.addEventListener("click", async () => {
         // reset success/error messages
-        elemSuccess.innerHTML = "";
-        elemError.innerHTML = "";
+        webAuthnResponse.innerText = "";
 
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
-        const resp = await fetch("/api/internal/webAuthn/creationRequest");
+        const creationRequest = await fetch("/api/internal/webAuthn/creationRequest");
 
-        let attResp;
+        let creationRequestJson;
         try {
             // pass the options to the authenticator and wait for a response
-            attResp = await startRegistration(await resp.json());
+            creationRequest = await startRegistration(await creationRequest.json());
         } catch (error) {
             // some basic error handling
+            webAuthnResponse.classList.remove("success");
+            webAuthnResponse.classList.add("failure");
+
             if (error.name === "InvalidStateError") {
-                elemError.innerText = "Error: Authenticator was probably already registered by user";
+                webAuthnResponse.innerText = "Authenticator was probably already registered by user";
             } else {
-                elemError.innerText = error;
+                webAuthnResponse.innerText = error;
             }
 
             throw error;
@@ -38,24 +39,27 @@
 
         // POST the response to the endpoint that calls
         // @simplewebauthn/server -> verifyRegistrationResponse()
-        const verificationResp = await fetch("/api/internal/webAuthn/creationResponse", {
+        const creationResponse = await fetch("/api/internal/webAuthn/creationResponse", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(attResp),
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(creationRequestJson),
         });
 
         // wait for the results of verification
-        const verificationJSON = await verificationResp.json();
+        const creationResponseJson = await creationResponse.json();
 
         // show UI appropriate for the `verified` status
-        if (verificationJSON && verificationJSON.verified) {
-            elemSuccess.innerHTML = "Success!";
+        if (creationResponseJson && creationResponseJson.verified) {
+            webAuthnResponse.classList.remove("failure");
+            webAuthnResponse.classList.add("success");
+
+            webAuthnResponse.innerText = "Added a WebAuthn device with the user handle " + creationResponseJson.userHandle;
         } else {
-            elemError.innerHTML = `Oh no, something went wrong! Response: <pre>${JSON.stringify(
-                verificationJSON,
-            )}</pre>`;
+            // show an error message
+            webAuthnResponse.classList.remove("success");
+            webAuthnResponse.classList.add("failure");
+
+            webAuthnResponse.innerText = creationResponseJson.data;
         }
     });
 })();

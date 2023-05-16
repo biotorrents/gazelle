@@ -585,7 +585,6 @@
         {% else %}
         <div id="twoFactorEnabled">
         <p>
-          Note that TOTP (authenticator app) and FIDO2 (hardware key) are mutually exclusive!
           Two factor authentication is enabled for your account, with this secret:
         </p>
 
@@ -615,9 +614,6 @@
           <th>WebAuthn (FIDO2)</th>
 
           <td>
-          <p id="webAuthnResponse"></p>
-          <a id="createWebAuthn" class="button button-primary" target="_blank">enroll a new device</a>
-
             {# no webauthn #}
             {% if webAuthnKeys is empty %}
             <p id="emptywebAuthnMessage">
@@ -635,7 +631,7 @@
 
             {% for item in webAuthnKeys %}
             <tr id="credentialId-{{ item.credentialId }}">
-              <td>{{ item.userHandle }}</td>
+              <td><code>{{ item.userHandle }}</code></td>
               <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
               <td><a class="button deleteWebAuthn" data-credentialId="{{ item.credentialId }}">revoke</a></td>
             </tr>
@@ -644,6 +640,11 @@
             </table>
 
             {% endif %} {# if bearerTokens is empty #}
+
+          {# enroll a new device #}
+          <p><strong>Enroll a new device</strong></p>
+          <p id="webAuthnResponse"></p>
+          <a id="createWebAuthn" class="button button-primary" target="_blank">start registration</a>
 
           </td>
         </tr>
