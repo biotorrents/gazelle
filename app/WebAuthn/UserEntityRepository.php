@@ -25,7 +25,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
         $app = \Gazelle\App::go();
 
         # get the uuid v7 from the username
-        $query = "select uuid from users where username = ? and deleted_at is not null";
+        $query = "select uuid from users where username = ? and deleted_at is null";
         $userId = $app->dbNew->single($query, [$username]);
 
         if (!$userId) {
@@ -51,7 +51,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
         $app = \Gazelle\App::go();
 
         # get the userId from the userHandle
-        $query = "select userId from webauthn where userHandle = ? and deleted_at is not null";
+        $query = "select userId from webauthn where userHandle = ? and deleted_at is null";
         $userId = $app->dbNew->single($query, [$userHandle]);
 
         if (!$userId) {

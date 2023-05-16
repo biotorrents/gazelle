@@ -146,7 +146,7 @@ class Internal extends Base
             $response = $webAuthn->creationResponse($creationRequest)->jsonSerialize();
 
             # return the raw response
-            print $response;
+            print json_encode($response);
             exit;
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
@@ -195,7 +195,7 @@ class Internal extends Base
             $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
 
             # return the raw response
-            print $response;
+            print json_encode($response);
             exit;
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());

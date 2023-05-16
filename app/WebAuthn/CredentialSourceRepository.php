@@ -26,7 +26,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn where credentialId = ? and deleted_at is not null";
+        $query = "select json from webauthn where credentialId = ? and deleted_at is null";
         $ref = $app->dbNew->single($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredentialId) ]);
 
         if (!$ref) {
@@ -51,7 +51,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn where userId = ? and deleted_at is not null";
+        $query = "select json from webauthn where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [ $publicKeyCredentialUserEntity->getId() ]);
 
         $return = [];
@@ -121,7 +121,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         # check login status and set userId
         if ($app->user->isLoggedIn()) {
-            $variables["userId"] = $app->dbNew->uuidBinary($variables["userId"]);
+            $variables["userId"] = $app->dbNew->uuidBinary($app->user->core["uuid"]);
         } else {
             $variables["userId"] ??= null;
             unset($variables["userId"]);
@@ -141,7 +141,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select json from webauthn where userId = ? and deleted_at is not null";
+        $query = "select json from webauthn where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
 
         $return = [];
@@ -161,7 +161,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     {
         $app = \Gazelle\App::go();
 
-        $query = "select uuid, credentialId, type, userHandle, counter from webauthn where userId = ? and deleted_at is not null";
+        $query = "select credentialId, userHandle, created_at from webauthn where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
 
         return $ref;

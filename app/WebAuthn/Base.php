@@ -57,7 +57,7 @@ class Base
 
     # public key credential source repository
     # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#public-key-credential-source-repository
-    private $publicKeyCredentialSourceRepository = null;
+    public $publicKeyCredentialSourceRepository = null;
     private $userEntityRepository = null;
 
     # token binding handler

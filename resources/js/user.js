@@ -216,11 +216,11 @@
     // the data to send
     var request = {
       frontendHash: frontendHash,
-      credentialId: $(event.target).data("credentialId"),
+      credentialId: $(event.target).data("credentialid"),
     };
 
     // ajax request
-    $.post("/api/internal/deleteWebAuthn", request, (response) => {
+    $.post("/api/internal/webAuthn/delete", request, (response) => {
       if (response.status === "success") {
         $("#credentialId-" + request.credentialId).hide();
       }

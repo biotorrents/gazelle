@@ -46,7 +46,7 @@ if (!empty($app->user->extra["TwoFactor"])) {
 }
 
 # webauthn: query the repository for the user
-$webAuthnKeys = $webAuthn->publicKeyCredentialSourceRepository->findMetadataByUserId($app->user->core["uuid"]);
+$webAuthnKeys = $webAuthn->publicKeyCredentialSourceRepository->findMetadataByUserUuid($app->user->core["uuid"]);
 
 
 /** stylesheets, paranoia, options */
