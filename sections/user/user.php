@@ -1190,7 +1190,7 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Extension:</td>
         <td>
-          <select name="ExtendWarning" onchange="ToggleWarningAdjust(this);">
+          <select name="ExtendWarning">
             <option>---</option>
             <option value="1">1 week</option>
             <option value="2">2 weeks</option>

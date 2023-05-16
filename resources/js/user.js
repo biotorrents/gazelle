@@ -202,6 +202,37 @@
 
 
   /**
+   * delete webauthn
+   */
+
+  $("#webAuthnResponse").hide();
+  $(".deleteWebAuthn").on("click", (event) => {
+    // confirm deletion
+    let isConfirmed = confirm("Are you sure you want to unenroll this WebAuthn device?")
+    if (!isConfirmed) {
+      return;
+    }
+
+    // the data to send
+    var request = {
+      frontendHash: frontendHash,
+      credentialId: $(event.target).data("credentialId"),
+    };
+
+    // ajax request
+    $.post("/api/internal/deleteWebAuthn", request, (response) => {
+      if (response.status === "success") {
+        $("#credentialId-" + request.credentialId).hide();
+      }
+
+      if (response.status === "failure") {
+        // todo: communicate the failure somehow
+      }
+    });
+  });
+
+
+  /**
    * suggest a passphrase
    */
 
@@ -291,30 +322,3 @@
     });
   });
 })();
-
-
-/** legacy code */
-
-
-/**
-* UncheckIfDisabled
-*/
-function UncheckIfDisabled(checkbox) {
-  if (checkbox.disabled) {
-    checkbox.checked = false;
-  }
-}
-
-
-/**
-* ToggleWarningAdjust
-*/
-function ToggleWarningAdjust(selector) {
-  if (selector.options[selector.selectedIndex].value == "---") {
-    $("#ReduceWarningTR").gshow();
-    $("#ReduceWarning").raw().disabled = false;
-  } else {
-    $("#ReduceWarningTR").ghide();
-    $("#ReduceWarning").raw().disabled = true;
-  }
-}

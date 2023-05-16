@@ -70,7 +70,7 @@ class Internal extends Base
         try {
             $app->user->create2FA($post["secret"], $post["code"]);
 
-            self::success("successfully created a 2fa key");
+            self::success("created 2fa [{$post["secret"]} => {$post["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -97,7 +97,7 @@ class Internal extends Base
         try {
             $app->user->delete2FA($post["secret"], $post["code"]);
 
-            self::success("successfully deleted a 2fa key");
+            self::success("deleted 2fa [{$post["secret"]} => {$post["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -145,7 +145,9 @@ class Internal extends Base
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $response = $webAuthn->creationResponse($creationRequest)->jsonSerialize();
 
-            self::success($response);
+            # return the raw response
+            print $response;
+            exit;
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -192,7 +194,38 @@ class Internal extends Base
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
 
-            self::success($response);
+            # return the raw response
+            print $response;
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteWebAuthn
+     *
+     * Deletes a WebAuthn device for the user.
+     */
+    public static function deleteWebAuthn(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $post = \Http::request("post");
+        $post["credentialId"] ??= null;
+
+        if (empty($post["credentialId"])) {
+            self::failure(400, "credentialId required");
+        }
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $webAuthn->publicKeyCredentialSourceRepository->deleteCredentialSource($post["credentialId"]);
+
+            self::success("deleted credentialId {$post["credentialId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -310,11 +343,12 @@ class Internal extends Base
         try {
             \Auth::deleteBearerToken(intval($post["tokenId"]));
 
-            self::success("successfully deleted a bearer token");
+            self::success("deleted tokenId {$post["tokenId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
+
 
     /** */
 
@@ -383,7 +417,7 @@ class Internal extends Base
                 intval($post["contentId"] ?? null)
             );
 
-            self::success("bookmark created");
+            self::success("created bookmark [{$post["contentType"]} => {$post["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -407,7 +441,7 @@ class Internal extends Base
                 intval($post["contentId"] ?? null)
             );
 
-            self::success("bookmark deleted");
+            self::success("deleted bookmark [{$post["contentType"]} => {$post["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -547,7 +581,7 @@ class Internal extends Base
 
             Friends::create($post["friendId"], $post["comment"]);
 
-            self::success("successfully created a friend");
+            self::success("created friendId {$post["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -573,7 +607,7 @@ class Internal extends Base
 
             Friends::update($post["friendId"], $post["comment"]);
 
-            self::success("successfully updated a friend");
+            self::success("updated friendId {$post["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -598,7 +632,7 @@ class Internal extends Base
 
             Friends::delete($post["friendId"]);
 
-            self::success("successfully deleted a friend");
+            self::success("deleted friendId {$post["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

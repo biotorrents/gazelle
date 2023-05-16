@@ -59,13 +59,13 @@ final class WebAuthn extends AbstractMigration
 
             # https://webauthn-doc.spomky-labs.com/pure-php/the-hard-way#supported-attestation-statement-types
             ->addColumn("attestationType", "enum", ["values" => [
-                "androidKey",
-                "androidSafetyNet",
+                "android-key",
+                "android-safetynet",
                 "apple",
                 "fido-u2f",
                 "none",
                 "packed",
-                "trustedPlatformModule",
+                "tpm",
             ], "default" => "none", "null" => true])
 
             # https://github.com/web-auth/webauthn-lib/blob/v4.0/src/PublicKeyCredentialSource.php

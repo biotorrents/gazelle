@@ -16,13 +16,14 @@ Http::csrf();
 $get = Http::request("get");
 $post = Http::request("post");
 
-# 2fa libraries
+# 2fa/webauthn libraries
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
+$webAuthn = new Gazelle\WebAuthn\Base();
 
 # bearer tokens
 $bearerTokens = Auth::readBearerToken();
 
-# no settings exist
+# 2fa: no settings exist
 if (empty($app->user->extra["TwoFactor"])) {
     $twoFactorSecret = $twoFactor->createSecret();
     $twoFactorImage = $twoFactor->getQRCodeImageAsDataUri(
@@ -31,7 +32,7 @@ if (empty($app->user->extra["TwoFactor"])) {
     );
 }
 
-# yes settings exist
+# 2fa: yes settings exist
 if (!empty($app->user->extra["TwoFactor"])) {
     try {
         $twoFactorSecret = $app->user->read2FA();
@@ -43,6 +44,9 @@ if (!empty($app->user->extra["TwoFactor"])) {
         # do something
     }
 }
+
+# webauthn: query the repository for the user
+$webAuthnKeys = $webAuthn->publicKeyCredentialSourceRepository->findMetadataByUserId($app->user->core["uuid"]);
 
 
 /** stylesheets, paranoia, options */
@@ -107,6 +111,9 @@ $app->twig->display("user/settings/settings.twig", [
     "twoFactorImage" => $twoFactorImage ?? null,
 
     "bearerTokens" => $bearerTokens,
+
+    # webauthn
+    "webAuthnKeys" => $webAuthnKeys,
 
     # random placeholders
     "twoFactorPlaceHolder" => random_int(100000, 999999),

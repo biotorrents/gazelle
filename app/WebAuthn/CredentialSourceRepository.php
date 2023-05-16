@@ -129,4 +129,53 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
         $app->dbNew->do($query, $variables);
     }
+
+
+    /** custom methods */
+
+
+    /**
+     * findAllByUserUuid
+     */
+    public function findAllByUserUuid(string $userId): array
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select json from webauthn where userId = ? and deleted_at is not null";
+        $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
+
+        $return = [];
+        foreach ($ref as $row) {
+            $data = json_decode($row["json"], true);
+            $return[] = PublicKeyCredentialSource::createFromArray($data);
+        }
+
+        return $return;
+    }
+
+
+    /**
+     * findMetadataByUserUuid
+     */
+    public function findMetadataByUserUuid(string $userId): array
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select uuid, credentialId, type, userHandle, counter from webauthn where userId = ? and deleted_at is not null";
+        $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
+
+        return $ref;
+    }
+
+
+    /**
+     * deleteCredentialSource
+     */
+    public function deleteCredentialSource(string $publicKeyCredentialId): void
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "update webauthn set deleted_at = now() where credentialId = ?";
+        $app->dbNew->do($query, [ Base64UrlSafe::encodeUnpadded($publicKeyCredentialId) ]);
+    }
 } # class

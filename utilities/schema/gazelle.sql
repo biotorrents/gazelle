@@ -995,17 +995,6 @@ CREATE TABLE `torrents_tags` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `u2f` (
-  `UserID` int NOT NULL,
-  `KeyHandle` varchar(255) NOT NULL,
-  `PublicKey` varchar(255) NOT NULL,
-  `Certificate` text,
-  `Counter` int NOT NULL DEFAULT '-1',
-  `Valid` enum('0','1') NOT NULL DEFAULT '1',
-  PRIMARY KEY (`UserID`,`KeyHandle`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `users_badges` (
   `UserID` int NOT NULL,
   `BadgeID` int NOT NULL,

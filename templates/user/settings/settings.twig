@@ -617,6 +617,35 @@
           <td>
           <p id="webAuthnResponse"></p>
           <a id="createWebAuthn" class="button button-primary" target="_blank">enroll a new device</a>
+
+            {# no webauthn #}
+            {% if webAuthnKeys is empty %}
+            <p id="emptywebAuthnMessage">
+            You have no WebAuthn devices enrolled. :(
+            </p>
+
+            {# yes webauthn #}
+            {% else %}
+            <table id="webAuthnKeys">
+            <tr>
+                <th>User handle</th>
+                <th>Created</th>
+                <th>Type</th>
+                <th>Counter</th>
+            </tr>
+
+            {% for item in webAuthnKeys %}
+            <tr id="credentialId-{{ item.credentialId }}">
+              <td>{{ item.userHandle }}</td>
+              <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
+              <td><a class="button deleteWebAuthn" data-credentialId="{{ item.credentialId }}">revoke</a></td>
+            </tr>
+            {% endfor %}
+
+            </table>
+
+            {% endif %} {# if bearerTokens is empty #}
+
           </td>
         </tr>
 

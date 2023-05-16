@@ -665,6 +665,9 @@ class Auth # extends Delight\Auth\Auth
             # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
             $this->library->destroySession();
+
+            # todo: gazelle session
+            #$this->deleteSession($sessionId);
         } catch (Throwable $e) {
             return $message;
         }
