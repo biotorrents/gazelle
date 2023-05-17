@@ -221,19 +221,54 @@ class Database extends \PDO
 
 
     /**
-      * readUuid
-      *
-      * Get the string representation of a binary uuid.
-      *
-      * @param string $binary uuid v7 binary
-      * @return string uuid v7 string
-      *
-      * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
-      * @see https://uuid.ramsey.dev/en/stable/database.html
-      */
-    private function readUuid(string $binary): string
+     * uuidBinary
+     *
+     * Gets the binary representation of a string uuid.
+     *
+     * @param string $string uuid v7 string
+     * @return string uuid v7 binary
+     *
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
+     */
+    public function uuidBinary(string $string): string
+    {
+        return \Ramsey\Uuid\Uuid::fromString($string)->getBytes();
+    }
+
+
+    /**
+     * binaryUuid
+     */
+    public function binaryUuid(string $string): string
+    {
+        return $this->uuidBinary($string);
+    }
+
+
+    /**
+     * uuidString
+     *
+     * Get the string representation of a binary uuid.
+     *
+     * @param string $binary uuid v7 binary
+     * @return string uuid v7 string
+     *
+     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
+     * @see https://uuid.ramsey.dev/en/stable/database.html
+     */
+    public function uuidString(string $binary): string
     {
         return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
+    }
+
+
+    /**
+     * stringUuid
+     */
+    public function stringUuid(string $binary): string
+    {
+        return $this->uuidString($binary);
     }
 
 
@@ -279,9 +314,17 @@ class Database extends \PDO
         # uuid v7
         $row["uuid"] ??= null;
         if ($row["uuid"]) {
-            $row["uuid"] = $this->readUuid($row["uuid"]);
+            $row["uuid"] = $this->uuidString($row["uuid"]);
         } else {
             unset($row["uuid"]);
+        }
+
+        # webauthn
+        $row["aaguid"] ??= null;
+        if ($row["aaguid"]) {
+            $row["aaguid"] = $this->uuidString($row["aaguid"]);
+        } else {
+            unset($row["aaguid"]);
         }
 
         # peer_id
@@ -374,7 +417,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -407,7 +450,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -440,7 +483,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -478,7 +521,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([$query, $arguments]));
+        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }

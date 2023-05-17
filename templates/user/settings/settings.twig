@@ -528,217 +528,6 @@
       </section> {# profileSettings #}
 
 
-{# PARANOIA TODO: THIS WHOLE SECTION IS FUCKED UP
-        <!-- Recent activity -->
-          <td>
-            <label>
-              <input type="checkbox" name="p_lastseen" <?=checked(!in_array('lastseen', $Paranoia))?>
-              />
-              Last seen
-            </label>
-          </td>
-
-        <!-- Statistics -->
-          <td>
-            <?php
-$UploadChecked = checked(!in_array('uploaded', $Paranoia));
-$DownloadChecked = checked(!in_array('downloaded', $Paranoia));
-$RatioChecked = checked(!in_array('ratio', $Paranoia));
-?>
-
-            <label><input type="checkbox" name="p_uploaded" onchange="AlterParanoia();" <?=$UploadChecked?>> Uploaded</label>&ensp;
-            <label><input type="checkbox" name="p_downloaded" onchange="AlterParanoia();" <?=$DownloadChecked?>> Downloaded</label>&ensp;
-            <label><input type="checkbox" name="p_ratio" onchange="AlterParanoia();" <?=$RatioChecked?>> Ratio</label>
-          </td>
-
-        <!-- Required Ratio -->
-          <td>
-            <label>
-              <input type="checkbox" name="p_requiredratio" <?=checked(!in_array('requiredratio', $Paranoia))?>
-              /> Required Ratio
-            </label>
-          </td>
-
-        <!-- Comments (torrents) -->
-        <tr id="para_comments_tr">
-          <td class="label">
-            <strong>Comments (torrents)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('torrentcomments'); ?>
-          </td>
-        </tr>
-
-        <!-- Collections (started) -->
-        <tr id="para_collstart_tr">
-          <td class="label">
-            <strong>Collections (started)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('collages'); ?>
-          </td>
-        </tr>
-
-        <!-- Collections (contributed to) -->
-        <tr id="para_collcontr_tr">
-          <td class="label">
-            <strong>Collections (contributed to)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('collagecontribs'); ?>
-          </td>
-        </tr>
-
-        <!-- Requests (filled) -->
-        <tr id="para_reqfill_tr">
-          <td class="label">
-            <strong>Requests (filled)</strong>
-          </td>
-
-          <td>
-
-            <label><input type="checkbox" name="p_requestsfilled_count" onchange="AlterParanoia();" <?=$RequestsFilledCountChecked?>> Show
-              count</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsfilled_bounty" onchange="AlterParanoia();" <?=$RequestsFilledBountyChecked?>> Show
-              bounty</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsfilled_list" onchange="AlterParanoia();" <?=$RequestsFilledListChecked?>> Show list</label>
-          </td>
-        </tr>
-
-        <!-- Requests (voted for) -->
-        <tr id="para_reqvote_tr">
-          <td class="label">
-            <strong>Requests (voted for)</strong>
-          </td>
-
-          <td>
-
-            <label><input type="checkbox" name="p_requestsvoted_count" onchange="AlterParanoia();" <?=$RequestsVotedCountChecked?>> Show
-              count</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsvoted_bounty" onchange="AlterParanoia();" <?=$RequestsVotedBountyChecked?>> Show
-              bounty</label>&nbsp;
-            <label><input type="checkbox" name="p_requestsvoted_list" onchange="AlterParanoia();" <?=$RequestsVotedListChecked?>> Show list</label>
-          </td>
-        </tr>
-
-        <!-- Uploaded torrents -->
-        <tr id="para_upltor_tr">
-          <td class="label">
-            <strong>Uploaded torrents</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('uploads'); ?>
-          </td>
-        </tr>
-
-        <!-- Uploaded torrents (unique groups) -->
-        <tr id="para_uplunique_tr">
-          <td class="label">
-            <strong>Uploaded torrents (unique groups)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('uniquegroups'); ?>
-          </td>
-        </tr>
-
-        <!-- Torrents (seeding) -->
-        <tr id="para_torseed_tr">
-          <td class="label">
-            <strong>Torrents (seeding)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('seeding'); ?>
-          </td>
-        </tr>
-
-        <!-- Torrents (leeching) -->
-        <tr id="para_torleech_tr">
-          <td class="label">
-            <strong>Torrents (leeching)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('leeching'); ?>
-          </td>
-        </tr>
-
-        <!-- Torrents (snatched) -->
-        <tr id="para_torsnatch_tr">
-          <td class="label">
-            <strong>Torrents (snatched)</strong>
-          </td>
-
-          <td>
-            <?php display_paranoia('snatched'); ?>
-          </td>
-        </tr>
-
-        <!-- Torrents (upload subscriptions) -->
-        <tr id="para_torsubscr_tr">
-          <td class="label tooltip" title="Can others subscribe to your uploads?">
-            <strong>Torrents (upload subscriptions)</strong>
-          </td>
-
-          <td>
-            <label>
-              <input type="checkbox" name="p_notifications" <?=checked(!in_array('notifications', $Paranoia))?>
-              /> Allow torrent upload subscriptions
-            </label>
-          </td>
-        </tr>
-
-        <?php
-$app->dbOld->query("
-  SELECT COUNT(UserID)
-  FROM users_info
-  WHERE Inviter = ?", $UserID);
-list($Invited) = $app->dbOld->next_record();
-?>
-
-        <!-- Invitees -->
-        <tr id="para_invited_tr">
-          <td class="label">
-            <strong>Invitees</strong>
-          </td>
-
-          <td>
-            <label>
-              <input type="checkbox" name="p_invitedcount" <?=checked(!in_array('invitedcount', $Paranoia))?>
-              /> Show count
-            </label>
-          </td>
-        </tr>
-
-        <?php
-$app->dbOld->query("
-  SELECT COUNT(ArtistID)
-  FROM torrents_artists
-  WHERE UserID = ?", $UserID);
-list($ArtistsAdded) = $app->dbOld->next_record();
-?>
-
-        <!-- Artists added -->
-        <tr id="para_artistsadded_tr">
-          <td class="label">
-            <strong>Artists added</strong>
-          </td>
-
-          <td>
-            <label>
-              <input type="checkbox" name="p_artistsadded" <?=checked(!in_array('artistsadded', $Paranoia))?>
-              /> Show count
-            </label>
-          </td>
-        </tr>
-END PARANOIA CLUSTERFUCK #}
-
-
 {# security settings #}
 <section id="securitySettings">
 <h3>Security settings</h3>
@@ -784,7 +573,6 @@ END PARANOIA CLUSTERFUCK #}
         {% else %}
         <div id="twoFactorEnabled">
         <p>
-          Note that TOTP (authenticator app) and U2F (hardware key) are mutually exclusive!
           Two factor authentication is enabled for your account, with this secret:
         </p>
 
@@ -809,63 +597,43 @@ END PARANOIA CLUSTERFUCK #}
         </tr>
 
 
-        {# u2f #}
+        {# webauthn #}
         <tr>
-          <th>Universal two factor (U2F)</th>
+          <th>WebAuthn (FIDO2)</th>
 
-          {# this is a mess: just open a popup #}
           <td>
-          <a href="/user/settings/u2f" class="button button-primary" target="_blank">manage u2f settings</a>
-          {#
-    <div class="pad">
-      <?php if (sizeof($U2FRegs) === 0) { ?>
-      <?php if (empty($TwoFactor)) { ?>
-      <form method="post" id="u2f_register_form">
-        <input type="hidden" name="u2f-request"
-          value='<?=json_encode($U2FRequest)?>' />
+            {# no webauthn #}
+            {% if webAuthnKeys is empty %}
+            <p id="emptywebAuthnMessage">
+            You have no WebAuthn devices enrolled. :(
+            </p>
 
-        <input type="hidden" name="u2f-sigs"
-          value='<?=json_encode($U2FSigs)?>' />
+            {# yes webauthn #}
+            {% else %}
+            <table id="webAuthnKeys">
+            <tr>
+                <th>Credential ID</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
 
-        <input type="hidden" name="u2f-response">
+            {% for item in webAuthnKeys %}
+            <tr id="credentialId-{{ item.credentialId }}">
+              <td><code>{{ item.truncatedId }}</code></td>
+              <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
+              <td><a class="button deleteWebAuthn" data-credentialId="{{ item.credentialId }}">revoke</a></td>
+            </tr>
+            {% endfor %}
 
-        <input type="hidden" value="U2F-E">
-      </form>
+            </table>
 
-      <p>
-        Universal Two Factor is not currently enabled for this account.
-        To enable Universal Two Factor, plug in your U2F token and press the button on it.
-      </p>
+            {% endif %} {# if bearerTokens is empty #}
 
-      <?php } else { ?>
-      <p>
-        Universal Two Factor is not currently enabled for this account.
-        To enable Universal Two Factor, you must first disable normal 2FA above.
-      </p>
-      <?php } ?>
+          {# enroll a new device #}
+          <p><strong>Enroll a new device</strong></p>
+          <p id="webAuthnResponse"></p>
+          <a id="createWebAuthn" class="button button-primary" target="_blank">start registration</a>
 
-      <?php } else { ?>
-      <form method="post" id="u2f_register_form">
-        <input type="hidden" name="u2f-request"
-          value='<?=json_encode($U2FRequest)?>' />
-
-        <input type="hidden" name="u2f-sigs"
-          value='<?=json_encode($U2FSigs)?>' />
-
-        <input type="hidden" name="u2f-response">
-
-        <input type="hidden" value="U2F-E">
-
-        <p>
-          Universal Two Factor is enabled.
-          To add an additional U2F token, plug it in and press the button on it.
-          To disable U2F completely and deregister all tokens, press the button below.
-        </p>
-        <button type="submit" name="type" value="U2F-D">Disable U2F</button>
-      </form>
-      <?php } ?>
-    </div>
-    #}
           </td>
         </tr>
 
@@ -1069,37 +837,3 @@ END PARANOIA CLUSTERFUCK #}
 {{ include("user/settings/sidebar.twig") }}
 
 {% endblock %}
-
-
-{# U2F STUFF HERE
-    if ($Type === 'U2F-E') {
-        try {
-            $U2FReg = $U2F->doRegister(json_decode($_POST['u2f-request']), json_decode($_POST['u2f-response']));
-            $app->dbOld->query("
-              INSERT INTO u2f
-                (UserID, KeyHandle, PublicKey, Certificate, Counter, Valid)
-              Values ($UserID, '".db_string($U2FReg->keyHandle)."', '".db_string($U2FReg->publicKey)."', '".db_string($U2FReg->certificate)."', '".db_string($U2FReg->counter)."', '1')");
-            $Message = "U2F token registered";
-        } catch (Throwable $e) {
-            $Error = "Failed to register U2F token";
-        }
-    }
-
-    if ($Type === 'U2F-D') {
-        $app->dbOld->query("
-          DELETE FROM u2f
-          WHERE UserID = $UserID");
-        $Message = 'U2F tokens deregistered';
-    }
-
-$U2FRegs = [];
-$app->dbOld->query("
-  SELECT KeyHandle, PublicKey, Certificate, Counter
-  FROM u2f
-  WHERE UserID = $UserID");
-
-// Needs to be an array of objects, so we can't use to_array()
-while (list($KeyHandle, $PublicKey, $Certificate, $Counter) = $app->dbOld->next_record()) {
-    $U2FRegs[] = (object)['keyHandle'=>$KeyHandle, 'publicKey'=>$PublicKey, 'certificate'=>$Certificate, 'counter'=>$Counter];
-}
-#}

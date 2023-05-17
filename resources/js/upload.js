@@ -96,7 +96,6 @@
 
         // the data to send
         var request = {
-            frontendHash: frontendHash,
             paperId: $("#doiNumberInput").val(),
         };
 
@@ -106,11 +105,24 @@
         }
 
         // ajax request
-        $.post("/api/internal/doiNumberAutofill", request, (response) => {
-            // hide ajax spinner
-            $("#autofillLoader").hide();
+        $.ajax("/api/internal/deleteBookmark", {
+            method: "POST",
+            headers: { "Authorization": "Bearer " + frontendHash },
 
-            if (response.status === "success") {
+            contentType: "application/json",
+            dataType: "json",
+
+            data: JSON.stringify(request),
+
+            success: (response) => {
+                // hide ajax spinner
+                $("#autofillLoader").hide();
+            },
+
+            error: (response) => {
+                // hide ajax spinner
+                $("#autofillLoader").hide();
+
                 $("#title").val(response.data.title);
                 $("#groupDescription").html(response.data.groupDescription);
                 $("#groupDescription").trigger("change", () => { });
@@ -118,11 +130,7 @@
                 $("#literature").val(response.data.literature.join("\n"));
                 $("#creatorList").val(response.data.creatorList.join("\n"));
                 $("#workgroup").val(response.data.workgroup);
-            }
-
-            if (response.status === "failure") {
-                // do something
-            }
+            },
         });
     });
 
