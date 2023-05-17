@@ -22,7 +22,7 @@ Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\API\Int
 Flight::route("POST /api/internal/webAuthn/delete", ["Gazelle\API\Internal", "deleteWebAuthn"]);
 
 # suggest a passphrase
-Flight::route("POST /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
+Flight::route("GET /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
 
 # manage bookmarks
 Flight::route("POST /api/internal/createBookmark", ["Gazelle\API\Internal", "createBookmark"]);

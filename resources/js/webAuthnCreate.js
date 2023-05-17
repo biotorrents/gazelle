@@ -13,16 +13,23 @@
     // start registration when the user clicks a button
     createWebAuthn.addEventListener("click", async () => {
         // reset success/error messages
+        $("webAuthnResponse").hide();
         webAuthnResponse.innerText = "";
 
         // GET registration options from the endpoint that calls
         // @simplewebauthn/server -> generateRegistrationOptions()
-        const creationRequest = await fetch("/api/internal/webAuthn/creationRequest");
+        const creationRequest = await fetch("/api/internal/webAuthn/creationRequest", {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + frontendHash,
+            },
+        });
 
         let creationRequestJson;
         try {
             // pass the options to the authenticator and wait for a response
-            creationRequest = await startRegistration(await creationRequest.json());
+            creationRequestJson = await startRegistration(await creationRequest.json());
         } catch (error) {
             // some basic error handling
             webAuthnResponse.classList.remove("success");
@@ -41,7 +48,10 @@
         // @simplewebauthn/server -> verifyRegistrationResponse()
         const creationResponse = await fetch("/api/internal/webAuthn/creationResponse", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + frontendHash,
+            },
             body: JSON.stringify(creationRequestJson),
         });
 
@@ -49,13 +59,17 @@
         const creationResponseJson = await creationResponse.json();
 
         // show UI appropriate for the `verified` status
-        if (creationResponseJson && creationResponseJson.verified) {
+        if (creationResponseJson && creationResponseJson.publicKeyCredentialId) {
+            $("webAuthnResponse").show();
+
             webAuthnResponse.classList.remove("failure");
             webAuthnResponse.classList.add("success");
 
-            webAuthnResponse.innerText = "Added a WebAuthn device with the user handle " + creationResponseJson.userHandle;
+            webAuthnResponse.innerHTML = "Added a WebAuthn device with the user handle <code>" + creationResponseJson.userHandle + "</code> and the credential ID <code>" + creationResponseJson.publicKeyCredentialId + "</code>";
         } else {
             // show an error message
+            $("webAuthnResponse").show();
+
             webAuthnResponse.classList.remove("success");
             webAuthnResponse.classList.add("failure");
 

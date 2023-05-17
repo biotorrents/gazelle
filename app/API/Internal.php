@@ -24,25 +24,54 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        if (headers_sent()) {
-            self::failure();
+        /** */
+
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
         }
 
-        $post = \Http::request("post");
-        $frontendHash = $post["frontendHash"] ??= null;
+        # https://tools.ietf.org/html/rfc6750
+        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
 
-        if (!$frontendHash) {
-            self::failure();
+        # too much whitespace
+        if (count($authorizationHeader) !== 2) {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
         }
 
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 1";
-        $sessionId = $app->dbNew->single($query, [ $app->user->core["id"] ]);
+        # not rfc compliant
+        if ($authorizationHeader[0] !== "Bearer") {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
 
-        $backendKey = implode(".", [$sessionId, $app->env->getPriv("siteApiSecret")]);
-        $good = \Auth::checkHash($backendKey, $frontendHash);
+        # we have a token!
+        $token = $authorizationHeader[1];
+
+        # empty token
+        if (empty($token)) {
+            self::failure(401, "empty token provided");
+        }
+
+        /** */
+
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
+        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
+
+        $good = false;
+        foreach ($ref as $row) {
+            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
+            $good = password_verify($backendKey, $token);
+
+            if ($good) {
+                break;
+            }
+        }
 
         if (!$good) {
-            self::failure();
+            self::failure(401, "invalid token");
         }
     }
 
@@ -114,7 +143,7 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        #self::validateFrontendHash();
+        self::validateFrontendHash();
 
         try {
             $webAuthn = new \Gazelle\WebAuthn\Base();
@@ -136,7 +165,7 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        #self::validateFrontendHash();
+        self::validateFrontendHash();
 
         # get the raw request
         $creationRequest = file_get_contents("php://input");

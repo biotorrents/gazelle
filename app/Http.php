@@ -390,7 +390,7 @@ class Http
         $GLOBALS["http_response_code"] = $code;
 
         header("{$protocol} {$code} {$text}");
-        exit;
+        #exit;
     }
 
 

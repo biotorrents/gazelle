@@ -32,24 +32,28 @@
   $("#createGroupBookmark").on("click", (event) => {
     // the data to send
     var request = {
-      frontendHash: frontendHash,
       userId: $(event.target).data("userid"),
       contentId: $(event.target).data("groupid"),
       contentType: "torrent",
     };
 
     // ajax request
-    $.post("/api/internal/createBookmark", request, (response) => {
-      if (response.status === "success") {
+    $.ajax("/api/internal/createBookmark", {
+      method: "POST",
+      contentType: "application/json",
+      headers: { "Authorization": "Bearer " + frontendHash },
+      data: JSON.stringify(request),
+
+      success: (response) => {
         $(event.target).removeClass("button-orange");
         $(event.target).addClass("button-red");
         $(event.target).html("remove bookmark");
         $(event.target).attr("id", "deleteGroupBookmark");
-      }
+      },
 
-      if (response.status === "failure") {
+      error: (response) => {
         console.log(response);
-      }
+      },
     });
   });
 
@@ -66,7 +70,6 @@
 
     // the data to send
     var request = {
-      frontendHash: frontendHash,
       userId: $(event.target).data("userid"),
       contentId: $(event.target).data("groupid"),
       contentType: "torrent",
@@ -74,30 +77,40 @@
 
     // ajax request
     if (action === "create") {
-      $.post("/api/internal/createBookmark", request, (response) => {
-        if (response.status === "success") {
+      $.ajax("/api/internal/createBookmark", {
+        method: "POST",
+        contentType: "application/json",
+        headers: { "Authorization": "Bearer " + frontendHash },
+        data: JSON.stringify(request),
+
+        success: (response) => {
           $(event.target).removeClass("button-orange");
           $(event.target).addClass("button-red");
           $(event.target).html("remove bookmark");
-        }
+        },
 
-        if (response.status === "failure") {
+        error: (response) => {
           console.log(response);
-        }
+        },
       });
     }
 
     if (action === "delete") {
-      $.post("/api/internal/deleteBookmark", request, (response) => {
-        if (response.status === "success") {
+      $.ajax("/api/internal/deleteBookmark", {
+        method: "POST",
+        contentType: "application/json",
+        headers: { "Authorization": "Bearer " + frontendHash },
+        data: JSON.stringify(request),
+
+        success: (response) => {
           $(event.target).removeClass("button-red");
           $(event.target).addClass("button-orange");
           $(event.target).html("add bookmark");
-        }
+        },
 
-        if (response.status === "failure") {
+        error: (response) => {
           console.log(response);
-        }
+        },
       });
     }
   });
