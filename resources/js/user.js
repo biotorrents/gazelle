@@ -147,8 +147,11 @@
     // ajax request
     $.ajax("/api/internal/createTwoFactor", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {
@@ -202,8 +205,11 @@
     // ajax request
     $.ajax("/api/internal/deleteTwoFactor", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {
@@ -251,8 +257,11 @@
     // ajax request
     $.ajax("/api/internal/webAuthn/delete", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {
@@ -278,8 +287,12 @@
     // ajax request
     $.ajax("/api/internal/createPassphrase", {
       method: "GET",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
+      //data: JSON.stringify(request),
 
       success: (response) => {
         $("#suggestedPassphrase").val(response.data);
@@ -305,8 +318,11 @@
     // ajax request
     $.ajax("/api/internal/createBearerToken", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {
@@ -339,8 +355,11 @@
     // ajax request
     $.ajax("/api/internal/deleteBearerToken", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {

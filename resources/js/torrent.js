@@ -40,8 +40,11 @@
     // ajax request
     $.ajax("/api/internal/createBookmark", {
       method: "POST",
-      contentType: "application/json",
       headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/json",
+      dataType: "json",
+
       data: JSON.stringify(request),
 
       success: (response) => {
@@ -79,8 +82,11 @@
     if (action === "create") {
       $.ajax("/api/internal/createBookmark", {
         method: "POST",
-        contentType: "application/json",
         headers: { "Authorization": "Bearer " + frontendHash },
+
+        contentType: "application/json",
+        dataType: "json",
+
         data: JSON.stringify(request),
 
         success: (response) => {
@@ -98,8 +104,11 @@
     if (action === "delete") {
       $.ajax("/api/internal/deleteBookmark", {
         method: "POST",
-        contentType: "application/json",
         headers: { "Authorization": "Bearer " + frontendHash },
+
+        contentType: "application/json",
+        dataType: "json",
+
         data: JSON.stringify(request),
 
         success: (response) => {

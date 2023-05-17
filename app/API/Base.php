@@ -102,7 +102,7 @@ class Base
       *
       * @see https://jsonapi.org/examples/
       */
-    public static function success($response): void
+    public static function success(array|string $response): void
     {
         $app = \Gazelle\App::go();
 
@@ -140,7 +140,7 @@ class Base
      *
      * @see https://jsonapi.org/format/#error-objects
      */
-    public static function failure(int $code = 400, string $response = "bad request"): void
+    public static function failure(int $code = 400, array|string $response = "bad request"): void
     {
         \Http::response($code);
         header("Content-Type: application/json; charset=utf-8");

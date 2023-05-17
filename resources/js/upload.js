@@ -107,8 +107,11 @@
         // ajax request
         $.ajax("/api/internal/deleteBookmark", {
             method: "POST",
-            contentType: "application/json",
             headers: { "Authorization": "Bearer " + frontendHash },
+
+            contentType: "application/json",
+            dataType: "json",
+
             data: JSON.stringify(request),
 
             success: (response) => {
