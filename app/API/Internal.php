@@ -227,8 +227,8 @@ class Internal extends Base
             # get the userId to log in as
             $query = "
                 select users.id from users
-                join webauthn where webauthn.credentialId = ?
-                and webauthn.deleted_at is null
+                join webauthn on webauthn.userId = users.uuid
+                where webauthn.credentialId = ? and users.verified = 1 and webauthn.deleted_at is null
             ";
             $userId = $app->dbNew->single($query, [ $response["publicKeyCredentialId"] ]);
 
