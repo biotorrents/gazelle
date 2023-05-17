@@ -141,7 +141,7 @@ class Twig # extends Twig\Environment
             $app->env->getPriv("siteApiSecret"),
         ]);
 
-        $frontendHash = Auth::makeHash($frontendKey);
+        $frontendHash = password_hash($frontendKey, PASSWORD_DEFAULT);
         $twig->addGlobal("frontendHash", $frontendHash);
 
         # query

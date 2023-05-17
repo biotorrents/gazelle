@@ -24,30 +24,59 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        if (headers_sent()) {
-            self::failure();
+        /** */
+
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
         }
 
-        $post = \Http::request("post");
-        $frontendHash = $post["frontendHash"] ??= null;
+        # https://tools.ietf.org/html/rfc6750
+        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
 
-        if (!$frontendHash) {
-            self::failure();
+        # too much whitespace
+        if (count($authorizationHeader) !== 2) {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
         }
 
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 1";
-        $sessionId = $app->dbNew->single($query, [ $app->user->core["id"] ]);
+        # not rfc compliant
+        if ($authorizationHeader[0] !== "Bearer") {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
 
-        $backendKey = implode(".", [$sessionId, $app->env->getPriv("siteApiSecret")]);
-        $good = \Auth::checkHash($backendKey, $frontendHash);
+        # we have a token!
+        $token = $authorizationHeader[1];
+
+        # empty token
+        if (empty($token)) {
+            self::failure(401, "empty token provided");
+        }
+
+        /** */
+
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
+        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
+
+        $good = false;
+        foreach ($ref as $row) {
+            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
+            $good = password_verify($backendKey, $token);
+
+            if ($good) {
+                break;
+            }
+        }
 
         if (!$good) {
-            self::failure();
+            self::failure(401, "invalid token");
         }
     }
 
 
-    /** */
+    /** 2fa */
 
 
     /**
@@ -59,18 +88,18 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
-        $post["secret"] ??= null;
-        $post["code"] ??= null;
+        $request = \Http::json();
+        $request["secret"] ??= null;
+        $request["code"] ??= null;
 
-        if (empty($post["secret"]) || empty($post["code"])) {
+        if (empty($request["secret"]) || empty($request["code"])) {
             self::failure(400, "empty 2fa secret or code");
         }
 
         try {
-            $app->user->create2FA($post["secret"], $post["code"]);
+            $app->user->create2FA($request["secret"], $request["code"]);
 
-            self::success("successfully created a 2fa key");
+            self::success("created 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -86,22 +115,166 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
-        $post["secret"] ??= null;
-        $post["code"] ??= null;
+        $request = \Http::json();
+        $request["secret"] ??= null;
+        $request["code"] ??= null;
 
-        if (empty($post["secret"]) || empty($post["code"])) {
+        if (empty($request["secret"]) || empty($request["code"])) {
             self::failure(400, "empty 2fa secret or code");
         }
 
         try {
-            $app->user->delete2FA($post["secret"], $post["code"]);
+            $app->user->delete2FA($request["secret"], $request["code"]);
 
-            self::success("successfully deleted a 2fa key");
+            self::success("deleted 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** webauthn */
+
+
+    /**
+     * webAuthnCreationRequest
+     */
+    public static function webAuthnCreationRequest(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $request = $webAuthn->creationRequest();
+
+            # return the raw request
+            print $request;
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * webAuthnCreationResponse
+     */
+    public static function webAuthnCreationResponse(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        # get the raw request
+        $creationRequest = file_get_contents("php://input");
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $response = $webAuthn->creationResponse($creationRequest)->jsonSerialize();
+
+            # return the raw response
+            print json_encode($response);
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * webAuthnAssertionRequest
+     */
+    public static function webAuthnAssertionRequest(string $username): void
+    {
+        $app = \Gazelle\App::go();
+
+        try {
+            $userEntityRepository = new \Gazelle\WebAuthn\UserEntityRepository();
+            $userEntity = $userEntityRepository->findOneByUsername($username);
+
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $request = $webAuthn->assertionRequest($userEntity);
+
+            # return the raw request
+            print $request;
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * webAuthnAssertionResponse
+     */
+    public static function webAuthnAssertionResponse(): void
+    {
+        $app = \Gazelle\App::go();
+
+        # get the raw request
+        $assertionRequest = file_get_contents("php://input");
+
+        try {
+            # webauthn
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $response = $webAuthn->assertionResponse($assertionRequest)->jsonSerialize();
+
+            # gazelle auth
+            $auth = new \Auth();
+
+            # get the userId to log in as
+            $query = "
+                select users.id from users
+                join webauthn where webauthn.credentialId = ?
+                and webauthn.deleted_at is null
+            ";
+            $userId = $app->dbNew->single($query, [ $response["publicKeyCredentialId"] ]);
+
+            # try to login
+            $auth->library->admin()->logInAsUserById($userId);
+            $auth->createSession($userId); # todo: rememberMe?
+
+            # return the raw response
+            print json_encode($response);
+            exit;
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteWebAuthn
+     *
+     * Deletes a WebAuthn device for the user.
+     */
+    public static function deleteWebAuthn(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["credentialId"] ??= null;
+
+        if (empty($request["credentialId"])) {
+            self::failure(400, "credentialId required");
+        }
+
+        try {
+            $webAuthn = new \Gazelle\WebAuthn\Base();
+            $webAuthn->publicKeyCredentialSourceRepository->deleteCredentialSource($request["credentialId"]);
+
+            self::success("deleted credentialId {$request["credentialId"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /** */
 
 
     /**
@@ -172,17 +345,11 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
-        $post["name"] ??= null;
-
-        /*
-        if (empty($post["name"])) {
-            self::failure(400, "empty name");
-        }
-        */
+        $request = \Http::json();
+        $request["name"] ??= null;
 
         try {
-            $token = \Auth::createBearerToken($post["name"]);
+            $token = \Auth::createBearerToken($request["name"]);
 
             self::success($token);
         } catch (\Throwable $e) {
@@ -202,21 +369,22 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
-        $post["tokenId"] ??= null;
+        $request = \Http::json();
+        $request["tokenId"] ??= null;
 
-        if (empty($post["tokenId"])) {
+        if (empty($request["tokenId"])) {
             self::failure(400, "tokenId required");
         }
 
         try {
-            \Auth::deleteBearerToken(intval($post["tokenId"]));
+            \Auth::deleteBearerToken(intval($request["tokenId"]));
 
-            self::success("successfully deleted a bearer token");
+            self::success("deleted tokenId {$request["tokenId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
+
 
     /** */
 
@@ -277,15 +445,15 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
 
         try {
             \Bookmarks::create(
-                strval($post["contentType"] ?? null),
-                intval($post["contentId"] ?? null)
+                strval($request["contentType"] ?? null),
+                intval($request["contentId"] ?? null)
             );
 
-            self::success("bookmark created");
+            self::success("created bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -301,15 +469,15 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
 
         try {
             \Bookmarks::delete(
-                strval($post["contentType"] ?? null),
-                intval($post["contentId"] ?? null)
+                strval($request["contentType"] ?? null),
+                intval($request["contentId"] ?? null)
             );
 
-            self::success("bookmark deleted");
+            self::success("deleted bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -330,14 +498,14 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
+        $paperId = trim($request["paperId"] ?? null);
+
+        if (empty($paperId)) {
+            self::failure(400, "paperId required");
+        }
 
         try {
-            $paperId = trim($post["paperId"] ?? null);
-            if (!$paperId) {
-                self::failure();
-            }
-
             $semanticScholar = new \SemanticScholar([
                 "paperId" => $paperId,
             ]);
@@ -441,15 +609,18 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
+        $request["friendId"] ??= null;
+        $request["comment"] ??= null;
+
+        if (empty($request["friendId"])) {
+            self::failure(400, "friendId required");
+        }
 
         try {
-            $post["friendId"] ??= null;
-            $post["comment"] ??= null;
+            Friends::create($request["friendId"], $request["comment"]);
 
-            Friends::create($post["friendId"], $post["comment"]);
-
-            self::success("successfully created a friend");
+            self::success("created friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -467,15 +638,18 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
+        $request["friendId"] ??= null;
+        $request["comment"] ??= null;
+
+        if (empty($request["friendId"])) {
+            self::failure(400, "friendId required");
+        }
 
         try {
-            $post["friendId"] ??= null;
-            $post["comment"] ??= null;
+            Friends::update($request["friendId"], $request["comment"]);
 
-            Friends::update($post["friendId"], $post["comment"]);
-
-            self::success("successfully updated a friend");
+            self::success("updated friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -493,14 +667,17 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $post = \Http::request("post");
+        $request = \Http::json();
+        $request["friendId"] ??= null;
+
+        if (empty($request["friendId"])) {
+            self::failure(400, "friendId required");
+        }
 
         try {
-            $post["friendId"] ??= null;
+            Friends::delete($request["friendId"]);
 
-            Friends::delete($post["friendId"]);
-
-            self::success("successfully deleted a friend");
+            self::success("deleted friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

@@ -1,0 +1,8 @@
+/**
+ * https://symfony.com/doc/current/frontend/encore/installation.html
+ */
+
+/* assets/styles/app.css */
+body {
+    background-color: lightgray;
+}

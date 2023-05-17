@@ -29,17 +29,16 @@ yarn-error.log
 *.sw*
 
 # assets
-/public/css/*
 !/public/css/vendor/
+!/public/js/vendor/
+/public/build/*
+/public/css/*
 /public/fonts.tgz
 /public/fonts/*
 /public/images/badges/*
 /public/js/*
-!/public/js/vendor/
+/public/vendor/*
 /resources/closureCompiler.jar
-
-/vendor/**
-/public/vendor/**
 
 # config
 /config/private.php

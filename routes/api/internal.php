@@ -8,18 +8,21 @@ declare(strict_types=1);
  * yeah, we getting crudded
  */
 
-/*
-Flight::route("/api/internal/foo", function () {
-    #require_once "bar";
-});
-*/
-
 # 2fa (totp)
 Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\API\Internal", "createTwoFactor"]);
 Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "deleteTwoFactor"]);
 
+# webauthn (fido2)
+Flight::route("GET /api/internal/webAuthn/creationRequest", ["Gazelle\API\Internal", "webAuthnCreationRequest"]);
+Flight::route("POST /api/internal/webAuthn/creationResponse", ["Gazelle\API\Internal", "webAuthnCreationResponse"]);
+
+Flight::route("GET /api/internal/webAuthn/assertionRequest/@username", ["Gazelle\API\Internal", "webAuthnAssertionRequest"]);
+Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\API\Internal", "webAuthnAssertionResponse"]);
+
+Flight::route("POST /api/internal/webAuthn/delete", ["Gazelle\API\Internal", "deleteWebAuthn"]);
+
 # suggest a passphrase
-Flight::route("POST /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
+Flight::route("GET /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
 
 # manage bookmarks
 Flight::route("POST /api/internal/createBookmark", ["Gazelle\API\Internal", "createBookmark"]);

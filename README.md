@@ -87,6 +87,18 @@ No JavaScript access, scoped to the same site, long length, etc.
 This kind of stuff is in the
 [low level Http class](app/Http.php).
 
+### WebAuthn security tokens
+
+BioGazelle has always supported hardware keys thanks to Oppaitime.
+But we took it up a notch by upgrading this system to use the
+[modern WebAuthn standard](app/WebAuthn/Base.php)
+instead of the deprecated FIDO U2F standard.
+[This specification](https://webauthn.guide)
+is well supported in all major browsers, and it doesn't require a $50 dongle:
+use a hardware key, a smartphone fingerprint or QR code reader, or just generate a key in the browser.
+The underlying library is the canonical
+[web-auth/webauthn-lib](https://github.com/web-auth/webauthn-lib).
+
 ## OpenAI integration
 
 One of BioGazelle's goals is to place data in context using
