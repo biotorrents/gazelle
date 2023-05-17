@@ -152,6 +152,28 @@ class Http
 
 
     /**
+     * json
+     *
+     * Parse a Content-Type: application/json request.
+     */
+    public static function json(): array
+    {
+        $app = \Gazelle\App::go();
+
+        $json = json_decode(file_get_contents("php://input"), true);
+
+        /*
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $app->log->error("json error: " . json_last_error_msg());
+            self::response(400);
+        }
+        */
+
+        return $json;
+    }
+
+
+    /**
      * cookie
      *
      * Helper for self::request("cookie").
