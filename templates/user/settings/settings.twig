@@ -612,14 +612,14 @@
             {% else %}
             <table id="webAuthnKeys">
             <tr>
-                <th>User handle</th>
+                <th>Credential ID</th>
                 <th>Created</th>
                 <th>Actions</th>
             </tr>
 
             {% for item in webAuthnKeys %}
             <tr id="credentialId-{{ item.credentialId }}">
-              <td><code>{{ item.userHandle }}</code></td>
+              <td><code>{{ item.truncatedId }}</code></td>
               <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
               <td><a class="button deleteWebAuthn" data-credentialId="{{ item.credentialId }}">revoke</a></td>
             </tr>

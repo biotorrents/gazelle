@@ -36,7 +36,7 @@
             webAuthnResponse.classList.add("failure");
 
             if (error.name === "InvalidStateError") {
-                webAuthnResponse.innerText = "Authenticator was probably already registered by user";
+                webAuthnResponse.innerText = "The authenticator was probably already registered";
             } else {
                 webAuthnResponse.innerText = error;
             }
@@ -65,7 +65,7 @@
             webAuthnResponse.classList.remove("failure");
             webAuthnResponse.classList.add("success");
 
-            webAuthnResponse.innerHTML = "Added a WebAuthn device with the user handle <code>" + creationResponseJson.userHandle + "</code> and the credential ID <code>" + creationResponseJson.publicKeyCredentialId + "</code>";
+            webAuthnResponse.innerHTML = "Added a new WebAuthn device";
         } else {
             // show an error message
             $("webAuthnResponse").show();
