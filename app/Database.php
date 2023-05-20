@@ -584,23 +584,34 @@ class Database extends \PDO
      */
     public function upsert(string $table, array $data)
     {
-        # extract the column names and values
+        # extract the columns and values
         $columns = array_keys($data);
         $values = array_values($data);
 
-        # construct the sql query
-        $query = "
-            insert into {$table} (" . implode(", ", $columns) . ")
-            values (:" . implode(", :", $columns) . ")
-            on duplicate key update
-        ";
+        # generate the comma-separated list of columns and named placeholders
+        $insertColumns = implode(", ", $columns);
+        $insertPlaceholders = ":" . implode(", :", $columns);
 
-        # build the update portion of the query
+        # generate the update column expressions with named placeholders
         $updateColumns = array_map(function ($column) {
-            return "$column = :{$column}";
+            return "{$column} = :{$column}_update";
         }, $columns);
-        $query .= implode(", ", $updateColumns);
 
+        # generate the named placeholders for the update column values
+        $updatePlaceholders = array_map(function ($column) {
+            return ":{$column}_update";
+        }, $columns);
+
+        # construct the sql query string for the upsert operation
+        $query = "
+            insert into {$table} ({$insertColumns})
+            values ({$insertPlaceholders})
+            on duplicate key update " . implode(", ", $updateColumns);
+
+        # merge the original data array with the update placeholders and their corresponding values
+        $data = array_merge($data, array_combine($updatePlaceholders, $values));
+
+        # execute the query with the data
         return $this->do($query, $data);
     }
 
