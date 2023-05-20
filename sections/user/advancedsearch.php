@@ -5,7 +5,7 @@ $app = \Gazelle\App::go();
 $ENV = ENV::go();
 
 if (!empty($_GET['search'])) {
-    if (preg_match("/{$app->env->regexIp}/", $_GET['search'])) {
+    if (preg_match("/{$app->env->regexIp4}/", $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
         /*
         } elseif (preg_match("/{$app->env->regexEmail}/", $_GET['search'])) {

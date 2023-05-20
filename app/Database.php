@@ -302,6 +302,33 @@ class Database extends \PDO
 
 
     /**
+     * determineIdentifier
+     *
+     * Determine the identifier to use for a query.
+     * Used for finding stuff by id, uuid, or slug.
+     */
+    public function determineIdentifier(int|string $id)
+    {
+        if (is_int($id) || is_numeric($id)) {
+            return "id";
+        }
+
+        # https://ihateregex.io/expr/uuid/
+        if (is_string($id) && preg_match("/{$app->env->regexUuid}/iD", $id)) {
+            return "uuid";
+        }
+
+        # is it binary?
+        if (\Gazelle\Text::isBinary($id)) {
+            return "uuid";
+        }
+
+        # default slug
+        return "slug";
+    }
+
+
+    /**
      * translateBinary
      *
      * Translates a binary field to a string representation.
@@ -388,6 +415,13 @@ class Database extends \PDO
         # no params
         if (empty($arguments)) {
             return $host->query($query);
+        }
+
+        # https://ihateregex.io/expr/uuid/
+        foreach ($arguments as $key => $value) {
+            if (is_string($value) && preg_match("/{$app->env->regexUuid}/iD", $value)) {
+                $arguments[$key] = $this->uuidBinary($value);
+            }
         }
 
         # execute
