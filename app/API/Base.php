@@ -15,8 +15,8 @@ namespace Gazelle\API;
 
 class Base
 {
-    private static $source = null;
-    private static $version = 1;
+    # https://jsonapi.org/format/#document-jsonapi-object
+    private static $version = "1.1";
 
 
     /**
@@ -169,36 +169,34 @@ class Base
     /** responses */
 
 
-    /**
+     /**
       * success
       *
-      * @see https://jsonapi.org/examples/
+      * @param $response HTTP success code (usually 2xx)
+      * @param $data the data set in the JSON response
+      *
+      * @see https://jsonapi.org/format/#document-structure
       */
-    public static function success(array|string $data): void
+    public static function success(int $code = 200, array|string $data = []): void
     {
-        $app = \Gazelle\App::go();
+        $response = [
+            "data" => $data,
 
-        if (empty($data)) {
-            self::failure(500, "the server provided no payload");
-        }
-
-        \Http::response(200);
-        header("Content-Type: application/json; charset=utf-8");
-
-        print json_encode(
-            [
-                "id" => uniqid(),
-                "code" => 200,
-
-                "data" => $data,
-
-                "meta" => [
-                    "info" => self::info(),
-                    "debug" => self::debug(),
-                ],
+            "jsonapi" => [
+                "version" => self::$version,
             ],
-        );
 
+            "meta" => [
+                "id" => uniqid(),
+                "count" => (is_array($data) ? count($data) : 1),
+                #"debug" => self::debug(),
+            ],
+        ];
+
+        http_response_code($code);
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
+
+        echo json_encode($response);
         exit;
     }
 
@@ -206,53 +204,32 @@ class Base
     /**
      * failure
      *
-     * General failure routine for when bad things happen.
+     * @param $response HTTP error code (usually 4xx)
+     * @param string $data the error set in the JSON response
      *
-     * @param string $message The error set in the JSON response
-     * @param $response HTTP error code (usually 4xx client errors)
-     *
-     * @see https://jsonapi.org/format/#error-objects
+     * @see https://jsonapi.org/format/#errors
      */
     public static function failure(int $code = 400, array|string $data = "bad request"): void
     {
-        $app = \Gazelle\App::go();
+        $response = [
+            "errors" => $data,
 
-        if (empty($data)) {
-            self::failure(500, "the server provided no payload");
-        }
-
-        \Http::response($code);
-        header("Content-Type: application/json; charset=utf-8");
-
-        print json_encode(
-            [
-                "id" => uniqid(),
-                "code" => $code,
-
-                "data" => $data,
-
-                "meta" => [
-                    "info" => self::info(),
-                    "debug" => self::debug(),
-                ],
+            "jsonapi" => [
+                "version" => self::$version,
             ],
-        );
 
-        exit;
-    }
-
-
-    /**
-     * info
-     */
-    private static function info()
-    {
-        $app = \Gazelle\App::go();
-
-        return [
-            "source" => $app->env->siteName,
-            "version" => self::$version,
+            "meta" => [
+                "id" => uniqid(),
+                "count" => (is_array($data) ? count($data) : 1),
+                #"debug" => self::debug(),
+            ],
         ];
+
+        http_response_code($code);
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
+
+        echo json_encode($response);
+        exit;
     }
 
 

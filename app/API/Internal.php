@@ -37,7 +37,7 @@ class Internal extends Base
         try {
             $app->user->create2FA($request["secret"], $request["code"]);
 
-            self::success("created 2fa [{$request["secret"]} => {$request["code"]}]");
+            self::success(200, "created 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -64,7 +64,7 @@ class Internal extends Base
         try {
             $app->user->delete2FA($request["secret"], $request["code"]);
 
-            self::success("deleted 2fa [{$request["secret"]} => {$request["code"]}]");
+            self::success(200, "deleted 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -205,7 +205,7 @@ class Internal extends Base
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $webAuthn->publicKeyCredentialSourceRepository->deleteCredentialSource($request["credentialId"]);
 
-            self::success("deleted credentialId {$request["credentialId"]}");
+            self::success(200, "deleted credentialId {$request["credentialId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -233,7 +233,7 @@ class Internal extends Base
         try {
             $token = \Auth::createBearerToken($request["name"], $request["permissions"]);
 
-            self::success($token);
+            self::success(200, $token);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -261,7 +261,7 @@ class Internal extends Base
         try {
             \Auth::deleteBearerToken(intval($request["tokenId"]));
 
-            self::success("deleted tokenId {$request["tokenId"]}");
+            self::success(200, "deleted tokenId {$request["tokenId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -320,7 +320,7 @@ class Internal extends Base
 
         # success
         if (!empty($passphrase)) {
-            self::success($passphrase);
+            self::success(200, $passphrase);
         }
 
         # failure
@@ -360,7 +360,7 @@ class Internal extends Base
         $query = "update users_info set siteOptions = ? where userId = ?";
         $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
 
-        self::success($siteOptions);
+        self::success(200, $siteOptions);
     }
 
 
@@ -395,7 +395,7 @@ class Internal extends Base
                 intval($request["contentId"] ?? null)
             );
 
-            self::success("created bookmark [{$request["contentType"]} => {$request["contentId"]}]");
+            self::success(200, "created bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -419,7 +419,7 @@ class Internal extends Base
                 intval($request["contentId"] ?? null)
             );
 
-            self::success("deleted bookmark [{$request["contentType"]} => {$request["contentId"]}]");
+            self::success(200, "deleted bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -530,7 +530,7 @@ class Internal extends Base
                 }
             } # foreach ($response["authors"] as $creator)
 
-            self::success($data);
+            self::success(200, $data);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -562,7 +562,7 @@ class Internal extends Base
         try {
             Friends::create($request["friendId"], $request["comment"]);
 
-            self::success("created friendId {$request["friendId"]}");
+            self::success(200, "created friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -591,7 +591,7 @@ class Internal extends Base
         try {
             Friends::update($request["friendId"], $request["comment"]);
 
-            self::success("updated friendId {$request["friendId"]}");
+            self::success(200, "updated friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -619,7 +619,7 @@ class Internal extends Base
         try {
             Friends::delete($request["friendId"]);
 
-            self::success("deleted friendId {$request["friendId"]}");
+            self::success(200, "deleted friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
