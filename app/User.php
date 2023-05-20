@@ -786,64 +786,6 @@ class User
     }
 
 
-    /**
-     * createApiToken
-     *
-     * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1
-     */
-    public function createApiToken(int $id, string $name, string $key): string
-    {
-        $app = \Gazelle\App::go();
-
-        $suffix = sprintf('%014d', $id);
-        $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-        $hash = password_hash($token, PASSWORD_DEFAULT);
-
-        /*
-        # prevent collisions with an existing token name
-        while (true) {
-            $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-            $hash = password_hash($token, PASSWORD_DEFAULT);
-
-            if (!$this->hasApiToken($id, $token)) {
-                break;
-            }
-        }
-        */
-
-        $query = "insert into api_tokens (userId, name, token) values (?, ?, ?)";
-        $app->dbNew->do($query, [$id, $name, $hash]);
-
-        return $token;
-    }
-
-
-    /**
-     * hasTokenByName
-     */
-    public function hasTokenByName(int $id, string $name)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select 1 from user_api_tokens where userId = ? and name = ?";
-        $good = $app->dbNew->single($query, [$id, $name]);
-
-        return $good;
-    }
-
-
-    /**
-     * revokeApiTokenById
-     */
-    public function revokeApiTokenById(int $id, int $tokenId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
-        $app->dbNew->do($query, [$id, $tokenId]);
-    }
-
-
     /** security stuff */
 
 
