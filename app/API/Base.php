@@ -163,6 +163,20 @@ class Base
 
 
     /**
+     * info
+     */
+    private static function info()
+    {
+        $app = \Gazelle\App::go();
+
+        return [
+            "source" => $app->env->siteName,
+            "version" => self::$version,
+        ];
+    }
+
+
+    /**
      * debug
      *
      * todo
@@ -184,27 +198,5 @@ class Base
             return [];
         }
         */
-    }
-
-
-    /**
-     * info
-     */
-    private static function info()
-    {
-        $app = \Gazelle\App::go();
-
-        return [
-            "source" => $app->env->siteName,
-            "version" => self::$version,
-        ];
-    }
-
-
-    /**
-     * selfTest
-     */
-    public static function selfTest()
-    {
     }
 } # class

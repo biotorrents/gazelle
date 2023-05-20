@@ -20,9 +20,6 @@ class Collage extends Base
     # the primary key associated with the table
     protected $primaryKey = "ID";
 
-    # indicates if the model should be timestamped
-    public $timestamps = false;
-
     # the attributes that aren't mass assignable
     protected $guarded = ["ID"];
 

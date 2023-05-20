@@ -20,9 +20,6 @@ class Creator extends Base
     # the primary key associated with the table
     protected $primaryKey = "id";
 
-    # indicates if the model should be timestamped
-    public $timestamps = false;
-
     # the attributes that aren't mass assignable
     protected $guarded = ["id"];
 
