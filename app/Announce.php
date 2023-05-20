@@ -157,7 +157,7 @@ class Announce
                 $data = json_encode(["text" => $message], JSON_UNESCAPED_SLASHES);
 
                 # options
-                curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
+                curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/vnd.api+json"]);
                 curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
                 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 

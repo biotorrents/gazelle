@@ -149,7 +149,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -207,7 +207,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -259,7 +259,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -289,7 +289,7 @@
       method: "GET",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       //data: JSON.stringify(request),
@@ -330,7 +330,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -367,7 +367,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),

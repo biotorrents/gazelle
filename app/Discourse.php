@@ -83,7 +83,7 @@ class Discourse
         # https://www.codexworld.com/post-receive-json-data-using-php-curl/
         $ch = curl_init("{$this->baseUri}/{$path}");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type:application/json",
+            "Content-Type: application/vnd.api+json",
             "Api-Key: {$this->token}",
             "Api-Username: {$this->username}"
         ]);

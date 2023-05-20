@@ -123,7 +123,7 @@ class Json
             return $this->failure("the server provided no payload", 500);
         }
 
-        header("Content-Type: application/json; charset=utf-8");
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
         print json_encode(
             [
                 "id" => uniqid(),
@@ -160,7 +160,7 @@ class Json
             return false;
         }
 
-        header("Content-Type: application/json; charset=utf-8");
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
         print json_encode(
             [
                 "id" => uniqid(),

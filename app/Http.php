@@ -154,7 +154,7 @@ class Http
     /**
      * json
      *
-     * Parse a Content-Type: application/json request.
+     * Parse a Content-Type: application/vnd.api+json request.
      */
     public static function json(): array
     {
