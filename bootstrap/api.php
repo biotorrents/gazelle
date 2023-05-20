@@ -10,8 +10,16 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
+# skip this stuff for internal api calls
+if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
+    require_once "{$app->env->serverRoot}/routes/internal.php";
+}
+
 # check for a token
-\Gazelle\API\Base::checkToken($app->user->core["id"]);
+$userId = \Gazelle\API\Base::checkToken();
+if (!$userId) {
+    \Gazelle\API\Base::failure(401, "invalid token");
+}
 
 # rate limit exceptions
 $rateLimitExceptions = [];
@@ -26,7 +34,6 @@ array_push($rateLimitExceptions, ...$ref);
 
 # rate limit = [x requests, y seconds]
 $rateLimit = [2, 5];
-$userId = $app->user->core["id"];
 
 # enforce rate limiting everywhere
 if (!in_array($userId, $rateLimitExceptions)) {

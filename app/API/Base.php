@@ -24,49 +24,46 @@ class Base
      *
      * Validates an authorization header and API token.
      */
-    public static function checkToken(int $userId, string $token = ""): void
+    public static function checkToken(): int
     {
         $app = \Gazelle\App::go();
 
         /** */
 
-        # get the token off the headers
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
+        }
+
+        # https://tools.ietf.org/html/rfc6750
+        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
+
+        # too much whitespace
+        if (count($authorizationHeader) !== 2) {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # not rfc compliant
+        if ($authorizationHeader[0] !== "Bearer") {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # we have a token!
+        $token = $authorizationHeader[1];
+
+        # empty token
         if (empty($token)) {
-            # escape bearer token
-            $server = \Http::request("server");
-
-            # no header present
-            if (empty($server["HTTP_AUTHORIZATION"])) {
-                self::failure(401, "no authorization header present");
-            }
-
-            # https://tools.ietf.org/html/rfc6750
-            $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-            # too much whitespace
-            if (count($authorizationHeader) !== 2) {
-                self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-            }
-
-            # not rfc compliant
-            if ($authorizationHeader[0] !== "Bearer") {
-                self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-            }
-
-            # we have a token!
-            $token = $authorizationHeader[1];
-
-            # empty token
-            if (empty($token)) {
-                self::failure(401, "empty token provided");
-            }
-        } # if (empty($token))
+            self::failure(401, "empty token provided");
+        }
 
         /** */
 
         # check the database
-        $query = "select userId, token, revoked from api_user_tokens where userId = ?";
-        $row = $app->dbNew->row($query, [$userId]);
+        $query = "select userId, token, revoked from api_user_tokens where token = ?";
+        $row = $app->dbNew->row($query, [$token]);
         #~d($row);exit;
 
         if (!$row) {
@@ -78,22 +75,25 @@ class Base
             self::failure(401, "token revoked");
         }
 
+        /*
         # user doesn't own that token
         if ($userId !== intval($row["userId"])) {
             self::failure(401, "token user mismatch");
         }
+        */
 
-        /*
         # user is disabled
         if (\User::isDisabled($userId)) {
             self::failure(401, "user disabled");
         }
-        */
 
         # wrong token provided
         if (!password_verify($token, $row["token"])) {
             self::failure(401, "wrong token provided");
         }
+
+        # return the user id
+        return $userId;
     }
 
 
