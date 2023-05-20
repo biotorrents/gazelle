@@ -70,10 +70,10 @@ $UserID = $app->user->core['id'];
 
 # Set proper headers for JSON output
 # https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php
-if (!empty($_SERVER['CONTENT_TYPE']) && substr($_SERVER['CONTENT_TYPE'], 0, 16) === 'application/json') {
+if (!empty($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/vnd.api+json') {
     $_POST = json_decode(file_get_contents('php://input'), true);
 }
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/vnd.api+json; charset=utf-8');
 
 # Enforce rate limiting everywhere
 if (!in_array($UserID, $UserExceptions) && isset($_GET['action'])) {

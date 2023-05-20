@@ -15,118 +15,188 @@ namespace Gazelle\API;
 
 class Base
 {
-    private static $source = null;
-    private static $version = 1;
+    # https://jsonapi.org/format/#document-jsonapi-object
+    private static $version = "1.1";
 
 
     /**
-     * checkToken
+     * validateBearerToken
      *
      * Validates an authorization header and API token.
+     *
+     * @return ?array
      */
-    public static function checkToken(int $userId, string $token = ""): void
+    public static function validateBearerToken(): ?array
     {
         $app = \Gazelle\App::go();
 
         /** */
 
-        # get the token off the headers
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
+        }
+
+        # https://tools.ietf.org/html/rfc6750
+        if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
+            self::failure(401, "invalid authorization header format");
+        }
+
+        # we have a token!
+        $token = $matches[1];
+
+        # empty token
         if (empty($token)) {
-            # escape bearer token
-            $server = \Http::request("server");
-
-            # no header present
-            if (empty($server["HTTP_AUTHORIZATION"])) {
-                self::failure(401, "no authorization header present");
-            }
-
-            # https://tools.ietf.org/html/rfc6750
-            $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-            # too much whitespace
-            if (count($authorizationHeader) !== 2) {
-                self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-            }
-
-            # not rfc compliant
-            if ($authorizationHeader[0] !== "Bearer") {
-                self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-            }
-
-            # we have a token!
-            $token = $authorizationHeader[1];
-
-            # empty token
-            if (empty($token)) {
-                self::failure(401, "empty token provided");
-            }
-        } # if (empty($token))
+            self::failure(401, "empty token provided");
+        }
 
         /** */
 
         # check the database
-        $query = "select userId, token, revoked from api_user_tokens where userId = ?";
-        $row = $app->dbNew->row($query, [$userId]);
-        #~d($row);exit;
+        $query = "select userId, token from api_tokens use index (userId_token) where deleted_at is null";
+        $ref = $app->dbNew->multi($query, []);
 
-        if (!$row) {
-            self::failure(401, "token not found");
+        foreach ($ref as $row) {
+            $good = password_verify($token, $row["token"]);
+            if ($good) {
+                # is the user disabled?
+                if (\User::isDisabled($row["userId"])) {
+                    self::failure(401, "user disabled");
+                }
+
+                # return the data
+                return $row;
+            }
         }
 
-        # user revoked the token
-        if (intval($row["revoked"]) === 1) {
-            self::failure(401, "token revoked");
-        }
-
-        # user doesn't own that token
-        if ($userId !== intval($row["userId"])) {
-            self::failure(401, "token user mismatch");
-        }
-
-        /*
-        # user is disabled
-        if (\User::isDisabled($userId)) {
-            self::failure(401, "user disabled");
-        }
-        */
-
-        # wrong token provided
-        if (!password_verify($token, $row["token"])) {
-            self::failure(401, "wrong token provided");
-        }
+        # default failure
+        self::failure(401, "invalid token");
     }
 
 
     /**
-      * success
-      *
-      * @see https://jsonapi.org/examples/
-      */
-    public static function success(array|string $data): void
+     * validateFrontendHash
+     *
+     * Checks a frontend key against a backend one.
+     * The key is hash(sessionId . siteApiSecret).
+     */
+    public static function validateFrontendHash(): void
     {
         $app = \Gazelle\App::go();
 
-        if (empty($response)) {
-            self::failure(500, "the server provided no payload");
+        /** */
+
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
         }
 
-        \Http::response(200);
-        header("Content-Type: application/json; charset=utf-8");
+        # https://tools.ietf.org/html/rfc6750
+        if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
+            self::failure(401, "invalid authorization header format");
+        }
 
-        print json_encode(
-            [
-                "id" => uniqid(),
-                "code" => 200,
+        # we have a token!
+        $token = $matches[1];
 
-                "data" => $data,
+        # empty token
+        if (empty($token)) {
+            self::failure(401, "empty token provided");
+        }
 
-                "meta" => [
-                    "info" => self::info(),
-                    "debug" => self::debug(),
-                ],
+        /** */
+
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 10";
+        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
+
+        foreach ($ref as $row) {
+            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
+            $good = password_verify($backendKey, $token);
+
+            if ($good) {
+                return;
+            }
+        }
+
+        # default failure
+        self::failure(401, "invalid token");
+    }
+
+
+    /** token permissions */
+
+
+    /**
+     * validatePermissions
+     *
+     * Checks a token's permissions against a list of required permissions.
+     */
+    public static function validatePermissions(int $tokenId, array $permissions = []): void
+    {
+        $app = \Gazelle\App::go();
+
+        # quick sanity check
+        $permissions = arrap_map("strtolower", $permissions);
+        $allowedPermissions = ["create", "read", "update", "delete"];
+
+        # check that all permissions are valid
+        if (array_intersect($permissions, $allowedPermissions) !== $permissions) {
+            self::failure(401, "invalid permission");
+        }
+
+        # check the token's permissions
+        $query = "select permissions from api_tokens where id = ?";
+        $ref = $app->dbNew->single($query, [$tokenId]);
+
+        if (empty($ref)) {
+            self::failure(401, "no permissions found");
+        }
+
+        # check that all required permissions are present
+        $tokenPermissions = json_decode($ref, true);
+        if (array_intersect($permissions, $tokenPermissions) !== $permissions) {
+            self::failure(401, "missing required permissions");
+        }
+    }
+
+
+    /** responses */
+
+
+     /**
+      * success
+      *
+      * @param $response HTTP success code (usually 2xx)
+      * @param $data the data set in the JSON response
+      *
+      * @see https://jsonapi.org/format/#document-structure
+      */
+    public static function success(int $code = 200, array|string $data = []): void
+    {
+        $response = [
+            "data" => $data,
+
+            "jsonapi" => [
+                "version" => self::$version,
             ],
-        );
 
+            "meta" => [
+                "id" => uniqid(),
+                "count" => (is_array($data) ? count($data) : 1),
+                #"debug" => self::debug(),
+            ],
+        ];
+
+        http_response_code($code);
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
+
+        echo json_encode($response);
         exit;
     }
 
@@ -134,47 +204,32 @@ class Base
     /**
      * failure
      *
-     * General failure routine for when bad things happen.
+     * @param $response HTTP error code (usually 4xx)
+     * @param string $data the error set in the JSON response
      *
-     * @param string $message The error set in the JSON response
-     * @param $response HTTP error code (usually 4xx client errors)
-     *
-     * @see https://jsonapi.org/format/#error-objects
+     * @see https://jsonapi.org/format/#errors
      */
     public static function failure(int $code = 400, array|string $data = "bad request"): void
     {
-        \Http::response($code);
-        header("Content-Type: application/json; charset=utf-8");
+        $response = [
+            "errors" => $data,
 
-        print json_encode(
-            [
-                "id" => uniqid(),
-                "code" => $code,
-
-                "data" => $data,
-
-                "meta" => [
-                    "info" => self::info(),
-                    "debug" => self::debug(),
-                ],
+            "jsonapi" => [
+                "version" => self::$version,
             ],
-        );
 
-        exit;
-    }
-
-
-    /**
-     * info
-     */
-    private static function info()
-    {
-        $app = \Gazelle\App::go();
-
-        return [
-            "source" => $app->env->siteName,
-            "version" => self::$version,
+            "meta" => [
+                "id" => uniqid(),
+                "count" => (is_array($data) ? count($data) : 1),
+                #"debug" => self::debug(),
+            ],
         ];
+
+        http_response_code($code);
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
+
+        echo json_encode($response);
+        exit;
     }
 
 

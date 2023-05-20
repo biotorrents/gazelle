@@ -149,7 +149,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -207,7 +207,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -259,7 +259,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -289,7 +289,7 @@
       method: "GET",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       //data: JSON.stringify(request),
@@ -310,9 +310,19 @@
    */
 
   $("#createBearerToken").on("click", () => {
+    // collect checkboxes
+    var permissions = [];
+    $("input[name='tokenPermissions[]']").each(function () {
+      var self = $(this);
+      if (self.is(":checked")) {
+        permissions.push(self.attr("value"));
+      }
+    });
+
     // the data to send
     var request = {
-      tokenName: $("#tokenName").val(),
+      name: $("#tokenName").val(),
+      permissions: permissions,
     };
 
     // ajax request
@@ -320,7 +330,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),
@@ -357,7 +367,7 @@
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
-      contentType: "application/json",
+      contentType: "application/vnd.api+json",
       dataType: "json",
 
       data: JSON.stringify(request),

@@ -29,7 +29,13 @@
 
         // GET authentication options from the endpoint that calls
         // @simplewebauthn/server -> generateAuthenticationOptions()
-        const assertionRequest = await fetch("/api/internal/webAuthn/assertionRequest/" + username);
+        const assertionRequest = await fetch("/api/internal/webAuthn/assertionRequest/" + username, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/vnd.api+json",
+                "Authorization": "Bearer " + frontendHash,
+            },
+        });
 
         let assertionRequestJson;
         try {
@@ -49,7 +55,7 @@
         // @simplewebauthn/server -> verifyAuthenticationResponse()
         const assertionResponse = await fetch("/api/internal/webAuthn/assertionResponse", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { "Content-Type": "application/vnd.api+json" },
             body: JSON.stringify(assertionRequestJson),
         });
 

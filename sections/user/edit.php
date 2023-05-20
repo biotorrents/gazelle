@@ -22,6 +22,7 @@ $webAuthn = new Gazelle\WebAuthn\Base();
 
 # bearer tokens
 $bearerTokens = Auth::readBearerToken();
+#!d($bearerTokens);exit;
 
 # 2fa: no settings exist
 if (empty($app->user->extra["TwoFactor"])) {

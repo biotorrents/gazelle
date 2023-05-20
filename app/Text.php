@@ -17,9 +17,6 @@ namespace Gazelle;
 
 class Text
 {
-    # hash algo for cache keys
-    private static $algorithm = "sha3-512";
-
     # cache settings
     private static $cachePrefix = "text:";
     private static $cacheDuration = "1 week";
@@ -43,7 +40,7 @@ class Text
         $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
+        $cacheKey = self::$cachePrefix . hash($app->env->cacheAlgorithm, $string);
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {

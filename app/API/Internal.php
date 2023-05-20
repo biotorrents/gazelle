@@ -14,68 +14,6 @@ namespace Gazelle\API;
 
 class Internal extends Base
 {
-    /**
-     * validateFrontendHash
-     *
-     * Checks a frontend key against a backend one.
-     * The key is hash(sessionId . siteApiSecret).
-     */
-    private static function validateFrontendHash(): void
-    {
-        $app = \Gazelle\App::go();
-
-        /** */
-
-        # escape bearer token
-        $server = \Http::request("server");
-
-        # no header present
-        if (empty($server["HTTP_AUTHORIZATION"])) {
-            self::failure(401, "no authorization header present");
-        }
-
-        # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-        # too much whitespace
-        if (count($authorizationHeader) !== 2) {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # not rfc compliant
-        if ($authorizationHeader[0] !== "Bearer") {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # we have a token!
-        $token = $authorizationHeader[1];
-
-        # empty token
-        if (empty($token)) {
-            self::failure(401, "empty token provided");
-        }
-
-        /** */
-
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
-        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
-
-        $good = false;
-        foreach ($ref as $row) {
-            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
-            $good = password_verify($backendKey, $token);
-
-            if ($good) {
-                break;
-            }
-        }
-
-        if (!$good) {
-            self::failure(401, "invalid token");
-        }
-    }
-
-
     /** 2fa */
 
 
@@ -99,7 +37,7 @@ class Internal extends Base
         try {
             $app->user->create2FA($request["secret"], $request["code"]);
 
-            self::success("created 2fa [{$request["secret"]} => {$request["code"]}]");
+            self::success(200, "created 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -126,7 +64,7 @@ class Internal extends Base
         try {
             $app->user->delete2FA($request["secret"], $request["code"]);
 
-            self::success("deleted 2fa [{$request["secret"]} => {$request["code"]}]");
+            self::success(200, "deleted 2fa [{$request["secret"]} => {$request["code"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -267,14 +205,70 @@ class Internal extends Base
             $webAuthn = new \Gazelle\WebAuthn\Base();
             $webAuthn->publicKeyCredentialSourceRepository->deleteCredentialSource($request["credentialId"]);
 
-            self::success("deleted credentialId {$request["credentialId"]}");
+            self::success(200, "deleted credentialId {$request["credentialId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
 
 
-    /** */
+    /** bearer tokens */
+
+
+    /**
+     * createBearerToken
+     *
+     * Creates a bearer token for the user.
+     */
+    public static function createBearerToken(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["name"] ??= null;
+        $request["permissions"] ??= [];
+
+        try {
+            $token = \Auth::createBearerToken($request["name"], $request["permissions"]);
+
+            self::success(200, $token);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteBearerToken
+     *
+     * Deletes a bearer token for the user.
+     */
+    public static function deleteBearerToken(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["tokenId"] ??= null;
+
+        if (empty($request["tokenId"])) {
+            self::failure(400, "tokenId required");
+        }
+
+        try {
+            \Auth::deleteBearerToken(intval($request["tokenId"]));
+
+            self::success(200, "deleted tokenId {$request["tokenId"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /** pwgen */
 
 
     /**
@@ -326,7 +320,7 @@ class Internal extends Base
 
         # success
         if (!empty($passphrase)) {
-            self::success($passphrase);
+            self::success(200, $passphrase);
         }
 
         # failure
@@ -334,59 +328,7 @@ class Internal extends Base
     }
 
 
-    /**
-     * createBearerToken
-     *
-     * Creates a bearer token for the user.
-     */
-    public static function createBearerToken(): void
-    {
-        $app = \Gazelle\App::go();
-
-        self::validateFrontendHash();
-
-        $request = \Http::json();
-        $request["name"] ??= null;
-
-        try {
-            $token = \Auth::createBearerToken($request["name"]);
-
-            self::success($token);
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
-    }
-
-
-    /**
-     * deleteBearerToken
-     *
-     * Deletes a bearer token for the user.
-     */
-    public static function deleteBearerToken(): void
-    {
-        $app = \Gazelle\App::go();
-
-        self::validateFrontendHash();
-
-        $request = \Http::json();
-        $request["tokenId"] ??= null;
-
-        if (empty($request["tokenId"])) {
-            self::failure(400, "tokenId required");
-        }
-
-        try {
-            \Auth::deleteBearerToken(intval($request["tokenId"]));
-
-            self::success("deleted tokenId {$request["tokenId"]}");
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
-    }
-
-
-    /** */
+    /** torrent search */
 
 
     /**
@@ -418,7 +360,7 @@ class Internal extends Base
         $query = "update users_info set siteOptions = ? where userId = ?";
         $app->dbNew->do($query, [json_encode($siteOptions), $userId]);
 
-        self::success($siteOptions);
+        self::success(200, $siteOptions);
     }
 
 
@@ -433,7 +375,7 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** bookmarks */
 
 
     /**
@@ -453,7 +395,7 @@ class Internal extends Base
                 intval($request["contentId"] ?? null)
             );
 
-            self::success("created bookmark [{$request["contentType"]} => {$request["contentId"]}]");
+            self::success(200, "created bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -477,14 +419,14 @@ class Internal extends Base
                 intval($request["contentId"] ?? null)
             );
 
-            self::success("deleted bookmark [{$request["contentType"]} => {$request["contentId"]}]");
+            self::success(200, "deleted bookmark [{$request["contentType"]} => {$request["contentId"]}]");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
 
 
-    /** */
+    /** autofill */
 
 
     /**
@@ -588,14 +530,14 @@ class Internal extends Base
                 }
             } # foreach ($response["authors"] as $creator)
 
-            self::success($data);
+            self::success(200, $data);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
     }
 
 
-    /** */
+    /** friends */
 
 
     /**
@@ -620,7 +562,7 @@ class Internal extends Base
         try {
             Friends::create($request["friendId"], $request["comment"]);
 
-            self::success("created friendId {$request["friendId"]}");
+            self::success(200, "created friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -649,7 +591,7 @@ class Internal extends Base
         try {
             Friends::update($request["friendId"], $request["comment"]);
 
-            self::success("updated friendId {$request["friendId"]}");
+            self::success(200, "updated friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -677,7 +619,7 @@ class Internal extends Base
         try {
             Friends::delete($request["friendId"]);
 
-            self::success("deleted friendId {$request["friendId"]}");
+            self::success(200, "deleted friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

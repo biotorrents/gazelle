@@ -36,9 +36,6 @@ class SemanticScholar
     private $cachePrefix = "semanticScholar:";
     private $cacheDuration = "1 day";
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
 
     /**
      * __construct
@@ -74,7 +71,7 @@ class SemanticScholar
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode([
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([
             "uri" => $uri, "fields" => $fields, "search" => $search
         ]));
 

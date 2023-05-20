@@ -23,7 +23,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->user->core["id"]);
+        self::validateBearerToken();
 
         $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);
@@ -51,7 +51,7 @@ class Friends extends Base
             $query = "select * from users_friends where id = ?";
             $row = $app->dbNew->row($query, [$app->dbNew->source->lastInsertId()]);
 
-            self::success($row);
+            self::success(200, $row);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -83,7 +83,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->user->core["id"]);
+        self::validateBearerToken();
 
         $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);
@@ -106,7 +106,7 @@ class Friends extends Base
             $query = "delete from users_friends where userId = ? and friendId = ?";
             $app->dbNew->do($query, [$app->user->core["id"], $userId]);
 
-            self::success($row);
+            self::success(200, $row);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

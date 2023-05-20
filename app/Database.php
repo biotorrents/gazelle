@@ -24,9 +24,6 @@ class Database extends \PDO
     public $replicas = [];
     public $last = null;
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "database:";
     private $cacheDuration = "1 minute";
@@ -314,12 +311,12 @@ class Database extends \PDO
         }
 
         # https://ihateregex.io/expr/uuid/
-        if (is_string($id) && preg_match("/{$app->env->regexUuid}/iD", $id)) {
+        if (is_string($id) && strlen($id) === 36 && preg_match("/{$app->env->regexUuid}/iD", $id)) {
             return "uuid";
         }
 
         # is it binary?
-        if (\Gazelle\Text::isBinary($id)) {
+        if (\Gazelle\Text::isBinary($id) && strlen($id) === 16) {
             return "uuid";
         }
 
@@ -378,6 +375,14 @@ class Database extends \PDO
             unset($row["InfoHash"]);
         }
 
+        # info_hash
+        $row["info_hash"] ??= null;
+        if ($row["info_hash"]) {
+            $row["info_hash"] = bin2hex($row["info_hash"]);
+        } else {
+            unset($row["info_hash"]);
+        }
+
         return $row;
     }
 
@@ -419,7 +424,7 @@ class Database extends \PDO
 
         # https://ihateregex.io/expr/uuid/
         foreach ($arguments as $key => $value) {
-            if (is_string($value) && preg_match("/{$app->env->regexUuid}/iD", $value)) {
+            if (is_string($value) && strlen($value) === 36 && preg_match("/{$app->env->regexUuid}/iD", $value)) {
                 $arguments[$key] = $this->uuidBinary($value);
             }
         }
@@ -451,7 +456,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -484,7 +489,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -517,7 +522,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -555,7 +560,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -573,6 +578,9 @@ class Database extends \PDO
     }
 
 
+    /** pseudo orm */
+
+
     /**
      * upsert
      *
@@ -581,8 +589,9 @@ class Database extends \PDO
      *
      * @param string $table
      * @param array $data
+     * @return \PDOStatement
      */
-    public function upsert(string $table, array $data)
+    public function upsert(string $table, array $data = []): \PDOStatement
     {
         # extract the columns and values
         $columns = array_keys($data);
@@ -613,6 +622,56 @@ class Database extends \PDO
 
         # execute the query with the data
         return $this->do($query, $data);
+    }
+
+
+    /**
+     * findOne
+     *
+     * Finds a single row by a set of contraints.
+     *
+     * @param string $table
+     * @param array $data ["column" => "value"]
+     * @return ?array
+     */
+    public function findOne(string $table, array $data = []): ?array
+    {
+        # important! trailing whitespace
+        $query = "select * from {$table} where ";
+
+        $parameters = [];
+        foreach ($data as $key => $value) {
+            $parameters[] = "{$key} = :{$key}";
+        }
+
+        $query .= implode(" and ", $parameters);
+
+        return $this->row($query, $data);
+    }
+
+
+    /**
+     * findAll
+     *
+     * Finds all rows by a set of contraints.
+     *
+     * @param string $table
+     * @param array $data ["column" => "value"]
+     * @return array
+     */
+    public function findAll(string $table, array $data = []): array
+    {
+        # important! trailing whitespace
+        $query = "select * from {$table} where ";
+
+        $parameters = [];
+        foreach ($data as $key => $value) {
+            $parameters[] = "{$key} = :{$key}";
+        }
+
+        $query .= implode(" and ", $parameters);
+
+        return $this->multi($query, $data);
     }
 
 
