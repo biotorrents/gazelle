@@ -65,7 +65,7 @@ class Base
         /** */
 
         # check the database
-        $query = "select userId, token, revoked from api_user_tokens where UserID = ?";
+        $query = "select userId, token, revoked from api_user_tokens where userId = ?";
         $row = $app->dbNew->row($query, [$userId]);
         #~d($row);exit;
 
@@ -102,7 +102,7 @@ class Base
       *
       * @see https://jsonapi.org/examples/
       */
-    public static function success(array|string $response): void
+    public static function success(array|string $data): void
     {
         $app = \Gazelle\App::go();
 
@@ -112,12 +112,13 @@ class Base
 
         \Http::response(200);
         header("Content-Type: application/json; charset=utf-8");
+
         print json_encode(
             [
                 "id" => uniqid(),
                 "code" => 200,
 
-                "data" => $response,
+                "data" => $data,
 
                 "meta" => [
                     "info" => self::info(),
@@ -140,16 +141,17 @@ class Base
      *
      * @see https://jsonapi.org/format/#error-objects
      */
-    public static function failure(int $code = 400, array|string $response = "bad request"): void
+    public static function failure(int $code = 400, array|string $data = "bad request"): void
     {
         \Http::response($code);
         header("Content-Type: application/json; charset=utf-8");
+
         print json_encode(
             [
                 "id" => uniqid(),
                 "code" => $code,
 
-                "data" => $response,
+                "data" => $data,
 
                 "meta" => [
                     "info" => self::info(),

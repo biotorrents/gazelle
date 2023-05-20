@@ -6,53 +6,41 @@ declare(strict_types=1);
 /**
  * API specific auth bootstrap.
  * Loads the app for API requests.
- *
- * THIS ONLY HANDLES TOKEN CHECKING.
- * The actual routes come from the router.
  */
 
-if (headers_sent()) {
-    return false;
-}
-
-# https://github.com/OPSnet/Gazelle/blob/master/sections/api/index.php
-#header("Content-Type: application/json; charset=utf-8");
-
 $app = \Gazelle\App::go();
-$json = new Json();
 
-$get = Http::request("get");
-$post = Http::request("post");
-
-/*
-# fail out
-#$json->checkToken($app->userOld["ID"]);
+# check for a token
+\Gazelle\API\Base::checkToken($app->user->core["id"]);
 
 # rate limit exceptions
-$query = "select id from users_main where permissionId = 20"; # donors
-$userExceptions = $app->dbNew->multi($query, []);
+$rateLimitExceptions = [];
 
 # system and admin
-array_push($userExceptions, 0, 1);
+array_push($rateLimitExceptions, 0, 1);
 
-# ajaxLimit = [x requests, y seconds]
-$ajaxLimit = [1, 5];
-$userId = $user["ID"];
+# donors
+$query = "select id from users_main where permissionId = 20"; # donors
+$ref = $app->dbNew->column("id", $query, []);
+array_push($rateLimitExceptions, ...$ref);
+
+# rate limit = [x requests, y seconds]
+$rateLimit = [2, 5];
+$userId = $app->user->core["id"];
 
 # enforce rate limiting everywhere
-if (!in_array($userId, $userExceptions)) {
-    if (!$userRequests = $app->cache->get("ajax_requests_{$userId}")) {
-        $userRequests = 0;
-        $app->cache->set("ajax_requests_{$userId}", 0, $ajaxLimit[1]);
+if (!in_array($userId, $rateLimitExceptions)) {
+    $requestCount = $app->cache->get("requestCount:{$userId}");
+    if (!$requestCount) {
+        $app->cache->set("requestCount:{$userId}", 0, $rateLimit[1]);
     }
 
-    if ($userRequests > $ajaxLimit[0]) {
-        $json->failure(400, "rate limit exceeded");
+    if ($userRequests > $rateLimit[0]) {
+        \Gazelle\API\Base::failure(400, "rate limit exceeded");
     } else {
         $app->cache->increment("ajax_requests_{$userId}");
     }
 }
-*/
 
 # include routes
 require_once "{$app->env->serverRoot}/routes/api.php";

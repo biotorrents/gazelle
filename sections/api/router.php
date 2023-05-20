@@ -284,22 +284,6 @@ switch ($_GET['action']) {
           break;
         */
 
-    case 'autofill':
-        require_once "$ENV->serverRoot/sections/api/autofill/doi.php";
-        /*
-        if ($_GET['cat'] === 'anime') {
-            require_once "$ENV->serverRoot/sections/api/autofill/anime.php";
-        }
-
-        if ($_GET['cat'] === 'jav') {
-            require_once "$ENV->serverRoot/sections/api/autofill/jav.php";
-        }
-
-        if ($_GET['cat'] === 'manga') {
-            require_once "$ENV->serverRoot/sections/api/autofill/manga.php";
-        }
-        */
-        break;
 
     default:
         // If they're screwing around with the query string
