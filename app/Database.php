@@ -24,9 +24,6 @@ class Database extends \PDO
     public $replicas = [];
     public $last = null;
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "database:";
     private $cacheDuration = "1 minute";
@@ -459,7 +456,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -492,7 +489,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -525,7 +522,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }
@@ -563,7 +560,7 @@ class Database extends \PDO
     {
         $app = \Gazelle\App::go();
 
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, strval(json_encode([$query, $arguments])));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
         if ($app->cache->get($cacheKey) && !$app->env->dev) {
             return $app->cache->get($cacheKey);
         }

@@ -21,9 +21,6 @@ class Manticore
     private $helper = null;
     private $percolate = null;
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "manticore:";
     private $cacheDuration = "1 minute";
@@ -157,7 +154,7 @@ class Manticore
         $app->debug["time"]->startMeasure("manticore", "manticore search");
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode($data));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode($data));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {

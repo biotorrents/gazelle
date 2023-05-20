@@ -32,9 +32,6 @@ class User
     public $lightInfo = [];
     public $heavyInfo = [];
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
