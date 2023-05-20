@@ -573,6 +573,38 @@ class Database extends \PDO
     }
 
 
+    /**
+     * upsert
+     *
+     * Mass assigns a data array to a table.
+     * Similar to Eloquent's updateOrCreate.
+     *
+     * @param string $table
+     * @param array $data
+     */
+    public function upsert(string $table, array $data)
+    {
+        # extract the column names and values
+        $columns = array_keys($data);
+        $values = array_values($data);
+
+        # construct the sql query
+        $query = "
+            insert into {$table} (" . implode(", ", $columns) . ")
+            values (:" . implode(", :", $columns) . ")
+            on duplicate key update
+        ";
+
+        # build the update portion of the query
+        $updateColumns = array_map(function ($column) {
+            return "$column = :{$column}";
+        }, $columns);
+        $query .= implode(", ", $updateColumns);
+
+        return $this->do($query, $data);
+    }
+
+
     /** statement metadata */
 
 
