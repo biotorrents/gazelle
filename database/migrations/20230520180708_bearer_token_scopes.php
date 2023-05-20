@@ -43,7 +43,7 @@ final class BearerTokenScopes extends AbstractMigration
             ->removeColumn("revoked")
 
             # add these columns
-            ->addColumn("permissions", "json", ["null" => true, "after" => "token"])
+            ->addColumn("permissions", "string", ["null" => true, "after" => "token", "limit" => 64])
 
             # rename these columns
             ->renameColumn("ID", "id")

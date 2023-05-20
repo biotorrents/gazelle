@@ -145,12 +145,24 @@ class Base
         $permissions = arrap_map("strtolower", $permissions);
         $allowedPermissions = ["create", "read", "update", "delete"];
 
-        foreach ($permissions as $permission) {
-            if (!in_array($permission, $allowedPermissions)) {
-                self::failure(401, "invalid permission");
-            }
+        # check that all permissions are valid
+        if (array_intersect($permissions, $allowedPermissions) !== $permissions) {
+            self::failure(401, "invalid permission");
         }
 
+        # check the token's permissions
+        $query = "select permissions from api_tokens where id = ?";
+        $ref = $app->dbNew->single($query, [$tokenId]);
+
+        if (empty($ref)) {
+            self::failure(401, "no permissions found");
+        }
+
+        # check that all required permissions are present
+        $tokenPermissions = json_decode($ref, true);
+        if (array_intersect($permissions, $tokenPermissions) !== $permissions) {
+            self::failure(401, "missing required permissions");
+        }
     }
 
 
