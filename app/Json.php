@@ -32,11 +32,11 @@ class Json
 
 
     /**
-     * checkToken
+     * validateBearerToken
      *
      * Validates an authorization header and API token.
      */
-    public function checkToken(int $userId, string $token = "")
+    public function validateBearerToken(int $userId, string $token = "")
     {
         $app = \Gazelle\App::go();
 

@@ -23,7 +23,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->user->core["id"]);
+        self::validateBearerToken();
 
         $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);
@@ -83,7 +83,7 @@ class Friends extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::checkToken($app->user->core["id"]);
+        self::validateBearerToken();
 
         $post = \Http::request("post");
         $userId = \Gazelle\Esc::int($post["userId"]);

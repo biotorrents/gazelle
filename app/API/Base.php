@@ -20,11 +20,11 @@ class Base
 
 
     /**
-     * checkToken
+     * validateBearerToken
      *
      * Validates an authorization header and API token.
      */
-    public static function checkToken(): int
+    public static function validateBearerToken(): int
     {
         $app = \Gazelle\App::go();
 
@@ -62,17 +62,12 @@ class Base
         /** */
 
         # check the database
-        $query = "select userId, token, revoked from api_tokens where token = ?";
+        $query = "select * from api_tokens where token = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$token]);
         #~d($row);exit;
 
         if (!$row) {
             self::failure(401, "token not found");
-        }
-
-        # user revoked the token
-        if (intval($row["revoked"]) === 1) {
-            self::failure(401, "token revoked");
         }
 
         /*
@@ -98,6 +93,96 @@ class Base
 
 
     /**
+     * validateFrontendHash
+     *
+     * Checks a frontend key against a backend one.
+     * The key is hash(sessionId . siteApiSecret).
+     */
+    public static function validateFrontendHash(): void
+    {
+        $app = \Gazelle\App::go();
+
+        /** */
+
+        # escape bearer token
+        $server = \Http::request("server");
+
+        # no header present
+        if (empty($server["HTTP_AUTHORIZATION"])) {
+            self::failure(401, "no authorization header present");
+        }
+
+        # https://tools.ietf.org/html/rfc6750
+        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
+
+        # too much whitespace
+        if (count($authorizationHeader) !== 2) {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # not rfc compliant
+        if ($authorizationHeader[0] !== "Bearer") {
+            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        }
+
+        # we have a token!
+        $token = $authorizationHeader[1];
+
+        # empty token
+        if (empty($token)) {
+            self::failure(401, "empty token provided");
+        }
+
+        /** */
+
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
+        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
+
+        $good = false;
+        foreach ($ref as $row) {
+            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
+            $good = password_verify($backendKey, $token);
+
+            if ($good) {
+                break;
+            }
+        }
+
+        if (!$good) {
+            self::failure(401, "invalid token");
+        }
+    }
+
+
+    /** token permissions */
+
+
+    /**
+     * validatePermissions
+     *
+     * Checks a token's permissions against a list of required permissions.
+     */
+    public static function validatePermissions(int $tokenId, array $permissions = []): void
+    {
+        $app = \Gazelle\App::go();
+
+        # quick sanity check
+        $permissions = arrap_map("strtolower", $permissions);
+        $allowedPermissions = ["create", "read", "update", "delete"];
+
+        foreach ($permissions as $permission) {
+            if (!in_array($permission, $allowedPermissions)) {
+                self::failure(401, "invalid permission");
+            }
+        }
+
+    }
+
+
+    /** responses */
+
+
+    /**
       * success
       *
       * @see https://jsonapi.org/examples/
@@ -106,7 +191,7 @@ class Base
     {
         $app = \Gazelle\App::go();
 
-        if (empty($response)) {
+        if (empty($data)) {
             self::failure(500, "the server provided no payload");
         }
 
@@ -143,6 +228,12 @@ class Base
      */
     public static function failure(int $code = 400, array|string $data = "bad request"): void
     {
+        $app = \Gazelle\App::go();
+
+        if (empty($data)) {
+            self::failure(500, "the server provided no payload");
+        }
+
         \Http::response($code);
         header("Content-Type: application/json; charset=utf-8");
 

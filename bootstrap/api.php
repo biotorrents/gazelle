@@ -16,7 +16,7 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
 }
 
 # check for a token
-$userId = \Gazelle\API\Base::checkToken();
+$userId = \Gazelle\API\Base::validateBearerToken();
 if (!$userId) {
     \Gazelle\API\Base::failure(401, "invalid token");
 }

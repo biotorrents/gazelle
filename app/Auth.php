@@ -894,7 +894,7 @@ If you need the custom user information only rarely, you may just retrieve it as
      *
      * @param string $name
      * @param array $permissions ["create", "read", "update", "delete"]
-     * @return string
+     * @return string the plaintext token
      */
     public static function createBearerToken(?string $name = null, array $permissions = []): string
     {
@@ -908,8 +908,9 @@ If you need the custom user information only rarely, you may just retrieve it as
             values (:uuid, :userId, :name, :token, :permissions)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $app->dbNew->do($query, [
-            "uuid" => $app->dbNew->uuid(),
+            "uuid" => $uuid,
             "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),
@@ -931,7 +932,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_tokens where userId = ? and deleted_at is not null";
+        $query = "select * from api_tokens where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;

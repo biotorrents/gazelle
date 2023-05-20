@@ -310,9 +310,19 @@
    */
 
   $("#createBearerToken").on("click", () => {
+    // collect checkboxes
+    var permissions = [];
+    $("input[name='tokenPermissions[]']").each(function () {
+      var self = $(this);
+      if (self.is(":checked")) {
+        permissions.push(self.attr("value"));
+      }
+    });
+
     // the data to send
     var request = {
-      tokenName: $("#tokenName").val(),
+      name: $("#tokenName").val(),
+      permissions: permissions,
     };
 
     // ajax request

@@ -14,68 +14,6 @@ namespace Gazelle\API;
 
 class Internal extends Base
 {
-    /**
-     * validateFrontendHash
-     *
-     * Checks a frontend key against a backend one.
-     * The key is hash(sessionId . siteApiSecret).
-     */
-    private static function validateFrontendHash(): void
-    {
-        $app = \Gazelle\App::go();
-
-        /** */
-
-        # escape bearer token
-        $server = \Http::request("server");
-
-        # no header present
-        if (empty($server["HTTP_AUTHORIZATION"])) {
-            self::failure(401, "no authorization header present");
-        }
-
-        # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-        # too much whitespace
-        if (count($authorizationHeader) !== 2) {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # not rfc compliant
-        if ($authorizationHeader[0] !== "Bearer") {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # we have a token!
-        $token = $authorizationHeader[1];
-
-        # empty token
-        if (empty($token)) {
-            self::failure(401, "empty token provided");
-        }
-
-        /** */
-
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
-        $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
-
-        $good = false;
-        foreach ($ref as $row) {
-            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
-            $good = password_verify($backendKey, $token);
-
-            if ($good) {
-                break;
-            }
-        }
-
-        if (!$good) {
-            self::failure(401, "invalid token");
-        }
-    }
-
-
     /** 2fa */
 
 
@@ -274,7 +212,63 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** bearer tokens */
+
+
+    /**
+     * createBearerToken
+     *
+     * Creates a bearer token for the user.
+     */
+    public static function createBearerToken(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["name"] ??= null;
+        $request["permissions"] ??= [];
+
+        try {
+            $token = \Auth::createBearerToken($request["name"], $request["permissions"]);
+
+            self::success($token);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * deleteBearerToken
+     *
+     * Deletes a bearer token for the user.
+     */
+    public static function deleteBearerToken(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["tokenId"] ??= null;
+
+        if (empty($request["tokenId"])) {
+            self::failure(400, "tokenId required");
+        }
+
+        try {
+            \Auth::deleteBearerToken(intval($request["tokenId"]));
+
+            self::success("deleted tokenId {$request["tokenId"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /** pwgen */
 
 
     /**
@@ -334,60 +328,7 @@ class Internal extends Base
     }
 
 
-    /**
-     * createBearerToken
-     *
-     * Creates a bearer token for the user.
-     */
-    public static function createBearerToken(): void
-    {
-        $app = \Gazelle\App::go();
-
-        self::validateFrontendHash();
-
-        $request = \Http::json();
-        $request["name"] ??= null;
-        $request["tokenPermissions"] ??= [];
-
-        try {
-            $token = \Auth::createBearerToken($request["name"], $request["tokenPermissions"]);
-
-            self::success($token);
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
-    }
-
-
-    /**
-     * deleteBearerToken
-     *
-     * Deletes a bearer token for the user.
-     */
-    public static function deleteBearerToken(): void
-    {
-        $app = \Gazelle\App::go();
-
-        self::validateFrontendHash();
-
-        $request = \Http::json();
-        $request["tokenId"] ??= null;
-
-        if (empty($request["tokenId"])) {
-            self::failure(400, "tokenId required");
-        }
-
-        try {
-            \Auth::deleteBearerToken(intval($request["tokenId"]));
-
-            self::success("deleted tokenId {$request["tokenId"]}");
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
-    }
-
-
-    /** */
+    /** torrent search */
 
 
     /**
@@ -434,7 +375,7 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** bookmarks */
 
 
     /**
@@ -485,7 +426,7 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** autofill */
 
 
     /**
@@ -596,7 +537,7 @@ class Internal extends Base
     }
 
 
-    /** */
+    /** friends */
 
 
     /**
