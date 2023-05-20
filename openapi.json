@@ -1,7 +1,8 @@
 {
-    "openapi": "3.0.0",
+    "openapi": "3.1.0",
     "info": {
         "title": "BioGazelle",
+        "description": "Please generate a token in the user security settings and keep it safe. It's functionally a password, and as such, can't be recovered later. \n\n API requests are throttled to 2 requests every 5 seconds. This limit may be removed by [donating any amount](https://torrents.bio/donate) to help fund the service. \n\n Thank you for supporting [BioTorrents.de](https://torrents.bio), an open platform for libre biology data.",
         "version": "1.1",
         "license": {
             "name": "ISC",
@@ -30,7 +31,7 @@
                 "summary": "List API versions",
                 "responses": {
                     "200": {
-                        "description": "200 response",
+                        "description": "OK",
                         "content": {
                             "application/vnd.api+json": {
                                 "examples": {
@@ -67,7 +68,7 @@
                         }
                     },
                     "400": {
-                        "description": "400 response",
+                        "description": "Bad Request",
                         "content": {
                             "application/vnd.api+json": {
                                 "examples": {
@@ -87,7 +88,7 @@
                 "summary": "Show API version details",
                 "responses": {
                     "200": {
-                        "description": "200 response",
+                        "description": "OK",
                         "content": {
                             "application/vnd.api+json": {
                                 "examples": {
@@ -136,7 +137,7 @@
                         }
                     },
                     "400": {
-                        "description": "400 response",
+                        "description": "Bad Request",
                         "content": {
                             "application/vnd.api+json": {
                                 "examples": {
