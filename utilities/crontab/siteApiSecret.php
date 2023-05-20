@@ -10,5 +10,5 @@ declare(strict_types=1);
 # cli bootstrap
 require_once __DIR__."/../../bootstrap/cli.php";
 
-$siteApiSecret = password_hash(random_bytes(256), PASSWORD_DEFAULT);
+$siteApiSecret = random_bytes(256);
 file_put_contents("{$app->env->webRoot}/siteApiSecret.txt", $siteApiSecret);

@@ -822,14 +822,16 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "
             insert into users_sessions
-            (userId, sessionId, expires, ipAddress, userAgent)
+                (uuid, userId, sessionId, expires, ipAddress, userAgent)
             values
-            (:userId, :sessionId, :expires, :ipAddress, :userAgent)
+                (:uuid, :userId, :sessionId, :expires, :ipAddress, :userAgent)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
 
         $data = [
+            "uuid" => $uuid,
             "userId" => $userId,
             "sessionId" => \Gazelle\Text::random(128),
             "expires" => $expires,

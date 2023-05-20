@@ -23,8 +23,10 @@ class Base
      * validateBearerToken
      *
      * Validates an authorization header and API token.
+     *
+     * @return ?array
      */
-    public static function validateBearerToken(): int
+    public static function validateBearerToken(): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -39,20 +41,12 @@ class Base
         }
 
         # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-        # too much whitespace
-        if (count($authorizationHeader) !== 2) {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # not rfc compliant
-        if ($authorizationHeader[0] !== "Bearer") {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
+            self::failure(401, "invalid authorization header format");
         }
 
         # we have a token!
-        $token = $authorizationHeader[1];
+        $token = $matches[1];
 
         # empty token
         if (empty($token)) {
@@ -62,33 +56,24 @@ class Base
         /** */
 
         # check the database
-        $query = "select * from api_tokens where token = ? and deleted_at is null";
-        $row = $app->dbNew->row($query, [$token]);
-        #~d($row);exit;
+        $query = "select userId, token from api_tokens use index (userId_token) where deleted_at is null";
+        $ref = $app->dbNew->multi($query, []);
 
-        if (!$row) {
-            self::failure(401, "token not found");
+        foreach ($ref as $row) {
+            $good = password_verify($token, $row["token"]);
+            if ($good) {
+                # is the user disabled?
+                if (\User::isDisabled($row["userId"])) {
+                    self::failure(401, "user disabled");
+                }
+
+                # return the data
+                return $row;
+            }
         }
 
-        /*
-        # user doesn't own that token
-        if ($userId !== intval($row["userId"])) {
-            self::failure(401, "token user mismatch");
-        }
-        */
-
-        # user is disabled
-        if (\User::isDisabled($userId)) {
-            self::failure(401, "user disabled");
-        }
-
-        # wrong token provided
-        if (!password_verify($token, $row["token"])) {
-            self::failure(401, "wrong token provided");
-        }
-
-        # return the user id
-        return $userId;
+        # default failure
+        self::failure(401, "invalid token");
     }
 
 
@@ -113,20 +98,12 @@ class Base
         }
 
         # https://tools.ietf.org/html/rfc6750
-        $authorizationHeader = explode(" ", $server["HTTP_AUTHORIZATION"]);
-
-        # too much whitespace
-        if (count($authorizationHeader) !== 2) {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
-        }
-
-        # not rfc compliant
-        if ($authorizationHeader[0] !== "Bearer") {
-            self::failure(401, "token must be given as \"Authorization: Bearer {\$token}\"");
+        if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
+            self::failure(401, "invalid authorization header format");
         }
 
         # we have a token!
-        $token = $authorizationHeader[1];
+        $token = $matches[1];
 
         # empty token
         if (empty($token)) {
@@ -135,22 +112,20 @@ class Base
 
         /** */
 
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
+        $query = "select sessionId from users_sessions where userId = ? order by expires desc limit 10";
         $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
 
-        $good = false;
         foreach ($ref as $row) {
             $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
             $good = password_verify($backendKey, $token);
 
             if ($good) {
-                break;
+                return;
             }
         }
 
-        if (!$good) {
-            self::failure(401, "invalid token");
-        }
+        # default failure
+        self::failure(401, "invalid token");
     }
 
 
