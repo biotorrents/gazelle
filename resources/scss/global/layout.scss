@@ -17,6 +17,11 @@
 }
 
 #sidebar {
+  /*
+  position: sticky;
+  top: 0;
+  */
+
   hr {
     margin: 1rem auto;
     width: 100%;
@@ -39,6 +44,12 @@ section {
   gap: 2rem;
   align-items: center;
   justify-content: space-between;
+}
+
+.flexRow {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0 2rem;
 }
 
 /**

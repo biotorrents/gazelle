@@ -776,6 +776,28 @@
             <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token">
             </p>
 
+            <p class="flexRow">
+            <span>
+            <input type="checkbox" id="tokenCreatePermissions" name="tokenPermissions[]" value="create">
+            <label for="tokenCreatePermissions"> create</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenReadPermissions" name="tokenPermissions[]" value="read" checked>
+            <label for="tokenReadPermissions"> read</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenUpdatePermissions" name="tokenPermissions[]" value="update">
+            <label for="tokenUpdatePermissions"> update</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenDeletePermissions" name="tokenPermissions[]" value="delete">
+            <label for="tokenDeletePermissions"> delete</label>
+            </span>
+           </p>
+
             <p>
             <a id="createBearerToken" class="button button-primary">create new token</a>
             </p>

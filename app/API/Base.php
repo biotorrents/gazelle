@@ -62,7 +62,7 @@ class Base
         /** */
 
         # check the database
-        $query = "select userId, token, revoked from api_user_tokens where token = ?";
+        $query = "select userId, token, revoked from api_tokens where token = ?";
         $row = $app->dbNew->row($query, [$token]);
         #~d($row);exit;
 

@@ -760,7 +760,6 @@ If you need the custom user information only rarely, you may just retrieve it as
     }
 
 
-
     /** gazelle hash checking */
 
 
@@ -894,26 +893,27 @@ If you need the custom user information only rarely, you may just retrieve it as
      * createBearerToken
      *
      * @param string $name
+     * @param array $permissions ["create", "read", "update", "delete"]
      * @return string
      */
-    public static function createBearerToken(?string $name = null): string
+    public static function createBearerToken(?string $name = null, array $permissions = []): string
     {
         $app = \Gazelle\App::go();
 
         $token = \Gazelle\Text::random(128);
         $name ??= \Gazelle\Text::random(16);
-        #$name ??= "Token from " . \Carbon\Carbon::now()->toDateTimeString();
 
         $query = "
-            insert into api_user_tokens (userId, name, token, revoked)
-            values (:userId, :name, :token, :revoked)
+            insert into api_tokens (uuid, userId, name, token, permissions)
+            values (:uuid, :userId, :name, :token, :permissions)
         ";
 
         $app->dbNew->do($query, [
+            "uuid" => $app->dbNew->uuid(),
             "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),
-            "revoked" => 0,
+            "permissions" => json_encode($permissions),
         ]);
 
         return $token;
@@ -931,8 +931,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_user_tokens where userId = ? and revoked = ?";
-        $ref = $app->dbNew->multi($query, [$app->user->core["id"], 0]);
+        $query = "select * from api_tokens where userId = ? and deleted_at is not null";
+        $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;
     }
@@ -957,7 +957,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "update api_user_tokens set revoked = ? where id = ?";
-        $app->dbNew->do($query, [1, $tokenId]);
+        $query = "update api_tokens set deleted_at = now() where id = ?";
+        $app->dbNew->do($query, [$tokenId]);
     }
 } # class

@@ -232,7 +232,7 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and revoked = 0";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
@@ -811,7 +811,7 @@ class User
         }
         */
 
-        $query = "insert into api_user_tokens (userId, name, token) values (?, ?, ?)";
+        $query = "insert into api_tokens (userId, name, token) values (?, ?, ?)";
         $app->dbNew->do($query, [$id, $name, $hash]);
 
         return $token;

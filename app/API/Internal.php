@@ -347,9 +347,10 @@ class Internal extends Base
 
         $request = \Http::json();
         $request["name"] ??= null;
+        $request["tokenPermissions"] ??= [];
 
         try {
-            $token = \Auth::createBearerToken($request["name"]);
+            $token = \Auth::createBearerToken($request["name"], $request["tokenPermissions"]);
 
             self::success($token);
         } catch (\Throwable $e) {
