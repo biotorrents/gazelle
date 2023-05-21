@@ -16,7 +16,7 @@ namespace Gazelle\Api;
 class Base
 {
     # https://jsonapi.org/format/#document-jsonapi-object
-    private static $version = "1.1";
+    private static $version = "1.2.0";
 
 
     /**
@@ -181,19 +181,23 @@ class Base
       */
     public static function success(int $code = 200, $data = []): void
     {
+        $app = \Gazelle\App::go();
+
         $response = [
             "data" => $data,
 
-            "jsonapi" => [
+            "meta" => [
+                "id" => $app->dbNew->uuidString($app->dbNew->uuid()),
+                "count" => (is_array($data) ? count($data) : 1),
                 "version" => self::$version,
             ],
-
-            "meta" => [
-                "id" => uniqid(),
-                "count" => (is_array($data) ? count($data) : 1),
-                #"debug" => self::debug(),
-            ],
         ];
+
+        if ($app->env->dev) {
+            $response["meta"]["debug"] = self::debug();
+        }
+
+        /** */
 
         http_response_code($code);
         header("Content-Type: application/vnd.api+json; charset=utf-8");
@@ -213,19 +217,23 @@ class Base
      */
     public static function failure(int $code = 400, $data = "bad request"): void
     {
+        $app = \Gazelle\App::go();
+
         $response = [
             "errors" => $data,
 
-            "jsonapi" => [
+            "meta" => [
+                "id" => $app->dbNew->uuidString($app->dbNew->uuid()),
+                "count" => (is_array($data) ? count($data) : 1),
                 "version" => self::$version,
             ],
-
-            "meta" => [
-                "id" => uniqid(),
-                "count" => (is_array($data) ? count($data) : 1),
-                #"debug" => self::debug(),
-            ],
         ];
+
+        if ($app->env->dev) {
+            $response["meta"]["debug"] = self::debug();
+        }
+
+        /** */
 
         http_response_code($code);
         header("Content-Type: application/vnd.api+json; charset=utf-8");
@@ -237,25 +245,24 @@ class Base
 
     /**
      * debug
-     *
-     * todo
      */
     private static function debug()
     {
-        return [];
-
-        /*
         $app = \Gazelle\App::go();
 
-        if ($app->env->dev) {
-            return [
-                "debug" => [
-                    "queries"  => $app->debug->get_queries(),
-                ],
-            ];
-        } else {
-            return [];
+        $data = [
+            "database" => $app->dbNew->meta(),
+            "git" => \Debug::gitInfo(),
+            "session" => $_SESSION ?? "no session",
+        ];
+
+        $includes = get_included_files();
+        foreach ($includes as $include) {
+            if (!str_starts_with($include, "{$app->env->serverRoot}/vendor")) {
+                $data["includes"][] = $include;
+            }
         }
-        */
+
+        return $data;
     }
 } # class
