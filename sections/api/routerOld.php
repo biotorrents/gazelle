@@ -53,20 +53,8 @@ switch ($_GET['action']) {
         require_once "$ENV->serverRoot/sections/api/user.php";
         break;
 
-    case 'usersearch':
-        require_once "$ENV->serverRoot/sections/api/usersearch.php";
-        break;
-
-    case 'community_stats':
-        require_once "$ENV->serverRoot/sections/api/community_stats.php";
-        break;
-
     case 'user_recents':
         require_once "$ENV->serverRoot/sections/api/user_recents.php";
-        break;
-
-    case 'userhistory':
-        require_once "$ENV->serverRoot/sections/api/userhistory/index.php";
         break;
 
         /**
