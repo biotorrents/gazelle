@@ -23,10 +23,8 @@ class Groups extends Base
         try {
             $manticore = new \Gazelle\Manticore();
 
-            $manticore->search("torrents", $request);
-
-            $data = [];
-            foreach ($data as $id) {
+            $ids = $manticore->search("torrents", $request);
+            foreach ($ids as $id) {
                 $data[] = \Torrents::get_group_info($id);
             }
 

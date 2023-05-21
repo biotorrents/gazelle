@@ -23,10 +23,8 @@ class Collages extends Base
         try {
             $manticore = new \Gazelle\Manticore();
 
-            $manticore->search("collections", $request);
-
-            $data = [];
-            foreach ($data as $id) {
+            $ids = $manticore->search("collections", $request);
+            foreach ($ids as $id) {
                 $data[] = \Torrents::get_groups($id);
             }
 

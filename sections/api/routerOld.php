@@ -42,10 +42,6 @@ switch ($_GET['action']) {
         require_once "$ENV->serverRoot/sections/api/request.php";
         break;
 
-    case 'requests':
-        require_once "$ENV->serverRoot/sections/api/requests.php";
-        break;
-
     case 'top10':
         require_once "$ENV->serverRoot/sections/api/top10/index.php";
         break;

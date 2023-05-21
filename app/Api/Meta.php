@@ -105,6 +105,5 @@ class Meta extends Base
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
-
     }
 } # class

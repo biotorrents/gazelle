@@ -5,12 +5,109 @@ declare(strict_types=1);
 
 /**
  * Requests
- *
- * todo: turn requests into first-class objects
- */
+*/
 
 class Requests
 {
+    # ["database" => "display"]
+    private $maps = [
+        "uuid" => "uuid",
+        "ID" => "id",
+        "UserID" => "userId",
+        "TimeAdded" => "createdAt",
+        "LastVote" => "lastVote",
+        "CategoryID" => "categoryId",
+        "Title" => "title",
+        "Title2" => "subject",
+        "TitleJP" => "object",
+        "Image" => "picture",
+        "Description" => "description",
+        "CatalogueNumber" => "identifier",
+        "DLsiteID" => null,
+        "FillerID" => "fillerId",
+        "TorrentID" => "torrentId",
+        "TimeFilled" => "filledAt",
+        "Visible" => "isVisible",
+        "GroupID" => "groupId",
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+
+
+    /**
+     * __construct
+     */
+    public function __construct(int|string $identifier = null)
+    {
+        if ($identifier) {
+            return $this->read($identifier);
+        }
+    }
+
+
+    /** crud */
+
+
+    /**
+     * create
+     */
+    public function create(array $data = [])
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /**
+     * read
+     */
+    public function read(int|string $identifier)
+    {
+        $app = \Gazelle\App::go();
+
+        $column = $app->dbNew->determineIdentifier($identifier);
+
+        $query = "select * from requests where {$column} = ?";
+        $row = $app->dbNew->row($query, [$identifier]);
+
+        if (empty($row)) {
+            return [];
+        }
+
+        $translatedRow = [];
+        foreach ($row as $column => $value) {
+            # does the column exist in the map?
+            if (isset($this->maps[$column])) {
+                $outputLabel = $this->maps[$column];
+                $translatedRow[$outputLabel] = $value;
+            }
+        }
+
+        return $translatedRow;
+    }
+
+
+    /**
+     * update
+     */
+    public function update(int|string $identifier, array $data = [])
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /**
+     * delete
+     */
+    public function delete(int|string $identifier)
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /** legacy */
+
+
     /**
      * get_requests
      *

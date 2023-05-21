@@ -23,12 +23,8 @@ class Requests extends Base
         try {
             $manticore = new \Gazelle\Manticore();
 
-            $manticore->search("torrents", $request);
-
-            $data = [];
-            foreach ($data as $torrentId) {
-                $data[] = \Torrents::get_groups($torrentId);
-            }
+            $ids = $manticore->search("requests", $request);
+            $data = Requests::get_requests($ids);
 
             self::success(200, $data);
         } catch (\Throwable $e) {
@@ -55,7 +51,14 @@ class Requests extends Base
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
-        self::failure(400, "not implemented");
+        try {
+            $item = new \Requests();
+            $data = $item->read($identifier);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 
