@@ -10,6 +10,20 @@
 class Artists
 {
     /**
+     * __construct
+     */
+    public function __construct(int|string $identifier = null)
+    {
+        if ($identifier) {
+            return $this->read($identifier);
+        }
+    }
+
+
+    /** crud */
+
+
+    /**
      * create
      *
      * Create a creator object.
@@ -25,13 +39,18 @@ class Artists
      *
      * Read a creator object.
      */
-    public function read(string $uuid)
+    public function read(int|string $identifier)
     {
         $app = \Gazelle\App::go();
 
-        # try to find it
-        $query = "select * from creators where uuid = ?";
-        $row = $app->dbNew->row($query, [$uuid]);
+        $column = $app->dbNew->determineIdentifier($identifier);
+
+        $query = "select * from creators where {$column} = ?";
+        $row = $app->dbNew->row($query, [$identifier]);
+
+        if (empty($row)) {
+            return [];
+        }
 
         return $row;
     }
@@ -53,21 +72,23 @@ class Artists
      *
      * Delete a creator object.
      */
-    public function delete(string $uuid): void
+    public function delete(int|string $identifier): void
     {
         $app = \Gazelle\App::go();
 
+        $column = $app->dbNew->determineIdentifier($identifier);
+
         # does it exist?
-        $query = "select 1 from creators where uuid = ?";
-        $good = $app->dbNew->single($query, [$uuid]);
+        $query = "select 1 from creators where {$column} = ?";
+        $good = $app->dbNew->single($query, [$identifier]);
 
         if (!$good) {
-            throw new Exception("invalid uuid");
+            throw new Exception("not found");
         }
 
         # soft delete
-        $query = "update creators set deleted_at = now() where uuid = ?";
-        $app->dbNew->prepared_query($query, [$uuid]);
+        $query = "update creators set deleted_at = now() where {$column} = ?";
+        $app->dbNew->do($query, [$identifier]);
     }
 
 

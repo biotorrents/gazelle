@@ -46,7 +46,7 @@ class Collages
     /** crud */
 
 
-        /**
+    /**
      * create
      */
     public function create(array $data = [])

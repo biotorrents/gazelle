@@ -23,11 +23,11 @@ class Collages extends Base
         try {
             $manticore = new \Gazelle\Manticore();
 
-            $manticore->search("torrents", $request);
+            $manticore->search("collections", $request);
 
             $data = [];
-            foreach ($data as $torrentId) {
-                $data[] = \Torrents::get_groups($torrentId);
+            foreach ($data as $id) {
+                $data[] = \Torrents::get_groups($id);
             }
 
             self::success(200, $data);
@@ -55,7 +55,14 @@ class Collages extends Base
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
-        self::failure(400, "not implemented");
+        try {
+            $item = new \Collages();
+            $data = $item->read($identifier);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 
