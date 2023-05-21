@@ -114,10 +114,6 @@ switch ($_GET['action']) {
         require_once "$ENV->serverRoot/sections/api/info.php";
         break;
 
-    case 'stats':
-        require_once "$ENV->serverRoot/sections/api/stats.php";
-        break;
-
     case 'announcements':
         require_once "$ENV->serverRoot/sections/api/announcements.php";
         break;
