@@ -179,7 +179,7 @@ class Base
       *
       * @see https://jsonapi.org/format/#document-structure
       */
-    public static function success(int $code = 200, array|string $data = []): void
+    public static function success(int $code = 200, $data = []): void
     {
         $response = [
             "data" => $data,
@@ -211,7 +211,7 @@ class Base
      *
      * @see https://jsonapi.org/format/#errors
      */
-    public static function failure(int $code = 400, array|string $data = "bad request"): void
+    public static function failure(int $code = 400, $data = "bad request"): void
     {
         $response = [
             "errors" => $data,

@@ -8,14 +8,7 @@ declare(strict_types=1);
  */
 
 # manifest
-Flight::route("/api/manifest", function () {
-    Gazelle\API::success(\Gazelle\App::manifest());
-});
+Flight::route("GET /api/meta/manifest", ["Gazelle\API\Meta", "manifest"]);
 
-
-# metadata
-Flight::route("/api/metadata", function () {
-    $app = \Gazelle\App::go();
-
-    Gazelle\API::success($app->env->CATS);
-});
+# ontology
+Flight::route("GET /api/meta/ontology", ["Gazelle\API\Meta", "ontology"]);
