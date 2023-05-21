@@ -56,16 +56,18 @@ class Base
         /** */
 
         # check the database
-        $query = "select userId, token from api_tokens use index (userId_token) where deleted_at is null";
+        $query = "select id, userId, token from api_tokens use index (userId_token) where deleted_at is null";
         $ref = $app->dbNew->multi($query, []);
 
         foreach ($ref as $row) {
             $good = password_verify($token, $row["token"]);
             if ($good) {
+                /*
                 # is the user disabled?
                 if (\User::isDisabled($row["userId"])) {
                     self::failure(401, "user disabled");
                 }
+                */
 
                 # return the data
                 return $row;
@@ -142,7 +144,7 @@ class Base
         $app = \Gazelle\App::go();
 
         # quick sanity check
-        $permissions = arrap_map("strtolower", $permissions);
+        $permissions = array_map("strtolower", $permissions);
         $allowedPermissions = ["create", "read", "update", "delete"];
 
         # check that all permissions are valid

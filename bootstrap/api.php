@@ -16,8 +16,8 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
 }
 
 # check for a token
-$userId = \Gazelle\API\Base::validateBearerToken();
-if (!$userId) {
+$_SESSION["token"] = \Gazelle\API\Base::validateBearerToken();
+if (!$_SESSION["token"]) {
     \Gazelle\API\Base::failure(401, "invalid token");
 }
 
@@ -37,15 +37,15 @@ $rateLimit = [2, 5];
 
 # enforce rate limiting everywhere
 if (!in_array($userId, $rateLimitExceptions)) {
-    $requestCount = $app->cache->get("requestCount:{$userId}");
+    $requestCount = $app->cache->get("requestCount:{$_SESSION["token"]["userId"]}");
     if (!$requestCount) {
-        $app->cache->set("requestCount:{$userId}", 0, $rateLimit[1]);
+        $app->cache->set("requestCount:{$_SESSION["token"]["userId"]}", 0, $rateLimit[1]);
     }
 
     if ($userRequests > $rateLimit[0]) {
         \Gazelle\API\Base::failure(400, "rate limit exceeded");
     } else {
-        $app->cache->increment("ajax_requests_{$userId}");
+        $app->cache->increment("ajax_requests_{$_SESSION["token"]["userId"]}");
     }
 }
 

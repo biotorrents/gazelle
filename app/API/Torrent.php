@@ -9,40 +9,81 @@ declare(strict_types=1);
 
 namespace Gazelle\API;
 
-class Torrent # extends Base
+class Torrent extends Base
 {
+    /**
+     * browse
+     */
+    public static function browse(): void
+    {
+        self::validatePermissions($_SESSION["token"]["id"], ["read"]);
+
+        $request = \Http::json();
+
+        try {
+            $manticore = new \Gazelle\Manticore();
+
+            $manticore->search("torrents", $request);
+
+            $data = [];
+            foreach ($data as $torrentId) {
+                $data[] = \Torrents::get_groups($torrentId);
+            }
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
     /**
      * create
      */
-    public function create(array $options = [])
+    public static function create(): void
     {
-        return false;
+        self::validatePermissions($_SESSION["token"]["id"], ["create"]);
+
+        self::failure(400, "not implemented");
     }
 
 
     /**
      * read
      */
-    public function read(array $options = [])
+    public static function read(int|string $identifier): void
     {
-        return false;
+        self::validatePermissions($_SESSION["token"]["id"], ["read"]);
+
+        try {
+            $torrent = new \Torrents();
+            $data = $torrent->read($identifier);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 
     /**
      * update
      */
-    public function update(array $options = [])
+    public static function update(): void
     {
-        return false;
+        self::validatePermissions($_SESSION["token"]["id"], ["update"]);
+
+        self::failure(400, "not implemented");
     }
 
 
     /**
      * delete
      */
-    public function delete(array $options = [])
+    public static function delete(): void
     {
-        return false;
+        self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
+
+        self::failure(400, "not implemented");
     }
 } # class

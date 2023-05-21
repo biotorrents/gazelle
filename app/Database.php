@@ -306,6 +306,8 @@ class Database extends \PDO
      */
     public function determineIdentifier(int|string $id)
     {
+        $app = \Gazelle\App::go();
+
         if (is_int($id) || is_numeric($id)) {
             return "id";
         }
