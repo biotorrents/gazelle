@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Torrents
+ * Gazelle\Api\Torrents
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
 class Torrents extends Base
 {

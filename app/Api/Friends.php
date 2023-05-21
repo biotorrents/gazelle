@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Friends
+ * Gazelle\Api\Friends
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
 class Friends extends Base
 {

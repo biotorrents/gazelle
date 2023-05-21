@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Base
+ * Gazelle\Api\Base
  *
  * Adapted from OPS's abstract class.
  *
  * @see https://github.com/OPSnet/Gazelle/blob/master/app/Json.php
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
 class Base
 {

@@ -9,17 +9,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$query = "
-    select torrents.id, torrents.groupId from xbt_files_users
-    join torrents on torrents.id = xbt_files_users.fid
-    group by xbt_files_users.fid
-    having count(xbt_files_users.uid) = 1
-    limit 20
-";
-
-$ref = $app->dbNew->multi($query) ?? [];
-$groupIds = array_column($ref, "id");
-$torrentGroups = Torrents::get_groups($groupIds);
+$torrentGroups = \Gazelle\Better::singleSeeder();
 #!d($torrentGroups);exit;
 
 # twig template

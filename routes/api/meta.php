@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # manifest
-Flight::route("GET /api/meta/manifest", ["Gazelle\API\Meta", "manifest"]);
+Flight::route("GET /api/meta/manifest", ["Gazelle\Api\Meta", "manifest"]);
 
 # ontology
-Flight::route("GET /api/meta/ontology", ["Gazelle\API\Meta", "ontology"]);
+Flight::route("GET /api/meta/ontology", ["Gazelle\Api\Meta", "ontology"]);

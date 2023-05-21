@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Internal
+ * Gazelle\Api\Internal
  *
  * Some little widgetry for site Ajax calls and such.
  * Mostly used for passing silly willies every which way.
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
 class Internal extends Base
 {

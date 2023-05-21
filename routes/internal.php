@@ -9,40 +9,40 @@ declare(strict_types=1);
  */
 
 # 2fa (totp)
-Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\API\Internal", "createTwoFactor"]);
-Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\API\Internal", "deleteTwoFactor"]);
+Flight::route("POST /api/internal/createTwoFactor", ["Gazelle\Api\Internal", "createTwoFactor"]);
+Flight::route("POST /api/internal/deleteTwoFactor", ["Gazelle\Api\Internal", "deleteTwoFactor"]);
 
 # webauthn (fido2)
-Flight::route("GET /api/internal/webAuthn/creationRequest", ["Gazelle\API\Internal", "webAuthnCreationRequest"]);
-Flight::route("POST /api/internal/webAuthn/creationResponse", ["Gazelle\API\Internal", "webAuthnCreationResponse"]);
+Flight::route("GET /api/internal/webAuthn/creationRequest", ["Gazelle\Api\Internal", "webAuthnCreationRequest"]);
+Flight::route("POST /api/internal/webAuthn/creationResponse", ["Gazelle\Api\Internal", "webAuthnCreationResponse"]);
 
-Flight::route("GET /api/internal/webAuthn/assertionRequest/@username", ["Gazelle\API\Internal", "webAuthnAssertionRequest"]);
-Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\API\Internal", "webAuthnAssertionResponse"]);
+Flight::route("GET /api/internal/webAuthn/assertionRequest/@username", ["Gazelle\Api\Internal", "webAuthnAssertionRequest"]);
+Flight::route("POST /api/internal/webAuthn/assertionResponse", ["Gazelle\Api\Internal", "webAuthnAssertionResponse"]);
 
-Flight::route("POST /api/internal/webAuthn/delete", ["Gazelle\API\Internal", "deleteWebAuthn"]);
+Flight::route("POST /api/internal/webAuthn/delete", ["Gazelle\Api\Internal", "deleteWebAuthn"]);
 
 # suggest a passphrase
-Flight::route("GET /api/internal/createPassphrase", ["Gazelle\API\Internal", "createPassphrase"]);
+Flight::route("GET /api/internal/createPassphrase", ["Gazelle\Api\Internal", "createPassphrase"]);
 
 # manage bookmarks
-Flight::route("POST /api/internal/createBookmark", ["Gazelle\API\Internal", "createBookmark"]);
-Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\API\Internal", "deleteBookmark"]);
+Flight::route("POST /api/internal/createBookmark", ["Gazelle\Api\Internal", "createBookmark"]);
+Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\Api\Internal", "deleteBookmark"]);
 
 # doi number autofill
-Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\API\Internal", "doiNumberAutofill"]);
+Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\Api\Internal", "doiNumberAutofill"]);
 
 # friends
-Flight::route("POST /api/internal/createFriend", ["Gazelle\API\Internal", "createFriend"]);
-Flight::route("POST /api/internal/updateFriend", ["Gazelle\API\Internal", "updateFriend"]);
-Flight::route("POST /api/internal/deleteFriend", ["Gazelle\API\Internal", "deleteFriend"]);
+Flight::route("POST /api/internal/createFriend", ["Gazelle\Api\Internal", "createFriend"]);
+Flight::route("POST /api/internal/updateFriend", ["Gazelle\Api\Internal", "updateFriend"]);
+Flight::route("POST /api/internal/deleteFriend", ["Gazelle\Api\Internal", "deleteFriend"]);
 
 # bearer tokens
-Flight::route("POST /api/internal/createBearerToken", ["Gazelle\API\Internal", "createBearerToken"]);
-Flight::route("POST /api/internal/deleteBearerToken", ["Gazelle\API\Internal", "deleteBearerToken"]);
+Flight::route("POST /api/internal/createBearerToken", ["Gazelle\Api\Internal", "createBearerToken"]);
+Flight::route("POST /api/internal/deleteBearerToken", ["Gazelle\Api\Internal", "deleteBearerToken"]);
 
 # not found
 Flight::route("*", function () {
-    \Gazelle\API\Base::failure(404, "not found");
+    \Gazelle\Api\Base::failure(404, "not found");
 });
 
 # start the router

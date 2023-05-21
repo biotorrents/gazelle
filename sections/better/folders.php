@@ -10,31 +10,11 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 $get = Http::request("get");
-$snatchedOnly = $get["snatches"] ?? null;
+$snatchedOnly = (!empty($get["snatches"]))
+    ? true
+    : false;
 
-# snatched vs. all
-$allTorrents = true;
-if ($snatchedOnly) {
-    $allTorrents = false;
-    $subQuery = "
-        join xbt_snatched on xbt_snatched.fid = torrents_bad_folders.torrentId
-        and xbt_snatched.uid = {$app->user->core["id"]}
-    ";
-} else {
-    $subQuery = "";
-}
-
-$query = "
-    select torrents_bad_folders.torrentId, torrents.groupId
-    from torrents_bad_folders
-    join torrents on torrents.id = torrents_bad_folders.torrentId
-    {$subQuery}
-    order by rand() limit 20
-";
-
-$ref = $app->dbNew->multi($query) ?? [];
-$groupIds = array_column($ref, "groupId");
-$torrentGroups = Torrents::get_groups($groupIds);
+$torrentGroups = \Gazelle\Better::badFolders($snatchedOnly);
 #!d($torrentGroups);exit;
 
 # twig template

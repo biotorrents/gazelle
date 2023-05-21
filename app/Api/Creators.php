@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Collages
+ * Gazelle\Api\Creators
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
-class Collages extends Base
+class Creators extends Base
 {
     /**
      * browse
@@ -23,11 +23,11 @@ class Collages extends Base
         try {
             $manticore = new \Gazelle\Manticore();
 
-            $manticore->search("collections", $request);
+            $manticore->search("torrents", $request);
 
             $data = [];
-            foreach ($data as $id) {
-                $data[] = \Torrents::get_groups($id);
+            foreach ($data as $torrentId) {
+                $data[] = \Torrents::get_groups($torrentId);
             }
 
             self::success(200, $data);
@@ -55,14 +55,7 @@ class Collages extends Base
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
-        try {
-            $item = new \Collages();
-            $data = $item->read($identifier);
-
-            self::success(200, $data);
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
+        self::failure(400, "not implemented");
     }
 
 

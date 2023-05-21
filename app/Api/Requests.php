@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Groups
+ * Gazelle\Api\Requests
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
-class Groups extends Base
+class Requests extends Base
 {
     /**
      * browse
@@ -26,8 +26,8 @@ class Groups extends Base
             $manticore->search("torrents", $request);
 
             $data = [];
-            foreach ($data as $id) {
-                $data[] = \Torrents::get_group_info($id);
+            foreach ($data as $torrentId) {
+                $data[] = \Torrents::get_groups($torrentId);
             }
 
             self::success(200, $data);

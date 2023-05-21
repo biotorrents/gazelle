@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 # not found
 Flight::route("*", function () {
-    \Gazelle\API\Base::failure(404, "not found");
+    \Gazelle\Api\Base::failure(404, "not found");
 });
 
 # start the router

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Meta
+ * Gazelle\Api\Meta
  */
 
-namespace Gazelle\API;
+namespace Gazelle\Api;
 
 class Meta extends Base
 {

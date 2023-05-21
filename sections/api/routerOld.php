@@ -129,10 +129,6 @@ switch ($_GET['action']) {
         /**
          * Under construction
          */
-    case 'better':
-        require_once "$ENV->serverRoot/sections/api/better/index.php";
-        break;
-
     case 'get_friends':
         require_once "$ENV->serverRoot/sections/api/get_friends.php";
         break;
