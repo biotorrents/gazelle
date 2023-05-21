@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Torrent
+ * Gazelle\API\Groups
  */
 
 namespace Gazelle\API;
 
-class Torrent extends Base
+class Groups extends Base
 {
     /**
      * browse
@@ -55,14 +55,7 @@ class Torrent extends Base
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
-        try {
-            $torrent = new \Torrents();
-            $data = $torrent->read($identifier);
-
-            self::success(200, $data);
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
+        self::failure(400, "not implemented");
     }
 
 

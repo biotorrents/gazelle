@@ -4,13 +4,39 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\API\Group
+ * Gazelle\API\Requests
  */
 
 namespace Gazelle\API;
 
-class Group extends Base
+class Requests extends Base
 {
+    /**
+     * browse
+     */
+    public static function browse(): void
+    {
+        self::validatePermissions($_SESSION["token"]["id"], ["read"]);
+
+        $request = \Http::json();
+
+        try {
+            $manticore = new \Gazelle\Manticore();
+
+            $manticore->search("torrents", $request);
+
+            $data = [];
+            foreach ($data as $torrentId) {
+                $data[] = \Torrents::get_groups($torrentId);
+            }
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
     /**
      * create
      */

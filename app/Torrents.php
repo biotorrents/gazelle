@@ -24,7 +24,6 @@ class Torrents
     // Presets to facilitate the use of $Mode
     public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
 
-
     # ["database" => "display"]
     private $maps = [
         "uuid" => "uuid",
@@ -65,7 +64,7 @@ class Torrents
      */
     public function __construct(int|string $identifier = null)
     {
-        if (!empty($identifier)) {
+        if ($identifier) {
             return $this->read($identifier);
         }
     }
