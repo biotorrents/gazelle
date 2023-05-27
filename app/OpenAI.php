@@ -91,7 +91,7 @@ class OpenAI
      * @param string $prompt
      * @return OpenAI\Responses\Completions\CreateResponse
      */
-    public function test(string $prompt = "hello"): OpenAI\Responses\Completions\CreateResponse
+    public function test(string $prompt = "hello"): \OpenAI\Responses\Completions\CreateResponse
     {
         $response = $this->client->completions()->create([
             "model" => $this->model,
