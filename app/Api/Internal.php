@@ -552,15 +552,9 @@ class Internal extends Base
         self::validateFrontendHash();
 
         $request = \Http::json();
-        $request["friendId"] ??= null;
-        $request["comment"] ??= null;
-
-        if (empty($request["friendId"])) {
-            self::failure(400, "friendId required");
-        }
 
         try {
-            Friends::create($request["friendId"], $request["comment"]);
+            \Gazelle\Friends::create($request);
 
             self::success(200, "created friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
@@ -589,7 +583,7 @@ class Internal extends Base
         }
 
         try {
-            Friends::update($request["friendId"], $request["comment"]);
+            \Gazelle\Friends::update($request["friendId"], $request["comment"]);
 
             self::success(200, "updated friendId {$request["friendId"]}");
         } catch (\Throwable $e) {
@@ -617,7 +611,7 @@ class Internal extends Base
         }
 
         try {
-            Friends::delete($request["friendId"]);
+            \Gazelle\Friends::delete($request["friendId"]);
 
             self::success(200, "deleted friendId {$request["friendId"]}");
         } catch (\Throwable $e) {

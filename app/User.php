@@ -255,6 +255,31 @@ class User
     }
 
 
+    /** */
+
+
+    /**
+     * read
+     *
+     * Gets a user profile (public info only).
+     */
+    public static function read(int|string $id): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # allow usernames instead of slugs
+        $column = $app->dbNew->determineIdentifier($id);
+        if ($column === "slug") {
+            $column = "username";
+        }
+
+        # database query
+        $query = "
+            todo
+        ";
+    }
+
+
     /**
      * can
      *
@@ -1733,7 +1758,7 @@ class User
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # get the user data

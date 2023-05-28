@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 /**
  * Gazelle\Api\Friends
+ *
+ * todo: make this safely return user objects
  */
 
 namespace Gazelle\Api;
@@ -13,43 +15,21 @@ class Friends extends Base
 {
     /**
      * create
-     *
-     * {
-     *   "userId": int,
-     *   "comment": string
-     * }
      */
     public static function create(): void
     {
         $app = \Gazelle\App::go();
 
-        self::validateBearerToken();
+        self::validatePermissions($_SESSION["token"]["id"], ["create"]);
 
-        $post = \Http::request("post");
-        $userId = \Gazelle\Esc::int($post["userId"]);
-        $comment = \Gazelle\Esc::string($post["comment"]);
-
-        if (empty($userId)) {
-            self::failure(400, "userId required");
-        }
-
-        if (strlen($comment) > 255) {
-            self::failure(400, "comment too long");
-        }
+        $request = \Http::json();
+        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
 
         try {
-            $query = "select 1 from users_main where id = ?";
-            $good = $app->dbNew->single($query, [$userId]);
-
-            if (!$good) {
-                self::failure(404, "userId not found");
-            }
-
-            $query = "insert ignore into users_friends (userId, friendId, comment) values (?, ?, ?)";
-            $app->dbNew->do($query, [$app->user->core["id"], $userId, $comment]);
+            $id = \Gazelle\Friends::create($request);
 
             $query = "select * from users_friends where id = ?";
-            $row = $app->dbNew->row($query, [$app->dbNew->source->lastInsertId()]);
+            $row = $app->dbNew->row($query, [$id]);
 
             self::success(200, $row);
         } catch (\Throwable $e) {
@@ -61,52 +41,70 @@ class Friends extends Base
     /**
      * read
      */
-    public static function read()
+    public static function read($friendId = null)
     {
-        return false;
+        self::validatePermissions($_SESSION["token"]["id"], ["read"]);
+
+        $request = \Http::json();
+        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Esc::int($friendId);
+
+        try {
+            $data = \Gazelle\Friends::read($request);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 
     /**
      * update
      */
-    public static function update(): void
+    public static function update($friendId = null): void
     {
-        self::create();
+        $app = \Gazelle\App::go();
+
+        self::validatePermissions($_SESSION["token"]["id"], ["update"]);
+
+        $request = \Http::json();
+        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Esc::int($friendId);
+
+        try {
+            $id = \Gazelle\Friends::create($request);
+
+            $query = "select * from users_friends where id = ?";
+            $row = $app->dbNew->row($query, [$id]);
+
+            self::success(200, $row);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
     }
 
 
     /**
      * delete
      */
-    public static function delete(): void
+    public static function delete($friendId = null): void
     {
         $app = \Gazelle\App::go();
 
-        self::validateBearerToken();
+        self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
 
-        $post = \Http::request("post");
-        $userId = \Gazelle\Esc::int($post["userId"]);
-
-        if (empty($userId)) {
-            self::failure(400, "userId required");
-        }
+        $request = \Http::json();
+        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Esc::int($friendId);
 
         try {
-            $query = "select 1 from users_main where id = ?";
-            $good = $app->dbNew->single($query, [$userId]);
-
-            if (!$good) {
-                self::failure(404, "userId not found");
-            }
+            $id = \Gazelle\Friends::delete($request);
 
             $query = "select * from users_friends where id = ?";
-            $row = $app->dbNew->row($query, [$app->dbNew->source->lastInsertId()]);
+            $row = $app->dbNew->row($query, [$id]);
 
-            $query = "delete from users_friends where userId = ? and friendId = ?";
-            $app->dbNew->do($query, [$app->user->core["id"], $userId]);
-
-            self::success(200, $row);
+            self::success(200, "deleted friend {$request["friendId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

@@ -189,6 +189,7 @@ class Base
             "meta" => [
                 "id" => $app->dbNew->uuidString($app->dbNew->uuid()),
                 "count" => (is_array($data) ? count($data) : 1),
+                "status" => "success",
                 "version" => self::$version,
             ],
         ];
@@ -225,6 +226,7 @@ class Base
             "meta" => [
                 "id" => $app->dbNew->uuidString($app->dbNew->uuid()),
                 "count" => (is_array($data) ? count($data) : 1),
+                "status" => "failure",
                 "version" => self::$version,
             ],
         ];
@@ -253,7 +255,7 @@ class Base
         $data = [
             "database" => $app->dbNew->meta(),
             "git" => \Debug::gitInfo(),
-            "session" => $_SESSION ?? "no session",
+            "session" => $_SESSION["token"] ?? "no session",
         ];
 
         $includes = get_included_files();
