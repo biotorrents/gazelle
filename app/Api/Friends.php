@@ -41,13 +41,13 @@ class Friends extends Base
     /**
      * read
      */
-    public static function read($friendId = null)
+    public static function read(int|string $identifier = null): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         $request = \Http::json();
         $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($friendId);
+        $request["friendId"] = \Gazelle\Esc::int($identifier);
 
         try {
             $data = \Gazelle\Friends::read($request);
@@ -62,7 +62,7 @@ class Friends extends Base
     /**
      * update
      */
-    public static function update($friendId = null): void
+    public static function update(int|string $identifier): void
     {
         $app = \Gazelle\App::go();
 
@@ -70,7 +70,7 @@ class Friends extends Base
 
         $request = \Http::json();
         $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($friendId);
+        $request["friendId"] = \Gazelle\Esc::int($identifier);
 
         try {
             $id = \Gazelle\Friends::create($request);
@@ -88,7 +88,7 @@ class Friends extends Base
     /**
      * delete
      */
-    public static function delete($friendId = null): void
+    public static function delete(int|string $identifier): void
     {
         $app = \Gazelle\App::go();
 
@@ -96,7 +96,7 @@ class Friends extends Base
 
         $request = \Http::json();
         $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($friendId);
+        $request["friendId"] = \Gazelle\Esc::int($identifier);
 
         try {
             $id = \Gazelle\Friends::delete($request);
