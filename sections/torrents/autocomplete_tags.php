@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/vnd.api+json; charset=utf-8');
 
 $FullName = rawurldecode($_GET['query']);
 

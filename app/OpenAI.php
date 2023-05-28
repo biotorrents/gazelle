@@ -12,7 +12,7 @@ declare(strict_types=1);
  * curl -X POST https://api.openai.com/v1/completions \
  *   -H 'Authorization: Bearer {secretKey}' \
  *   -H 'OpenAI-Organization: {organizationId}' \
- *   -H 'Content-Type: application/json' \
+ *   -H 'Content-Type: application/vnd.api+json' \
  *   -d '{
  *     "model": "text-davinci-003",
  *     "prompt": "Summarize in 100 words: {torrent group description}",

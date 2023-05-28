@@ -10,6 +10,20 @@ declare(strict_types=1);
  * formerly in classes/regex.php
  */
 
+# https://ihateregex.io/expr/uuid/
+ENV::setPub(
+    "regexUuid",
+    "^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$" # iD
+);
+
+
+# https://ihateregex.io/expr/semver/
+ENV::setPub(
+    "regexSemVer",
+    "^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+);
+
+
 # resource_type://username:password@domain:port/path?query_string#anchor
 ENV::setPub(
     "regexResource",
@@ -17,10 +31,17 @@ ENV::setPub(
 );
 
 
-# ip
+# https://ihateregex.io/expr/ip/
 ENV::setPub(
-    "regexIp",
-    "(\d{1,3}\.){3}\d{1,3}"
+    "regexIp4",
+    "(\b25[0-5]|\b2[0-4][0-9]|\b[01]?[0-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}"
+);
+
+
+# https://ihateregex.io/expr/ipv6/
+ENV::setPub(
+    "regexIp6",
+    "(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))"
 );
 
 
@@ -41,7 +62,7 @@ ENV::setPub(
 # uri
 ENV::setPub(
     "regexUri",
-    "^({$env->regexResource})({$env->regexIp}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*" # i
+    "^({$env->regexResource})({$env->regexIp4}|{$env->regexDomain})({$env->regexPort})?(\/\S*)*" # i
 );
 
 

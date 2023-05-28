@@ -32,9 +32,6 @@ class User
     public $lightInfo = [];
     public $heavyInfo = [];
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
@@ -235,7 +232,7 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and revoked = 0";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
@@ -789,64 +786,6 @@ class User
     }
 
 
-    /**
-     * createApiToken
-     *
-     * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1
-     */
-    public function createApiToken(int $id, string $name, string $key): string
-    {
-        $app = \Gazelle\App::go();
-
-        $suffix = sprintf('%014d', $id);
-        $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-        $hash = password_hash($token, PASSWORD_DEFAULT);
-
-        /*
-        # prevent collisions with an existing token name
-        while (true) {
-            $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-            $hash = password_hash($token, PASSWORD_DEFAULT);
-
-            if (!$this->hasApiToken($id, $token)) {
-                break;
-            }
-        }
-        */
-
-        $query = "insert into api_user_tokens (userId, name, token) values (?, ?, ?)";
-        $app->dbNew->do($query, [$id, $name, $hash]);
-
-        return $token;
-    }
-
-
-    /**
-     * hasTokenByName
-     */
-    public function hasTokenByName(int $id, string $name)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select 1 from user_api_tokens where userId = ? and name = ?";
-        $good = $app->dbNew->single($query, [$id, $name]);
-
-        return $good;
-    }
-
-
-    /**
-     * revokeApiTokenById
-     */
-    public function revokeApiTokenById(int $id, int $tokenId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
-        $app->dbNew->do($query, [$id, $tokenId]);
-    }
-
-
     /** security stuff */
 
 
@@ -966,77 +905,6 @@ class User
         }
 
         $query = "update users_main set twoFactor = null where id = ?";
-        $app->dbNew->do($query, [ $this->core["id"] ]);
-    }
-
-
-    /**
-     * createU2F
-     *
-     * todo: buy a device to test this
-     */
-    public function createU2F(string $request, string $response): void
-    {
-        $app = \Gazelle\App::go();
-
-        $u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
-        $good = $u2f->doRegister($request, $response);
-
-        # does this even null on fail or just throw an exception?
-        if (!$good) {
-            throw new Exception("bad u2f request or response");
-        }
-
-        # upsert
-        $query = "
-            replace into u2f
-            (userId, keyHandle, publicKey, certificate, counter, valid)
-            values
-            (:userId, :keyHandle, :publicKey, :certificate, :counter, :valid)
-        ";
-
-        $app->dbNew->do($query, [
-            "userId" => $this->core["id"],
-            "keyHandle" => $good->keyHandle,
-            "publicKey" => $good->publicKey,
-            "certificate" => $good->certificate,
-            "counter" => $good->counter,
-            "valid" => 1,
-        ]);
-    }
-
-
-    /**
-     * readU2F
-     */
-    public function readU2F(): ?array
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select * from u2f where userId = ?";
-        $row = $app->dbNew->row($query, [ $this->core["id"] ]);
-
-        return $row;
-    }
-
-
-    /**
-     * updateU2F
-     */
-    public function updateU2F(string $request, string $response): void
-    {
-        $this->createU2F($request, $response);
-    }
-
-
-    /**
-     * deleteU2F
-     */
-    public function deleteU2F(): void
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "delete from u2f where userId = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
     }
 
@@ -1344,9 +1212,17 @@ class User
      *
      * Gets an external user's profile.
      */
-    public function readProfile(int $userId): array
+    public function readProfile(int $userId): ?array
     {
         $app = \Gazelle\App::go();
+
+        # quick sanity check
+        $query = "select 1 from users where id = ?";
+        $good = $app->dbNew->single($query, [$userId]);
+
+        if (!$good) {
+            return null;
+        }
 
         # return basically $this
         $data = [ "core" => [], "extra" => [], "permissions" => [] ];

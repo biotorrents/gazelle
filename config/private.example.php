@@ -123,6 +123,9 @@ else {
  * cache
  */
 
+# algorithm for hashed cache keys
+ENV::setPub("cacheAlgorithm", "sha3-512");
+
 # enable redis cluster support
 ENV::setPub("redisClusterEnabled", true);
 
@@ -239,6 +242,24 @@ ENV::setPub("enableDiscourse", true);
 # discourse forum categories
 $discourseCategories = [
     # [id, slug]
+    2 => "site-feedback",
+    3 => "staff",
+    4 => "general",
+
+    # [slug, id]
+    "site-feedback" => 2,
+    "staff" => 3,
+    "general" => 4,
+];
+ENV::setPub(
+    "discourseCategories",
+    $env->convert($discourseCategories)
+);
+
+/*
+# discourse forum categories
+$discourseCategories = [
+    # [id, slug]
     1 => "uncategorized",
     3 => "staff",
     5 => "blog",
@@ -260,6 +281,7 @@ ENV::setPub(
     "discourseCategories",
     $env->convert($discourseCategories)
 );
+*/
 
 # base URI for API calls
 ENV::setPub("discourseUri", "");

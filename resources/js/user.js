@@ -123,38 +123,54 @@
 
   $("#twoFactorResponse").hide();
   $("#createTwoFactor").on("click", () => {
+    // reset response
+    $("#twoFactorResponse").hide();
+    $("#twoFactorResponse").html("");
+
     // the data to send
     var request = {
-      frontendHash: frontendHash,
       secret: $("#twoFactorSecret").val(),
       code: $("#twoFactorCode").val(),
     };
 
     // sanity checks
-    if (
-      !request.code ||
-      request.code.length !== 6 ||
-      Number.isNaN(request.code)
-    ) {
-      alert("please enter the 6-digit code from your authenticator app");
+    if (!request.code || request.code.length !== 6 || Number.isNaN(request.code)) {
+      $("#twoFactorResponse").removeClass("success");
+      $("#twoFactorResponse").addClass("failure");
+
+      $("#twoFactorResponse").show();
+      $("#twoFactorResponse").html("Please enter the 6-digit code from your authenticator app");
+
       return;
     }
 
     // ajax request
-    $.post("/api/internal/createTwoFactor", request, (response) => {
-      $("#twoFactorResponse").show();
-      $("#twoFactorResponse").html(response.data);
+    $.ajax("/api/internal/createTwoFactor", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
 
-      if (response.status === "success") {
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#twoFactorResponse").show();
+        $("#twoFactorResponse").html(response.data);
+
         $("#twoFactorResponse").removeClass("failure");
         $("#twoFactorResponse").addClass("success");
-        $("#twoFactorDisabled").hide();
-      }
 
-      if (response.status === "failure") {
+        $("#twoFactorDisabled").hide();
+      },
+
+      error: (response) => {
+        $("#twoFactorResponse").show();
+        $("#twoFactorResponse").html(response.data);
+
         $("#twoFactorResponse").removeClass("success");
         $("#twoFactorResponse").addClass("failure");
-      }
+      },
     });
   });
 
@@ -165,38 +181,100 @@
 
   $("#twoFactorResponse").hide();
   $("#deleteTwoFactor").on("click", () => {
+    // reset response
+    $("#twoFactorResponse").hide();
+    $("#twoFactorResponse").html("");
+
     // the data to send
     var request = {
-      frontendHash: frontendHash,
       secret: $("#twoFactorSecret").val(),
       code: $("#twoFactorCode").val(),
     };
 
     // sanity checks
-    if (
-      !request.code ||
-      request.code.length !== 6 ||
-      Number.isNaN(request.code)
-    ) {
-      alert("please enter the 6-digit code from your authenticator app");
+    if (!request.code || request.code.length !== 6 || Number.isNaN(request.code)) {
+      $("#twoFactorResponse").removeClass("success");
+      $("#twoFactorResponse").addClass("failure");
+
+      $("#twoFactorResponse").show();
+      $("#twoFactorResponse").html("Please enter the 6-digit code from your authenticator app");
+
       return;
     }
 
     // ajax request
-    $.post("/api/internal/deleteTwoFactor", request, (response) => {
-      $("#twoFactorResponse").show();
-      $("#twoFactorResponse").html(response.data);
+    $.ajax("/api/internal/deleteTwoFactor", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
 
-      if (response.status === "success") {
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#twoFactorResponse").show();
+        $("#twoFactorResponse").html(response.data);
+
         $("#twoFactorResponse").removeClass("failure");
         $("#twoFactorResponse").addClass("success");
-        $("#twoFactorEnabled").hide();
-      }
 
-      if (response.status === "failure") {
+        $("#twoFactorDisabled").hide();
+      },
+
+      error: (response) => {
+        $("#twoFactorResponse").show();
+        $("#twoFactorResponse").html(response.data);
+
         $("#twoFactorResponse").removeClass("success");
         $("#twoFactorResponse").addClass("failure");
-      }
+      },
+    });
+  });
+
+
+  /**
+   * delete webauthn
+   */
+
+  $("#webAuthnResponse").hide();
+  $(".deleteWebAuthn").on("click", (event) => {
+    // reset response
+    $("#twoFactorResponse").hide();
+    $("#twoFactorResponse").html("");
+
+    // confirm deletion
+    let isConfirmed = confirm("Are you sure you want to unenroll this WebAuthn device?")
+    if (!isConfirmed) {
+      return;
+    }
+
+    // the data to send
+    var request = {
+      credentialId: $(event.target).data("credentialid"),
+    };
+
+    // ajax request
+    $.ajax("/api/internal/webAuthn/delete", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#credentialId-" + request.credentialId).hide();
+      },
+
+      error: (response) => {
+        $("#webAuthnResponse").show();
+        $("#webAuthnResponse").html(response.data);
+
+        $("#webAuthnResponse").removeClass("success");
+        $("#webAuthnResponse").addClass("failure");
+      },
     });
   });
 
@@ -206,14 +284,101 @@
    */
 
   $("#createPassphrase").on("click", () => {
+    // ajax request
+    $.ajax("/api/internal/createPassphrase", {
+      method: "GET",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      //data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#suggestedPassphrase").val(response.data);
+      },
+
+      error: (response) => {
+        $("#suggestedPassphrase").val(response.data);
+      },
+    });
+  });
+
+
+  /**
+   * createBearerToken
+   */
+
+  $("#createBearerToken").on("click", () => {
+    // collect checkboxes
+    var permissions = [];
+    $("input[name='tokenPermissions[]']").each(function () {
+      var self = $(this);
+      if (self.is(":checked")) {
+        permissions.push(self.attr("value"));
+      }
+    });
+
     // the data to send
     var request = {
-      frontendHash: frontendHash,
+      name: $("#tokenName").val(),
+      permissions: permissions,
     };
 
     // ajax request
-    $.post("/api/internal/createPassphrase", request, (response) => {
-      $("#suggestedPassphrase").val(response.data);
+    $.ajax("/api/internal/createBearerToken", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#newTokenMessage").html(response.data);
+      },
+
+      error: (response) => {
+        $("#newTokenMessage").html(response.data);
+      },
+    });
+  });
+
+
+  /**
+   * deleteBearerToken
+   */
+
+  $(".deleteBearerToken").on("click", (event) => {
+    // confirm deletion
+    let isConfirmed = confirm("Are you sure you want to delete this token?")
+    if (!isConfirmed) {
+      return;
+    }
+
+    // the data to send
+    var request = {
+      tokenId: $(event.target).data("tokenid"),
+    };
+
+    // ajax request
+    $.ajax("/api/internal/deleteBearerToken", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $("#tokenId-" + request.tokenId).hide();
+      },
+
+      error: (response) => {
+        console.log(response);
+      },
     });
   });
 
@@ -243,78 +408,4 @@
      */
   });
 
-
-  /**
-   * createBearerToken
-   */
-
-  $("#createBearerToken").on("click", () => {
-    // the data to send
-    var request = {
-      frontendHash: frontendHash,
-      tokenName: $("#tokenName").val(),
-    };
-
-    // ajax request
-    $.post("/api/internal/createBearerToken", request, (response) => {
-      $("#newTokenMessage").html(response.data);
-    });
-  });
-
-
-  /**
-   * deleteBearerToken
-   */
-
-  $(".deleteBearerToken").on("click", (event) => {
-    // confirm deletion
-    let isConfirmed = confirm("Are you sure you want to delete this token?")
-    if (!isConfirmed) {
-      return;
-    }
-
-    // the data to send
-    var request = {
-      frontendHash: frontendHash,
-      tokenId: $(event.target).data("tokenid"),
-    };
-
-    // ajax request
-    $.post("/api/internal/deleteBearerToken", request, (response) => {
-      if (response.status === "success") {
-        $("#tokenId-" + request.tokenId).hide();
-      }
-
-      if (response.status === "failure") {
-        // todo: communicate the failure somehow
-      }
-    });
-  });
 })();
-
-
-/** legacy code */
-
-
-/**
-* UncheckIfDisabled
-*/
-function UncheckIfDisabled(checkbox) {
-  if (checkbox.disabled) {
-    checkbox.checked = false;
-  }
-}
-
-
-/**
-* ToggleWarningAdjust
-*/
-function ToggleWarningAdjust(selector) {
-  if (selector.options[selector.selectedIndex].value == "---") {
-    $("#ReduceWarningTR").gshow();
-    $("#ReduceWarning").raw().disabled = false;
-  } else {
-    $("#ReduceWarningTR").ghide();
-    $("#ReduceWarning").raw().disabled = true;
-  }
-}

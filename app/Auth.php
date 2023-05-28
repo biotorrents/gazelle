@@ -22,7 +22,6 @@ class Auth # extends Delight\Auth\Auth
 
     # 2fa libraries
     private $twoFactor = null;
-    private $u2f = null;
 
     # seconds * minutes * hours * days
     private $shortRemember = 60 * 60 * 24 * 1;
@@ -58,7 +57,6 @@ class Auth # extends Delight\Auth\Auth
             );
 
             $this->twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
-            $this->u2f = new u2flib_server\U2F("https://{$app->env->siteDomain}");
         } catch (Throwable $e) {
             return $e->getMessage();
         }
@@ -332,8 +330,6 @@ class Auth # extends Delight\Auth\Auth
 
         # 2fa code needs to be a string (RobThree)
         $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
-        $u2fRequest = $data["u2f-request"] ?? null;
-        $u2fResponse = $data["u2f-response"] ?? null;
 
         $query = "select id from users where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
@@ -398,16 +394,6 @@ class Auth # extends Delight\Auth\Auth
             }
         }
 
-        # gazelle u2f
-        if (!empty($u2fRequest) && !empty($u2fResponse)) {
-            try {
-                $this->verifyU2F($userId, $twoFactor);
-            } catch (Throwable $e) {
-                return $e->getMessage();
-                return $message;
-            }
-        }
-
         # gazelle session
         try {
             $this->createSession($userId, $rememberMe);
@@ -437,55 +423,6 @@ class Auth # extends Delight\Auth\Auth
         # failed to verify
         if (!$this->twoFactor->verifyCode($twoFactorSecret, $twoFactorCode)) {
             throw new Exception("Unable to verify the 2FA token");
-        }
-    }
-
-
-    /**
-     * verifyU2F
-     */
-    public function verifyU2F(int $userId, $request, $response): void
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select * from u2f where userId = ? and twoFactor is not null";
-        $ref = $app->dbNew->row($query, [$userId]);
-
-        if (empty($ref)) {
-            throw new Exception("U2F data not found");
-        }
-
-        # todo: needs to be an array of objects
-        $payload = [
-            "keyHandle" => $ref["KeyHandle"],
-            "publicKey" => $ref["PublicKey"],
-            "certificate" => $ref["Certificate"],
-            "counter" => $ref["Counter"],
-            "valid" => $ref["Valid"],
-        ];
-
-        try {
-            $response = $u2f->doAuthenticate(json_decode($post["u2f-request"]), $payload, json_decode($post["u2f-response"]));
-            $u2fAuthData = json_encode($u2f->getAuthenticateData($response));
-            #!d($response, $u2fAuthData);
-
-            if (boolval($response->valid) !== true) {
-                throw new Exception("Unable to validate the U2F token");
-            }
-
-            $query = "update u2f set counter = ? where keyHandle = ? and userId = ?";
-            $app->dbNew->do($query, [$response->counter, $response->keyHandle, $userId]);
-        } catch (Throwable $e) {
-            # hardcoded u2f library exception here?
-            if ($e->getMessage() === "Counter too low.") {
-                $badHandle = json_decode($post["u2f-response"], true)["keyHandle"];
-
-                $query = "update u2f set valid = 0 where keyHandle = ? and userId = ?";
-                $app->dbNew->do($query, [$badHandle, $userId]);
-            }
-
-            # lazy af
-            throw new Exception($e->getMessage());
         }
     }
 
@@ -728,6 +665,9 @@ class Auth # extends Delight\Auth\Auth
             # you can destroy the entire session by calling a second method
             $this->library->logOutEverywhere();
             $this->library->destroySession();
+
+            # todo: gazelle session
+            #$this->deleteSession($sessionId);
         } catch (Throwable $e) {
             return $message;
         }
@@ -820,7 +760,6 @@ If you need the custom user information only rarely, you may just retrieve it as
     }
 
 
-
     /** gazelle hash checking */
 
 
@@ -883,14 +822,16 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "
             insert into users_sessions
-            (userId, sessionId, expires, ipAddress, userAgent)
+                (uuid, userId, sessionId, expires, ipAddress, userAgent)
             values
-            (:userId, :sessionId, :expires, :ipAddress, :userAgent)
+                (:uuid, :userId, :sessionId, :expires, :ipAddress, :userAgent)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
 
         $data = [
+            "uuid" => $uuid,
             "userId" => $userId,
             "sessionId" => \Gazelle\Text::random(128),
             "expires" => $expires,
@@ -954,26 +895,28 @@ If you need the custom user information only rarely, you may just retrieve it as
      * createBearerToken
      *
      * @param string $name
-     * @return string
+     * @param array $permissions ["create", "read", "update", "delete"]
+     * @return string the plaintext token
      */
-    public static function createBearerToken(?string $name = null): string
+    public static function createBearerToken(?string $name = null, array $permissions = []): string
     {
         $app = \Gazelle\App::go();
 
         $token = \Gazelle\Text::random(128);
         $name ??= \Gazelle\Text::random(16);
-        #$name ??= "Token from " . \Carbon\Carbon::now()->toDateTimeString();
 
         $query = "
-            insert into api_user_tokens (userId, name, token, revoked)
-            values (:userId, :name, :token, :revoked)
+            insert into api_tokens (uuid, userId, name, token, permissions)
+            values (:uuid, :userId, :name, :token, :permissions)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $app->dbNew->do($query, [
+            "uuid" => $uuid,
             "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),
-            "revoked" => 0,
+            "permissions" => json_encode($permissions),
         ]);
 
         return $token;
@@ -991,8 +934,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_user_tokens where userId = ? and revoked = ?";
-        $ref = $app->dbNew->multi($query, [$app->user->core["id"], 0]);
+        $query = "select * from api_tokens where userId = ? and deleted_at is null";
+        $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;
     }
@@ -1017,7 +960,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "update api_user_tokens set revoked = ? where id = ?";
-        $app->dbNew->do($query, [1, $tokenId]);
+        $query = "update api_tokens set deleted_at = now() where id = ?";
+        $app->dbNew->do($query, [$tokenId]);
     }
 } # class
