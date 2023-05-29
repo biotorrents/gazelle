@@ -1,0 +1,57 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Service stats</h2>
+
+  <p>
+  Various debug information about the database and cache.
+  Intended as a quick reference and not a comprehensive management tool.
+  </p>
+
+{# todo: make this searchable #}
+  <h3>Database information</h3>
+  <section>
+  <table style="display: block; height: 50rem; overflow-y: scroll;">
+  <tr>
+    <th>Variable name</th>
+	<th>Value</th>
+  </tr>
+
+  {% for item in database %}
+  <tr>
+	<td>{{ item.Variable_name }}</td>
+	<td>{{ item.Value }}</td>
+  </tr>
+  {% endfor %}
+
+  </table>
+  </section>
+
+{# todo: add a "flush cache" option" #}
+  <h3>Cache information</h3>
+  <section>
+  <table style="display: block; height: 50rem; overflow-y: scroll;">
+  <tr>
+	<th>Key</th>
+	<th>Value</th>
+  </tr>
+
+  {% for key, value in cache %}
+  <tr>
+	<td>{{ key }}</td>
+	<td>{{ value }}</td>
+  </tr>
+  {% endfor %}
+
+  </table>
+</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}
