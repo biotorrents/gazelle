@@ -353,14 +353,6 @@ class Database extends \PDO
             unset($row["aaguid"]);
         }
 
-        # peer_id
-        $row["peer_id"] ??= null;
-        if ($row["peer_id"]) {
-            $row["peer_id"] = bin2hex($row["peer_id"]);
-        } else {
-            unset($row["peer_id"]);
-        }
-
         # infoHash
         $row["infoHash"] ??= null;
         if ($row["infoHash"]) {

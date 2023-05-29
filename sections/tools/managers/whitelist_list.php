@@ -23,27 +23,27 @@ $post = Http::request("post");
 # create
 $post["create"] ??= null;
 if (!empty($post) && $post["create"]) {
-    $query = "insert into allowed_clients (peer_id, title) values (?, ?)";
-    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"] ]);
+    $query = "insert into approved_clients (uuid, peer_id, title) values (?, ?, ?)";
+    $app->dbNew->do($query, [ $app->dbNew->uuid(), $post["peerId"], $post["clientName"] ]);
 }
 
 # read
-$query = "select id, title, peer_id from allowed_clients order by peer_id asc";
+$query = "select uuid, title, peer_id from approved_clients where deleted_at is null order by peer_id asc";
 $ref = $app->dbNew->multi($query, []);
 #!d($ref);exit;
 
 # update
 $post["update"] ??= null;
 if (!empty($post) && $post["update"]) {
-    $query = "update allowed_clients set peer_id = ?, title = ? where id = ?";
-    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"], $post["id"] ]);
+    $query = "update approved_clients set peer_id = ?, title = ? where uuid = ?";
+    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"], $app->dbNew->uuidBinary($post["uuid"]) ]);
 }
 
 # delete
 $post["delete"] ??= null;
 if (!empty($post) && $post["delete"]) {
-    $query = "delete from allowed_clients where id = ?";
-    $app->dbNew->do($query, [ $post["id"] ]);
+    $query = "update approved_clients set archived = ?, deleted_at = now() where uuid = ?";
+    $app->dbNew->do($query, [ 1, $app->dbNew->uuidBinary($post["uuid"]) ]);
 }
 
 # twig
