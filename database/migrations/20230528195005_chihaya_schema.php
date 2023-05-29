@@ -151,7 +151,7 @@ final class ChihayaSchema extends AbstractMigration
          */
         $table = $this->table("torrents_group");
         $table
-            ->addColumn("time", "integer", ["default" => 0, "null" => false, "after" => "upMultiplier"])
+            ->addColumn("time", "integer", ["default" => 0, "null" => false, "after" => "timestamp"])
 
             #->renameColumn("timestamp", "time")
             #->changeColumn("time", "integer", ["default" => 0, "null" => false, "after" => "timestamp"])
