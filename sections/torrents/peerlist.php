@@ -25,7 +25,7 @@ $Result = $app->dbOld->query("
     xu.uploaded,
     xu.remaining,
     xu.useragent
-  FROM xbt_files_users AS xu
+  FROM transfer_history AS xu
     LEFT JOIN users_main AS um ON um.ID = xu.uid
     JOIN torrents AS t ON t.ID = xu.fid
   WHERE xu.fid = '$TorrentID'

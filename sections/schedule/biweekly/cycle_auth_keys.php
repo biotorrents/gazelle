@@ -2,21 +2,15 @@
 
 declare(strict_types=1);
 
+
+/**
+ * cycle auth keys
+ */
+
 $app = \Gazelle\App::go();
 
-$app->dbOld->query("
-UPDATE
-  `users_info`
-SET
-  `AuthKey` =
-    MD5(
-      CONCAT(
-        `AuthKey`, RAND(), '".\Gazelle\Text::random()."',
-        SHA1(
-          CONCAT(
-            RAND(), RAND(), '".\Gazelle\Text::random()."'
-          )
-        )
-      )
-    );
-");
+$query = "
+    update users_info set
+    authKey = md5(concat(authKey, rand(), ?, sha1(concat(rand(), rand(), ?))))
+";
+$app->dbNew->do($query, [ \Gazelle\Text::random(), \Gazelle\Text::random() ]);

@@ -291,14 +291,14 @@ class Tracker
         }
 
         $app->dbOld->query("
-            select peer_id, vstring from xbt_client_whitelist
-            where vstring not like '//%' order by vstring asc
+            select peer_id, title from approved_clients
+            where title not like '//%' order by title asc
         ");
 
         $allowedClients = $app->dbOld->to_array();
         $allowedClients = array_combine(
             array_column($allowedClients, 'peer_id'),
-            array_column($allowedClients, 'vstring'),
+            array_column($allowedClients, 'title'),
         );
 
         $app->cache->set(self::$cachePrefix. __FUNCTION__, $allowedClients, self::$cacheDuration);

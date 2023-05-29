@@ -161,17 +161,6 @@ exit;
 
 
 
-$app->dbOld->query("
-  SELECT SUM(t.Size)
-  FROM xbt_files_users AS xfu
-  JOIN torrents AS t on t.ID = xfu.fid
-  WHERE
-    xfu.uid = '$userId'
-    AND xfu.active = 1
-    AND xfu.Remaining = 0");
-if ($app->dbOld->has_results()) {
-    list($TotalSeeding) = $app->dbOld->next_record(MYSQLI_NUM, false);
-}
 
 
 // Image proxy CTs
@@ -388,7 +377,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
            if (check_perms('users_view_ips', $Class)) {
                $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
-        FROM xbt_snatched
+        FROM transfer_ips
         WHERE uid = '$userId'
           AND IP != ''");
                list($TrackerIPs) = $app->dbOld->next_record();
@@ -506,24 +495,10 @@ if (!isset($SupportFor)) {
     WHERE UserID = '.$user['ID']);
     list($SupportFor) = $app->dbOld->next_record();
 }
-if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)) {
-    ?>
-        <li<?=(($Override === 2 || $SupportFor) ? ' class="paranoia_override"' : '')?>>Clients:
-          <?php
-    $app->dbOld->query("
-      SELECT DISTINCT useragent
-      FROM xbt_files_users
-      WHERE uid = $userId");
-    $Clients = $app->dbOld->collect(0);
-    echo implode('; ', $Clients); ?>
-          </li>
-          <?php
-}
 ?>
       </ul>
     </div>
     <?php
-include(serverRoot.'/sections/user/community_stats.php');
 ?>
   </div>
   <div class="main_column two-thirds column">
@@ -560,74 +535,6 @@ if (!$Info) {
     </div>
     <?php
 
-if (check_paranoia_here('snatched')) {
-    $RecentSnatches = $app->cache->get("recent_snatches_$userId");
-    if ($RecentSnatches === false) {
-        $app->dbOld->prepared_query("
-        SELECT
-          g.`id`,
-          g.`title`,
-          g.`subject`,
-          g.`object`,
-          g.`picture`
-        FROM
-          `xbt_snatched` AS s
-        INNER JOIN `torrents` AS t
-        ON
-          t.`ID` = s.`fid`
-        INNER JOIN `torrents_group` AS g
-        ON
-          t.`GroupID` = g.`id`
-        WHERE
-          s.`uid` = '$userId' AND g.`picture` != ''
-        GROUP BY
-          g.`id`,
-          s.`tstamp`
-        ORDER BY
-          s.`tstamp`
-        DESC
-        LIMIT 5
-        ");
-
-        $RecentSnatches = $app->dbOld->to_array();
-
-        $Artists = Artists::get_artists($app->dbOld->collect('ID'));
-        foreach ($RecentSnatches as $Key => $SnatchInfo) {
-            $RecentSnatches[$Key]['Artist'] = Artists::display_artists($Artists[$SnatchInfo['ID']], false, true);
-        }
-
-        $app->cache->set("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
-    }
-
-    if (!empty($RecentSnatches)) {
-        ?>
-    <div class="box" id="recent_snatches">
-      <div class="head">
-        Recent Snatches
-        <span class="u-pull-right"><a
-            onclick="$('#recent_snatches_images').gtoggle(); this.innerHTML = (this.innerHTML == 'Hide' ? 'Show' : 'Hide'); wall('#recent_snatches_images', '.collage_image', [2,3]); return false;"
-            class="brackets">Show</a></span>&nbsp;
-      </div>
-      <div id="recent_snatches_images" class="collage_images hidden">
-        <?php foreach ($RecentSnatches as $RS) {
-            $RSName = empty($RS['Name']) ? (empty($RS['Title2']) ? $RS['NameJP'] : $RS['Title2']) : $RS['Name']; ?>
-        <div style='width: 100px;' class='collage_image'>
-          <a
-            href="torrents.php?id=<?=$RS['ID']?>">
-            <img class="tooltip"
-              title="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
-              src="<?=\Gazelle\Images::process($RS['WikiImage'], 'thumb')?>"
-              alt="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
-              width="100%" />
-          </a>
-        </div>
-        <?php
-        } ?>
-      </div>
-    </div>
-    <?php
-    }
-}
 
 if (check_paranoia_here('uploads')) {
     $RecentUploads = $app->cache->get("recent_uploads_$userId");
@@ -995,86 +902,6 @@ if (check_perms('users_mod', $Class)) { ?>
         <td class="label">Visible in peer lists:</td>
         <td><input type="checkbox" name="Visible" <?php if ($Visible==1) { ?> checked="checked"
           <?php } ?> />
-        </td>
-      </tr>
-      <?php
-  }
-
-  if (check_perms('users_edit_ratio', $Class) || (check_perms('users_edit_own_ratio') && $userId == $user['ID'])) {
-      ?>
-      <tr>
-        <td class="label tooltip" title="Upload amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
-          Uploaded:</td>
-        <td>
-          <input type="hidden" name="OldUploaded"
-            value="<?=$Uploaded?>" />
-          <input type="text" size="20" name="Uploaded"
-            value="<?=$Uploaded?>" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Download amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
-          Downloaded:</td>
-        <td>
-          <input type="hidden" name="OldDownloaded"
-            value="<?=$Downloaded?>" />
-          <input type="text" size="20" name="Downloaded"
-            value="<?=$Downloaded?>" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label"><?=bonusPoints?>:</td>
-        <td>
-          <input type="text" size="20" name="BonusPoints"
-            value="<?=$BonusPoints?>" />
-          <?php
-if (!$DisablePoints) {
-    $PointsRate = 0;
-    $getTorrents = $app->dbOld->query("
-    SELECT COUNT(DISTINCT x.fid) AS Torrents,
-           SUM(t.Size) AS Size,
-           SUM(xs.seedtime) AS Seedtime,
-           SUM(t.Seeders) AS Seeders
-    FROM users_main AS um
-    LEFT JOIN users_info AS i on um.ID = i.UserID
-    LEFT JOIN xbt_files_users AS x ON um.ID=x.uid
-    LEFT JOIN torrents AS t ON t.ID=x.fid
-    LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
-    WHERE
-      um.ID = $userId
-      AND um.Enabled = '1'
-      AND x.active = 1
-      AND x.completed = 0
-      AND x.Remaining = 0
-    GROUP BY um.ID");
-    if ($app->dbOld->has_results()) {
-        list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
-
-        $ENV = ENV::go();
-        $PointsRate = ($ENV->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
-    }
-
-    $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
-    $PointsPerDay = \Gazelle\Text::float($PointsRate*24)." ".bonusPoints."/day";
-} else {
-    $PointsPerHour = "0 ".bonusPoints."/hour";
-    $PointsPerDay = bonusPoints." disabled";
-} ?>
-          <?=$PointsPerHour?> (<?=$PointsPerDay?>)
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Enter a username.">Merge stats <strong>from:</strong></td>
-        <td>
-          <input type="text" size="40" name="MergeStatsFrom">
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Freeleech tokens:</td>
-        <td>
-          <input type="text" size="5" name="FLTokens"
-            value="<?=$FLTokens?>" />
         </td>
       </tr>
       <?php

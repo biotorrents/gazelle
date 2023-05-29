@@ -580,7 +580,7 @@ class Stats
 
         # total snatches for all torrents
         $app->dbOld->prepared_query("
-            select count(uid) from xbt_snatched
+            select count(uid) from transfer_history
         ");
 
         $totalSnatches = $app->dbOld->to_array();
@@ -596,14 +596,14 @@ class Stats
 
         # seeders
         $app->dbOld->prepared_query("
-            select count(fid) from xbt_files_users where remaining = 0
+            select count(fid) from transfer_history where remaining = 0
         ");
 
         $seeders = $app->dbOld->to_array();
 
         # leechers
         $app->dbOld->prepared_query("
-            select count(fid) from xbt_files_users where remaining > 0
+            select count(fid) from transfer_history where remaining > 0
         ");
 
         $leechers = $app->dbOld->to_array();
@@ -633,7 +633,7 @@ class Stats
         FROM users_main
         WHERE (
           SELECT COUNT(uid)
-          FROM xbt_files_users
+          FROM transfer_history
           WHERE uid = users_main.ID
           ) > 0
         ");
@@ -992,14 +992,14 @@ class Stats
         $data = [];
 
         # snatch count (holla)
-        $query = "select count(uid) from xbt_snatched";
+        $query = "select count(uid) from transfer_history";
         $data["snatchCount"] = $app->dbNew->single($query, []);
 
         # seeders, leechers, and snatches
         # todo: this uses the old database class
         $query = "
             select if(remaining = 0, 'seeding', 'leeching') as peerType, count(uid)
-            from xbt_files_users where active = 1 group by peerType
+            from transfer_history where active = 1 group by peerType
         ";
 
         $app->dbOld->query($query);

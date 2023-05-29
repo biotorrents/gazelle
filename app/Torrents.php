@@ -14,10 +14,8 @@ class Torrents
     public const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
 
     // Some constants for self::display_string's $Mode parameter
-    public const DISPLAYSTRING_HTML = 1; // Whether or not to use HTML for the output (e.g. VH tooltip)
     public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
     public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-    public const DISPLAYSTRING_VH = 8; // Whether or not to display the VH flag
     public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
     public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
     // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
@@ -25,7 +23,113 @@ class Torrents
 
     // Presets to facilitate the use of $Mode
     public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
-    public const DISPLAYSTRING_SHORT = 6; // Very simple format, only artists and year, no linking (e.g. for forum thread titles)
+
+    # ["database" => "display"]
+    private $maps = [
+        "uuid" => "uuid",
+        "ID" => "id",
+        "GroupID" => "groupId",
+        "UserID" => "userId",
+        "media" => "platform",
+        "container" => "format",
+        "codec" => "license",
+        "resolution" => "scope",
+        "version" => "version",
+        "Censored" => "aligned",
+        "Anonymous" => "anonymous",
+        "info_hash" => "infoHash",
+        "FileCount" => "fileCount",
+        "FileList" => "fileList",
+        "FilePath" => "filePath",
+        "Size" => "dataSize",
+        "Leechers" => "leecherCount",
+        "Seeders" => "seederCount",
+        "last_action" => "lastAction",
+        "FreeTorrent" => "freeleech",
+        "FreeLeechType" => "freeleechType",
+        "Time" => "createdAt",
+        "Description" => "description",
+        "Snatched" => "snatchCount",
+        "balance" => "balance",
+        "LastReseedRequest" => "lastReseedRequest",
+        "archive" => "archive",
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+
+
+    /**
+     * __construct
+     */
+    public function __construct(int|string $identifier = null)
+    {
+        if ($identifier) {
+            return $this->read($identifier);
+        }
+    }
+
+
+    /** crud */
+
+
+    /**
+     * create
+     */
+    public function create(array $data = [])
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /**
+     * read
+     */
+    public function read(int|string $identifier)
+    {
+        $app = \Gazelle\App::go();
+
+        $column = $app->dbNew->determineIdentifier($identifier);
+
+        $query = "select * from torrents where {$column} = ?";
+        $row = $app->dbNew->row($query, [$identifier]);
+
+        if (empty($row)) {
+            return [];
+        }
+
+        $translatedRow = [];
+        foreach ($row as $column => $value) {
+            # does the column exist in the map?
+            if (isset($this->maps[$column])) {
+                $outputLabel = $this->maps[$column];
+                $translatedRow[$outputLabel] = $value;
+            }
+        }
+
+        return $translatedRow;
+    }
+
+
+    /**
+     * update
+     */
+    public function update(int|string $identifier, array $data = [])
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /**
+     * delete
+     */
+    public function delete(int|string $identifier)
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /** legacy */
 
 
     /**
@@ -1151,7 +1255,7 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_snatched
+                    FROM transfer_history
                       WHERE uid = ?", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $SnatchedTorrents[$ID & $LastBucket][(int)$ID] = true;
@@ -1164,9 +1268,9 @@ class Torrents
                     // Old cache, check if torrent has been snatched recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_snatched
+                    FROM transfer_history
                       WHERE uid = ?
-                      AND tstamp >= ?", $UserID, $UpdateTime['last']);
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SnatchedTorrents[$CurBucketID] === false) {
@@ -1237,10 +1341,10 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining = 0", $UserID);
+                      AND remaining = 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $SeedingTorrents[$ID & $LastBucket][(int)$ID] = true;
                     }
@@ -1252,11 +1356,11 @@ class Torrents
                     // Old cache, check if torrent has been seeding recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining = 0
-                      AND mtime >= ?", $UserID, $UpdateTime['last']);
+                      AND remaining = 0
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SeedingTorrents[$CurBucketID] === false) {
@@ -1329,10 +1433,10 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining > 0", $UserID);
+                      AND remaining > 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $LeechingTorrents[$ID & $LastBucket][(int)$ID] = true;
                     }
@@ -1344,11 +1448,11 @@ class Torrents
                     // Old cache, check if torrent has been leeching recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining > 0
-                      AND mtime >= ?", $UserID, $UpdateTime['last']);
+                      AND remaining > 0
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($LeechingTorrents[$CurBucketID] === false) {

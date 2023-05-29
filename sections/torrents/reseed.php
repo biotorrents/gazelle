@@ -52,9 +52,9 @@ $Name .= $GroupName;
 $app->dbOld->query("
 SELECT
   `uid`,
-  MAX(`tstamp`) AS tstamp
+  MAX(`last_announce`) AS tstamp
 FROM
-  `xbt_snatched`
+  `transfer_history`
 WHERE
   `fid` = '$TorrentID'
 GROUP BY

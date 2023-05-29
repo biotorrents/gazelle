@@ -1,16 +1,16 @@
 <?php
 #declare(strict_types = 1);
 
+/**
+ * JUST USE MANTICORE
+ */
+
 $app = \Gazelle\App::go();
 $ENV = ENV::go();
 
 if (!empty($_GET['search'])) {
-    if (preg_match("/{$app->env->regexIp}/", $_GET['search'])) {
+    if (preg_match("/{$app->env->regexIp4}/", $_GET['search'])) {
         $_GET['ip'] = $_GET['search'];
-        /*
-        } elseif (preg_match("/{$app->env->regexEmail}/", $_GET['search'])) {
-            $_GET['email'] = $_GET['search'];
-        */
     } elseif (preg_match("/{$app->env->regexUsername}/iD", $_GET['search'])) {
         $app->dbOld->query("
       SELECT ID
@@ -134,15 +134,6 @@ if (count($_GET)) {
 
     $ClassIDs = [];
     $SecClassIDs = [];
-    /*
-    foreach ($Classes as $ClassID => $Value) {
-        if ($Value['Secondary']) {
-            $SecClassIDs[] = $ClassID;
-        } else {
-            $ClassIDs[] = $ClassID;
-        }
-    }
-    */
 
     $Val->SetFields('comment', '0', 'string', 'Comment is too long.', array('maxlength' => 512));
     $Val->SetFields('disabled_invites', '0', 'inarray', 'Invalid disabled_invites field', $YesNo);
@@ -288,12 +279,6 @@ if (count($_GET)) {
             $Join['xfu'] = ' JOIN xbt_files_users AS xfu ON um1.ID = xfu.uid ';
             $Where[] = ' xfu.ip '.$Match.wrap($_GET['tracker_ip'], '', true);
         }
-
-        //    if (!empty($_GET['tracker_ip'])) {
-        //        $Distinct = 'DISTINCT ';
-        //        $Join['xs'] = ' JOIN xbt_snatched AS xs ON um1.ID = xs.uid ';
-        //        $Where[] = ' xs.IP '.$Match.wrap($_GET['ip']);
-        //    }
 
         if (!empty($_GET['comment'])) {
             $Where[] = 'ui1.AdminComment'.$Match.wrap($_GET['comment']);

@@ -24,7 +24,7 @@ if (check_paranoia_here('snatched')) {
       g.`title`,
       g.`picture`
     FROM
-      `xbt_snatched` AS s
+      `transfer_history` AS s
     INNER JOIN `torrents` AS t
     ON
       t.`ID` = s.`fid`

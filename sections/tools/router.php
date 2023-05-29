@@ -61,10 +61,6 @@ switch ($_REQUEST['action']) {
         include serverRoot.'/sections/tools/managers/whitelist_list.php';
         break;
 
-    case 'whitelist_alter':
-        include serverRoot.'/sections/tools/managers/whitelist_alter.php';
-        break;
-
     case 'enable_requests':
         include serverRoot.'/sections/tools/managers/enable_requests.php';
         break;

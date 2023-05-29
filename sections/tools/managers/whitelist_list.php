@@ -23,27 +23,27 @@ $post = Http::request("post");
 # create
 $post["create"] ??= null;
 if (!empty($post) && $post["create"]) {
-    $query = "insert into xbt_client_whitelist (peer_id, vstring) values (?, ?)";
-    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"] ]);
+    $query = "insert into approved_clients (uuid, peer_id, title) values (?, ?, ?)";
+    $app->dbNew->do($query, [ $app->dbNew->uuid(), $post["peerId"], $post["clientName"] ]);
 }
 
 # read
-$query = "select id, vstring, peer_id from xbt_client_whitelist order by peer_id asc";
+$query = "select uuid, title, peer_id from approved_clients where deleted_at is null order by peer_id asc";
 $ref = $app->dbNew->multi($query, []);
 #!d($ref);exit;
 
 # update
 $post["update"] ??= null;
 if (!empty($post) && $post["update"]) {
-    $query = "update xbt_client_whitelist set peer_id = ?, vstring = ? where id = ?";
-    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"], $post["id"] ]);
+    $query = "update approved_clients set peer_id = ?, title = ? where uuid = ?";
+    $app->dbNew->do($query, [ $post["peerId"], $post["clientName"], $app->dbNew->uuidBinary($post["uuid"]) ]);
 }
 
 # delete
 $post["delete"] ??= null;
 if (!empty($post) && $post["delete"]) {
-    $query = "delete from xbt_client_whitelist where id = ?";
-    $app->dbNew->do($query, [ $post["id"] ]);
+    $query = "update approved_clients set archived = ?, deleted_at = now() where uuid = ?";
+    $app->dbNew->do($query, [ 1, $app->dbNew->uuidBinary($post["uuid"]) ]);
 }
 
 # twig

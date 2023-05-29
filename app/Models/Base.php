@@ -16,7 +16,10 @@ namespace Gazelle\Models;
 class Base extends \Illuminate\Database\Eloquent\Model
 {
     # https://laravel.com/docs/master/eloquent#soft-deleting
-    #use \Illuminate\Database\Eloquent\SoftDeletes;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+
+    # https://laravel.com/docs/master/eloquent#uuid-and-ulid-keys
+    use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
     # eloquent capsule
     public $eloquent = null;
@@ -69,5 +72,57 @@ class Base extends \Illuminate\Database\Eloquent\Model
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
+    }
+
+
+    /** uuid v7 */
+
+
+    /**
+     * newUniqueId
+     *
+     * Generate a new UUID for the model.
+     *
+     * @see https://laravel.com/docs/master/eloquent#uuid-and-ulid-keys
+     */
+    public function newUniqueId(): string
+    {
+        $app = \Gazelle\App::go();
+
+        return $app->dbNew->uuid();
+    }
+
+
+    /**
+     * Get the columns that should receive a unique identifier.
+     *
+     * @return array<int, string>
+     *
+     * @see https://laravel.com/docs/master/eloquent#uuid-and-ulid-keys
+     */
+    public function uniqueIds(): array
+    {
+        return ["uuid"];
+    }
+
+
+    /** accessors */
+
+
+    /**
+     * uuid
+     *
+     * Get a string uuid.
+     *
+     * @see https://laravel.com/docs/master/eloquent-mutators#defining-an-accessor
+     */
+    protected function uuid(): \Illuminate\Database\Eloquent\Casts\Attribute
+    {
+        $app = \Gazelle\App::go();
+
+        return \Illuminate\Database\Eloquent\Casts\Attribute::make(
+            get: fn (string $value) => $app->dbNew->uuidString($value),
+        );
+
     }
 } # class

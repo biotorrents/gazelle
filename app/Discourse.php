@@ -23,9 +23,6 @@ class Discourse
     private $cachePrefix = "discourse:";
     private $cacheDuration = "5 minutes";
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # discourse connect
     private $connectSecret = null;
 
@@ -66,7 +63,7 @@ class Discourse
         $method = strtolower($method);
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($this->algorithm, json_encode(["path" => $path, "method" => $method, "options" => $options]));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode(["path" => $path, "method" => $method, "options" => $options]));
         if ($app->cache->get($cacheKey)) {
             return $app->cache->get($cacheKey);
         }
@@ -86,7 +83,7 @@ class Discourse
         # https://www.codexworld.com/post-receive-json-data-using-php-curl/
         $ch = curl_init("{$this->baseUri}/{$path}");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            "Content-Type:application/json",
+            "Content-Type: application/vnd.api+json",
             "Api-Key: {$this->token}",
             "Api-Username: {$this->username}"
         ]);

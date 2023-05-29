@@ -32,9 +32,6 @@ class User
     public $lightInfo = [];
     public $heavyInfo = [];
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
@@ -235,7 +232,7 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and revoked = 0";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
@@ -604,10 +601,12 @@ class User
     {
         $app = \Gazelle\App::go();
 
+        /*
         # current user
         if (!$userId) {
             $userId = $this->core["id"];
         }
+        */
 
         # system user with id 0
         if ($userId === 0) {
@@ -786,64 +785,6 @@ class User
         $app = \Gazelle\App::go();
 
         return "{$app->env->siteName}-" . \Gazelle\Text::random(16);
-    }
-
-
-    /**
-     * createApiToken
-     *
-     * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1
-     */
-    public function createApiToken(int $id, string $name, string $key): string
-    {
-        $app = \Gazelle\App::go();
-
-        $suffix = sprintf('%014d', $id);
-        $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-        $hash = password_hash($token, PASSWORD_DEFAULT);
-
-        /*
-        # prevent collisions with an existing token name
-        while (true) {
-            $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-            $hash = password_hash($token, PASSWORD_DEFAULT);
-
-            if (!$this->hasApiToken($id, $token)) {
-                break;
-            }
-        }
-        */
-
-        $query = "insert into api_user_tokens (userId, name, token) values (?, ?, ?)";
-        $app->dbNew->do($query, [$id, $name, $hash]);
-
-        return $token;
-    }
-
-
-    /**
-     * hasTokenByName
-     */
-    public function hasTokenByName(int $id, string $name)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select 1 from user_api_tokens where userId = ? and name = ?";
-        $good = $app->dbNew->single($query, [$id, $name]);
-
-        return $good;
-    }
-
-
-    /**
-     * revokeApiTokenById
-     */
-    public function revokeApiTokenById(int $id, int $tokenId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
-        $app->dbNew->do($query, [$id, $tokenId]);
     }
 
 
@@ -1344,11 +1285,11 @@ class User
 
         $query = "
             select torrents_group.id, torrents_group.title, torrents_group.subject, torrents_group.object, torrents_group.picture
-            from xbt_snatched inner join torrents on torrents.id = xbt_snatched.fid
+            from transfer_history inner join torrents on torrents.id = transfer_history.fid
             inner join torrents_group on torrents_group.id = torrents.groupId
-            where xbt_snatched.uid = ? and torrents_group.picture is not null
-            group by torrents_group.id, xbt_snatched.tstamp
-            order by xbt_snatched.tstamp desc limit 5
+            where transfer_history.uid = ? and torrents_group.picture is not null
+            group by torrents_group.id, transfer_history.activeTime
+            order by transfer_history.activeTime desc limit 5
         ";
         $ref = $app->dbNew->multi($query, [$userId]);
 
@@ -1710,9 +1651,9 @@ class User
         # torrents.php?action=redownload&type=seeding&userid={{ userId }}
         # torrents.php?type=leeching&userid={{ userId }}
         $query = "
-            select if(remaining = 0, 'seeding', 'leeching') as type, count(uid) from xbt_files_users
-            inner join torrents on torrents.id = xbt_files_users.fid
-            where xbt_files_users.uid = ? and active = 1 group by type
+            select if(remaining = 0, 'seeding', 'leeching') as type, count(uid) from transfer_history
+            inner join torrents on torrents.id = transfer_history.fid
+            where transfer_history.uid = ? and active = 1 group by type
         ";
         $row = $app->dbNew->row($query, [$userId]);
         #!d($row);exit;
@@ -1728,8 +1669,8 @@ class User
         # torrents.php?action=redownload&type=snatches&userid={{ userId }}
         # check_perms("site_view_torrent_snatchlist")
         $query = "
-            select count(uid), count(distinct fid) from xbt_snatched
-            inner join torrents on torrents.id = xbt_snatched.fid
+            select count(uid), count(distinct fid) from transfer_history
+            inner join torrents on torrents.id = transfer_history.fid
             where uid = ?
         ";
         $row = $app->dbNew->row($query, [$userId]);
@@ -1767,10 +1708,10 @@ class User
         }
 
         # torrent clients
-        $query = "select distinct userAgent from xbt_files_users where uid = ?";
+        $query = "select distinct client_id from transfer_ips where uid = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
 
-        $data["torrentClients"] = array_column($ref, "userAgent");
+        $data["torrentClients"] = array_column($ref, "client_id");
 
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);

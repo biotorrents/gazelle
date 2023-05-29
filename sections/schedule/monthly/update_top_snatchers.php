@@ -2,14 +2,19 @@
 
 declare(strict_types=1);
 
+
+/**
+ * update top snatchers
+ */
+
 $app = \Gazelle\App::go();
 
-$app->dbOld->query('TRUNCATE TABLE top_snatchers;');
-$app->dbOld->query("
-INSERT INTO top_snatchers (UserID)
-SELECT uid
-FROM xbt_snatched
-GROUP BY uid
-ORDER BY COUNT(uid) DESC
-LIMIT 100;
-");
+$query = "truncate table top_snatchers";
+$app->dbNew->do($query, []);
+
+$query = "
+    insert into top_snatchers (userId)
+    select uid from transfer_history
+    group by uid order by count(uid) desc limit 100
+";
+$app->dbNew->do($query, []);

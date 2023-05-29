@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Unit tests
+ * unit tests
  */
 
 # cli bootstrap

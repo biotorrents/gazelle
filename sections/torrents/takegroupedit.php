@@ -234,7 +234,7 @@ if ($app->dbOld->has_results()) {
     SELECT DISTINCT
       `uid`
     FROM
-      `xbt_snatched`
+      `transfer_history`
     WHERE
       `fid` IN($TorrentIDs)
     ");

@@ -21,7 +21,7 @@
         const creationRequest = await fetch("/api/internal/webAuthn/creationRequest", {
             method: "GET",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/vnd.api+json",
                 "Authorization": "Bearer " + frontendHash,
             },
         });
@@ -49,7 +49,7 @@
         const creationResponse = await fetch("/api/internal/webAuthn/creationResponse", {
             method: "POST",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/vnd.api+json",
                 "Authorization": "Bearer " + frontendHash,
             },
             body: JSON.stringify(creationRequestJson),

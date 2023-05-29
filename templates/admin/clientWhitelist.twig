@@ -30,10 +30,10 @@
 
 					{{ form_token(query.server.REQUEST_URI) }}
 
-					<input type="hidden" name="id" value="{{ item.id }}">
+					<input type="hidden" name="uuid" value="{{ item.uuid }}">
 
 					<tr>
-						<td><input type="text" name="clientName" value="{{ item.vstring }}" required></td>
+						<td><input type="text" name="clientName" value="{{ item.title }}" required></td>
 						<td><input type="text" name="peerId" class="monospace" value="{{ item.peer_id }}" required></td>
 						<td>
 							<input type="submit" name="update" class="button-orange" value="update">

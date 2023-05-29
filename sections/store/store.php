@@ -13,18 +13,16 @@ if (!$app->user->extra['DisablePoints']) {
       SELECT um.BonusPoints,
         COUNT(DISTINCT x.fid) AS Torrents,
         SUM(t.Size) AS Size,
-        SUM(xs.seedtime) AS Seedtime,
+        SUM(x.seedtime) AS Seedtime,
         SUM(t.Seeders) AS Seeders
       FROM users_main AS um
       LEFT JOIN users_info AS i on um.ID = i.UserID
-      LEFT JOIN xbt_files_users AS x ON um.ID=x.uid
+      LEFT JOIN transfer_history AS x ON um.ID=x.uid
       LEFT JOIN torrents AS t ON t.ID=x.fid
-      LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
       WHERE
         um.ID = '$UserID'
         AND um.Enabled = '1'
         AND x.active = 1
-        AND x.completed = 0
         AND x.Remaining = 0
       GROUP BY um.ID");
 
