@@ -601,10 +601,12 @@ class User
     {
         $app = \Gazelle\App::go();
 
+        /*
         # current user
         if (!$userId) {
             $userId = $this->core["id"];
         }
+        */
 
         # system user with id 0
         if ($userId === 0) {
