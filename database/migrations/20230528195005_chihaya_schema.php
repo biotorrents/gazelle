@@ -41,6 +41,7 @@ final class ChihayaSchema extends AbstractMigration
 
             ->addColumn("peer_id", "string", ["limit" => 64, "null" => true])
             ->addColumn("archived", "boolean", ["default" => false, "null" => true])
+            ->addColumn("title", "string", ["limit" => 255, "default" => "", "null" => true])
 
             ->addColumn("created_at", "datetime", ["default" => "CURRENT_TIMESTAMP"])
             ->addColumn("updated_at", "datetime", ["null" => true, "update" => "CURRENT_TIMESTAMP"])

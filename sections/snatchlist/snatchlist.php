@@ -19,7 +19,7 @@ $app->dbOld->query("
   FROM users_seedtime as s
   JOIN torrents AS t ON s.TorrentID = t.ID
   JOIN torrents_group AS g ON g.ID = t.GroupID
-  LEFT JOIN xbt_files_users AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
+  LEFT JOIN transfer_history AS f ON s.TorrentID = f.fid AND s.UserID = f.uid
   WHERE s.UserID = $UserID");
 if ($app->dbOld->has_results()) {
     $Torrents = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
@@ -52,7 +52,7 @@ foreach ($Torrents as $Torrent) {
     if ($Torrent['SeedTime'] < (2*24*60*60) &&
       $Torrent['active'] != "1" &&
       $Torrent['UserID'] != $UserID
-  ) {
+    ) {
         $HnR = true;
     } ?>
   <tr class="torrent">

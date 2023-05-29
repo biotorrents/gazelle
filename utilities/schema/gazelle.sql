@@ -1428,54 +1428,6 @@ CREATE TABLE `wiki_torrents` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `xbt_client_whitelist` (
-  `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `peer_id` varchar(25) DEFAULT NULL,
-  `vstring` varchar(255) DEFAULT '',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `peer_id` (`peer_id`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `xbt_files_users` (
-  `uid` int NOT NULL,
-  `active` tinyint NOT NULL DEFAULT '0',
-  `announced` int NOT NULL,
-  `completed` tinyint NOT NULL DEFAULT '0',
-  `downloaded` bigint NOT NULL DEFAULT '0',
-  `remaining` bigint NOT NULL DEFAULT '0',
-  `uploaded` bigint NOT NULL DEFAULT '0',
-  `upspeed` int unsigned NOT NULL DEFAULT '0',
-  `downspeed` int unsigned NOT NULL DEFAULT '0',
-  `corrupt` bigint NOT NULL DEFAULT '0',
-  `timespent` int unsigned NOT NULL,
-  `useragent` varchar(51) NOT NULL DEFAULT '',
-  `connectable` tinyint NOT NULL DEFAULT '1',
-  `peer_id` binary(20) NOT NULL DEFAULT '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0',
-  `fid` int NOT NULL,
-  `mtime` int NOT NULL,
-  `ip` varchar(15) NOT NULL DEFAULT '', -- Max IPv4 address length
-  `seeder` tinyint NOT NULL DEFAULT '0',
-  PRIMARY KEY (`peer_id`,`fid`,`uid`),
-  KEY `remaining_idx` (`remaining`),
-  KEY `fid_idx` (`fid`),
-  KEY `mtime_idx` (`mtime`),
-  KEY `uid_active` (`uid`,`active`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `xbt_snatched` (
-  `uid` int NOT NULL DEFAULT '0',
-  `tstamp` int NOT NULL,
-  `fid` int NOT NULL,
-  `IP` varchar(15) NOT NULL, -- Max IPv4 address length
-  `seedtime` int NOT NULL DEFAULT '0',
-  KEY `fid` (`fid`),
-  KEY `tstamp` (`tstamp`),
-  KEY `uid_tstamp` (`uid`,`tstamp`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `openai` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `jobId` VARCHAR(128) NOT NULL,
@@ -1562,23 +1514,3 @@ INSERT INTO `forums_categories` (`ID`, `Sort`, `Name`) VALUES (20,20,'Trash');
 
 
 INSERT INTO `misc` (`ID`, `Name`, `First`, `Second`) VALUES (1, 'FreeleechPool', '100', '200');
-
-
--- One last thing: a trigger to update seeding stats
-DELIMITER ;;
-CREATE TRIGGER update_seedtime
-  AFTER UPDATE ON `xbt_files_users`
-  FOR EACH ROW BEGIN
-    IF ( (OLD.timespent < NEW.timespent) AND (OLD.active = 1) AND (NEW.active = 1) ) THEN
-      INSERT INTO `users_seedtime`
-        (`UserID`, `TorrentID`, `SeedTime`, `Uploaded`, `Downloaded`, `LastUpdate`)
-        VALUES
-        (NEW.uid, NEW.fid, NEW.timespent, NEW.uploaded, NEW.downloaded, NOW())
-        ON DUPLICATE KEY UPDATE
-          `SeedTime` = `SeedTime` + (NEW.timespent - OLD.timespent),
-          `Uploaded` = `Uploaded` + (NEW.uploaded - OLD.uploaded),
-          `Downloaded` = `Downloaded` + (NEW.downloaded - OLD.downloaded),
-          `LastUpdate` = NOW();
-    END IF;
-  END;;
-DELIMITER ;

@@ -28,7 +28,7 @@ $app->dbOld->query("
     LEFT JOIN torrents_artists AS ta ON ta.GroupID = t.GroupID
     LEFT JOIN torrents_group AS tg ON tg.ID = t.GroupID
     LEFT JOIN artists_group AS ag ON ag.ArtistID = ta.ArtistID
-    LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
+    LEFT JOIN transfer_history AS x ON x.fid = t.ID
   WHERE t.ID = '$TorrentID'");
 list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $app->dbOld->next_record(MYSQLI_NUM, false);
 

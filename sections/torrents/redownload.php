@@ -35,19 +35,19 @@ if (empty($_GET['type'])) {
                 error(403);
             }
             $SQL = "
-          JOIN xbt_snatched AS x ON t.ID = x.fid
+          JOIN transfer_history AS x ON t.ID = x.fid
         WHERE x.uid = '$UserID'";
-            $Month = "FROM_UNIXTIME(x.tstamp)";
+            $Month = "FROM_UNIXTIME(x.last_announce)";
             break;
         case 'seeding':
             if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
                 error(403);
             }
             $SQL = "
-          JOIN xbt_files_users AS xfu ON t.ID = xfu.fid
+          JOIN transfer_history AS xfu ON t.ID = xfu.fid
         WHERE xfu.uid = '$UserID'
           AND xfu.remaining = 0";
-            $Month = "FROM_UNIXTIME(xfu.mtime)";
+            $Month = "FROM_UNIXTIME(xfu.last_announce)";
             break;
         default:
             error(0);

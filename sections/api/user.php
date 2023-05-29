@@ -236,7 +236,7 @@ if (check_paranoia_here('snatched+')) {
       COUNT(x.`uid`),
       COUNT(DISTINCT x.`fid`)
     FROM
-      `xbt_snatched` AS x
+      `transfer_history` AS x
     INNER JOIN `torrents` AS t
     ON
       t.`ID` = x.`fid`
@@ -344,7 +344,7 @@ if (check_paranoia_here('seeding+')) {
     SELECT
       COUNT(x.`uid`)
     FROM
-      `xbt_files_users` AS x
+      `transfer_history` AS x
     INNER JOIN `torrents` AS t
     ON
       t.`ID` = x.`fid`
@@ -360,7 +360,7 @@ if (check_paranoia_here('leeching+')) {
     SELECT
       COUNT(x.`uid`)
     FROM
-      `xbt_files_users` AS x
+      `transfer_history` AS x
     INNER JOIN `torrents` AS t
     ON
       t.`ID` = x.`fid`

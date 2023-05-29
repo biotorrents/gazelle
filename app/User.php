@@ -1283,11 +1283,11 @@ class User
 
         $query = "
             select torrents_group.id, torrents_group.title, torrents_group.subject, torrents_group.object, torrents_group.picture
-            from xbt_snatched inner join torrents on torrents.id = xbt_snatched.fid
+            from transfer_history inner join torrents on torrents.id = transfer_history.fid
             inner join torrents_group on torrents_group.id = torrents.groupId
-            where xbt_snatched.uid = ? and torrents_group.picture is not null
-            group by torrents_group.id, xbt_snatched.tstamp
-            order by xbt_snatched.tstamp desc limit 5
+            where transfer_history.uid = ? and torrents_group.picture is not null
+            group by torrents_group.id, transfer_history.activeTime
+            order by transfer_history.activeTime desc limit 5
         ";
         $ref = $app->dbNew->multi($query, [$userId]);
 
@@ -1649,9 +1649,9 @@ class User
         # torrents.php?action=redownload&type=seeding&userid={{ userId }}
         # torrents.php?type=leeching&userid={{ userId }}
         $query = "
-            select if(remaining = 0, 'seeding', 'leeching') as type, count(uid) from xbt_files_users
-            inner join torrents on torrents.id = xbt_files_users.fid
-            where xbt_files_users.uid = ? and active = 1 group by type
+            select if(remaining = 0, 'seeding', 'leeching') as type, count(uid) from transfer_history
+            inner join torrents on torrents.id = transfer_history.fid
+            where transfer_history.uid = ? and active = 1 group by type
         ";
         $row = $app->dbNew->row($query, [$userId]);
         #!d($row);exit;
@@ -1667,8 +1667,8 @@ class User
         # torrents.php?action=redownload&type=snatches&userid={{ userId }}
         # check_perms("site_view_torrent_snatchlist")
         $query = "
-            select count(uid), count(distinct fid) from xbt_snatched
-            inner join torrents on torrents.id = xbt_snatched.fid
+            select count(uid), count(distinct fid) from transfer_history
+            inner join torrents on torrents.id = transfer_history.fid
             where uid = ?
         ";
         $row = $app->dbNew->row($query, [$userId]);
@@ -1706,10 +1706,10 @@ class User
         }
 
         # torrent clients
-        $query = "select distinct userAgent from xbt_files_users where uid = ?";
+        $query = "select distinct client_id from transfer_ips where uid = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
 
-        $data["torrentClients"] = array_column($ref, "userAgent");
+        $data["torrentClients"] = array_column($ref, "client_id");
 
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);

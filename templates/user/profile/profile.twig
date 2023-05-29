@@ -389,7 +389,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
      if (check_perms('users_view_ips', $Class)) {
          $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
-        FROM xbt_snatched
+        FROM transfer_history
         WHERE uid = '$UserID'
           AND IP != ''");
          list($TrackerIPs) = $app->dbOld->next_record();
@@ -716,86 +716,6 @@ if (check_perms('users_mod', $Class)) { ?>
         <td class="label">Visible in peer lists:</td>
         <td><input type="checkbox" name="Visible" <?php if ($Visible==1) { ?> checked="checked"
           <?php } ?> />
-        </td>
-      </tr>
-      <?php
-  }
-
-  if (check_perms('users_edit_ratio', $Class) || (check_perms('users_edit_own_ratio') && $UserID == $user['ID'])) {
-      ?>
-      <tr>
-        <td class="label tooltip" title="Upload amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
-          Uploaded:</td>
-        <td>
-          <input type="hidden" name="OldUploaded"
-            value="<?=$Uploaded?>" />
-          <input type="text" size="20" name="Uploaded"
-            value="<?=$Uploaded?>" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Download amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
-          Downloaded:</td>
-        <td>
-          <input type="hidden" name="OldDownloaded"
-            value="<?=$Downloaded?>" />
-          <input type="text" size="20" name="Downloaded"
-            value="<?=$Downloaded?>" />
-        </td>
-      </tr>
-      <tr>
-        <td class="label"><?=bonusPoints?>:</td>
-        <td>
-          <input type="text" size="20" name="BonusPoints"
-            value="<?=$BonusPoints?>" />
-          <?php
-if (!$DisablePoints) {
-          $PointsRate = 0;
-          $getTorrents = $app->dbOld->query("
-    SELECT COUNT(DISTINCT x.fid) AS Torrents,
-           SUM(t.Size) AS Size,
-           SUM(xs.seedtime) AS Seedtime,
-           SUM(t.Seeders) AS Seeders
-    FROM users_main AS um
-    LEFT JOIN users_info AS i on um.ID = i.UserID
-    LEFT JOIN xbt_files_users AS x ON um.ID=x.uid
-    LEFT JOIN torrents AS t ON t.ID=x.fid
-    LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
-    WHERE
-      um.ID = $UserID
-      AND um.Enabled = '1'
-      AND x.active = 1
-      AND x.completed = 0
-      AND x.Remaining = 0
-    GROUP BY um.ID");
-          if ($app->dbOld->has_results()) {
-              list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
-
-              $ENV = ENV::go();
-              $PointsRate = ($ENV->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
-          }
-
-          $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-          $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
-          $PointsPerDay = \Gazelle\Text::float($PointsRate*24)." ".bonusPoints."/day";
-      } else {
-          $PointsPerHour = "0 ".bonusPoints."/hour";
-          $PointsPerDay = bonusPoints." disabled";
-      } ?>
-          <?=$PointsPerHour?> (<?=$PointsPerDay?>)
-        </td>
-      </tr>
-      <tr>
-        <td class="label tooltip" title="Enter a username.">Merge stats <strong>from:</strong></td>
-        <td>
-          <input type="text" size="40" name="MergeStatsFrom">
-        </td>
-      </tr>
-      <tr>
-        <td class="label">Freeleech tokens:</td>
-        <td>
-          <input type="text" size="5" name="FLTokens"
-            value="<?=$FLTokens?>" />
         </td>
       </tr>
       <?php

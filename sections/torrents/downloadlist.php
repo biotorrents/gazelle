@@ -34,14 +34,14 @@ if (count($UserIDs) > 0) {
     $UserIDs = implode(',', $UserIDs);
     $app->dbOld->query("
     SELECT uid
-    FROM xbt_snatched
+    FROM transfer_history 
     WHERE fid = '$TorrentID'
       AND uid IN($UserIDs)");
     $Snatched = $app->dbOld->to_array('uid');
 
     $app->dbOld->query("
     SELECT uid
-    FROM xbt_files_users
+    FROM transfer_history
     WHERE fid = '$TorrentID'
       AND Remaining = 0
       AND uid IN($UserIDs)");
@@ -79,11 +79,11 @@ foreach ($Results as $ID=>$Data) {
   </tr>
   <tr>
 <?php
-  } ?>
+    } ?>
     <td><?=$User?></td>
     <td><?=time_diff($Timestamp)?></td>
 <?php
-  $i++;
+    $i++;
 }
 ?>
   </tr>

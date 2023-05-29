@@ -234,14 +234,6 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
     $EditSummary[] = 'RatioWatch history reset';
 }
 
-if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
-    $app->dbOld->query("
-      DELETE FROM xbt_snatched
-      WHERE uid = '$UserID'");
-    $EditSummary[] = 'Snatch list cleared';
-    $app->cache->delete("recent_snatches_$UserID");
-}
-
 if ($_POST['ResetDownloadList'] && check_perms('users_edit_reset_keys')) {
     $app->dbOld->query("
       DELETE FROM users_downloads

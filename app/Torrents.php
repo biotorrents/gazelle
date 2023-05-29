@@ -1255,7 +1255,7 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_snatched
+                    FROM transfer_history
                       WHERE uid = ?", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $SnatchedTorrents[$ID & $LastBucket][(int)$ID] = true;
@@ -1268,9 +1268,9 @@ class Torrents
                     // Old cache, check if torrent has been snatched recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_snatched
+                    FROM transfer_history
                       WHERE uid = ?
-                      AND tstamp >= ?", $UserID, $UpdateTime['last']);
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SnatchedTorrents[$CurBucketID] === false) {
@@ -1341,10 +1341,10 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining = 0", $UserID);
+                      AND remaining = 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $SeedingTorrents[$ID & $LastBucket][(int)$ID] = true;
                     }
@@ -1356,11 +1356,11 @@ class Torrents
                     // Old cache, check if torrent has been seeding recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining = 0
-                      AND mtime >= ?", $UserID, $UpdateTime['last']);
+                      AND remaining = 0
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($SeedingTorrents[$CurBucketID] === false) {
@@ -1433,10 +1433,10 @@ class Torrents
                     // Not found in cache. Since we don't have a suitable index, it's faster to update everything
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining > 0", $UserID);
+                      AND remaining > 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $LeechingTorrents[$ID & $LastBucket][(int)$ID] = true;
                     }
@@ -1448,11 +1448,11 @@ class Torrents
                     // Old cache, check if torrent has been leeching recently
                     $app->dbOld->query("
                     SELECT fid
-                    FROM xbt_files_users
+                    FROM transfer_history
                       WHERE uid = ?
                       AND active = 1
-                      AND Remaining > 0
-                      AND mtime >= ?", $UserID, $UpdateTime['last']);
+                      AND remaining > 0
+                      AND last_announce >= ?", $UserID, $UpdateTime['last']);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
                         $CurBucketID = $ID & $LastBucket;
                         if ($LeechingTorrents[$CurBucketID] === false) {

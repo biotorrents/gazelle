@@ -1,0 +1,48 @@
+{
+    "database": {
+        "username": "chihaya",
+        "password": "",
+        "database": "chihaya",
+        "proto": "tcp",
+        "addr": "127.0.0.1:3306",
+        "deadlock_pause": 1,
+        "deadlock_retries": 5
+    },
+    "channels": {
+        "torrent": 5000,
+        "user": 5000,
+        "transfer_history": 5000,
+        "transfer_ips": 5000,
+        "snatch": 25
+    },
+    "intervals": {
+        "announce": 1800,
+        "min_announce": 900,
+        "peer_inactivity": 3900,
+        "announce_drift": 300,
+        "scrape": 900,
+        "database_reload": 45,
+        "database_serialize": 68,
+        "purge_inactive_peers": 120,
+        "flush": 3
+    },
+    "http": {
+        "addr": ":34000",
+        "admin_token": "",
+        "proxy_header": "",
+        "timeout": {
+            "read": 1,
+            "read_header": 2,
+            "write": 1,
+            "idle": 30
+        }
+    },
+    "announce": {
+        "strict_port": false,
+        "numwant": 25,
+        "max_numwant": 50
+    },
+    "record": false,
+    "scrape": true,
+    "log_flushes": true
+}

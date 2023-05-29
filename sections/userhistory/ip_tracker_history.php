@@ -55,11 +55,11 @@ if ($Perms['site_disable_ip_history']) {
 }
 
 $TrackerIps = $app->dbOld->query("
-  SELECT IP, fid, tstamp
-  FROM xbt_snatched
+  SELECT IP, fid, last_announce
+  FROM transfer_ips
   WHERE uid = $UserID
     AND IP != ''
-  ORDER BY tstamp DESC
+  ORDER BY last_announce DESC
   LIMIT $Limit");
 
 $app->dbOld->query('SELECT FOUND_ROWS()');

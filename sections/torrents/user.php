@@ -153,11 +153,11 @@ switch ($_GET['type']) {
         if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $Time = 'xs.`tstamp`';
+        $Time = 'xs.`last_announce`';
         $UserField = 'xs.`uid`';
         $ExtraWhere = '';
         $From = "
-      `xbt_snatched` AS xs
+      `transfer_history` AS xs
         JOIN `torrents` AS t ON t.`ID` = xs.`fid`";
         break;
 
@@ -165,13 +165,13 @@ switch ($_GET['type']) {
         if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $Time = '(xfu.`mtime` - xfu.`timespent`)';
+        $Time = '(xfu.`last_announce` - xfu.`starttime`)';
         $UserField = 'xfu.`uid`';
         $ExtraWhere = '
       AND xfu.`active` = 1
       AND xfu.`Remaining` = 0';
         $From = "
-      `xbt_files_users` AS xfu
+      `transfer_history` AS xfu
         JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
         break;
 
@@ -179,13 +179,13 @@ switch ($_GET['type']) {
         if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
             error(403);
         }
-        $Time = '(xfu.`mtime` - xfu.`timespent`)';
+        $Time = '(xfu.`last_announce` - xfu.`starttime`)';
         $UserField = 'xfu.`uid`';
         $ExtraWhere = '
       AND xfu.`active` = 1
       AND xfu.`Remaining` > 0';
         $From = "
-      `xbt_files_users` AS xfu
+      `transfer_history` AS xfu
         JOIN `torrents` AS t ON t.`ID` = xfu.`fid`";
         break;
 

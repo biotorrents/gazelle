@@ -226,7 +226,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
             }
             $app->dbOld->prepared_query("
         SELECT uid
-        FROM xbt_snatched
+        FROM transfer_history
         WHERE fid = $TorrentID");
             if ($app->dbOld->has_results()) {
                 while (list($UserID) = $app->dbOld->next_record()) {

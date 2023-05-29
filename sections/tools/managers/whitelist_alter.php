@@ -16,13 +16,13 @@ if ($_POST['submit'] == 'Delete') {
 
     $app->dbOld->query('
     SELECT peer_id
-    FROM xbt_client_whitelist
+    FROM allowed_clients
     WHERE id = '.$_POST['id']);
     list($PeerID) = $app->dbOld->next_record();
     $app->dbOld->query('
-    DELETE FROM xbt_client_whitelist
+    DELETE FROM allowed_clients
     WHERE id = '.$_POST['id']);
-    Tracker::update_tracker('remove_whitelist', array('peer_id' => $PeerID));
+    #Tracker::update_tracker('remove_whitelist', array('peer_id' => $PeerID));
 } else { //Edit & Create, Shared Validation
 
     if (empty($_POST['client']) || empty($_POST['peer_id'])) {
@@ -39,24 +39,24 @@ if ($_POST['submit'] == 'Delete') {
         } else {
             $app->dbOld->query('
         SELECT peer_id
-        FROM xbt_client_whitelist
+        FROM allowed_clients
         WHERE id = '.$_POST['id']);
             list($OldPeerID) = $app->dbOld->next_record();
             $app->dbOld->query("
-        UPDATE xbt_client_whitelist
+        UPDATE allowed_clients
         SET
-          vstring = '$Client',
+          title = '$Client',
           peer_id = '$PeerID'
         WHERE ID = ".$_POST['id']);
-            Tracker::update_tracker('edit_whitelist', array('old_peer_id' => $OldPeerID, 'new_peer_id' => $PeerID));
+            #Tracker::update_tracker('edit_whitelist', array('old_peer_id' => $OldPeerID, 'new_peer_id' => $PeerID));
         }
     } else { //Create
         $app->dbOld->query("
-      INSERT INTO xbt_client_whitelist
-        (vstring, peer_id)
+      INSERT INTO allowed_clients
+        (title, peer_id)
       VALUES
         ('$Client', '$PeerID')");
-        Tracker::update_tracker('add_whitelist', array('peer_id' => $PeerID));
+        #Tracker::update_tracker('add_whitelist', array('peer_id' => $PeerID));
     }
 }
 

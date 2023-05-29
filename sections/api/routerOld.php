@@ -61,10 +61,6 @@ switch ($_GET['action']) {
         require_once "$ENV->serverRoot/sections/api/usersearch.php";
         break;
 
-    case 'community_stats':
-        require_once "$ENV->serverRoot/sections/api/community_stats.php";
-        break;
-
     case 'user_recents':
         require_once "$ENV->serverRoot/sections/api/user_recents.php";
         break;
@@ -114,10 +110,6 @@ switch ($_GET['action']) {
         require_once "$ENV->serverRoot/sections/api/info.php";
         break;
 
-    case 'stats':
-        require_once "$ENV->serverRoot/sections/api/stats.php";
-        break;
-
     case 'announcements':
         require_once "$ENV->serverRoot/sections/api/announcements.php";
         break;
@@ -129,10 +121,6 @@ switch ($_GET['action']) {
         /**
          * Under construction
          */
-    case 'better':
-        require_once "$ENV->serverRoot/sections/api/better/index.php";
-        break;
-
     case 'get_friends':
         require_once "$ENV->serverRoot/sections/api/get_friends.php";
         break;

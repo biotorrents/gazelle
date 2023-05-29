@@ -19,8 +19,8 @@ $Result = $app->dbOld->query("
       SELECT
         SQL_CALC_FOUND_ROWS
         uid,
-        tstamp
-      FROM xbt_snatched
+        last_announce_time AS tstamp
+      FROM transfer_history
       WHERE fid = '$TorrentID'
       ORDER BY tstamp DESC
       LIMIT $Limit");

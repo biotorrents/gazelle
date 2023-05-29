@@ -46,7 +46,7 @@ if ($Err) {
 
 $app->dbOld->query("
   SELECT uid
-  FROM xbt_snatched
+  FROM transfer_history
   WHERE fid = $TorrentID");
 
 if ($app->dbOld->has_results()) {

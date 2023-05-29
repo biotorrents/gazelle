@@ -15,7 +15,7 @@ $app->dbOld->query("
     t.Time,
     COUNT(x.uid)
   FROM torrents AS t
-    LEFT JOIN xbt_snatched AS x ON x.fid = t.ID
+    LEFT JOIN transfer_history AS x ON x.fid = t.ID
   WHERE t.ID = $TorrentID
   GROUP BY t.UserID");
 
