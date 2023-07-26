@@ -334,12 +334,11 @@ class Auth # extends Delight\Auth\Auth
         $query = "select id from users where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
 
-        # delight-im/auth
-        try {
-            # legacy: remove after 2024-04-01
-            # fucking gazelle, hashing hashes with hardcoded algorithms
-            # this idiotic bullshit is actually insane
+        ##
+        # legacy: remove after 2024-04-01
+        #
 
+        try {
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
@@ -360,8 +359,9 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [1, $userId]);
             }
 
-            # end the dumb legacy upgrade clusterfuck
+            ##
             # resume normal, relatively sane code below
+            #
 
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
