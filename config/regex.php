@@ -69,7 +69,8 @@ ENV::setPub(
 # username
 ENV::setPub(
     "regexUsername",
-    "^[a-z0-9_]{3,32}$" # iD
+    "^[a-z0-9_]{1,32}$" # iD
+    #"^[a-z0-9_]{3,32}$" # iD
 );
 
 
