@@ -246,12 +246,14 @@ class FilesCollector extends DataCollector implements Renderable
      */
     public function collect()
     {
+        $app = \Gazelle\App::go();
+
         $includes = [];
         $files = get_included_files();
 
         foreach ($files as $file) {
             # skip composer files
-            if (!str_starts_with($include, "{$app->env->serverRoot}/vendor")) {
+            if (!str_starts_with($file, "{$app->env->serverRoot}/vendor")) {
                 $includes[] = [
                     "message" => $file,
                     "is_string" => true,
