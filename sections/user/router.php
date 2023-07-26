@@ -74,12 +74,6 @@ switch ($_REQUEST['action']) {
         require_once 'take_edit.php';
         break;
 
-        /*
-        case '2fa':
-            require_once '2fa.php';
-            break;
-        */
-
     case 'invitetree':
         require_once 'invitetree.php';
         break;
@@ -128,10 +122,6 @@ switch ($_REQUEST['action']) {
 
     case 'points':
         require_once serverRoot.'/sections/user/points.php';
-        break;
-
-    case 'token':
-        require_once __DIR__ . '/token.php';
         break;
 
     default:

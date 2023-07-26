@@ -50,9 +50,8 @@
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
     "foolz/sphinxql-query-builder": "^3.0.2",
-    "guzzlehttp/guzzle": "^7.5.1",
+    "guzzlehttp/guzzle": "^7.6.1",
     "illuminate/database": "^9.52.7",
-    "illuminate/events": "^9.52.7",
     "illuminate/support": "^9.52.7",
     "mikecao/flight": "^2.0.1",
     "nesbot/carbon": "^2.66",
@@ -64,12 +63,11 @@
     "ramsey/uuid": "^4.7.4",
     "robthree/twofactorauth": "^1.8.2",
     "snipe/banbuilder": "^2.3",
+    "sofa/eloquence": "dev-master",
     "spatie/once": "^3.1",
-    "symfony/http-foundation": "^6.2.10",
     "twig/twig": "^3.6.0",
     "vanilla/nbbc": "^2.4",
-    "web-auth/webauthn-lib": "^4.5.2",
-    "web-auth/webauthn-stimulus": "^4.5"
+    "web-auth/webauthn-lib": "^4.5.2"
   },
   "require-dev": {
     "ergebnis/composer-normalize": "^2.31.0",

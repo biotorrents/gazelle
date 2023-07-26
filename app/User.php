@@ -32,9 +32,6 @@ class User
     public $lightInfo = [];
     public $heavyInfo = [];
 
-    # hash algo for cache keys
-    private $algorithm = "sha3-512";
-
     # cache settings
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
@@ -235,7 +232,7 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and revoked = 0";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
@@ -786,64 +783,6 @@ class User
         $app = \Gazelle\App::go();
 
         return "{$app->env->siteName}-" . \Gazelle\Text::random(16);
-    }
-
-
-    /**
-     * createApiToken
-     *
-     * @see https://github.com/OPSnet/Gazelle/commit/7c208fc4c396a16c77289ef886d0015db65f2af1
-     */
-    public function createApiToken(int $id, string $name, string $key): string
-    {
-        $app = \Gazelle\App::go();
-
-        $suffix = sprintf('%014d', $id);
-        $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-        $hash = password_hash($token, PASSWORD_DEFAULT);
-
-        /*
-        # prevent collisions with an existing token name
-        while (true) {
-            $token = base64UrlEncode(Crypto::encrypt(random_bytes(32) . $suffix, $key));
-            $hash = password_hash($token, PASSWORD_DEFAULT);
-
-            if (!$this->hasApiToken($id, $token)) {
-                break;
-            }
-        }
-        */
-
-        $query = "insert into api_user_tokens (userId, name, token) values (?, ?, ?)";
-        $app->dbNew->do($query, [$id, $name, $hash]);
-
-        return $token;
-    }
-
-
-    /**
-     * hasTokenByName
-     */
-    public function hasTokenByName(int $id, string $name)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select 1 from user_api_tokens where userId = ? and name = ?";
-        $good = $app->dbNew->single($query, [$id, $name]);
-
-        return $good;
-    }
-
-
-    /**
-     * revokeApiTokenById
-     */
-    public function revokeApiTokenById(int $id, int $tokenId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "update user_api_tokens set revoked = 1 where userId = ? and id = ?";
-        $app->dbNew->do($query, [$id, $tokenId]);
     }
 
 

@@ -17,9 +17,6 @@ namespace Gazelle;
 
 class Text
 {
-    # hash algo for cache keys
-    private static $algorithm = "sha3-512";
-
     # cache settings
     private static $cachePrefix = "text:";
     private static $cacheDuration = "1 week";
@@ -43,7 +40,7 @@ class Text
         $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . hash(self::$algorithm, $string);
+        $cacheKey = self::$cachePrefix . hash($app->env->cacheAlgorithm, $string);
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -350,4 +347,24 @@ class Text
         return \Illuminate\Support\Str::limit($string, $length);
     }
 
+
+    /**
+     * isBinary
+     *
+     * I asked ChatGPT about this one.
+     */
+    public static function isBinaryString(string $string): bool
+    {
+        # check if the string contains any non-printable characters
+        if (preg_match("/[^\x20-\x7E\t\r\n]/", $string)) {
+            return true; # binary characters found
+        }
+
+        # check if the string is valid utf8
+        if (!mb_check_encoding($string, "UTF-8")) {
+            return true; # invalid utf8, likely binary
+        }
+
+        return false; # no binary characters found
+    }
 } # class

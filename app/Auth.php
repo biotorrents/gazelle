@@ -334,12 +334,11 @@ class Auth # extends Delight\Auth\Auth
         $query = "select id from users where username = ?";
         $userId = $app->dbNew->single($query, [$username]);
 
-        # delight-im/auth
-        try {
-            # legacy: remove after 2024-04-01
-            # fucking gazelle, hashing hashes with hardcoded algorithms
-            # this idiotic bullshit is actually insane
+        ##
+        # legacy: remove after 2024-04-01
+        #
 
+        try {
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
@@ -360,8 +359,9 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [1, $userId]);
             }
 
-            # end the dumb legacy upgrade clusterfuck
+            ##
             # resume normal, relatively sane code below
+            #
 
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
@@ -760,7 +760,6 @@ If you need the custom user information only rarely, you may just retrieve it as
     }
 
 
-
     /** gazelle hash checking */
 
 
@@ -823,14 +822,16 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "
             insert into users_sessions
-            (userId, sessionId, expires, ipAddress, userAgent)
+                (uuid, userId, sessionId, expires, ipAddress, userAgent)
             values
-            (:userId, :sessionId, :expires, :ipAddress, :userAgent)
+                (:uuid, :userId, :sessionId, :expires, :ipAddress, :userAgent)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
 
         $data = [
+            "uuid" => $uuid,
             "userId" => $userId,
             "sessionId" => \Gazelle\Text::random(128),
             "expires" => $expires,
@@ -894,26 +895,28 @@ If you need the custom user information only rarely, you may just retrieve it as
      * createBearerToken
      *
      * @param string $name
-     * @return string
+     * @param array $permissions ["create", "read", "update", "delete"]
+     * @return string the plaintext token
      */
-    public static function createBearerToken(?string $name = null): string
+    public static function createBearerToken(?string $name = null, array $permissions = []): string
     {
         $app = \Gazelle\App::go();
 
         $token = \Gazelle\Text::random(128);
         $name ??= \Gazelle\Text::random(16);
-        #$name ??= "Token from " . \Carbon\Carbon::now()->toDateTimeString();
 
         $query = "
-            insert into api_user_tokens (userId, name, token, revoked)
-            values (:userId, :name, :token, :revoked)
+            insert into api_tokens (uuid, userId, name, token, permissions)
+            values (:uuid, :userId, :name, :token, :permissions)
         ";
 
+        $uuid = $app->dbNew->uuid();
         $app->dbNew->do($query, [
+            "uuid" => $uuid,
             "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),
-            "revoked" => 0,
+            "permissions" => json_encode($permissions),
         ]);
 
         return $token;
@@ -931,8 +934,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_user_tokens where userId = ? and revoked = ?";
-        $ref = $app->dbNew->multi($query, [$app->user->core["id"], 0]);
+        $query = "select * from api_tokens where userId = ? and deleted_at is null";
+        $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;
     }
@@ -957,7 +960,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "update api_user_tokens set revoked = ? where id = ?";
-        $app->dbNew->do($query, [1, $tokenId]);
+        $query = "update api_tokens set deleted_at = now() where id = ?";
+        $app->dbNew->do($query, [$tokenId]);
     }
 } # class

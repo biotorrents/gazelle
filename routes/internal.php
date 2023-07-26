@@ -39,3 +39,11 @@ Flight::route("POST /api/internal/deleteFriend", ["Gazelle\API\Internal", "delet
 # bearer tokens
 Flight::route("POST /api/internal/createBearerToken", ["Gazelle\API\Internal", "createBearerToken"]);
 Flight::route("POST /api/internal/deleteBearerToken", ["Gazelle\API\Internal", "deleteBearerToken"]);
+
+# not found
+Flight::route("*", function () {
+    \Gazelle\API\Base::failure(404, "not found");
+});
+
+# start the router
+Flight::start();

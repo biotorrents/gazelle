@@ -32,11 +32,11 @@ class Json
 
 
     /**
-     * checkToken
+     * validateBearerToken
      *
      * Validates an authorization header and API token.
      */
-    public function checkToken(int $userId, string $token = "")
+    public function validateBearerToken(int $userId, string $token = "")
     {
         $app = \Gazelle\App::go();
 
@@ -73,7 +73,7 @@ class Json
         } # if (empty($token))
 
         # check the database
-        $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
+        $query = "select UserID, Token, Revoked from api_tokens where UserID = ?";
         $row = $app->dbNew->row($query, [$userId]);
         #~d($row);exit;
 
@@ -123,7 +123,7 @@ class Json
             return $this->failure("the server provided no payload", 500);
         }
 
-        header("Content-Type: application/json; charset=utf-8");
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
         print json_encode(
             [
                 "id" => uniqid(),
@@ -160,7 +160,7 @@ class Json
             return false;
         }
 
-        header("Content-Type: application/json; charset=utf-8");
+        header("Content-Type: application/vnd.api+json; charset=utf-8");
         print json_encode(
             [
                 "id" => uniqid(),

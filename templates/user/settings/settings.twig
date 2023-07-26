@@ -753,15 +753,17 @@
             <table id="bearerTokens">
             <tr>
                 <th>Name</th>
+                <th>Permissions</th>
                 <th>Created</th>
                 <th>Actions</th>
             </tr>
 
             {% for item in bearerTokens %}
-            <tr id="tokenId-{{ item.ID }}">
+            <tr id="tokenId-{{ item.id }}">
               <td>{{ item.name }}</td>
-              <td><span class="tooltip" title="{{ item.Created }}">{{ item.Created|relativeTime }}</span></td>
-              <td><a class="button deleteBearerToken" data-tokenId="{{ item.ID }}">revoke</a></td>
+              <td>{{ item.permissions }}</td>
+              <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
+              <td><a class="button deleteBearerToken" data-tokenId="{{ item.id }}">revoke</a></td>
             </tr>
             {% endfor %}
 
@@ -773,8 +775,30 @@
             <p><strong>Create a new token</strong></p>
 
             <p>
-            <input type="text" id="bearerTokenName" name="bearerTokenName" placeholder="e.g., my personal token">
+            <input type="text" id="tokenName" name="tokenName" placeholder="e.g., my personal token">
             </p>
+
+            <p class="flexRow">
+            <span>
+            <input type="checkbox" id="tokenCreatePermissions" name="tokenPermissions[]" value="create">
+            <label for="tokenCreatePermissions"> create</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenReadPermissions" name="tokenPermissions[]" value="read" checked>
+            <label for="tokenReadPermissions"> read</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenUpdatePermissions" name="tokenPermissions[]" value="update">
+            <label for="tokenUpdatePermissions"> update</label>
+            </span>
+
+            <span>
+            <input type="checkbox" id="tokenDeletePermissions" name="tokenPermissions[]" value="delete">
+            <label for="tokenDeletePermissions"> delete</label>
+            </span>
+           </p>
 
             <p>
             <a id="createBearerToken" class="button button-primary">create new token</a>
