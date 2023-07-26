@@ -1,0 +1,179 @@
+{##
+ # main collage search form
+ #}
+
+<h2>Collages</h2>
+
+{# the form itself #}
+<form id="torrentSearch" name="torrentSearch" method="get">
+
+
+	{# complex search form #}
+	<section id="{# complexSearch #}">
+
+		<table class="torrentSearch">
+
+			{# essentials #}
+			<tr id="essentials">
+				<th>Essentials</th>
+				<td>
+					{# torrent title / organism / strain or variety #}
+					<input type="text" name="complexSearch" placeholder="Collage title / organism / strain or variety" value="{{ searchTerms.complexSearch }}">
+				</td>
+			</tr>
+
+			{# numbers #}
+			<tr id="numbers">
+				<th>Numbers</th>
+				<td>
+					{# identifier / accession number / version #}
+					<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}">
+
+					{# year #}
+					<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}">
+				</td>
+			</tr>
+
+			{# people #}
+			<tr id="people">
+				<th>People</th>
+				<td>
+					{# department or lab / location #}
+					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}">
+
+					{# creator #}
+					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creator }}">
+				</td>
+			</tr>
+
+		</table>
+	</section> {# advancedSearch #}
+
+
+	{# sort options #}
+	<section id="sortOptions">
+		<h3>Sorting options</h3>
+
+		<table class="torrentSearch">
+
+			{# category list #}
+			<tr>
+				<th>Categories</th>
+				<td class="wrapThis">
+					<select id="categories" name="categories[]" placeholder="Categories" multiple>
+						{% for key, value in categories %}
+							{% set categoryId = key + 1 %}
+							<option value="{{ categoryId }}" {{ (categoryId in searchTerms.categories) ? "selected" : "" }}>
+								{{ value }}
+							</option>
+						{% endfor %}
+					</select>
+				</td>
+			</tr>
+
+			{# tag filter #}
+			<tr id="tagFilter">
+				<th>Tags</th>
+				<td>
+					<select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
+						{% for item in officialTags %}
+							<option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
+								{{ item }}
+							</option>
+						{% endfor %}
+					</select>
+
+					<div class="inlineFlex">
+					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}>
+					<label for="includeTags">Include&nbsp;<strong>all</strong></label>
+
+					<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (searchTerms.tagsType == "excludeTags") ? "checked" : "" }}>
+					<label for="excludeTags">Exclude&nbsp;<strong>any</strong></label>
+
+					{#
+					<span>
+						Use <code>-tag</code> or <code>!tag</code> to exclude tags
+					</span>
+					#}
+					</div>
+					
+				</td>
+			</tr>
+
+			{# ordering #}
+			<tr id="ordering">
+				<th>Order by</th>
+				<td>
+
+					<select name="orderBy" id="orderBy" placeholder="Attribute">
+						<option value="timeAdded" {{ (searchTerms.orderBy == "timeAdded") ? "selected" : "" }}>
+							Time added
+						</option>
+
+						<option value="year" {{ (searchTerms.orderBy == "year") ? "selected" : "" }}>
+							Year
+						</option>
+
+						<option value="size" {{ (searchTerms.orderBy == "size") ? "selected" : "" }}>
+							Size
+						</option>
+
+						<option value="snatched" {{ (searchTerms.orderBy == "snatched") ? "selected" : "" }}>
+							Snatched
+						</option>
+
+						<option value="seeders" {{ (searchTerms.orderBy == "seeders") ? "selected" : "" }}>
+							Seeders
+						</option>
+
+						<option value="leechers" {{ (searchTerms.orderBy == "leechers") ? "selected" : "" }}>
+							Leechers
+						</option>
+
+						<option value="identifier" {{ (searchTerms.orderBy == "identifier") ? "selected" : "" }}>
+							Accession number
+						</option>
+
+						<option value="random" {{ (searchTerms.orderBy == "random") ? "selected" : "" }}>
+							Random
+						</option>
+
+					</select>
+
+					{# order way #}
+					<select name="orderWay" id="orderWay" placeholder="Direction">
+						<option value="desc" {{ (searchTerms.orderWay == "desc") ? "selected" : "" }}>
+							Descending
+						</option>
+
+						<option value="asc" {{ (searchTerms.orderWay == "asc") ? "selected" : "" }}>
+							Ascending
+						</option>
+					</select>
+
+					<div class="inlineFlex">
+						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}>
+						<label for="groupResults">Group&nbsp;torrents</label>
+
+						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}>
+						<label for="openaiContent">OpenAI&nbsp;content</label>
+					</div>
+
+				</td>
+			</tr>
+
+			{# formControls #}
+			<tr>
+				<th/>
+				<td id="formControls">
+					<input type="submit" value="search" class="button-primary">
+
+					<input type="button" id="resetSearchForm" value="reset">
+				</td>
+			</tr>
+
+
+		</table>
+	</section> {# sortOptions #}
+
+</form>

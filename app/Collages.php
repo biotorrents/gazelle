@@ -9,6 +9,9 @@ declare(strict_types=1);
 
 class Collages
 {
+    # the object itself
+    public $object = null;
+
     # ["database" => "display"]
     private $maps = [
         "uuid" => "uuid",
@@ -38,7 +41,8 @@ class Collages
     public function __construct(int|string $identifier = null)
     {
         if ($identifier) {
-            return $this->read($identifier);
+            $this->object = $this->read($identifier);
+            #return $this->read($identifier);
         }
     }
 

@@ -350,6 +350,14 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # User::format_username
+        $twig->addFilter(new Twig\TwigFilter("formatUsername", function ($userId) {
+            return new Twig\Markup(
+                User::format_username($userId),
+                "UTF-8"
+            );
+        }));
+
         # random creator
         $twig->addFunction(new Twig\TwigFunction("randomCreator", function () {
             $randomCreators = [
