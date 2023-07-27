@@ -1,8 +1,27 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 $app = \Gazelle\App::go();
+
+# http request
+$get = Http::get();
+$id = $get["id"];
+
+# collage details
+$collage = new Collages($id);
+$collage = $collage->object;
+
+# twig template
+$app->twig->display("collages/details.twig", [
+  "title" => $collage["title"],
+  "sidebar" => true,
+  "collage" => $collage,
+]);
+
+exit;
+
+/****** */
 
 $CollageID = (int) $_GET['id'];
 Security::int($CollageID);

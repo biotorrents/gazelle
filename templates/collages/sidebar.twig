@@ -1,3 +1,207 @@
+{# actions #}
+<section>
+	<h3>Actions</h3>
+
+	<form>
+
+        {% if can("site_collages_create") %}
+            {# add new collage #}
+		    <a class="button button-green" href="/collages.php?action=new">create a collage</a>
+        {% endif %}
+
+        {# back to list #}
+       	<a class="button button-primary" href="/collages.php">back to list</a>
+ 
+
+        {# edit buttons #}
+        {% if can("site_collages_manage") and not collage.isLocked %}
+            {# manage torrents #}
+		    <a class="button button-orange" href="/collages.php?action=manage&collageid={{ collage.id }}">manage torrents</a>
+        {% endif %}
+
+
+        <div class="linkbox">
+      <a href="collages.php" class="brackets">List of collections</a>
+      <br><br>
+      <?php if (check_perms('site_collages_subscribe')) { ?>
+      <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
+        onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
+      <?php
+      }
+  if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
+      ?>
+      <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
+        class="brackets">Edit description</a>
+      <?php
+  } else { ?>
+      <span class="brackets">Locked</span>
+      <?php
+  }
+  if (Bookmarks::isBookmarked('collage', $CollageID)) {
+      ?>
+      <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
+        class="brackets"
+        onclick="Unbookmark('collage', <?=$CollageID?>, 'Bookmark'); return false;">Remove
+        bookmark</a>
+      <?php
+  } else { ?>
+      <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
+        class="brackets"
+        onclick="Bookmark('collage', <?=$CollageID?>, 'Remove bookmark'); return false;">Bookmark</a>
+      <?php } ?>
+      <!-- <a href="#" id="recommend" class="brackets">Recommend</a> -->
+      <?php
+  if (check_perms('site_collages_manage') && !$Locked) {
+      ?>
+      <a href="collages.php?action=manage&amp;collageid=<?=$CollageID?>"
+        class="brackets">Manage torrents</a>
+      <?php
+  } ?>
+      <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
+        class="brackets">Report collection</a>
+      <?php if (check_perms('site_collages_delete') || $CreatorID == $app->user->core['id']) { ?>
+      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
+        class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
+      <?php } ?>
+    </div>
+ 
+
+
+
+
+{#
+		{# add new request # }
+		{% if can("site_submit_requests") %}
+			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
+		{% endif %}
+#}
+
+		{# toggle bookmark #}
+		{% if isBookmarked %}
+			<a class="button button-red" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">remove bookmark</a>
+		{% else %}
+			<a class="button button-orange" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">add bookmark</a>
+		{% endif %}
+
+		<hr />
+
+		{# edit group #}
+		{% if can("site_edit_wiki") %}
+			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
+		{% endif %}
+
+		{# use this revision #}
+		{% if revisionId != 0 and can("site_edit_wiki") %}
+			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
+		{% endif %}
+
+		{# revision history #}
+		<a class="button" href="/torrents.php?action=history&groupid={{ groupId }}">revision history</a>
+
+		{# view log #}
+		<a class="button" href="/torrents.php?action=grouplog&groupid={{ groupId }}">view log</a>
+
+	</form>
+
+</section>
+
+
+{# creators #}
+<section>
+<span id="creatorListHeader">
+<h3>Creators</h3>
+<a class="button button-orange">edit</a>
+</span>
+
+<table class="compact">
+
+{% for item in creatorList %}
+<tr>
+<th>{{ displayCreator(item) }}</th>
+
+<td class="right">
+{% if can("torrents_edit") %}
+
+<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
+
+{% endif %}
+</td>
+</tr>
+{% endfor %}
+
+</table>
+
+{# add new #}
+{% if can("torrents_add_artist") %}
+<form>
+<input type="hidden" name="groupId" value="{{ groupId }}">
+
+<input type="text" id="creatorName" placeholder="e.g., {{ randomCreator() }}">
+
+<a class="button button-primary" id="addNewCreator">new creator</a>
+</form>
+{% endif %}
+</section>
+
+
+{# tags #}
+<section>
+<h3>Tags</h3>
+
+<table class="compact">
+
+{# normal tags #}
+{% for item in tagList %}
+{% if item.tagType != "openai" %}
+<tr>
+
+<th>{{ item.name }}</th>
+
+<td class="right">
+{% if can("torrents_edit") %}
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+{% endif %}
+
+</td>
+</tr>
+{% endif %}
+{% endfor %}
+
+{# openai tags #}
+{% for item in tagList %}
+{% if item.tagType == "openai" and user.siteOptions.openaiContent %}
+
+<tr>
+
+<th class="openaiTorrentTag">{{ item.name }}</th>
+
+<td class="right">
+{% if can("torrents_edit") %}
+<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+{% endif %}
+
+</td>
+</tr>
+{% endif %}
+
+{% endfor %}
+
+
+</table>
+
+{# add new #}
+<form>
+<input type="hidden" name="groupId" value="{{ groupId }}">
+
+<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}">
+
+<a class="button button-primary" id="addNewTag">new tag</a>
+</form>
+</section>
+
+
+
+
 {#
 <div class="box box_category">
     <div class="head"><strong>Category</strong></div>

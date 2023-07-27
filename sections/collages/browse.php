@@ -185,7 +185,7 @@ $GroupedCategories = $Categories;
 /** twig template */
 
 $app->twig->display("collages/browse.twig", [
-    "title" => "Browse",
+    "title" => "Browse collages",
     "js" => ["vendor/tom-select.complete.min", "browse"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 

@@ -159,6 +159,11 @@ I dropped support for a number of compromising features:
 - Bitcoin addresses, user donation history, and similar metadata; and
 - IP address and geolocation, email address, passphrase, and passkey history.
 
+The software license is also updated to use
+[OpenBSD's license template](https://www.openbsd.org/policy.html)
+instead of the questionable Unlicense that may be illegal in Germany and elsewhere.
+We seek to make our original code available to all with as few restrictions as possible.
+No fuss, no muss.
 Besides that, BioGazelle has several passive developments in progress:
 
 - prepare all queries with parameterized statements;
