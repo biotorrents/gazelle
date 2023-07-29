@@ -25,7 +25,7 @@ class Collages extends Base
 
             $ids = $manticore->search("collections", $request);
             foreach ($ids as $id) {
-                $data[] = \Torrents::get_groups($id);
+                $data[] = new \Collages($id);
             }
 
             self::success(200, $data);

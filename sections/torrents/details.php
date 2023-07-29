@@ -69,7 +69,7 @@ $app->twig->display("torrents/details.twig", [
     "title" => $groupDetails["title"],
     "sidebar" => true,
 
-    "js" => ["vendor/easymde.min", "vendor/tom-select.complete.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
+    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
 
     "groupId" => $groupId,

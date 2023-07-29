@@ -1,7 +1,62 @@
 <?php
-#declare(strict_types = 1);
+
+declare(strict_types=1);
+
+
+/**
+ * create or update a collage
+ */
 
 $app = \Gazelle\App::go();
+
+# http requests
+$get = Http::get();
+$post = Http::post();
+
+# default to create a new collage
+$collageId = $get["collageid"] ?? null;
+$isUpdate = false;
+$title = "Create a new collage";
+$tagList = [];
+
+# are we editing an existing collage?
+if ($collageId) {
+    try {
+        $collage = new Collages($collageId);
+        if (!$collage->id) {
+            throw new Exception("The requested collage doesn't exist");
+        }
+
+        $collageId = $collage->id ?? null;
+        $isUpdate = true;
+        $title = "Edit {$collage->title}";
+        $tagList = new Tags($collage->tagList);
+    } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
+    }
+}
+
+# official tags
+$query = "select name from tags where tagType = 'genre' order by name";
+$ref = $app->dbNew->multi($query, []);
+$officialTags = array_column($ref, "name");
+
+# twig template
+$app->twig->display("collages/createUpdate.twig", [
+    "title" => $title,
+    "pageTitle" => $title,
+    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min"],
+    "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+
+    "collage" => $collage ?? null,
+    "collageId" => $collageId ?? null,
+    "errorMessage" => $errorMessage ?? null,
+    "isUpdate" => $isUpdate ?? null,
+    "tagList" => $tagList ?? [],
+    "officialTags" => $officialTags,
+]);
+
+exit;
 
 View::header(
     'Create a collection',

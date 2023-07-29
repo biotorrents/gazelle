@@ -2,6 +2,7 @@
 
 #declare(strict_types=1);
 
+/*
 $app = \Gazelle\App::go();
 
 authorize();
@@ -76,3 +77,4 @@ if ($_POST['submit'] === 'Remove') {
 
 $app->cache->delete("collage_$CollageID");
 Http::redirect("collages.php?action=manage_artists&collageid=$CollageID");
+*/

@@ -154,7 +154,7 @@ $officialTags = array_column($ref, "name");
 
 $app->twig->display("collages/browse.twig", [
     "title" => "Browse collages",
-    "js" => ["vendor/tom-select.complete.min", "browse"],
+    "js" => ["vendor/tom-select.base.min", "browse"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
     "categories" => $app->env->collageCategories,

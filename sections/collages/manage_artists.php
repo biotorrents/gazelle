@@ -1,6 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
+/*
 $app = \Gazelle\App::go();
 
 $CollageID = $_GET['collageid'];
@@ -155,3 +157,4 @@ foreach ($Artists as $Artist) {
   </form>
 </div>
 <?php View::footer();
+*/

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-
+/*
 $app = \Gazelle\App::go();
 
 //NumTorrents is actually the number of things in the collage, the name just isn't generic.
@@ -53,7 +53,7 @@ function add_artist($CollageID, $ArtistID)
         while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
             $app->cache->delete("collage_subs_user_new_$app->cacheOldUserID");
         }
-        */
+        * /
     }
 }
 
@@ -172,3 +172,4 @@ if ($_REQUEST['action'] == 'add_artist') {
     }
 }
 Http::redirect("collages.php?id=$CollageID");
+*/

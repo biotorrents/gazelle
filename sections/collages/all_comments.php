@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 $app = \Gazelle\App::go();
@@ -12,6 +13,7 @@ Things to expect in $_GET:
 
 ********************************************************************************/
 
+/*
 //---------- Things to sort out before it can start printing/generating content
 
 // Check for lame SQL injection attempts
@@ -79,3 +81,4 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
 </div>
 
 <?php View::footer();
+*/

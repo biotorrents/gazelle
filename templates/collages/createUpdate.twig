@@ -1,0 +1,135 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>{{ pageTitle }}</h2>
+
+  {# collage form #}
+  <section>
+    <h3 class="hidden">collageForm</h3>
+
+    <p>
+      Please consult the
+      <a href="/rules/collages">collage rules</a>
+      before using this form.
+      This page has helpful guidelines for using the collage system.
+      Thanks for contributing to the site's data ecosystem.
+    </p>
+
+    
+    <form name="collage" method="post">
+
+      {# hidden fields #}
+      {{ form_token(query.server.REQUEST_URI) }}
+		  <input type="hidden" name="collageId" value={{ collageId }}>
+		  <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
+		  <input type="hidden" name="userId" value="{{ user.core.id }}">
+
+      {# visible fields #}
+			<table>
+
+      {# title #}
+	    <tr>
+		    <th>
+          <label for="title">Title</label>
+		    </th>
+
+		    <td>
+			    <input type="text" id="title" name="title" maxlength="128" placeholder="The collage's title" value="{{ (collage) ? collage.title : "" }}">
+		    </td>
+	    </tr>
+
+      {# category #}
+	    <tr>
+		    <th>
+          <label for="category">Category</label>
+		    </th>
+
+		    <td>
+          <select name="category">
+          {% for key, value in env.collageCategories %}
+            <option value="{{ key }}" {{ (collage and collage.categoryId == key) ? " selected" : "" }}>{{ value }}</option>
+          {% endfor %}
+          </select>
+
+          {# todo: this is hardcoded #}
+          <br><br>
+          <ul>
+            <li>
+              <strong>Personal</strong> &mdash; A collage that appears on your profile page
+            </li>
+
+            <li>
+              <strong>Theme</strong> &mdash; A collage with thematically grouped torrents
+            </li>
+
+{#
+            <li>
+              <strong>Staff Picks</strong> &mdash; A list of staff recommendations for special occasions
+            </li>
+
+            <li>
+              <strong>Group Picks</strong> &mdash; A collage that appears on your profile page
+            </li>
+#}
+          </ul>
+
+		    </td>
+	    </tr>
+
+      {# description #}
+	    <tr>
+		    <th>
+          <label for="description">Description</label>
+		    </th>
+
+		    <td>
+          {% set variables = {"id": "description", "name": "description", "placeholder": "Detailed description of the collage's content and purpose", "value": (collage) ? collage.description : "", "required": true} %}
+			    {% include "_base/textarea.twig" with variables %}
+		    </td>
+	    </tr>
+
+      			{# tags #}
+			<tr>
+				<th>Tags</th>
+				<td>
+					<select id="tagList" name="tagList[]" class="select" placeholder="Add or remove tags" multiple>
+						{% for item in officialTags %}
+							<option value="{{ item }}" {{ (item in tagList) ? "selected" : "" }}>
+								{{ item }}
+							</option>
+						{% endfor %}
+					</select>
+					
+				</td>
+			</tr>
+
+      {# todo: torrent textarea here, one per line #}
+
+{# update button #}
+      {% if isUpdate %}
+        <tr>
+          <td colspan="2" class="center">
+            <input type="submit" class="button-orange" value="update">
+          </td>
+        </tr>
+
+{# create button #}
+      {% else %}
+        <tr>
+          <td colspan="2" class="center">
+            <input type="submit" class="button-primary" value="create">
+          </td>
+        </tr>
+      {% endif %}
+
+
+
+  </table>
+
+
+    </form>
+
+  </section>
+
+{% endblock %}
