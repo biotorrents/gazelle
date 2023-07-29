@@ -9,34 +9,41 @@
 		    <a class="button button-green" href="/collages.php?action=new">create a collage</a>
         {% endif %}
 
-        {# back to list #}
-       	<a class="button button-primary" href="/collages.php">back to list</a>
+        {# back to search #}
+       	{# <a class="button button-primary" href="/collages.php">back to search</a> #}
  
 
         {# edit buttons #}
         {% if can("site_collages_manage") and not collage.isLocked %}
             {# manage torrents #}
 		    <a class="button button-orange" href="/collages.php?action=manage&collageid={{ collage.id }}">manage torrents</a>
+
+            {# edit description #}
+            <a class="button button-orange" href="/collages.php?action=edit&collageid={{ collage.id }}">edit description</a>
         {% endif %}
 
+        {# report #}
+      <a class="button button-red" href="/reports.php?action=report&type=collage&id={{ collage.id }}">report</a>
 
-        <div class="linkbox">
-      <a href="collages.php" class="brackets">List of collections</a>
-      <br><br>
+      {# delete #}
+      {% if can("site_collages_delete") or collage.creatorId == user.core.id %}
+      <a class="button button-red" href="/collages.php?action=delete&collageid={{ collage.id }}&auth={{ user.extra.AuthKey }}"
+        onclick="return confirm('Are you sure you want to delete this collage?');">delete</a>
+        {% endif %}
+
+        <hr>
+
+{# suscribe #}
+{#
       <?php if (check_perms('site_collages_subscribe')) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php
       }
-  if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
-      ?>
-      <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
-        class="brackets">Edit description</a>
-      <?php
-  } else { ?>
-      <span class="brackets">Locked</span>
-      <?php
-  }
+#}
+
+{# bookmark #}
+{#
   if (Bookmarks::isBookmarked('collage', $CollageID)) {
       ?>
       <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
@@ -49,289 +56,101 @@
         class="brackets"
         onclick="Bookmark('collage', <?=$CollageID?>, 'Remove bookmark'); return false;">Bookmark</a>
       <?php } ?>
-      <!-- <a href="#" id="recommend" class="brackets">Recommend</a> -->
-      <?php
-  if (check_perms('site_collages_manage') && !$Locked) {
-      ?>
-      <a href="collages.php?action=manage&amp;collageid=<?=$CollageID?>"
-        class="brackets">Manage torrents</a>
-      <?php
-  } ?>
-      <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
-        class="brackets">Report collection</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID == $app->user->core['id']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
-        class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
-      <?php } ?>
-    </div>
- 
-
-
-
-
-{#
-		{# add new request # }
-		{% if can("site_submit_requests") %}
-			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
-		{% endif %}
 #}
+
 
 		{# toggle bookmark #}
 		{% if isBookmarked %}
-			<a class="button button-red" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">remove bookmark</a>
+			<a class="button button-red" id="toggleCollageBookmark" data-userid="{{ user.core.id }}" data-collageid="{{ collage.id }}">remove bookmark</a>
 		{% else %}
-			<a class="button button-orange" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ groupId }}">add bookmark</a>
+			<a class="button button-orange" id="toggleCollageBookmark" data-userid="{{ user.core.id }}" data-collageid="{{ collage.id }}">add bookmark</a>
 		{% endif %}
-
-		<hr />
-
-		{# edit group #}
-		{% if can("site_edit_wiki") %}
-			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
-		{% endif %}
-
-		{# use this revision #}
-		{% if revisionId != 0 and can("site_edit_wiki") %}
-			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
-		{% endif %}
-
-		{# revision history #}
-		<a class="button" href="/torrents.php?action=history&groupid={{ groupId }}">revision history</a>
-
-		{# view log #}
-		<a class="button" href="/torrents.php?action=grouplog&groupid={{ groupId }}">view log</a>
 
 	</form>
 
 </section>
 
 
-{# creators #}
+{# stats #}
 <section>
-<span id="creatorListHeader">
-<h3>Creators</h3>
-<a class="button button-orange">edit</a>
-</span>
+<h3>Stats</h3>
 
 <table class="compact">
 
-{% for item in creatorList %}
 <tr>
-<th>{{ displayCreator(item) }}</th>
-
-<td class="right">
-{% if can("torrents_edit") %}
-
-<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
-
-{% endif %}
-</td>
+<th>Groups</th>
+<td class="right">{{ collage.torrentCount }}</td>
 </tr>
-{% endfor %}
+
+<tr>
+<th>Creators</th>
+<td class="right">{{ stats.creatorCount }}</td>
+</tr>
+
+<tr>
+<th>Contributors</th>
+<td class="right">{{ stats.contributorCount }}</td>
+</tr>
+
+<tr>
+<th>Tags</th>
+<td class="right">{{ stats.tagCount }}</td>
+</tr>
 
 </table>
-
-{# add new #}
-{% if can("torrents_add_artist") %}
-<form>
-<input type="hidden" name="groupId" value="{{ groupId }}">
-
-<input type="text" id="creatorName" placeholder="e.g., {{ randomCreator() }}">
-
-<a class="button button-primary" id="addNewCreator">new creator</a>
-</form>
-{% endif %}
 </section>
 
-
-{# tags #}
+{# top creators #}
 <section>
-<h3>Tags</h3>
+<h3>Top creators</h3>
 
 <table class="compact">
 
-{# normal tags #}
-{% for item in tagList %}
-{% if item.tagType != "openai" %}
-<tr>
 
-<th>{{ item.name }}</th>
-
-<td class="right">
-{% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
-{% endif %}
-
-</td>
-</tr>
-{% endif %}
-{% endfor %}
-
-{# openai tags #}
-{% for item in tagList %}
-{% if item.tagType == "openai" and user.siteOptions.openaiContent %}
+{% for key, value in stats.topCreators %}
 
 <tr>
-
-<th class="openaiTorrentTag">{{ item.name }}</th>
-
-<td class="right">
-{% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
-{% endif %}
-
-</td>
+<th>{{ creatorNameById(key, true) }}</th>
+<td class="right">{{ value }}</td>
 </tr>
-{% endif %}
 
 {% endfor %}
-
 
 </table>
-
-{# add new #}
-<form>
-<input type="hidden" name="groupId" value="{{ groupId }}">
-
-<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}">
-
-<a class="button button-primary" id="addNewTag">new tag</a>
-</form>
 </section>
 
+{# top contributors #}
+<section>
+<h3>Top contributors</h3>
 
+<table class="compact">
 
+{% for key, value in stats.topContributors %}
 
-{#
-<div class="box box_category">
-    <div class="head"><strong>Category</strong></div>
-    <div class="pad">
-    <a href="collages.php?action=search&amp;cats[{{ category_id }}]=1">{{ category_name }}</a>
-{% if is_personal %}
-collage by {{ user_id }}
-{% endif %}
-    </div>
-</div>
-<div class="box box_description">
-    <div class="head"><strong>Description</strong></div>
-    <div class="pad">{{ description|raw }}</div>
-</div>
-<div class="box box_info box_statistics_collage_{{ object }}s">
-    <div class="head"><strong>Statistics</strong></div>
-    <ul class="stats nobullet">
-        <li>Entries: {{ entries|number_format }}</li>
-{% if artists %}
-        <li>Artists: {{ artists|number_format }}</li>
-{% endif %}
-        <li>Subscribers: {{ subscribers|number_format }}</li>
-        <li>Built by {{ contributors_n|number_format }} user{{ contributors_n|plural }}</li>
-        <li>Last updated: {{ updated|time_diff }}</li>
-    </ul>
-</div>
-{% if top_tags is defined %}
-<div class="box box_tags">
-    <div class="head"><strong>Top Tags</strong></div>
-    <div class="pad">
-{%   if top_tags is empty %}
-        <i>None yet</i>
-{%   else %}
-        <ol style="padding-left: 5px;">
-{% for t in top_tags %}
-            <li><a href="collages.php?action=search&amp;tags={{ t.tag }}">{{ t.tag }}</a> ({{ t.count }})</li>
+<tr>
+<th>{{ key|formatUsername }}</th>
+<td class="right">{{ value }}</td>
+</tr>
+
 {% endfor %}
-        </ol>
-{%     endif %}
-    </div>
-</div>
-{% endif %}
-{% if artists %}
-<div class="box box_artists">
-    <div class="head"><strong>Top Artists</strong></div>
-    <div class="pad">
-        <ol style="padding-left: 5px;">
-{% for artist in top_artists %}
-            <li><a href="artist.php?id={{ artist.id }} ">{{ artist.name }}</a> ({{ artist.count|number_format }})</li>
+
+</table>
+</section>
+
+{# top tags #}
+<section>
+<h3>Top tags</h3>
+
+<table class="compact">
+
+{% for key, value in stats.topTags %}
+
+<tr>
+<th><a href="/collages.php?action=search&tags={{ tagNameById(key, false) }}">{{ tagNameById(key, false) }}</a></th>
+<td class="right">{{ value }}</td>
+</tr>
+
 {% endfor %}
-        </ol>
-    </div>
-</div>
-{% endif %}
-{% if not is_personal %}
-<div class="box box_contributors">
-    <div class="head"><strong>Top Contributors</strong></div>
-    <div class="pad">
-        <ol style="padding-left: 5px;">
-{% for user_id, additions in contributors %}
-            <li>{{ user_id }} ({{ additions|number_format }})</li>
-{% endfor %}
-        </ol>
-    </div>
-</div>
-{% endif %}
-{% if can_add %}
-<div class="box box_add{{ object }}">
-    <div class="head"><strong>Add {{ object_name }}</strong><span class="u-pull-right"><a href="#" onclick="$('.add_{{ object }}_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML == 'Batch add' ? 'Individual add' : 'Batch add'); return false;" class="brackets">Batch add</a></span></div>
-    <div class="pad add_{{ object }}_container">
-        <form class="add_form" name="{{ object }}" action="collages.php" method="post">
-            <input type="hidden" name="action" value="add_{{ object }}">
-            <input type="hidden" name="auth" value="{{ auth }}">
-            <input type="hidden" name="collageid" value="{{ id }}">
-            <div class="field_div">
-                <input type="text" size="20" name="url">
-            </div>
-            <div class="submit_div">
-                <input type="submit" value="Add">
-            </div>
-            <span style="font-style: italic;">Enter the URL of {{ object|article }} {{ object }} on the site.</span>
-        </form>
-    </div>
-    <div class="pad hidden add_{{ object }}_container">
-        <form class="add_form" name="{{ object }}s" action="collages.php" method="post">
-            <input type="hidden" name="action" value="add_{{ object }}_batch">
-            <input type="hidden" name="auth" value="{{ auth }}">
-            <input type="hidden" name="collageid" value="{{ id }}">
-            <div class="field_div">
-                <textarea name="urls" rows="5" cols="25" style="white-space: pre; word-wrap: normal; overflow: auto;"></textarea>
-            </div>
-            <div class="submit_div">
-                <input type="submit" value="Add">
-            </div>
-            <span style="font-style: italic;">Enter the URLs of {{ object}}s on the site, one per line.</span>
-        </form>
-    </div>
-</div>
-{% endif %}
-<h3>Comments</h3>
-{% for comment in comments %}
-<div class="box comment">
-    <div class="head">
-        {{ comment.author_id }} {{ comment.added|time_diff }}
-        <br>
-        <a href="reports.php?action=report&amp;type=collages_comment&amp;id={{ comment.id }}" class="brackets">Report</a>
-    </div>
-    <div class="pad">{{ comment.body|raw }}</div>
-</div>
-{% endfor %}
-<div class="box pad">
-    <a href="collages.php?action=comments&amp;collageid={{ id }}" class="brackets">View all comments</a>
-</div>
-{% if can_post %}
-<div class="box box_addcomment">
-    <div class="head"><strong>Add comment</strong></div>
-    <form class="send_form" name="comment" id="quickpostform" onsubmit="quickpostform.submit_button.disabled = true;" action="comments.php" method="post">
-        <input type="hidden" name="action" value="take_post">
-        <input type="hidden" name="page" value="collages">
-        <input type="hidden" name="auth" value="{{ auth }}">
-        <input type="hidden" name="pageid" value="{{ id }}">
-        <div class="pad">
-            <div class="field_div">
-                <textarea name="body" cols="24" rows="5"></textarea>
-            </div>
-            <div class="submit_div">
-                <input type="submit" id="submit_button" value="Add comment">
-            </div>
-        </div>
-    </form>
-</div>
-{% endif %}
-#}
+
+</table>
+</section>

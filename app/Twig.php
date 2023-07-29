@@ -297,6 +297,14 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Artists::getNameById
+        $twig->addFunction(new Twig\TwigFunction("creatorNameById", function ($id, $html = false) {
+            return new Twig\Markup(
+                Artists::getNameById($id, $html),
+                "UTF-8"
+            );
+        }));
+
         # displayTags
         $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
             $tags = new Tags($tagList);
@@ -315,6 +323,14 @@ class Twig # extends Twig\Environment
 
             return new Twig\Markup(
                 $tags->format(""),
+                "UTF-8"
+            );
+        }));
+
+        # Tags::getNameById
+        $twig->addFunction(new Twig\TwigFunction("tagNameById", function ($id, $html = true) {
+            return new Twig\Markup(
+                Tags::getNameById($id, $html),
                 "UTF-8"
             );
         }));

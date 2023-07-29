@@ -1,6 +1,11 @@
 <?php
-#declare(strict_types=1);
 
+declare(strict_types=1);
+
+# todo: rework this into something more sensible for the site,
+# such as a "workgroup spotlight" that automatically collects creators and their groups
+
+/*
 $app = \Gazelle\App::go();
 
 // todo: Cache this
@@ -384,3 +389,4 @@ if ($CollageCovers !== 0) {
 
 <?php
 View::footer();
+*/

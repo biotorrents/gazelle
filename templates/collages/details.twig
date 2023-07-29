@@ -2,379 +2,127 @@
 
 {% block content %}
 
-	<h2>{{ groupDetails.title }}</h2>
+	<h2>{{ collage.title }}</h2>
 
-	{# essential details table #}
+  {# description #}
+  <section>
+    <h3 class="hidden">Description</h3>
+
+    {{ collage.description|parse }}
+    </section>
+
+
+      {# pictures #}
+      {#}
+  <section>
+    <h3>Pictures</h3>
+
+// Silly hack for people who are on the old setting
+$app->user->extra['HideCollage'] ??= 0;
+$CollageCovers = isset($app->user->extra['CollageCovers']) ? $app->user->extra['CollageCovers'] : 25 * (abs($app->user->extra['HideCollage'] - 1));
+$CollagePages = [];
+
+if ($CollageCovers) {
+    for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) {
+        $Groups = array_slice($Collage, $i * $CollageCovers, $CollageCovers);
+        $CollagePage = '';
+        foreach ($Groups as $Group) {
+            $CollagePage .= $Group;
+        }
+        $CollagePages[] = $CollagePage;
+    }
+}
+
+        <?php
+if ($CollageCovers != 0) { ?>
+    <div id="coverart" class="box">
+      <div class="head" id="coverhead"><strong>Pictures</strong></div>
+      <div class="collage_images" id="collage_page0" data-wall-child=".collage_image" data-wall-size="4"
+        data-wall-min="2">
+        <?php
+  $Page1 = array_slice($Collage, 0, $CollageCovers);
+    foreach ($Page1 as $Group) {
+        echo $Group;
+    }
+    ?>
+      </div>
+    </div>
+
+    <?php if ($NumGroups > $CollageCovers) { ?>
+    <div class="linkbox pager" style="clear: left;" id="pageslinksdiv">
+
+      <span id="firstpage" class="invisible">
+        <a href="#" class="pageslink" onclick="collageShow.page(0, this); return false;">
+          <strong>&laquo; First</strong>
+        </a> |
+      </span>
+
+      <span id="prevpage" class="invisible">
+        <a href="#" class="pageslink" onclick="collageShow.prevPage(); return false;">
+          <strong>&lsaquo; Prev</strong>
+        </a> |
+      </span>
+
+      <?php for ($i = 0; $i < $NumGroups / $CollageCovers; $i++) { ?>
+      <span id="pagelink<?=$i?>"
+        class="<?=(($i > 4) ? 'hidden' : '')?><?=(($i == 0) ? 'selected' : '')?>">
+        <a href="#" class="pageslink"
+          onclick="collageShow.page(<?=$i?>, this); return false;">
+          <strong><?=$CollageCovers * $i + 1?>-<?=min($NumGroups, $CollageCovers * ($i + 1))?></strong>
+        </a>
+        <?=(($i != ceil($NumGroups / $CollageCovers) - 1) ? ' | ' : '')?>
+      </span>
+      <?php } ?>
+
+      <span id="nextbar"
+        class="<?=($NumGroups / $CollageCovers > 5) ? 'hidden' : ''?>">
+        | </span>
+
+      <span id="nextpage">
+        <a href="#" class="pageslink" onclick="collageShow.nextPage(); return false;">
+          <strong>Next &rsaquo;</strong>
+        </a>
+      </span>
+
+      <span id="lastpage"
+        class="<?=(ceil($NumGroups / $CollageCovers) == 2 ? 'invisible' : '')?>">
+        |
+        <a href="#" class="pageslink"
+          onclick="collageShow.page(<?=ceil($NumGroups / $CollageCovers) - 1?>, this); return false;">
+          <strong>Last&nbsp;&raquo;</strong>
+        </a>
+      </span>
+    </div>
+
+    <script>
+      $(() => collageShow.init( <?=json_encode($CollagePages)?> ));
+    </script>
+    <?php
+    }
+}
+?>
+
+    {{ collage.description|parse }}
+    </section>
+    #}
+
+
+
+	{# torrents table #}
 	<section>
+  <h3>Torrent groups</h3>
+
 		<table>
 
-			{# organism #}
-			{% if groupDetails.subject %}
-				<tr>
-					<th><span class="subjectObject nobr">Organism</span></th>
+{% for group in torrentGroups %}
 
-					<td>
-            {# subject #}
-          	{{ "<em>#{groupDetails.subject}</em>"|raw }}
-						{# object #}
-					  {{ (groupDetails.object) ? groupDetails.object : "" }}
-					</td>
+{% include "torrents/tableEntry.twig" with group %}
 
-					<td>
-						<a href="/torrents.php?complexSearch={{ groupDetails.subject }} {{ groupDetails.object }}">Search&nbsp;»</a>
-					</td>
-				</tr>
-			{% endif %}
-
-			{# year #}
-			{% if groupDetails.year %}
-				<tr>
-					<th><span class="year nobr">Year</span></th>
-
-					<td>{{ groupDetails.year }}</td>
-
-					<td>
-						<a href="/torrents.php?year={{ groupDetails.year }}">Search&nbsp;»</a>
-					</td>
-				</tr>
-			{% endif %}
-
-			{# identifier #}
-			{% if groupDetails.identifier %}
-				<tr>
-					<th><span class="identifier nobr">Identifier</span></th>
-
-					<td>{{ groupDetails.identifier }}</td>
-
-					<td/>
-				</tr>
-			{% endif %}
-
-			{# workgroup #}
-			{% if groupDetails.workgroup %}
-				<tr>
-					<th><span class="workgroup nobr">Workgroup</span></th>
-
-					<td>{{ groupDetails.workgroup|raw }}</td>
-
-					<td>
-						<a href="/torrents.php?location={{ groupDetails.workgroup }}">Search&nbsp;»</a>
-					</td>
-				</tr>
-			{% endif %}
-
-			{# location #}
-			{% if groupDetails.location %}
-				<tr>
-					<th><span class="location nobr">Location</span></th>
-
-					<td>{{ groupDetails.location|raw }}</td>
-
-					<td>
-						<a href="/torrents.php?location={{ groupDetails.location }}">Search&nbsp;»</a>
-					</td>
-				</tr>
-			{% endif %}
-
-			{# tags #}
-		    {#
-			{% if groupDetails.tag_list is not empty %}
-				<tr>
-					<th>#️ Tags</th>
-		
-					<td>{{ displayTags(item.tag_list)|raw }}</td>
-		
-					<td/>
-				</tr>
-			{% endif %}
-		    #}
-
-			{# creators #}
-			{#
-			{% if groupDetails.tag_list is not empty %}
-				<tr>
-					<th>#️ Tags</th>
-			
-					<td>{{ displayTags(item.tag_list)|raw }}</td>
-			
-					<td/>
-				</tr>
-			{% endif %}
-			#}
+{% endfor %}
 
 		</table>
 	</section>
 
-	{# description #}
-	<section>
-		<h3>Description</h3>
-
-		{{ description|raw }}
-
-        {# plz be my ai gf #}
-        {% if openAiDescription and user.siteOptions.openaiContent %}
-            <div class="faded">
-                <h4>OpenAI tl;dr</h4>
-
-                {{ openAiDescription }}
-            </div>
-        {% endif %}
-	</section>
-
-
-    {# torrent list #}
-    <section>
-    <h3>Torrents</h3>
-
-    {# individual torrents #}
-{% for item in torrentDetails %}
-
-    <table id="torrentId-{{ item.ID }}" class="torrentDetails">
-
-    <tr>
-
-    {# permalink #}
-    <th />
-
-	{# torrent info #}
-	<th>Torrent&nbsp;info</th>
-
-	{# timeAdded #}
-	<th>Time&nbsp;added</th>
-
-	{# data size #}
-	<th>Data&nbsp;size</th>
-
-	{# seeders #}
-	<th title="Seeders">↑</th>
-
-	{# leechers #}
-	<th title="Leechers">↓</th>
-
-  {# snatches #}
-	<th title="Snatches">↻</th>
-
-</tr>
-
-
-<tr>
-
-{# permalink #}
-<td class="center" title="Permalink (click to copy)">
-<a class="permalink" href="#torrentId-{{ item.ID }}" data-permalink="https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}">🔗</a>
-</td>
-
-	{# title #}
-	<td class="flexRow">
-
-  {# platform #}
-  {% if item.Media %}
-    <span title="Platform">📦 {{ item.Media }}</span>
-  {% endif %}
-
-  {# format #}
-  {% if item.Container %}
-    <span title="Format">💾 {{ item.Container }}</span>
-  {% endif %}
-
-  {# version #}
-  {% if item.Version %}
-    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon"> {{ item.Version }}</span>
-  {% endif %}
-
-  {# scope #}
-  {% if item.Resolution %}
-    <span title="Scope">🔎 {{ item.Resolution }}</span>
-  {% endif %}
-
-  {# archive #}
-  {% if item.Archive %}
-    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon"> {{ item.Archive }}</span>
-  {% endif %}
-
-  {# license #}
-  {% if item.Codec %}
-    <span title="License">📜 {{ item.Codec }}</span>
-  {% endif %}
-
-  {# alignment #}
-  {% if item.Censored %}
-    <span title="Alignment" class="good">Aligned</span>
-  {% else %}
-      <span title="Alignment" class="bad">Not aligned</span>
-  {% endif %}
-
-</td>
-
-	{# timeAdded #}
-	<td class="nobr" title="{{ item.Time }}">
-  {{ item.Time|relativeTime }}
-  </td>
-
-
-	{# data size #}
-	<td class="nobr">
-  {{ item.Size|get_size }}
-  </td>
-
-	{# seeders #}
-	<td class="nobr">
-    {{ item.Seeders|number_format }}
-  </td>
-
-
-	{# leechers #}
-	<td class="nobr">
-    {{ item.Leechers|number_format }}
-</td>
-
-
-	{# snatches #}
-	<td class="nobr">
-    {{ item.Snatched|number_format }}
-</td>
-</tr>
-
-{# second row: buttons #}
-<tr>
-
-{# controls #}
-<td colspan="7">
-
-<div class="flexRow">
-{# download #}
-<a class="button button-primary" href="/torrents.php?action=download&torrentId={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
-
-{# freeleech token #}
-{% if canUseToken(item.ID) %}
-<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ item.ID }}&authkey={{ user.extra.AuthKey }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
-{% endif %}
-
-{# update #}
-{% if can("torrents_edit") or item.UserID == user.core.id %}
-<a class="button button-orange" href="/torrents.php?action=edit&id={{ item.ID }}">update</a>
-{% endif %}
-
-{# report #}
-<a class="button button-red" href="/reportsv2.php?action=report&id={{ item.ID }}">report</a>
-
-{# delete #}
-{% if can("torrents_delete") or item.UserID == user.core.id %}
-<a class="button button-red" href="/torrents.php?action=delete&torrentid={{ item.ID }}">delete</a>
-{% endif %}
-</div>
-</td>
-</tr>
-
-{# third row:description #}
-{% if item.Description is not empty %}
-<tr>
-
-{# description #}
-<td colspan="7">
-<h4>Description</h4>
-{{ item.Description }}
-</td>
-{% endif %}
-</tr>
-
-
-{# citation #}
-<tr>
-
-<td colspan="7">
-
-<span class="flexHeader">
-<h4>Cite this dataset</h4>
-<a class="button toggleBibtex" data-torrentid="{{ item.ID }}">biblatex</a>
-</span>
-
-{##
- # https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#biblatex
- # https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf
- #
- # @misc{ enwiki:1116502991,
- #   author = "{Wikipedia contributors}",
- #   title = "Biber (LaTeX) --- {Wikipedia}{,} The Free Encyclopedia",
- #   year = "2022",
- #   howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Biber_(LaTeX)&oldid=1116502991}",
- #   note = "[Online; accessed 10-January-2023]"
- # }
- #
- # important: the weird indentation below is absolutely necessary due to the textarea
- #}
-
-{% if groupDetails.Screenshots is not empty %}
-  {% set firstDoi = groupDetails.Screenshots|first %}
-  {% set firstDoi = firstDoi.doi %}
-{% else %}
-  {% set firstDoi = "" %}
-{% endif %}
-
-<textarea class="bibtexCitation" id="bibtexCitation-{{ item.ID }}" rows="10">
-@dataset{ BioTorrents.de-torrentId-{{ item.ID }}
-  title = {{ groupDetails.title|curlyBraces }},
-  author = todo,
-{% if groupDetails.workgroup %}
-  organization = {{ groupDetails.workgroup|curlyBraces }},
-{% endif %}
-{% if groupDetails.year %}
-  year = {{ groupDetails.year|curlyBraces }},
-{% endif %}
-{% if item.Version %}
-  version = {{ item.Version|curlyBraces }},
-{% endif %}
-  url = \href{https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.ID }}},
-  urldate = {{ "now"|date|curlyBraces }},
-{% if firstDoi is not empty %}
-  doi = {{ firstDoi|curlyBraces }},
-{% endif %}
-  note = {{ "BitTorrent info hash: #{item.InfoHash}"|curlyBraces }}
-}
-</textarea>
-</td>
-
-</tr>
-
-{#}
-                  if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.\Gazelle\Text::parse($Description).'</blockquote>';
-                  }
-
-                  echo "\n<blockquote>"; ?>
-            <div class="spoilerContainer hideContainer">
-              <?php
-                  # Make a BibTeX citation
-                  # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
-                  $EntryName = "BioTorrents.de-$TorrentID";
-    $Today = strftime('%Y-%m-%d');
-
-    # Author format handling
-    $ArtistArray = [];
-    foreach ($Artists as $Num => $Artist) {
-        array_push($ArtistArray, $Artist['name']);
-    }
-
-    # Not sure if inline newlines are valid
-    $ArtistString = (count($ArtistArray) > 3)
-        ? implode("\n    and ", $ArtistArray)
-        : implode(' and ', $ArtistArray);
-
-    # DOI number
-    $BibtexDOI = (count($Screenshots) > 0)
-        ? $Screenshots[0]['Image']
-        : null;
-
-
-    ?>
-
-
-#}
-
-</table>
-{% endfor %}
-
-    </section>
 
 
     {# conversation #}
@@ -384,9 +132,9 @@
     <h3>Conversation</h3>
 		{# toggle subscription #}
 		{% if isSubscribed %}
-			<a class="button button-red" id="toggleGroupSubscription" data-groupid="{{ groupId }}">remove subscription</a>
+			<a class="button button-red" id="toggleGroupSubscription" data-collageid="{{ collage.id }}">remove subscription</a>
 		{% else %}
-			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
+			<a class="button button-orange" id="toggleGroupSubscription" data-collageid="{{ collage.id }}">add subscription</a>
 		{% endif %}
     </span>
 
@@ -400,7 +148,7 @@
 
 {% block sidebar %}
 
-	{% include "torrents/sidebar.twig" %}
+	{% include "collages/sidebar.twig" %}
 
 {% endblock %}
 

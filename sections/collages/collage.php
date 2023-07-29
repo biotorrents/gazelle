@@ -10,13 +10,19 @@ $id = $get["id"];
 
 # collage details
 $collage = new Collages($id);
-$collage = $collage->object;
+$torrentGroups = $collage->torrentGroups();
+$isSubscribed = $collage->isSubscribed();
+$stats = $collage->readStats();
 
 # twig template
 $app->twig->display("collages/details.twig", [
-  "title" => $collage["title"],
+  "title" => $collage->title,
   "sidebar" => true,
   "collage" => $collage,
+  "torrentGroups" => $torrentGroups,
+  "isSubscribed" => $isSubscribed,
+  "isBookmarked" => false, # todo
+  "stats" => $stats,
 ]);
 
 exit;

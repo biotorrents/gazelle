@@ -130,15 +130,13 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 # Torrents::get_groups
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("browse", "get collages");
+
 $collageIds = array_column($searchResults, "id");
 $collageIds = array_slice($collageIds, $pagination["offset"], $pagination["pageSize"]);
 
 $collages = [];
 foreach ($collageIds as $collageId) {
-    $collage = new Collages($collageId);
-    if ($collage->object) {
-        $collages[] = $collage->object;
-    }
+    $collages[] = new Collages($collageId);
 }
 
 $app->debug["time"]->stopMeasure("browse", "get collages");
@@ -152,36 +150,6 @@ $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
 
 
-/** legacy variables */
-
-
-# shims
-$Resolutions = [
-  "Contig",
-  "Scaffold",
-  "Chromosome",
-  "Genome",
-  "Proteome",
-  "Transcriptome",
-];
-
-$Categories = [
-  "Sequences",
-  "Graphs",
-  "Systems",
-  "Geometric",
-  "Scalars/Vectors",
-  "Patterns",
-  "Constraints",
-  "Images",
-  "Spatial",
-  "Models",
-  "Documents",
-  "Machine Data",
-];
-$GroupedCategories = $Categories;
-
-
 /** twig template */
 
 $app->twig->display("collages/browse.twig", [
@@ -189,30 +157,7 @@ $app->twig->display("collages/browse.twig", [
     "js" => ["vendor/tom-select.complete.min", "browse"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
-    # todo: this situation
-    "categories" => $Categories,
-    "resolutions" => $Resolutions,
-
-    "xmls" => array_merge(
-        $app->env->toArray($app->env->META->Formats->GraphXml),
-        $app->env->toArray($app->env->META->Formats->GraphTxt)
-    ),
-
-    "raster" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgRaster),
-        $app->env->toArray($app->env->META->Formats->MapRaster)
-    ),
-
-    "vector" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgVector),
-        $app->env->toArray($app->env->META->Formats->MapVector)
-    ),
-
-    "extras" => array_merge(
-        $app->env->toArray($app->env->META->Formats->BinDoc),
-        $app->env->toArray($app->env->META->Formats->CpuGen),
-        $app->env->toArray($app->env->META->Formats->Plain)
-    ),
+    "categories" => $app->env->collageCategories,
 
     "searchResults" => $searchResults,
     "collages" => $collages,

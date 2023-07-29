@@ -38,6 +38,11 @@ class Cache # extends \Redis
     # are we running a cluster or a single server?
     private $clusterMode = null;
 
+    # reserved characters
+    # see https://github.com/symfony/cache-contracts/blob/main/ItemInterface.php
+    private $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@"]; # you can totally use ":"
+    #private $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@", ":"];
+
 
     /**
      * __functions
@@ -167,6 +172,9 @@ class Cache # extends \Redis
      */
     public function set(string $key, mixed $value, int|string $cacheDuration = null): array
     {
+        # reserved characters
+        $key = $this->sanitize($key);
+
         # we passed an integer
         if (is_int($cacheDuration)) {
             $cacheDuration = time() + $cacheDuration;
@@ -216,6 +224,7 @@ class Cache # extends \Redis
      */
     public function get(string $key): mixed
     {
+        $key = $this->sanitize($key);
         return $this->redis->get($key);
     }
 
@@ -230,6 +239,7 @@ class Cache # extends \Redis
      */
     public function exists(string $key): bool
     {
+        $key = $this->sanitize($key);
         return boolval($this->redis->exists($key));
     }
 
@@ -245,6 +255,7 @@ class Cache # extends \Redis
      */
     public function append(string $key, string $value): int
     {
+        $key = $this->sanitize($key);
         return $this->redis->append($key, $value);
     }
 
@@ -261,6 +272,8 @@ class Cache # extends \Redis
      */
     public function increment(string $key, int|float $value = 1): int|float
     {
+        $key = $this->sanitize($key);
+
         if (!is_int($value)) {
             return $this->redis->incrByFloat($key, $value);
         }
@@ -280,6 +293,8 @@ class Cache # extends \Redis
      */
     public function decrement(string $key, int $value = 1): int
     {
+        $key = $this->sanitize($key);
+
         # cast to an int
         $unsafe = $this->redis->get($key);
         $safe = intval($unsafe);
@@ -301,6 +316,7 @@ class Cache # extends \Redis
      */
     public function persist(string $key): bool
     {
+        $key = $this->sanitize($key);
         return $this->redis->persist($key);
     }
 
@@ -316,6 +332,7 @@ class Cache # extends \Redis
     public function delete(string ...$keys): void
     {
         foreach ($keys as $key) {
+            $key = $this->sanitize($key);
             $this->redis->unlink($key);
         }
     }
@@ -362,6 +379,20 @@ class Cache # extends \Redis
 
 
     /** meta */
+
+
+    /**
+     * sanitize
+     *
+     * Sanitize a cache key.
+     *
+     * @param string $key the cache key
+     * @return string the sanitized key
+     */
+    private function sanitize(string $key): string
+    {
+        return str_replace($this->reservedCharacters, "-", $key);
+    }
 
 
     /**

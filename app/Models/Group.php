@@ -31,4 +31,28 @@ class Group extends Base
     {
         return $this->hasMany(Torrent::class, "groupId", "id");
     }
+
+
+    /**
+     * creators
+     *
+     * todo: depends on creatorObjects merge
+     */
+    public function creators()
+    {
+        return $this->hasMany(Creator::class, "groupId", "id");
+    }
+
+
+    /**
+     * tags
+     *
+     * todo: need to avoid making models of everything
+     */
+    /*
+    public function tags()
+    {
+        return $this->hasMany(Tag::class, "groupId", "id");
+    }
+    */
 } # class

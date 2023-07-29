@@ -385,12 +385,12 @@ ENV::setPub("DONOR_FORUM_RANK", 6);
 
 
 /**
- * Ratio and badges
+ * ratio and badges
  */
 
-# Ratio requirements, in descending order
+# ratio requirements, in descending order
 define("RATIO_REQUIREMENTS", [
- # Downloaded     Req (0% seed) Req (100% seed)
+ # downloaded     req (0% seed) req (100% seed)
   [200 * 1024**3, 0.60,         0.60],
   [160 * 1024**3, 0.60,         0.50],
   [120 * 1024**3, 0.50,         0.40],

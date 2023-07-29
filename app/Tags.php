@@ -292,4 +292,35 @@ class Tags
 
         return $ref;
     }
+
+
+    /**
+     * getNameById
+     *
+     * Get the name of a tag by their id.
+     * Optionally, return a link to a search.
+     *
+     * @param int $id
+     * @param bool $html
+     * @return string
+     */
+    public static function getNameById(int $id, ?bool $html = false): string
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select name from tags where id = ?";
+        $name = $app->dbNew->single($query, [$id]);
+
+        if (!$name) {
+            throw new Exception("not found");
+        }
+
+        # todo
+        if ($html) {
+            # e.g., /collages.php?action=search&tags=protocol.available
+            return $name;
+        }
+
+        return $name;
+    }
 }

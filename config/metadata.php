@@ -765,6 +765,7 @@ ENV::setPub(
  * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
+# legacy
 $CollageCats = [
   0 => "Personal",
   1 => "Theme",
@@ -772,6 +773,18 @@ $CollageCats = [
   3 => "Group Picks",
 ];
 
+# modern
+ENV::setPub(
+    "collageCategories",
+    $env->convert([
+        0 => "Personal",
+        1 => "Theme",
+        2 => "Staff Picks",
+        3 => "Group Picks",
+    ])
+);
+
+# main torrent categories
 $categories = [
     1 => [
         "ID" => 1,
