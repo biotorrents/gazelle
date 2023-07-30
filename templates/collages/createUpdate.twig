@@ -8,6 +8,12 @@
   <section>
     <h3 class="hidden">collageForm</h3>
 
+{# any errors? #}
+    {% if errorMessage %}
+     <p class="error">{{ errorMessage }}</p>
+    {% endif %}
+
+{# admonition #}
     <p>
       Please consult the
       <a href="/rules/collages">collage rules</a>
@@ -89,7 +95,7 @@
 		    </td>
 	    </tr>
 
-      			{# tags #}
+      {# tags #}
 			<tr>
 				<th>Tags</th>
 				<td>
@@ -103,6 +109,31 @@
 					
 				</td>
 			</tr>
+
+      {# locked #}
+      <tr>
+				<th>Lock this collage?</th>
+				<td>
+          <input type="checkbox" name="locked" value="true" {{ (collage and collage.locked) ? "checked" : "" }}>
+				</td>
+			</tr>
+
+      {# max groups #}
+      <tr>
+				<th>Max groups</th>
+				<td>
+          <input type="number" name="maxGroups" value="{{ (collage and collage.maxGroups) ? collage.maxGroups : 0 }}">
+				</td>
+			</tr>
+
+      {# max groups per user #}
+      <tr>
+				<th>Max groups per user</th>
+				<td>
+          <input type="number" name="maxGroupsPerUser" value="{{ (collage and collage.maxGroupsPerUser) ? collage.maxGroupsPerUser : 0 }}">
+				</td>
+			</tr>
+
 
       {# todo: torrent textarea here, one per line #}
 

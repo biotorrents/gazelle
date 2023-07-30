@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-/*
 $app = \Gazelle\App::go();
 
 //NumTorrents is actually the number of things in the collage, the name just isn't generic.
@@ -11,51 +10,6 @@ authorize();
 
 $Val = new Validate();
 
-function add_artist($CollageID, $ArtistID)
-{
-    $app = \Gazelle\App::go();
-
-
-    $app->dbOld->query("
-    SELECT MAX(Sort)
-    FROM collages_artists
-    WHERE CollageID = '$CollageID'");
-    list($Sort) = $app->dbOld->next_record();
-    $Sort += 10;
-
-    $app->dbOld->query("
-    SELECT ArtistID
-    FROM collages_artists
-    WHERE CollageID = '$CollageID'
-      AND ArtistID = '$ArtistID'");
-    if (!$app->dbOld->has_results()) {
-        $app->dbOld->query("
-      INSERT IGNORE INTO collages_artists
-        (CollageID, ArtistID, UserID, Sort, AddedOn)
-      VALUES
-        ('$CollageID', '$ArtistID', '{$app->user->core['id']}', '$Sort', '" . sqltime() . "')");
-
-        $app->dbOld->query("
-      UPDATE collages
-      SET NumTorrents = NumTorrents + 1, Updated = '" . sqltime() . "'
-      WHERE ID = '$CollageID'");
-
-        $app->cache->delete("collage_$CollageID");
-        $app->cache->delete("artists_collages_$ArtistID");
-        $app->cache->delete("artists_collages_personal_$ArtistID");
-
-        $app->dbOld->query("
-      SELECT UserID
-      FROM users_collage_subs
-      WHERE CollageID = $CollageID");
-
-        /*
-        while (list($app->cacheOldUserID) = $app->dbOld->next_record()) {
-            $app->cache->delete("collage_subs_user_new_$app->cacheOldUserID");
-        }
-        * /
-    }
-}
 
 $CollageID = $_POST['collageid'];
 if (!is_numeric($CollageID)) {
@@ -172,4 +126,3 @@ if ($_REQUEST['action'] == 'add_artist') {
     }
 }
 Http::redirect("collages.php?id=$CollageID");
-*/

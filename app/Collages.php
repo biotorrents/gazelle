@@ -7,9 +7,12 @@ declare(strict_types=1);
  * Collages
  */
 
-class Collages
+class Collages extends \Gazelle\ObjectCrud
 {
-    # the object itself
+    # database table
+    public $object = "collages";
+
+    # object properties
     public $uuid;
     public $id;
     public $title;
@@ -30,7 +33,7 @@ class Collages
     public $deletedAt;
 
     # ["database" => "display"]
-    private $maps = [
+    protected $maps = [
         "uuid" => "uuid",
         "ID" => "id",
         "Name" => "title",
@@ -53,85 +56,7 @@ class Collages
 
     # cache settings
     private $cachePrefix = "collages:";
-    private $cacheDuration = "1 day";
-
-
-    /**
-     * __construct
-     */
-    public function __construct(int|string $identifier = null)
-    {
-        if ($identifier) {
-            $this->read($identifier);
-            #$this->object = $this->read($identifier);
-            #return $this->read($identifier);
-        }
-    }
-
-
-    /** crud */
-
-
-    /**
-     * create
-     */
-    public function create(array $data = [])
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * read
-     */
-    public function read(int|string $identifier)
-    {
-        $app = \Gazelle\App::go();
-
-        $column = $app->dbNew->determineIdentifier($identifier);
-
-        $query = "select * from collages where {$column} = ?";
-        $row = $app->dbNew->row($query, [$identifier]);
-
-        if (empty($row)) {
-            return [];
-        }
-
-        $translatedRow = [];
-        foreach ($row as $column => $value) {
-            # does the column exist in the map?
-            if (isset($this->maps[$column])) {
-                $outputLabel = $this->maps[$column];
-                $translatedRow[$outputLabel] = $value;
-
-                # set $this here
-                $this->{$outputLabel} = $value;
-            }
-        }
-
-        return $translatedRow;
-    }
-
-
-    /**
-     * update
-     */
-    public function update(int|string $identifier, array $data = [])
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * delete
-     */
-    public function delete(int|string $identifier)
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /** subscriptions */
+    private $cacheDuration = "1 hour";
 
 
     /**
@@ -307,5 +232,46 @@ class Collages
         # fun and done
         $app->cache->set($cacheKey, $return, $this->cacheDuration);
         return $return;
+    }
+
+
+    /**
+     * addCreator
+     *
+     * Taken from the sections, potentially useful for "workgroup feature pages."
+     */
+    public function addCreator($collageId, $creatorId): void
+    {
+        $app = \Gazelle\App::go();
+
+        # sorting info
+        $query = "select max(sort) from collages_artists where collageId = ?";
+        $sort = $app->dbNew->single($query, [$collageId]);
+        $sort += 10;
+
+        # is the creator there?
+        $query = "select artistId from collages_artists where collageId = ? and artistId = ?";
+        $ref = $app->dbNew->single($query, [$collageId, $creatorId]);
+
+        # nothing to do
+        if ($ref) {
+            return;
+        }
+
+        # add the creator
+        $query = "insert ignore into collages_artists (collageId, artistId, sort, addedOn) values (?, ?, ?, now())";
+        $app->dbNew->do($query, [$collageId, $creatorId, $sort]);
+
+        # update the collages table
+        $query = "update collages set numTorrents = numTorrents + 1, updated = now() where id = ?";
+        $app->dbNew->do($query, [$collageId]);
+
+        # clear user subscriptions
+        $query = "select userId from users_collage_subs where collageId = ?";
+        $ref = $app->dbNew->column("userId", $query, [$collageId]);
+
+        foreach ($ref as $userId) {
+            $app->cache->delete("collage_subs_user_new_{$userId}");
+        }
     }
 } # class

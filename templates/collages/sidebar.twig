@@ -66,6 +66,10 @@
 			<a class="button button-orange" id="toggleCollageBookmark" data-userid="{{ user.core.id }}" data-collageid="{{ collage.id }}">add bookmark</a>
 		{% endif %}
 
+{# user collage links #}
+			<a class="button" href="/collages.php?userid={{ user.core.id }}">collages you started</a>
+			<a class="button" href="/collages.php?userid={{ user.core.id }}&contrib=1">collages you contributed to</a>
+
 	</form>
 
 </section>

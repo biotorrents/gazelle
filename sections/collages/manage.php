@@ -142,7 +142,7 @@ foreach ($GroupIDs as $GroupID) {
           </td>
           <td><?=trim($TorrentLink)?>
           </td>
-          <td class="nobr"><?=User::format_username($UserID, $Username, false, false, false)?>
+          <td class="nobr"><?=User::format_username(intval($UserID), $Username, false, false, false)?>
           </td>
           <td class="nobr">
             <input type="hidden" name="action" value="manage_handle">

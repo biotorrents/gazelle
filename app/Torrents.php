@@ -9,20 +9,37 @@
 
 class Torrents
 {
-    public const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
-    public const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
-    public const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
-
-    // Some constants for self::display_string's $Mode parameter
-    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
-    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
-    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
-    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
-    // Keep this in mind when defining presets below!
-
-    // Presets to facilitate the use of $Mode
-    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+    # object properties
+    public $uuid;
+    public $id;
+    public $groupId;
+    public $userId;
+    public $platform;
+    public $format;
+    public $license;
+    public $scope;
+    public $version;
+    public $aligned;
+    public $anonymous;
+    public $infoHash;
+    public $fileCount;
+    public $fileList;
+    public $filePath;
+    public $dataSize;
+    public $leecherCount;
+    public $seederCount;
+    public $lastAction;
+    public $freeleech;
+    public $freeleechType;
+    #public $createdAt;
+    public $description;
+    public $snatchCount;
+    public $balance;
+    public $lastReseedRequest;
+    public $archive;
+    public $createdAt;
+    public $updatedAt;
+    public $deletedAt;
 
     # ["database" => "display"]
     private $maps = [
@@ -59,13 +76,35 @@ class Torrents
     ];
 
 
+    # hex for ÷, must be the same as phrase_boundary in manticore.conf
+    public const FILELIST_DELIM = 0xF7;
+
+    # how often we want to update users' snatch lists
+    public const SNATCHED_UPDATE_INTERVAL = 3600;
+
+    # how long after a torrent download we want to update a user's snatch lists
+    public const SNATCHED_UPDATE_AFTERDL = 300;
+
+    // Some constants for self::display_string's $Mode parameter
+    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
+    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
+    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
+    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
+    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
+    // Keep this in mind when defining presets below!
+
+    // Presets to facilitate the use of $Mode
+    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+
+
+
     /**
      * __construct
      */
     public function __construct(int|string $identifier = null)
     {
         if ($identifier) {
-            return $this->read($identifier);
+            $this->read($identifier);
         }
     }
 

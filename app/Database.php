@@ -591,9 +591,9 @@ class Database extends \PDO
      *
      * @param string $table
      * @param array $data
-     * @return \PDOStatement
+     * @return ?array
      */
-    public function upsert(string $table, array $data = []): \PDOStatement
+    public function upsert(string $table, array $data = []): ?array
     {
         # extract the columns and values
         $columns = array_keys($data);
@@ -614,6 +614,13 @@ class Database extends \PDO
         }, $columns);
 
         # construct the sql query string for the upsert operation
+        /*
+        $query = "
+            replace into {$table} ({$insertColumns})
+            values ({$insertPlaceholders})
+        ";
+        */
+
         $query = "
             insert into {$table} ({$insertColumns})
             values ({$insertPlaceholders})
@@ -623,7 +630,26 @@ class Database extends \PDO
         $data = array_merge($data, array_combine($updatePlaceholders, $values));
 
         # execute the query with the data
-        return $this->do($query, $data);
+        $statement = $this->do($query, $data);
+
+        # return the newly created or updated row
+        $lastInsertId = $this->lastInsertId(); # 0 if not inserted
+        if (!empty($lastInsertId)) {
+            $query = "select * from {$table} where id = ?";
+            return $this->row($query, [$lastInsertId], "source");
+        }
+
+        # it was updated, resolve a key from the data
+        foreach ($data as $key => $value) {
+            if (in_array($key, ["id", "uuid", "slug"])) {
+                $column = $this->determineIdentifier($value);
+                $query = "select * from {$table} where {$column} = ?";
+                return $this->row($query, [$value], "source");
+            }
+        }
+
+        # this should never happen
+        throw new \Exception("unable to upsert into {$table}");
     }
 
 

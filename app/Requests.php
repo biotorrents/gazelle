@@ -9,6 +9,28 @@ declare(strict_types=1);
 
 class Requests
 {
+    # object properties
+    public $uuid;
+    public $id;
+    public $userId;
+    #public $createdAt;
+    public $lastVote;
+    public $categoryId;
+    public $title;
+    public $subject;
+    public $object;
+    public $picture;
+    public $description;
+    public $identifier;
+    public $fillerId;
+    public $torrentId;
+    public $filledAt;
+    public $isVisible;
+    public $groupId;
+    public $createdAt;
+    public $updatedAt;
+    public $deletedAt;
+
     # ["database" => "display"]
     private $maps = [
         "uuid" => "uuid",
@@ -41,7 +63,7 @@ class Requests
     public function __construct(int|string $identifier = null)
     {
         if ($identifier) {
-            return $this->read($identifier);
+            $this->read($identifier);
         }
     }
 
@@ -80,6 +102,9 @@ class Requests
             if (isset($this->maps[$column])) {
                 $outputLabel = $this->maps[$column];
                 $translatedRow[$outputLabel] = $value;
+
+                # set $this here
+                $this->{$outputLabel} = $value;
             }
         }
 
