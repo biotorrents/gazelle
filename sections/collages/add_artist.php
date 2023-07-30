@@ -1,5 +1,6 @@
 <?php
 
+/*
 declare(strict_types=1);
 
 $app = \Gazelle\App::go();
@@ -126,3 +127,4 @@ if ($_REQUEST['action'] == 'add_artist') {
     }
 }
 Http::redirect("collages.php?id=$CollageID");
+*/

@@ -97,11 +97,7 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
     $app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
 }
 
-if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    include serverRoot.'/sections/collages/artist_collage.php';
-} else {
-    include serverRoot.'/sections/collages/torrent_collage.php';
-}
+include serverRoot.'/sections/collages/torrent_collage.php';
 
 if (isset($SetCache)) {
     $CollageData = array(

@@ -22,10 +22,6 @@ if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && !check_perms('sit
     error(403);
 }
 
-if ($CategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    error(404);
-}
-
 $app->dbOld->prepared_query("
 SELECT
   ct.`GroupID`,

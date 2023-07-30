@@ -2,7 +2,7 @@
 
 {% block content %}
 
-	<h2>{{ pageTitle }}</h2>
+	<h2>{{ pageTitle|raw }}</h2>
 
   {# collage form #}
   <section>
@@ -114,7 +114,7 @@
       <tr>
 				<th>Lock this collage?</th>
 				<td>
-          <input type="checkbox" name="locked" value="true" {{ (collage and collage.locked) ? "checked" : "" }}>
+          <input type="checkbox" name="isLocked" value="true" {{ (collage and collage.isLocked) ? "checked" : "" }}>
 				</td>
 			</tr>
 

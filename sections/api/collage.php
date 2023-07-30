@@ -4,8 +4,6 @@
 
 $app = \Gazelle\App::go();
 
-define('ARTIST_COLLAGE', 'Artists');
-
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     json_die('failure', 'bad parameters');
 }
@@ -71,10 +69,9 @@ $JSON = array(
   'torrentGroupIDList'  => $TorrentGroups
 );
 
-if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
-    // Torrent collage
-    $TorrentGroups = [];
-    $app->dbOld->query("
+// Torrent collage
+$TorrentGroups = [];
+$app->dbOld->query("
     SELECT
       ct.`GroupID`
     FROM
@@ -88,74 +85,43 @@ if ($CollageCategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
       ct.`Sort`
     ");
 
-    $GroupIDs = $app->dbOld->collect('GroupID');
-    $GroupList = Torrents::get_groups($GroupIDs);
+$GroupIDs = $app->dbOld->collect('GroupID');
+$GroupList = Torrents::get_groups($GroupIDs);
 
-    foreach ($GroupIDs as $GroupID) {
-        if (!empty($GroupList[$GroupID])) {
-            $GroupDetails = Torrents::array_group($GroupList[$GroupID]);
-            $TorrentList = [];
+foreach ($GroupIDs as $GroupID) {
+    if (!empty($GroupList[$GroupID])) {
+        $GroupDetails = Torrents::array_group($GroupList[$GroupID]);
+        $TorrentList = [];
 
-            foreach ($GroupDetails['Torrents'] as $Torrent) {
-                $TorrentList[] = array(
-                  'torrentid'   => (int)$Torrent['ID'],
-                  'platform'    => $Torrent['Media'],
-                  'fileCount'   => (int)$Torrent['FileCount'],
-                  'size'        => (int)$Torrent['Size'],
-                  'seeders'     => (int)$Torrent['Seeders'],
-                  'leechers'    => (int)$Torrent['Leechers'],
-                  'snatched'    => (int)$Torrent['Snatched'],
-                  'freeTorrent' => ($Torrent['FreeTorrent'] === 1),
-                  'reported'    => (count(Torrents::get_reports((int)$Torrent['ID'])) > 0),
-                  'time'        => $Torrent['Time']
-                );
-            }
-
-            $TorrentGroups[] = array(
-              'id'          => $GroupDetails['GroupID'],
-              'name'        => $GroupDetails['GroupName'],
-              'year'        => $GroupDetails['GroupYear'],
-              'categoryId'  => $GroupDetails['GroupCategoryID'],
-              'accession'   => $GroupDetails['GroupCatalogueNumber'],
-              'vanityHouse' => $GroupDetails['GroupVanityHouse'],
-              'tagList'     => $GroupDetails['TagList'],
-              'picture'     => $GroupDetails['WikiImage'],
-              'torrents'    => $TorrentList
+        foreach ($GroupDetails['Torrents'] as $Torrent) {
+            $TorrentList[] = array(
+              'torrentid'   => (int)$Torrent['ID'],
+              'platform'    => $Torrent['Media'],
+              'fileCount'   => (int)$Torrent['FileCount'],
+              'size'        => (int)$Torrent['Size'],
+              'seeders'     => (int)$Torrent['Seeders'],
+              'leechers'    => (int)$Torrent['Leechers'],
+              'snatched'    => (int)$Torrent['Snatched'],
+              'freeTorrent' => ($Torrent['FreeTorrent'] === 1),
+              'reported'    => (count(Torrents::get_reports((int)$Torrent['ID'])) > 0),
+              'time'        => $Torrent['Time']
             );
         }
-    }
-    $JSON['torrentgroups'] = $TorrentGroups;
-} else {
-    // Artist collage
-    $app->dbOld->query("
-    SELECT
-      ca.`ArtistID`,
-      ag.`Name`,
-      aw.`Image`
-    FROM
-      `collages_artists` AS ca
-    JOIN `artists_group` AS ag
-    ON
-      ag.`ArtistID` = ca.`ArtistID`
-    LEFT JOIN `wiki_artists` AS aw
-    ON
-      aw.`RevisionID` = ag.`RevisionID`
-    WHERE
-      ca.`CollageID` = '$CollageID'
-    ORDER BY
-      ca.`Sort`
-    ");
 
-    $Artists = [];
-    while (list($ArtistID, $ArtistName, $ArtistImage) = $app->dbOld->next_record()) {
-        $Artists[] = array(
-          'id'      => (int) $ArtistID,
-          'name'    => $ArtistName,
-          'picture' => $ArtistImage
+        $TorrentGroups[] = array(
+          'id'          => $GroupDetails['GroupID'],
+          'name'        => $GroupDetails['GroupName'],
+          'year'        => $GroupDetails['GroupYear'],
+          'categoryId'  => $GroupDetails['GroupCategoryID'],
+          'accession'   => $GroupDetails['GroupCatalogueNumber'],
+          'vanityHouse' => $GroupDetails['GroupVanityHouse'],
+          'tagList'     => $GroupDetails['TagList'],
+          'picture'     => $GroupDetails['WikiImage'],
+          'torrents'    => $TorrentList
         );
     }
-    $JSON['artists'] = $Artists;
 }
+$JSON['torrentgroups'] = $TorrentGroups;
 
 if (isset($SetCache)) {
     $CollageData = array(

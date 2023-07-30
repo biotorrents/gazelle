@@ -9,6 +9,11 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
+# check permissions
+if ($app->user->cant("site_collages_create") || $app->user->cant("site_collages_manage") || $app->user->cant("site_edit_wiki")) {
+    $app->error(403);
+}
+
 # http requests
 $get = Http::get();
 $post = Http::post();
@@ -29,7 +34,7 @@ if ($collageId) {
 
         $collageId = $collage->id ?? null;
         $isUpdate = true;
-        $title = "Edit {$collage->title}";
+        $title = "Edit <a href='/collages.php?id={$collage->id}'>{$collage->title}</a>";
         $tagList = new Tags($collage->tagList);
     } catch (Exception $e) {
         $errorMessage = $e->getMessage();

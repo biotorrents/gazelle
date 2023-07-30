@@ -20,9 +20,6 @@ list($UserID, $CategoryID) = $app->dbOld->next_record();
 if ($CategoryID === '0' && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
 }
-if ($CategoryID !== array_search(ARTIST_COLLAGE, $CollageCats)) {
-    error(403);
-}
 
 $ArtistID = $_POST['artistid'];
 if (!is_numeric($ArtistID)) {

@@ -15,11 +15,11 @@
 
         {# edit buttons #}
         {% if can("site_collages_manage") and not collage.isLocked %}
-            {# manage torrents #}
-		    <a class="button button-orange" href="/collages.php?action=manage&collageid={{ collage.id }}">manage torrents</a>
+            {# edit this collage #}
+            <a class="button button-orange" href="/collages.php?action=edit&collageid={{ collage.id }}">edit this collage</a>
 
-            {# edit description #}
-            <a class="button button-orange" href="/collages.php?action=edit&collageid={{ collage.id }}">edit description</a>
+            {# manage its torrents #}
+		        <a class="button button-orange" href="/collages.php?action=manage&collageid={{ collage.id }}">manage its torrents</a>
         {% endif %}
 
         {# report #}
