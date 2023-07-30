@@ -32,6 +32,25 @@ if ($collageId) {
             throw new Exception("The requested collage doesn't exist");
         }
 
+        # todo: magic number
+        if ($collage->categoryId === 0 && $collage->userId !== $app->user->core["id"]) {
+            throw new Exception("You can't edit someone else's personal collage");
+        }
+
+        # check max groups
+        if ($collage->maxGroups > 0 && $collage->torrentCount >= $collage->maxGroups) {
+            throw new Exception("This collage already holds its maximum allowed number of groups");
+        }
+
+        # check max groups per user
+        # todo
+
+        # check if locked
+        if ($collage->isLocked) {
+            throw new Exception("This collage is locked from further editing");
+        }
+
+        # set variables
         $collageId = $collage->id ?? null;
         $isUpdate = true;
         $title = "Edit <a href='/collages.php?id={$collage->id}'>{$collage->title}</a>";

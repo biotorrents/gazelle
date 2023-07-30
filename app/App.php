@@ -361,5 +361,8 @@ class App
             "subject" => $subject,
             "body" => $body
         ]);
+
+        # end all execution
+        exit;
     }
 } # class

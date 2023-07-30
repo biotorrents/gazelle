@@ -76,10 +76,6 @@ switch ($_REQUEST['action']) {
         require(serverRoot.'/sections/collages/take_delete.php');
         break;
 
-    case 'comments':
-        require(serverRoot.'/sections/collages/all_comments.php');
-        break;
-
     case 'download':
         require(serverRoot.'/sections/collages/download.php');
         break;

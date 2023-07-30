@@ -54,8 +54,11 @@ class Collages extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         try {
-            $item = new \Collages();
-            $data = $item->read($identifier);
+            $data = new \Collages($identifier);
+
+            if (!$data->uuid) {
+                throw new \Exception("collage not found");
+            }
 
             self::success(200, $data);
         } catch (\Throwable $e) {

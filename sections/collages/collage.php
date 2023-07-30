@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+
+/**
+ * collage details page
+ */
+
 $app = \Gazelle\App::go();
 
 # http request
@@ -10,6 +15,11 @@ $id = $get["id"];
 
 # collage details
 $collage = new Collages($id);
+
+if (!$collage->uuid) {
+    $app->error(404);
+}
+
 $torrentGroups = $collage->torrentGroups();
 $isSubscribed = $collage->isSubscribed();
 $stats = $collage->readStats();
