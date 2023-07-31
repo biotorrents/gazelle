@@ -40,6 +40,9 @@ Flight::route("POST /api/internal/deleteFriend", ["Gazelle\Api\Internal", "delet
 Flight::route("POST /api/internal/createBearerToken", ["Gazelle\Api\Internal", "createBearerToken"]);
 Flight::route("POST /api/internal/deleteBearerToken", ["Gazelle\Api\Internal", "deleteBearerToken"]);
 
+# torrents and groups
+Flight::route("POST /api/internal/deleteGroupTags", ["Gazelle\Api\Internal", "deleteGroupTags"]);
+
 # not found
 Flight::route("*", function () {
     \Gazelle\Api\Base::failure(404, "not found");

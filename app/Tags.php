@@ -323,4 +323,95 @@ class Tags
 
         return $name;
     }
-}
+
+
+    /**
+     * updateGroupTags
+     *
+     * Add tags to a group.
+     */
+    public static function updateGroupTags(int $groupId, array $tagIds): void
+    {
+        $app = \Gazelle\App::go();
+
+        $app->dbNew->beginTransaction();
+
+        try {
+            # does the group exist?
+            $query = "select 1 from torrents_group where id = ?";
+            $good = $app->dbNew->single($query, [$groupId]);
+
+            if (!$good) {
+                throw new Exception("group not found");
+            }
+
+            foreach ($tagIds as $key => $tagId) {
+                # does the tag exist?
+                $query = "select 1 from tags where id = ?";
+                $good = $app->dbNew->single($query, [$tagId]);
+
+                if (!$good) {
+                    unset($tagIds[$key]);
+                    continue;
+                }
+
+                # add the tag
+                $query = "
+                    insert into torrents_tags (groupId, tagId, userId) values (?, ?, ?)
+                    on duplicate key update tagId = tagId
+                ";
+                $app->dbNew->do($query, [ $groupId, $tagId, $app->user->core["id"] ]);
+            }
+
+            # write to the group log
+            $message = "added tags: " . implode(", ", $tagIds);
+            $query = "
+                insert into group_log (groupId, userId, time, info)
+                values (?, ?, now(), ?)
+            ";
+            $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+            throw $e;
+        }
+
+        $app->dbNew->commit();
+    }
+
+
+    /**
+     * deleteGroupTags
+     *
+     * Delete a tag from a group.
+     *
+     * @param int $groupId
+     * @param array $tagIds
+     * @return void
+     */
+    public static function deleteGroupTags(int $groupId, array $tagIds): void
+    {
+        $app = \Gazelle\App::go();
+
+        $app->dbNew->beginTransaction();
+
+        try {
+            # does the group exist?
+            $query = "select 1 from torrents_group where id = ?";
+            $good = $app->dbNew->single($query, [$groupId]);
+
+            if (!$good) {
+                throw new Exception("group not found");
+            }
+
+            foreach ($tagIds as $tagId) {
+                $query = "delete from torrents_tags where groupId = ? and tagId = ?";
+                $app->dbNew->do($query, [$groupId, $tagId]);
+            }
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+            throw $e;
+        }
+
+        $app->dbNew->commit();
+    }
+} # class

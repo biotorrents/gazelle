@@ -10,11 +10,22 @@
 $app = \Gazelle\App::go();
 
 $get = Http::request("get");
+$post = Http::request("post");
+
 $groupId = intval($get["id"] ?? 0);
 $revisionId = intval($get["revisionId"] ?? 0);
 
-if (empty($groupId)) {
-    # render error page
+# handle any necessary for stuff
+if (!empty($post)) {
+    # add tags
+    $tagIds = $post["tagIds"] ?? [];
+    if (!empty($tagIds)) {
+        try {
+            Tags::updateGroupTags($groupId, $tagIds);
+        } catch (\Throwable $e) {
+            $errorMessage = $e->getMessage();
+        }
+    }
 }
 
 # get torrent/group info
@@ -47,6 +58,10 @@ $query = "
 $tagList = $app->dbNew->multi($query, [$groupId]);
 #!d($tagList);exit;
 
+# official tags
+$officialTags = Tags::getOfficialTags();
+#!d($officialTags);exit;
+
 /*
 # tagList: old
 $tagList = [];
@@ -68,6 +83,7 @@ foreach ($tagNames as $key => $value) {
 $app->twig->display("torrents/details.twig", [
     "title" => $groupDetails["title"],
     "sidebar" => true,
+    "errorMessage" => $errorMessage ?? null,
 
     "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
@@ -84,6 +100,7 @@ $app->twig->display("torrents/details.twig", [
 
     "coverArt" => $coverArt,
     "tagList" => $tagList,
+    "officialTags" => $officialTags,
 
     "isBookmarked" => Bookmarks::isBookmarked("torrent", $groupId),
     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),

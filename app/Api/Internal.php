@@ -375,6 +375,42 @@ class Internal extends Base
     }
 
 
+    /** torrents and groups */
+
+
+    /**
+     * deleteGroupTags
+     *
+     * Deletes torrent group tags.
+     */
+    public static function deleteGroupTags(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["groupId"] ??= null;
+        $request["tagIds"] ??= null;
+
+        if (!$request["groupId"] || empty($request["tagIds"])) {
+            self::failure(400, "groupId and tagIds required");
+        }
+
+        $groupId = intval($request["groupId"]);
+        $tagIds = array_unique($request["tagIds"]);
+
+        try {
+            \Tags::deleteGroupTags($groupId, $tagIds);
+
+            self::success(200, "deleted tags " . implode(", ", $request["tagIds"]) . " from group {$request["groupId"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+
+    }
+
+
     /** bookmarks */
 
 

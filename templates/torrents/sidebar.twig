@@ -224,7 +224,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+<a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 
 </td>
@@ -242,7 +242,7 @@
 
 <td class="right">
 {% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+<a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 
 </td>
@@ -255,11 +255,17 @@
 </table>
 
 {# add new #}
-<form>
-<input type="hidden" name="groupId" value="{{ groupId }}">
+<form method="post" action="/torrents.php?id=64&action=add_tag">
 
-<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}">
+<select class="select" placeholder="e.g., {{ randomTag() }}" multiple>
 
-<a class="button button-primary" id="addNewTag">new tag</a>
+{% for item in officialTags %}
+<option name="tagIds[]" value="{{ item.ID }}">{{ item.Name }}</option>
+{% endfor %}
+
+</select>
+
+<input type="submit" value="add tags" class="button button-primary">
+
 </form>
 </section>
