@@ -73,7 +73,7 @@ class Json
         } # if (empty($token))
 
         # check the database
-        $query = "select UserID, Token, Revoked from api_tokens where UserID = ?";
+        $query = "select UserID, Token, Revoked from api_user_tokens where UserID = ?";
         $row = $app->dbNew->row($query, [$userId]);
         #~d($row);exit;
 
