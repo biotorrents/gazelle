@@ -232,7 +232,7 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
+            $query = "select * from api_user_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
@@ -628,7 +628,7 @@ class User
 
         # current user
         if (!$userId) {
-            $userId = $this->core["id"];
+            $userId = $app->user->core["id"];
         }
 
         # system user with id 0
