@@ -407,7 +407,7 @@ class User
         $UserInfo = $app->cache->get("user_info_".$UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
-        if (empty($UserInfo) || empty($UserInfo['ID']) || empty($UserInfo['Class'])) {
+        if (empty($UserInfo)) {
             $OldQueryID = $app->dbOld->get_query_id();
 
             $app->dbOld->query("
@@ -461,6 +461,7 @@ class User
                     'Class'        => 0
                 ];
             } else {
+                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
@@ -470,10 +471,12 @@ class User
                 }
                 */
 
+                $UserInfo['Paranoia'] ??= [];
                 if (!$UserInfo['Paranoia']) {
                     $UserInfo['Paranoia'] = [];
                 }
 
+                $Classes[$UserInfo['PermissionID']]['Level'] ??= null;
                 $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'] ?? null;
 
                 # Badges
@@ -497,11 +500,13 @@ class User
             }
 
             # Locked?
+            $UserInfo['LockedAccount'] ??= null;
             if (isset($UserInfo['LockedAccount']) && $UserInfo['LockedAccount'] === '') {
                 unset($UserInfo['LockedAccount']);
             }
 
             # Classes and levels
+            $UserInfo['Levels'] ??= null;
             if (!empty($UserInfo['Levels'])) {
                 $UserInfo['ExtraClasses'] = array_fill_keys(explode(',', $UserInfo['Levels']), 1);
             } else {
@@ -520,7 +525,8 @@ class User
         }
 
         # Warned?
-        if (strtotime($UserInfo['Warned'] ?? "now") < time()) {
+        $UserInfo['Warned'] ??= null;
+        if ($UserInfo['Warned'] && strtotime($UserInfo['Warned'] ?? "now") < time()) {
             $UserInfo['Warned'] = null;
             $app->cache->set("user_info_$UserID", $UserInfo, 2592000);
         }
@@ -592,6 +598,7 @@ class User
                 $Perms = Permissions::get_permissions($PermID);
             }
 
+            $HeavyInfo['PermissionID'] ??= null;
             $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
 
