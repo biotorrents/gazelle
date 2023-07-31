@@ -206,11 +206,11 @@ class User
 
             $this->permissions["values"] ??= null;
             if ($this->permissions["values"]) {
-                $this->permissions["values"] = json_decode($this->permissions["values"], true);
+                $this->permissions["values"] = json_decode($this->permissions["values"] ?? "{}", true);
             }
 
             # siteOptions
-            $this->siteOptions = json_decode($this->extra["SiteOptions"], true);
+            $this->siteOptions = json_decode($this->extra["SiteOptions"] ?? "{}", true);
 
             # rss auth
             $this->extra["RSS_Auth"] = md5(
@@ -237,7 +237,7 @@ class User
             $this->extra["bearerTokens"] = $bearerTokens;
 
             # site options
-            $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
+            $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"] ?? "{}", true);
             unset($this->extra["SiteOptions"]);
 
             # for my own sanity
@@ -382,7 +382,7 @@ class User
         $UserInfo = $app->cache->get("user_info_".$UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
-        if (empty($UserInfo) || empty($UserInfo['ID']) || empty($UserInfo['Class'])) {
+        if (empty($UserInfo)) {
             $OldQueryID = $app->dbOld->get_query_id();
 
             $app->dbOld->query("
@@ -436,19 +436,22 @@ class User
                     'Class'        => 0
                 ];
             } else {
+                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
                 /*
                 if (!is_array($UserInfo['Paranoia'])) {
-                    $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
+                    $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'] ?? "{}", true);
                 }
                 */
 
+                $UserInfo['Paranoia'] ??= [];
                 if (!$UserInfo['Paranoia']) {
                     $UserInfo['Paranoia'] = [];
                 }
 
+                $Classes[$UserInfo['PermissionID']]['Level'] ??= null;
                 $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'] ?? null;
 
                 # Badges
@@ -472,11 +475,13 @@ class User
             }
 
             # Locked?
+            $UserInfo['LockedAccount'] ??= null;
             if (isset($UserInfo['LockedAccount']) && $UserInfo['LockedAccount'] === '') {
                 unset($UserInfo['LockedAccount']);
             }
 
             # Classes and levels
+            $UserInfo['Levels'] ??= null;
             if (!empty($UserInfo['Levels'])) {
                 $UserInfo['ExtraClasses'] = array_fill_keys(explode(',', $UserInfo['Levels']), 1);
             } else {
@@ -495,7 +500,8 @@ class User
         }
 
         # Warned?
-        if (strtotime($UserInfo['Warned'] ?? "now") < time()) {
+        $UserInfo['Warned'] ??= null;
+        if ($UserInfo['Warned'] && strtotime($UserInfo['Warned'] ?? "now") < time()) {
             $UserInfo['Warned'] = null;
             $app->cache->set("user_info_$UserID", $UserInfo, 2592000);
         }
@@ -553,7 +559,7 @@ class User
             $HeavyInfo['CustomPermissions'] = [];
 
             if (!empty($HeavyInfo['CustomPermissions'])) {
-                $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
+                $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'] ?? "{}", true);
             }
 
             $app->dbOld->query("
@@ -567,10 +573,11 @@ class User
                 $Perms = Permissions::get_permissions($PermID);
             }
 
+            $HeavyInfo['PermissionID'] ??= null;
             $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
 
-            $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'], true);
+            $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'] ?? "{}", true);
             if (!empty($HeavyInfo['SiteOptions'])) {
                 $HeavyInfo = array_merge($HeavyInfo, $HeavyInfo['SiteOptions']);
             }
@@ -631,7 +638,7 @@ class User
         }
 
         # donor icon
-        $siteOptions = json_decode($row["siteOptions"], true);
+        $siteOptions = json_decode($row["siteOptions"] ?? "{}", true);
         if ($siteOptions["donorIcon"] && !empty($row["donor"])) {
             return "<a href='/user.php?id={$userId}' class='donor'>{$row["username"]}</a>" . $badgeHtml;
         }
@@ -1250,11 +1257,11 @@ class User
         $data["permissions"] = $row ?? [];
 
         if ($data["permissions"]["values"]) {
-            $data["permissions"]["values"] = json_decode($data["permissions"]["values"], true);
+            $data["permissions"]["values"] = json_decode($data["permissions"]["values"] ?? "{}", true);
         }
 
         # site options
-        $data["extra"]["siteOptions"] = json_decode($data["extra"]["SiteOptions"], true);
+        $data["extra"]["siteOptions"] = json_decode($data["extra"]["SiteOptions"] ?? "{}", true);
         unset($data["extra"]["SiteOptions"]);
 
         # okay

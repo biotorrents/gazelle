@@ -29,8 +29,6 @@ yarn-error.log
 *.sw*
 
 # assets
-!/public/css/vendor/
-!/public/js/vendor/
 /public/build/*
 /public/css/*
 /public/fonts.tgz
@@ -39,6 +37,10 @@ yarn-error.log
 /public/js/*
 /public/vendor/*
 /resources/closureCompiler.jar
+
+# allow vendor libraries
+!/public/css/vendor/
+!/public/js/vendor/
 
 # config
 /config/private.php
