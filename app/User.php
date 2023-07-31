@@ -603,7 +603,7 @@ class User
 
         # current user
         if (!$userId) {
-            $userId = $this->core["id"];
+            $userId = $app->user->core["id"];
         }
 
         # system user with id 0
