@@ -370,6 +370,9 @@ class Tags
                 values (?, ?, now(), ?)
             ";
             $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
+
+            # delete torrent group cache
+            Torrents::update_hash($groupId);
         } catch (\Throwable $e) {
             $app->dbNew->rollBack();
             throw $e;
@@ -407,6 +410,17 @@ class Tags
                 $query = "delete from torrents_tags where groupId = ? and tagId = ?";
                 $app->dbNew->do($query, [$groupId, $tagId]);
             }
+
+            # write to the group log
+            $message = "removed tags: " . implode(", ", $tagIds);
+            $query = "
+                insert into group_log (groupId, userId, time, info)
+                values (?, ?, now(), ?)
+            ";
+            $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
+
+            # delete torrent group cache
+            Torrents::update_hash($groupId);
         } catch (\Throwable $e) {
             $app->dbNew->rollBack();
             throw $e;

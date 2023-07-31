@@ -165,17 +165,6 @@ if (!empty($_REQUEST['action'])) {
             require_once "$ENV->serverRoot/sections/torrents/takemasspm.php";
             break;
 
-        case 'add_tag':
-            enforce_login();
-            require_once "$ENV->serverRoot/sections/torrents/add_tag.php";
-            break;
-
-        case 'delete_tag':
-            enforce_login();
-            authorize();
-            require_once "$ENV->serverRoot/sections/torrents/delete_tag.php";
-            break;
-
         case 'notify':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/notify.php";
@@ -250,10 +239,6 @@ if (!empty($_REQUEST['action'])) {
 
         case 'remove_cover_art':
             require_once "$ENV->serverRoot/sections/torrents/remove_cover_art.php";
-            break;
-
-        case 'autocomplete_tags':
-            require_once "$ENV->serverRoot/sections/torrents/autocomplete_tags.php";
             break;
 
         default:
