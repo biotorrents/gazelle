@@ -27,6 +27,9 @@ class Better
     {
         $app = \Gazelle\App::go();
 
+        # undefined variable $resultCount
+        $resultCount = self::$resultCount;
+
         # snatched vs. all
         $allTorrents = true;
         if ($snatchedOnly) {
@@ -44,12 +47,12 @@ class Better
             from torrents_bad_folders
             join torrents on torrents.id = torrents_bad_folders.torrentId
             {$subQuery}
-            order by rand() limit {self::$resultCount}
+            order by rand() limit {$resultCount}
         ";
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "groupId");
-        $torrentGroups = Torrents::get_groups($groupIds);
+        $torrentGroups = \Torrents::get_groups($groupIds);
 
         return $torrentGroups;
     }
@@ -63,6 +66,9 @@ class Better
     public static function badTags(bool $snatchedOnly = false): array
     {
         $app = \Gazelle\App::go();
+
+        # undefined variable $resultCount
+        $resultCount = self::$resultCount;
 
         # snatched vs. all
         $allTorrents = true;
@@ -81,12 +87,12 @@ class Better
             from torrents_bad_tags
             join torrents on torrents_bad_tags.torrentId = torrents.id
             {$subQuery}
-            order by rand() limit {self::$resultCount}
+            order by rand() limit {$resultCount}
         ";
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "groupId");
-        $torrentGroups = Torrents::get_groups($groupIds);
+        $torrentGroups = \Torrents::get_groups($groupIds);
 
         return $torrentGroups;
     }
@@ -100,6 +106,9 @@ class Better
     public static function missingCitations(bool $snatchedOnly = false): array
     {
         $app = \Gazelle\App::go();
+
+        # undefined variable $resultCount
+        $resultCount = self::$resultCount;
 
         # snatched vs. all
         $allTorrents = true;
@@ -120,12 +129,12 @@ class Better
             {$subQuery}
             where torrents_group.id not in
             (select distinct group_id from literature)
-            order by rand() limit {self::$resultCount}
+            order by rand() limit {$resultCount}
         ";
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = Torrents::get_groups($groupIds);
+        $torrentGroups = \Torrents::get_groups($groupIds);
 
         return $torrentGroups;
     }
@@ -139,6 +148,9 @@ class Better
     public static function missingPictures(bool $snatchedOnly = false): array
     {
         $app = \Gazelle\App::go();
+
+        # undefined variable $resultCount
+        $resultCount = self::$resultCount;
 
         # snatched vs. all
         $allTorrents = true;
@@ -157,12 +169,12 @@ class Better
             select sql_calc_found_rows torrents_group.id from torrents_group
             {$subQuery}
             where torrents_group.picture = ''
-            order by rand() limit {self::$resultCount}
+            order by rand() limit {$resultCount}
         ";
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = Torrents::get_groups($groupIds);
+        $torrentGroups = \Torrents::get_groups($groupIds);
 
         return $torrentGroups;
     }
@@ -177,17 +189,20 @@ class Better
     {
         $app = \Gazelle\App::go();
 
+        # undefined variable $resultCount
+        $resultCount = self::$resultCount;
+
         $query = "
             select torrents.id, torrents.groupId from xbt_files_users
             join torrents on torrents.id = xbt_files_users.fid
             group by xbt_files_users.fid
             having count(xbt_files_users.uid) = 1
-            limit {self::$resultCount}
+            limit {$resultCount}
         ";
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = Torrents::get_groups($groupIds);
+        $torrentGroups = \Torrents::get_groups($groupIds);
 
         return $torrentGroups;
     }
