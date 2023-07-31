@@ -192,7 +192,7 @@ class User
             $this->core = $row ?? [];
 
             # decrypt email
-            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            #$this->core["email"] = Crypto::decrypt($this->core["email"]);
 
             # extra: gazelle
             $query = "select * from users_main join users_info on users_main.userId = users_info.userId where users_main.userId = ?";

@@ -27,7 +27,7 @@
 
       {# hidden fields #}
       {{ form_token(query.server.REQUEST_URI) }}
-		  <input type="hidden" name="collageId" value={{ collageId }}>
+		  <input type="hidden" name="id" value={{ collageId }}>
 		  <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
 		  <input type="hidden" name="userId" value="{{ user.core.id }}">
 
@@ -110,14 +110,6 @@
 				</td>
 			</tr>
 
-      {# locked #}
-      <tr>
-				<th>Lock this collage?</th>
-				<td>
-          <input type="checkbox" name="isLocked" value="true" {{ (collage and collage.isLocked) ? "checked" : "" }}>
-				</td>
-			</tr>
-
       {# max groups #}
       <tr>
 				<th>Max groups</th>
@@ -134,8 +126,13 @@
 				</td>
 			</tr>
 
-
-      {# todo: torrent textarea here, one per line #}
+      {# locked #}
+      <tr>
+				<th>Lock this collage?</th>
+				<td>
+          <input type="checkbox" name="isLocked" value="1" {{ (collage and collage.isLocked) ? "checked" : "" }}>
+				</td>
+			</tr>
 
 {# update button #}
       {% if isUpdate %}

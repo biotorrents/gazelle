@@ -25,7 +25,11 @@ $post = Http::request("post");
 
 # delight-im/auth
 if (!empty($post)) {
-    $response = $auth->login($post);
+    try {
+        $response = $auth->login($post);
+    } catch (\Throwable $e) {
+        $response = $e->getMessage();
+    }
 
     # silence is golden
     if (!$response) {

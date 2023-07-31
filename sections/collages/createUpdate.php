@@ -46,7 +46,8 @@ if ($collageId) {
         # todo
 
         # check if locked
-        if ($collage->isLocked) {
+        $post["isLocked"] ??= 0;
+        if ($post["isLocked"]) {
             throw new Exception("This collage is locked from further editing");
         }
 
@@ -60,6 +61,14 @@ if ($collageId) {
     }
 }
 
+# handle a post request
+if (!empty($post)) {
+    $identifier = $post["id"] ?? null;
+    $collage = new Collages($identifier);
+
+    $collage->updateOrCreate($post);
+}
+
 # official tags
 $query = "select name from tags where tagType = 'genre' order by name";
 $ref = $app->dbNew->multi($query, []);
@@ -67,7 +76,7 @@ $officialTags = array_column($ref, "name");
 
 # twig template
 $app->twig->display("collages/createUpdate.twig", [
-    "title" => $title,
+    "title" => strip_tags($title),
     "pageTitle" => $title,
     "js" => ["vendor/easymde.min", "vendor/tom-select.base.min"],
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],

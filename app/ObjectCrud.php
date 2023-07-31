@@ -42,13 +42,22 @@ abstract class ObjectCrud
         $transform = $this->displayToDatabase($data);
 
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->object, $data);
+        $upsert = $app->dbNew->upsert($this->object, $transform);
 
         # map database => display
-        $transform = $this->databaseToDisplay($row);
+        $transform = $this->databaseToDisplay($upsert);
         foreach ($transform as $key => $value) {
             $this->{$key} = $value;
         }
+    }
+
+
+    /**
+     * updateOrCreate
+     */
+    public function updateOrCreate(array $data = []): void
+    {
+        $this->create($data);
     }
 
 

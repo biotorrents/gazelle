@@ -641,7 +641,7 @@ class Database extends \PDO
 
         # it was updated, resolve a key from the data
         foreach ($data as $key => $value) {
-            if (in_array($key, ["id", "uuid", "slug"])) {
+            if (in_array(strtolower(strval($key)), ["id", "uuid", "slug"])) {
                 $column = $this->determineIdentifier($value);
                 $query = "select * from {$table} where {$column} = ?";
                 return $this->row($query, [$value], "source");
@@ -649,7 +649,7 @@ class Database extends \PDO
         }
 
         # this should never happen
-        throw new \Exception("unable to upsert into {$table}");
+        #throw new \Exception("unable to upsert into {$table}");
     }
 
 

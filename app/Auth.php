@@ -380,7 +380,7 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
 
@@ -389,7 +389,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                return $e->getMessage();
+                #return $e->getMessage();
                 return $message;
             }
         }
@@ -398,7 +398,7 @@ class Auth # extends Delight\Auth\Auth
         try {
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
     } # login
