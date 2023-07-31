@@ -1,9 +1,66 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * user invites page
+ */
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
+# check permissions
+if ($app->user->cant("users_view_invites")) {
+    $app->error(403);
+}
+
+# http query vars
+$get = Http::get();
+$post = Http::post();
+
+# which user's invites to show
+$userId = $get["userId"] ?? $app->user->core["id"];
+$userData = $app->user->readProfile($userId);
+#!d($userData);exit;
+
+# get invited users
+$query = "
+    select users.id, users.username, users.email, users.registered, users.last_login, users_main.uploaded, users_main.downloaded
+    from users inner join users_main on users.id = users_main.userId
+    left join users_info on users.id = users_info.userId
+    where users_info.inviter = ?
+";
+$ref = $app->dbNew->multi($query, [$userId]);
+#!d($ref);exit;
+
+# current user count
+$query = "select count(id) from users where status = ?";
+$userCount = $app->dbNew->single($query, [User::STATUS_ENABLED]);
+
+
+# twig template
+$app->twig->display("user/profile/invites.twig", [
+    "title" => "Invites for {$app->user->core["username"]}",
+    "sidebar" => true,
+    "invites" => $ref,
+]);
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     if (!is_numeric($_GET['userid'])) {

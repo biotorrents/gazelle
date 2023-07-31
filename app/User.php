@@ -36,6 +36,11 @@ class User
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
 
+    # user status constants
+    const STATUS_UNCONFIRMED = 0;
+    const STATUS_ENABLED = 1;
+    const STATUS_DISABLED = 2;
+
 
     /**
      * __functions
