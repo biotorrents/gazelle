@@ -906,7 +906,7 @@ If you need the custom user information only rarely, you may just retrieve it as
         $name ??= \Gazelle\Text::random(16);
 
         $query = "
-            insert into api_user_tokens (uuid, userId, name, token, permissions)
+            insert into api_tokens (uuid, userId, name, token, permissions)
             values (:uuid, :userId, :name, :token, :permissions)
         ";
 
@@ -934,7 +934,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_user_tokens where userId = ? and deleted_at is null";
+        $query = "select * from api_tokens where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;
@@ -960,7 +960,7 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $query = "update api_user_tokens set deleted_at = now() where id = ?";
+        $query = "update api_tokens set deleted_at = now() where id = ?";
         $app->dbNew->do($query, [$tokenId]);
     }
 } # class

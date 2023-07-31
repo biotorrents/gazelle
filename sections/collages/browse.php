@@ -81,7 +81,7 @@ $queryString = http_build_query($get);
 $manticore = new Gazelle\Manticore();
 $searchResults = $manticore->search("collections", $get);
 $resultCount = count($searchResults);
-
+#!d($searchResults);
 
 /** pagination */
 

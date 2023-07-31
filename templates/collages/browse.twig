@@ -97,8 +97,7 @@
       </span>
       <?php } ?>
 	  #}
-      <div class="tags"><?=$TorrentTags->format('collages.php?action=search&amp;tags=')?>
-      </div>
+      <div class="tags">{{ item.tagList }}</div>
     </td>
 
 	{# torrent count #}
@@ -114,7 +113,7 @@
 	    <td class="nobr">{{ item.createdAt|relativeTime }}</td>
 		{% endif %}
 
-    <td>{{ item.userId|formatUsername }} <?=User::format_username($UserID, false, false, false)?></td>
+    <td>{{ item.userId|formatUsername }}</td>
   </tr>
 
 

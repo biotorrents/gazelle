@@ -60,7 +60,7 @@
 			<tr>
 				<th>Categories</th>
 				<td class="wrapThis">
-					<select id="categories" name="categories[]" placeholder="Categories" multiple>
+					<select id="categories" name="categories[]" placeholder="Categories" class="select" multiple>
 						{% for key, value in categories %}
 							{% set categoryId = key + 1 %}
 							<option value="{{ categoryId }}" {{ (categoryId in searchTerms.categories) ? "selected" : "" }}>
@@ -75,7 +75,7 @@
 			<tr id="tagFilter">
 				<th>Tags</th>
 				<td>
-					<select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
+					<select id="tagList" name="tagList[]" placeholder="Add or remove tags" class="select" multiple>
 						{% for item in officialTags %}
 							<option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
 								{{ item }}
@@ -105,7 +105,7 @@
 				<th>Order by</th>
 				<td>
 
-					<select name="orderBy" id="orderBy" placeholder="Attribute">
+					<select name="orderBy" id="orderBy" placeholder="Attribute" class="select">
 						<option value="timeAdded" {{ (searchTerms.orderBy == "timeAdded") ? "selected" : "" }}>
 							Time added
 						</option>
@@ -141,7 +141,7 @@
 					</select>
 
 					{# order way #}
-					<select name="orderWay" id="orderWay" placeholder="Direction">
+					<select name="orderWay" id="orderWay" placeholder="Direction" class="select">
 						<option value="desc" {{ (searchTerms.orderWay == "desc") ? "selected" : "" }}>
 							Descending
 						</option>
@@ -151,6 +151,7 @@
 						</option>
 					</select>
 
+{#
 					<div class="inlineFlex">
 						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}>
 						<label for="groupResults">Group&nbsp;torrents</label>
@@ -158,6 +159,7 @@
 						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}>
 						<label for="openaiContent">OpenAI&nbsp;content</label>
 					</div>
+#}
 
 				</td>
 			</tr>

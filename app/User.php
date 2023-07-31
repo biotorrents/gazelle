@@ -206,11 +206,11 @@ class User
 
             $this->permissions["values"] ??= null;
             if ($this->permissions["values"]) {
-                $this->permissions["values"] = json_decode($this->permissions["values"], true);
+                $this->permissions["values"] = json_decode($this->permissions["values"] ?? "{}", true);
             }
 
             # siteOptions
-            $this->siteOptions = json_decode($this->extra["SiteOptions"], true);
+            $this->siteOptions = json_decode($this->extra["SiteOptions"] ?? "{}", true);
 
             # rss auth
             $this->extra["RSS_Auth"] = md5(
@@ -232,12 +232,12 @@ class User
             $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and deleted_at is not null";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens;
 
             # site options
-            $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"], true);
+            $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"] ?? "{}", true);
             unset($this->extra["SiteOptions"]);
 
             # for my own sanity
@@ -466,7 +466,7 @@ class User
 
                 /*
                 if (!is_array($UserInfo['Paranoia'])) {
-                    $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'], true);
+                    $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'] ?? "{}", true);
                 }
                 */
 
@@ -578,7 +578,7 @@ class User
             $HeavyInfo['CustomPermissions'] = [];
 
             if (!empty($HeavyInfo['CustomPermissions'])) {
-                $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'], true);
+                $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'] ?? "{}", true);
             }
 
             $app->dbOld->query("
@@ -595,7 +595,7 @@ class User
             $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
 
-            $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'], true);
+            $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'] ?? "{}", true);
             if (!empty($HeavyInfo['SiteOptions'])) {
                 $HeavyInfo = array_merge($HeavyInfo, $HeavyInfo['SiteOptions']);
             }
@@ -656,7 +656,7 @@ class User
         }
 
         # donor icon
-        $siteOptions = json_decode($row["siteOptions"], true);
+        $siteOptions = json_decode($row["siteOptions"] ?? "{}", true);
         if ($siteOptions["donorIcon"] && !empty($row["donor"])) {
             return "<a href='/user.php?id={$userId}' class='donor'>{$row["username"]}</a>" . $badgeHtml;
         }
@@ -1275,11 +1275,11 @@ class User
         $data["permissions"] = $row ?? [];
 
         if ($data["permissions"]["values"]) {
-            $data["permissions"]["values"] = json_decode($data["permissions"]["values"], true);
+            $data["permissions"]["values"] = json_decode($data["permissions"]["values"] ?? "{}", true);
         }
 
         # site options
-        $data["extra"]["siteOptions"] = json_decode($data["extra"]["SiteOptions"], true);
+        $data["extra"]["siteOptions"] = json_decode($data["extra"]["SiteOptions"] ?? "{}", true);
         unset($data["extra"]["SiteOptions"]);
 
         # okay

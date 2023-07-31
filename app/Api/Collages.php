@@ -24,6 +24,8 @@ class Collages extends Base
             $manticore = new \Gazelle\Manticore();
 
             $ids = $manticore->search("collections", $request);
+            $ids = array_column($ids, "id");
+
             foreach ($ids as $id) {
                 $data[] = new \Collages($id);
             }

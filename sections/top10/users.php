@@ -170,7 +170,7 @@ function generate_user_table($Caption, $Tag, $Details, $Limit)
     <tr class="row">
       <td class="center"><?=$Rank?>
       </td>
-      <td><?=User::format_username($Detail['ID'], false, false, false)?>
+      <td><?=User::format_username(intval($Detail['ID']), false, false, false)?>
       </td>
       <td class="number_column"><?=Format::get_size($Detail['Uploaded'])?>
       </td>

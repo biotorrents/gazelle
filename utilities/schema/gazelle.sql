@@ -5,7 +5,7 @@ USE gazelle_development;
 
 
 -- 2020-10-11
-CREATE TABLE `api_user_tokens`(
+CREATE TABLE `api_tokens`(
     `ID` int NOT NULL AUTO_INCREMENT,
     `UserID` int NOT NULL,
     `AppID` int DEFAULT NULL,

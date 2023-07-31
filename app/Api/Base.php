@@ -56,7 +56,7 @@ class Base
         /** */
 
         # check the database
-        $query = "select id, userId, token from api_user_tokens use index (userId_token) where deleted_at is null";
+        $query = "select id, userId, token from api_tokens use index (userId_token) where deleted_at is null";
         $ref = $app->dbNew->multi($query, []);
 
         foreach ($ref as $row) {
@@ -153,7 +153,7 @@ class Base
         }
 
         # check the token's permissions
-        $query = "select permissions from api_user_tokens where id = ?";
+        $query = "select permissions from api_tokens where id = ?";
         $ref = $app->dbNew->single($query, [$tokenId]);
 
         if (empty($ref)) {
@@ -195,7 +195,7 @@ class Base
         ];
 
         if ($app->env->dev) {
-            $response["meta"]["debug"] = self::debug();
+            #$response["meta"]["debug"] = self::debug();
         }
 
         /** */
