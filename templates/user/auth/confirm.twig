@@ -4,7 +4,7 @@
 
 	<h2>Confirm your account</h2>
 
-	{% if response is not null %}
+	{% if response %}
 		<p class="error">
 			{{ response }}
 		</p>
@@ -19,7 +19,6 @@
 			<a href="/rules" class="button button-primary">Rules</a>
 			<a href="/wiki" class="button">Wiki</a>
 		</p>
-
 	{% endif %}
 
 {% endblock %}

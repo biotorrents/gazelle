@@ -508,7 +508,8 @@ class Auth # extends Delight\Auth\Auth
                 Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
-            return $message;
+            # reveals unknown email
+            #return $message;
         }
     } # recoverStart
 
@@ -563,7 +564,21 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
+            # resolve the username
+            $query = "
+                select username from users
+                left join users_resets on users_resets.user = users.id
+                where selector = ?
+            ";
+            $username = $app->dbNew->single($query, [$selector]);
+
+            if (!$username) {
+                throw new Exception("Unable to find the username");
+            }
+
+            # reset the passphrase and log them in
             $this->library->resetPassword($selector, $token, $passphrase);
+            $this->login(["username" => $username, "passphrase" => $passphrase]);
         } catch (Throwable $e) {
             return $message;
         }

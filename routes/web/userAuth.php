@@ -45,7 +45,7 @@ Flight::route("/enable/@token", function (string $token) {
 
 
 # recover
-Flight::route("/recover", function () {
+Flight::route("/recover(/@selector(/@token))", function (?string $selector, ?string $token) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/recover.php";
 });
@@ -70,7 +70,7 @@ Flight::route("/register(/@invite)", function ($invite) {
 
 
 # confirm email
-Flight::route("/confirm/@selector/@token", function ($selector, $token) {
+Flight::route("/confirm/@selector/@token", function (string $selector, string $token) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/confirm.php";
 });
