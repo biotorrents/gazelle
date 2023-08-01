@@ -19,6 +19,11 @@ $get = Http::request("get");
 $post = Http::request("post");
 $server = Http::request("server");
 
+# start a session
+$activeSession = session_status() === PHP_SESSION_ACTIVE;
+if (!$activeSession) {
+    session_start();
+}
 
 /** */
 

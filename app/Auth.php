@@ -463,11 +463,11 @@ class Auth # extends Delight\Auth\Auth
         $enabled = \Gazelle\Esc::bool($enabled);
 
         if ($enabled === true) {
-            return time() + $this->longRemember;
+            return $this->longRemember;
         }
 
         if ($enabled === false) {
-            return time() + $this->shortRemember;
+            return $this->shortRemember;
         }
     }
 
@@ -668,8 +668,17 @@ class Auth # extends Delight\Auth\Auth
             $this->library->logOutEverywhere();
             $this->library->destroySession();
 
-            # todo: gazelle session
-            #$this->deleteSession($sessionId);
+            # flush all the cookies
+            Http::flushCookies();
+
+            # database: gazelle session
+            $this->flushSessions();
+
+            # cache: should be a hash map
+            $app->cache->delete("user_info_heavy_{$app->user->core["id"]}");
+            $app->cache->delete("user_info_{$app->user->core["id"]}");
+            $app->cache->delete("user_stats_{$app->user->core["id"]}");
+            $app->cache->delete("users_sessions_{$app->user->core["id"]}");
         } catch (Throwable $e) {
             return $message;
         }
@@ -830,7 +839,8 @@ If you need the custom user information only rarely, you may just retrieve it as
         ";
 
         $uuid = $app->dbNew->uuid();
-        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+        $rememberDuration = time() + $this->remember($rememberMe);
+        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
 
         $data = [
             "uuid" => $uuid,
@@ -869,7 +879,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+        $rememberDuration = time() + $this->remember($rememberMe);
+        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
 
         $query = "update users_sessions set expires = ? where sessionId = ?";
         $app->dbNew->do($query, [$expires, $sessionId]);
@@ -885,6 +896,20 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "delete from users_sessions where sessionId = ?";
         $app->dbNew->do($query, [$sessionId]);
+
+        Http::flushCookies();
+    }
+
+
+    /**
+     * flushSessions
+     */
+    public function flushSessions()
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "delete from users_sessions where userId = ?";
+        $app->dbNew->do($query, [ $app->user->core["id"] ]);
 
         Http::flushCookies();
     }

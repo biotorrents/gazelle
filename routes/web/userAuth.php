@@ -53,27 +53,9 @@ Flight::route("/recover", function () {
 
 # logout
 Flight::route("/logout", function () {
-    $app = \Gazelle\App::go();
-
     # no more bullshit
     $auth = new Auth();
     $auth->logout();
-
-    /** gazelle session */
-
-    # cookies
-    Http::deleteCookie("userId");
-    Http::deleteCookie("sessionId");
-
-    # database
-    $query = "delete from users_sessions where userId = ?";
-    $app->dbNew->do($query, [ $app->user->core["id"] ]);
-
-    # cache
-    $app->cache->delete("user_info_heavy_{$app->user->core["id"]}");
-    $app->cache->delete("user_info_{$app->user->core["id"]}");
-    $app->cache->delete("user_stats_{$app->user->core["id"]}");
-    $app->cache->delete("users_sessions_{$app->user->core["id"]}");
 
     # send to login
     Http::redirect("login");

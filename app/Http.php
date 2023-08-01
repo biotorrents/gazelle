@@ -497,7 +497,7 @@ class Http
      */
     public static function deleteCookie(string $key): void
     {
-        self::createCookie([self::$cookiePrefix.$key, ""], "now");
+        self::updateCookie([$key => ""], "yesterday");
     }
 
 
@@ -514,6 +514,7 @@ class Http
         $cookie = self::request("cookie");
 
         foreach ($cookie as $key => $value) {
+            $key = str_replace(self::$cookiePrefix, "", $key);
             self::deleteCookie($key);
         }
     }
