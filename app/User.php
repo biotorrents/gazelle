@@ -36,6 +36,14 @@ class User
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
 
+    # https://github.com/delight-im/PHP-Auth/blob/master/src/Status.php
+    public const NORMAL = 0;
+    public const ARCHIVED = 1;
+    public const BANNED = 2;
+    public const LOCKED = 3;
+    public const PENDING_REVIEW = 4;
+    public const SUSPENDED = 5;
+
 
     /**
      * __functions
@@ -67,7 +75,7 @@ class User
      */
     public static function go(array $options = [])
     {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }
@@ -352,6 +360,20 @@ class User
 
 
     /**
+     * username
+     *
+     * Returns the username.
+     * Required for the auth library.
+     *
+     * return string|null
+     */
+    public function username(): ?string
+    {
+        return $this->core["username"] ?? null;
+    }
+
+
+    /**
      * THIS IS GOING AWAY!
      *
      * Get user info, is used for the current user and usernames all over the site.
@@ -436,8 +458,8 @@ class User
                     'Class'        => 0
                 ];
             } else {
-                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
+                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
                 /*
@@ -1013,8 +1035,7 @@ class User
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
 
 
-            # todo: update the email
-            # maybe admins can't change it?
+            # update the email, only allowed by the current user
             $email = \Gazelle\Esc::email($data["email"]);
             if (empty($email)) {
                 throw new Exception("invalid email address");
@@ -1022,13 +1043,7 @@ class User
 
             if (!$moderatorUpdate && $email !== $this->core["email"]) {
                 # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
-                $this->auth->changeEmail($email, function ($selector, $token) {
-                    /*
-                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                    echo '  For SMS, consider using a third-party service and a compatible SDK';
-                    */
-                });
+                $this->auth->changeEmail($email);
             } # if (!$moderatorUpdate && $email !== $this->core["email"])
 
 
@@ -1049,12 +1064,15 @@ class User
 
 
             # badges
-            $query = "update users_badges set displayed = 0 where userId = ?";
-            $app->dbNew->do($query, [$userId]);
+            $data["badges"] ??= null;
+            if ($data["bagdes"]) {
+                $query = "update users_badges set displayed = 0 where userId = ?";
+                $app->dbNew->do($query, [$userId]);
 
-            $badges = implode(", ", $data["badges"]);
-            $query = "update users_badges set displayed = 1 where userId = ? and badgeId in ({$badges})";
-            $app->dbNew->do($query, [$userId]);
+                $badges = implode(", ", $data["badges"]);
+                $query = "update users_badges set displayed = 1 where userId = ? and badgeId in ({$badges})";
+                $app->dbNew->do($query, [$userId]);
+            }
 
 
             # ircKey
@@ -1191,7 +1209,7 @@ class User
             # commit the transaction
             $app->dbNew->commit();
         } catch (Throwable $e) {
-            $app->dbNew->rollback();
+            $app->dbNew->rollBack();
             throw new Exception($e->getMessage());
         }
     } # updateSettings
@@ -1240,7 +1258,7 @@ class User
         $data["core"] = $row ?? [];
 
         # extra: gazelle
-        $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+        $query = "select * from users_main cross join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
         $row = $app->dbNew->row($query, [$userId]);
         $data["extra"] = $row ?? [];
 
@@ -1668,7 +1686,6 @@ class User
         $data["leechingCount"] = $row["foo"] ?? 0;
         */
 
-
         # snatches
         # torrents.php?type=snatched&userid={{ userId }}
         # torrents.php?action=redownload&type=snatches&userid={{ userId }}
@@ -1706,7 +1723,8 @@ class User
 
 
         # ratio
-        if ($profile["extra"]["Downloaded"] === 0) {
+        $profile["extra"]["Downloaded"] ??= null;
+        if (empty($profile["extra"]["Downloaded"])) {
             $data["ratio"] = 1;
         } else {
             $data["ratio"] = round($profile["extra"]["Uploaded"] / $profile["extra"]["Downloaded"], 2);
@@ -1752,25 +1770,25 @@ class User
         $data = [];
 
         # uploaded
-        $data["uploaded"] = UserRank::get_rank('uploaded', $profile["extra"]["Uploaded"]);
+        $data["uploaded"] = UserRank::get_rank("uploaded", $profile["extra"]["Uploaded"]);
 
         # downloaded
-        $data["downloaded"] = UserRank::get_rank('downloaded', $profile["extra"]["Downloaded"]);
+        $data["downloaded"] = UserRank::get_rank("downloaded", $profile["extra"]["Downloaded"]);
 
         # uploads
-        $data["uploads"] = UserRank::get_rank('uploads', $torrentStats["uploadCount"]);
+        $data["uploads"] = UserRank::get_rank("uploads", $torrentStats["uploadCount"]);
 
         # requestsFilled
-        $data["requestsFilled"] = UserRank::get_rank('requests', $communityStats["requestsFilledCount"]);
+        $data["requestsFilled"] = UserRank::get_rank("requests", $communityStats["requestsFilledCount"]);
 
         # posts
-        $data["posts"] = UserRank::get_rank('posts', $communityStats["forumPosts"]);
+        $data["posts"] = UserRank::get_rank("posts", $communityStats["forumPosts"]);
 
         # requestsVoted
-        $data["requestsVoted"] = UserRank::get_rank('bounty', $communityStats["requestsVotedBounty"]);
+        $data["requestsVoted"] = UserRank::get_rank("bounty", $communityStats["requestsVotedBounty"]);
 
         # creatorsAdded
-        $data["creatorsAdded"] = UserRank::get_rank('artists', $communityStats["creatorsAdded"]);
+        $data["creatorsAdded"] = UserRank::get_rank("artists", $communityStats["creatorsAdded"]);
 
         # overall
         $data["overall"] = UserRank::overall_score(

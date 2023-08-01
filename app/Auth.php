@@ -496,12 +496,11 @@ class Auth # extends Delight\Auth\Auth
                 $uri = "https://{$app->env->siteDomain}/recover/{$selector}/{$token}";
 
                 # email it to the prospective user
-                $to = $email;
                 $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
-                \Gazelle\App::email($to, $subject, $body);
-                Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
+                \Gazelle\App::email($email, $subject, $body);
+                Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
             return $message;
@@ -550,6 +549,7 @@ class Auth # extends Delight\Auth\Auth
 
         $selector = \Gazelle\Esc::string($selector);
         $token = \Gazelle\Esc::string($token);
+
         $passphrase = \Gazelle\Esc::passphrase($passphrase);
         $confirmPassphrase = \Gazelle\Esc::passphrase($confirmPassphrase);
 
@@ -592,27 +592,29 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
      */
-    public function changeEmail(string $newEmail, string $passphrase)
+    public function changeEmail(string $newEmail)
     {
         $app = \Gazelle\App::go();
 
         $message = "Unable to update email";
 
+        # sanitize the input
         $newEmail = \Gazelle\Esc::email($newEmail);
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
 
         try {
-            $reconfirmed = $this->library->reconfirmPassword($passphrase);
+            $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
+                $app = \Gazelle\App::go();
 
-            if ($reconfirmed) {
-                $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
-                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                    echo '  For SMS, consider using a third-party service and a compatible SDK';
-                });
-            } else {
-                throw new Exception("We can't say if the user is who they claim to be");
-            }
+                # build the uri
+                $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
+
+                # email content
+                $subject = "Confirm your new email address";
+                $body = $app->twig->render("email/changeEmail.twig", ["uri" => $uri]);
+
+                # send the email
+                \Gazelle\App::email($newEmail, $subject, $body);
+            });
         } catch (Throwable $e) {
             return $message;
         }

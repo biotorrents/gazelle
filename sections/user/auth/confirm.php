@@ -11,7 +11,6 @@ $app = \Gazelle\App::go();
 
 $auth = new Auth();
 
-#!d($selector, $token);exit;
 if (empty($selector) || empty($token)) {
     Http::response(403);
 }

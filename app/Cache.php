@@ -72,7 +72,7 @@ class Cache # extends \Redis
      */
     public static function go(array $options = []): self
     {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }
