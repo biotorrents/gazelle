@@ -9,10 +9,6 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-if ($app->user->isLoggedIn()) {
-    Http::redirect();
-}
-
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
 
@@ -22,18 +18,30 @@ $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 
 # variables
 $post = Http::request("post");
+$server = Http::request("server");
+
+# where are they trying to go?
+if (empty($post)) {
+    $_SESSION["requestedPage"] = $server["REQUEST_URI"] ?? "/";
+}
+
+# redirect if logged in
+if ($auth->library->isLoggedIn()) {
+    Http::redirect($_SESSION["requestedPage"]);
+}
 
 # delight-im/auth
 if (!empty($post)) {
     try {
         $response = $auth->login($post);
+        #!d($response);exit;
     } catch (\Throwable $e) {
         $response = $e->getMessage();
     }
 
     # silence is golden
     if (!$response) {
-        Http::redirect();
+        Http::redirect($_SESSION["requestedPage"]);
     }
 }
 

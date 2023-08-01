@@ -331,14 +331,31 @@ class Auth # extends Delight\Auth\Auth
         # 2fa code needs to be a string (RobThree)
         $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
 
-        $query = "select id from users where username = ?";
-        $userId = $app->dbNew->single($query, [$username]);
+        try {
+            # validate userId
+            $query = "select id from users where username = ?";
+            $userId = $app->dbNew->single($query, [$username]);
 
-        ##
-        # legacy: remove after 2024-04-01
-        #
+            if (!$userId) {
+                throw new Exception("username doesn't exist");
+            }
+        } catch (Throwable $e) {
+            #return $e->getMessage();
+            return $message;
+        }
+
+        # gazelle 2fa
+        if (!empty($twoFactor)) {
+            try {
+                $this->verify2FA($userId, $twoFactor);
+            } catch (Throwable $e) {
+                #return $e->getMessage();
+                return $message;
+            }
+        }
 
         try {
+            # legacy: remove after 2024-04-01
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
@@ -359,9 +376,7 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [1, $userId]);
             }
 
-            ##
             # resume normal, relatively sane code below
-            #
 
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
@@ -380,25 +395,15 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
 
-        # gazelle 2fa
-        if (!empty($twoFactor)) {
-            try {
-                $this->verify2FA($userId, $twoFactor);
-            } catch (Throwable $e) {
-                return $e->getMessage();
-                return $message;
-            }
-        }
-
-        # gazelle session
         try {
+            # gazelle session
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
     } # login
@@ -806,8 +811,12 @@ If you need the custom user information only rarely, you may just retrieve it as
      * @param string $hash passphrase hash
      * @return bool on verification
      */
-    public static function checkHash(string $string, string $hash): bool
+    public static function checkHash(string $string, ?string $hash = null): bool
     {
+        if (!$hash) {
+            return false;
+        }
+
         return password_verify(
             str_replace(
                 "\0",

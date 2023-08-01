@@ -36,16 +36,20 @@ class Http
         $parsed["scheme"] ??= null;
         $parsed["host"] ??= null;
 
-        # local
+        # local: yes slash, e.g., /torrents/foo
+        if (str_starts_with($uri, "/")) {
+            header("Location: {$uri}");
+            exit;
+        }
+
+        # local: no slash, e.g., torrents/foo
         if (!$parsed["scheme"] || !$parsed["host"]) {
             header("Location: /{$uri}");
+            exit;
         }
 
         # remote
-        else {
-            header("Location: {$uri}");
-        }
-
+        header("Location: {$uri}");
         exit;
     }
 

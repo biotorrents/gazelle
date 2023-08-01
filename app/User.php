@@ -28,6 +28,9 @@ class User
     public $permissions = [];
     public $siteOptions = [];
 
+    # make $_SESSION available
+    public $session = null;
+
     # legacy gazelle
     public $lightInfo = [];
     public $heavyInfo = [];
@@ -96,6 +99,9 @@ class User
 
         # auth class
         $this->auth = new Auth();
+
+        # session superglobal
+        $this->session = $_SESSION;
 
         # untrusted input
         $sessionId = Http::readCookie("sessionId") ?? null;
@@ -292,7 +298,8 @@ class User
      */
     public function isLoggedIn(): bool
     {
-        return !empty($this->core);
+        return $this->auth->library->isLoggedIn();
+        #return !empty($this->core);
     }
 
 
