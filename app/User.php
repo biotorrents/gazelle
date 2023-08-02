@@ -234,11 +234,15 @@ class User
             }
 
             # ip changed
-            $this->extra["IP"] ??= null;
-            if ($this->extra["IP"]) {
-                $ipChanged = Crypto::decrypt($this->extra["IP"]) !== $server["REMOTE_ADDR"];
+            $this->extra["IP"] = Crypto::decrypt($this->extra["IP"]);
+            if ($this->extra["IP"]) { # not false
+                $ipChanged = $this->extra["IP"] !== $server["REMOTE_ADDR"];
                 if ($ipChanged) {
                     $this->extra["IP"] = $server["REMOTE_ADDR"];
+                    $encryptedIp = Crypto::encrypt($this->extra["IP"]);
+
+                    $query = "update users_main set IP = ? where userId = ?";
+                    $app->dbNew->do($query, [$encryptedIp, $userId]);
                 }
 
                 # should be done by the firewall
@@ -905,14 +909,14 @@ class User
         }
 
         # default to the current user
-        $userId = $data["userId"] ?? $this->core["id"];
-        if (!$userId) {
+        $userId = intval($data["userId"] ?? $this->core["id"]);
+        if (empty($userId)) {
             throw new Exception("userId not found");
         }
 
         # check permissions to update another user
         $moderatorUpdate = false;
-        if (intval($userId) !== $this->core["id"]) {
+        if ($userId !== $this->core["id"]) {
             $good = $this->can("users_edit_profiles");
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
@@ -991,7 +995,7 @@ class User
 
             if (!$moderatorUpdate && $email !== $this->core["email"]) {
                 # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
-                $this->auth->changeEmail($email);
+                $this->auth->changeEmail($userId, $email);
             } # if (!$moderatorUpdate && $email !== $this->core["email"])
 
 

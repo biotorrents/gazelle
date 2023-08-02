@@ -133,7 +133,9 @@ class Auth # extends Delight\Auth\Auth
                 }
             }
 
-            # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
+            # if you want to enforce unique usernames,
+            # simply call registerWithUniqueUsername instead of register,
+            # and be prepared to catch the DuplicateUsernameException
             $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
                 $app = \Gazelle\App::go();
 
@@ -148,6 +150,7 @@ class Auth # extends Delight\Auth\Auth
                 \Gazelle\App::email($email, $subject, $body);
             });
 
+            # this will be a userId
             return $response;
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
@@ -508,7 +511,7 @@ class Auth # extends Delight\Auth\Auth
                 Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
-            # reveals unknown email
+            # reveals invalid email
             #return $message;
         }
     } # recoverStart
@@ -600,7 +603,7 @@ class Auth # extends Delight\Auth\Auth
         $newPassphrase = \Gazelle\Esc::passphrase($newPassphrase);
 
         try {
-            $auth->changePassword($oldPassphrase, $newPassphrase);
+            $this->library->changePassword($oldPassphrase, $newPassphrase);
         } catch (Throwable $e) {
             return $message;
         }
@@ -610,10 +613,29 @@ class Auth # extends Delight\Auth\Auth
     /**
      * changeEmail
      *
+     * Actually, I'm gonna bypass the library for this.
+     * It doesn't make sense to require extra steps here,
+     * and I need to support encrypted email addresses.
+     *
      * @see https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
      */
-    public function changeEmail(string $newEmail)
+    public function changeEmail(int $userId, string $newEmail)
     {
+        $app = \Gazelle\App::go();
+
+        $message = "Unable to update email";
+
+        $newEmail = \Gazelle\Esc::email($newEmail);
+        $newEmail = \Crypto::encrypt($newEmail);
+
+        try {
+            $query = "update users set email = ? where id = ?";
+            $app->dbNew->do($query, [$newEmail, $userId]);
+        } catch (Throwable $e) {
+            return $message;
+        }
+
+        /*
         $app = \Gazelle\App::go();
 
         $message = "Unable to update email";
@@ -638,6 +660,7 @@ class Auth # extends Delight\Auth\Auth
         } catch (Throwable $e) {
             return $message;
         }
+        */
     } # changeEmail
 
 
@@ -648,6 +671,9 @@ class Auth # extends Delight\Auth\Auth
      */
     public function resendConfirmation(string $email)
     {
+        throw new Exception("not implemented");
+
+        /*
         $app = \Gazelle\App::go();
 
         $message = "Unable to resend confirmation email";
@@ -666,6 +692,7 @@ class Auth # extends Delight\Auth\Auth
         } catch (Throwable $e) {
             return $message;
         }
+        */
     } # resendConfirmation
 
 
@@ -706,20 +733,36 @@ class Auth # extends Delight\Auth\Auth
 
 
     /**
-
-@see https://github.com/delight-im/PHP-Auth#additional-user-information
-
-Additional user information
-In order to preserve this library’s suitability for all purposes as well as its full re-usability, it doesn’t come with additional bundled columns for user information. But you don’t have to do without additional user information, of course:
-
-Here’s how to use this library with your own tables for custom user information in a maintainable and re-usable way:
-
-Add any number of custom database tables where you store custom user information, e.g. a table named profiles.
-
-Whenever you call the register method (which returns the new user’s ID), add your own logic afterwards that fills your custom database tables.
-
-If you need the custom user information only rarely, you may just retrieve it as needed. If you need it more frequently, however, you’d probably want to have it in your session data. The following method is how you can load and access your data in a reliable way:
-
+     * Additional user information
+     *
+     * In order to preserve this library’s suitability for all purposes as well as its full re-usability,
+     * it doesn’t come with additional bundled columns for user information.
+     * But you don’t have to do without additional user information, of course:
+     *
+     * Here’s how to use this library with your own tables for custom user information in a maintainable and re-usable way:
+     *
+     * 1. Add any number of custom database tables where you store custom user information, e.g. a table named profiles.
+     *
+     * 2. Whenever you call the register method (which returns the new user’s ID), add your own logic afterwards that fills your custom database tables.
+     *
+     * 3. If you need the custom user information only rarely, you may just retrieve it as needed.
+     *    If you need it more frequently, however, you’d probably want to have it in your session data.
+     *    The following method is how you can load and access your data in a reliable way:
+     *
+     * function getUserInfo(\Delight\Auth\Auth $auth) {
+     *   if (!$auth->isLoggedIn()) {
+     *     return null;
+     *   }
+     *
+     *   if (!isset($_SESSION['_internal_user_info'])) {
+     *     // TODO: load your custom user information and assign it to the session variable below
+     *     // $_SESSION['_internal_user_info'] = ...
+     *   }
+     *
+     *   return $_SESSION['_internal_user_info'];
+     * }
+     *
+     * @see https://github.com/delight-im/PHP-Auth#additional-user-information
      */
 
 
