@@ -77,24 +77,24 @@ if ($app->dbOld->has_results()) {
     list($PermID, $BP, $Warned, $Upload, $Download, $Ratio, $Enabled, $Uploads, $Groups) = $app->dbOld->next_record();
 
     switch ($PermID) {
-    case USER:
-      $To = MEMBER;
-      break;
-    case MEMBER:
-      $To = POWER;
-      break;
-    case POWER:
-      $To = ELITE;
-      break;
-    case ELITE:
-      $To = TORRENT_MASTER;
-      break;
-    case TORRENT_MASTER:
-      $To = POWER_TM;
-      break;
-    default:
-      $To = -1;
-  }
+        case USER:
+            $To = MEMBER;
+            break;
+        case MEMBER:
+            $To = POWER;
+            break;
+        case POWER:
+            $To = ELITE;
+            break;
+        case ELITE:
+            $To = TORRENT_MASTER;
+            break;
+        case TORRENT_MASTER:
+            $To = POWER_TM;
+            break;
+        default:
+            $To = -1;
+    }
 
     if ($To == -1) {
         $Err[] = "Your user class is not eligible for promotions";
@@ -170,7 +170,7 @@ if ($app->dbOld->has_results()) {
 
             $app->dbOld->prepared_query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($To)." via store purchase\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".$To." via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
             $app->cache->delete("user_info_$UserID");
