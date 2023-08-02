@@ -333,7 +333,7 @@ class User
      */
     public function isEnabled(): bool
     {
-        return $this->enabledState() === 1;
+        return $this->enabledState() === self::NORMAL;
     }
 
 
@@ -771,41 +771,6 @@ class User
     {
         # negating the return is a shim: this is used everywhere
         return !$this->extra["siteOptions"]["userAvatars"];
-    }
-
-
-    /*
-     * Initiate a password reset
-     *
-     * @param int $UserID The user ID
-     * @param string $Username The username
-     * @param string $Email The email address
-     */
-    public static function reset_password($UserID, $Username, $Email)
-    {
-        $app = \Gazelle\App::go();
-
-        $ResetKey = \Gazelle\Text::random();
-        $app->dbOld->query("
-        UPDATE users_info
-        SET
-          ResetKey = '" . db_string($ResetKey) . "',
-          ResetExpires = '" . time_plus(60 * 60) . "'
-        WHERE UserID = '$UserID'");
-
-        $email = $app->twig->render(
-            "email/passphraseReset.twig",
-            [
-            'Username'=> $Username,
-           'ResetKey'=> $ResetKey,
-          'IP'=> $_SERVER['REMOTE_ADDR'],
-          'siteName'=> $app->env->siteName,
-            'siteDomain'=> siteDomain,
-
-        ]
-        );
-
-        \Gazelle\App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
     }
 
 
