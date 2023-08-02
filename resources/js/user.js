@@ -384,28 +384,49 @@
 
 
   /**
-   * hide everything but selected
+   * hide all user settings but the selected section
    */
 
-  let allSettingsSections = [
-    "siteAppearanceSettings",
-    "torrentSettings",
-    "communitySettings",
-    "notificationSettings",
-    "profileSettings",
-    "securitySettings",
-  ];
+  // { "section id": "button id" }
+  let settingSections = {
+    "allSettings": "toggleAllSettings",
+    "siteAppearanceSettings": "toggleSiteAppearanceSettings",
+    "torrentSettings": "toggleTorrentSettings",
+    "communitySettings": "toggleCommunitySettings",
+    "notificationSettings": "toggleNotificationSettings",
+    "profileSettings": "toggleProfileSettings",
+    "securitySettings": "toggleSecuritySettings",
+  };
 
-  allSettingsSections.forEach(() => {
-    /**
-     * todo:
-     * doing a forEach loop is probably stupid,
-     * but i need a way to call $("#foo").hide()
-     * on all the shit that's not selected,
-     * and apply "button-primary" to that which is selected,
-     * then i get mad salesforce-tier ui points,
-     * maybe
-     */
+  // when you click a sidebar link
+  $(".toggleSettings").on("click", (event) => {
+    // add button-primary to the clicked button
+    $(event.target).addClass("button-primary");
+
+    // remove button-primary from all other buttons
+    Object.values(settingSections).forEach((element) => {
+      if (element !== event.target.id) {
+        $("#" + element).removeClass("button-primary");
+      }
+    });
+
+    // show all the sections
+    if (event.target.id === "toggleAllSettings") {
+      Object.keys(settingSections).forEach((element) => {
+        $("#" + element).show();
+      });
+    }
+
+    // hide all but the selected section
+    else {
+      Object.entries(settingSections).forEach((element) => {
+        if (element[1] === event.target.id) {
+          $("#" + element[0]).show();
+        } else {
+          $("#" + element[0]).hide();
+        }
+      });
+    }
   });
 
 })();
