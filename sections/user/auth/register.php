@@ -25,12 +25,9 @@ try {
             throw new Exception("Please try again later");
         }
 
-        # hydrate gazelle
-        $userId = $response;
-        $auth->hydrateUserInfo($userId, $post);
-
         # success
-        $emailSent = true;
+        $emailSent = true; # change to thank you page
+        unset($response); # avoid dumping userId
     }
 } catch (Throwable $e) {
     $response = $e->getMessage();

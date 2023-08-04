@@ -158,8 +158,12 @@ class Text
      */
     public static function esc(mixed $string): string
     {
+        # preprocess
+        $string = self::utf8($string);
+
+        # escape
         return htmlspecialchars(
-            $string = self::utf8(strval($string)),
+            $string = $string,
             $flags = ENT_QUOTES | ENT_SUBSTITUTE,
             $encoding = "UTF-8",
             $double_encode = false
@@ -173,22 +177,21 @@ class Text
      * Magical function (the preg_match).
      * Format::is_utf8 + Format::make_utf8.
      *
-     * @param string $string the string to convert
+     * @param mixed $string the string to convert
      * @return string the converted utf8 string
      */
-    public static function utf8(string $string): string
+    public static function utf8(mixed $string): string
     {
+        # preprocess
+        $string = strval($string);
+        $string = trim($string);
+
         # best effort guess (meh)
         # https://stackoverflow.com/a/7980354
-        return iconv(
-            mb_detect_encoding(
-                $string,
-                mb_detect_order(),
-                true
-            ),
-            "UTF-8",
-            $string
-        );
+        $encoding = mb_detect_encoding($string, mb_detect_order(), true);
+        $string = iconv($encoding, "UTF-8", $string);
+
+        return $string;
 
         /*
         # string is already utf8

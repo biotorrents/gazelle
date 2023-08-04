@@ -150,6 +150,9 @@ class Auth # extends Delight\Auth\Auth
                 \Gazelle\App::email($email, $subject, $body);
             });
 
+            # set up the gazelle data
+            $this->hydrateUserInfo($response, $data);
+
             # this will be a userId
             return $response;
         } catch (Delight\Auth\InvalidEmailException $e) {
@@ -182,8 +185,11 @@ class Auth # extends Delight\Auth\Auth
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
+        $encryptedEmail = \Crypto::encrypt($email);
+
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
+
         $username = \Gazelle\Esc::username($data["username"] ?? null);
         $invite = \Gazelle\Esc::string($data["invite"] ?? null);
 
@@ -193,6 +199,10 @@ class Auth # extends Delight\Auth\Auth
         $resetKey = \Gazelle\Text::random(32);
 
         try {
+            # delight-im/auth: encrypt the email
+            $query = "update users set email = ? where id = ?";
+            $app->dbNew->do($query, [$encryptedEmail, $userId]);
+
             # users_main
             $query = "
                 insert into users_main (
@@ -209,7 +219,7 @@ class Auth # extends Delight\Auth\Auth
 
                 # legacy not null fields
                 "username" => $username,
-                "email" => $email,
+                "email" => $encryptedEmail,
                 "passHash" => password_hash($passphrase, PASSWORD_DEFAULT),
 
                 # everything else
@@ -824,12 +834,10 @@ class Auth # extends Delight\Auth\Auth
     {
         $passphrase = \Gazelle\Esc::passphrase($passphrase);
 
-        # failure
-        if (strlen($passphrase) < 15) {
+        if (empty($passphrase) || strlen($passphrase) < 15) {
             return false;
         }
 
-        # success
         return true;
     }
 
