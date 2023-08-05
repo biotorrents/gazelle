@@ -389,7 +389,7 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("username doesn't exist");
             }
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
 
@@ -398,7 +398,7 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                return $e->getMessage();
+                #return $e->getMessage();
                 return $message;
             }
         }
@@ -459,25 +459,25 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (\Delight\Auth\InvalidEmailException $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\InvalidPasswordException $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             # this throws to provide a "resend confirmation email" link
             throw new \Delight\Auth\EmailNotVerifiedException($e->getMessage());
         } catch (\Delight\Auth\TooManyRequestsException $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\UnknownUsernameException $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\AmbiguousUsernameException $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
 
@@ -485,7 +485,7 @@ class Auth # extends Delight\Auth\Auth
             # gazelle session
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            return $e->getMessage();
+            #return $e->getMessage();
             return $message;
         }
     } # login
