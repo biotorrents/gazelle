@@ -106,6 +106,16 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
+            # passphrase = username
+            if ($passphrase === $username) {
+                throw new Exception("Your passphrase can't be the same as your username");
+            }
+
+            # passphrase = email
+            if ($passphrase === $email) {
+                throw new Exception("Your passphrase can't be the same as your email");
+            }
+
             /*
             # you may want to exclude non-printing control characters and certain printable special characters
             if (preg_match("/[\x00-\x1f\x7f\/:\\\\]/", $username)) {
@@ -601,23 +611,34 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
-            # resolve the username
+            # resolve the username and email
             $query = "
-                select username from users
+                select username, email from users
                 left join users_resets on users_resets.user = users.id
                 where selector = ?
             ";
-            $username = $app->dbNew->single($query, [$selector]);
+            $row = $app->dbNew->row($query, [$selector]);
 
-            if (!$username) {
+            if (!$row["username"]) {
                 throw new Exception("Unable to find the username");
+            }
+
+            # passphrase = username
+            if ($passphrase === $row["username"]) {
+                throw new Exception("Your passphrase can't be the same as your username");
+            }
+
+            # passphrase = email
+            $row["email"] = \Crypto::decrypt($row["email"]);
+            if ($passphrase === $row["email"]) {
+                throw new Exception("Your passphrase can't be the same as your email");
             }
 
             # reset the passphrase and log them in
             $this->library->resetPassword($selector, $token, $passphrase);
-            $this->login(["username" => $username, "passphrase" => $passphrase]);
+            $this->login(["username" => $row["username"], "passphrase" => $passphrase]);
         } catch (Throwable $e) {
-            return $message;
+            return $e->getMessage();
         }
     } # recoverEnd
 
@@ -629,6 +650,9 @@ class Auth # extends Delight\Auth\Auth
      */
     public function changePassphrase(string $oldPassphrase, string $newPassphrase)
     {
+        throw new \Exception("not implemented");
+
+        /*
         $app = \Gazelle\App::go();
 
         $message = "Unable to update passphrase";
@@ -641,6 +665,7 @@ class Auth # extends Delight\Auth\Auth
         } catch (Throwable $e) {
             return $message;
         }
+        */
     } # changePassphrase
 
 

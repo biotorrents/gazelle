@@ -962,6 +962,7 @@ class User
 
 
             # update the passphrase
+            # todo: clarify if this is something only the current user can do
             $newPassphrase1 = \Gazelle\Esc::passphrase($data["newPassphrase1"]);
             $newPassphrase2 = \Gazelle\Esc::passphrase($data["newPassphrase2"]);
 
@@ -969,6 +970,16 @@ class User
                 # do they match?
                 if ($newPassphrase1 !== $newPassphrase2) {
                     throw new Exception("new passphrase doesn't match");
+                }
+
+                # passphrase = username
+                if ($newPassphrase1 === $this->core["username"]) {
+                    throw new Exception("new passphrase can't be the same as your username");
+                }
+
+                # passphrase = email
+                if ($newPassphrase1 === $this->core["email"]) {
+                    throw new Exception("new passphrase can't be the same as your email");
                 }
 
                 # is it allowed?

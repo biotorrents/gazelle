@@ -137,6 +137,7 @@ if (!$stepThree) {
     # default recovery
     $app->twig->display("user/auth/recover.twig", [
         "title" => "Recover account",
+        "js" => ["user"],
 
         "response" => $response ?? null,
         "emailSent" => $emailSent ?? null,

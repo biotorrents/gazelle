@@ -287,7 +287,7 @@
     // ajax request
     $.ajax("/api/internal/createPassphrase", {
       method: "GET",
-      headers: { "Authorization": "Bearer " + frontendHash },
+      //headers: { "Authorization": "Bearer " + frontendHash },
 
       contentType: "application/vnd.api+json",
       dataType: "json",
