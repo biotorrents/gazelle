@@ -20,11 +20,6 @@ $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $post = Http::request("post");
 $server = Http::request("server");
 
-$post["username"] ??= null;
-$post["passphrase"] ??= null;
-$post["twoFactor"] ??= null;
-$post["rememberMe"] ??= null;
-
 # where are they trying to go?
 if (empty($post)) {
     $_SESSION["requestedPage"] = $server["REQUEST_URI"] ?? "/";
@@ -37,6 +32,11 @@ if ($auth->library->isLoggedIn()) {
 
 # delight-im/auth
 if (!empty($post)) {
+    $post["username"] ??= null;
+    $post["passphrase"] ??= null;
+    $post["twoFactor"] ??= null;
+    $post["rememberMe"] ??= null;
+
     try {
         $response = $auth->login($post);
         #!d($response);exit;
