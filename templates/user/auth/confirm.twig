@@ -9,6 +9,13 @@
 			{{ response }}
 		</p>
 
+		{# resend confirmation #}
+		{% if resendConfirmation %}
+			<p class="flexRow">
+        		<a href="/resend/{{ username }}" class="button">send new confirmation</a>
+			</p>
+		{% endif %}
+
 	{% else %}
 		<p class="info">
 			Thanks for confirming your account.
@@ -16,8 +23,8 @@
 		</p>
 
 		<p class="flexRow">
-			<a href="/rules" class="button button-primary">Rules</a>
-			<a href="/wiki" class="button">Wiki</a>
+			<a href="/rules" class="button button-primary">rules</a>
+			<a href="/wiki" class="button">wiki</a>
 		</p>
 	{% endif %}
 

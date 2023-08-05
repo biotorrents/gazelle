@@ -68,13 +68,18 @@
     <a id="assertWebAuthn" class="button button-orange">webauthn login</a>
 
     {# register #}
-    {% if env.openRegistration == true %}
-        <a href="/register" class="button">Register</a>
+    {% if env.openRegistration == true and post is empty %}
+        <a href="/register" class="button">register</a>
     {% endif %}
 
     {# recover #}
     {% if post is not empty %}
-        <a href="/recover" class="button">Recover account</a>
+        <a href="/recover" class="button">recover account</a>
+    {% endif %}
+
+    {# resend confirmation #}
+    {% if resendConfirmation %}
+        <a href="/resend/{{ post.username }}" class="button">send new confirmation</a>
     {% endif %}
 
 </form>

@@ -76,6 +76,13 @@ Flight::route("/confirm/@selector/@token", function (string $selector, string $t
 });
 
 
+# resend confirmation email
+Flight::route("/resend/@identifier", function ($identifier) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/user/auth/resend.php";
+});
+
+
 /*
 # pwgen
 Flight::route("/pwgen(/@method)", function ($method) {

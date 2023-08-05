@@ -198,24 +198,28 @@ class Auth # extends Delight\Auth\Auth
         $authKey = \Gazelle\Text::random(32);
         $resetKey = \Gazelle\Text::random(32);
 
+        # delight-im/auth: encrypt the email
+        # purposefully enforced outside the transaction
+        $query = "update users set email = ? where id = ?";
+        $app->dbNew->do($query, [$encryptedEmail, $userId]);
+
         try {
-            # delight-im/auth: encrypt the email
-            $query = "update users set email = ? where id = ?";
-            $app->dbNew->do($query, [$encryptedEmail, $userId]);
+            # start a transaction
+            $app->dbNew->beginTransaction();
 
             # users_main
             $query = "
                 insert into users_main (
-                    userId, username, email, passHash,
+                    id, userId, username, email, passHash,
                     ip, uploaded, enabled, invites, permissionId, torrent_pass, flTokens)
                 values (
-                    :userId, :username, :email, :passHash,
+                    :id, :userId, :username, :email, :passHash,
                     :ip, :uploaded, :enabled, :invites, :permissionId, :torrent_pass, :flTokens)
             ";
 
             $app->dbNew->do($query, [
-                # this will become the primary key
-                "userId" => $userId,
+                "id" => $userId, # required for legacy gazelle queries
+                "userId" => $userId, # this will become the primary key
 
                 # legacy not null fields
                 "username" => $username,
@@ -317,9 +321,11 @@ class Auth # extends Delight\Auth\Auth
             $query = "insert into users_notifications_settings (userId) values (?)";
             $app->dbNew->do($query, [$userId]);
 
-            # update ocelot with the new user
+            # update ocelot and commit
             Tracker::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
+            $app->dbNew->commit();
         } catch (Throwable $e) {
+            $app->dbNew->rollBack();
             return $e->getMessage();
         }
     } # hydrateUserInfo
@@ -353,7 +359,6 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("username doesn't exist");
             }
         } catch (Throwable $e) {
-            #return $e->getMessage();
             return $message;
         }
 
@@ -362,7 +367,6 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                #return $e->getMessage();
                 return $message;
             }
         }
@@ -407,8 +411,20 @@ class Auth # extends Delight\Auth\Auth
                 $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
             */
+        } catch (\Delight\Auth\InvalidEmailException $e) {
+            return $message;
+        } catch (\Delight\Auth\InvalidPasswordException $e) {
+            return $message;
+        } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+            # this throws to provide a "resend confirmation email" link
+            throw new \Delight\Auth\EmailNotVerifiedException($e);
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return $message;
+        } catch (\Delight\Auth\UnknownUsernameException $e) {
+            return $message;
+        } catch (\Delight\Auth\AmbiguousUsernameException $e) {
+            return $message;
         } catch (Throwable $e) {
-            #return $e->getMessage();
             return $message;
         }
 
@@ -416,7 +432,6 @@ class Auth # extends Delight\Auth\Auth
             # gazelle session
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            #return $e->getMessage();
             return $message;
         }
     } # login
@@ -463,6 +478,15 @@ class Auth # extends Delight\Auth\Auth
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
             $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
+        } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
+            return $message;
+        } catch (\Delight\Auth\TokenExpiredException $e) {
+            # this throws to provide a "resend confirmation email" link
+            throw new \Delight\Auth\TokenExpiredException($e);
+        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            return $message;
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return $message;
         } catch (Throwable $e) {
             return $message;
         }
@@ -679,30 +703,51 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#re-sending-confirmation-requests
      */
-    public function resendConfirmation(string $email)
+    public function resendConfirmation(int|string $identifier)
     {
-        throw new Exception("not implemented");
-
-        /*
         $app = \Gazelle\App::go();
 
         $message = "Unable to resend confirmation email";
 
-        $email = \Gazelle\Esc::email($email);
+        # try to resolve the email address
+        $identifier = \Gazelle\Esc::string($identifier);
+        $column = $app->dbNew->determineIdentifier($identifier);
+
+        # todo: maybe change unresolved id or uuid to null
+        # and let the backend decide which column to use?
+        if ($column === "slug") {
+            $column = "username";
+        }
+
+        $query = "select email from users where {$column} = ?";
+        $email = $app->dbNew->single($query, [$identifier]);
+
+        $email = \Crypto::decrypt($email);
+        if (!$email) {
+            return $message;
+        }
 
         try {
             $this->library->resendConfirmationForEmail($email, function ($selector, $token) {
-                echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
-                echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                echo '  For SMS, consider using a third-party service and a compatible SDK';
+                $app = \Gazelle\App::go();
+
+                # build the verification uri
+                $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
+
+                # email it to the prospective user
+                $subject = "Confirm your new {$app->env->siteName} account";
+                $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
+
+                # send the email
+                \Gazelle\App::email($email, $subject, $body);
             });
-
-
-            echo 'The user may now respond to the confirmation request (usually by clicking a link)';
+        } catch (\Delight\Auth\ConfirmationRequestNotFound $e) {
+            return $message;
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return $message;
         } catch (Throwable $e) {
             return $message;
         }
-        */
     } # resendConfirmation
 
 

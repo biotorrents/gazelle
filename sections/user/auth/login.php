@@ -20,6 +20,11 @@ $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $post = Http::request("post");
 $server = Http::request("server");
 
+$post["username"] ??= null;
+$post["passphrase"] ??= null;
+$post["twoFactor"] ??= null;
+$post["rememberMe"] ??= null;
+
 # where are they trying to go?
 if (empty($post)) {
     $_SESSION["requestedPage"] = $server["REQUEST_URI"] ?? "/";
@@ -35,6 +40,9 @@ if (!empty($post)) {
     try {
         $response = $auth->login($post);
         #!d($response);exit;
+    } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+        $resendConfirmation = true;
+        $response = "Your email address hasn't been verified.";
     } catch (\Throwable $e) {
         $response = $e->getMessage();
     }
@@ -50,4 +58,5 @@ $app->twig->display("user/auth/login.twig", [
     "js" => ["vendor/simplewebauthn.min", "webAuthnAssert"],
     "response" => $response ?? null,
     "post" => $post ?? null,
+    "resendConfirmation" => $resendConfirmation ?? false,
 ]);
