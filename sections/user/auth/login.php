@@ -34,7 +34,7 @@ if (empty($post)) {
 
 # redirect if logged in
 if ($auth->library->isLoggedIn()) {
-    Http::redirect($_SESSION["requestedPage"]);
+    Http::redirect($_SESSION["requestedPage"] ?? "/");
 }
 
 # delight-im/auth
@@ -56,7 +56,7 @@ if (!empty($post)) {
 
     # silence is golden
     if (!$response) {
-        Http::redirect($_SESSION["requestedPage"]);
+        Http::redirect($_SESSION["requestedPage"] ?? "/");
     }
 }
 
