@@ -22,7 +22,7 @@ try {
 
         # failure
         if (!is_int($response)) {
-            throw new Exception("Please try again later");
+            throw new Exception($response);
         }
 
         # success

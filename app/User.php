@@ -153,6 +153,7 @@ class User
 
             # decrypt the email address
             $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            #!d($this->core);exit;
 
             # extra: gazelle, users_main and users_info
             $query = "select * from users_main join users_info on users_main.userId = users_info.userId where users_main.userId = ?";

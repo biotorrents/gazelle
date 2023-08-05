@@ -38,7 +38,7 @@ $document ??= "index";
 #!d($document);exit;
 
 # redirect unauthenticated to login page
-$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm", "canary"];
+$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm", "canary", "resend"];
 if (!$app->user->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;

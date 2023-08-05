@@ -52,8 +52,10 @@ if (is_array($response)) {
 # twig template
 $app->twig->display("user/auth/confirm.twig", [
     "title" => "Confirm account",
+
     "response" => $response ?? null,
     "success" => $success ?? null,
+
     "resendConfirmation" => $resendConfirmation ?? false,
     "username" => $username ?? null,
 ]);

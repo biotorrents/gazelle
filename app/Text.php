@@ -356,7 +356,7 @@ class Text
      *
      * I asked ChatGPT about this one.
      */
-    public static function isBinaryString(string $string): bool
+    public static function isBinary(string $string): bool
     {
         # check if the string contains any non-printable characters
         if (preg_match("/[^\x20-\x7E\t\r\n]/", $string)) {

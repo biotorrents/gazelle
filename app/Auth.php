@@ -79,10 +79,12 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # escape the inputs
+        $username = \Gazelle\Esc::username($data["username"] ?? null);
         $email = \Gazelle\Esc::email($data["email"] ?? null);
+
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
-        $username = \Gazelle\Esc::username($data["username"] ?? null);
+
         $invite = \Gazelle\Esc::string($data["invite"] ?? null);
 
         try {
@@ -160,10 +162,12 @@ class Auth # extends Delight\Auth\Auth
                 \Gazelle\App::email($email, $subject, $body);
             });
 
-            # set up the gazelle data
-            $this->hydrateUserInfo($response, $data);
+            if (!is_int($response)) {
+                throw new Exception("Registration failed");
+            }
 
             # this will be a userId
+            $this->hydrateUserInfo($response, $data);
             return $response;
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
@@ -251,7 +255,7 @@ class Auth # extends Delight\Auth\Auth
                 # everything else
                 "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
                 "uploaded" => $app->env->newUserUpload,
-                "enabled" => 0,
+                "enabled" => 1,
                 "invites" => $app->env->newUserInvites,
                 "permissionId" => USER, # todo: constant
                 "torrent_pass" => $torrent_pass,
@@ -405,6 +409,16 @@ class Auth # extends Delight\Auth\Auth
             $query = "update users_main set id = userId where userId = ?";
             $app->dbNew->do($query, [$userId]);
 
+            # todo: same as above
+            $query = "select email from users where id = ?";
+            $email = $app->dbNew->single($query, [$userId]);
+
+            $decryptedEmail = \Crypto::decrypt($email);
+            if (!$decryptedEmail) {
+                $query = "update users set email where id = ?";
+                $app->dbNew->do($query, [ \Crypto::encrypt($email) ]);
+            }
+
             # legacy: remove after 2024-04-01
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
@@ -452,7 +466,7 @@ class Auth # extends Delight\Auth\Auth
             return $message;
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             # this throws to provide a "resend confirmation email" link
-            throw new \Delight\Auth\EmailNotVerifiedException($e);
+            throw new \Delight\Auth\EmailNotVerifiedException($e->getMessage());
         } catch (\Delight\Auth\TooManyRequestsException $e) {
             return $e->getMessage();
             return $message;
@@ -517,12 +531,12 @@ class Auth # extends Delight\Auth\Auth
         try {
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
-            $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
+            $this->library->confirmEmail($selector, $token, $this->remember());
         } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
             return $message;
         } catch (\Delight\Auth\TokenExpiredException $e) {
             # this throws to provide a "resend confirmation email" link
-            throw new \Delight\Auth\TokenExpiredException($e);
+            throw new \Delight\Auth\TokenExpiredException($e->getMessage());
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             return $message;
         } catch (\Delight\Auth\TooManyRequestsException $e) {
@@ -664,9 +678,8 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("Your passphrase can't be the same as your email");
             }
 
-            # reset the passphrase and log them in
+            # reset the passphrase
             $this->library->resetPassword($selector, $token, $passphrase);
-            $this->login(["username" => $row["username"], "passphrase" => $passphrase]);
         } catch (Throwable $e) {
             return $e->getMessage();
         }
@@ -783,7 +796,7 @@ class Auth # extends Delight\Auth\Auth
         }
 
         try {
-            $this->library->resendConfirmationForEmail($email, function ($selector, $token) {
+            $this->library->resendConfirmationForEmail($email, function ($selector, $token) use ($email) {
                 $app = \Gazelle\App::go();
 
                 # build the verification uri

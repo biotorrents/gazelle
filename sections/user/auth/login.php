@@ -19,6 +19,13 @@ $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 # variables
 $post = Http::request("post");
 $server = Http::request("server");
+#!d($server["REQUEST_URI"]);exit;
+
+# kinda lazy but it works
+if (str_starts_with($server["REQUEST_URI"], "/resend")) {
+    $_SESSION["requestedPage"] = "/";
+    $resendConfirmationMessage = "We've sent you a new confirmation email";
+}
 
 # where are they trying to go?
 if (empty($post)) {
@@ -42,7 +49,7 @@ if (!empty($post)) {
         #!d($response);exit;
     } catch (\Delight\Auth\EmailNotVerifiedException $e) {
         $resendConfirmation = true;
-        $response = "Your email address hasn't been verified.";
+        $response = "Your email address hasn't been verified";
     } catch (\Throwable $e) {
         $response = $e->getMessage();
     }
@@ -59,4 +66,5 @@ $app->twig->display("user/auth/login.twig", [
     "response" => $response ?? null,
     "post" => $post ?? null,
     "resendConfirmation" => $resendConfirmation ?? false,
+    "resendConfirmationMessage" => $resendConfirmationMessage ?? null,
 ]);

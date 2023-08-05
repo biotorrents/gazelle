@@ -33,6 +33,13 @@
     </p>
 {% endif %}
 
+{# resend confirmation message #}
+{% if resendConfirmationMessage is not null %}
+    <p class="info">
+        {{ resendConfirmationMessage }}
+    </p>
+{% endif %}
+
 {# webauthn response #}
 <p id="webAuthnResponse"></p>
 
