@@ -415,8 +415,8 @@ class Auth # extends Delight\Auth\Auth
 
             $decryptedEmail = \Crypto::decrypt($email);
             if (!$decryptedEmail) {
-                $query = "update users set email where id = ?";
-                $app->dbNew->do($query, [ \Crypto::encrypt($email) ]);
+                $query = "update users set email = ? where id = ?";
+                $app->dbNew->do($query, [ \Crypto::encrypt($email), $userId ]);
             }
 
             # legacy: remove after 2024-04-01
