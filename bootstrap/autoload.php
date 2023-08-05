@@ -51,7 +51,7 @@ spl_autoload_register(function (string $class) {
     }
 
     $name ??= null;
-    if ($name) {
+    if ($name && file_exists($path)) {
         require_once $path;
     }
 });

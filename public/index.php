@@ -42,6 +42,9 @@ if ($server["REQUEST_URI"] === "/") {
 require_once __DIR__."/../config/app.php";
 require_once __DIR__."/../bootstrap/utilities.php";
 
+# start a session
+session_start();
+
 # web vs. api bootstrap
 # cli is included directly
 if ($document !== "api") {

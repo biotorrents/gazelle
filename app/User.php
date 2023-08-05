@@ -9,6 +9,7 @@ declare(strict_types=1);
  * $this->core contains necessary info from delight-im/auth.
  * $this->extra contains various profile, etc., info from Gazelle.
  * $this->permissions contains role and permission info.
+ * $this->siteOptions contains the parsed user options.
  *
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
@@ -28,18 +29,20 @@ class User
     public $permissions = [];
     public $siteOptions = [];
 
-    # legacy gazelle
-    public $lightInfo = [];
-    public $heavyInfo = [];
+    # make $_SESSION available
+    public $session = null;
 
     # cache settings
     private $cachePrefix = "user:";
     private $cacheDuration = "5 minutes";
 
-    # user status constants
-    const STATUS_UNCONFIRMED = 0;
-    const STATUS_ENABLED = 1;
-    const STATUS_DISABLED = 2;
+    # https://github.com/delight-im/PHP-Auth/blob/master/src/Status.php
+    public const NORMAL = 0;
+    public const ARCHIVED = 1;
+    public const BANNED = 2;
+    public const LOCKED = 3;
+    public const PENDING_REVIEW = 4;
+    public const SUSPENDED = 5;
 
 
     /**
@@ -72,7 +75,7 @@ class User
      */
     public static function go(array $options = [])
     {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }
@@ -94,101 +97,53 @@ class User
         # auth class
         $this->auth = new Auth();
 
+        # session superglobal
+        $this->session = $_SESSION;
+
         # untrusted input
-        $sessionId = Http::readCookie("sessionId") ?? null;
         $userId = Http::readCookie("userId") ?? null;
+        $sessionId = Http::readCookie("sessionId") ?? null;
         $server = Http::request("server") ?? null;
 
-        # unauthenticated
-        if (!$sessionId) {
+        # unauthenticated, no cookies
+        if (!$userId || !$sessionId) {
             return false;
         }
 
-        # get userId
-        $now = Carbon\Carbon::now()->toDateString();
+        # get the real userId and sessionId
+        $now = Carbon\Carbon::now()->toDateTimeString();
 
-        $query = "select userId from users_sessions where sessionId = ? and expires > ?";
-        $userId = $app->dbNew->single($query, [$sessionId, $now]);
+        $query = "select userId, sessionId from users_sessions where sessionId = ? and expires > ?";
+        $ref = $app->dbNew->row($query, [$sessionId, $now]);
 
-        # double check
-        if (intval($userId) !== intval(Http::readCookie("userId"))) {
-            return false;
-        }
+        $userId = $ref["userId"] ?? null;
+        $sessionId = $ref["sessionId"] ?? null;
 
-        # no session
+        # not in the database
         if (!$userId && !$sessionId) {
             return false;
         }
 
-        # get most recent session
-        $query = "select sessionId from users_sessions where userId = ? order by expires desc";
-        $ref = $app->dbNew->multi($query, [$userId]);
-        $sessions = array_column($ref, "sessionId");
+        /*
+        # get the most recent session
+        $query = "select sessionId from users_sessions where userId = ? and expires > ? order by expires desc";
+        $sessions = $app->dbNew->column("sessionId", $query, [$userId, $now]);
 
-        # bad session
+        # bad session from list
         if (!in_array($sessionId, $sessions)) {
             return false;
         }
+        */
 
-        /*
-        # check enabled
-        # todo: migrate to delight-im/auth
-        $query = "select enabled from users_main where id = ?";
-        $enabled = $app->dbNew->single($query, [$userId]);
+        # check enabled state
+        $query = "select 1 from users where id = ? and status = ?";
+        $good = $app->dbNew->single($query, [$userId, self::NORMAL]);
 
-        # double check
-        if (intval($enabled) === 2) {
+        if (!$good) {
             return false;
         }
-        */
 
-        # user stats
-        $query = "select uploaded, downloaded, requiredRatio from users_main where userId = ?";
-        $stats = $app->dbNew->row($query, [$userId]);
-
-        # original gazelle user info
-        $this->heavyInfo = self::user_heavy_info($userId) ?? [];
-        $this->lightInfo = self::user_info($userId) ?? [];
-
-        /*
-        # ratio watch
-        $user["RatioWatch"] = (
-            $user["RatioWatchEnds"]
-              && time() < strtotime($user["RatioWatchEnds"])
-              && ($stats["Downloaded"] * $stats["RequiredRatio"]) > $stats["Uploaded"]
-        );
-        */
-
-        /*
-        # notifications
-        if ($user["Permissions"]["site_torrents_notify"]) {
-            $user["Notify"] = $app->cache->get("notify_filters_{$userId}");
-
-            if (!$user["Notify"]) {
-                $query = "select id, label from users_notify_filters where userId = ?";
-                $user["Notify"] = $app->dbNew->row($query, [$userId]);
-                $app->cache->set("notify_filters_{$userId}", $user["Notify"], $this->cacheDuration);
-            }
-        }
-        */
-
-        /*
-        # ip changed
-        if (Crypto::decrypt($user["IP"]) !== $server["REMOTE_ADDR"]) {
-            # should be done by the firewall
-            if (Tools::site_ban_ip($server["REMOTE_ADDR"])) {
-                error("Your IP address is banned");
-            }
-
-            # current and new
-            $currentIp = $user["IP"];
-            $newIp = $server["REMOTE_ADDR"];
-        }
-        */
-
-
-        /** */
-
+        /** end validation, start populating data */
 
         try {
             # core: delight-im/auth
@@ -196,10 +151,11 @@ class User
             $row = $app->dbNew->row($query, [$userId]);
             $this->core = $row ?? [];
 
-            # decrypt email
-            #$this->core["email"] = Crypto::decrypt($this->core["email"]);
+            # decrypt the email address
+            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            #!d($this->core);exit;
 
-            # extra: gazelle
+            # extra: gazelle, users_main and users_info
             $query = "select * from users_main join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
             $row = $app->dbNew->row($query, [$userId]);
             $this->extra = $row ?? [];
@@ -218,6 +174,7 @@ class User
             $this->siteOptions = json_decode($this->extra["SiteOptions"] ?? "{}", true);
 
             # rss auth
+            $this->extra["torrent_pass"] ??= null;
             $this->extra["RSS_Auth"] = md5(
                 $userId
                 . $app->env->getPriv("rssHash")
@@ -234,16 +191,66 @@ class User
             $stylesheets = $app->dbNew->multi($query);
 
             # user stylesheet
-            $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
+            $this->extra["StyleID"] ??= null;
+            if ($this->extra["StyleID"]) {
+                $stylesheets[$this->extra["StyleID"]]["name"] ??= null;
+                $this->extra["StyleName"] = $stylesheets[$this->extra["StyleID"]]["name"];
+            }
 
             # api bearer tokens
             $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
-            $this->extra["bearerTokens"] = $bearerTokens;
+            $this->extra["bearerTokens"] = $bearerTokens ?? [];
 
             # site options
             $this->extra["siteOptions"] = json_decode($this->extra["SiteOptions"] ?? "{}", true);
             unset($this->extra["SiteOptions"]);
+
+            # user stats
+            $query = "select uploaded, downloaded, requiredRatio from users_main where userId = ?";
+            $stats = $app->dbNew->row($query, [$userId]) ?? [];
+
+            if (empty($stats)) {
+                $stats = [
+                    "uploaded" => 0,
+                    "downloaded" => 0,
+                    "requiredRatio" => 0,
+                ];
+            }
+
+            # ratio watch
+            $this->extra["RatioWatchEnds"] ??= null;
+            if ($this->extra["RatioWatchEnds"]) {
+                $this->extra["ratioWatch"] = (
+                    time() < strtotime($this->extra["RatioWatchEnds"])
+                    && ($stats["downloaded"] * $stats["requiredRatio"]) > $stats["uploaded"]
+                );
+            }
+
+            # notifications
+            $this->permissions["values"]["site_torrents_notify"] ??= null;
+            if ($this->permissions["values"]["site_torrents_notify"]) {
+                $query = "select id, label from users_notify_filters where userId = ?";
+                $this->extra["notifyFilters"] = $app->dbNew->row($query, [$userId]) ?? [];
+            }
+
+            # ip changed
+            $this->extra["IP"] = Crypto::decrypt($this->extra["IP"]);
+            if ($this->extra["IP"]) { # not false
+                $ipChanged = $this->extra["IP"] !== $server["REMOTE_ADDR"];
+                if ($ipChanged) {
+                    $this->extra["IP"] = $server["REMOTE_ADDR"];
+                    $encryptedIp = Crypto::encrypt($this->extra["IP"]);
+
+                    $query = "update users_main set IP = ? where userId = ?";
+                    $app->dbNew->do($query, [$encryptedIp, $userId]);
+                }
+
+                # should be done by the firewall
+                if (Tools::site_ban_ip($server["REMOTE_ADDR"])) {
+                    $app->error("Your IP address is banned");
+                }
+            }
 
             # for my own sanity
             foreach ($this as $key => $value) {
@@ -314,7 +321,7 @@ class User
      */
     public function isLoggedIn(): bool
     {
-        return !empty($this->core);
+        return $this->auth->library->isLoggedIn() || !empty($this->core);
     }
 
 
@@ -339,7 +346,7 @@ class User
      */
     public function isUnconfirmed(): bool
     {
-        return $this->enabledState() === 0;
+        return $this->enabledState() === self::PENDING_REVIEW;
     }
 
 
@@ -348,7 +355,7 @@ class User
      */
     public function isEnabled(): bool
     {
-        return $this->enabledState() === 1;
+        return $this->enabledState() === self::NORMAL;
     }
 
 
@@ -357,7 +364,7 @@ class User
      */
     public function isDisabled(): bool
     {
-        return $this->enabledState() === 2;
+        return $this->enabledState() === self::BANNED;
     }
 
 
@@ -373,11 +380,21 @@ class User
         $query = "select 1 from users where id = ?";
         $ref = $app->dbNew->single($query, [$userId]);
 
-        if ($ref) {
-            return true;
-        }
+        return boolval($ref);
+    }
 
-        return false;
+
+    /**
+     * username
+     *
+     * Returns the username.
+     * Required for the auth library.
+     *
+     * return string|null
+     */
+    public function username(): ?string
+    {
+        return $this->core["username"] ?? null;
     }
 
 
@@ -466,8 +483,8 @@ class User
                     'Class'        => 0
                 ];
             } else {
-                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
+                $UserInfo['CatchupTime'] ??= null;
                 $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
 
                 /*
@@ -689,18 +706,6 @@ class User
 
 
     /**
-     * Given a class ID, return its name.
-     *
-     * @param int $ClassID
-     * @return string name
-     */
-    public static function make_class_string($ClassID)
-    {
-        # todo: remove
-    }
-
-
-    /**
      * Returns an array with User Bookmark data: group IDs, collage data, torrent data
      * @param string|int $UserID
      * @return array Group IDs, Bookmark Data, Torrent List
@@ -772,41 +777,6 @@ class User
     {
         # negating the return is a shim: this is used everywhere
         return !$this->extra["siteOptions"]["userAvatars"];
-    }
-
-
-    /*
-     * Initiate a password reset
-     *
-     * @param int $UserID The user ID
-     * @param string $Username The username
-     * @param string $Email The email address
-     */
-    public static function reset_password($UserID, $Username, $Email)
-    {
-        $app = \Gazelle\App::go();
-
-        $ResetKey = \Gazelle\Text::random();
-        $app->dbOld->query("
-        UPDATE users_info
-        SET
-          ResetKey = '" . db_string($ResetKey) . "',
-          ResetExpires = '" . time_plus(60 * 60) . "'
-        WHERE UserID = '$UserID'");
-
-        $email = $app->twig->render(
-            "email/passphraseReset.twig",
-            [
-            'Username'=> $Username,
-           'ResetKey'=> $ResetKey,
-          'IP'=> $_SERVER['REMOTE_ADDR'],
-          'siteName'=> $app->env->siteName,
-            'siteDomain'=> siteDomain,
-
-        ]
-        );
-
-        \Gazelle\App::email($Email, 'Password reset information for ' . $app->env->siteName, $email);
     }
 
 
@@ -965,14 +935,14 @@ class User
         }
 
         # default to the current user
-        $userId = $data["userId"] ?? $this->core["id"];
-        if (!$userId) {
+        $userId = intval($data["userId"] ?? $this->core["id"]);
+        if (empty($userId)) {
             throw new Exception("userId not found");
         }
 
         # check permissions to update another user
         $moderatorUpdate = false;
-        if (intval($userId) !== $this->core["id"]) {
+        if ($userId !== $this->core["id"]) {
             $good = $this->can("users_edit_profiles");
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
@@ -1018,6 +988,7 @@ class User
 
 
             # update the passphrase
+            # todo: clarify if this is something only the current user can do
             $newPassphrase1 = \Gazelle\Esc::passphrase($data["newPassphrase1"]);
             $newPassphrase2 = \Gazelle\Esc::passphrase($data["newPassphrase2"]);
 
@@ -1025,6 +996,16 @@ class User
                 # do they match?
                 if ($newPassphrase1 !== $newPassphrase2) {
                     throw new Exception("new passphrase doesn't match");
+                }
+
+                # passphrase = username
+                if ($newPassphrase1 === $this->core["username"]) {
+                    throw new Exception("new passphrase can't be the same as your username");
+                }
+
+                # passphrase = email
+                if ($newPassphrase1 === $this->core["email"]) {
+                    throw new Exception("new passphrase can't be the same as your email");
                 }
 
                 # is it allowed?
@@ -1043,8 +1024,7 @@ class User
             } # if (!empty($newPassphrase1) && !empty($newPassphrase2))
 
 
-            # todo: update the email
-            # maybe admins can't change it?
+            # update the email, only allowed by the current user
             $email = \Gazelle\Esc::email($data["email"]);
             if (empty($email)) {
                 throw new Exception("invalid email address");
@@ -1052,13 +1032,7 @@ class User
 
             if (!$moderatorUpdate && $email !== $this->core["email"]) {
                 # https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
-                $this->auth->changeEmail($email, function ($selector, $token) {
-                    /*
-                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                    echo '  For SMS, consider using a third-party service and a compatible SDK';
-                    */
-                });
+                $this->auth->changeEmail($userId, $email);
             } # if (!$moderatorUpdate && $email !== $this->core["email"])
 
 
@@ -1079,12 +1053,15 @@ class User
 
 
             # badges
-            $query = "update users_badges set displayed = 0 where userId = ?";
-            $app->dbNew->do($query, [$userId]);
+            $data["badges"] ??= null;
+            if ($data["bagdes"]) {
+                $query = "update users_badges set displayed = 0 where userId = ?";
+                $app->dbNew->do($query, [$userId]);
 
-            $badges = implode(", ", $data["badges"]);
-            $query = "update users_badges set displayed = 1 where userId = ? and badgeId in ({$badges})";
-            $app->dbNew->do($query, [$userId]);
+                $badges = implode(", ", $data["badges"]);
+                $query = "update users_badges set displayed = 1 where userId = ? and badgeId in ({$badges})";
+                $app->dbNew->do($query, [$userId]);
+            }
 
 
             # ircKey
@@ -1221,7 +1198,7 @@ class User
             # commit the transaction
             $app->dbNew->commit();
         } catch (Throwable $e) {
-            $app->dbNew->rollback();
+            $app->dbNew->rollBack();
             throw new Exception($e->getMessage());
         }
     } # updateSettings
@@ -1270,7 +1247,7 @@ class User
         $data["core"] = $row ?? [];
 
         # extra: gazelle
-        $query = "select * from users_main cross join users_info on users_main.id = users_info.userId where id = ?";
+        $query = "select * from users_main cross join users_info on users_main.userId = users_info.userId where users_main.userId = ?";
         $row = $app->dbNew->row($query, [$userId]);
         $data["extra"] = $row ?? [];
 
@@ -1698,7 +1675,6 @@ class User
         $data["leechingCount"] = $row["foo"] ?? 0;
         */
 
-
         # snatches
         # torrents.php?type=snatched&userid={{ userId }}
         # torrents.php?action=redownload&type=snatches&userid={{ userId }}
@@ -1736,7 +1712,8 @@ class User
 
 
         # ratio
-        if ($profile["extra"]["Downloaded"] === 0) {
+        $profile["extra"]["Downloaded"] ??= null;
+        if (empty($profile["extra"]["Downloaded"])) {
             $data["ratio"] = 1;
         } else {
             $data["ratio"] = round($profile["extra"]["Uploaded"] / $profile["extra"]["Downloaded"], 2);
@@ -1782,25 +1759,25 @@ class User
         $data = [];
 
         # uploaded
-        $data["uploaded"] = UserRank::get_rank('uploaded', $profile["extra"]["Uploaded"]);
+        $data["uploaded"] = UserRank::get_rank("uploaded", $profile["extra"]["Uploaded"]);
 
         # downloaded
-        $data["downloaded"] = UserRank::get_rank('downloaded', $profile["extra"]["Downloaded"]);
+        $data["downloaded"] = UserRank::get_rank("downloaded", $profile["extra"]["Downloaded"]);
 
         # uploads
-        $data["uploads"] = UserRank::get_rank('uploads', $torrentStats["uploadCount"]);
+        $data["uploads"] = UserRank::get_rank("uploads", $torrentStats["uploadCount"]);
 
         # requestsFilled
-        $data["requestsFilled"] = UserRank::get_rank('requests', $communityStats["requestsFilledCount"]);
+        $data["requestsFilled"] = UserRank::get_rank("requests", $communityStats["requestsFilledCount"]);
 
         # posts
-        $data["posts"] = UserRank::get_rank('posts', $communityStats["forumPosts"]);
+        $data["posts"] = UserRank::get_rank("posts", $communityStats["forumPosts"]);
 
         # requestsVoted
-        $data["requestsVoted"] = UserRank::get_rank('bounty', $communityStats["requestsVotedBounty"]);
+        $data["requestsVoted"] = UserRank::get_rank("bounty", $communityStats["requestsVotedBounty"]);
 
         # creatorsAdded
-        $data["creatorsAdded"] = UserRank::get_rank('artists', $communityStats["creatorsAdded"]);
+        $data["creatorsAdded"] = UserRank::get_rank("artists", $communityStats["creatorsAdded"]);
 
         # overall
         $data["overall"] = UserRank::overall_score(

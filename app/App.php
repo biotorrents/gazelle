@@ -64,7 +64,7 @@ class App
      */
     public static function go(array $options = [])
     {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }
@@ -143,7 +143,7 @@ class App
             # debug on development
             $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_OFF;
             if ($app->env->dev) {
-                $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
+                #$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
             }
 
             # server settings
@@ -185,7 +185,7 @@ class App
 
             # create a plaintext version if needed
             if ($isHtml) {
-                $mail->AltBody = "todo: render the html as plaintext";
+                $mail->AltBody = strip_tags($body);
             }
 
             # send it

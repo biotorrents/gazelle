@@ -36,16 +36,20 @@ class Http
         $parsed["scheme"] ??= null;
         $parsed["host"] ??= null;
 
-        # local
+        # local: yes slash, e.g., /torrents/foo
+        if (str_starts_with($uri, "/")) {
+            header("Location: {$uri}");
+            exit;
+        }
+
+        # local: no slash, e.g., torrents/foo
         if (!$parsed["scheme"] || !$parsed["host"]) {
             header("Location: /{$uri}");
+            exit;
         }
 
         # remote
-        else {
-            header("Location: {$uri}");
-        }
-
+        header("Location: {$uri}");
         exit;
     }
 
@@ -497,7 +501,7 @@ class Http
      */
     public static function deleteCookie(string $key): void
     {
-        self::createCookie([self::$cookiePrefix.$key, ""], "now");
+        self::updateCookie([$key => ""], "yesterday");
     }
 
 
@@ -514,6 +518,7 @@ class Http
         $cookie = self::request("cookie");
 
         foreach ($cookie as $key => $value) {
+            $key = str_replace(self::$cookiePrefix, "", $key);
             self::deleteCookie($key);
         }
     }

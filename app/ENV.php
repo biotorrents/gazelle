@@ -82,7 +82,7 @@ class ENV
      */
     public static function go(array $options = []): ENV
     {
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
         }
 

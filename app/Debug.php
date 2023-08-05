@@ -50,12 +50,13 @@ class Debug # extends DebugBar\StandardDebugBar
      */
     public static function go(array $options = [])
     {
-        return (self::$instance === null)
+        return (!self::$instance)
             ? self::$instance = self::factory($options)
             : self::$instance;
 
         /*
-        if (self::$instance === null) {
+        # Cannot use object of type Debug as array
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }

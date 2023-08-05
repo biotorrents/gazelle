@@ -53,12 +53,12 @@ class Twig # extends Twig\Environment
      */
     public static function go(array $options = [])
     {
-        return (self::$instance === null)
+        return (!self::$instance)
             ? self::$instance = self::factory($options)
             : self::$instance;
 
         /*
-        if (self::$instance === null) {
+        if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }

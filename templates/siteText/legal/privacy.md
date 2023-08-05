@@ -8,17 +8,16 @@ You consent on account registration by checking the box labelled,
 
 We collect and use personal data defined as
 
-- usernames, email addresses, passphrases, and 2FA seeds;
-- GPG keys, IRC keys, API keys, passkeys, and authkeys;
-- IP addresses, and login and access timestamps;
-- account preferences, activity, and history;
+- usernames, email addresses, passphrases, 2FA seeds, and WebAuthn credentials;
+- GPG keys, IRC keys, API keys, tracker passkeys, site authkeys, and RSS keys;
+- IP addresses, user agent strings, and login and access timestamps;
+- account preferences, activity, and participation history;
 - and server error logs.
 
 We don't collect cross-origin data.
 Also, we don't access
 [browser features](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Permissions-Policy)
 such as camera, microphone, and sensors.
-
 You directly provide us with most personal data.
 We collect data when you
 
@@ -30,12 +29,11 @@ We collect data when you
 ### Data use and storage
 
 We use your personal data to manage your account and administer the site.
-We don't sell or provide data to third parties, except as required by law.
+We don't sell or otherwise provide data to third parties, except as required by law.
 
 We store your personal data on our own servers.
 Sensitive data is encrypted or hashed, defined as:
 email and IP addresses, private messages, passphrases, and API keys.
-
 We'll keep your personal data until account termination.
 Please contact us to terminate your account.
 Termination deletes your personal data and revokes your passkey.
@@ -66,7 +64,7 @@ Generally, we don't collect any personal data as defined in
 [Art. 4](https://gdpr-info.eu/art-4-gdpr)
 except what you voluntarily provide us.
 
-We don't pass information to any 3rd-party processors or share it with anyone.
+We don't pass information to any third-party processors or share it with anyone.
 We only use it to communicate with you for our mutual business purposes,
 and we'll be happy to delete your information
 to the extent you don't enter into a business relationship with us.
@@ -82,7 +80,6 @@ to the extent you don't enter into a business relationship with us.
 
 Cookies are text files placed on your computer to store functional information.
 When you log into our website, we save cookies to your browser's local storage.
-
 We use cookies to keep you signed in.
 Our secure session cookie parameters include:
 
@@ -103,7 +100,7 @@ If you click an external link, please read their privacy policy.
 
 ### Changes to our policy
 
-We last updated this policy on 2023-04-18.
+We last updated this policy on 2023-08-05.
 
 ## How to contact us
 

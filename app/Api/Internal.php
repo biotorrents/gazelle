@@ -278,7 +278,7 @@ class Internal extends Base
     {
         $app = \Gazelle\App::go();
 
-        self::validateFrontendHash();
+        #self::validateFrontendHash();
 
         # diceware
         if ($type === "diceware") {

@@ -55,7 +55,7 @@ View::header('User search');
     <h3>Search results</h3>
   </div>
 <?php $Pages = Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 9);
-  if ($Pages) { ?>
+if ($Pages) { ?>
   <div class="linkbox pager"><?=($Pages)?></div>
 <?php } ?>
   <form class="search_form" name="users" action="user.php" method="get">
@@ -79,14 +79,14 @@ View::header('User search');
         <td>Primary class</td>
       </tr>
 <?php
-  foreach ($Results as $Result) {
-      list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned) = $Result; ?>
+foreach ($Results as $Result) {
+    list($UserID, $Username, $Enabled, $PermissionID, $Donor, $Warned) = $Result; ?>
       <tr>
         <td><?=User::format_username($UserID, true, true, true, true); ?></td>
-        <td><?=User::make_class_string($PermissionID); ?></td>
+        <td><?=$PermissionID; ?></td>
       </tr>
 <?php
-  } ?>
+} ?>
     </table>
   </div>
   <div class="linkbox">

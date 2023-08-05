@@ -79,10 +79,12 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # escape the inputs
+        $username = \Gazelle\Esc::username($data["username"] ?? null);
         $email = \Gazelle\Esc::email($data["email"] ?? null);
+
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
-        $username = \Gazelle\Esc::username($data["username"] ?? null);
+
         $invite = \Gazelle\Esc::string($data["invite"] ?? null);
 
         try {
@@ -104,6 +106,16 @@ class Auth # extends Delight\Auth\Auth
             # passphrase mismatch
             if ($passphrase !== $confirmPassphrase) {
                 throw new Exception("The entered passphrases don't match");
+            }
+
+            # passphrase = username
+            if ($passphrase === $username) {
+                throw new Exception("Your passphrase can't be the same as your username");
+            }
+
+            # passphrase = email
+            if ($passphrase === $email) {
+                throw new Exception("Your passphrase can't be the same as your email");
             }
 
             /*
@@ -133,7 +145,9 @@ class Auth # extends Delight\Auth\Auth
                 }
             }
 
-            # if you want to enforce unique usernames, simply call registerWithUniqueUsername instead of register, and be prepared to catch the DuplicateUsernameException
+            # if you want to enforce unique usernames,
+            # simply call registerWithUniqueUsername instead of register,
+            # and be prepared to catch the DuplicateUsernameException
             $response = $this->library->registerWithUniqueUsername($email, $passphrase, $username, function ($selector, $token) use ($email) {
                 $app = \Gazelle\App::go();
 
@@ -148,6 +162,12 @@ class Auth # extends Delight\Auth\Auth
                 \Gazelle\App::email($email, $subject, $body);
             });
 
+            if (!is_int($response)) {
+                throw new Exception("Registration failed");
+            }
+
+            # this will be a userId
+            $this->hydrateUserInfo($response, $data);
             return $response;
         } catch (Delight\Auth\InvalidEmailException $e) {
             return "Please use a different email";
@@ -179,8 +199,11 @@ class Auth # extends Delight\Auth\Auth
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
+        $encryptedEmail = \Crypto::encrypt($email);
+
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
+
         $username = \Gazelle\Esc::username($data["username"] ?? null);
         $invite = \Gazelle\Esc::string($data["invite"] ?? null);
 
@@ -189,7 +212,15 @@ class Auth # extends Delight\Auth\Auth
         $authKey = \Gazelle\Text::random(32);
         $resetKey = \Gazelle\Text::random(32);
 
+        # delight-im/auth: encrypt the email
+        # purposefully enforced outside the transaction
+        $query = "update users set email = ? where id = ?";
+        $app->dbNew->do($query, [$encryptedEmail, $userId]);
+
         try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
             # users_main
             $query = "
                 insert into users_main (
@@ -200,24 +231,40 @@ class Auth # extends Delight\Auth\Auth
                     :ip, :uploaded, :enabled, :invites, :permissionId, :torrent_pass, :flTokens)
             ";
 
+            /*
+            # todo: this will have to wait until foreign key constraints are resolved
+            $query = "
+                insert into users_main (
+                    id, userId, username, email, passHash,
+                    ip, uploaded, enabled, invites, permissionId, torrent_pass, flTokens)
+                values (
+                    :id, :userId, :username, :email, :passHash,
+                    :ip, :uploaded, :enabled, :invites, :permissionId, :torrent_pass, :flTokens)
+            ";
+            */
+
             $app->dbNew->do($query, [
-                # this will become the primary key
-                "userId" => $userId,
+                #"id" => $userId, # required for legacy gazelle queries
+                "userId" => $userId, # this will become the primary key
 
                 # legacy not null fields
                 "username" => $username,
-                "email" => $email,
+                "email" => $encryptedEmail,
                 "passHash" => password_hash($passphrase, PASSWORD_DEFAULT),
 
                 # everything else
                 "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
                 "uploaded" => $app->env->newUserUpload,
-                "enabled" => 0,
+                "enabled" => 1,
                 "invites" => $app->env->newUserInvites,
                 "permissionId" => USER, # todo: constant
                 "torrent_pass" => $torrent_pass,
                 "flTokens" => $app->env->newUserTokens,
             ]);
+
+            # todo: we're just updating users_main.id, it's technically wrong
+            $query = "update users_main set id = userId where userId = ?";
+            $app->dbNew->do($query, [$userId]);
 
             /** */
 
@@ -304,9 +351,11 @@ class Auth # extends Delight\Auth\Auth
             $query = "insert into users_notifications_settings (userId) values (?)";
             $app->dbNew->do($query, [$userId]);
 
-            # update ocelot with the new user
+            # update ocelot and commit
             Tracker::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
+            $app->dbNew->commit();
         } catch (Throwable $e) {
+            $app->dbNew->rollBack();
             return $e->getMessage();
         }
     } # hydrateUserInfo
@@ -331,18 +380,50 @@ class Auth # extends Delight\Auth\Auth
         # 2fa code needs to be a string (RobThree)
         $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
 
-        $query = "select id from users where username = ?";
-        $userId = $app->dbNew->single($query, [$username]);
+        try {
+            # validate userId
+            $query = "select id from users where username = ?";
+            $userId = $app->dbNew->single($query, [$username]);
 
-        ##
-        # legacy: remove after 2024-04-01
-        #
+            if (!$userId) {
+                throw new Exception("username doesn't exist");
+            }
+        } catch (Throwable $e) {
+            #return $e->getMessage();
+            return $message;
+        }
+
+        # gazelle 2fa
+        if (!empty($twoFactor)) {
+            try {
+                $this->verify2FA($userId, $twoFactor);
+            } catch (Throwable $e) {
+                #return $e->getMessage();
+                return $message;
+            }
+        }
 
         try {
+            # todo: we're just updating users_main.id, it's technically wrong
+            # also this executes on every login, kinda lazy and not ideal
+            $query = "update users_main set id = userId where userId = ?";
+            $app->dbNew->do($query, [$userId]);
+
+            # todo: same as above
+            $query = "select email from users where id = ?";
+            $email = $app->dbNew->single($query, [$userId]);
+
+            $decryptedEmail = \Crypto::decrypt($email);
+            if (!$decryptedEmail) {
+                $query = "update users set email = ? where id = ?";
+                $app->dbNew->do($query, [ \Crypto::encrypt($email), $userId ]);
+            }
+
+            # legacy: remove after 2024-04-01
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
-            if (boolval($isPassphraseMigrated) === false) {
+            if ($isPassphraseMigrated && boolval($isPassphraseMigrated) === false) {
                 $query = "select password from users where id = ?";
                 $hash = $app->dbNew->single($query, [$userId]);
 
@@ -359,9 +440,7 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [1, $userId]);
             }
 
-            ##
             # resume normal, relatively sane code below
-            #
 
             # simply call the method loginWithUsername instead of method login
             # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
@@ -379,23 +458,31 @@ class Auth # extends Delight\Auth\Auth
                 $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
             */
+        } catch (\Delight\Auth\InvalidEmailException $e) {
+            #return $e->getMessage();
+            return $message;
+        } catch (\Delight\Auth\InvalidPasswordException $e) {
+            #return $e->getMessage();
+            return $message;
+        } catch (\Delight\Auth\EmailNotVerifiedException $e) {
+            # this throws to provide a "resend confirmation email" link
+            throw new \Delight\Auth\EmailNotVerifiedException($e->getMessage());
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            #return $e->getMessage();
+            return $message;
+        } catch (\Delight\Auth\UnknownUsernameException $e) {
+            #return $e->getMessage();
+            return $message;
+        } catch (\Delight\Auth\AmbiguousUsernameException $e) {
+            #return $e->getMessage();
+            return $message;
         } catch (Throwable $e) {
             #return $e->getMessage();
             return $message;
         }
 
-        # gazelle 2fa
-        if (!empty($twoFactor)) {
-            try {
-                $this->verify2FA($userId, $twoFactor);
-            } catch (Throwable $e) {
-                #return $e->getMessage();
-                return $message;
-            }
-        }
-
-        # gazelle session
         try {
+            # gazelle session
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
             #return $e->getMessage();
@@ -444,7 +531,16 @@ class Auth # extends Delight\Auth\Auth
         try {
             # if you want the user to be automatically signed in after successful confirmation,
             # just call confirmEmailAndSignIn instead of confirmEmail
-            $this->library->confirmEmailAndSignIn($selector, $token, $this->remember());
+            $this->library->confirmEmail($selector, $token, $this->remember());
+        } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
+            return $message;
+        } catch (\Delight\Auth\TokenExpiredException $e) {
+            # this throws to provide a "resend confirmation email" link
+            throw new \Delight\Auth\TokenExpiredException($e->getMessage());
+        } catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            return $message;
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return $message;
         } catch (Throwable $e) {
             return $message;
         }
@@ -463,11 +559,11 @@ class Auth # extends Delight\Auth\Auth
         $enabled = \Gazelle\Esc::bool($enabled);
 
         if ($enabled === true) {
-            return time() + $this->longRemember;
+            return $this->longRemember;
         }
 
         if ($enabled === false) {
-            return time() + $this->shortRemember;
+            return $this->shortRemember;
         }
     }
 
@@ -496,15 +592,15 @@ class Auth # extends Delight\Auth\Auth
                 $uri = "https://{$app->env->siteDomain}/recover/{$selector}/{$token}";
 
                 # email it to the prospective user
-                $to = $email;
                 $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
-                \Gazelle\App::email($to, $subject, $body);
-                Announce::slack("{$to}\n{$subject}\n{$body}", ["debug"]);
+                \Gazelle\App::email($email, $subject, $body);
+                Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
-            return $message;
+            # reveals invalid email
+            #return $message;
         }
     } # recoverStart
 
@@ -550,6 +646,7 @@ class Auth # extends Delight\Auth\Auth
 
         $selector = \Gazelle\Esc::string($selector);
         $token = \Gazelle\Esc::string($token);
+
         $passphrase = \Gazelle\Esc::passphrase($passphrase);
         $confirmPassphrase = \Gazelle\Esc::passphrase($confirmPassphrase);
 
@@ -558,9 +655,33 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("The entered passphrases don't match");
             }
 
+            # resolve the username and email
+            $query = "
+                select username, email from users
+                left join users_resets on users_resets.user = users.id
+                where selector = ?
+            ";
+            $row = $app->dbNew->row($query, [$selector]);
+
+            if (!$row["username"]) {
+                throw new Exception("Unable to find the username");
+            }
+
+            # passphrase = username
+            if ($passphrase === $row["username"]) {
+                throw new Exception("Your passphrase can't be the same as your username");
+            }
+
+            # passphrase = email
+            $row["email"] = \Crypto::decrypt($row["email"]);
+            if ($passphrase === $row["email"]) {
+                throw new Exception("Your passphrase can't be the same as your email");
+            }
+
+            # reset the passphrase
             $this->library->resetPassword($selector, $token, $passphrase);
         } catch (Throwable $e) {
-            return $message;
+            return $e->getMessage();
         }
     } # recoverEnd
 
@@ -572,6 +693,9 @@ class Auth # extends Delight\Auth\Auth
      */
     public function changePassphrase(string $oldPassphrase, string $newPassphrase)
     {
+        throw new \Exception("not implemented");
+
+        /*
         $app = \Gazelle\App::go();
 
         $message = "Unable to update passphrase";
@@ -580,42 +704,65 @@ class Auth # extends Delight\Auth\Auth
         $newPassphrase = \Gazelle\Esc::passphrase($newPassphrase);
 
         try {
-            $auth->changePassword($oldPassphrase, $newPassphrase);
+            $this->library->changePassword($oldPassphrase, $newPassphrase);
         } catch (Throwable $e) {
             return $message;
         }
+        */
     } # changePassphrase
 
 
     /**
      * changeEmail
      *
+     * Actually, I'm gonna bypass the library for this.
+     * It doesn't make sense to require extra steps here,
+     * and I need to support encrypted email addresses.
+     *
      * @see https://github.com/delight-im/PHP-Auth#changing-the-current-users-email-address
      */
-    public function changeEmail(string $newEmail, string $passphrase)
+    public function changeEmail(int $userId, string $newEmail)
     {
         $app = \Gazelle\App::go();
 
         $message = "Unable to update email";
 
         $newEmail = \Gazelle\Esc::email($newEmail);
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
+        $newEmail = \Crypto::encrypt($newEmail);
 
         try {
-            $reconfirmed = $this->library->reconfirmPassword($passphrase);
-
-            if ($reconfirmed) {
-                $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
-                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                    echo '  For SMS, consider using a third-party service and a compatible SDK';
-                });
-            } else {
-                throw new Exception("We can't say if the user is who they claim to be");
-            }
+            $query = "update users set email = ? where id = ?";
+            $app->dbNew->do($query, [$newEmail, $userId]);
         } catch (Throwable $e) {
             return $message;
         }
+
+        /*
+        $app = \Gazelle\App::go();
+
+        $message = "Unable to update email";
+
+        # sanitize the input
+        $newEmail = \Gazelle\Esc::email($newEmail);
+
+        try {
+            $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
+                $app = \Gazelle\App::go();
+
+                # build the uri
+                $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
+
+                # email content
+                $subject = "Confirm your new email address";
+                $body = $app->twig->render("email/changeEmail.twig", ["uri" => $uri]);
+
+                # send the email
+                \Gazelle\App::email($newEmail, $subject, $body);
+            });
+        } catch (Throwable $e) {
+            return $message;
+        }
+        */
     } # changeEmail
 
 
@@ -624,23 +771,48 @@ class Auth # extends Delight\Auth\Auth
      *
      * @see https://github.com/delight-im/PHP-Auth#re-sending-confirmation-requests
      */
-    public function resendConfirmation(string $email)
+    public function resendConfirmation(int|string $identifier)
     {
         $app = \Gazelle\App::go();
 
         $message = "Unable to resend confirmation email";
 
-        $email = \Gazelle\Esc::email($email);
+        # try to resolve the email address
+        $identifier = \Gazelle\Esc::string($identifier);
+        $column = $app->dbNew->determineIdentifier($identifier);
+
+        # todo: maybe change unresolved id or uuid to null
+        # and let the backend decide which column to use?
+        if ($column === "slug") {
+            $column = "username";
+        }
+
+        $query = "select email from users where {$column} = ?";
+        $email = $app->dbNew->single($query, [$identifier]);
+
+        $email = \Crypto::decrypt($email);
+        if (!$email) {
+            return $message;
+        }
 
         try {
-            $this->library->resendConfirmationForEmail($email, function ($selector, $token) {
-                echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
-                echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                echo '  For SMS, consider using a third-party service and a compatible SDK';
+            $this->library->resendConfirmationForEmail($email, function ($selector, $token) use ($email) {
+                $app = \Gazelle\App::go();
+
+                # build the verification uri
+                $uri = "https://{$app->env->siteDomain}/confirm/{$selector}/{$token}";
+
+                # email it to the prospective user
+                $subject = "Confirm your new {$app->env->siteName} account";
+                $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
+
+                # send the email
+                \Gazelle\App::email($email, $subject, $body);
             });
-
-
-            echo 'The user may now respond to the confirmation request (usually by clicking a link)';
+        } catch (\Delight\Auth\ConfirmationRequestNotFound $e) {
+            return $message;
+        } catch (\Delight\Auth\TooManyRequestsException $e) {
+            return $message;
         } catch (Throwable $e) {
             return $message;
         }
@@ -666,8 +838,17 @@ class Auth # extends Delight\Auth\Auth
             $this->library->logOutEverywhere();
             $this->library->destroySession();
 
-            # todo: gazelle session
-            #$this->deleteSession($sessionId);
+            # flush all the cookies
+            Http::flushCookies();
+
+            # database: gazelle session
+            $this->flushSessions();
+
+            # cache: should be a hash map
+            $app->cache->delete("user_info_heavy_{$app->user->core["id"]}");
+            $app->cache->delete("user_info_{$app->user->core["id"]}");
+            $app->cache->delete("user_stats_{$app->user->core["id"]}");
+            $app->cache->delete("users_sessions_{$app->user->core["id"]}");
         } catch (Throwable $e) {
             return $message;
         }
@@ -675,20 +856,36 @@ class Auth # extends Delight\Auth\Auth
 
 
     /**
-
-@see https://github.com/delight-im/PHP-Auth#additional-user-information
-
-Additional user information
-In order to preserve this library’s suitability for all purposes as well as its full re-usability, it doesn’t come with additional bundled columns for user information. But you don’t have to do without additional user information, of course:
-
-Here’s how to use this library with your own tables for custom user information in a maintainable and re-usable way:
-
-Add any number of custom database tables where you store custom user information, e.g. a table named profiles.
-
-Whenever you call the register method (which returns the new user’s ID), add your own logic afterwards that fills your custom database tables.
-
-If you need the custom user information only rarely, you may just retrieve it as needed. If you need it more frequently, however, you’d probably want to have it in your session data. The following method is how you can load and access your data in a reliable way:
-
+     * Additional user information
+     *
+     * In order to preserve this library’s suitability for all purposes as well as its full re-usability,
+     * it doesn’t come with additional bundled columns for user information.
+     * But you don’t have to do without additional user information, of course:
+     *
+     * Here’s how to use this library with your own tables for custom user information in a maintainable and re-usable way:
+     *
+     * 1. Add any number of custom database tables where you store custom user information, e.g. a table named profiles.
+     *
+     * 2. Whenever you call the register method (which returns the new user’s ID), add your own logic afterwards that fills your custom database tables.
+     *
+     * 3. If you need the custom user information only rarely, you may just retrieve it as needed.
+     *    If you need it more frequently, however, you’d probably want to have it in your session data.
+     *    The following method is how you can load and access your data in a reliable way:
+     *
+     * function getUserInfo(\Delight\Auth\Auth $auth) {
+     *   if (!$auth->isLoggedIn()) {
+     *     return null;
+     *   }
+     *
+     *   if (!isset($_SESSION['_internal_user_info'])) {
+     *     // TODO: load your custom user information and assign it to the session variable below
+     *     // $_SESSION['_internal_user_info'] = ...
+     *   }
+     *
+     *   return $_SESSION['_internal_user_info'];
+     * }
+     *
+     * @see https://github.com/delight-im/PHP-Auth#additional-user-information
      */
 
 
@@ -750,12 +947,10 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $passphrase = \Gazelle\Esc::passphrase($passphrase);
 
-        # failure
-        if (strlen($passphrase) < 15) {
+        if (empty($passphrase) || strlen($passphrase) < 15) {
             return false;
         }
 
-        # success
         return true;
     }
 
@@ -795,8 +990,12 @@ If you need the custom user information only rarely, you may just retrieve it as
      * @param string $hash passphrase hash
      * @return bool on verification
      */
-    public static function checkHash(string $string, string $hash): bool
+    public static function checkHash(string $string, ?string $hash = null): bool
     {
+        if (!$hash) {
+            return false;
+        }
+
         return password_verify(
             str_replace(
                 "\0",
@@ -828,7 +1027,8 @@ If you need the custom user information only rarely, you may just retrieve it as
         ";
 
         $uuid = $app->dbNew->uuid();
-        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+        $rememberDuration = time() + $this->remember($rememberMe);
+        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
 
         $data = [
             "uuid" => $uuid,
@@ -867,7 +1067,8 @@ If you need the custom user information only rarely, you may just retrieve it as
     {
         $app = \Gazelle\App::go();
 
-        $expires = Carbon\Carbon::createFromTimestamp($this->remember($rememberMe))->toDateString();
+        $rememberDuration = time() + $this->remember($rememberMe);
+        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
 
         $query = "update users_sessions set expires = ? where sessionId = ?";
         $app->dbNew->do($query, [$expires, $sessionId]);
@@ -883,6 +1084,20 @@ If you need the custom user information only rarely, you may just retrieve it as
 
         $query = "delete from users_sessions where sessionId = ?";
         $app->dbNew->do($query, [$sessionId]);
+
+        Http::flushCookies();
+    }
+
+
+    /**
+     * flushSessions
+     */
+    public function flushSessions()
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "delete from users_sessions where userId = ?";
+        $app->dbNew->do($query, [ $app->user->core["id"] ]);
 
         Http::flushCookies();
     }
