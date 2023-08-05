@@ -759,11 +759,11 @@
             </tr>
 
             {% for item in bearerTokens %}
-            <tr id="tokenId-{{ item.id }}">
+            <tr id="tokenId-{{ item.ID }}">
               <td>{{ item.name }}</td>
               {# <td>{{ item.permissions }}</td> #}
               <td><span class="tooltip" title="{{ item.created_at }}">{{ item.created_at|relativeTime }}</span></td>
-              <td><a class="button deleteBearerToken" data-tokenId="{{ item.id }}">revoke</a></td>
+              <td><a class="button deleteBearerToken" data-tokenId="{{ item.ID }}">revoke</a></td>
             </tr>
             {% endfor %}
 
