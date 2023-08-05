@@ -24,19 +24,21 @@
 
 {# go to section #}
 <section>
-	<h3>Go to section</h3>
+	<h3>Show only this section</h3>
 
 <form>
-	<a href="#siteAppearanceSettings" class="button">site appearence</a>
+	<a id="toggleAllSettings" class="button button-primary toggleSettings">all settings</a>
 
-	<a href="#torrentSettings" class="button">torrents</a>
+	<a id="toggleSiteAppearanceSettings" class="button toggleSettings">site appearence</a>
 
-	<a href="#communitySettings" class="button">community</a>
+	<a id="toggleTorrentSettings" class="button toggleSettings">torrents</a>
 
-	<a href="#notificationSettings" class="button">notifications</a>
+	<a id="toggleCommunitySettings" class="button toggleSettings">community</a>
 
-	<a href="#profileSettings" class="button">profile</a>
+	<a id="toggleNotificationSettings" class="button toggleSettings">notifications</a>
 
-	<a href="#securitySettings" class="button">security</a>
+	<a id="toggleProfileSettings" class="button toggleSettings">profile</a>
+
+	<a id="toggleSecuritySettings" class="button toggleSettings">security</a>
 </form>
 </section>

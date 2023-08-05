@@ -106,9 +106,9 @@ foreach ($Criteria as $L) { // $L = Level
 
             $app->dbOld->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['To'])." by System\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".$L['To']." by System\n\n', AdminComment)
               WHERE UserID = $UserID");
-            Misc::send_pm($UserID, 0, 'You have been promoted to '.User::make_class_string($L['To']), 'Congratulations on your promotion to '.User::make_class_string($L['To'])."!\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+            Misc::send_pm($UserID, 0, 'You have been promoted to '.$L['To'], 'Congratulations on your promotion to '.$L['To']."!\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
         }
     }
 
@@ -156,9 +156,9 @@ foreach ($Criteria as $L) { // $L = Level
 
             $app->dbOld->query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".User::make_class_string($L['From'])." by System\n\n', AdminComment)
+              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".$L['From']." by System\n\n', AdminComment)
               WHERE UserID = $UserID");
-            Misc::send_pm($UserID, 0, 'You have been demoted to '.User::make_class_string($L['From']), "You now only qualify for the \"".User::make_class_string($L['From'])."\" user class.\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
+            Misc::send_pm($UserID, 0, 'You have been demoted to '.$L['From'], "You now only qualify for the \"".$L['From']."\" user class.\n\nTo read more about ".$ENV->siteName."'s user classes, read [url=".site_url()."wiki.php?action=article&amp;name=userclasses]this wiki article[/url].");
         }
     }
 }

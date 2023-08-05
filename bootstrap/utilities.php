@@ -27,12 +27,14 @@ function carbon($when = "")
  */
 function enforce_login()
 {
+    /*
     $app = \Gazelle\App::go();
 
     if (empty($app->user->core)) {
         Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
+    */
 }
 
 
@@ -129,41 +131,7 @@ function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = fals
 {
     $app = \Gazelle\App::go();
 
-    # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-    $map = [
-        400 => [
-            "400 Bad Request",
-            "The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).",
-        ],
-
-        403 => [
-            "403 Forbidden",
-            "The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication by answering the WWW-Authenticate header field challenge, but the server did not accept that authentication. The request should not be repeated.",
-        ],
-
-        404 => [
-            "404 Not Found",
-            "The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.",
-        ],
-    ];
-
-    # page content
-    if (array_key_exists($error, $map)) {
-        $subject = $map[$error][0];
-        $body = $map[$error][1];
-    } else {
-        $subject = "Other error";
-        $body = "A function supplied this error message: {$error}";
-    }
-
-    # twig
-    $app->twig->display("error.twig", [
-        "title" => "Error",
-        "subject" => $subject,
-        "body" => $body
-    ]);
-
-    exit;
+    $app->error($error);
 }
 
 
@@ -243,19 +211,6 @@ function json_error($Code)
         )
     );
     die();
-}
-
-
-/**
- * json_or_error
- */
-function json_or_error($JsonError, $Error = null, $NoHTML = false)
-{
-    if (defined('AJAX')) {
-        json_error($JsonError);
-    } else {
-        error($Error ?? $JsonError, $NoHTML);
-    }
 }
 
 

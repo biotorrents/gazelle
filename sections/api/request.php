@@ -72,7 +72,7 @@ foreach ($Thread as $Key => $Post) {
     'donor'           => ($Donor == 1),
     'warned'          => (bool)$Warned,
     'enabled'         => ($Enabled == 2 ? false : true),
-    'class'           => User::make_class_string($PermissionID),
+    'class'           => $PermissionID,
     'addedTime'       => $AddedTime,
     'avatar'          => $Avatar,
     'comment'         => \Gazelle\Text::parse($Body),

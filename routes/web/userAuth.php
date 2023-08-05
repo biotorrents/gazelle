@@ -45,7 +45,7 @@ Flight::route("/enable/@token", function (string $token) {
 
 
 # recover
-Flight::route("/recover", function () {
+Flight::route("/recover(/@selector(/@token))", function (?string $selector, ?string $token) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/recover.php";
 });
@@ -53,27 +53,9 @@ Flight::route("/recover", function () {
 
 # logout
 Flight::route("/logout", function () {
-    $app = \Gazelle\App::go();
-
     # no more bullshit
     $auth = new Auth();
     $auth->logout();
-
-    /** gazelle session */
-
-    # cookies
-    Http::deleteCookie("userId");
-    Http::deleteCookie("sessionId");
-
-    # database
-    $query = "delete from users_sessions where userId = ?";
-    $app->dbNew->do($query, [ $app->user->core["id"] ]);
-
-    # cache
-    $app->cache->delete("user_info_heavy_{$app->user->core["id"]}");
-    $app->cache->delete("user_info_{$app->user->core["id"]}");
-    $app->cache->delete("user_stats_{$app->user->core["id"]}");
-    $app->cache->delete("users_sessions_{$app->user->core["id"]}");
 
     # send to login
     Http::redirect("login");
@@ -88,9 +70,16 @@ Flight::route("/register(/@invite)", function ($invite) {
 
 
 # confirm email
-Flight::route("/confirm/@selector/@token", function ($selector, $token) {
+Flight::route("/confirm/@selector/@token", function (string $selector, string $token) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/confirm.php";
+});
+
+
+# resend confirmation email
+Flight::route("/resend/@identifier", function ($identifier) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/user/auth/resend.php";
 });
 
 

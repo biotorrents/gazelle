@@ -22,15 +22,12 @@ try {
 
         # failure
         if (!is_int($response)) {
-            throw new Exception("Please try again later");
+            throw new Exception($response);
         }
 
-        # hydrate gazelle
-        $userId = $response;
-        $auth->hydrateUserInfo($userId, $post);
-
         # success
-        $emailSent = true;
+        $emailSent = true; # change to thank you page
+        unset($response); # avoid dumping userId
     }
 } catch (Throwable $e) {
     $response = $e->getMessage();

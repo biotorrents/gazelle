@@ -3,6 +3,7 @@
 _If_ you're a copyright owner or an agent of one,
 _and_ you reasonably believe that user-generated content on the domains torrents.bio or biotorrents.de infringes your copyrights:
 _then_ you may notify our Digital Millennium Copyright Act (DMCA) agent in writing.
+All of these elements are required:
 
 - Identification of the copyrighted work you claim is infringed.
   _Please include your copyright registration number or proof of status pending._
@@ -25,9 +26,8 @@ _then_ you may notify our Digital Millennium Copyright Act (DMCA) agent in writi
 
 Because a high percentage of DMCA takedown notices are invalid or abusive,
 Omics Tools LLC reserves the right to ignore requests for unregistered works.
-
 We'll expeditiously disable access to the targets of valid requests.
-Our agent to receive notifications of claimed infringement is:
+Our agent to receive notifications of alleged infringement is:
 
 ### Address
 

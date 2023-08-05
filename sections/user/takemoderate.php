@@ -280,7 +280,7 @@ if ($Classes[$Class]['Level'] != $Cur['Class']
   )
 ) {
     $UpdateSet[] = "PermissionID = '$Class'";
-    $EditSummary[] = 'class changed to '.User::make_class_string($Class);
+    $EditSummary[] = 'class changed to '.$Class;
     $LightUpdates['PermissionID'] = $Class;
     $DeleteKeys = true;
 

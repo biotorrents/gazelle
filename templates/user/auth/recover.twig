@@ -5,7 +5,7 @@
 <h2>Recover your account</h2>
 
 {# error message #}
-{% if response is not null %}
+{% if response %}
     <p class="error">
         {{ response }}
     </p>
@@ -16,14 +16,14 @@
  # step one
  #}
 
-{% if stepOne is not null %}
+{% if stepOne %}
     <p class="info">
         {# https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#password-recovery #}
         If that email address is in our database, we will send you an email to reset your password.
     </p>
 {% endif %}
 
-{% if emailSent is null %}
+{% if not emailSent %}
     <form name="recover" id="recover" method="post">
         {{ form_token(query.server.REQUEST_URI) }}
 
@@ -38,7 +38,7 @@
  # step two
  #}
 
-{% if stepTwo is not null %}
+{% if stepTwo %}
     <p class="info">
         Thanks for confirming your email.
         Please set a new passphrase below.
@@ -55,7 +55,22 @@
 
         <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase" minlength="15" required>
 
-        <input type="submit" name="reset" value="Update passphrase" class="button-primary">
+        {# suggested passphrase #}
+        <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly>
+        <a id="createPassphrase" class="button button-orange">suggest a secure passphrase</a>
+
+        {# passphrase guidelines #}
+        <p>
+            Please note that passphrases must be at least 15 characters long.
+            They may not be the same as your email address or username.
+            Null bytes are removed to prevent truncation while hashing.
+            Beyond that, there are no restrictions on what you can use.
+
+            {# warning #}
+            <span id="passphraseWarning" class="warning"></span>
+        </p>
+
+        <input type="submit" name="reset" value="update passphrase" class="button-primary">
     </form>
 {% endif %}
 

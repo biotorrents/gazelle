@@ -30,38 +30,35 @@ class Tracker
      *
      * For example, this call:
      *   Tracker::update_tracker(
-     *     'change_passkey',
-     *     ['oldpasskey' => $oldPassKey, 'newpasskey' => $newPassKey]
+     *     "change_passkey",
+     *     ["oldpasskey" => $oldPassKey, "newpasskey" => $newPassKey]
      *   );
      *
      * Will send this request:
-     *   GET /{$ENV->trackerSecret}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
+     *   GET /{$app->env->trackerSecret}/update?action=change_passkey&oldpasskey={$oldPassKey}&newpasskey={$newPassKey} HTTP/1.1
      *
-     * @param string $action The action to send
-     * @param array $updates An associative array of key->value pairs to send to the tracker
-     * @param boolean $toIrc Sends a message to the channel #tracker with the GET URL.
+     * @param string $action the action to send
+     * @param array $updates an associative array of key => value pairs to send to the tracker
+     * @param boolean $toIrc sends a message to the channel #tracker with the GET URL
      */
     public static function update_tracker(string $action, array $updates, bool $toIrc = false)
     {
         $app = \Gazelle\App::go();
 
-        $ENV = ENV::go();
+        # todo: support a development tracker
+        if ($app->env->dev) {
+            return;
+        }
 
-        // Build request
-        $get = $ENV->getPriv('trackerSecret') . "/update?action={$action}";
+        # build the request
+        $get = $app->env->getPriv("trackerSecret") . "/update?action={$action}";
         foreach ($updates as $k => $v) {
             $get .= "&{$k}={$v}";
         }
 
-        # Production
-        if (!$ENV->dev) {
-            $maxAttempts = 3;
-        }
-
-        # Development
-        else {
-            $maxAttempts = 1;
-        }
+        # max attempts
+        $currentAttempt = 0;
+        $maxAttempts = 3;
 
         $err = false;
         if (self::send_request($get, $maxAttempts, $err) === false) {

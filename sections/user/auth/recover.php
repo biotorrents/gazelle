@@ -9,50 +9,94 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
+$auth = new Auth();
+
 # https://github.com/paragonie/anti-csrf
 Http::csrf();
-
-$auth = new Auth();
 
 # variables
 $post = Http::request("post");
 $server = Http::request("server");
 
-$email = \Gazelle\Esc::email($post["email"]) ?? null;
-$ip = \Gazelle\Esc::ip($server["REMOTE_ADDR"]) ?? null;
-
-$passphrase = \Gazelle\Esc::string($post["passphrase"]) ?? null;
-$confirmPassphrase = \Gazelle\Esc::string($post["confirmPassphrase"]) ?? null;
+# did we send an email?
+$emailSent ??= false;
 
 
-# step one: send recover email
+/**
+ * step one: send recover email
+ */
+
+$stepOne ??= null;
+
+$email = \Gazelle\Esc::email($post["email"] ?? null);
+$ip = \Gazelle\Esc::ip($server["REMOTE_ADDR"] ?? null);
+
 if (!empty($email) && !empty($ip)) {
-    $response = $auth->recoverStart($email, $ip);
-    $stepOne = true;
-}
+    try {
+        $stepOne = true;
+        $emailSent = true;
 
-# step two: validate selector and token
-$selector ??= null;
-$token ??= null;
-
-if (!empty($selector) && !empty($token)) {
-    $response = $auth->recoverMiddle($selector, $token);
-    $stepTwo = true;
-}
-
-# step three: set new passphrase
-# nested ifs were cleaner here
-if (!empty($passphrase) && !empty($confirmPassphrase)) {
-    if (!empty($post["selector"]) && !empty($post["token"])) {
-        $response = $auth->recover($selector, $token, $passphrase, $confirmPassphrase);
-        $stepThree = true;
+        $response = $auth->recoverStart($email, $ip);
+    } catch (Throwable $e) {
+        $response = $e->getMessage();
     }
 }
 
 
-/** GAZELLE */
+/**
+ * step two: validate selector and token
+ */
+
+$stepTwo ??= null;
+
+$selector ??= null;
+$token ??= null;
+
+if (!empty($selector) && !empty($token)) {
+    try {
+        $stepTwo = true;
+        $emailSent = true;
+
+        $response = $auth->recoverMiddle($selector, $token);
+    } catch (Throwable $e) {
+        $response = $e->getMessage();
+    }
+}
 
 
+/**
+ * step three: set new passphrase
+ * nested ifs were cleaner here
+ */
+
+$stepThree ??= null;
+
+$passphrase = \Gazelle\Esc::string($post["passphrase"] ?? null);
+$confirmPassphrase = \Gazelle\Esc::string($post["confirmPassphrase"] ?? null);
+
+if (!empty($passphrase) && !empty($confirmPassphrase)) {
+    # putting these here to not mess up recoverMiddle
+    $selector = \Gazelle\Esc::string($post["selector"] ?? null);
+    $token = \Gazelle\Esc::string($post["token"] ?? null);
+
+    if (!empty($selector) && !empty($token)) {
+        try {
+            $stepThree = true;
+            $emailSent = true;
+
+            $response = $auth->recoverEnd($selector, $token, $passphrase, $confirmPassphrase);
+        } catch (Throwable $e) {
+            $response = $e->getMessage();
+        }
+    }
+}
+
+
+/**
+ * gazelle
+ */
+
+/*
 try {
     # set new secret and password
     $query = "
@@ -82,20 +126,33 @@ try {
 } catch (Throwable $e) {
     $response = $e->getMessage();
 }
+*/
 
 
-/** TWIG TEMPLATE */
+/**
+ * twig template
+ */
 
-
-$stepThree ??= null;
-if ($stepThree !== true) {
+if (!$stepThree) {
     # default recovery
     $app->twig->display("user/auth/recover.twig", [
+        "title" => "Recover account",
+        "js" => ["user"],
+
         "response" => $response ?? null,
+        "emailSent" => $emailSent ?? null,
+
         "stepOne" => $stepOne ?? null,
         "stepTwo" => $stepTwo ?? null,
+        "stepThree" => $stepThree ?? null,
+
+        "selector" => $selector ?? null,
+        "token" => $token ?? null,
     ]);
 } else {
     # "thanks for confirming"
-    $app->twig->display("user/auth/confirm.twig");
+    $app->twig->display("user/auth/confirm.twig", [
+        "title" => "Recover account",
+        "response" => $response ?? null,
+    ]);
 }

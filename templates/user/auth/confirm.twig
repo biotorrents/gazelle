@@ -4,10 +4,17 @@
 
 	<h2>Confirm your account</h2>
 
-	{% if response is not null %}
+	{% if response %}
 		<p class="error">
 			{{ response }}
 		</p>
+
+		{# resend confirmation #}
+		{% if resendConfirmation %}
+			<p class="flexRow">
+        		<a href="/resend/{{ username }}" class="button">send new confirmation</a>
+			</p>
+		{% endif %}
 
 	{% else %}
 		<p class="info">
@@ -15,11 +22,10 @@
 			Please enjoy the site!
 		</p>
 
-		<p>
-			<a href="/rules" class="button button-primary">Rules</a>
-			<a href="/wiki" class="button">Wiki</a>
+		<p class="flexRow">
+			<a href="/rules" class="button button-primary">rules</a>
+			<a href="/wiki" class="button">wiki</a>
 		</p>
-
 	{% endif %}
 
 {% endblock %}
