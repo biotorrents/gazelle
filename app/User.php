@@ -120,7 +120,7 @@ class User
         $sessionId = $ref["sessionId"] ?? null;
 
         # not in the database
-        if (!$userId && !$sessionId) {
+        if (!$userId || !$sessionId) {
             return false;
         }
 
