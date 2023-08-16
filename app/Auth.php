@@ -383,9 +383,9 @@ class Auth # extends Delight\Auth\Auth
         try {
             # validate userId and 2fa
             $query = "
-                select id, twoFactor from users
+                select users.id, users_main.twoFactor from users
                 join users_main on users_main.userId = users.id
-                where username = ?
+                where users.username = ?
             ";
             $row = $app->dbNew->row($query, [$username]);
 
