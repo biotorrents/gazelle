@@ -74,4 +74,17 @@ class Crypto
             $iv
         );
     }
+
+
+    /**
+     * apcuExists
+     *
+     * Is the DBKEY present?
+     *
+     * @return bool
+     */
+    public static function apcuExists(): bool
+    {
+        return apcu_exists("DBKEY");
+    }
 } # class

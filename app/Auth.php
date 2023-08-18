@@ -389,13 +389,13 @@ class Auth # extends Delight\Auth\Auth
             ";
             $row = $app->dbNew->row($query, [$username]);
 
-            $row["id"] ??= null;
-            if (!$row["id"]) {
+            $userId = $row["id"] ?? null;
+            if (!$userId) {
                 throw new Exception("username doesn't exist");
             }
 
             $row["twoFactor"] ??= null;
-            if (!empty($row["twoFactor"]) && empty($twoFactor)) {
+            if ($row["twoFactor"] && empty($twoFactor)) {
                 throw new Exception("2fa code required");
             }
         } catch (Throwable $e) {
@@ -424,7 +424,7 @@ class Auth # extends Delight\Auth\Auth
             $email = $app->dbNew->single($query, [$userId]);
 
             $decryptedEmail = \Crypto::decrypt($email);
-            if (!$decryptedEmail) {
+            if (!$decryptedEmail && \Crypto::apcuExists()) {
                 $query = "update users set email = ? where id = ?";
                 $app->dbNew->do($query, [ \Crypto::encrypt($email), $userId ]);
             }
@@ -433,7 +433,7 @@ class Auth # extends Delight\Auth\Auth
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
-            if ($isPassphraseMigrated && boolval($isPassphraseMigrated) === false) {
+            if (boolval($isPassphraseMigrated) === false) {
                 $query = "select password from users where id = ?";
                 $hash = $app->dbNew->single($query, [$userId]);
 
@@ -445,7 +445,7 @@ class Auth # extends Delight\Auth\Auth
                 # the current passphrase is good, just update it to a real hash
                 $this->library->admin()->changePasswordForUserById($userId, $passphrase);
 
-                # update isPassphraseMigrated to not deal with this shit again
+                # update isPassphraseMigrated to not deal with this again
                 $query = "update users_info set isPassphraseMigrated = ? where userId = ?";
                 $app->dbNew->do($query, [1, $userId]);
             }
@@ -509,7 +509,7 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # get the secret
-        $query = "select twoFactor from users_main where id = ? and twoFactor is not null";
+        $query = "select twoFactor from users_main where userId = ? and twoFactor is not null";
         $twoFactorSecret = $app->dbNew->single($query, [$userId]);
 
         # no secret
