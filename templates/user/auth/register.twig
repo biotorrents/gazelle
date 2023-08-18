@@ -51,8 +51,20 @@
         {# confirmPassphrase #}
         <input type="password" name="confirmPassphrase" id="confirmPassphrase" placeholder="Confirm passphrase" minlength="15" required>
 
-        {# warning #}
-        <p id="passphraseWarning" class="warning"></p>
+        {# suggested passphrase #}
+        <input type="text" id="suggestedPassphrase" placeholder="Secure diceware passphrase" readonly>
+        <a id="createPassphrase" class="button button-orange">suggest a secure passphrase</a>
+
+        {# passphrase guidelines #}
+        <p>
+            Please note that passphrases must be at least 15 characters long.
+            They may not be the same as your email address or username.
+            Null bytes are removed to prevent truncation while hashing.
+            Beyond that, there are no restrictions on what you can use.
+
+            {# warning #}
+            <span id="passphraseWarning" class="warning"></span>
+        </p>
 
         {# checkboxes #}
         <ul>

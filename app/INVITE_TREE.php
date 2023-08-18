@@ -202,7 +202,7 @@ class INVITE_TREE
                     continue;
                 }
 
-                $LastClass = User::make_class_string($ClassID);
+                $LastClass = $ClassID;
                 if ($ClassCount > 1) {
                     if ($LastClass === 'Torrent Celebrity') {
                         $LastClass = 'Torrent Celebrities';

@@ -21,7 +21,7 @@ $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 $webAuthn = new Gazelle\WebAuthn\Base();
 
 # bearer tokens
-$bearerTokens = Auth::readBearerToken();
+$bearerTokens = Auth::readBearerToken() ?? [];
 #!d($bearerTokens);exit;
 
 # 2fa: no settings exist
