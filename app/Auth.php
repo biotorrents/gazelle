@@ -389,10 +389,12 @@ class Auth # extends Delight\Auth\Auth
             ";
             $row = $app->dbNew->row($query, [$username]);
 
+            $row["id"] ??= null;
             if (!$row["id"]) {
                 throw new Exception("username doesn't exist");
             }
 
+            $row["twoFactor"] ??= null;
             if (!empty($row["twoFactor"]) && empty($twoFactor)) {
                 throw new Exception("2fa code required");
             }
