@@ -381,12 +381,22 @@ class Auth # extends Delight\Auth\Auth
         $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
 
         try {
-            # validate userId
-            $query = "select id from users where username = ?";
-            $userId = $app->dbNew->single($query, [$username]);
+            # validate userId and 2fa
+            $query = "
+                select users.id, users_main.twoFactor from users
+                join users_main on users_main.userId = users.id
+                where users.username = ?
+            ";
+            $row = $app->dbNew->row($query, [$username]);
 
-            if (!$userId) {
+            $row["id"] ??= null;
+            if (!$row["id"]) {
                 throw new Exception("username doesn't exist");
+            }
+
+            $row["twoFactor"] ??= null;
+            if (!empty($row["twoFactor"]) && empty($twoFactor)) {
+                throw new Exception("2fa code required");
             }
         } catch (Throwable $e) {
             #return $e->getMessage();
