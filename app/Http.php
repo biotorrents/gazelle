@@ -456,7 +456,8 @@ class Http
                     "domain" => $app->env->siteDomain,
                     "secure" => true,
                     "httponly" => true,
-                    "samesite" => "Strict",
+                    "samesite" => "Lax",
+                    #"samesite" => "Strict",
                 ]
             );
         }
