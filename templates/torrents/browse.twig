@@ -51,6 +51,7 @@
 
 {# start results table headings #}
 {# todo: this can be reorganized to suck less #}
+<thead>
 <tr>
 
 	{# grouped #}
@@ -92,14 +93,18 @@
 	{# <th>Snatches&nbsp;↻</th> #}
 
 </tr>
+</thead>
 {# end results table headings #}
 
 {# start the results themselves #}
+<tbody>
 {% for group in torrentGroups %}
 
 {% include "torrents/tableEntry.twig" with group %}
 
 {% endfor %}
+</tbody>
+{# end the results themselves #}
 
 {# end the results table #}
 </table>
