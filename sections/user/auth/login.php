@@ -55,7 +55,7 @@ if (!empty($post)) {
 
     # silence is golden
     if (!$response) {
-        Http::redirect($_SESSION["requestedPage"]);
+        Http::redirect($_SESSION["requestedPage"] ?? "/");
     }
 }
 
