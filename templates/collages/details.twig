@@ -118,12 +118,57 @@ if ($CollageCovers != 0) { ?>
   <h3>Torrent groups</h3>
 
 		<table>
+<thead>
+<tr>
 
+	{# grouped #}
+  	{# <th /> #}
+
+	{#
+  {% if searchTerms.groupResults %}
+		<th />
+	{% endif %}
+  #}
+
+	{# category icon #}
+	<th class="categoryColumn" />
+
+	{# torrent info #}
+	<th>Torrent&nbsp;info</th>
+
+	{# timeAdded #}
+	<th>Time&nbsp;added</th>
+
+	{# data size #}
+	<th>Data&nbsp;size</th>
+
+	{# file count #}
+	{#
+	<th>File&nbsp;count</th>
+	#}
+
+	{# seeders #}
+	<th title="Seeders">↑</th>
+	{# <th>Seeders&nbsp;↑</th> #}
+
+	{# leechers #}
+	<th title="Leechers">↓</th>
+	{# <th>Leechers&nbsp;↓</th> #}
+
+  {# snatches #}
+	<th title="Snatches">↻</th>
+	{# <th>Snatches&nbsp;↻</th> #}
+
+</tr>
+</thead>
+
+<tbody>
 {% for group in torrentGroups %}
 
 {% include "torrents/tableEntry.twig" with group %}
 
 {% endfor %}
+</tbody>
 
 		</table>
 	</section>

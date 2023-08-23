@@ -129,47 +129,47 @@
 
   {# platform #}
   {% if torrent.Media %}
-    <span class="platform" title="Platform">{{ torrent.Media }}</span>
+    <span class="tooltip platform" title="Platform">{{ torrent.Media }}</span>
   {% endif %}
 
   {# format #}
   {% if torrent.Container %}
-    <span class="format" title="Format">{{ torrent.Container }}</span>
+    <span class="tooltip format" title="Format">{{ torrent.Container }}</span>
   {% endif %}
 
   {# version #}
   {% if torrent.Version %}
-    <span class="version" title="Version">{{ torrent.Version }}</span>
+    <span class="tooltip version" title="Version">{{ torrent.Version }}</span>
   {% endif %}
 
   {# scope #}
   {% if torrent.Resolution %}
-    <span class="scope" title="Scope">{{ torrent.Resolution }}</span>
+    <span class="tooltip scope" title="Scope">{{ torrent.Resolution }}</span>
   {% endif %}
 
   {# archive #}
   {% if torrent.Archive %}
-    <span class="archive" title="Archive">{{ torrent.Archive }}</span>
+    <span class="tooltip archive" title="Archive">{{ torrent.Archive }}</span>
   {% endif %}
 
   {# license #}
   {% if torrent.Codec %}
-    <span class="license" title="License">{{ torrent.Codec }}</span>
+    <span class="tooltip license" title="License">{{ torrent.Codec }}</span>
   {% endif %}
 
   {# alignment #}
   {% if torrent.Censored %}
-    <span title="Alignment" class="good">Aligned</span>
+    <span title="Alignment" class="tooltip good">Aligned</span>
   {% else %}
-      <span title="Alignment" class="bad">Not aligned</span>
+      <span title="Alignment" class="tooltip bad">Not aligned</span>
   {% endif %}
 
 </td>
 
 
 	{# timeAdded #}
-	<td class="nobr" title="{{ torrent.Time }}">
-  {{ torrent.Time|relativeTime }}
+	<td class="nobr">
+  		<span class="tooltip" title="{{ torrent.Time }}">{{ torrent.Time|relativeTime }}</span>
   </td>
 
 
