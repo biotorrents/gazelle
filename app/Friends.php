@@ -165,7 +165,10 @@ class Friends
      */
     private static function validate(array $data = []): array
     {
+        $app = \Gazelle\App::go();
+
         # check the userId
+        $data["userId"] ??= null;
         if ($data["userId"]) {
             $good = \User::exists($data["userId"]);
             if (!$good) {
@@ -177,6 +180,7 @@ class Friends
         }
 
         # check the friendId
+        $data["friendId"] ??= null;
         if ($data["friendId"]) {
             $good = \User::exists($data["friendId"]);
             if (!$good) {
@@ -185,6 +189,7 @@ class Friends
         }
 
         # check the comment
+        $data["comment"] ??= null;
         if ($data["comment"]) {
             if (strlen($data["comment"]) > 255) {
                 throw new \Exception("comment too long");
