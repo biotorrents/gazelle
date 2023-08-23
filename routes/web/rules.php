@@ -42,7 +42,9 @@ Flight::route("/rules/collages", function () {
 # ratio
 Flight::route("/rules/ratio", function () {
     $app = \Gazelle\App::go();
-    require_once "/{$app->env->serverRoot}/sections/rules/ratio.php";
+    $downloaded = $app->user->extra["Downloaded"];
+    $gigabit = 1024 * 1024 * 1024;
+    $app->twig->display("siteText/rules/ratio.twig", ["title" => "Ratio rules", "sidebar" => true, "downloaded" => $downloaded, "gigabit" => $gigabit]);
 });
 
 
