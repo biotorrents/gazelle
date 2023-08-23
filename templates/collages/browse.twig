@@ -47,10 +47,11 @@
 
 
 {# start the results table #}
-<table id="torrentSearchResults" class="{{ grouping }}">
+<table id="torrentSearchResults" class="{{ grouping }}" data-sortable>
 
 {# start results table headings #}
 {# todo: this can be reorganized to suck less #}
+<thead>
 <tr>
 
 	{# category #}
@@ -72,9 +73,11 @@
 	<th>Author</th>
 
 </tr>
+</thead>
 {# end results table headings #}
 
 {# start the results themselves #}
+<tbody>
 {% for item in collages %}
 
   <tr>
@@ -118,6 +121,7 @@
 
 
 {% endfor %}
+</tbody>
 
 {# end the results table #}
 </table>

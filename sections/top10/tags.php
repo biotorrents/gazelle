@@ -22,6 +22,7 @@ $requestTags = Top10::requestTags($limit);
 
 $app->twig->display("top10/tags.twig", [
   "title" => "Top tags",
+  "sidebar" => true,
   "limit" => $limit,
   "torrentTags" => $torrentTags,
   "requestTags" => $requestTags,
