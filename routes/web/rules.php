@@ -67,5 +67,6 @@ Flight::route("/rules/tags", function () {
 # upload
 Flight::route("/rules/upload", function () {
     $app = \Gazelle\App::go();
-    require_once "/{$app->env->serverRoot}/sections/rules/upload.php";
+    $content = \Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/upload.md"));
+    $app->twig->display("siteText/rules.twig", ["title" => "Collection rules", "sidebar" => true, "content" => $content]);
 });
