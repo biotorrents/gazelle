@@ -40,10 +40,11 @@
 
 
 {# start the results table #}
-<table id="requestSearchResults">
+<table id="requestSearchResults" data-sortable>
 
 {# start results table headings #}
 {# todo: this can be reorganized to suck less #}
+<thead>
 <tr>
 
 	{# category icon #}
@@ -62,14 +63,17 @@
 	<th class="center">Filled</th>
 
 </tr>
+</thead>
 {# end results table headings #}
 
 {# start the results themselves #}
+<tbody>
 {% for item in requestData %}
 
 {% include "requests/tableEntry.twig" with item %}
 
 {% endfor %}
+</tbody>
 
 {# end the results table #}
 </table>

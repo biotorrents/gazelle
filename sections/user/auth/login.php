@@ -14,7 +14,6 @@ Http::csrf();
 
 # libraries
 $auth = new Auth();
-$twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
 
 # variables
 $post = Http::request("post");

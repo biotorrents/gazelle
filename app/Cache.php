@@ -157,6 +157,28 @@ class Cache # extends \Redis
     }
 
 
+    /**
+     * handleError
+     *
+     * Throw an exception, if we're so inclined.
+     *
+     * @param \Throwable $throwable
+     * @return void
+     */
+    public function handleError(\Throwable $throwable): void
+    {
+        $app = \Gazelle\App::go();
+
+        # log the error
+        error_log($throwable->getMessage());
+
+        # throw an exception
+        if ($app->env->dev) {
+            throw $throwable;
+        }
+    }
+
+
     /** crud */
 
 
@@ -196,21 +218,25 @@ class Cache # extends \Redis
 
         /** */
 
-        # store the value
-        $this->redis->set($key, $value);
+        try {
+            # store the value
+            $this->redis->set($key, $value);
 
-        # if cacheDuration = 0, persist the value
-        if ($cacheDuration === 0) {
-            $this->redis->persist($key);
+            # if cacheDuration = 0, persist the value
+            if ($cacheDuration === 0) {
+                $this->redis->persist($key);
+            }
+
+            # else, set the expiration time
+            else {
+                $this->redis->expireAt($key, $cacheDuration);
+            }
+
+            # return the input
+            return [$key => $value];
+        } catch (\Throwable $e) {
+            $this->handleError($e);
         }
-
-        # else, set the expiration time
-        else {
-            $this->redis->expireAt($key, $cacheDuration);
-        }
-
-        # return the input
-        return [$key => $value];
     }
 
 
@@ -225,7 +251,12 @@ class Cache # extends \Redis
     public function get(string $key): mixed
     {
         $key = $this->sanitize($key);
-        return $this->redis->get($key);
+
+        try {
+            return $this->redis->get($key);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -240,7 +271,12 @@ class Cache # extends \Redis
     public function exists(string $key): bool
     {
         $key = $this->sanitize($key);
-        return boolval($this->redis->exists($key));
+
+        try {
+            return boolval($this->redis->exists($key));
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -256,7 +292,12 @@ class Cache # extends \Redis
     public function append(string $key, string $value): int
     {
         $key = $this->sanitize($key);
-        return $this->redis->append($key, $value);
+
+        try {
+            return $this->redis->append($key, $value);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -265,7 +306,7 @@ class Cache # extends \Redis
      *
      * @param string $key the cache key
      * @param int|float $value the value to increment by
-     * @return int the new value
+     * @return int|float the new value
      *
      * @see https://github.com/phpredis/phpredis#incr-incrby
      * @see https://github.com/phpredis/phpredis#incrbyfloat
@@ -274,11 +315,15 @@ class Cache # extends \Redis
     {
         $key = $this->sanitize($key);
 
-        if (!is_int($value)) {
-            return $this->redis->incrByFloat($key, $value);
-        }
+        try {
+            if (!is_int($value)) {
+                return $this->redis->incrByFloat($key, $value);
+            }
 
-        return $this->redis->incrBy($key, $value);
+            return $this->redis->incrBy($key, $value);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -295,14 +340,18 @@ class Cache # extends \Redis
     {
         $key = $this->sanitize($key);
 
-        # cast to an int
-        $unsafe = $this->redis->get($key);
-        $safe = intval($unsafe);
+        try {
+            # cast to an int
+            $unsafe = $this->redis->get($key);
+            $safe = intval($unsafe);
 
-        # set the integer value
-        $this->redis->set($key, $safe);
+            # set the integer value
+            $this->redis->set($key, $safe);
 
-        return $this->redis->decrBy($key, $value);
+            return $this->redis->decrBy($key, $value);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -317,7 +366,12 @@ class Cache # extends \Redis
     public function persist(string $key): bool
     {
         $key = $this->sanitize($key);
-        return $this->redis->persist($key);
+
+        try {
+            return $this->redis->persist($key);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -331,9 +385,13 @@ class Cache # extends \Redis
      */
     public function delete(string ...$keys): void
     {
-        foreach ($keys as $key) {
-            $key = $this->sanitize($key);
-            $this->redis->unlink($key);
+        try {
+            foreach ($keys as $key) {
+                $key = $this->sanitize($key);
+                $this->redis->unlink($key);
+            }
+        } catch (\Throwable $e) {
+            $this->handleError($e);
         }
     }
 
@@ -350,7 +408,11 @@ class Cache # extends \Redis
      */
     public function flush(int $node = 1): bool
     {
-        return $this->redis->flushAll($node);
+        try {
+            return $this->redis->flushAll($node);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -365,13 +427,18 @@ class Cache # extends \Redis
      */
     public function flushAll(): ?array
     {
+        $return = [];
+
         if (!$this->clusterMode) {
             return null;
         }
 
-        $return = [];
-        foreach ($this->masters() as $node => $master) {
-            $return[$node] = $this->redis->flushAll($node);
+        try {
+            foreach ($this->masters() as $node => $master) {
+                $return[$node] = $this->redis->flushAll($node);
+            }
+        } catch (\Throwable $e) {
+            $this->handleError($e);
         }
 
         return $return;
@@ -405,7 +472,11 @@ class Cache # extends \Redis
      */
     public function info(string $pattern = "*"): array
     {
-        return $this->redis->info($pattern);
+        try {
+            return $this->redis->info($pattern);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -418,7 +489,11 @@ class Cache # extends \Redis
      */
     public function error(): ?string
     {
-        return $this->redis->getLastError();
+        try {
+            return $this->redis->getLastError();
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -432,9 +507,14 @@ class Cache # extends \Redis
      */
     public function slowLog(int $limit = 10): array
     {
-        $slowLog = $this->redis->slowLog("get", $limit);
-        if (!empty($slowLog)) {
-            return $slowLog;
+        try {
+            $slowLog = $this->redis->slowLog("get", $limit);
+
+            if (!empty($slowLog)) {
+                return $slowLog;
+            }
+        } catch (\Throwable $e) {
+            $this->handleError($e);
         }
 
         return [];
@@ -451,7 +531,11 @@ class Cache # extends \Redis
      */
     public function keys(string $pattern = "*"): array
     {
-        return $this->redis->keys($pattern);
+        try {
+            return $this->redis->keys($pattern);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -464,7 +548,11 @@ class Cache # extends \Redis
      */
     public function count(int $node = 1): int
     {
-        return $this->redis->dbSize($node);
+        try {
+            return $this->redis->dbSize($node);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -478,7 +566,11 @@ class Cache # extends \Redis
      */
     public function ping(string $message = "hello"): string
     {
-        return $this->redis->ping($message);
+        try {
+            return $this->redis->ping($message);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -493,7 +585,11 @@ class Cache # extends \Redis
      */
     public function raw(string $command, array $arguments = []): mixed
     {
-        return $this->redis->rawCommand($command, ...$arguments);
+        try {
+            return $this->redis->rawCommand($command, ...$arguments);
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 
@@ -508,7 +604,11 @@ class Cache # extends \Redis
             return null;
         }
 
-        return $this->redis->_masters();
+        try {
+            return $this->redis->_masters();
+        } catch (\Throwable $e) {
+            $this->handleError($e);
+        }
     }
 
 

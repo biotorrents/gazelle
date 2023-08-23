@@ -24,7 +24,7 @@ class Http
      * Handles checks, format, and exiting.
      * Goes to "/" by default with no argument.
      */
-    public static function redirect(string $uri = ""): void
+    public static function redirect(?string $uri = "/"): void
     {
         if (headers_sent()) {
             exit;
@@ -456,7 +456,8 @@ class Http
                     "domain" => $app->env->siteDomain,
                     "secure" => true,
                     "httponly" => true,
-                    "samesite" => "Strict",
+                    "samesite" => "Lax",
+                    #"samesite" => "Strict",
                 ]
             );
         }
