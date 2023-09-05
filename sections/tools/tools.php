@@ -15,7 +15,7 @@ if (!check_perms("users_mod")) {
 
 $app->twig->display("admin/tools.twig", [
     "title" => "Admin tools",
-    "sidebar" => true
+    "sidebar" => true,
 ]);
 
 exit;

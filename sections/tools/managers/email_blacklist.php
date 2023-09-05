@@ -1,104 +1,40 @@
 <?php
 
+declare(strict_types=1);
+
+
+/**
+ * email blacklist manager
+ */
+
 $app = \Gazelle\App::go();
 
-define('EMAILS_PER_PAGE', 25);
-if (!check_perms('users_view_email')) {
+if (!check_perms("users_view_email")) {
     error(403);
 }
-list($Page, $Limit) = Format::page_limit(EMAILS_PER_PAGE);
 
-View::header('Manage email blacklist');
-$Where = "";
-if (!empty($_POST['email'])) {
-    $Email = db_string($_POST['email']);
-    $Where .= " WHERE Email LIKE '%$Email%'";
+# request variables
+$get = Http::get();
+$post = Http::post();
+
+# get the emails
+$get["search"] ??= null;
+if ($get["search"]) {
+    $query = "select * from email_blacklist where email like '%{$get["search"]}%' or comment like '%{$get["search"]}%' order by id desc";
+} else {
+    $query = "select * from email_blacklist order by id desc";
 }
-if (!empty($_POST['comment'])) {
-    $Comment = db_string($_POST['comment']);
-    if (!empty($Where)) {
-        $Where .= " AND";
-    } else {
-        $Where .= " WHERE";
-    }
-    $Where .= " Comment LIKE '%$Comment%'";
-}
-$app->dbOld->prepared_query("
-  SELECT
-    SQL_CALC_FOUND_ROWS
-    ID,
-    UserID,
-    Time,
-    Email,
-    Comment
-  FROM email_blacklist
-  $Where
-  ORDER BY Time DESC
-  LIMIT $Limit");
-$Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
-$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $app->dbOld->next_record();
-?>
-<div class="header">
-  <h2>Email Blacklist</h2>
-</div>
-<br>
-<form action="tools.php" method="post">
-  <input type="hidden" name="action" value="email_blacklist">
-  <input type="email" name="email" size="30" placeholder="Email">
-  <input type="search" name="comment" size="60" placeholder="Comment">
-  <input type="submit" class="button-primary" value="Search">
-</form>
-<div class="linkbox pager">
-  <br>
-<?php
-  $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
-echo $Pages;
-?>
-</div>
-<table>
-  <tr class="colhead">
-    <td>Email address</td>
-    <td>Comment</td>
-    <td>Date added</td>
-    <td>Submit</td>
-  </tr>
-  <tr class="colhead">
-    <td colspan="4">Add email address or domain to blacklist</td>
-  </tr>
-  <tr class="row">
-    <form class="add_form" name="email_blacklist" action="tools.php" method="post">
-      <input type="hidden" name="action" value="email_blacklist_alter">
-      <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-      <td><input type="text" name="email" size="30"></td>
-      <td colspan="2"><input type="text" name="comment" size="50"></td>
-      <td><input type="submit" class="button-primary" value="Create"></td>
-    </form>
-  </tr>
-<?php
-  foreach ($Results as $Result) {
-      ?>
-  <tr>
-    <form class="manage_form" name="email_blacklist" action="tools.php" method="post">
-      <td>
-        <input type="hidden" name="action" value="email_blacklist_alter">
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-        <input type="hidden" name="id" value="<?=$Result['ID']?>">
-        <input type="email" name="email" value="<?=\Gazelle\Text::esc($Result['Email'])?>" size="30">
-      </td>
-      <td><input type="text" name="comment" value="<?=\Gazelle\Text::esc($Result['Comment'])?>" size="50"></td>
-      <td><?=User::format_username($Result ['UserID'], false, false, false)?><br><?=time_diff($Result ['Time'], 1)?></td>
-      <td>
-        <input type="submit" name="submit" class="button-primary" value="Edit">
-        <input type="submit" name="submit" value="Delete">
-      </td>
-    </form>
-  </tr>
-<?php
-  } ?>
-</table>
-<div class="linkbox pager">
-  <br>
-  <?=$Pages?>
-</div>
-<?php View::footer(); ?>
+
+$data = $app->dbNew->multi($query, []);
+#!d($data);exit;
+
+# crud actions
+# todo
+
+# twig template
+$app->twig->display("admin/emailBlacklist.twig", [
+  "title" => "Manage email blacklist",
+  "sidebar" => true,
+  "data" => $data,
+  "search" => $get["search"],
+]);
