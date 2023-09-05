@@ -135,6 +135,15 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("Open registration is disabled, no invite code provided");
             }
 
+            # is the email blacklisted?
+            $domain = explode("@", $email)[1] ?? null;
+            $query = "select 1 from email_blacklist where email like '%{$domain}%' limit 1";
+            $bad = $app->dbNew->single($query, []);
+
+            if ($bad) {
+                throw new Exception("This email address can't be used to register an account");
+            }
+
             # check the validity of the invite code
             if (!empty($invite)) {
                 $query = "select 1 from invites where inviteKey = ?";

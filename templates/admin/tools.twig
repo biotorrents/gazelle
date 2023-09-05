@@ -1,0 +1,187 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<h2>Admin tools</h2>
+
+<p>Various tools to help manage the site.</p>
+
+
+<div id="adminGrid">
+
+
+{# administration #}
+<section>
+    <h3>Administration</h3>
+
+    <ul>
+        {% if can("admin_whitelist") %}
+            <li><a href="/tools.php?action=whitelist">Client whitelist</a></li>
+        {% endif %}
+
+        {% if can("admin_manage_permissions") %}
+            <li><a href="/tools.php?action=permissions">Permissions manager</a></li>
+        {% endif %}
+
+        {% if can("admin_manage_permissions") %} 
+            <li><a href="/tools.php?action=database_key">Database key</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# announcements #}
+<section>
+    <h3>Announcements</h3>
+
+    <ul>
+        {% if can("users_mod") %}
+            <li><a href="/tools.php?action=global_notification">Global notification</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %}
+            <li><a href="/tools.php?action=mass_pm">Mass PM</a></li>
+        {% endif %}
+
+        {% if can("admin_manage_news") %} 
+            <li><a href="/tools.php?action=news">News post</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# community #}
+{#
+<section>
+    <h3>Community</h3>
+
+    <ul>
+        {% if can("admin_manage_forums") %}
+            <li><a href="/tools.php?action=forum">Forum manager</a></li>
+        {% endif %}
+   </ul>
+</section>
+#}
+
+{# queue #}
+<section>
+    <h3>Queue</h3>
+
+    <ul>
+        {% if can("users_mod") %}
+            <li><a href="/tools.php?action=enable_requests">Auto-enable requests</a></li>
+        {% endif %}
+
+        {% if can("admin_login_watch") %}
+            <li><a href="/tools.php?action=login_watch">Login watch</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# managers #}
+<section>
+    <h3>Managers</h3>
+
+    <ul>
+        {% if can("users_view_email") %}
+            <li><a href="/tools.php?action=email_blacklist">Email blacklist</a></li>
+        {% endif %}
+
+        {% if can("admin_manage_ipbans") %}
+            <li><a href="/tools.php?action=ip_ban">IP address bans</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=manipulate_tree">Manipulate invite tree</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# development #}
+<section>
+    <h3>Development</h3>
+
+    <ul>
+        {% if can("site_debug") %}
+            <li><a href="/schedule.php?auth={{ user.extra.AuthKey }}">Run the schedule</a></li>
+        {% endif %}
+
+        {% if can("site_debug") %}
+            <li><a href="/tools.php?action=service_stats">Service stats</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=misc_values">Miscellaneous values</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=ocelot_info">Tracker info</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# site information #}
+<section>
+    <h3>Site information</h3>
+
+    <ul>
+        {% if can("users_view_invites") %}
+            <li><a href="/tools.php?action=invite_pool">Invite pool</a></li>
+        {% endif %}
+
+        {% if can("users_view_email") and can("users_view_ips") %}
+            <li><a href="/tools.php?action=registration_log">Registration log</a></li>
+        {% endif %}
+
+        {% if can("site_view_flow") %} 
+            <li><a href="/tools.php?action=upscale_pool">Upscale pool</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# torrents #}
+<section>
+    <h3>Torrents</h3>
+
+    <ul>
+        {% if can("site_collages_recover") %}
+            <li><a href="/collages.php?action=recover">Collage recovery</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %}
+            <li><a href="/tools.php?action=tokens">Manage freeleech tokens</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=multiple_freeleech">Multiple freeleech</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=tag_aliases">Tag aliases</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=edit_tags">Batch tag editor</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=official_tags">Official tags manager</a></li>
+        {% endif %}
+
+        {% if can("users_mod") %} 
+            <li><a href="/tools.php?action=freeleech">Sitewide freeleech manager</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+
+</div>
+
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "admin/sidebar.twig" %}
+
+{% endblock %}
