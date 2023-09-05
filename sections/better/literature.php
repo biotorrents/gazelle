@@ -22,77 +22,8 @@ $app->twig->display("better/list.twig", [
   "title" => "Better",
   "header" => "Torrent groups with no publications",
   "sidebar" => true,
+
   "torrentGroups" => $torrentGroups,
+  "snatchedOnly" => $snatchedOnly,
+  "currentPage" => "literature",
 ]);
-
-exit;
-
-/** continue */
-
-View::header('Torrent groups with no publications');
-
-$Groups = $app->dbOld->to_array('id', MYSQLI_ASSOC);
-$app->dbOld->prepared_query('SELECT FOUND_ROWS()');
-list($NumResults) = $app->dbOld->next_record();
-$Results = Torrents::get_groups(array_keys($Groups)); ?>
-
-<div class="header">
-  <?php if ($All) { ?>
-  <h2>
-    All groups with no DOI numbers
-  </h2>
-
-  <?php } else { ?>
-  <h2>
-    Torrent groups with no DOI numbers that you have snatched
-  </h2>
-  <?php } ?>
-
-  <div class="linkbox">
-    <a href="better.php" class="brackets">Back to better.php list</a>
-    <?php if ($All) { ?>
-    <a href="better.php?method=literature" class="brackets">Show only those you have snatched</a>
-    <?php } else { ?>
-    <a href="better.php?method=literature&amp;filter=all" class="brackets">Show all</a>
-    <?php } ?>
-  </div>
-</div>
-
-<div class="box pad">
-  <h3>
-    There are <?=\Gazelle\Text::float($NumResults)?> groups remaining
-  </h3>
-
-  <table class="torrent_table">
-    <?php
-foreach ($Results as $Result) {
-    extract($Result);
-    $LangName = $title ? $title : ($subject ? $subject : $object);
-    $TorrentTags = new Tags($tag_list);
-
-    $DisplayName = "<a href='torrents.php?id=$id' ";
-    if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-        $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
-    }
-    $DisplayName .= ">$LangName</a>";
-
-    if ($year > 0) {
-        $DisplayName .= " [$year]";
-    } ?>
-
-    <tr class="torrent">
-      <td>
-        <div class="<?=Format::css_category($category_id)?>"></div>
-      </td>
-
-      <td>
-        <?=$DisplayName?>
-        <div class="tags"><?=$TorrentTags->format()?>
-        </div>
-      </td>
-    </tr>
-    <?php
-} ?>
-  </table>
-</div>
-<?php View::footer();
