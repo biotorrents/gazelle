@@ -229,12 +229,18 @@
 
 	{# start header #}
 
-		{# there's no crypto key loaded! #}
+	{# there's no crypto key loaded! #}
 	{% if not env.apcuKey %}
 		<div id="systemError">
+
 			<strong>Error!</strong>
 			Couldn't detect an APCu key to decrypt the database.
 			Certain user account functionality is degraded.
+
+			{% if authenticated and can("site_debug") %}
+        		<a href="/tools.php?action=database_key">Load the database key.</a>
+    		{% endif %}
+
 		</div>
 	{% endif %}
 
@@ -276,6 +282,12 @@
 
 
 		<main class="container">
+
+			{# admin bar #}
+			{% if authenticated and can("users_mod") %}
+				{{ include("_base/adminBar.twig") }}
+			{% endif %}
+			
 			<div class="row">
 
 				{# splash logo #}
