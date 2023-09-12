@@ -95,7 +95,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -122,7 +122,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -149,7 +149,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -176,7 +176,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -202,7 +202,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -229,7 +229,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -256,7 +256,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -283,7 +283,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and query extras
@@ -324,7 +324,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit
@@ -358,7 +358,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit
@@ -442,7 +442,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -471,7 +471,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -500,7 +500,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -531,7 +531,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -562,7 +562,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables

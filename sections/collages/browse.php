@@ -163,7 +163,7 @@ $app->twig->display("collages/browse.twig", [
     "searchResults" => $searchResults,
     "collages" => $collages,
 
-    "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    "bookmarks" => Bookmarks::all_bookmarks("torrent"),
     "officialTags" => $officialTags,
 
     "searchTerms" => $searchTerms,
