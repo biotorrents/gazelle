@@ -5,8 +5,9 @@
 	<h2>Top users</h2>
 
 	{# dataUploaded #}
+	{% if dataUploaded is not empty %}
 	<section>
-		<h3>{{ limit }} best data uploaders</h3>
+		<h3>{{ limit }} most data uploaded</h3>
 
 		<table data-sortable>
 			<thead>
@@ -40,10 +41,12 @@
 			</tbody>
 		</table>
 	</section>
+	{% endif %}
 
     {# dataDownloaded #}
+	{% if dataDownloaded is not empty %}
 	<section>
-		<h3>{{ limit }} best data downloaders</h3>
+		<h3>{{ limit }} most data downloaded</h3>
 
 		<table data-sortable>
 			<thead>
@@ -77,10 +80,12 @@
 			</tbody>
 		</table>
 	</section>
+	{% endif %}
 
     {# uploadCount #}
+	{% if uploadCount is not empty %}
 	<section>
-		<h3>{{ limit }} best torrent uploaders</h3>
+		<h3>{{ limit }} most torrents uploaded</h3>
 
 		<table data-sortable>
 			<thead>
@@ -114,6 +119,7 @@
 			</tbody>
 		</table>
 	</section>
+	{% endif %}
 
 {% endblock %}
 

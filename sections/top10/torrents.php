@@ -10,9 +10,77 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 enforce_login();
-if (!check_perms('site_top10')) {
+if (!check_perms("site_top10")) {
     error(403);
 }
+
+$get = Http::request("get");
+$limit = intval($get["limit"] ?? Top10::$defaultLimit);
+
+# data
+$dailyTorrents = Top10::dailyTorrents($limit);
+if (!empty($dailyTorrents)) {
+    $dailyTorrents = Torrents::get_groups(array_column($dailyTorrents, "id"));
+}
+
+$weeklyTorrents = Top10::weeklyTorrents($limit);
+if (!empty($weeklyTorrents)) {
+    $weeklyTorrents = Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
+}
+
+$monthlyTorrents = Top10::monthlyTorrents($limit);
+if (!empty($monthlyTorrents)) {
+    $monthlyTorrents = Torrents::get_groups(array_column($monthlyTorrents, "id"));
+}
+
+$yearlyTorrents = Top10::yearlyTorrents($limit);
+if (!empty($yearlyTorrents)) {
+    $yearlyTorrents = Torrents::get_groups(array_column($yearlyTorrents, "id"));
+}
+
+$overallTorrents = Top10::overallTorrents($limit);
+if (!empty($overallTorrents)) {
+    $overallTorrents = Torrents::get_groups(array_column($overallTorrents, "id"));
+}
+
+$torrentSeeders = Top10::torrentSeeders($limit);
+if (!empty($torrentSeeders)) {
+    $torrentSeeders = Torrents::get_groups(array_column($torrentSeeders, "id"));
+}
+
+$torrentSnatches = Top10::torrentSnatches($limit);
+if (!empty($torrentSnatches)) {
+    $torrentSnatches = Torrents::get_groups(array_column($torrentSnatches, "id"));
+}
+
+$torrentData = Top10::torrentData($limit);
+if (!empty($torrentData)) {
+    $torrentData = Torrents::get_groups(array_column($torrentData, "id"));
+}
+
+# template
+$app->twig->display("top10/torrents.twig", [
+    "title" => "Top torrents",
+    "sidebar" => true,
+
+    "page" => "torrents",
+    "limit" => $limit,
+
+    "dailyTorrents" => $dailyTorrents,
+    "weeklyTorrents" => $weeklyTorrents,
+    "monthlyTorrents" => $monthlyTorrents,
+    "yearlyTorrents" => $yearlyTorrents,
+    "overallTorrents" => $overallTorrents,
+
+    "torrentSeeders" => $torrentSeeders,
+    "torrentSnatches" => $torrentSnatches,
+    "torrentData" => $torrentData,
+]);
+
+exit;
+
+
+
 
 $Where = [];
 
@@ -84,8 +152,8 @@ if (check_perms('site_advanced_top10')) {
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
                             echo \Gazelle\Text::esc($_GET['tags']);
                         } ?>" />&nbsp;
-                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall'])||$_GET['anyall']!=='any') ? ' checked="checked"' : '')?>><label for="rdoAll"> All</label>&nbsp;&nbsp;
-                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall'])||$_GET['anyall']==='any') ? ' checked="checked"' : '')?>><label for="rdoAny"> Any</label>
+                        <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall']) || $_GET['anyall'] !== 'any') ? ' checked="checked"' : '')?>><label for="rdoAll"> All</label>&nbsp;&nbsp;
+                        <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall']) || $_GET['anyall'] === 'any') ? ' checked="checked"' : '')?>><label for="rdoAny"> Any</label>
                     </td>
                 </tr>
                 <tr>
@@ -98,7 +166,7 @@ if (check_perms('site_advanced_top10')) {
     foreach ($Categories as $CategoryName) { ?>
                             <option
                                 value="<?=\Gazelle\Text::esc($CategoryName)?>"
-                                <?=(($CategoryName===($_GET['category']??false)) ? 'selected="selected"' : '')?>><?=\Gazelle\Text::esc($CategoryName)?>
+                                <?=(($CategoryName === ($_GET['category'] ?? false)) ? 'selected="selected"' : '')?>><?=\Gazelle\Text::esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>

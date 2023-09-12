@@ -1,0 +1,158 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Top torrents</h2>
+
+	{# dailyTorrents #}
+	{% if dailyTorrents is not empty %}
+	<section>
+		<h3>{{ limit }} daily uploads</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in dailyTorrents %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# weeklyTorrents #}
+	{% if weeklyTorrents is not empty %}
+	<section>
+		<h3>{{ limit }} weekly uploads</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in weeklyTorrents %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# monthlyTorrents #}
+	{% if monthlyTorrents is not empty %}
+	<section>
+		<h3>{{ limit }} monthly uploads</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in monthlyTorrents %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# yearlyTorrents #}
+	{% if yearlyTorrents is not empty %}
+	<section>
+		<h3>{{ limit }} yearly uploads</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in yearlyTorrents %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# overallTorrents #}
+	{% if overallTorrents is not empty %}
+	<section>
+		<h3>{{ limit }} overall uploads</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in overallTorrents %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# torrentSeeders #}
+	{% if torrentSeeders is not empty %}
+	<section>
+		<h3>{{ limit }} best seeded torrents</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in torrentSeeders %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# torrentSnatches #}
+	{% if torrentSnatches is not empty %}
+	<section>
+		<h3>{{ limit }} most snatched torrents</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in torrentSnatches %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+	{# torrentData #}
+	{% if torrentData is not empty %}
+	<section>
+		<h3>{{ limit }} most transferred torrents</h3>
+
+		<table>
+
+			<tbody>
+				{% for group in torrentData %}
+
+					{% include "torrents/tableEntry.twig" with group %}
+
+				{% endfor %}
+			</tbody>
+		</table>
+	</section>
+	{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "top10/sidebar.twig" %}
+
+{% endblock %}

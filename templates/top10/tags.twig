@@ -5,6 +5,7 @@
 	<h2>Top tags</h2>
 
 	{# torrentTags #}
+	{% if torrentTags is not empty %}
 	<section>
 		<h3>{{ limit }} most used torrent tags</h3>
 
@@ -28,9 +29,10 @@
 			</tbody>
 		</table>
 	</section>
-
+	{% endif %}
 
 	{# requestTags #}
+	{% if requestTags is not empty %}
 	<section>
 		<h3>{{ limit }} most used request tags</h3>
 
@@ -54,6 +56,7 @@
 			</tbody>
 		</table>
 	</section>
+	{% endif %}
 
 {% endblock %}
 
