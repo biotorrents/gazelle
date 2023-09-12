@@ -52,10 +52,10 @@ $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"
 # badges
 if ($isOwnProfile) {
     $badges = Badges::getBadges($userId);
-    $badgesDisplay = Badges::displayBadges(array_keys($badges), true);
+    $badgesDisplay = Badges::displayBadges(array_keys($badges));
 } else {
     $badges = Badges::getDisplayedBadges($userId);
-    $badgesDisplay = Badges::displayBadges($badges, true);
+    $badgesDisplay = Badges::displayBadges($badges);
 }
 
 
@@ -1147,7 +1147,7 @@ if (!$DisablePoints) {
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br>";

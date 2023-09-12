@@ -8,15 +8,15 @@ $BadgeID = $_GET['badge'];
 
 $ShopBadgeIDs = [40, 41, 42, 43, 44, 45, 46, 47, 48];
 $Prices = [
-    40 => 500,
-    41 => 1000,
-    42 => 2500,
-    43 => 5000,
-    44 => 10000,
-    45 => 25000,
-    46 => 50000,
-    47 => 100000,
-    48 => 250000
+    40 => 1000,
+    41 => 2000,
+    42 => 5000,
+    43 => 10000,
+    44 => 20000,
+    45 => 50000,
+    46 => 100000,
+    47 => 200000,
+    48 => 500000,
 ];
 
 if (!$BadgeID) {
@@ -25,7 +25,7 @@ if (!$BadgeID) {
     $Err = 'Invalid badge ID';
 } elseif (Badges::hasBadge($UserID, $BadgeID)) {
     $Err = 'You already have this badge';
-} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::hasBadge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs)-1])) {
+} elseif ((int) $BadgeID !== $ShopBadgeIDs[0] && !Badges::hasBadge($UserID, $ShopBadgeIDs[array_search($BadgeID, $ShopBadgeIDs) - 1])) {
     $Err = "You haven't purchased the badges before this one!";
 }
 
@@ -79,7 +79,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
 </div>
 <?php
 } else {
-        View::header('Store'); ?>
+    View::header('Store'); ?>
 <div>
     <h2 id='general'>Purchase Badge?</h2>
     <div class='box pad'>
@@ -107,5 +107,5 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
     </div>
 </div>
 <?php
-    }
+}
 View::footer();

@@ -106,42 +106,28 @@ class Badges
      * Creates HTML for displaying a badge.
      *
      * @param int $badgeId
-     * @param bool $tooltip should the html contain a tooltip?
      * @return ?string html
      */
-    public static function displayBadge(int $badgeId, bool $tooltip = true): ?string
+    public static function displayBadge(int $badgeId): ?string
     {
         $app = \Gazelle\App::go();
 
         $query = "select * from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
-        #!d($row);exit;
 
-        /*
-        if (!$row) {
-            return null;
-        }
-        */
-
-        if ($tooltip) {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' title='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>";
-        } else {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>"; # no title
-        }
-
-        return $html;
+        return "<span class='badge tooltip' title='{$row["name"]}: {$row["description"]}'>{$row["icon"]}</span>";
     }
 
 
     /**
      * displayBadges
      */
-    public static function displayBadges(array $badgeIds, $tooltip = false): string
+    public static function displayBadges(array $badgeIds): string
     {
         $data = [];
 
         foreach ($badgeIds as $badgeId) {
-            $data[] = self::displayBadge($badgeId, $tooltip);
+            $data[] = self::displayBadge($badgeId);
         }
 
         $data = implode("", $data);
