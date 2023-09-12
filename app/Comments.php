@@ -257,7 +257,7 @@ class Comments
                 return "artist.php?id=$PageID$Post";
 
             case 'collages':
-                return "collages.php?action=comments&collageid=$PageID$Post";
+                return "collages.php?action=comments&collageId=$PageID$Post";
 
             case 'requests':
                 return "requests.php?action=view&id=$PageID$Post";

@@ -261,7 +261,7 @@ if (!$NumResults) {
           <a data-toggle-target="#discog_table_<?=$CollageID?>"
             data-toggle-replace="<?=($ShowAll ? 'Hide' : 'Show')?>"
             class="brackets"><?=($ShowAll ? 'Show' : 'Hide')?></a>&nbsp;&nbsp;&nbsp;<a
-            href="userhistory.php?action=catchup_collages&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;collageid=<?=$CollageID?>"
+            href="userhistory.php?action=catchup_collages&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;collageId=<?=$CollageID?>"
             class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;<a href="#"
             onclick="CollageSubscribe(<?=$CollageID?>); return false;"
             id="subscribelink<?=$CollageID?>"

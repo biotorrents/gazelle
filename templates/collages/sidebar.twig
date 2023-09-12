@@ -16,10 +16,10 @@
         {# edit buttons #}
         {% if can("site_collages_manage") and not collage.isLocked %}
             {# edit this collage #}
-            <a class="button button-orange" href="/collages.php?action=edit&collageid={{ collage.id }}">edit this collage</a>
+            <a class="button button-orange" href="/collages.php?action=edit&collageId={{ collage.id }}">edit this collage</a>
 
             {# manage its torrents #}
-		        <a class="button button-orange" href="/collages.php?action=manage&collageid={{ collage.id }}">manage its torrents</a>
+		        <a class="button button-orange" href="/collages.php?action=manage&collageId={{ collage.id }}">manage its torrents</a>
         {% endif %}
 
         {# report #}
@@ -27,7 +27,7 @@
 
       {# delete #}
       {% if can("site_collages_delete") or collage.creatorId == user.core.id %}
-      <a class="button button-red" href="/collages.php?action=delete&collageid={{ collage.id }}&auth={{ user.extra.AuthKey }}"
+      <a class="button button-red" href="/collages.php?action=delete&collageId={{ collage.id }}&auth={{ user.extra.AuthKey }}"
         onclick="return confirm('Are you sure you want to delete this collage?');">delete</a>
         {% endif %}
 

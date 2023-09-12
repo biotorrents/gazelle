@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$CollageID = $_POST['collageid'];
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(0);
 }

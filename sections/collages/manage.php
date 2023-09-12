@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$CollageID = (int) $_GET['collageid'];
+$CollageID = (int) $_GET['collageId'];
 Security::int($CollageID);
 
 $app->dbOld->prepared_query("
@@ -144,7 +144,7 @@ foreach ($GroupIDs as $GroupID) {
             <input type="hidden" name="action" value="manage_handle">
             <input type="hidden" name="auth"
               value="<?=$app->user->extra['AuthKey']?>">
-            <input type="hidden" name="collageid"
+            <input type="hidden" name="collageId"
               value="<?=$CollageID?>">
             <input type="hidden" name="groupid"
               value="<?=$GroupID?>">
@@ -165,7 +165,7 @@ foreach ($GroupIDs as $GroupID) {
       <input type="hidden" name="action" value="manage_handle">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
-      <input type="hidden" name="collageid"
+      <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <input type="hidden" name="groupid" value="1">
       <input type="hidden" name="drag_drop_collage_sort_order" id="drag_drop_collage_sort_order" readonly="readonly"

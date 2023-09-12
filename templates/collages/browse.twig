@@ -100,7 +100,10 @@
       </span>
       <?php } ?>
 	  #}
+
+    {% if item.tagList is not empty %}
       <div class="tooltip tagList" title="Tags">{{ item.tagList }}</div>
+    {% endif %}
     </td>
 
 	{# torrent count #}

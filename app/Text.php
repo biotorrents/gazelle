@@ -50,7 +50,7 @@ class Text
         # prepare clean escapes
         $string = self::esc($string);
 
-        # here's the magic pattern:
+        # here's the magic pattern
         if (!preg_match("/{$app->env->regexBBCode}/s", $string)) {
             # markdown
             $parsedown = new \ParsedownExtra();

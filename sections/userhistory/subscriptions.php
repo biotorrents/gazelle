@@ -169,7 +169,7 @@ if (!$NumResults) {
 
           case 'collages':
               $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . \Gazelle\Text::esc($Result['Name']) . '</a>';
-              $JumpLink = 'collages.php?action=comments&collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              $JumpLink = 'collages.php?action=comments&collageId=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
               break;
 
 

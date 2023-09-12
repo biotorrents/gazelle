@@ -3,8 +3,8 @@
 
 $app = \Gazelle\App::go();
 
-if (!empty($_GET['collageid']) && is_numeric($_GET['collageid'])) {
-    $CollageID = $_GET['collageid'];
+if (!empty($_GET['collageId']) && is_numeric($_GET['collageId'])) {
+    $CollageID = $_GET['collageId'];
 }
 if (!is_numeric($CollageID)) {
     error(0);
@@ -44,7 +44,7 @@ if (!empty($Err)) {
       <input type="hidden" name="action" value="edit_handle">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
-      <input type="hidden" name="collageid"
+      <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <table id="edit_collage" class="layout collage_edit">
         <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>

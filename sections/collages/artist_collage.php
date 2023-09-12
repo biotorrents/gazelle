@@ -113,7 +113,7 @@ View::header($Name, 'browse,collage,recommend');
       }
   if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
       ?>
-      <a href="collages.php?action=edit&amp;collageid=<?=$CollageID?>"
+      <a href="collages.php?action=edit&amp;collageId=<?=$CollageID?>"
         class="brackets">Edit description</a>
       <?php
   } else { ?>
@@ -135,14 +135,14 @@ View::header($Name, 'browse,collage,recommend');
   }
   if (check_perms('site_collages_manage') && !$Locked) {
       ?>
-      <a href="collages.php?action=manage_artists&amp;collageid=<?=$CollageID?>"
+      <a href="collages.php?action=manage_artists&amp;collageId=<?=$CollageID?>"
         class="brackets">Manage artists</a>
       <?php
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collage</a>
       <?php if (check_perms('site_collages_delete') || $CreatorID === $app->user->core['id']) { ?>
-      <a href="collages.php?action=delete&amp;collageid=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
+      <a href="collages.php?action=delete&amp;collageId=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
     </div>
@@ -207,7 +207,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
           <input type="hidden" name="action" value="add_artist">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>">
-          <input type="hidden" name="collageid"
+          <input type="hidden" name="collageId"
             value="<?=$CollageID?>">
           <div>
             <input type="text" id="artist" size="20" name="url">
@@ -224,7 +224,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
           <input type="hidden" name="action" value="add_artist_batch">
           <input type="hidden" name="auth"
             value="<?=$app->user->extra['AuthKey']?>">
-          <input type="hidden" name="collageid"
+          <input type="hidden" name="collageId"
             value="<?=$CollageID?>">
           <div>
             <textarea name="urls" rows="5" cols="25" style="white-space: nowrap;"></textarea>
@@ -275,7 +275,7 @@ foreach ($CommentList as $Comment) {
 ?>
 
     <div class="box pad">
-      <a href="collages.php?action=comments&amp;collageid=<?=$CollageID?>"
+      <a href="collages.php?action=comments&amp;collageId=<?=$CollageID?>"
         class="brackets">View all comments</a>
     </div>
 

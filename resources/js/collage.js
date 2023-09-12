@@ -52,14 +52,14 @@ function Cancel() {
   document.getElementById("choices").raw().value = "";
 }
 
-function CollageSubscribe(collageid) {
+function CollageSubscribe(collageId) {
   ajax.get(
-    "userhistory.php?action=collage_subscribe&collageid=" +
-    collageid +
+    "userhistory.php?action=collage_subscribe&collageId=" +
+    collageId +
     "&auth=" +
     authkey,
     function () {
-      var subscribeLink = $("#subscribelink" + collageid).raw();
+      var subscribeLink = $("#subscribelink" + collageId).raw();
       if (subscribeLink) {
         subscribeLink.firstChild.nodeValue =
           subscribeLink.firstChild.nodeValue.charAt(0) == "U"

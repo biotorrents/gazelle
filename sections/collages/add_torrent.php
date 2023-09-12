@@ -55,7 +55,7 @@ function add_torrent($CollageID, $GroupID)
     }
 }
 
-$CollageID = $_POST['collageid'];
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(404);
 }

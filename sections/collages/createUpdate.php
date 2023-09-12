@@ -19,7 +19,7 @@ $get = Http::get();
 $post = Http::post();
 
 # default to create a new collage
-$collageId = $get["collageid"] ?? null;
+$collageId = $get["collageId"] ?? null;
 $isUpdate = false;
 $title = "Create a new collage";
 $tagList = [];
@@ -46,8 +46,8 @@ if ($collageId) {
         # todo
 
         # check if locked
-        $post["isLocked"] ??= 0;
-        if ($post["isLocked"]) {
+        $isLocked = $post["isLocked"] ?? 0;
+        if ($isLocked) {
             throw new Exception("This collage is locked from further editing");
         }
 
