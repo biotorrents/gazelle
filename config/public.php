@@ -29,6 +29,9 @@ ENV::setPub("enablePublicEncryptionKey", false);
 # is there an apcu database key loaded?
 ENV::setPub("apcuKey", apcu_exists("DBKEY"));
 
+# mariadb date format
+ENV::setPub("sqlDate", "Y-m-d H:i:s");
+
 
 /**
  * site identity
@@ -390,16 +393,16 @@ ENV::setPub("DONOR_FORUM_RANK", 6);
 
 # ratio requirements, in descending order
 define("RATIO_REQUIREMENTS", [
- # downloaded     req (0% seed) req (100% seed)
-  [200 * 1024**3, 0.60,         0.60],
-  [160 * 1024**3, 0.60,         0.50],
-  [120 * 1024**3, 0.50,         0.40],
-  [100 * 1024**3, 0.40,         0.30],
-  [80  * 1024**3, 0.30,         0.20],
-  [60  * 1024**3, 0.20,         0.10],
-  [40  * 1024**3, 0.15,         0.00],
-  [20  * 1024**3, 0.10,         0.00],
-  [10  * 1024**3, 0.05,         0.00],
+ # downloaded       req (0% seed) req (100% seed)
+  [200 * 1024 ** 3, 0.60,         0.60],
+  [160 * 1024 ** 3, 0.60,         0.50],
+  [120 * 1024 ** 3, 0.50,         0.40],
+  [100 * 1024 ** 3, 0.40,         0.30],
+  [80  * 1024 ** 3, 0.30,         0.20],
+  [60  * 1024 ** 3, 0.20,         0.10],
+  [40  * 1024 ** 3, 0.15,         0.00],
+  [20  * 1024 ** 3, 0.10,         0.00],
+  [10  * 1024 ** 3, 0.05,         0.00],
 ]);
 
 # God I wish I didn't have to do this but I just don't care anymore

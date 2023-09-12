@@ -49,6 +49,9 @@ class Top10
     ];
 
 
+    /** torrents */
+
+
     /**
      * torrents
      *
@@ -67,6 +70,9 @@ class Top10
     public function history()
     {
     }
+
+
+    /** tags */
 
 
     /**
@@ -137,6 +143,9 @@ class Top10
     }
 
 
+    /** users */
+
+
     /**
      * hydrateUserVariables
      *
@@ -183,7 +192,7 @@ class Top10
      *     JOIN users_info AS ui ON ui.UserID = u.ID
      *     LEFT JOIN torrents AS t ON t.UserID=u.ID
      *   WHERE u.Enabled='1'
-     *     AND Uploaded>='". 500*1024*1024 ."'
+     *     AND Uploaded>='". 500 * 1024 * 1024 ."'
      *     AND Downloaded>='". 0 ."'
      *     AND u.ID > 2
      *     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
@@ -275,6 +284,8 @@ class Top10
      * uploadSpeed
      *
      * Gets the top users by upload speed.
+     *
+     * todo
      */
     public static function uploadSpeed(int $limit = null): array
     {
@@ -304,6 +315,8 @@ class Top10
      * downloadSpeed
      *
      * Gets the top users by download speed.
+     *
+     * todo
      */
     public static function downloadSpeed(int $limit = null): array
     {
@@ -328,6 +341,9 @@ class Top10
         return $ref;
     }
 
+
+    /** donors */
+
     /**
      * donors
      *
@@ -338,7 +354,7 @@ class Top10
     }
 
 
-    /** static */
+    /** legacy */
 
 
     /**
