@@ -15,45 +15,45 @@ if (!check_perms("site_top10")) {
 }
 
 $get = Http::request("get");
-$limit = intval($get["limit"] ?? Top10::$defaultLimit);
+$limit = intval($get["limit"] ?? \Gazelle\Top10::$defaultLimit);
 
 # data
-$dailyTorrents = Top10::dailyTorrents($limit);
+$dailyTorrents = \Gazelle\Top10::dailyTorrents($limit);
 if (!empty($dailyTorrents)) {
     $dailyTorrents = Torrents::get_groups(array_column($dailyTorrents, "id"));
 }
 
-$weeklyTorrents = Top10::weeklyTorrents($limit);
+$weeklyTorrents = \Gazelle\Top10::weeklyTorrents($limit);
 if (!empty($weeklyTorrents)) {
     $weeklyTorrents = Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
 }
 
-$monthlyTorrents = Top10::monthlyTorrents($limit);
+$monthlyTorrents = \Gazelle\Top10::monthlyTorrents($limit);
 if (!empty($monthlyTorrents)) {
     $monthlyTorrents = Torrents::get_groups(array_column($monthlyTorrents, "id"));
 }
 
-$yearlyTorrents = Top10::yearlyTorrents($limit);
+$yearlyTorrents = \Gazelle\Top10::yearlyTorrents($limit);
 if (!empty($yearlyTorrents)) {
     $yearlyTorrents = Torrents::get_groups(array_column($yearlyTorrents, "id"));
 }
 
-$overallTorrents = Top10::overallTorrents($limit);
+$overallTorrents = \Gazelle\Top10::overallTorrents($limit);
 if (!empty($overallTorrents)) {
     $overallTorrents = Torrents::get_groups(array_column($overallTorrents, "id"));
 }
 
-$torrentSeeders = Top10::torrentSeeders($limit);
+$torrentSeeders = \Gazelle\Top10::torrentSeeders($limit);
 if (!empty($torrentSeeders)) {
     $torrentSeeders = Torrents::get_groups(array_column($torrentSeeders, "id"));
 }
 
-$torrentSnatches = Top10::torrentSnatches($limit);
+$torrentSnatches = \Gazelle\Top10::torrentSnatches($limit);
 if (!empty($torrentSnatches)) {
     $torrentSnatches = Torrents::get_groups(array_column($torrentSnatches, "id"));
 }
 
-$torrentData = Top10::torrentData($limit);
+$torrentData = \Gazelle\Top10::torrentData($limit);
 if (!empty($torrentData)) {
     $torrentData = Torrents::get_groups(array_column($torrentData, "id"));
 }
@@ -136,7 +136,7 @@ View::header("Top $Limit Torrents", 'browse');
 <div>
     <div class="header">
         <h2>Top <?=$Limit?> Torrents</h2>
-        <?php Top10::render_linkbox("torrents"); ?>
+        <?php \Gazelle\Top10::render_linkbox("torrents"); ?>
     </div>
     <?php
 

@@ -9,7 +9,7 @@ View::header('Top 10 Donors');
 <div>
   <div class="header">
     <h2>Top Donors</h2>
-    <?php Top10::render_linkbox("donors"); ?>
+    <?php \Gazelle\Top10::render_linkbox("donors"); ?>
   </div>
   <?php
 

@@ -28,7 +28,7 @@ View::header('Top 10 Torrents history!');
 <div>
   <div class="header">
     <h2>Top 10 Torrents</h2>
-    <?php Top10::render_linkbox(); ?>
+    <?php \Gazelle\Top10::render_linkbox(); ?>
   </div>
   <div class="pad box">
     <form class="search_form" name="top10" method="get" action="">

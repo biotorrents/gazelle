@@ -15,10 +15,10 @@ if (!check_perms("site_top10")) {
 }
 
 $get = Http::request("get");
-$limit = intval($get["limit"] ?? Top10::$defaultLimit);
+$limit = intval($get["limit"] ?? \Gazelle\Top10::$defaultLimit);
 
-$torrentTags = Top10::torrentTags($limit);
-$requestTags = Top10::requestTags($limit);
+$torrentTags = \Gazelle\Top10::torrentTags($limit);
+$requestTags = \Gazelle\Top10::requestTags($limit);
 
 $app->twig->display("top10/tags.twig", [
   "title" => "Top tags",

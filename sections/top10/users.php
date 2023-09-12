@@ -15,16 +15,16 @@ if (!check_perms("site_top10")) {
 }
 
 $get = Http::request("get");
-$limit = intval($get["limit"] ?? Top10::$defaultLimit);
+$limit = intval($get["limit"] ?? \Gazelle\Top10::$defaultLimit);
 
 # data
-$dataUploaded = Top10::dataUploaded($limit);
-$dataDownloaded = Top10::dataDownloaded($limit);
+$dataUploaded = \Gazelle\Top10::dataUploaded($limit);
+$dataDownloaded = \Gazelle\Top10::dataDownloaded($limit);
 
-$uploadCount = Top10::uploadCount($limit);
+$uploadCount = \Gazelle\Top10::uploadCount($limit);
 
-#$uploadSpeed = Top10::uploadSpeed($limit);
-#$downloadSpeed = Top10::downloadSpeed($limit);
+#$uploadSpeed = \Gazelle\Top10::uploadSpeed($limit);
+#$downloadSpeed = \Gazelle\Top10::downloadSpeed($limit);
 
 # template
 $app->twig->display("top10/users.twig", [

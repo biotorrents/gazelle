@@ -11,6 +11,8 @@ declare(strict_types=1);
  * todo: test the user functions in production
  */
 
+namespace Gazelle;
+
 class Top10
 {
     # cache settings
@@ -584,6 +586,7 @@ class Top10
      */
     public function donors()
     {
+        throw new \Exception("not implemented");
     }
 
 
@@ -619,87 +622,4 @@ class Top10
             return $string;
         }
     }
-
-
-    /**
-     * render_artist_tile
-     */
-    public static function render_artist_tile($artist, $category)
-    {
-        if (self::is_valid_artist($artist)) {
-            switch ($category) {
-                case "weekly":
-                case "hyped":
-                    self::render_tile("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
-    /**
-     * render_tile
-     */
-    private static function render_tile($url, $name, $image)
-    {
-        if (!empty($image)) {
-            $name = \Gazelle\Text::esc($name); ?>
-<li>
-  <a
-    href="<?=$url?><?=$name?>">
-    <img class="tooltip large_tile" alt="<?=$name?>"
-      title="<?=$name?>"
-      src="<?=\Gazelle\Images::process($image)?>" />
-  </a>
-</li>
-<?php
-        }
-    }
-
-
-    /**
-     * render_artist_list
-     */
-    public static function render_artist_list($artist, $category)
-    {
-        if (self::is_valid_artist($artist)) {
-            switch ($category) {
-                case "weekly":
-                case "hyped":
-                    self::render_list("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
-    /**
-     * render_list
-     */
-    private static function render_list($url, $name, $image)
-    {
-        if (!empty($image)) {
-            $image = \Gazelle\Images::process($image);
-            $title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$image&quot; alt=&quot;&quot; /&gt;\"";
-            $name = \Gazelle\Text::esc($name); ?>
-
-<li>
-  <a class="tooltip_image" data-title-plain="<?=$name?>" <?=$title?> href="<?=$url?><?=$name?>"><?=$name?></a>
-</li>
-<?php
-        }
-    }
-
-
-    /**
-     * is_valid_artist
-     */
-    private static function is_valid_artist($artist)
-    {
-        return $artist["name"] !== "[unknown]";
-    }
-}
+} # class
