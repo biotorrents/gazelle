@@ -84,7 +84,7 @@
 
 	{# category #}
     <td class="center">
-	{{ item.categoryId }}
+	    {{ categories[item.categoryId] }}
       {# <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$CollageCats[(int)$CategoryID]?></a> #}
     </td>
 
@@ -100,7 +100,7 @@
       </span>
       <?php } ?>
 	  #}
-      <div class="tags">{{ item.tagList }}</div>
+      <div class="tooltip tagList" title="Tags">{{ item.tagList }}</div>
     </td>
 
 	{# torrent count #}

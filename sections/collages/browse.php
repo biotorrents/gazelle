@@ -83,6 +83,7 @@ $searchResults = $manticore->search("collections", $get);
 $resultCount = count($searchResults);
 #!d($searchResults);
 
+
 /** pagination */
 
 
@@ -152,6 +153,7 @@ $officialTags = array_column($ref, "name");
 
 
 /** twig template */
+
 
 $app->twig->display("collages/browse.twig", [
     "title" => "Browse collages",

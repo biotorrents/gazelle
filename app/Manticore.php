@@ -154,8 +154,7 @@ class Manticore
         $app->debug["time"]->startMeasure("manticore", "manticore search");
 
         # return cached if available
-        $data["what"] = $what;
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode($data));
+        $cacheKey = $this->cachePrefix . "{$what}:" . hash($app->env->cacheAlgorithm, json_encode($data));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
