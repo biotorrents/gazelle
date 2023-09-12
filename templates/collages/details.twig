@@ -4,9 +4,10 @@
 
 	<h2>
   {% if collage.isLocked %}
-  🔒 {# lazy: use css #}
+    <span class="locked">{{ collage.title }}</span>
+  {% else %}
+    {{ collage.title }}
   {% endif %}
-  {{ collage.title }}
   </h2>
 
   {# description #}
@@ -310,7 +311,7 @@ if ($CollageCovers != 0) { ?>
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
-              src="<?=staticServer?>common/noartwork.png"
+              src="<?=staticServer?>common/noartwork.webp"
               alt="<?=$Categories[$GroupCategoryID - 1]?>"
               class="brackets tooltip"
               title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>

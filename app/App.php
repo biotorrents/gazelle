@@ -253,14 +253,9 @@ class App
             "description" => $app->env->siteDescription,
             "icons" => [
                 [
-                    "src" => "/images/logos/liquidrop-bookish-1k.png",
-                    "sizes" => "1024x1024",
-                    "type" => "image/png",
-                ],
-                [
-                    "src" => "/images/logos/liquidrop-postmod-1k.png",
-                    "sizes" => "1024x1024",
-                    "type" => "image/png",
+                    "src" => "/images/logos/colorfulWaves-whiteShadow-2k.webp",
+                    "sizes" => "2048x2048",
+                    "type" => "image/webp",
                 ],
             ],
             /*

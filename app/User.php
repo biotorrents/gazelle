@@ -760,7 +760,7 @@ class User
         # disabled or missing: show default
         if (empty($uri)) {
             #if (!self::hasAvatarsEnabled() || empty($uri)) {
-            $uri = "/images/avatars/default.png";
+            $uri = "/images/avatars/default.webp";
 
             return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120'>";
         }

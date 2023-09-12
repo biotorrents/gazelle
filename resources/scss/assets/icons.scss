@@ -197,7 +197,7 @@ img.torrent_header {
     content: "";
     margin-right: 0.5rem;
 
-    background-image: url("/images/icons/version.png");
+    background-image: url("/images/icons/version.webp");
     background-size: 100% 100%;
     display: inline-block;
 
@@ -218,7 +218,7 @@ img.torrent_header {
     content: "";
     margin-right: 0.5rem;
 
-    background-image: url("/images/icons/archive.png");
+    background-image: url("/images/icons/archive.webp");
     background-size: 100% 100%;
     display: inline-block;
 
@@ -230,6 +230,18 @@ img.torrent_header {
 .license {
   &:before {
     content: "📜";
+    margin-right: 0.5rem;
+  }
+}
+
+
+/**
+ * collages
+ */
+
+.locked {
+  &:before {
+    content: "🔒";
     margin-right: 0.5rem;
   }
 }

@@ -36,7 +36,7 @@ direct donations are used exclusively for the site's operating costs.
 Please see [Patreon](https://www.patreon.com/biotorrents)
 for an overview of funding goals.
 
-[![Become a patron](/images/logos/patreon.png)](https://www.patreon.com/bePatron?u=27142321)
+[![Become a patron](/images/logos/patreon.webp)](https://www.patreon.com/bePatron?u=27142321)
 
 There are two donor tiers on Patreon, both with the same benefits:
 [unlimited API calls](https://docs.torrents.bio),

@@ -161,7 +161,7 @@ foreach ($GroupIDs as $GroupID) {
             $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
         }
 
-        $DisplayName .=' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
+        $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
 
         if ($Torrent['IsSnatched']) {
             $DisplayName .= ' ' . Format::torrent_label('Snatched', 'bold');
@@ -245,7 +245,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = staticServer.'/images/noartwork.png';
+        $picture = staticServer.'/images/noartwork.webp';
     } ?>
 
     <img class="tooltip"
@@ -282,7 +282,7 @@ View::header($Title, 'browse,collage');
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
         href="feeds.php?feed=torrents_bookmarks_t_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
-          src="<?=staticServer?>/images/symbols/rss.png"
+          src="<?=staticServer?>/images/icons/rss.webp"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>
     <div class="linkbox">

@@ -4,7 +4,7 @@
 	{% if user.siteOptions.coverArtTorrents %}
 		{% set uri = processImage(groupDetails.picture, "thumb") %}
 	{% else %}
-		{% set uri = processImage("#{env.staticServer}/images/noartwork.png", "thumb") %}
+		{% set uri = processImage("#{env.staticServer}/images/noartwork.webp", "thumb") %}
 	{% endif %}
 
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">

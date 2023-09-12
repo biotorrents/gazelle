@@ -234,7 +234,7 @@ This is based on Laravel Tinker and in fact uses the same REPL under the hood.
 
 # Gracie Gazelle
 
-![Gracie Gazelle](public/images/mascot.png)
+![Gracie Gazelle](public/images/mascot.webp)
 
 Gracie is a veteran pirate of the digital ocean.
 On land, predators form companies to hunt down prey.
@@ -247,6 +247,6 @@ She proudly puts the forbidden share symbols on her hat and belt, and is now one
 ## Tyson Tan
 
 Character design and bio by Tyson Tan, who offers mascot design services for free and open source software, free of charge, under a free license.
-[Download the high resolution version.](public/images/mascotFullVersion.png)
+[Download the high resolution version.](public/images/mascotFullVersion.webp)
 
 [tysontan.com](https://tysontan.com) / <tysontan@tysontan.com> / [@TysonTanX](https://twitter.com/tysontanx)

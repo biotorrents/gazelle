@@ -383,7 +383,7 @@ function getCover(event) {
   if ($("#coverCont img").length == 0) {
     coverCont.appendChild(document.createElement("img"));
   }
-  $("#coverCont img")[0].src = image ? image : "/public/images/noartwork.png";
+  $("#coverCont img")[0].src = image ? image : "/public/images/noartwork.webp";
   coverCont.style.display = "block";
   coverListener = (mevent) => {
     let wh = window.innerHeight,

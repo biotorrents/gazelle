@@ -321,7 +321,7 @@ View::header(
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
-              src="<?=staticServer?>/images/noartwork.png"
+              src="<?=staticServer?>/images/noartwork.webp"
               alt="<?=$Categories[$GroupCategoryID - 1]?>"
               class="brackets tooltip"
               title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
