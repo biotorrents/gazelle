@@ -84,8 +84,14 @@ class BonusPoints
 
     /** */
 
-    public $specificFreeleechCost = 5000;
     public $randomFreeleechCost = 2000;
+    public $specificFreeleechCost = 5000;
+    public $freeleechTokenCost = 10000;
+
+    public $inviteCost = 20000;
+    public $customTitleCost = 50000;
+    public $snowflakeProfileCost = 100000;
+
 
 
     /**
@@ -546,6 +552,34 @@ class BonusPoints
 
 
     /**
+     * randomFreeleech
+     *
+     * Purchase freeleech for a random torrent.
+     *
+     * @return int torrentId
+     */
+    public function randomFreeleech(): int
+    {
+        $app = \Gazelle\App::go();
+
+        # get a random torrent
+        $query = "select id from torrents where freeTorrent = ? and deleted_at is null order by rand() limit 1";
+        $torrentId = $app->dbNew->single($query, [0]);
+
+        # deduct the bonus points
+        $this->deductPoints($this->randomFreeleechCost);
+
+        # make the torrent freeleech
+        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+        $app->dbNew->do($query, [$torrentId]);
+        \Torrents::freeleech_torrents($torrentId, 1, 3);
+
+        # return the torrentId
+        return $torrentId;
+    }
+
+
+    /**
      * specificFreeleech
      *
      * Purchase freeleech for a specific torrent.
@@ -579,29 +613,95 @@ class BonusPoints
 
 
     /**
-     * randomFreeleech
+     * freeleechToken
      *
-     * Purchase freeleech for a random torrent.
+     * Purchase a freeleech token.
      *
-     * @return int torrentId
+     * @return void
      */
-    public function randomFreeleech(): int
+    public function freeleechToken(): void
     {
         $app = \Gazelle\App::go();
 
-        # get a random torrent
-        $query = "select id from torrents where freeTorrent = ? and deleted_at is null order by rand() limit 1";
-        $torrentId = $app->dbNew->single($query, [0]);
+        # deduct the bonus points
+        $this->deductPoints($this->freeleechTokenCost);
+
+        # award the token
+        $query = "update users_main set flTokens = flTokens + 1 where userId = ?";
+        $app->dbNew->do($query, [ $this->user->core["id"] ]);
+    }
+
+
+    /** user profile stuff */
+
+
+    /**
+     * invite
+     *
+     * Purchase an invite.
+     *
+     * @return void
+     */
+    public function invite(): void
+    {
+        $app = \Gazelle\App::go();
 
         # deduct the bonus points
-        $this->deductPoints($this->randomFreeleechCost);
+        $this->deductPoints($this->inviteCost);
 
-        # make the torrent freeleech
-        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
-        $app->dbNew->do($query, [$torrentId]);
-        \Torrents::freeleech_torrents($torrentId, 1, 3);
+        # award the invite
+        $query = "update users_main set invites = invites + 1 where userId = ?";
+        $app->dbNew->do($query, [ $this->user->core["id"] ]);
+    }
 
-        # return the torrentId
-        return $torrentId;
+    /**
+     * customTitle
+     *
+     * Purchase a custom title.
+     *
+     * @param string $title
+     * @return void
+     */
+    public function customTitle(string $title): void
+    {
+        $app = \Gazelle\App::go();
+
+        # check the title length
+        if (strlen($title) > 64) {
+            throw new \Exception("your chosen title is too long");
+        }
+
+        # deduct the bonus points
+        $this->deductPoints($this->customTitleCost);
+
+        # update the user's title
+        $query = "update users_main set title = ? where userId = ?";
+        $app->dbNew->do($query, [ $title, $this->user->core["id"] ]);
+    }
+
+
+    /**
+     * snowflakeProfile
+     *
+     * Add custom emoji snowflakes to your profile.
+     *
+     * @see https://pajasevi.github.io/CSSnowflakes/
+     */
+    public function snowflakeProfile(string $snowflake): void
+    {
+        $app = \Gazelle\App::go();
+
+        # make sure it's one emoji
+        $emoji = \Emoji\is_single_emoji($snowflake);
+        if (!$emoji) {
+            throw new \Exception("your chosen snowflake isn't a single emoji");
+        }
+
+        # deduct the bonus points
+        $this->deductPoints($this->snowflakeProfileCost);
+
+        # update the user's snowflake
+        $query = "replace into bonus_points (key, value) values (?, ?)";
+        $app->dbNew->do($query, ["snowflakeProfile:{$this->user->core["id"]}", $snowflake]);
     }
 } # class

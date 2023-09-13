@@ -57,6 +57,7 @@
     "nesbot/carbon": "^2.66",
     "openai-php/client": "^0.2.1",
     "orpheusnet/bencode-torrent": "^1.2",
+    "p3k/emoji-detector": "^1.0",
     "paragonie/anti-csrf": "^2.3",
     "phpmailer/phpmailer": "^6.8",
     "povils/figlet": "*",
