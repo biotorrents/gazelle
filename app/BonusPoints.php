@@ -82,6 +82,11 @@ class BonusPoints
     # auction badge id
     public $auctionBadgeId = 70;
 
+    /** */
+
+    public $specificFreeleechCost = 5000;
+    public $randomFreeleechCost = 2000;
+
 
     /**
      * __construct
@@ -201,13 +206,13 @@ class BonusPoints
         $app = \Gazelle\App::go();
 
         if ($amount > $this->bonusPoints) {
-            throw new \Exception("insufficient bonus points for the purchase");
+            throw new \Exception("insufficient bonus points for this purchase");
         }
 
         $this->bonusPoints -= $amount;
         $this->bonusPoints = max(0, $this->bonusPoints);
 
-        $query = "update users_info set bonusPoints = ? where userId = ?";
+        $query = "update users_main set bonusPoints = ? where userId = ?";
         $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
 
         return $this->bonusPoints;
@@ -222,12 +227,26 @@ class BonusPoints
      *
      * Convert bonus points to upload.
      *
-     * @param int amount
-     * @return int new upload
+     * @param int amount (points)
+     * @return int new upload (bytes)
      */
     public function pointsToUpload(int $amount): int
     {
         $app = \Gazelle\App::go();
+
+        # exchange rate penalty
+        $amount = $amount * (1 - $this->exchangeTax);
+
+        # deduct the bonus points
+        $this->deductPoints($amount);
+
+        # add the upload
+        $query = "update users_main set uploaded = uploaded + ? where userId = ?";
+        $app->dbNew->do($query, [ $amount, $this->user->core["id"] ]);
+
+        # return the new upload
+        $query = "select uploaded from users_main where userId = ?";
+        return $app->dbNew->single($query, [ $this->user->core["id"] ]);
     }
 
 
@@ -236,12 +255,32 @@ class BonusPoints
      *
      * Convert upload to bonus points.
      *
-     * @param int amount
+     * @param int amount (bytes)
      * @return int new bonus points
      */
     public function uploadToPoints(int $amount): int
     {
         $app = \Gazelle\App::go();
+
+        # can they afford it?
+        if ($amount > $this->user->extra["Uploaded"]) {
+            throw new \Exception("insufficient upload for this purchase");
+        }
+
+        # exchange rate penalty
+        $amount = $amount * (1 - $this->exchangeTax);
+
+        # subtract the upload
+        $query = "update users_main set uploaded = uploaded - ? where userId = ?";
+        $app->dbNew->do($query, [ $amount, $this->user->core["id"] ]);
+
+        # add the bonus points
+        $this->bonusPoints += $amount;
+        $query = "update users_main set bonusPoints = ? where userId = ?";
+        $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
+
+        # return the new bonus points
+        return $this->bonusPoints;
     }
 
 
@@ -279,11 +318,8 @@ class BonusPoints
 
         # can they afford the current badge?
         $currentCost = $this->sequentialBadges[$currentBadge];
-        if ($this->bonusPoints < $currentCost) {
-            throw new \Exception("insufficient bonus points for the purchase");
-        }
 
-        # deduct bonus points and award the badge
+        # deduct the bonus points and award the badge
         $this->deductPoints($currentCost);
         \Badges::awardBadge($this->user->core["id"], $this->sequentialBadges[$currentBadge]);
     }
@@ -341,8 +377,8 @@ class BonusPoints
         /** */
 
         # constants
-        $factorial20 = 2432902008176640000;
-        $factorial80 = 7.1569457e+118;
+        $factorial20 = 2.432902e+18;
+        $factorial80 = 7.156946e+118;
 
 
         ##
@@ -444,7 +480,7 @@ class BonusPoints
             throw new \Exception("you already own the badge {$icon}, please play again");
         }
 
-        # deduct bonus points and award the badge
+        # deduct the bonus points and award the badge
         $this->deductPoints($bet);
         \Badges::awardBadge($this->user->core["id"], $badgeId);
     }
@@ -484,7 +520,7 @@ class BonusPoints
             throw new \Exception("insufficient payment amount; the minimum payment is " . $currentCost + $this->coinBadgePremium);
         }
 
-        # deduct bonus points and award the badge
+        # deduct the bonus points and award the badge
         $this->deductPoints($payment);
         \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
 
@@ -503,5 +539,69 @@ class BonusPoints
     public function auctionBadge(): bool
     {
         $app = \Gazelle\App::go();
+    }
+
+
+    /** torrent and freeleech purchases */
+
+
+    /**
+     * specificFreeleech
+     *
+     * Purchase freeleech for a specific torrent.
+     *
+     * @param int|string $identifier
+     * @return int torrentId
+     */
+    public function specificFreeleech(int|string $identifier): int
+    {
+        $app = \Gazelle\App::go();
+
+        $column = $app->dbNew->determineIdentifier($identifier);
+        $query = "select id from torrents where {$column} = ? and deleted_at is null";
+        $torrentId = $app->dbNew->single($query, [$identifier]);
+
+        if (!$torrentId) {
+            throw new \Exception("torrent not found");
+        }
+
+        # deduct the bonus points
+        $this->deductPoints($this->specificFreeleechCost);
+
+        # make the torrent freeleech
+        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+        $app->dbNew->do($query, [$torrentId]);
+        \Torrents::freeleech_torrents($torrentId, 1, 3);
+
+        # return the torrentId
+        return $torrentId;
+    }
+
+
+    /**
+     * randomFreeleech
+     *
+     * Purchase freeleech for a random torrent.
+     *
+     * @return int torrentId
+     */
+    public function randomFreeleech(): int
+    {
+        $app = \Gazelle\App::go();
+
+        # get a random torrent
+        $query = "select id from torrents where freeTorrent = ? and deleted_at is null order by rand() limit 1";
+        $torrentId = $app->dbNew->single($query, [0]);
+
+        # deduct the bonus points
+        $this->deductPoints($this->randomFreeleechCost);
+
+        # make the torrent freeleech
+        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+        $app->dbNew->do($query, [$torrentId]);
+        \Torrents::freeleech_torrents($torrentId, 1, 3);
+
+        # return the torrentId
+        return $torrentId;
     }
 } # class
