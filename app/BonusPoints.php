@@ -44,6 +44,44 @@ class BonusPoints
     # how much does it cost to vote on a request? (new feature)
     public $requestTax = 0.1; # 10%
 
+    /** */
+
+    # sequential badges [id => bonus point cost]
+    public $sequentialBadges = [
+        40 => 1000,
+        41 => 2000,
+        42 => 5000,
+        43 => 10000,
+        44 => 20000,
+        45 => 50000,
+        46 => 100000,
+        47 => 200000,
+        48 => 500000,
+        49 => 1000000,
+    ];
+
+    # lottery badges [id => chance to win]
+    public $lotteryBadges = [
+        50 => 1.0, # always the first badge won
+        51 => 0.9, # then increasingly rare
+        52 => 0.8,
+        53 => 0.7,
+        54 => 0.6,
+        55 => 0.5,
+        56 => 0.4,
+        57 => 0.3,
+        58 => 0.2,
+        59 => 0.1,
+    ];
+
+    # coin badge stuff
+    public $coinBadgeId = 60;
+    public $coinBadgeCost = 10000; # starting cost
+    public $coinBadgePremium = 1000; # minimum step
+
+    # auction badge id
+    public $auctionBadgeId = 70;
+
 
     /**
      * __construct
@@ -132,6 +170,32 @@ class BonusPoints
     }
 
 
+    /**
+     * deductPoints
+     *
+     * Deduct bonus points from the user's account.
+     *
+     * @param int $amount
+     * @return int new balance
+     */
+    private function deductPoints(int $amount): int
+    {
+        $app = \Gazelle\App::go();
+
+        if ($amount > $this->bonusPoints) {
+            throw new \Exception("insufficient bonus points");
+        }
+
+        $this->bonusPoints -= $amount;
+        $this->bonusPoints = max(0, $this->bonusPoints);
+
+        $query = "update users_info set bonusPoints = ? where userId = ?";
+        $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
+
+        return $this->bonusPoints;
+    }
+
+
     /** bonus points and upload conversion */
 
 
@@ -140,11 +204,12 @@ class BonusPoints
      *
      * Convert bonus points to upload.
      *
-     * @param $factor float
-     * @return float new upload
+     * @param int amount
+     * @return int new upload
      */
-    public function pointsToUpload(float $factor = 1.0): float
+    public function pointsToUpload(int $amount): int
     {
+        $app = \Gazelle\App::go();
     }
 
 
@@ -153,11 +218,12 @@ class BonusPoints
      *
      * Convert upload to bonus points.
      *
-     * @param $factor float
-     * @return float new bonus points
+     * @param int amount
+     * @return int new bonus points
      */
-    public function uploadToPoints(float $factor = 1.0): float
+    public function uploadToPoints(int $amount): int
     {
+        $app = \Gazelle\App::go();
     }
 
 
@@ -169,9 +235,12 @@ class BonusPoints
      *
      * Purchase badges, one after the other.
      * Owning the previous badge is a prerequisite.
+     *
+     * @return bool
      */
     public function sequentialBadge(): bool
     {
+        $app = \Gazelle\App::go();
     }
 
 
@@ -180,20 +249,58 @@ class BonusPoints
      *
      * Purchase a badge in a keno lottery.
      * Bet bonus points to increase your chances.
+     *
+     * @param int $bet amount of bonus points to bet
+     * @param $votes array of votes (integers)
+     * @return bool
      */
-    public function lotteryBadge(): bool
+    public function lotteryBadge(int $bet, array $votes = []): bool
     {
+        $app = \Gazelle\App::go();
+
+        if (empty($bet) || empty($votes)) {
+            throw new \Exception("invalid bet or votes");
+        }
+
+        if ($bet > $this->bonusPoints) {
+            throw new \Exception("insufficient bonus points");
+        }
     }
 
 
     /**
-     * bitcoinBadge
+     * coinBadge
      *
      * Purchase a badge as in a pyramid scheme.
      * The cost increases with each purchase.
+     *
+     * @param int $payment
+     * @return bool
      */
-    public function bitcoinBadge(): bool
+    public function coinBadge(int $payment): bool
     {
+        $app = \Gazelle\App::go();
+
+        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->coinBadgeId);
+        if ($hasBadge) {
+            throw new \Exception("you already have this badge");
+        }
+
+        # how much does it cost?
+        $query = "select value from bonus_points where key = ?";
+        $currentCost = $app->dbNew->single($query, ["coinBadge"]);
+
+        if (!$currentCost) {
+            # revert to the default cost
+            $currentCost = $this->coinBadgeCost;
+            $query = "insert into bonus_points (key, value) values (?, ?)";
+            $app->dbNew->do($query, ["coinBadge", $currentCost]);
+        }
+
+        # did they pay enough bonus points?
+        if ($payment < ($currentCost + $this->coinBadgePremium)) {
+            throw new \Exception("insufficient payment");
+        }
     }
 
 
@@ -205,6 +312,7 @@ class BonusPoints
      */
     public function auctionBadge(): bool
     {
+        $app = \Gazelle\App::go();
     }
 
 } # class
