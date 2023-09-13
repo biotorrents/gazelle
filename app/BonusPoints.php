@@ -62,16 +62,16 @@ class BonusPoints
 
     # lottery badges [id => chance to win]
     public $lotteryBadges = [
-        50 => 1.0, # always the first badge won
-        51 => 0.9, # then increasingly rare
-        52 => 0.8,
-        53 => 0.7,
-        54 => 0.6,
-        55 => 0.5,
-        56 => 0.4,
-        57 => 0.3,
-        58 => 0.2,
-        59 => 0.1,
+        50 => 0.1,
+        51 => 0.01,
+        52 => 0.001,
+        53 => 0.0001,
+        54 => 0.00001,
+        55 => 0.000001,
+        56 => 0.0000001,
+        57 => 0.00000001,
+        58 => 0.000000001,
+        59 => 0.0000000001,
     ];
 
     # coin badge stuff
@@ -101,7 +101,7 @@ class BonusPoints
             $this->user = $app->user->readProfile($userId);
         }
 
-        if (!$this->user) {
+        if (!$this->user || empty($this->user->core)) {
             throw new \Exception("user not found");
         }
 
@@ -117,6 +117,25 @@ class BonusPoints
      * calculatePointsRate
      *
      * Holds the "monster bonus points calculation."
+     *
+     * $getTorrents = $DB->query("
+     *   SELECT um.BonusPoints,
+     *     COUNT(DISTINCT x.fid) AS Torrents,
+     *     SUM(t.Size) AS Size,
+     *     SUM(xs.seedtime) AS Seedtime,
+     *     SUM(t.Seeders) AS Seeders
+     *   FROM users_main AS um
+     *     LEFT JOIN users_info AS i on um.ID = i.UserID
+     *     LEFT JOIN xbt_files_users AS x ON um.ID=x.uid
+     *     LEFT JOIN torrents AS t ON t.ID=x.fid
+     *     LEFT JOIN xbt_snatched AS xs ON x.uid=xs.uid AND x.fid=xs.fid
+     *   WHERE
+     *     um.ID = ?
+     *     AND um.Enabled = '1'
+     *     AND x.active = 1
+     *     AND x.completed = 0
+     *     AND x.Remaining = 0
+     *   GROUP BY um.ID", $UserID);
      *
      * @see https://github.com/biotorrents/oppaiMirror/blob/main/sections/store/store.php
      */
@@ -146,8 +165,8 @@ class BonusPoints
                 sum(torrents.seeders) as seederCount
             from users_main
                 left join users_info on users_info.userId = users_main.userId
-                left join torrents on torrents.id = xbt_files_users.fid
                 left join xbt_files_users on xbt_files_users.uid = users_main.userId
+                left join torrents on torrents.id = xbt_files_users.fid
                 left join xbt_snatched on xbt_snatched.uid = xbt_files_users.uid and xbt_snatched.fid = xbt_files_users.fid
             where
                 users_main.userId = ?
@@ -158,12 +177,11 @@ class BonusPoints
         ";
         $row = $app->dbNew->row($query, [ $this->user->core["id"] ]);
 
-        if (!$row) {
-            throw new \Exception("seed data not found");
+        $pointsRate = 0.0;
+        if ($row) {
+            # unchanged from the original oppaitime codebase
+            $pointsRate = (0.5 + (0.55 * ($row["torrentCount"] * (sqrt(($row["dataSize"] / $row["torrentCount"]) / 1073741824) * pow(1.5, ($row["seedTime"] / $row["torrentCount"]) / (24 * 365))))) / (max(1, sqrt(($row["seederCount"] / $row["torrentCount"]) + 4) / 3))) ** 0.95;
         }
-
-        # unchanged from the original oppaitime codebase
-        $pointsRate = (0.5 + (0.55 * ($row["torrentCount"] * (sqrt(($row["dataSize"] / $row["torrentCount"]) / 1073741824) * pow(1.5, ($row["seedTime"] / $row["torrentCount"]) / (24 * 365))))) / (max(1, sqrt(($row["seederCount"] / $row["torrentCount"]) + 4) / 3))) ** 0.95;
 
         $app->cache->set($cacheKey, $pointsRate, $this->cacheDuration);
         return $pointsRate;
@@ -183,7 +201,7 @@ class BonusPoints
         $app = \Gazelle\App::go();
 
         if ($amount > $this->bonusPoints) {
-            throw new \Exception("insufficient bonus points");
+            throw new \Exception("insufficient bonus points for the purchase");
         }
 
         $this->bonusPoints -= $amount;
@@ -236,11 +254,38 @@ class BonusPoints
      * Purchase badges, one after the other.
      * Owning the previous badge is a prerequisite.
      *
-     * @return bool
+     * @return void
      */
-    public function sequentialBadge(): bool
+    public function sequentialBadge(): void
     {
         $app = \Gazelle\App::go();
+
+        # what badge, if any, do they currently own?
+        $currentBadge = array_key_first($this->sequentialBadges);
+        $reversedBadges = array_reverse($this->sequentialBadges);
+
+        foreach ($reversedBadges as $id => $cost) {
+            $hasBadge = \Badges::hasBadge($this->user->core["id"], $id);
+            if ($hasBadge) {
+                $currentBadge = $id;
+                break;
+            }
+        }
+
+        # did they already buy all the badges?
+        if ($currentBadge === array_key_last($this->sequentialBadges)) {
+            throw new \Exception("you already have all the badges");
+        }
+
+        # can they afford the current badge?
+        $currentCost = $this->sequentialBadges[$currentBadge];
+        if ($this->bonusPoints < $currentCost) {
+            throw new \Exception("insufficient bonus points for the purchase");
+        }
+
+        # deduct bonus points and award the badge
+        $this->deductPoints($currentCost);
+        \Badges::awardBadge($this->user->core["id"], $this->sequentialBadges[$currentBadge]);
     }
 
 
@@ -251,20 +296,157 @@ class BonusPoints
      * Bet bonus points to increase your chances.
      *
      * @param int $bet amount of bonus points to bet
-     * @param $votes array of votes (integers)
-     * @return bool
+     * @param string $votes array of votes (integers)
+     * @return void
+     *
+     * @see https://en.wikipedia.org/wiki/Keno
      */
-    public function lotteryBadge(int $bet, array $votes = []): bool
+    public function lotteryBadge(int $bet, string $votes): void
     {
         $app = \Gazelle\App::go();
 
         if (empty($bet) || empty($votes)) {
-            throw new \Exception("invalid bet or votes");
+            throw new \Exception("your bet and votes can't be empty");
         }
 
         if ($bet > $this->bonusPoints) {
-            throw new \Exception("insufficient bonus points");
+            throw new \Exception("you're betting more than you have");
         }
+
+        # replace all whitespace and newlines with a single space
+        $votes = preg_replace("/\s+/", " ", $votes);
+
+        # explode the votes into an array
+        $votes = explode(" ", $votes);
+
+        # remove any non-numeric and invalid values
+        $votes = array_filter($votes, function ($vote) {
+            return is_numeric($vote) && $vote >= 1 && $vote <= 80;
+        });
+
+        # take only the first 20 votes
+        $votes = array_unique($votes);
+        $votes = array_slice($votes, 0, 20);
+
+        # pick 20 random numbers from 1 to 80
+        $randomNumbers = [];
+        foreach (range(1, 20) as $i) {
+            $randomNumbers[] = random_int(1, 80);
+        }
+
+        # how many votes did they get right?
+        $correctVotes = array_intersect($votes, $randomNumbers);
+        $correctVotes = count($correctVotes);
+
+        /** */
+
+        # constants
+        $factorial20 = 2432902008176640000;
+        $factorial80 = 7.1569457e+118;
+
+
+        ##
+        # calculate ( n | r )
+        # https://www.calculatorsoup.com/calculators/discretemathematics/combinations.php
+        #
+
+        $factorialHits = 1;
+        foreach (range(1, $correctVotes) as $i) {
+            $factorialHits *= $i;
+        }
+
+        $divisor = ($factorialHits * $factorial20 - $factorialHits);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr1
+        $nCr1 = $factorial20 / $divisor;
+
+
+        ##
+        # calculate ( 80 - r | 20 - n )
+        #
+
+        $factorial80MinusR = 1;
+        foreach (range(1, 80 - $correctVotes) as $i) {
+            $factorial80MinusR *= $i;
+        }
+
+        $factorial20MinusN = 1;
+        foreach (range(1, 20 - $correctVotes) as $i) {
+            $factorial20MinusN *= $i;
+        }
+
+        $divisor = ($factorial20MinusN * $factorial80MinusR - $factorial20MinusN);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr2
+        $nCr2 = $factorial80MinusR / $divisor;
+
+
+        ##
+        # calculate ( 80 | 20 )
+        #
+
+        $divisor = ($factorial20 * $factorial80 - $factorial20);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr3
+        $nCr3 = $factorial80 / $divisor;
+
+
+        ##
+        # calculate the probability of hitting exactly r spots on an n-spot ticket
+        # https://en.wikipedia.org/wiki/Hypergeometric_distribution#Application_to_Keno
+        #
+
+        $probability = $nCr1 * $nCr2 / $nCr3;
+
+        # find the badge array value closest to the weighted probability
+        $weightedProbability = $probability / $bet;
+
+        $closest = null;
+        foreach ($this->lotteryBadges as $id => $chance) {
+            if ($closest === null || abs($chance - $weightedProbability) < abs($closest - $weightedProbability)) {
+                $closest = $chance;
+            }
+        }
+
+        /*
+        return [
+            "bet" => $bet,
+            "correctVotes" => $correctVotes,
+            "probability" => $probability,
+            "weightedProbability" => $weightedProbability,
+            "closest" => $closest
+        ];
+        */
+
+        /** */
+
+        # get the badgeId for the closest weighted probability
+        $badgeId = array_search($closest, $this->lotteryBadges);
+
+        # do they already have the badge?
+        $hasBadge = \Badges::hasBadge($this->user->core["id"], $badgeId);
+        if ($hasBadge) {
+            $query = "select icon from badges where id = ?";
+            $icon = $app->dbNew->single($query, [$badgeId]);
+
+            # gambling is bad
+            $this->deductPoints($bet);
+
+            throw new \Exception("you already own the badge {$icon}, please play again");
+        }
+
+        # deduct bonus points and award the badge
+        $this->deductPoints($bet);
+        \Badges::awardBadge($this->user->core["id"], $badgeId);
     }
 
 
@@ -275,15 +457,15 @@ class BonusPoints
      * The cost increases with each purchase.
      *
      * @param int $payment
-     * @return bool
+     * @return void
      */
-    public function coinBadge(int $payment): bool
+    public function coinBadge(int $payment): void
     {
         $app = \Gazelle\App::go();
 
         $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->coinBadgeId);
         if ($hasBadge) {
-            throw new \Exception("you already have this badge");
+            throw new \Exception("you already own this badge");
         }
 
         # how much does it cost?
@@ -291,16 +473,24 @@ class BonusPoints
         $currentCost = $app->dbNew->single($query, ["coinBadge"]);
 
         if (!$currentCost) {
-            # revert to the default cost
+            # use the default cost
             $currentCost = $this->coinBadgeCost;
             $query = "insert into bonus_points (key, value) values (?, ?)";
             $app->dbNew->do($query, ["coinBadge", $currentCost]);
         }
 
         # did they pay enough bonus points?
-        if ($payment < ($currentCost + $this->coinBadgePremium)) {
-            throw new \Exception("insufficient payment");
+        if ($payment < $currentCost + $this->coinBadgePremium) {
+            throw new \Exception("insufficient payment amount; the minimum payment is " . $currentCost + $this->coinBadgePremium);
         }
+
+        # deduct bonus points and award the badge
+        $this->deductPoints($payment);
+        \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
+
+        # update the cost
+        $query = "update bonus_points set value = ? where key = ?";
+        $app->dbNew->do($query, [$payment, "coinBadge"]);
     }
 
 
@@ -314,5 +504,4 @@ class BonusPoints
     {
         $app = \Gazelle\App::go();
     }
-
 } # class
