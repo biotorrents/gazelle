@@ -274,9 +274,17 @@ class Twig # extends Twig\Environment
         }));
 
         # Badges::displayBadge
-        $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId) {
+        $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId, $tooltip = true) {
             return new Twig\Markup(
-                Badges::displayBadge($badgeId),
+                Badges::displayBadge($badgeId, $tooltip),
+                "UTF-8"
+            );
+        }));
+
+        # Badges::badgeDescription
+        $twig->addFunction(new Twig\TwigFunction("badgeDescription", function ($badgeId) {
+            return new Twig\Markup(
+                Badges::badgeDescription($badgeId),
                 "UTF-8"
             );
         }));

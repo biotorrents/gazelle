@@ -106,16 +106,48 @@ class Badges
      * Creates HTML for displaying a badge.
      *
      * @param int $badgeId
+     * @param bool $tooltip
      * @return ?string html
      */
-    public static function displayBadge(int $badgeId): ?string
+    public static function displayBadge(int $badgeId, bool $tooltip = true): ?string
     {
         $app = \Gazelle\App::go();
 
         $query = "select * from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
 
-        return "<span class='badge tooltip' title='{$row["name"]}: {$row["description"]}'>{$row["icon"]}</span>";
+        if (!$row) {
+            return null;
+        }
+
+        if ($tooltip) {
+            return "<span class='badge tooltip' title='{$row["name"]}: {$row["description"]}'>{$row["icon"]}</span>";
+        } else {
+            return "<span class='badge'>{$row["icon"]}</span>";
+        }
+    }
+
+
+    /**
+     * badgeDescription
+     *
+     * Get a badge's description.
+     *
+     * @param int $badgeId
+     * @return ?string
+     */
+    public static function badgeDescription(int $badgeId): ?string
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select name, description from badges where id = ?";
+        $row = $app->dbNew->row($query, [$badgeId]);
+
+        if (!$row) {
+            return null;
+        }
+
+        return "{$row["name"]}: {$row["description"]}";
     }
 
 

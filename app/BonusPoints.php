@@ -90,7 +90,11 @@ class BonusPoints
 
     public $inviteCost = 20000;
     public $customTitleCost = 50000;
-    public $snowflakeProfileCost = 100000;
+
+    public $snowflakeCreateCost = 100000;
+    public $snowflakeUpdateCost = 10000;
+
+    public $personalCollageCost = 10000;
 
 
 
@@ -121,6 +125,13 @@ class BonusPoints
         # bonus points data
         $this->bonusPoints = $this->user->extra["BonusPoints"] ?? 0;
         $this->pointsRate = $this->calculatePointsRate() ?? 0.0;
+
+        $this->pointsOverTime = [
+            "hourly" => $this->pointsRate,
+            "daily" => $this->pointsRate * 24,
+            "weekly" => $this->pointsRate * 24 * 7,
+            "monthly" => $this->pointsRate * 24 * 30,
+        ];
     }
 
 
@@ -192,6 +203,7 @@ class BonusPoints
         if ($row) {
             # unchanged from the original oppaitime codebase
             $pointsRate = (0.5 + (0.55 * ($row["torrentCount"] * (sqrt(($row["dataSize"] / $row["torrentCount"]) / 1073741824) * pow(1.5, ($row["seedTime"] / $row["torrentCount"]) / (24 * 365))))) / (max(1, sqrt(($row["seederCount"] / $row["torrentCount"]) + 4) / 3))) ** 0.95;
+            $pointsRate = intval(max(min($pointsRate, ($pointsRate * 2) - ($row["bonusPoints"] / 1440)), 0));
         }
 
         $app->cache->set($cacheKey, $pointsRate, $this->cacheDuration);
@@ -685,9 +697,12 @@ class BonusPoints
      *
      * Add custom emoji snowflakes to your profile.
      *
+     * @param string $snowflake the emoji to use
+     * @param bool $isUpdate whether to update or replace the snowflake
+     *
      * @see https://pajasevi.github.io/CSSnowflakes/
      */
-    public function snowflakeProfile(string $snowflake): void
+    public function snowflakeProfile(string $snowflake, bool $isUpdate): void
     {
         $app = \Gazelle\App::go();
 
@@ -698,10 +713,27 @@ class BonusPoints
         }
 
         # deduct the bonus points
-        $this->deductPoints($this->snowflakeProfileCost);
+        if (!$isUpdate) {
+            $this->deductPoints($this->snowflakeCreateCost);
+        } else {
+            $this->deductPoints($this->snowflakeUpdateCost);
+        }
 
         # update the user's snowflake
-        $query = "replace into bonus_points (key, value) values (?, ?)";
+        $query = "replace into bonus_points (`key`, value) values (?, ?)";
         $app->dbNew->do($query, ["snowflakeProfile:{$this->user->core["id"]}", $snowflake]);
+    }
+
+
+    /**
+     * personalCollage
+     *
+     * Purchase an extra personal collage.
+     *
+     * @return void
+     */
+    public function personalCollage(): void
+    {
+        $app = \Gazelle\App::go();
     }
 } # class

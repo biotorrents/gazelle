@@ -1,0 +1,71 @@
+{# information #}
+<section>
+<h3>Information</h3>
+
+<table>
+    <tr>
+        <th>Available balance</th>
+        <td>{{ bonusPoints.bonusPoints|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Accrual per hour</th>
+        <td>{{ bonusPoints.pointsOverTime.hourly|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per day</th>
+        <td>{{ bonusPoints.pointsOverTime.daily|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per week</th>
+        <td>{{ bonusPoints.pointsOverTime.weekly|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per month</th>
+        <td>{{ bonusPoints.pointsOverTime.monthly|number_format }}</td>
+    </tr>
+</table>
+
+</section>
+
+{# exchange currency #}
+<section>
+<h3>Exchange currency</h3>
+
+<p>
+    All currency exchanges incur a {{ bonusPoints.exchangeTax * 100 }}% tax.
+</p>
+
+<form method="post">
+    <input type="hidden" name="exchangeCurrency" value="pointsToUpload">
+
+    <input type ="number" name="amount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
+
+    <button type="submit" class="button">{{ env.bonusPoints }} → upload</button>
+</form>
+
+    <hr>
+    <br>
+
+<form method="post">
+    <input type="hidden" name="exchangeCurrency" value="uploadToPoints">
+
+    <input type ="number" name="amount" placeholder="How much upload to exchange" required>
+
+    <select name="dataUnit" class="select">
+        <option value="MiB">MiB</option>
+        <option value="GiB">GiB</option>
+        <option value="TiB">TiB</option>
+    </select>
+
+    <button type="submit" class="button">upload → {{ env.bonusPoints }}</button>
+</form>
+
+    <hr>
+
+    <a href="/store" class="button button-orange">back to index</a>
+</form>
+</section>

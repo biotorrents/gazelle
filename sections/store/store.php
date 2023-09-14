@@ -1,7 +1,36 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * bonus points store
+ */
 
 $app = \Gazelle\App::go();
+
+$bonusPoints = new \Gazelle\BonusPoints();
+#!d($bonusPoints);exit;
+
+# did they buy a snowflake effect?
+$databaseKey = "snowflakeProfile:{$app->user->core["id"]}";
+$query = "select 1 from bonus_points where `key` = ?";
+$hasSnowflake = $app->dbNew->single($query, [$databaseKey]);
+
+$snowflakeUpdate = false;
+if ($hasSnowflake) {
+    $snowflakeUpdate = true;
+}
+
+# twig template
+$app->twig->display("bonusPoints/store.twig", [
+    "title" => "Store",
+    "sidebar" => true,
+    "bonusPoints" => $bonusPoints,
+    "snowflakeUpdate" => $snowflakeUpdate,
+]);
+
+exit;
 
 $UserID = $app->user->core['id'];
 $PermID = $app->user->extra['PermissionID'];
@@ -33,13 +62,13 @@ if (!$app->user->extra['DisablePoints']) {
     if ($app->dbOld->has_results()) {
         list($BonusPoints, $NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
-        $PointsRate = ($app->env->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
+        $PointsRate = ($app->env->bonusPointsCoefficient + (0.55 * ($NumTorr * (sqrt(($TSize / $NumTorr) / 1073741824) * pow(1.5, ($TTime / $NumTorr) / (24 * 365))))) / (max(1, sqrt(($TSeeds / $NumTorr) + 4) / 3))) ** 0.95;
     }
 
     $BonusPoints ??= 0;
-    $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
+    $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints / 1440)), 0));
     $PointsPerHour = \Gazelle\Text::float($PointsRate) . " ".$app->env->bonusPoints."/hour";
-    $PointsPerDay = \Gazelle\Text::float($PointsRate*24) . " ".$app->env->bonusPoints."/day";
+    $PointsPerDay = \Gazelle\Text::float($PointsRate * 24) . " ".$app->env->bonusPoints."/day";
 } else {
     $PointsPerHour = "0 ".$app->env->bonusPoints."/hour";
     $PointsPerDay = $app->env->bonusPoints." disabled";
@@ -284,7 +313,7 @@ if ($app->dbOld->has_results()) {
     foreach ($Badges as $ID => $Badge) { ?>
       <tr class="row">
         <?php
-        if (($ID === 0 || Badges::hasBadge($app->user->core['id'], $Badges[$ID-1]['BadgeID']))
+        if (($ID === 0 || Badges::hasBadge($app->user->core['id'], $Badges[$ID - 1]['BadgeID']))
         && !Badges::hasBadge($app->user->core['id'], $Badge['BadgeID'])) {
             $BadgeText = '<a href="store.php?item=badge&badge='.$Badge['BadgeID'].'">'.$Badge['Name'].'</a>';
         } else {

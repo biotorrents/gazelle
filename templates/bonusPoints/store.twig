@@ -1,0 +1,160 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+<h2>{{ env.bonusPoints }} web store</h2>
+
+<p>
+    Please find below a list of things you can buy with your {{ env.bonusPoints }}.
+</p>
+</section>
+
+{# torrents #}
+<section>
+<h3>Torrents</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Random freeleech</td>
+            <td>{{ bonusPoints.randomFreeleechCost|number_format }}</td>
+            <td>Make a random torrent freeleech for one day</td>
+        </tr>
+
+        <tr>
+            <td>Specific freeleech</td>
+            <td>{{ bonusPoints.specificFreeleechCost|number_format }}</td>
+            <td>Make a torrent of your choice freeleech for one day</td>
+        </tr>
+
+        <tr>
+            <td>Freeleech token</td>
+            <td>{{ bonusPoints.freeleechTokenCost|number_format }}</td>
+            <td>Purchase a freeleech token that you can use at leisure</td>
+        </tr>
+    </tbody>
+</table>
+</section>
+
+{# user profile #}
+<section>
+<h3>User profile</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>Invite</td>
+            <td>{{ bonusPoints.inviteCost|number_format }}</td>
+            <td>Purchase an invite for a friend or fun enemy</td>
+        </tr>
+
+        <tr>
+            <td>Custom title</td>
+            <td>{{ bonusPoints.customTitleCost|number_format }}</td>
+            <td>Purchase a cusom title that's displayed with your username</td>
+        </tr>
+
+        {% if not snowflakeUpdate %}
+        <tr>
+            <td>Profile snowflake effect</td>
+            <td>{{ bonusPoints.snowflakeCreateCost|number_format }}</td>
+            <td>Add a snowflake effect to your profile with an emoji of your choice</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td>Profile snowflake effect</td>
+            <td>{{ bonusPoints.snowflakeUpdateCost|number_format }}</td>
+            <td>Update zour profileäs snowflake emoji, or delete it gratis</td>
+        </tr>
+        {% endif %}
+
+    </tbody>
+</table>
+</section>
+
+{# badges #}
+<section>
+<h3>Badges</h3>
+
+{# sequential badges #}
+<p>
+    These badges must be purchased sequentially.
+    To buy the next one, you first need all the prior ones.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for key, value in bonusPoints.sequentialBadges %}
+        <tr>
+            <td>{{ displayBadge(key, false) }}</td>
+            <td>{{ value|number_format }}</td>
+            <td>{{ badgeDescription(key) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</section>
+
+{# lottery badges #}
+<p>
+    <a href="https://en.wikipedia.org/wiki/Keno" class="external">Play a game of keno</a> for the chance to win a badge.
+    The rules are simple: pick up to 20 numbers between 1 and 80, and bet {{ env.bonusPoints }} to increase your odds.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Odds</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for key, value in bonusPoints.lotteryBadges %}
+        <tr>
+            <td>{{ displayBadge(key, false) }}</td>
+            <td>{{ value }}</td>
+            <td>{{ badgeDescription(key) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</section>
+
+
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("bonusPoints/sidebar.twig") }}
+
+{% endblock %}
