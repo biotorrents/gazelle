@@ -11,6 +11,7 @@
 </p>
 </section>
 
+
 {# torrents #}
 <section>
 <h3>Torrents</h3>
@@ -26,25 +27,77 @@
 
     <tbody>
         <tr>
-            <td>Random freeleech</td>
+            <td><a href="/store/checkout?item=randomFreeleech">Random freeleech</a></td>
             <td>{{ bonusPoints.randomFreeleechCost|number_format }}</td>
             <td>Make a random torrent freeleech for one day</td>
         </tr>
 
         <tr>
-            <td>Specific freeleech</td>
+            <td><a href="/store/checkout?item=specificFreeleech">Specific freeleech</a></td>
             <td>{{ bonusPoints.specificFreeleechCost|number_format }}</td>
             <td>Make a torrent of your choice freeleech for one day</td>
         </tr>
 
         <tr>
-            <td>Freeleech token</td>
+            <td><a href="/store/checkout?item=freeleechToken">Freeleech token</a></td>
             <td>{{ bonusPoints.freeleechTokenCost|number_format }}</td>
             <td>Purchase a freeleech token that you can use at leisure</td>
+        </tr>
+
+        <tr>
+            <td><a href="/store/checkout?item=neutralLeechTag">Neutral leech a tag</a></td>
+            <td>{{ bonusPoints.neutralLeechTagCost|number_format }}</td>
+            <td>Make all torrents with a certain tag neutral leech for one day</td>
+        </tr>
+
+        <tr>
+            <td><a href="/store/checkout?item=freeleechTag">Freeleech a tag</a></td>
+            <td>{{ bonusPoints.freeleechTagCost|number_format }}</td>
+            <td>Make all torrents with a certain tag freeleech for one day</td>
+        </tr>
+
+        <tr>
+            <td><a href="/store/checkout?item=neutralLeechCategory">Neutral leech a category</a></td>
+            <td>{{ bonusPoints.neutralLeechCategoryCost|number_format }}</td>
+            <td>Make all torrents in a certain category neutral leech for one day</td>
+        </tr>
+
+        <tr>
+            <td><a href="/store/checkout?item=freeleechCategory">Freeleech a category</a></td>
+            <td>{{ bonusPoints.freeleechCategoryCost|number_format }}</td>
+            <td>Make all torrents in a certain category freeleech for one day</td>
+        </tr>
+
+    </tbody>
+</table>
+</section>
+
+
+{# site features #}
+{#
+<section>
+<h3>Site features</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td>foo</td>
+            <td>bar</td>
+            <td>baz</td>
         </tr>
     </tbody>
 </table>
 </section>
+#}
+
 
 {# user profile #}
 <section>
@@ -61,34 +114,47 @@
 
     <tbody>
         <tr>
-            <td>Invite</td>
-            <td>{{ bonusPoints.inviteCost|number_format }}</td>
-            <td>Purchase an invite for a friend or fun enemy</td>
+            <td><a href="/store/checkout?item=personalCollage">Personal collage</a></td>
+            <td>{{ bonusPoints.personalCollageCost|number_format }}</td>
+            <td>Purchase an additional personal collage for your profile</td>
         </tr>
 
         <tr>
-            <td>Custom title</td>
+            <td><a href="/store/checkout?item=invite">Invite</a></td>
+            <td>{{ bonusPoints.inviteCost|number_format }}</td>
+            <td>Purchase an invite for a friend or a fun enemy</td>
+        </tr>
+
+        <tr>
+            <td><a href="/store/checkout?item=customTitle">Custom title</a></td>
             <td>{{ bonusPoints.customTitleCost|number_format }}</td>
             <td>Purchase a cusom title that's displayed with your username</td>
         </tr>
 
+        <tr>
+            <td><a href="/store/checkout?item=glitchUsername">Glitch username effect</a></td>
+            <td>{{ bonusPoints.glitchUsernameCost|number_format }}</td>
+            <td>Display a glitchy text effect for your username</td>
+        </tr>
+
         {% if not snowflakeUpdate %}
         <tr>
-            <td>Profile snowflake effect</td>
+            <td><a href="/store/checkout?item=snowflakeProfile">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeCreateCost|number_format }}</td>
             <td>Add a snowflake effect to your profile with an emoji of your choice</td>
         </tr>
         {% else %}
         <tr>
-            <td>Profile snowflake effect</td>
+            <td><a href="/store/checkout?item=snowflakeProfile">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeUpdateCost|number_format }}</td>
-            <td>Update zour profileäs snowflake emoji, or delete it gratis</td>
+            <td>Update zour profile's snowflake emoji, or delete it gratis</td>
         </tr>
         {% endif %}
 
     </tbody>
 </table>
 </section>
+
 
 {# badges #}
 <section>
@@ -112,7 +178,7 @@
     <tbody>
         {% for key, value in bonusPoints.sequentialBadges %}
         <tr>
-            <td>{{ displayBadge(key, false) }}</td>
+            <td><a href="/store/checkout?item=sequentialBadge&badgeId={{ key }}">{{ displayBadge(key, false) }}</a></td>
             <td>{{ value|number_format }}</td>
             <td>{{ badgeDescription(key) }}</td>
         </tr>
@@ -124,7 +190,11 @@
 {# lottery badges #}
 <p>
     <a href="https://en.wikipedia.org/wiki/Keno" class="external">Play a game of keno</a> for the chance to win a badge.
-    The rules are simple: pick up to 20 numbers between 1 and 80, and bet {{ env.bonusPoints }} to increase your odds.
+    The rules are simple: pick up to 20 numbers between 1 and 80, and bet {{ env.bonusPoints }} to increase your odds of winning a rare badge.
+</p>
+
+<p>
+    <a href="/store/checkout?item=lotteryBadge" class="button button-primary">play now</a>
 </p>
 
 <table>
@@ -148,7 +218,56 @@
 </table>
 </section>
 
+{# auction badge #}
+<p>
+    Bid on a chance to win this badge.
+    The highest bidder wins, and the auction resets every week.
+</p>
 
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Minimum price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td><a href="/store/checkout?item=auctionBadge">{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</a></td>
+            <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
+            <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
+        </tr>
+    </tbody>
+</table>
+</section>
+
+{# pyramid scheme badge #}
+<p>
+    "It's not a pyramid, it's a triangle!"
+    {{ env.siteName }} is proud to present the investment opportunity of a lifetime.
+    Purchase this coveted badge now, because its price will only increase in the future.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Minimum price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td><a href="/store/checkout?item=coinBadge">{{ displayBadge(bonusPoints.coinBadgeId, false) }}</a></td>
+            <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
+            <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
+        </tr>
+    </tbody>
+</table>
+</section>
 
 {% endblock %}
 

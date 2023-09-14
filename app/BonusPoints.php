@@ -76,26 +76,33 @@ class BonusPoints
 
     # coin badge stuff
     public $coinBadgeId = 60;
-    public $coinBadgeCost = 10000; # starting cost
+    public $coinBadgeStartingCost = 9000; # starting cost
+    public $coinBadgeCurrentCost = 0; # current cost
     public $coinBadgePremium = 1000; # minimum step
 
     # auction badge id
     public $auctionBadgeId = 70;
+    public $auctionBadgeStartingCost = 9000; # starting cost
+    public $auctionBadgeCurrentCost = 0; # current cost
+    public $auctionBadgePremium = 1000; # minimum step
 
     /** */
 
-    public $randomFreeleechCost = 2000;
-    public $specificFreeleechCost = 5000;
-    public $freeleechTokenCost = 10000;
-
-    public $inviteCost = 20000;
-    public $customTitleCost = 50000;
-
-    public $snowflakeCreateCost = 100000;
-    public $snowflakeUpdateCost = 10000;
+    public $randomFreeleechCost = 1000;
+    public $specificFreeleechCost = 2000;
+    public $freeleechTokenCost = 5000;
+    public $neutralLeechTagCost = 10000;
+    public $freeleechTagCost = 20000;
+    public $neutralLeechCategoryCost = 50000;
+    public $freeleechCategoryCost = 100000;
 
     public $personalCollageCost = 10000;
+    public $inviteCost = 20000;
+    public $customTitleCost = 50000;
+    public $glitchUsernameCost = 100000;
 
+    public $snowflakeCreateCost = 200000;
+    public $snowflakeUpdateCost = 2000;
 
 
     /**
@@ -132,6 +139,16 @@ class BonusPoints
             "weekly" => $this->pointsRate * 24 * 7,
             "monthly" => $this->pointsRate * 24 * 30,
         ];
+
+        /** */
+
+        # coin badge data
+        $query = "select value from bonus_points where `key` = ?";
+        $this->coinBadgeCurrentCost = $app->dbNew->single($query, ["coinBadge"]) ?? $this->coinBadgeStartingCost;
+
+        # auction badge data
+        $query = "select value from bonus_points where `key` = ?";
+        $this->auctionBadgeCurrentCost = $app->dbNew->single($query, ["auctionBadge"]) ?? $this->auctionBadgeStartingCost;
     }
 
 
@@ -522,17 +539,6 @@ class BonusPoints
             throw new \Exception("you already own this badge");
         }
 
-        # how much does it cost?
-        $query = "select value from bonus_points where key = ?";
-        $currentCost = $app->dbNew->single($query, ["coinBadge"]);
-
-        if (!$currentCost) {
-            # use the default cost
-            $currentCost = $this->coinBadgeCost;
-            $query = "insert into bonus_points (key, value) values (?, ?)";
-            $app->dbNew->do($query, ["coinBadge", $currentCost]);
-        }
-
         # did they pay enough bonus points?
         if ($payment < $currentCost + $this->coinBadgePremium) {
             throw new \Exception("insufficient payment amount; the minimum payment is " . $currentCost + $this->coinBadgePremium);
@@ -543,7 +549,7 @@ class BonusPoints
         \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
 
         # update the cost
-        $query = "update bonus_points set value = ? where key = ?";
+        $query = "replace into bonus_points (`key`, value) values (?, ?)";
         $app->dbNew->do($query, [$payment, "coinBadge"]);
     }
 
@@ -644,7 +650,110 @@ class BonusPoints
     }
 
 
+    /**
+     * neutralLeechTag
+     *
+     * Make all torrent groups with a tag neutral leech.
+     *
+     * @param string $tag
+     * @return void
+     */
+    public function neutralLeechTag(string $tag): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->neutralLeechTagCost);
+
+        /*
+        # make the torrents freeleech
+        $query = "replace into shop_freeleeches (torrentId, expiryTime) select id, now() + interval 1 day from torrents where groupId in (select groupId from torrents_tags where tagId = ?) and deleted_at is null";
+        $app->dbNew->do($query, [$tag]);
+        \Torrents::freeleech_torrents($torrentId, 1, 3);
+        */
+    }
+
+
+    /**
+     * freeleechTag
+     *
+     * Make all torrent groups with a tag freeleech.
+     *
+     * @param string $tag
+     * @return void
+     */
+    public function freeleechTag(string $tag): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->freeleechTagCost);
+
+        /*
+        # make the torrents freeleech
+        $query = "replace into shop_freeleeches (torrentId, expiryTime) select id, now() + interval 1 day from torrents where groupId in (select groupId from torrents_tags where tagId = ?) and deleted_at is null";
+        $app->dbNew->do($query, [$tag]);
+        \Torrents::freeleech_torrents($torrentId, 1, 3);
+        */
+    }
+
+    /**
+     * neutralLeechCategory
+     *
+     * Make all torrent groups in a category neutral leech.
+     *
+     * @param int $categoryId
+     * @return void
+     */
+    public function neutralLeechCategory(int $categoryId): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->neutralLeechCategoryCost);
+
+        # todo
+    }
+
+
+    /**
+     * freeleechCategory
+     *
+     * Make all torrent groups in a category freeleech.
+     *
+     * @param int $categoryId
+     * @return void
+     */
+    public function freeleechCategory(int $categoryId): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->freeleechCategoryCost);
+
+        # todo
+    }
+
+
     /** user profile stuff */
+
+
+    /**
+     * personalCollage
+     *
+     * Purchase a personal collage.
+     *
+     * @return void
+     */
+    public function personalCollage(): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->personalCollageCost);
+
+        # todo
+    }
 
 
     /**
@@ -665,6 +774,7 @@ class BonusPoints
         $query = "update users_main set invites = invites + 1 where userId = ?";
         $app->dbNew->do($query, [ $this->user->core["id"] ]);
     }
+
 
     /**
      * customTitle
@@ -689,6 +799,24 @@ class BonusPoints
         # update the user's title
         $query = "update users_main set title = ? where userId = ?";
         $app->dbNew->do($query, [ $title, $this->user->core["id"] ]);
+    }
+
+
+    /**
+     * glitchUsername
+     *
+     * Purchase a glitchy username effect.
+     *
+     * @return void
+     */
+    public function glitchUsername(): void
+    {
+        $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($this->glitchUsernameCost);
+
+        # todo
     }
 
 
@@ -722,18 +850,5 @@ class BonusPoints
         # update the user's snowflake
         $query = "replace into bonus_points (`key`, value) values (?, ?)";
         $app->dbNew->do($query, ["snowflakeProfile:{$this->user->core["id"]}", $snowflake]);
-    }
-
-
-    /**
-     * personalCollage
-     *
-     * Purchase an extra personal collage.
-     *
-     * @return void
-     */
-    public function personalCollage(): void
-    {
-        $app = \Gazelle\App::go();
     }
 } # class

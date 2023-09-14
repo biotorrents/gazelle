@@ -36,7 +36,7 @@
 <h3>Exchange currency</h3>
 
 <p>
-    All currency exchanges incur a {{ bonusPoints.exchangeTax * 100 }}% tax.
+    Each transaction incurs a {{ bonusPoints.exchangeTax * 100 }}% processing fee.
 </p>
 
 <form method="post">
@@ -44,7 +44,7 @@
 
     <input type ="number" name="amount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
 
-    <button type="submit" class="button">{{ env.bonusPoints }} → upload</button>
+    <button type="submit" class="button button-primary">{{ env.bonusPoints }} → upload</button>
 </form>
 
     <hr>
@@ -61,11 +61,13 @@
         <option value="TiB">TiB</option>
     </select>
 
-    <button type="submit" class="button">upload → {{ env.bonusPoints }}</button>
+    <button type="submit" class="button button-primary">upload → {{ env.bonusPoints }}</button>
 </form>
 
     <hr>
+    <br>
 
-    <a href="/store" class="button button-orange">back to index</a>
-</form>
+    <form>
+        <a href="/store" class="button button-orange">back to index</a>
+    </form>
 </section>

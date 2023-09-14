@@ -515,3 +515,67 @@ span.badges {
 }
 
 /* https://gist.githubusercontent.com/pajasevi/0c50b0b95795debd6c1e/raw/7681f4feb747c7fa0d44da782a5cfbb5b9ed7207/snowflake-snippet */
+
+
+/**
+ * glitch text effect
+ *
+ * usage: <span class="glitch" data-text="foo">foo</span>
+ *
+ * @see https://blog.avada.io/css/text-glitch-effects
+ */
+
+/* https://codepen.io/mondo-iwanow/pen/xoxvgE */
+
+$primaryColor: #222;
+$secondaryColor: white;
+$steps: 20;
+
+.glitch {
+  position: relative;
+  color: $primaryColor;
+  transform: scale3d(1, 1, 1);
+
+  &::before,
+  &::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background: $secondaryColor;
+    color: $primaryColor;
+    clip: rect(0, 900px, 0, 0);
+  }
+
+  &::before {
+    left: 7px;
+    text-shadow: 1px 5 green;
+    animation: glitch-effect 3s infinite linear alternate-reverse;
+  }
+
+  &::after {
+    left: 3px;
+    text-shadow: -1px 0 red;
+    animation: glitch-effect 2s infinite linear alternate-reverse;
+  }
+}
+
+@keyframes glitch-effect {
+
+  @for $i from 0 through $steps {
+    #{percentage($i*calc(1/$steps))} {
+      clip: rect(random(100)+px, 9999px, random(100)+px, 0);
+    }
+  }
+
+}
+
+/* https://codepen.io/mondo-iwanow/pen/xoxvgE */
+
+
+/**
+ * another glitch to adapt:
+ * https://codepen.io/fabiowallner/pen/ozZoYo
+ */
