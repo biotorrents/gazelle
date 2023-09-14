@@ -27,43 +27,43 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout?item=randomFreeleech">Random freeleech</a></td>
+            <td><a href="/store/checkout/randomFreeleech">Random freeleech</a></td>
             <td>{{ bonusPoints.randomFreeleechCost|number_format }}</td>
             <td>Make a random torrent freeleech for one day</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=specificFreeleech">Specific freeleech</a></td>
+            <td><a href="/store/checkout/specificFreeleech">Specific freeleech</a></td>
             <td>{{ bonusPoints.specificFreeleechCost|number_format }}</td>
             <td>Make a torrent of your choice freeleech for one day</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=freeleechToken">Freeleech token</a></td>
+            <td><a href="/store/checkout/freeleechToken">Freeleech token</a></td>
             <td>{{ bonusPoints.freeleechTokenCost|number_format }}</td>
             <td>Purchase a freeleech token that you can use at leisure</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=neutralLeechTag">Neutral leech a tag</a></td>
+            <td><a href="/store/checkout/neutralLeechTag">Neutral leech a tag</a></td>
             <td>{{ bonusPoints.neutralLeechTagCost|number_format }}</td>
             <td>Make all torrents with a certain tag neutral leech for one day</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=freeleechTag">Freeleech a tag</a></td>
+            <td><a href="/store/checkout/freeleechTag">Freeleech a tag</a></td>
             <td>{{ bonusPoints.freeleechTagCost|number_format }}</td>
             <td>Make all torrents with a certain tag freeleech for one day</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=neutralLeechCategory">Neutral leech a category</a></td>
+            <td><a href="/store/checkout/neutralLeechCategory">Neutral leech a category</a></td>
             <td>{{ bonusPoints.neutralLeechCategoryCost|number_format }}</td>
             <td>Make all torrents in a certain category neutral leech for one day</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=freeleechCategory">Freeleech a category</a></td>
+            <td><a href="/store/checkout/freeleechCategory">Freeleech a category</a></td>
             <td>{{ bonusPoints.freeleechCategoryCost|number_format }}</td>
             <td>Make all torrents in a certain category freeleech for one day</td>
         </tr>
@@ -114,38 +114,38 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout?item=personalCollage">Personal collage</a></td>
+            <td><a href="/store/checkout/personalCollage">Personal collage</a></td>
             <td>{{ bonusPoints.personalCollageCost|number_format }}</td>
             <td>Purchase an additional personal collage for your profile</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=invite">Invite</a></td>
+            <td><a href="/store/checkout/invite">Invite</a></td>
             <td>{{ bonusPoints.inviteCost|number_format }}</td>
             <td>Purchase an invite for a friend or a fun enemy</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=customTitle">Custom title</a></td>
+            <td><a href="/store/checkout/customTitle">Custom title</a></td>
             <td>{{ bonusPoints.customTitleCost|number_format }}</td>
             <td>Purchase a cusom title that's displayed with your username</td>
         </tr>
 
         <tr>
-            <td><a href="/store/checkout?item=glitchUsername">Glitch username effect</a></td>
+            <td><a href="/store/checkout/glitchUsername">Glitch username effect</a></td>
             <td>{{ bonusPoints.glitchUsernameCost|number_format }}</td>
             <td>Display a glitchy text effect for your username</td>
         </tr>
 
         {% if not snowflakeUpdate %}
         <tr>
-            <td><a href="/store/checkout?item=snowflakeProfile">Profile snowflake effect</a></td>
+            <td><a href="/store/checkout/snowflakeProfile">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeCreateCost|number_format }}</td>
             <td>Add a snowflake effect to your profile with an emoji of your choice</td>
         </tr>
         {% else %}
         <tr>
-            <td><a href="/store/checkout?item=snowflakeProfile">Profile snowflake effect</a></td>
+            <td><a href="/store/checkout/snowflakeProfile">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeUpdateCost|number_format }}</td>
             <td>Update zour profile's snowflake emoji, or delete it gratis</td>
         </tr>
@@ -178,7 +178,7 @@
     <tbody>
         {% for key, value in bonusPoints.sequentialBadges %}
         <tr>
-            <td><a href="/store/checkout?item=sequentialBadge&badgeId={{ key }}">{{ displayBadge(key, false) }}</a></td>
+            <td><a href="/store/checkout/sequentialBadge?badgeId={{ key }}">{{ displayBadge(key, false) }}</a></td>
             <td>{{ value|number_format }}</td>
             <td>{{ badgeDescription(key) }}</td>
         </tr>
@@ -194,7 +194,7 @@
 </p>
 
 <p>
-    <a href="/store/checkout?item=lotteryBadge" class="button button-primary">play now</a>
+    <a href="/store/checkout/lotteryBadge" class="button button-primary">play now</a>
 </p>
 
 <table>
@@ -235,7 +235,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout?item=auctionBadge">{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</a></td>
+            <td><a href="/store/checkout/auctionBadge">{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</a></td>
             <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
         </tr>
@@ -261,7 +261,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout?item=coinBadge">{{ displayBadge(bonusPoints.coinBadgeId, false) }}</a></td>
+            <td><a href="/store/checkout/coinBadge">{{ displayBadge(bonusPoints.coinBadgeId, false) }}</a></td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
         </tr>
