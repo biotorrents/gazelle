@@ -60,6 +60,19 @@
   text-align: center;
 }
 
+/* https://moderncss.dev/generating-font-size-css-rules-and-creating-a-fluid-type-scale/ */
+p,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 /**
  * wikipedia-style external links
  */
