@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 # todo: I like the idea of store-based promotions expanded to other factors,
 # e.g., under an HnR threshold or minimum account age
 $UserID = $app->user->core['id'];
-$GiB = 1024*1024*1024;
+$GiB = 1024 * 1024 * 1024;
 
 $Classes = array(
   MEMBER => array(
@@ -56,7 +56,7 @@ $Classes = array(
   POWER_TM => array(
     'Name'        => 'Titty Monster',
     'Price'       => 100000,
-    'MinUpload'   => 1.5*1024,
+    'MinUpload'   => 1.5 * 1024,
     'MinDownload' => 500,
     'MinUploads'  => 500,
     'NonSmall'    => 160,
@@ -137,9 +137,9 @@ if ($app->dbOld->has_results()) {
             $Err[] = "Your ratio is too low to be promoted. The minimum ratio required for this promotion is ".$Classes[$To]['MinRatio'].".";
         }
 
-        if ($Upload < $Classes[$To]['MinUpload']*$GiB) {
+        if ($Upload < $Classes[$To]['MinUpload'] * $GiB) {
             if ($Classes[$To]['MinUpload'] >= 1024) {
-                $Amount = $Classes[$To]['MinUpload']/1024;
+                $Amount = $Classes[$To]['MinUpload'] / 1024;
                 $Unit = 'TiB';
             } else {
                 $Amount = $Classes[$To]['MinUpload'];
@@ -148,7 +148,7 @@ if ($app->dbOld->has_results()) {
             $Err[] = "You have not uploaded enough to be promoted. The minimum uploaded amount for this promotion is ".$Amount."".$Unit.".";
         }
 
-        if ($Download < $Classes[$To]['MinDownload']*$GiB) {
+        if ($Download < $Classes[$To]['MinDownload'] * $GiB) {
             $Err[] = "You have not downloaded enough to be promoted. The minimum downloaded amount for this promotion is ".$Classes[$To]['MinDownload']."GiB.";
         }
 

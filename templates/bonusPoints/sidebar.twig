@@ -40,6 +40,8 @@
 </p>
 
 <form method="post">
+    {{ form_token("") }}
+
     <input type="hidden" name="exchangeCurrency" value="pointsToUpload">
 
     <input type ="number" name="amount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
@@ -51,9 +53,11 @@
     <br>
 
 <form method="post">
+    {{ form_token("") }}
+
     <input type="hidden" name="exchangeCurrency" value="uploadToPoints">
 
-    <input type ="number" name="amount" placeholder="How much upload to exchange" required>
+    <input type = "number" name="amount" placeholder="How much upload to exchange" required>
 
     <select name="dataUnit" class="select">
         <option value="MiB">MiB</option>

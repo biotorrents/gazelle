@@ -49,7 +49,7 @@ if (isset($_POST['donation'])) {
                     $Torrents = [];
 
                     for ($i = 0; $i < $NumTorrents; $i++) {
-                        $TorrentSize = intval($Pool * (($i===$NumTorrents-1) ? 1 : (rand(10, 80)/100)) * 100000); # todo
+                        $TorrentSize = intval($Pool * (($i === $NumTorrents - 1) ? 1 : (rand(10, 80) / 100)) * 100000); # todo
                         $app->dbOld->prepared_query("
                           SELECT ID, Size
                           FROM torrents
@@ -69,7 +69,7 @@ if (isset($_POST['donation'])) {
                               VALUES($TorrentID, NOW() + INTERVAL 2 DAY)");
 
                             Torrents::freeleech_torrents($TorrentID, 1, 3);
-                            $Pool -= $TorrentSize/100000;
+                            $Pool -= $TorrentSize / 100000;
                         } else {
                             // Failed to find a torrent. Maybe try again with a new value, maybe move on
                             if (rand(1, 5) > 1) {

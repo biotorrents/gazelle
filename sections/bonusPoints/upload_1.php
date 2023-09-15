@@ -3,27 +3,25 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
-
 $UserID = $app->user->core['id'];
-$Purchase = "1,000 $ENV->bonusPoints";
+$Purchase = "0.1 GiB upload";
 
 $GiB = 1024 * 1024 * 1024;
-$Cost = 15.0 * $GiB;
+$Cost = 15;
 
 $app->dbOld->prepared_query("
-  SELECT Uploaded
+  SELECT BonusPoints
   FROM users_main
   WHERE ID = $UserID");
 
 if ($app->dbOld->has_results()) {
-    list($Upload) = $app->dbOld->next_record();
+    list($Points) = $app->dbOld->next_record();
 
-    if ($Upload >= $Cost) {
+    if ($Points >= $Cost) {
         $app->dbOld->prepared_query("
           UPDATE users_main
-          SET BonusPoints = BonusPoints + 1000,
-            Uploaded = Uploaded - $Cost
+          SET BonusPoints = BonusPoints - $Cost,
+            Uploaded = Uploaded + ($GiB * 0.1)
           WHERE ID = $UserID");
 
         $app->dbOld->prepared_query("
@@ -36,7 +34,7 @@ if ($app->dbOld->has_results()) {
         $Worked = true;
     } else {
         $Worked = false;
-        $ErrMessage = "Not enough upload";
+        $ErrMessage = "Not enough points";
     }
 }
 

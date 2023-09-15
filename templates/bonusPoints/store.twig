@@ -131,11 +131,18 @@
             <td>Purchase a cusom title that's displayed with your username</td>
         </tr>
 
+        {% if not snowflakeUpdate %}
         <tr>
             <td><a href="/store/checkout/glitchUsername">Glitch username effect</a></td>
             <td>{{ bonusPoints.glitchUsernameCost|number_format }}</td>
             <td>Display a glitchy text effect for your username</td>
         </tr>
+        {% else %}
+        <tr>
+            <td><a href="/store/checkout/glitchUsername?delete=true">Glitch username effect</a></td>
+            <td>{{ bonusPoints.glitchUsernameUpdateCost|number_format }}</td>
+            <td>Delete your username glitch effect</td>
+        {% endif %}
 
         {% if not snowflakeUpdate %}
         <tr>
@@ -145,9 +152,9 @@
         </tr>
         {% else %}
         <tr>
-            <td><a href="/store/checkout/snowflakeProfile">Profile snowflake effect</a></td>
+            <td><a href="/store/checkout/snowflakeProfile?delete=true">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeUpdateCost|number_format }}</td>
-            <td>Update zour profile's snowflake emoji, or delete it gratis</td>
+            <td>Update your profile's snowflake emoji or delete the effect</td>
         </tr>
         {% endif %}
 
@@ -178,7 +185,7 @@
     <tbody>
         {% for key, value in bonusPoints.sequentialBadges %}
         <tr>
-            <td><a href="/store/checkout/sequentialBadge?badgeId={{ key }}">{{ displayBadge(key, false) }}</a></td>
+            <td><a href="/store/checkout/sequentialBadge?badgeId={{ key }}">Buy</a> {{ displayBadge(key, false) }}</td>
             <td>{{ value|number_format }}</td>
             <td>{{ badgeDescription(key) }}</td>
         </tr>
@@ -235,7 +242,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/auctionBadge">{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</a></td>
+            <td><a href="/store/checkout/auctionBadge">Buy</a> {{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
             <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
         </tr>
@@ -261,7 +268,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/coinBadge">{{ displayBadge(bonusPoints.coinBadgeId, false) }}</a></td>
+            <td><a href="/store/checkout/coinBadge">Buy</a>{{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
         </tr>

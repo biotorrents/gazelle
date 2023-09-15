@@ -1,0 +1,172 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+<h2>Complete your purchase</h2>
+
+<p>
+    Thank you for shopping at {{ env.siteName }}.
+    Please complete your purchase of {{ bonusPoints.friendlyItemNames[item] }}.
+    We appreciate your contribution to the site.
+</p>
+
+{% if not actionRequired %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if not actionRequired %} #}
+<p>
+
+</section>
+
+{% if actionRequired %}
+<section>
+<h3>Action required</h3>
+
+<p>
+    We need more information to complete your purchase.
+    Please enter the requested information in the form below.
+</p>
+
+
+{# specificFreeleech #}
+{% if item == "specificFreeleech" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <label for="torrentId">Torrent identifier</label>
+    <input type="text" name="torrentId" id="torrentId" value="" required>
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "specificFreeleech" %} #}
+
+
+{# neutralLeechTag or freeleechTag #}
+{% if item == "neutralLeechTag" or item == "freeleechTag" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <label for="tag">Tag</label>
+    <select class="select" placeholder "Select a tag" required>
+        {% for tag in tags %}
+        <option value="{{ tag.ID }}">{{ tag.Name }}</option>
+        {% endfor %}
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "neutralLeechTag" or item == "freeleechTag" %} #}
+
+
+{# neutralLeechCategory or freeleechCategory #}
+{% if item == "neutralLeechCategory" or item == "freeleechCategory" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <label for="category">Category</label>
+    <select class="select" placeholder "Select a category" required>
+        {% for item in env.CATS %}
+        <option value="{{ item.ID }}">{{ item.Name }}</option>
+        {% endfor %}
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "neutralLeechCategory" or item == "freeleechCategory" %} #}
+
+
+{# customTitle #}
+{% if item == "customTitle" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <label for="title">Title</label>
+    <input type="text" name="title" id="title" max="64" value="" required>
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "customTitle" %} #}
+
+
+{# glitchUsername #}
+{% if item == "glitchUsername" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    {# todo: delete the effect #}
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "glitchUsername" %} #}
+
+
+{# snowflakeProfile #}
+{% if item == "snowflakeProfile" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <input type="text" name="emoji" id="emoji" value="" required>
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "snowflakeProfile" %} #}
+
+
+{# lotteryBadge #}
+{% if item == "lotteryBadge" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <label for="bets">Please enter up to 20 numbers between 1 and 80, separated by any amount of whitespace</label>
+
+    <textarea id="bets" name="bets"></textarea>
+
+    <input type="submit" value="try your luck">
+</form>
+{% endif %} {# {% if item == "lotteryBadge" %} #}
+
+
+{# auctionBadge or coinBadge #}
+{% if item == "auctionBadge" or item == "coinBadge" %}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="item" id="item" value="{{ item }}">
+
+    <input type="number" name="amount" id="amount" value="" required>
+
+    <input type="submit" value="complete purchase">
+</form>
+{% endif %} {# {% if item == "auctionBadge" or item == "coinBadge" %} #}
+
+
+</section>
+{% endif %} {# {% if actionRequired %} #}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("bonusPoints/sidebar.twig") }}
+
+{% endblock %}

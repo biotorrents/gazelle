@@ -50,7 +50,7 @@ View::header('Store');
               // Calculate new badge values
               $Purchases += 1;
               $x = $Purchases;
-              $Price = 1000+$x*(10000+1400*((sin($x/1.3)+cos($x/4.21))+(sin($x/2.6)+cos(2*$x/4.21))/2));
+              $Price = 1000 + $x * (10000 + 1400 * ((sin($x / 1.3) + cos($x / 4.21)) + (sin($x / 2.6) + cos(2 * $x / 4.21)) / 2));
 
               $app->dbOld->prepared_query("
               UPDATE misc
@@ -79,7 +79,7 @@ View::header('Store');
     </p>
   </div>
   <?php
-} else { ?>
+      } else { ?>
   <h2>Purchase Successful</h2>
   <div class="box pad">
     <p>You bought the Oppaicoin badge</p>

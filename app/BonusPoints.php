@@ -62,17 +62,21 @@ class BonusPoints
 
     # lottery badges [id => chance to win]
     public $lotteryBadges = [
-        50 => 0.1,
-        51 => 0.01,
-        52 => 0.001,
-        53 => 0.0001,
-        54 => 0.00001,
-        55 => 0.000001,
-        56 => 0.0000001,
-        57 => 0.00000001,
-        58 => 0.000000001,
-        59 => 0.0000000001,
+        50 => 0.9,
+        51 => 0.09,
+        52 => 0.009,
+        53 => 0.0009,
+        54 => 0.00009,
+        55 => 0.000009,
+        56 => 0.0000009,
+        57 => 0.00000009,
+        58 => 0.000000009,
+        59 => 0.0000000009,
     ];
+
+    # random badges (unique emoji badge)
+    public $randomBadgeCost = 100000;
+    public $RandomBadgeCategoryCost = 200000;
 
     # coin badge stuff
     public $coinBadgeId = 60;
@@ -103,6 +107,33 @@ class BonusPoints
 
     public $snowflakeCreateCost = 200000;
     public $snowflakeUpdateCost = 2000;
+
+    /** */
+
+    public $friendlyItemNames = [
+        "pointsToUpload" => "Convert bonus points to upload",
+        "uploadToPoints" => "Convert upload to bonus points",
+
+        "randomFreeleech" => "Random freeleech",
+        "specificFreeleech" => "Specific freeleech",
+        "freeleechToken" => "Freeleech token",
+        "neutralLeechTag" => "Neutral leech a tag",
+        "freeleechTag" => "Freeleech a tag",
+        "neutralLeechCategory" => "Neutral leech a category",
+        "freeleechCategory" => "Freeleech a category",
+
+        "personalCollage" => "Personal collage",
+        "invite" => "Invite",
+        "customTitle" => "Custom title",
+        "glitchUsername" => "Glitch username",
+        "snowflakeProfile" => "Snowflake profile",
+
+        "sequentialBadge" => "Sequential badge",
+        "lotteryBadge" => "Lottery badge",
+        "auctionBadge" => "Auction badge",
+        "coinBadge" => "Coin badge",
+        "randomBadge" => "Random badge",
+    ];
 
 
     /**
@@ -518,6 +549,17 @@ class BonusPoints
         # deduct the bonus points and award the badge
         $this->deductPoints($bet);
         \Badges::awardBadge($this->user->core["id"], $badgeId);
+    }
+
+
+    /**
+     * randomBadge
+     *
+     * Awards a unique emoji badge.
+     */
+    public function randomBadge()
+    {
+        throw new \Exception("not implemented");
     }
 
 
