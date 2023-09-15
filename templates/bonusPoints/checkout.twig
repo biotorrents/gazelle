@@ -16,7 +16,7 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
     <input type="submit" value="complete purchase">
 </form>
@@ -40,12 +40,19 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
+<p>
     <label for="torrentId">Torrent identifier</label>
-    <input type="text" name="torrentId" id="torrentId" value="" required>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="text" name="torrentId" value="" required>
+</p>
+
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "specificFreeleech" %} #}
 
@@ -55,15 +62,23 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
-    <label for="tag">Tag</label>
-    <select class="select" placeholder "Select a tag" required>
+<p>
+    <label for="tagId">Which tag would you like to use?</label>
+</p>
+
+<p>
+    <select class="select" placeholder="Select a tag" required>
         {% for tag in tags %}
         <option value="{{ tag.ID }}">{{ tag.Name }}</option>
         {% endfor %}
+    </select>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "neutralLeechTag" or item == "freeleechTag" %} #}
 
@@ -73,15 +88,23 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
-    <label for="category">Category</label>
-    <select class="select" placeholder "Select a category" required>
+<p>
+    <label for="categoryId">Which category would you like to use?</label>
+</p>
+
+<p>
+    <select class="select" name="categoryId" placeholder="Select a category" required>
         {% for item in env.CATS %}
         <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}
+    </select>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "neutralLeechCategory" or item == "freeleechCategory" %} #}
 
@@ -91,12 +114,19 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
-    <label for="title">Title</label>
-    <input type="text" name="title" id="title" max="64" value="" required>
+<p>
+    <label for="customTitle">Please enter your custom title (max 64 characters)</label>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="text" name="customTitle" id="customTitle" max="64" value="" required>
+</p>
+
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "customTitle" %} #}
 
@@ -106,7 +136,7 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
     {# todo: delete the effect #}
 
@@ -120,11 +150,19 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
-    <input type="text" name="emoji" id="emoji" value="" required>
+<p>
+    <label for="snowflakeEmoji">Please enter the emoji you'd like to use</label>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="text" name="snowflakeEmoji" value="" required>
+</p>
+
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "snowflakeProfile" %} #}
 
@@ -134,13 +172,23 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
+<p>
     <label for="bets">Please enter up to 20 numbers between 1 and 80, separated by any amount of whitespace</label>
+</p>
 
-    <textarea id="bets" name="bets"></textarea>
+<p>
+    <select class="select" name="bets" multiple>
+        {% for i in range(1, 80) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+</p>
 
-    <input type="submit" value="try your luck">
+<p>
+    <input type="submit" class="button button-primary" value="try your luck">
+</p>
 </form>
 {% endif %} {# {% if item == "lotteryBadge" %} #}
 
@@ -150,11 +198,19 @@
 <form method="post">
     {{ form_token("") }}
 
-    <input type="hidden" name="item" id="item" value="{{ item }}">
+    <input type="hidden" name="item" value="{{ item }}">
 
+<p>
+    <label for="amount">How many points would you like to spend?</label>
+</p>
+
+<p>
     <input type="number" name="amount" id="amount" value="" required>
+</p>
 
-    <input type="submit" value="complete purchase">
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
 </form>
 {% endif %} {# {% if item == "auctionBadge" or item == "coinBadge" %} #}
 

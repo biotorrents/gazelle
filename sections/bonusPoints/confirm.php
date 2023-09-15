@@ -18,6 +18,9 @@ if (empty($post)) {
     $app->error(400);
 }
 
+# error message
+$errorMessage = null;
+
 # try to buy the item
 try {
     $result = match ($item) {
@@ -44,12 +47,13 @@ try {
         "coinBadge" => $bonusPoints->coinBadge($post["amount"]),
         "randomBadge" => $bonusPoints->randomBadge(),
     };
-} catch (\Gazelle\Exception\BonusException $e) {
-    $app->error($e->getMessage());
+} catch (\Exception $e) {
+    $errorMessage = $e->getMessage();
 }
 
 # twig template
 $app->twig->display("bonusPoints/confirm.twig", [
     "title" => "Thanks for your purchase",
     "sidebar" => true,
+    "errorMessage" => $errorMessage,
 ]);
