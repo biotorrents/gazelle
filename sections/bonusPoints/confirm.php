@@ -18,6 +18,36 @@ if (empty($post)) {
     $app->error(400);
 }
 
+# try to buy the item
+try {
+    $result = match ($item) {
+        "pointsToUpload" => $bonusPoints->pointsToUpload($post["amount"]),
+        "uploadToPoints" => $bonusPoints->uploadToPoints($post["amount"]),
+
+        "randomFreeleech" => $bonusPoints->randomFreeleech(),
+        "specificFreeleech" => $bonusPoints->specificFreeleech($post["torrentId"]),
+        "freeleechToken" => $bonusPoints->freeleechToken(),
+        "neutralLeechTag" => $bonusPoints->neutralLeechTag($post["tagId"]),
+        "freeleechTag" => $bonusPoints->freeleechTag($post["tagId"]),
+        "neutralLeechCategory" => $bonusPoints->neutralLeechCategory($post["categoryId"]),
+        "freeleechCategory" => $bonusPoints->freeleechCategory($post["categoryId"]),
+
+        "personalCollage" => $bonusPoints->personalCollage(),
+        "invite" => $bonusPoints->invite(),
+        "customTitle" => $bonusPoints->customTitle($post["customTitle"]),
+        "glitchUsername" => $bonusPoints->glitchUsername(),
+        "snowflakeProfile" => $bonusPoints->snowflakeProfile($post["snowflakeEmoji"]),
+
+        "sequentialBadge" => $bonusPoints->sequentialBadge(),
+        "lotteryBadge" => $bonusPoints->lotteryBadge($post["bet"], $post["votes"]),
+        "auctionBadge" => $bonusPoints->auctionBadge($post["amount"]),
+        "coinBadge" => $bonusPoints->coinBadge($post["amount"]),
+        "randomBadge" => $bonusPoints->randomBadge(),
+    };
+} catch (\Gazelle\Exception\BonusException $e) {
+    $app->error($e->getMessage());
+}
+
 # twig template
 $app->twig->display("bonusPoints/confirm.twig", [
     "title" => "Thanks for your purchase",

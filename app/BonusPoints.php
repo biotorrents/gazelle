@@ -601,10 +601,21 @@ class BonusPoints
      *
      * Purchase a badge in an auction.
      * The high bidder wins the badge.
+     *
+     * @param int $bid
+     * @return void
      */
-    public function auctionBadge(): bool
+    public function auctionBadge(int $bid): void
     {
         $app = \Gazelle\App::go();
+
+        # deduct the bonus points
+        $this->deductPoints($bid);
+
+        # enter the bid
+        $data = json_encode(["userId" => $this->user->core["id"], "bid" => $bid]);
+        $query = "replace into bonus_points (`key`, value) values (?, ?)";
+        $app->dbNew->do($query, ["auctionBadge:bid:{$this->user->core["id"]}", $data]);
     }
 
 
