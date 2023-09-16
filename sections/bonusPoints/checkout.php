@@ -23,30 +23,34 @@ $get = Http::get();
 $post = Http::post();
 
 # are they converting currencies?
-$post["pointsAmount"] = intval($post["pointsAmount"] ?? null);
-$post["dataAmount"] = intval($post["dataAmount"] ?? null);
+if (!empty($post)) {
+    # units of usury
+    $KiB = 1024;
+    $MiB = $KiB * 1024;
 
-$post["dataUnit"] ??= null;
-match ($post["dataUnit"]) {
-    "MiB" => $post["dataAmount"] *= 1024 * 1024,
-    "GiB" => $post["dataAmount"] *= 1024 * 1024 * 1024,
-    "TiB" => $post["dataAmount"] *= 1024 * 1024 * 1024 * 1024,
-    default => $post["dataAmount"] *= 1024,
-};
+    $post["pointsAmount"] = intval($post["pointsAmount"] ?? null);
+    $post["dataAmount"] = intval($post["dataAmount"] ?? null);
 
-$newPointsBalance = null;
-$newUploadBalance = null;
+    $post["dataUnit"] ??= null;
+    match ($post["dataUnit"]) {
+        "MiB" => $post["dataAmount"] *= $MiB,
+        "GiB" => $post["dataAmount"] *= $MiB * 1024,
+        "TiB" => $post["dataAmount"] *= $MiB * 1024 * 1024,
+        "PiB" => $post["dataAmount"] *= $MiB * 1024 * 1024 * 1024,
+        default => $post["dataAmount"] = null,
+    };
 
-# pointsToUpload: get the new balances
-if ($item === "pointsToUpload") {
-    $newPointsBalance = $bonusPoints->bonusPoints - $post["pointsAmount"];
-    $newUploadBalance = $bonusPoints->user->extra["Uploaded"] + (($post["pointsAmount"] * 1024) * (1 - $bonusPoints->exchangeTax));
-}
+    # pointsToUpload: get the new balances
+    if ($item === "pointsToUpload") {
+        $newPointsBalance = $bonusPoints->bonusPoints - $post["pointsAmount"];
+        $newUploadBalance = $bonusPoints->user->extra["Uploaded"] + (($post["pointsAmount"] * $KiB) * (1 - $bonusPoints->exchangeTax));
+    }
 
-# uploadToPoints: get the new balances
-if ($item === "uploadToPoints") {
-    $newPointsBalance = $bonusPoints->bonusPoints + ($post["dataAmount"] * (1 - $bonusPoints->exchangeTax));
-    $newUploadBalance = $bonusPoints->user->extra["Uploaded"] - $post["dataAmount"];
+    # uploadToPoints: get the new balances
+    if ($item === "uploadToPoints") {
+        $newPointsBalance = $bonusPoints->bonusPoints + (($post["dataAmount"] / $MiB) * (1 - $bonusPoints->exchangeTax));
+        $newUploadBalance = $bonusPoints->user->extra["Uploaded"] - $post["dataAmount"];
+    }
 }
 
 # get the official tags
@@ -90,9 +94,9 @@ $app->twig->display("bonusPoints/checkout.twig", [
     "actionRequired" => $actionRequired,
 
     # currency conversion
-    "pointsAmount" => $post["pointsAmount"],
-    "dataAmount" => $post["dataAmount"],
-    "dataUnit" => $post["dataUnit"],
-    "newPointsBalance" => $newPointsBalance,
-    "newUploadBalance" => $newUploadBalance,
+    "pointsAmount" => $post["pointsAmount"] ?? null,
+    "dataAmount" => $post["dataAmount"] ?? null,
+    "dataUnit" => $post["dataUnit"] ?? null,
+    "newPointsBalance" => $newPointsBalance ?? null,
+    "newUploadBalance" => $newUploadBalance ?? null,
 ]);

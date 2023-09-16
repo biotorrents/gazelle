@@ -99,7 +99,7 @@ if (isset($_POST['torrent'])) {
         torrent</a>
     </p>
     <p>
-      <a href="/store.php">Back to Store</a>
+      <a href="/store">Back to Store</a>
     </p>
   </div>
 </div>
@@ -121,7 +121,7 @@ View::footer();
     </form>
 
     <p>
-      <a href="/store.php">Back to Store</a>
+      <a href="/store">Back to Store</a>
     </p>
   </div>
 </div>

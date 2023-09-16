@@ -251,7 +251,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 
 <body
   id="<?=$Document === 'collages' ? 'collage' : $Document?>"
-  class="<?=($BodyStyles??'')?>">
+  class="<?=($BodyStyles ?? '')?>">
   <div id="wrapper">
     <h1 class="hidden">
       <?= $ENV->siteName ?>
@@ -363,7 +363,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
+            <a href="/store"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
           </span>
         </li>
 

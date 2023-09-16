@@ -295,25 +295,28 @@ class BonusPoints
      * pointsToUpload
      *
      * Convert bonus points to upload.
-     * The rate is 1 point = 1 KiB of upload.
+     * The rate is 1 point = 1 MiB of upload.
      * Note the database stored upload as bytes.
      *
-     * @param int amount (points)
-     * @return int new upload (bytes)
+     * @param int amount (1 point = 1 KiB)
+     * @return int new upload (in bytes)
      */
     public function pointsToUpload(int $amount): int
     {
         $app = \Gazelle\App::go();
 
+        # KiB
+        $KiB = 1024;
+
         # exchange rate penalty
-        $amount = ($amount * 1024) * (1 - $this->exchangeTax);
+        $uploadAmount = ($amount * $KiB) * (1 - $this->exchangeTax);
 
         # deduct the bonus points
         $this->deductPoints($amount);
 
         # add the upload
         $query = "update users_main set uploaded = uploaded + ? where userId = ?";
-        $app->dbNew->do($query, [ $amount, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $uploadAmount, $this->user->core["id"] ]);
 
         # return the new upload
         $query = "select uploaded from users_main where userId = ?";
@@ -340,15 +343,18 @@ class BonusPoints
             throw new \Exception("insufficient upload for this purchase");
         }
 
+        # MiB
+        $MiB = 1024 * 1024;
+
         # exchange rate penalty
-        $amount = $amount * (1 - $this->exchangeTax);
+        $pointsAmount = ($amount / $MiB) * (1 - $this->exchangeTax);
 
         # subtract the upload
         $query = "update users_main set uploaded = uploaded - ? where userId = ?";
         $app->dbNew->do($query, [ $amount, $this->user->core["id"] ]);
 
         # add the bonus points
-        $this->bonusPoints += $amount;
+        $this->bonusPoints += $pointsAmount;
         $query = "update users_main set bonusPoints = ? where userId = ?";
         $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
 

@@ -75,7 +75,7 @@ View::header('Store');
     </p>
 
     <p>
-      <a href='/store.php'>Back to Store</a>
+      <a href='/store'>Back to Store</a>
     </p>
   </div>
   <?php

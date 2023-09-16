@@ -73,7 +73,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
         </p>
 
         <p>
-            <a href='/store.php'>Back to Store</a>
+            <a href='/store'>Back to Store</a>
         </p>
     </div>
 </div>
@@ -102,7 +102,7 @@ if (isset($_GET['confirm']) && $_GET['confirm'] === '1') {
             <?php } ?>
 
             <p>
-                <a href='/store.php'>Back to Store</a>
+                <a href='/store'>Back to Store</a>
             </p>
     </div>
 </div>
