@@ -16,7 +16,12 @@
 <form method="post" action="/store/confirm">
     {{ form_token("/store/confirm") }}
 
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
 </form>
 {% endif %} {# {% if not actionRequired %} #}
 </section>
@@ -55,8 +60,9 @@
     <input type="hidden" name="amount" value="{{ post.dataAmount }}">
     {% endif %} {# {% if item == "uploadToPoints" %} #}
 
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "pointsToUpload" or item == "uploadToPoints"  %} #}
@@ -69,16 +75,14 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="torrentId">Torrent identifier or permalink URI</label>
+    <input type="text" name="torrentId" value="" class="grow" required>
 </p>
 
-<p>
-    <input type="text" name="torrentId" value="" required>
-</p>
-
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "specificFreeleech" %} #}
@@ -91,20 +95,18 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="tagId">Which tag would you like to use?</label>
-</p>
-
-<p>
-    <select class="select" placeholder="Select a tag" required>
+    <select class="grow select" placeholder="Select a tag" required>
         {% for item in tagList %}
         <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}
     </select>
 </p>
 
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "neutralLeechTag" or item == "freeleechTag" %} #}
@@ -117,20 +119,18 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="categoryId">Which category would you like to use?</label>
-</p>
-
-<p>
-    <select class="select" name="categoryId" placeholder="Select a category" required>
+    <select class="grow select" name="categoryId" placeholder="Select a category" required>
         {% for item in env.CATS %}
         <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}
     </select>
 </p>
 
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "neutralLeechCategory" or item == "freeleechCategory" %} #}
@@ -143,16 +143,14 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="customTitle">Please enter your custom title (max 64 characters)</label>
+    <input type="text" class="grow" name="customTitle" id="customTitle" max="64" value="" required>
 </p>
 
-<p>
-    <input type="text" name="customTitle" id="customTitle" max="64" value="" required>
-</p>
-
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "customTitle" %} #}
@@ -167,7 +165,10 @@
 
     {# todo: delete the effect #}
 
-    <input type="submit" value="complete purchase">
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
 </form>
 {% endif %} {# {% if item == "glitchUsername" %} #}
 
@@ -179,16 +180,14 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="snowflakeEmoji">Please enter the emoji you'd like to use</label>
+    <input type="text" class="grow" name="snowflakeEmoji" value="" required>
 </p>
 
-<p>
-    <input type="text" name="snowflakeEmoji" value="" required>
-</p>
-
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "snowflakeProfile" %} #}
@@ -201,29 +200,24 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
+<p class="flexRow">
     <label for="bet">How many {{ env.bonusPoints }} would you like to bet?</label>
-</p>
-
-<p>
-    <input type="number" name="bet" id="bet" value="" max={{ bonusPoints.bonusPoints }} required>
+    <input type="number" class="grow" name="bet" id="bet" value="" max={{ bonusPoints.bonusPoints }} required>
 </p>
 
 
-<p>
+<p class="flexRow">
     <label for="votes">Please enter up to 20 numbers between 1 and 80</label>
-</p>
-
-<p>
-    <select class="select" name="votes[]" multiple>
+    <select class="grow select" name="votes[]" multiple>
         {% for i in range(1, 80) %}
         <option value="{{ i }}">{{ i }}</option>
         {% endfor %}
     </select>
 </p>
 
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="try your luck">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "lotteryBadge" %} #}
@@ -236,16 +230,14 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
-<p>
-    <label for="amount">How many points would you like to spend?</label>
+<p class="flexRow">
+    <label for="amount">How many {{ env.bonusPoints }} would you like to spend?</label>
+    <input type="number" class="grow" name="amount" id="amount" value="" required>
 </p>
 
-<p>
-    <input type="number" name="amount" id="amount" value="" required>
-</p>
-
-<p>
+<p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
 {% endif %} {# {% if item == "auctionBadge" or item == "coinBadge" %} #}

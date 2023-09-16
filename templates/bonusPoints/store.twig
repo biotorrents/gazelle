@@ -242,7 +242,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/auctionBadge">Buy</a> {{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
+            <td><a href="/store/checkout/auctionBadge">Bid</a> {{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
             <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
         </tr>
@@ -268,7 +268,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/coinBadge">Buy</a>{{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
+            <td><a href="/store/checkout/coinBadge">Invest</a> {{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
         </tr>

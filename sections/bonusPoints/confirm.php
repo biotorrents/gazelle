@@ -17,7 +17,8 @@ $bonusPoints = new \Gazelle\BonusPoints();
 # request variables
 $post = Http::post();
 if (empty($post)) {
-    $app->error(400);
+    Http::redirect("store");
+    #$app->error(400);
 }
 
 # error message
