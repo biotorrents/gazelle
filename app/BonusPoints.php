@@ -712,10 +712,10 @@ class BonusPoints
      *
      * Make all torrent groups with a tag neutral leech.
      *
-     * @param string $tag
+     * @param int $tagId
      * @return void
      */
-    public function neutralLeechTag(string $tag): void
+    public function neutralLeechTag(int $tagId): void
     {
         $app = \Gazelle\App::go();
 

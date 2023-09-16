@@ -39,10 +39,10 @@
     Each transaction incurs a {{ bonusPoints.exchangeTax * 100 }}% processing fee.
 </p>
 
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
-    <input type="hidden" name="exchangeCurrency" value="pointsToUpload">
+    <input type="hidden" name="item" value="pointsToUpload">
 
     <input type ="number" name="amount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
 
@@ -52,12 +52,12 @@
     <hr>
     <br>
 
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
-    <input type="hidden" name="exchangeCurrency" value="uploadToPoints">
+    <input type="hidden" name="item" value="uploadToPoints">
 
-    <input type = "number" name="amount" placeholder="How much upload to exchange" required>
+    <input type="number" name="amount" placeholder="How much upload to exchange" required>
 
     <select name="dataUnit" class="select">
         <option value="MiB">MiB</option>
@@ -72,6 +72,6 @@
     <br>
 
     <form>
-        <a href="/store" class="button button-orange">back to index</a>
+        <a href="/store" class="button button-orange">back to storefront</a>
     </form>
 </section>

@@ -31,14 +31,14 @@ try {
         throw new Exception("no item selected");
     }
 
-    $post["amount"] ??= null;
-    $post["torrentId"] ??= null;
-    $post["tagId"] ??= null;
-    $post["categoryId"] ??= null;
-    $post["customTitle"] ??= null;
-    $post["snowflakeEmoji"] ??= null;
-    $post["bet"] ??= null;
-    $post["votes"] ??= null;
+    $post["amount"] = intval($post["amount"] ?? null);
+    $post["torrentId"] ??= null; # int|string
+    $post["tagId"] = intval($post["tagId"] ?? null);
+    $post["categoryId"] = intval($post["categoryId"] ?? null);
+    $post["customTitle"] = strval($post["customTitle"] ?? null);
+    $post["snowflakeEmoji"] = strval($post["snowflakeEmoji"] ?? null);
+    $post["bet"] = intval($post["bet"] ?? null);
+    $post["votes"] ??= null; # array
 
     $result = match ($item) {
         "pointsToUpload" => $bonusPoints->pointsToUpload($post["amount"]),
@@ -74,6 +74,7 @@ $app->twig->display("bonusPoints/confirm.twig", [
     "title" => "Thanks for your purchase",
     "sidebar" => true,
 
+    "bonusPoints" => $bonusPoints,
     "item" => $item,
     "errorMessage" => $errorMessage,
     "result" => $result,
