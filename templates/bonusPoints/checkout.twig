@@ -13,8 +13,8 @@
 </p>
 
 {% if not actionRequired %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -37,8 +37,8 @@
 
 {# specificFreeleech #}
 {% if item == "specificFreeleech" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -59,8 +59,8 @@
 
 {# neutralLeechTag or freeleechTag #}
 {% if item == "neutralLeechTag" or item == "freeleechTag" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -85,8 +85,8 @@
 
 {# neutralLeechCategory or freeleechCategory #}
 {% if item == "neutralLeechCategory" or item == "freeleechCategory" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -111,8 +111,8 @@
 
 {# customTitle #}
 {% if item == "customTitle" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -133,8 +133,8 @@
 
 {# glitchUsername #}
 {% if item == "glitchUsername" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -147,8 +147,8 @@
 
 {# snowflakeProfile #}
 {% if item == "snowflakeProfile" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
@@ -169,17 +169,26 @@
 
 {# lotteryBadge #}
 {% if item == "lotteryBadge" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
 <p>
-    <label for="bets">Please enter up to 20 numbers between 1 and 80, separated by any amount of whitespace</label>
+    <label for="bet">How many {{ env.bonusPoints }} would you like to bet?</label>
 </p>
 
 <p>
-    <select class="select" name="bets" multiple>
+    <input type="number" name="bet" id="bet" value="" max={{ bonusPoints.bonusPoints }} required>
+</p>
+
+
+<p>
+    <label for="votes">Please enter up to 20 numbers between 1 and 80</label>
+</p>
+
+<p>
+    <select class="select" name="votes[]" multiple>
         {% for i in range(1, 80) %}
         <option value="{{ i }}">{{ i }}</option>
         {% endfor %}
@@ -195,8 +204,8 @@
 
 {# auctionBadge or coinBadge #}
 {% if item == "auctionBadge" or item == "coinBadge" %}
-<form method="post">
-    {{ form_token("") }}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 

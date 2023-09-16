@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
+Http::csrf();
+
 $bonusPoints = new \Gazelle\BonusPoints();
 #!d($bonusPoints);exit;
 
@@ -23,6 +25,21 @@ $errorMessage = null;
 
 # try to buy the item
 try {
+    # hydrate the variables
+    $item = $post["item"] ?? null;
+    if (!$item) {
+        throw new Exception("no item selected");
+    }
+
+    $post["amount"] ??= null;
+    $post["torrentId"] ??= null;
+    $post["tagId"] ??= null;
+    $post["categoryId"] ??= null;
+    $post["customTitle"] ??= null;
+    $post["snowflakeEmoji"] ??= null;
+    $post["bet"] ??= null;
+    $post["votes"] ??= null;
+
     $result = match ($item) {
         "pointsToUpload" => $bonusPoints->pointsToUpload($post["amount"]),
         "uploadToPoints" => $bonusPoints->uploadToPoints($post["amount"]),

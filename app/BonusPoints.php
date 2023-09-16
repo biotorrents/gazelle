@@ -398,12 +398,12 @@ class BonusPoints
      * Bet bonus points to increase your chances.
      *
      * @param int $bet amount of bonus points to bet
-     * @param string $votes array of votes (integers)
-     * @return void
+     * @param array|string $votes array of votes (integers)
+     * @return array scorecard data
      *
      * @see https://en.wikipedia.org/wiki/Keno
      */
-    public function lotteryBadge(int $bet, string $votes): void
+    public function lotteryBadge(int $bet, array|string $votes): array
     {
         $app = \Gazelle\App::go();
 
@@ -415,11 +415,14 @@ class BonusPoints
             throw new \Exception("you're betting more than you have");
         }
 
-        # replace all whitespace and newlines with a single space
-        $votes = preg_replace("/\s+/", " ", $votes);
+        # do we need to handle a string argument?
+        if (is_string($votes)) {
+            # replace all whitespace and newlines with a single space
+            $votes = preg_replace("/\s+/", " ", $votes);
 
-        # explode the votes into an array
-        $votes = explode(" ", $votes);
+            # explode the votes into an array
+            $votes = explode(" ", $votes);
+        }
 
         # remove any non-numeric and invalid values
         $votes = array_filter($votes, function ($vote) {
@@ -519,16 +522,6 @@ class BonusPoints
             }
         }
 
-        /*
-        return [
-            "bet" => $bet,
-            "correctVotes" => $correctVotes,
-            "probability" => $probability,
-            "weightedProbability" => $weightedProbability,
-            "closest" => $closest
-        ];
-        */
-
         /** */
 
         # get the badgeId for the closest weighted probability
@@ -549,6 +542,17 @@ class BonusPoints
         # deduct the bonus points and award the badge
         $this->deductPoints($bet);
         \Badges::awardBadge($this->user->core["id"], $badgeId);
+
+        return [
+            "badgeId" => $badgeId,
+            "bet" => $bet,
+            "closest" => $closest,
+            "correctVotes" => $correctVotes,
+            "probability" => $probability,
+            "randomNumbers" => $randomNumbers,
+            "votes" => $votes,
+            "weightedProbability" => $weightedProbability,
+        ];
     }
 
 

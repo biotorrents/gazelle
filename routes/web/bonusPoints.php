@@ -22,7 +22,7 @@ Flight::route("/store/checkout/@item", function ($item) {
 
 
 # confirm
-Flight::route("/store/confirm", function ($item) {
+Flight::route("/store/confirm", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/bonusPoints/confirm.php";
 });
