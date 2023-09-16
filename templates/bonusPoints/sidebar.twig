@@ -36,15 +36,15 @@
 <h3>Exchange currency</h3>
 
 <p>
+    {{ env.bonusPoints }} and upload trade at a rate of 1 point = 1 KiB.
+    You'll be able to review your purchase beforehand.
     Each transaction incurs a {{ bonusPoints.exchangeTax * 100 }}% processing fee.
 </p>
 
-<form method="post" action="/store/confirm">
-    {{ form_token("/store/confirm") }}
+<form method="post" action="/store/checkout/pointsToUpload">
+    {{ form_token("/store/checkout/pointsToUpload") }}
 
-    <input type="hidden" name="item" value="pointsToUpload">
-
-    <input type ="number" name="amount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
+    <input type ="number" name="pointsAmount" placeholder="How many {{ env.bonusPoints }} to exchange" max="{{ bonusPoints.bonusPoints }}" required>
 
     <button type="submit" class="button button-primary">{{ env.bonusPoints }} → upload</button>
 </form>
@@ -52,12 +52,10 @@
     <hr>
     <br>
 
-<form method="post" action="/store/confirm">
-    {{ form_token("/store/confirm") }}
+<form method="post" action="/store/checkout/uploadToPoints">
+    {{ form_token("/store/checkout/uploadToPoints") }}
 
-    <input type="hidden" name="item" value="uploadToPoints">
-
-    <input type="number" name="amount" placeholder="How much upload to exchange" required>
+    <input type="number" name="uploadAmount" placeholder="How much upload to exchange" required>
 
     <select name="dataUnit" class="select">
         <option value="MiB">MiB</option>

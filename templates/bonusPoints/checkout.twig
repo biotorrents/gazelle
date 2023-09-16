@@ -8,7 +8,7 @@
 
 <p>
     Thank you for shopping at {{ env.siteName }}.
-    Please complete your purchase of {{ bonusPoints.friendlyItemNames[item] }}.
+    Please complete your purchase: "{{ bonusPoints.friendlyItemNames[item] }}."
     We appreciate your contribution to the site.
 </p>
 
@@ -16,13 +16,9 @@
 <form method="post" action="/store/confirm">
     {{ form_token("/store/confirm") }}
 
-    <input type="hidden" name="item" value="{{ item }}">
-
-    <input type="submit" value="complete purchase">
+    <input type="submit" class="button button-primary" value="complete purchase">
 </form>
 {% endif %} {# {% if not actionRequired %} #}
-<p>
-
 </section>
 
 {% if actionRequired %}
@@ -33,6 +29,37 @@
     We need more information to complete your purchase.
     Please enter the requested information in the form below.
 </p>
+
+
+{# pointsToUpload or uploadToPoints #}
+{% if item == "pointsToUpload" or item == "uploadToPoints"  %}
+<p>
+    If you approve this transaction, your new balances will be:
+</p>
+
+<ul>
+    <li>{{ newPointsBalance|number_format }} {{ env.bonusPoints }}</li>
+    <li>{{ newUploadBalance|get_size }} uploaded</li>
+</ul>
+
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+    {% if item == "pointsToUpload" %}
+    <input type="hidden" name="amount" value="{{ post.pointsAmount }}">
+    {% endif %} {# {% if item == "pointsToUpload" %} #}
+
+    {% if item == "uploadToPoints" %}
+    <input type="hidden" name="amount" value="{{ post.uploadAmount }}">
+    {% endif %} {# {% if item == "uploadToPoints" %} #}
+
+<p>
+    <input type="submit" class="button button-primary" value="complete purchase">
+</p>
+</form>
+{% endif %} {# {% if item == "pointsToUpload" or item == "uploadToPoints"  %} #}
 
 
 {# specificFreeleech #}

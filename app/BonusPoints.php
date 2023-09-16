@@ -18,7 +18,7 @@ class BonusPoints
     private $cacheDuration = "1 minute";
 
     # the current user data
-    private $user = null;
+    public $user = null;
 
     # the available bonus points
     public $bonusPoints = 0;
@@ -264,16 +264,19 @@ class BonusPoints
      *
      * Deduct bonus points from the user's account.
      *
-     * @param int $amount
+     * @param int|float $amount
      * @return int new balance
      */
-    private function deductPoints(int $amount): int
+    private function deductPoints(int|float $amount): int
     {
         $app = \Gazelle\App::go();
 
         if ($amount > $this->bonusPoints) {
             throw new \Exception("insufficient bonus points for this purchase");
         }
+
+        # convert to an int
+        $amount = intval($amount);
 
         $this->bonusPoints -= $amount;
         $this->bonusPoints = max(0, $this->bonusPoints);
@@ -292,6 +295,8 @@ class BonusPoints
      * pointsToUpload
      *
      * Convert bonus points to upload.
+     * The rate is 1 point = 1 KiB of upload.
+     * Note the database stored upload as bytes.
      *
      * @param int amount (points)
      * @return int new upload (bytes)
@@ -301,7 +306,7 @@ class BonusPoints
         $app = \Gazelle\App::go();
 
         # exchange rate penalty
-        $amount = $amount * (1 - $this->exchangeTax);
+        $amount = ($amount * 1024) * (1 - $this->exchangeTax);
 
         # deduct the bonus points
         $this->deductPoints($amount);
@@ -320,6 +325,8 @@ class BonusPoints
      * uploadToPoints
      *
      * Convert upload to bonus points.
+     * The upload should be pre-calculated as bytes.
+     * Note the lack of amount validation here.
      *
      * @param int amount (bytes)
      * @return int new bonus points
