@@ -26,6 +26,7 @@ $post = Http::post();
 
 # get the official tags
 $tagList = Tags::getOfficialTags();
+#!d($tagList);exit;
 
 # is any extra action required?
 $actionRequired = false;

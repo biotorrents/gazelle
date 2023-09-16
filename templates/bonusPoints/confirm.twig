@@ -4,9 +4,23 @@
 {% block content %}
 
 <section>
-<h2>Complete your purchase</h2>
+{% if errorMessage %}
+<h2>An error occurred</h2>
+
+<div class="alert error">
+{{ errorMessage }}
+</div>
+{% else %}
+<h2>Thank you</h2>
 
 <p>
+    Your purchase of {{ item }} is complete!
+    todo: add some extra info based on the item
+</p>
+{% endif %}
+
+<p>
+    <a class="button button-primary" href="/store">back to the storefront</a>
 </p>
 </section>
 

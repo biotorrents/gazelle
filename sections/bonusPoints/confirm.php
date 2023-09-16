@@ -66,11 +66,15 @@ try {
     };
 } catch (\Exception $e) {
     $errorMessage = $e->getMessage();
+    $result = null;
 }
 
 # twig template
 $app->twig->display("bonusPoints/confirm.twig", [
     "title" => "Thanks for your purchase",
     "sidebar" => true,
+
+    "item" => $item,
     "errorMessage" => $errorMessage,
+    "result" => $result,
 ]);

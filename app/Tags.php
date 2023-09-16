@@ -290,6 +290,11 @@ class Tags
         $query = "select * from tags where tagType = ?";
         $ref = $app->dbNew->multi($query, ["genre"]);
 
+        # sort the array by the "name" key
+        usort($ref, function ($a, $b) {
+            return strcmp($a["Name"], $b["Name"]);
+        });
+
         return $ref;
     }
 

@@ -43,7 +43,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p>
-    <label for="torrentId">Torrent identifier</label>
+    <label for="torrentId">Torrent identifier or permalink URI</label>
 </p>
 
 <p>
@@ -70,8 +70,8 @@
 
 <p>
     <select class="select" placeholder="Select a tag" required>
-        {% for tag in tags %}
-        <option value="{{ tag.ID }}">{{ tag.Name }}</option>
+        {% for item in tagList %}
+        <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}
     </select>
 </p>
