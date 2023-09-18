@@ -125,13 +125,21 @@
             <td>Purchase an invite for a friend or a fun enemy</td>
         </tr>
 
+        {% if not hasCustomTitle %}
         <tr>
             <td><a href="/store/checkout/customTitle">Custom title</a></td>
             <td>{{ bonusPoints.customTitleCost|number_format }}</td>
             <td>Purchase a cusom title that's displayed with your username</td>
         </tr>
+        {% else %}
+        <tr>
+            <td><a href="/store/checkout/customTitle">Custom title</a></td>
+            <td>{{ bonusPoints.customTitleUpdateCost|number_format }}</td>
+            <td>Update of delete your custom title</td>
+        </tr>
+        {% endif %}
 
-        {% if not snowflakeUpdate %}
+        {% if not hasGlitchUsername %}
         <tr>
             <td><a href="/store/checkout/glitchUsername">Glitch username effect</a></td>
             <td>{{ bonusPoints.glitchUsernameCost|number_format }}</td>
@@ -144,7 +152,7 @@
             <td>Delete your username glitch effect</td>
         {% endif %}
 
-        {% if not snowflakeUpdate %}
+        {% if not hasSnowflakeProfile %}
         <tr>
             <td><a href="/store/checkout/snowflakeProfile">Profile snowflake effect</a></td>
             <td>{{ bonusPoints.snowflakeCreateCost|number_format }}</td>
@@ -195,6 +203,8 @@
 </section>
 
 {# lottery badges #}
+<h4>Lottery badges</h4>
+
 <p>
     <a href="https://en.wikipedia.org/wiki/Keno" class="external">Play a game of keno</a> for the chance to win a badge.
     The rules are simple: pick up to 20 numbers between 1 and 80, and bet {{ env.bonusPoints }} to increase your odds of winning a rare badge.
@@ -226,6 +236,8 @@
 </section>
 
 {# auction badge #}
+<h4>Auction badge</h4>
+
 <p>
     Bid on a chance to win this badge.
     The highest bidder wins, and the auction resets every week.
@@ -251,6 +263,7 @@
 </section>
 
 {# pyramid scheme badge #}
+<h4>Coin badge</h4>
 <p>
     "It's not a pyramid, it's a triangle!"
     {{ env.siteName }} is proud to present the investment opportunity of a lifetime.
@@ -271,6 +284,32 @@
             <td><a href="/store/checkout/coinBadge">Invest</a> {{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
+        </tr>
+    </tbody>
+</table>
+
+{# random badge #}
+<h4>Random badge</h4>
+<p>
+    Purchase a badge whose icon is chosen at random.
+    It's your chance to display something truly unique.
+    There's no guarantee the pictured badge is what you get.
+</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td><a href="/store/checkout/randomBadge">Buy</a> <span class="badge">{{ randomBadge }}</span></td>
+            <td>{{ bonusPoints.randomBadgeCost|number_format }}</td>
+            <td>Random Badge: Purchased {{ "now"|date("Y-m-d") }}</td>
         </tr>
     </tbody>
 </table>

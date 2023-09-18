@@ -76,7 +76,7 @@ class BonusPoints
 
     # random badges (unique emoji badge)
     public $randomBadgeCost = 100000;
-    public $RandomBadgeCategoryCost = 200000;
+    public $randomBadgeCategoryCost = 200000;
 
     # coin badge stuff
     public $coinBadgeId = 60;
@@ -103,10 +103,11 @@ class BonusPoints
     public $personalCollageCost = 10000;
     public $inviteCost = 20000;
     public $customTitleCost = 50000;
+    public $customTitleUpdateCost = 5000;
     public $glitchUsernameCost = 100000;
 
     public $snowflakeCreateCost = 200000;
-    public $snowflakeUpdateCost = 2000;
+    public $snowflakeUpdateCost = 20000;
 
     /** */
 
@@ -174,11 +175,11 @@ class BonusPoints
         /** */
 
         # coin badge data
-        $query = "select value from bonus_points where `key` = ?";
+        $query = "select value from bonus_point_purchases where `key` = ?";
         $this->coinBadgeCurrentCost = $app->dbNew->single($query, ["coinBadge"]) ?? $this->coinBadgeStartingCost;
 
         # auction badge data
-        $query = "select value from bonus_points where `key` = ?";
+        $query = "select value from bonus_point_purchases where `key` = ?";
         $this->auctionBadgeCurrentCost = $app->dbNew->single($query, ["auctionBadge"]) ?? $this->auctionBadgeStartingCost;
     }
 
@@ -576,6 +577,11 @@ class BonusPoints
      */
     public function randomBadge()
     {
+        $app = \Gazelle\App::go();
+
+        $allEmojis = \Spatie\Emoji\Emoji::all();
+        $randomEmoji = array_rand($allEmojis);
+
         throw new \Exception("not implemented");
     }
 
@@ -608,8 +614,8 @@ class BonusPoints
         \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
 
         # update the cost
-        $query = "replace into bonus_points (`key`, value) values (?, ?)";
-        $app->dbNew->do($query, [$payment, "coinBadge"]);
+        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
+        $app->dbNew->do($query, [$this->user->core["id"], "coinBadge", $payment]);
     }
 
 
@@ -630,9 +636,8 @@ class BonusPoints
         $this->deductPoints($bid);
 
         # enter the bid
-        $data = json_encode(["userId" => $this->user->core["id"], "bid" => $bid]);
-        $query = "replace into bonus_points (`key`, value) values (?, ?)";
-        $app->dbNew->do($query, ["auctionBadge:bid:{$this->user->core["id"]}", $data]);
+        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
+        $app->dbNew->do($query, [$this->user->core["id"], "auctionBadge", $bid]);
     }
 
 
@@ -905,8 +910,8 @@ class BonusPoints
         $app = \Gazelle\App::go();
 
         # make sure it's one emoji
-        $emoji = \Emoji\is_single_emoji($snowflake);
-        if (!$emoji) {
+        $allEmojis = \Spatie\Emoji\Emoji::all();
+        if (!in_array($snowflake, $allEmojis)) {
             throw new \Exception("your chosen snowflake isn't a single emoji");
         }
 
@@ -918,7 +923,7 @@ class BonusPoints
         }
 
         # update the user's snowflake
-        $query = "replace into bonus_points (`key`, value) values (?, ?)";
-        $app->dbNew->do($query, ["snowflakeProfile:{$this->user->core["id"]}", $snowflake]);
+        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
+        $app->dbNew->do($query, [$this->user->core["id"], "snowflakeProfile", $snowflake]);
     }
 } # class

@@ -19,25 +19,22 @@ final class BonusPoints extends AbstractMigration
      */
     public function change(): void
     {
-        $table = $this->table("bonus_points");
+        $app = \Gazelle\App::go();
 
-        $table
-            ->addColumn("uuid", "binary", [
-                "length" => 16,
-                "default" => Phinx\Util\Literal::from("unhex(replace(uuid(), '-', ''))"),
-                "null" => false,
-            ])
+        $query = "
+            create table `bonus_point_purchases` (
+                `id` bigint unsigned not null default uuid_short(),
+                `userId` bigint unsigned not null,
+                `key` varchar(128) not null,
+                `value` varchar(255) not null,
+                `created_at` datetime default current_timestamp(),
+                `updated_at` datetime default null on update current_timestamp(),
+                `deleted_at` datetime default null,
+                primary key (`id`),
+                unique key `id` (`id`,`userId`,`key`)
+            ) engine=innodb default charset=utf8mb4 collate=utf8mb4_unicode_ci
+        ";
 
-            ->addColumn("key", "string", ["limit" => 128, "null" => false])
-            ->addColumn("value", "string", ["limit" => 255, "null" => false])
-
-            ->addColumn("created_at", "datetime", ["default" => "CURRENT_TIMESTAMP"])
-            ->addColumn("updated_at", "datetime", ["null" => true, "update" => "CURRENT_TIMESTAMP"])
-            ->addColumn("deleted_at", "datetime", ["null" => true])
-
-            ->addIndex("uuid", ["unique" => true])
-            ->addIndex(["id", "uuid", "key"], ["unique" => true])
-
-            ->create();
+        $app->dbNew->do($query);
     }
 }

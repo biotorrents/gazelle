@@ -23,10 +23,10 @@ $Validate = new Validate();
 // it into the database.                                                        //
 //******************************************************************************//
 
-$Properties=[];
+$Properties = [];
 $_POST['type'] = $_POST['type'] + 1;
 $TypeID = (int) $_POST['type'];
-$Type = $Categories[$TypeID-1];
+$Type = $Categories[$TypeID - 1];
 $TorrentID = (int) $_POST['torrentid'];
 
 $Properties['BadTags'] = (isset($_POST['bad_tags'])) ? 1 : 0;
@@ -263,16 +263,6 @@ $app->dbOld->query("
   FROM torrents
   WHERE ID = '$TorrentID'");
 list($GroupID, $Time) = $app->dbOld->next_record();
-
-// Competition
-if (strtotime($Time) > 1241352173) {
-    if ($_POST['log_score'] == '100') {
-        $app->dbOld->query("
-          INSERT IGNORE into users_points (GroupID, UserID, Points)
-          VALUES ('$GroupID', '$UserID', '1')");
-    }
-}
-// End competiton
 
 $app->dbOld->query("
   SELECT Enabled

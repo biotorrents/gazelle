@@ -275,16 +275,6 @@ CREATE TABLE `email_blacklist` (
 
 
 -- 2020-03-09
-CREATE TABLE `featured_albums` (
-  `GroupID` int NOT NULL DEFAULT '0',
-  `ThreadID` int NOT NULL DEFAULT '0',
-  `Title` varchar(35) NOT NULL DEFAULT '', -- todo: 35 vs. 50 vs. 255?
-  `Started` datetime,
-  `Ended` datetime
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `forums` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `CategoryID` tinyint NOT NULL DEFAULT '0',
@@ -450,13 +440,6 @@ CREATE TABLE `invite_tree` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
--- 2020-03-09
-CREATE TABLE `last_sent_email` (
-  `UserID` int NOT NULL,
-  PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 -- 2021-07-29
 CREATE TABLE `literature` (
   `id` int NOT NULL,
@@ -513,26 +496,6 @@ CREATE TABLE `news` (
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
   KEY `Time` (`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
-CREATE TABLE `new_info_hashes` (
-  `TorrentID` int NOT NULL,
-  `InfoHash` binary(20) DEFAULT NULL,
-  PRIMARY KEY (`TorrentID`),
-  KEY `InfoHash` (`InfoHash`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
-CREATE TABLE `ocelot_query_times` (
-  `buffer` enum('users','torrents','snatches','peers') NOT NULL,
-  `starttime` datetime,
-  `ocelotinstance` datetime,
-  `querylength` int NOT NULL,
-  `timespent` int NOT NULL,
-  UNIQUE KEY `starttime` (`starttime`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
@@ -795,23 +758,6 @@ CREATE TABLE `tags` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `top10_history` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `Date` datetime,
-  `Type` enum('Daily','Weekly') DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `top10_history_torrents` (
-  `HistoryID` int NOT NULL DEFAULT '0',
-  `Rank` tinyint NOT NULL DEFAULT '0',
-  `TorrentID` int NOT NULL DEFAULT '0',
-  `TitleString` varchar(150) NOT NULL DEFAULT '',
-  `TagString` varchar(100) NOT NULL DEFAULT ''
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `top_snatchers` (
   `UserID` int unsigned NOT NULL,
   PRIMARY KEY (`UserID`)
@@ -924,22 +870,6 @@ CREATE TABLE `torrents_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `torrents_logs_new` (
-  `LogID` int NOT NULL AUTO_INCREMENT,
-  `TorrentID` int NOT NULL DEFAULT '0',
-  `Log` mediumtext,
-  `Details` mediumtext,
-  `Score` int NOT NULL,
-  `Revision` int NOT NULL,
-  `Adjusted` enum('1','0') NOT NULL DEFAULT '0',
-  `AdjustedBy` int NOT NULL DEFAULT '0',
-  `NotEnglish` enum('1','0') NOT NULL DEFAULT '0',
-  `AdjustmentReason` text,
-  PRIMARY KEY (`LogID`),
-  KEY `TorrentID` (`TorrentID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `torrents_peerlists` (
   `TorrentID` int NOT NULL,
   `GroupID` int DEFAULT NULL,
@@ -962,15 +892,6 @@ CREATE TABLE `torrents_peerlists_compare` (
   KEY `GroupID` (`GroupID`),
   KEY `Stats` (`TorrentID`,`Seeders`,`Leechers`,`Snatches`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-CREATE TABLE `torrents_recommended` (
-  `GroupID` int NOT NULL,
-  `UserID` int NOT NULL,
-  `Time` datetime,
-  PRIMARY KEY (`GroupID`),
-  KEY `Time` (`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
 -- 2021-07-28
@@ -1276,26 +1197,6 @@ CREATE TABLE `users_notify_torrents` (
   PRIMARY KEY (`UserID`,`TorrentID`),
   KEY `TorrentID` (`TorrentID`),
   KEY `UserID_Unread` (`UserID`,`UnRead`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `users_points` (
-  `UserID` int NOT NULL,
-  `GroupID` int NOT NULL,
-  `Points` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`UserID`,`GroupID`),
-  KEY `UserID` (`UserID`),
-  KEY `GroupID` (`GroupID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `users_points_requests` (
-  `UserID` int NOT NULL,
-  `RequestID` int NOT NULL,
-  `Points` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`RequestID`),
-  KEY `UserID` (`UserID`),
-  KEY `RequestID` (`RequestID`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 

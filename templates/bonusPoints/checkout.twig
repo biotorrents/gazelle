@@ -8,7 +8,7 @@
 
 <p>
     Thank you for shopping at {{ env.siteName }}.
-    Please complete your purchase: "{{ bonusPoints.friendlyItemNames[item] }}."
+    Please complete your purchase of: <strong>{{ bonusPoints.friendlyItemNames[item] }}.</strong>
     We appreciate your contribution to the site.
 </p>
 
@@ -76,8 +76,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="torrentId">Torrent identifier or permalink URI</label>
-    <input type="text" name="torrentId" value="" class="grow" required>
+    <input type="text" name="torrentId" placeholder="Torrent identifier or permalink URI" class="grow" required>
 </p>
 
 <p class="flexRow">
@@ -144,8 +143,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="customTitle">Please enter your custom title (max 64 characters)</label>
-    <input type="text" class="grow" name="customTitle" id="customTitle" max="64" value="" required>
+    <input type="text" class="grow" name="customTitle" id="customTitle" max="64" placeholder="Please enter your custom title (64 characters)" required>
 </p>
 
 <p class="flexRow">
@@ -180,9 +178,12 @@
 
     <input type="hidden" name="item" value="{{ item }}">
 
+<p>
+    <label for="snowflakeEmoji">Your snowflake effect must be a single <a href="https://emojipedia.org" target="_blank" class="external">emoji</a> of your choice</label>
+</p>
+
 <p class="flexRow">
-    <label for="snowflakeEmoji">Please enter the emoji you'd like to use</label>
-    <input type="text" class="grow" name="snowflakeEmoji" value="" required>
+    <input type="text" class="grow" name="snowflakeEmoji" placeholder="Please enter the emoji you'd like to use" required>
 </p>
 
 <p class="flexRow">
@@ -201,13 +202,14 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="bet">How many {{ env.bonusPoints }} would you like to bet?</label>
-    <input type="number" class="grow" name="bet" id="bet" value="" max={{ bonusPoints.bonusPoints }} required>
+    <input type="number" class="grow" name="bet" id="bet" placeholder="How many {{ env.bonusPoints }} would you like to bet?" max={{ bonusPoints.bonusPoints }} required>
 </p>
 
+<p>
+    <label for="votes">Please enter up to 20 numbers between 1 and 80</label>
+</p>
 
 <p class="flexRow">
-    <label for="votes">Please enter up to 20 numbers between 1 and 80</label>
     <select class="grow select" name="votes[]" multiple>
         {% for i in range(1, 80) %}
         <option value="{{ i }}">{{ i }}</option>
@@ -231,8 +233,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="amount">How many {{ env.bonusPoints }} would you like to spend?</label>
-    <input type="number" class="grow" name="amount" id="amount" value="" required>
+    <input type="number" class="grow" name="amount" id="amount" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
 </p>
 
 <p class="flexRow">
