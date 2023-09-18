@@ -327,20 +327,13 @@
 		{# start footer block #}
 		<footer id="bottom">
 			{% block footer %}
-				{% if authenticated %}
-					{# private #}
-					{{ include("_base/privateFooter.twig") }}
-				{% else %}
-					{# public #}
-					{{ include("_base/privateFooter.twig") }}
-					{# {{ include("_base/publicFooter.twig") }} #}
-				{% endif %}
+				{# there's only one footer #}
+				{{ include("_base/footer.twig") }}
 
 				{# DebugBar: footer #}
 				{% if env.dev %}
 					{{ debugFooter() }}
 				{% endif %}
-
 			{% endblock %}
 		</footer>
 		{# end footer block #}

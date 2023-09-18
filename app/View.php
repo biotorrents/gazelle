@@ -93,12 +93,11 @@ class View
      */
     public static function footer($Options = [])
     {
-        $ENV = ENV::go();
-        global $SessionID, $UserSessions, $Time, $Mobile;
-        #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
+        $app = \Gazelle\App::go();
 
-        # hardcode private (public already twig'd)
-        require_once "$ENV->serverRoot/design/privatefooter.php";
+        echo "<footer>";
+        $app->twig->display("_base/footer.twig");
+        echo "</footer>";
     }
 
 
