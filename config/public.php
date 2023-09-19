@@ -193,8 +193,8 @@ define("BOT_SERVER", "irc.$env->siteDomain");
 ENV::setPub("ircHostname", "irc.{$env->siteDomain}");
 
 
-define("SOCKET_LISTEN_ADDRESS", "10.0.0.4");
-ENV::setPub("ircAddress", "10.0.0.4");
+define("SOCKET_LISTEN_ADDRESS", "10.10.10.60");
+ENV::setPub("ircAddress", "10.10.10.60");
 
 define("SOCKET_LISTEN_PORT", 51010);
 ENV::setPub("ircPort", 51010);

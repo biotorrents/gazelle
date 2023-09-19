@@ -97,7 +97,6 @@ class Torrents
     public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
 
 
-
     /**
      * __construct
      */
@@ -1137,8 +1136,8 @@ class Torrents
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
-            Misc::write_log(($app->user->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
-            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
+            Misc::write_log(($app->user->core["username"] ?? 'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
+            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
                 send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
@@ -1279,7 +1278,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurSnatchedTorrents =& $SnatchedTorrents[$BucketID];
+        $CurSnatchedTorrents = & $SnatchedTorrents[$BucketID];
         if ($CurSnatchedTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1365,7 +1364,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected seeding lists
-        $CurSeedingTorrents =& $SeedingTorrents[$BucketID];
+        $CurSeedingTorrents = & $SeedingTorrents[$BucketID];
         if ($CurSeedingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1457,7 +1456,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurLeechingTorrents =& $LeechingTorrents[$BucketID];
+        $CurLeechingTorrents = & $LeechingTorrents[$BucketID];
         if ($CurLeechingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before

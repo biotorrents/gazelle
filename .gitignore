@@ -33,7 +33,6 @@ yarn-error.log
 /public/css/*
 /public/fonts.tgz
 /public/fonts/*
-/public/images/badges/*
 /public/js/*
 /public/vendor/*
 /resources/closureCompiler.jar

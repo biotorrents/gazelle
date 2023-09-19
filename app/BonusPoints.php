@@ -288,7 +288,7 @@ class BonusPoints
     }
 
 
-    /** bonus points and upload conversion */
+    /** currency conversion */
 
 
     /**
@@ -365,9 +365,7 @@ class BonusPoints
     }
 
 
-
-
-    /** torrent and freeleech purchases */
+    /** torrents */
 
 
     /**
@@ -383,7 +381,11 @@ class BonusPoints
 
         # get a random torrent
         $query = "select id from torrents where freeTorrent = ? and deleted_at is null order by rand() limit 1";
-        $torrentId = $app->dbNew->single($query, [0]);
+        $torrentId = $app->dbNew->single($query, [1]); # todo: freeTorrent is confusing
+
+        if (!$torrentId) {
+            throw new \Exception("torrent not found");
+        }
 
         # deduct the bonus points
         $this->deductPoints($this->randomFreeleechCost);
