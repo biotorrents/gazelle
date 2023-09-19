@@ -373,30 +373,39 @@ class BonusPoints
      *
      * Purchase freeleech for a random torrent group.
      *
-     * @return int torrentId
+     * @return array torrent group
      */
-    public function randomFreeleech(): int
+    public function randomFreeleech(): array
     {
         $app = \Gazelle\App::go();
 
-        # get a random torrent
-        $query = "select id from torrents where freeTorrent = ? and deleted_at is null order by rand() limit 1";
-        $torrentId = $app->dbNew->single($query, [1]); # todo: freeTorrent is confusing
+        # get a random torrent group
+        $query = "select id from torrents_group where deleted_at is null order by rand() limit 1";
+        $groupId = $app->dbNew->single($query);
 
-        if (!$torrentId) {
-            throw new \Exception("torrent not found");
+        if (!$groupId) {
+            throw new \Exception("torrent group not found");
         }
 
         # deduct the bonus points
         $this->deductPoints($this->randomFreeleechCost);
 
-        # make the torrent freeleech
-        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
-        $app->dbNew->do($query, [$torrentId]);
-        \Torrents::freeleech_torrents($torrentId, 1, 3);
+        # get the group's torrents
+        $query = "select id from torrents where groupId = ? and deleted_at is null";
+        $ref = $app->dbNew->multi($query, [$groupId]);
 
-        # return the torrentId
-        return $torrentId;
+        foreach ($ref as $row) {
+            # make the torrent freeleech
+            $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+            $app->dbNew->do($query, [ $row["id"] ]);
+            \Torrents::freeleech_torrents($row["id"], 1, 3);
+        }
+
+        # return the torrent group
+        $query = "select * from torrents_group where id = ?";
+        $row = $app->dbNew->row($query, [$groupId]);
+
+        return $row;
     }
 
 
@@ -405,31 +414,48 @@ class BonusPoints
      *
      * Purchase freeleech for a specific torrent group.
      *
-     * @param int|string $identifier
-     * @return int torrentId
+     * @param int|string $groupId
+     * @return array torrent group
      */
-    public function specificFreeleech(int|string $identifier): int
+    public function specificFreeleech(int|string $groupId): array
     {
         $app = \Gazelle\App::go();
 
-        $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select id from torrents where {$column} = ? and deleted_at is null";
-        $torrentId = $app->dbNew->single($query, [$identifier]);
+        $parsed = parse_url($groupId);
 
-        if (!$torrentId) {
-            throw new \Exception("torrent not found");
+        # did they pass a groupId directly?
+        $parsed["path"] ??= null;
+        if ($parsed["path"] && is_numeric($parsed["path"])) {
+            $groupId = intval($parsed["path"]);
         }
 
-        # deduct the bonus points
-        $this->deductPoints($this->specificFreeleechCost);
+        # did they pass a whole uri?
+        $parsed["query"] ??= null;
+        if ($parsed["query"] && str_starts_with($parsed["query"], "id=")) {
+            $groupId = intval(str_replace("id=", "", $parsed["query"]));
+        }
 
-        # make the torrent freeleech
-        $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
-        $app->dbNew->do($query, [$torrentId]);
-        \Torrents::freeleech_torrents($torrentId, 1, 3);
+        # bail out, they messed up
+        if (!is_numeric($groupId)) {
+            throw new \Exception("torrent group not found");
+        }
 
-        # return the torrentId
-        return $torrentId;
+        # get the group's torrents
+        $query = "select id from torrents where groupId = ? and deleted_at is null";
+        $ref = $app->dbNew->multi($query, [$groupId]);
+
+        foreach ($ref as $row) {
+            # make the torrent freeleech
+            $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+            $app->dbNew->do($query, [ $row["id"] ]);
+            \Torrents::freeleech_torrents($row["id"], 1, 3);
+        }
+
+        # return the torrent group
+        $query = "select * from torrents_group where id = ?";
+        $row = $app->dbNew->row($query, [$groupId]);
+
+        return $row;
     }
 
 

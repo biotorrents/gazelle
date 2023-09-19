@@ -70,6 +70,9 @@ try {
     $result = null;
 }
 
+# debug
+#!d($result);exit;
+
 # twig template
 $app->twig->display("bonusPoints/confirm.twig", [
     "title" => "Thanks for your purchase",

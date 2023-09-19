@@ -19,12 +19,28 @@
 </p>
 
 
+{# randomFreeleech or specificFreeleech #}
+{% if item == "randomFreeleech" or item == "specificFreeleech" %}
+<p>
+    You made freelech all the torrents in <a href="/torrents.php?id={{ result.id }}">{{ result.title }}</a>.
+</p>    
+{% endif %} {# if item == "randomFreeleech" or item == "specificFreeleech" #}
+
+
 {# invite #}
 {% if item == "invite" %}
 <p>
     You now have {{ user.extra.Invites|number_format }} invites to use as you wish.
 </p>    
 {% endif %} {# if item == "invite" #}
+
+
+{# freeleechToken #}
+{% if item == "freeleechToken" %}
+<p>
+    You now have {{ user.extra.FLTokens|number_format }} freeleech tokens to use as you wish.
+</p>    
+{% endif %} {# if item == "freeleechToken" #}
 
 
 {# sequentialBadge #}

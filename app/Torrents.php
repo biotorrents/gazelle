@@ -1140,7 +1140,8 @@ class Torrents
             Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
-                send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
+                # todo: fsockopen(): Unable to connect to 10.10.10.60:51010 (Connection refused)
+                #send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
             }
         }
 
