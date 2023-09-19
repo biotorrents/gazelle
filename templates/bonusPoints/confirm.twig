@@ -19,6 +19,14 @@
 </p>
 
 
+{# invite #}
+{% if item == "invite" %}
+<p>
+    You now have {{ user.extra.Invites|number_format }} invites to use as you wish.
+</p>    
+{% endif %} {# if item == "invite" #}
+
+
 {# sequentialBadge #}
 {% if item == "sequentialBadge" %}
 <p>
