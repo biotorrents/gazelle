@@ -103,7 +103,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
-//Now we're dealing with a normal post
+    //Now we're dealing with a normal post
 } else {
     //Insert the post into the posts database
     $app->dbOld->query(
@@ -153,7 +153,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
             $Thread['LastPostAuthorID'] = $app->user->core['id']; // Last poster ID
             $Part2 = [$TopicID => $Thread]; // Bumped thread
 
-        // if we're bumping from an older page
+            // if we're bumping from an older page
         } else {
             // Remove the last thread from the index
             if (count($Forum) == TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
@@ -237,21 +237,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
 
     //Increment this now to make sure we redirect to the correct page
     $ThreadInfo['Posts']++;
-
-    //Award a badge if necessary
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM forums_posts
-    WHERE AuthorID = '{$app->user->core['id']}'");
-    list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
-        if ((int) $UserPosts >= $Count) {
-            $Success = Badges::awardBadge($app->user->core['id'], $Badge);
-            if ($Success) {
-                Misc::send_pm($app->user->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-            }
-        }
-    }
 }
 
 Subscriptions::flush_subscriptions('forums', $TopicID);

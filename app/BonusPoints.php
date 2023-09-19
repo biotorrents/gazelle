@@ -48,40 +48,40 @@ class BonusPoints
 
     # sequential badges [id => bonus point cost]
     public $sequentialBadges = [
-        40 => 1000,
-        41 => 2000,
-        42 => 5000,
-        43 => 10000,
-        44 => 20000,
-        45 => 50000,
-        46 => 100000,
-        47 => 200000,
-        48 => 500000,
-        49 => 1000000,
+        50 => 1000,
+        51 => 2000,
+        52 => 5000,
+        53 => 10000,
+        54 => 20000,
+        55 => 50000,
+        56 => 100000,
+        57 => 200000,
+        58 => 500000,
+        59 => 1000000,
     ];
 
     # lottery badges [id => chance to win]
     public $lotteryBadges = [
-        50 => 0.9,
-        51 => 0.09,
-        52 => 0.009,
-        53 => 0.0009,
-        54 => 0.00009,
-        55 => 0.000009,
-        56 => 0.0000009,
-        57 => 0.00000009,
-        58 => 0.000000009,
-        59 => 0.0000000009,
+        60 => 0.9,
+        61 => 0.09,
+        62 => 0.009,
+        63 => 0.0009,
+        64 => 0.00009,
+        65 => 0.000009,
+        66 => 0.0000009,
+        67 => 0.00000009,
+        68 => 0.000000009,
+        69 => 0.0000000009,
     ];
 
     # auction badge id
-    public $auctionBadgeId = 60;
+    public $auctionBadgeId = 70;
     public $auctionBadgeStartingCost = 9000; # starting cost
     public $auctionBadgeCurrentCost = 0; # current cost
     public $auctionBadgePremium = 1000; # minimum step
 
     # coin badge stuff
-    public $coinBadgeId = 70;
+    public $coinBadgeId = 80;
     public $coinBadgeStartingCost = 9000; # starting cost
     public $coinBadgeCurrentCost = 0; # current cost
     public $coinBadgePremium = 1000; # minimum step

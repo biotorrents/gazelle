@@ -405,48 +405,65 @@ define("RATIO_REQUIREMENTS", [
   [10  * 1024 ** 3, 0.05,         0.00],
 ]);
 
-# God I wish I didn't have to do this but I just don't care anymore
-$AutomatedBadgeIDs = [
-  "DL" => [
-    "16"   => 10,
-    "32"   => 11,
-    "64"   => 12,
-    "128"  => 13,
-    "256"  => 14,
-    "512"  => 15,
-    "1024" => 16,
-    "2048" => 17,
-    "4096" => 18,
-    "8192" => 19,
-  ],
+# [badgeId => quantity]
+$activityBadgeIds = [
+    # theme: eating a meal
+    "download" => [
+        10 => 16, # GiB
+        21 => 32,
+        22 => 64,
+        23 => 128,
+        24 => 256,
+        25 => 512,
+        26 => 1024,
+        27 => 2048,
+        28 => 4096,
+        29 => 8192,
+    ],
 
-  "UL" => [
-    "16"   => 20,
-    "32"   => 21,
-    "64"   => 22,
-    "128"  => 23,
-    "256"  => 24,
-    "512"  => 25,
-    "1024" => 26,
-    "2048" => 27,
-    "4096" => 28,
-    "8192" => 29,
-  ],
+    # theme: advances in technology
+    "upload" => [
+        20 => 16, # GiB
+        21 => 32,
+        22 => 64,
+        23 => 128,
+        24 => 256,
+        25 => 512,
+        26 => 1024,
+        27 => 2048,
+        28 => 4096,
+        29 => 8192,
+    ],
 
-  "Posts" => [
-    "10"   => 30,
-    "20"   => 31,
-    "50"   => 32,
-    "100"  => 33,
-    "200"  => 34,
-    "500"  => 35,
-    "1000" => 36,
-    "2000" => 37,
-    "5000" => 38,
-    "10000" => 39,
-  ]
+    # theme: memes and shitposts
+    "posts" => [
+        30 => 10,
+        31 => 20,
+        32 => 50,
+        33 => 100,
+        34 => 200,
+        35 => 500,
+        36 => 1000,
+        37 => 2000,
+        38 => 5000,
+        39 => 10000,
+    ],
+
+    # theme: various biology items
+    "random" => [
+        40 => null,
+        41 => null,
+        42 => null,
+        43 => null,
+        44 => null,
+        45 => null,
+        46 => null,
+        47 => null,
+        48 => null,
+        49 => null,
+    ],
 ];
 ENV::setPub(
-    "AUTOMATED_BADGE_IDS",
-    $env->convert($AutomatedBadgeIDs)
+    "activityBadgeIds",
+    $env->convert($activityBadgeIds)
 );
