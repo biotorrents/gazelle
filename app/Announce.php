@@ -15,7 +15,7 @@ class Announce
 {
     # IRC bot config options
     private static $ircChannels = ["announce", "debug"];
-    private static $ircAddress = "10.0.0.4";
+    private static $ircAddress = "10.0.0.6";
     private static $ircPort = 51010;
 
     # RSS bot config options

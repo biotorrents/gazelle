@@ -371,7 +371,7 @@ class BonusPoints
     /**
      * randomFreeleech
      *
-     * Purchase freeleech for a random torrent.
+     * Purchase freeleech for a random torrent group.
      *
      * @return int torrentId
      */
@@ -403,7 +403,7 @@ class BonusPoints
     /**
      * specificFreeleech
      *
-     * Purchase freeleech for a specific torrent.
+     * Purchase freeleech for a specific torrent group.
      *
      * @param int|string $identifier
      * @return int torrentId

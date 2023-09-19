@@ -1587,8 +1587,9 @@ class Torrents
 
     /**
      * get_reports
+     *
+     * Used to get reports info on a unison cache in both browsing pages and torrent pages.
      */
-    // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
         $app = \Gazelle\App::go();
