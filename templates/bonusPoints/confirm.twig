@@ -10,14 +10,62 @@
 <div class="alertbar error">
 {{ errorMessage }}
 </div>
+
 {% else %}
 <h2>Thank you</h2>
 
 <p>
-    Your purchase of {{ item }} is complete!
-    todo: add some extra info based on the item
+    Your purchase of <strong>{{ bonusPoints.friendlyItemNames[item] }}</strong> is complete!
 </p>
-{% endif %}
+
+
+{# sequentialBadge #}
+{% if item == "sequentialBadge" %}
+<p>
+    You received this badge: {{ displayBadge(result) }}.
+</p>    
+{% endif %} {# if item == "sequentialBadge" #}
+
+
+{# lotteryBadge #}
+{% if item == "lotteryBadge" %}
+<p>
+    You won the badge {{ displayBadge(result.badgeId) }}!
+</p>
+
+<p>
+    You bet {{ result.bet|number_format }} {{ env.bonusPoints }} and got {{ result.correctVotes }} correct votes.
+    This increased your probability of winning to {{ result.weightedProbability }}.
+</p>
+{% endif %} {# if item == "lotteryBadge" #}
+
+
+{# auctionBadge #}
+{% if item == "auctionBadge" %}
+<p>
+    The next bidder must pay at least {{ result|number_format }} {{ env.bonusPoints }}.
+    The action restarts each month, so please check back often.
+</p>    
+{% endif %} {# if item == "auctionBadge" #}
+
+
+{# coinBadge #}
+{% if item == "coinBadge" %}
+<p>
+    The next investor must pay at least {{ result|number_format }} {{ env.bonusPoints }}.
+</p>    
+{% endif %} {# if item == "coinBadge" #}
+
+
+{# randomBadge #}
+{% if item == "randomBadge" %}
+<p>
+    You received this badge: {{ displayBadge(result.id) }}.
+</p>    
+{% endif %} {# if item == "randomBadge" #}
+
+
+{% endif %} {# if errorMessage #}
 
 <p>
     <a class="button button-primary" href="/store">back to the storefront</a>

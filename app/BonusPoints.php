@@ -74,21 +74,20 @@ class BonusPoints
         59 => 0.0000000009,
     ];
 
-    # random badges (unique emoji badge)
-    public $randomBadgeCost = 100000;
-    public $randomBadgeCategoryCost = 200000;
+    # auction badge id
+    public $auctionBadgeId = 60;
+    public $auctionBadgeStartingCost = 9000; # starting cost
+    public $auctionBadgeCurrentCost = 0; # current cost
+    public $auctionBadgePremium = 1000; # minimum step
 
     # coin badge stuff
-    public $coinBadgeId = 60;
+    public $coinBadgeId = 70;
     public $coinBadgeStartingCost = 9000; # starting cost
     public $coinBadgeCurrentCost = 0; # current cost
     public $coinBadgePremium = 1000; # minimum step
 
-    # auction badge id
-    public $auctionBadgeId = 70;
-    public $auctionBadgeStartingCost = 9000; # starting cost
-    public $auctionBadgeCurrentCost = 0; # current cost
-    public $auctionBadgePremium = 1000; # minimum step
+    # random badges (unique emoji badge)
+    public $randomBadgeCost = 1000000;
 
     /** */
 
@@ -175,11 +174,11 @@ class BonusPoints
         /** */
 
         # coin badge data
-        $query = "select value from bonus_point_purchases where `key` = ?";
+        $query = "select value from bonus_point_purchases where `key` = ? order by value desc limit 1";
         $this->coinBadgeCurrentCost = $app->dbNew->single($query, ["coinBadge"]) ?? $this->coinBadgeStartingCost;
 
         # auction badge data
-        $query = "select value from bonus_point_purchases where `key` = ?";
+        $query = "select value from bonus_point_purchases where `key` = ? order by value desc limit 1";
         $this->auctionBadgeCurrentCost = $app->dbNew->single($query, ["auctionBadge"]) ?? $this->auctionBadgeStartingCost;
     }
 
@@ -210,7 +209,7 @@ class BonusPoints
      *
      * @see https://github.com/biotorrents/oppaiMirror/blob/main/sections/store/store.php
      */
-    public function calculatePointsRate(): float
+    private function calculatePointsRate(): float
     {
         $app = \Gazelle\App::go();
 
@@ -321,7 +320,9 @@ class BonusPoints
 
         # return the new upload
         $query = "select uploaded from users_main where userId = ?";
-        return $app->dbNew->single($query, [ $this->user->core["id"] ]);
+        $upload = $app->dbNew->single($query, [ $this->user->core["id"] ]);
+
+        return intval($upload);
     }
 
 
@@ -360,285 +361,10 @@ class BonusPoints
         $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
 
         # return the new bonus points
-        return $this->bonusPoints;
+        return intval($this->bonusPoints);
     }
 
 
-    /** purchase various types of badges */
-
-
-    /**
-     * sequentialBadge
-     *
-     * Purchase badges, one after the other.
-     * Owning the previous badge is a prerequisite.
-     *
-     * @return void
-     */
-    public function sequentialBadge(): void
-    {
-        $app = \Gazelle\App::go();
-
-        # what badge, if any, do they currently own?
-        $currentBadge = array_key_first($this->sequentialBadges);
-        $reversedBadges = array_reverse($this->sequentialBadges);
-
-        foreach ($reversedBadges as $id => $cost) {
-            $hasBadge = \Badges::hasBadge($this->user->core["id"], $id);
-            if ($hasBadge) {
-                $currentBadge = $id;
-                break;
-            }
-        }
-
-        # did they already buy all the badges?
-        if ($currentBadge === array_key_last($this->sequentialBadges)) {
-            throw new \Exception("you already have all the badges");
-        }
-
-        # can they afford the current badge?
-        $currentCost = $this->sequentialBadges[$currentBadge];
-
-        # deduct the bonus points and award the badge
-        $this->deductPoints($currentCost);
-        \Badges::awardBadge($this->user->core["id"], $this->sequentialBadges[$currentBadge]);
-    }
-
-
-    /**
-     * lotteryBadge
-     *
-     * Purchase a badge in a keno lottery.
-     * Bet bonus points to increase your chances.
-     *
-     * @param int $bet amount of bonus points to bet
-     * @param array|string $votes array of votes (integers)
-     * @return array scorecard data
-     *
-     * @see https://en.wikipedia.org/wiki/Keno
-     */
-    public function lotteryBadge(int $bet, array|string $votes): array
-    {
-        $app = \Gazelle\App::go();
-
-        if (empty($bet) || empty($votes)) {
-            throw new \Exception("your bet and votes can't be empty");
-        }
-
-        if ($bet > $this->bonusPoints) {
-            throw new \Exception("you're betting more than you have");
-        }
-
-        # do we need to handle a string argument?
-        if (is_string($votes)) {
-            # replace all whitespace and newlines with a single space
-            $votes = preg_replace("/\s+/", " ", $votes);
-
-            # explode the votes into an array
-            $votes = explode(" ", $votes);
-        }
-
-        # remove any non-numeric and invalid values
-        $votes = array_filter($votes, function ($vote) {
-            return is_numeric($vote) && $vote >= 1 && $vote <= 80;
-        });
-
-        # take only the first 20 votes
-        $votes = array_unique($votes);
-        $votes = array_slice($votes, 0, 20);
-
-        # pick 20 random numbers from 1 to 80
-        $randomNumbers = [];
-        foreach (range(1, 20) as $i) {
-            $randomNumbers[] = random_int(1, 80);
-        }
-
-        # how many votes did they get right?
-        $correctVotes = array_intersect($votes, $randomNumbers);
-        $correctVotes = count($correctVotes);
-
-        /** */
-
-        # constants
-        $factorial20 = 2.432902e+18;
-        $factorial80 = 7.156946e+118;
-
-
-        ##
-        # calculate ( n | r )
-        # https://www.calculatorsoup.com/calculators/discretemathematics/combinations.php
-        #
-
-        $factorialHits = 1;
-        foreach (range(1, $correctVotes) as $i) {
-            $factorialHits *= $i;
-        }
-
-        $divisor = ($factorialHits * $factorial20 - $factorialHits);
-        if ($divisor === 0) {
-            $divisor = 1;
-        }
-
-        # nCr1
-        $nCr1 = $factorial20 / $divisor;
-
-
-        ##
-        # calculate ( 80 - r | 20 - n )
-        #
-
-        $factorial80MinusR = 1;
-        foreach (range(1, 80 - $correctVotes) as $i) {
-            $factorial80MinusR *= $i;
-        }
-
-        $factorial20MinusN = 1;
-        foreach (range(1, 20 - $correctVotes) as $i) {
-            $factorial20MinusN *= $i;
-        }
-
-        $divisor = ($factorial20MinusN * $factorial80MinusR - $factorial20MinusN);
-        if ($divisor === 0) {
-            $divisor = 1;
-        }
-
-        # nCr2
-        $nCr2 = $factorial80MinusR / $divisor;
-
-
-        ##
-        # calculate ( 80 | 20 )
-        #
-
-        $divisor = ($factorial20 * $factorial80 - $factorial20);
-        if ($divisor === 0) {
-            $divisor = 1;
-        }
-
-        # nCr3
-        $nCr3 = $factorial80 / $divisor;
-
-
-        ##
-        # calculate the probability of hitting exactly r spots on an n-spot ticket
-        # https://en.wikipedia.org/wiki/Hypergeometric_distribution#Application_to_Keno
-        #
-
-        $probability = $nCr1 * $nCr2 / $nCr3;
-
-        # find the badge array value closest to the weighted probability
-        $weightedProbability = $probability / $bet;
-
-        $closest = null;
-        foreach ($this->lotteryBadges as $id => $chance) {
-            if ($closest === null || abs($chance - $weightedProbability) < abs($closest - $weightedProbability)) {
-                $closest = $chance;
-            }
-        }
-
-        /** */
-
-        # get the badgeId for the closest weighted probability
-        $badgeId = array_search($closest, $this->lotteryBadges);
-
-        # do they already have the badge?
-        $hasBadge = \Badges::hasBadge($this->user->core["id"], $badgeId);
-        if ($hasBadge) {
-            $query = "select icon from badges where id = ?";
-            $icon = $app->dbNew->single($query, [$badgeId]);
-
-            # gambling is bad
-            $this->deductPoints($bet);
-
-            throw new \Exception("you already own the badge {$icon}, please play again");
-        }
-
-        # deduct the bonus points and award the badge
-        $this->deductPoints($bet);
-        \Badges::awardBadge($this->user->core["id"], $badgeId);
-
-        return [
-            "badgeId" => $badgeId,
-            "bet" => $bet,
-            "closest" => $closest,
-            "correctVotes" => $correctVotes,
-            "probability" => $probability,
-            "randomNumbers" => $randomNumbers,
-            "votes" => $votes,
-            "weightedProbability" => $weightedProbability,
-        ];
-    }
-
-
-    /**
-     * randomBadge
-     *
-     * Awards a unique emoji badge.
-     */
-    public function randomBadge()
-    {
-        $app = \Gazelle\App::go();
-
-        $allEmojis = \Spatie\Emoji\Emoji::all();
-        $randomEmoji = array_rand($allEmojis);
-
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * coinBadge
-     *
-     * Purchase a badge as in a pyramid scheme.
-     * The cost increases with each purchase.
-     *
-     * @param int $payment
-     * @return void
-     */
-    public function coinBadge(int $payment): void
-    {
-        $app = \Gazelle\App::go();
-
-        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->coinBadgeId);
-        if ($hasBadge) {
-            throw new \Exception("you already own this badge");
-        }
-
-        # did they pay enough bonus points?
-        if ($payment < $currentCost + $this->coinBadgePremium) {
-            throw new \Exception("insufficient payment amount; the minimum payment is " . $currentCost + $this->coinBadgePremium);
-        }
-
-        # deduct the bonus points and award the badge
-        $this->deductPoints($payment);
-        \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
-
-        # update the cost
-        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
-        $app->dbNew->do($query, [$this->user->core["id"], "coinBadge", $payment]);
-    }
-
-
-    /**
-     * auctionBadge
-     *
-     * Purchase a badge in an auction.
-     * The high bidder wins the badge.
-     *
-     * @param int $bid
-     * @return void
-     */
-    public function auctionBadge(int $bid): void
-    {
-        $app = \Gazelle\App::go();
-
-        # deduct the bonus points
-        $this->deductPoints($bid);
-
-        # enter the bid
-        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
-        $app->dbNew->do($query, [$this->user->core["id"], "auctionBadge", $bid]);
-    }
 
 
     /** torrent and freeleech purchases */
@@ -925,5 +651,336 @@ class BonusPoints
         # update the user's snowflake
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
         $app->dbNew->do($query, [$this->user->core["id"], "snowflakeProfile", $snowflake]);
+    }
+
+
+    /** badges */
+
+
+    /**
+     * sequentialBadge
+     *
+     * Purchase badges, one after the other.
+     * Owning the previous badge is a prerequisite.
+     *
+     * @return int badgeId
+     */
+    public function sequentialBadge(): int
+    {
+        $app = \Gazelle\App::go();
+
+        # what badge, if any, do they currently own?
+        $currentBadge = null;
+        foreach ($this->sequentialBadges as $id => $cost) {
+            $hasBadge = \Badges::hasBadge($this->user->core["id"], $id);
+            if (!$hasBadge) {
+                $currentBadge = $id;
+                break;
+            }
+        }
+
+        # did they already buy all the badges?
+        if (!$currentBadge) {
+            throw new \Exception("you already have all the badges");
+        }
+
+        # can they afford the current badge?
+        $currentCost = $this->sequentialBadges[$currentBadge];
+
+        # deduct the bonus points and award the badge
+        $this->deductPoints($currentCost);
+        \Badges::awardBadge($this->user->core["id"], $currentBadge);
+
+        return $currentBadge;
+    }
+
+
+    /**
+     * lotteryBadge
+     *
+     * Purchase a badge in a keno lottery.
+     * Bet bonus points to increase your chances.
+     *
+     * @param int $bet amount of bonus points to bet
+     * @param array|string $votes array of votes (integers)
+     * @return array scorecard data
+     *
+     * @see https://en.wikipedia.org/wiki/Keno
+     */
+    public function lotteryBadge(int $bet, array|string $votes): array
+    {
+        $app = \Gazelle\App::go();
+
+        if (empty($bet) || empty($votes)) {
+            throw new \Exception("your bet and votes can't be empty");
+        }
+
+        if ($bet > $this->bonusPoints) {
+            throw new \Exception("you're betting more than you have");
+        }
+
+        # do we need to handle a string argument?
+        if (is_string($votes)) {
+            # replace all whitespace and newlines with a single space
+            $votes = preg_replace("/\s+/", " ", $votes);
+
+            # explode the votes into an array
+            $votes = explode(" ", $votes);
+        }
+
+        # remove any non-numeric and invalid values
+        $votes = array_filter($votes, function ($vote) {
+            return is_numeric($vote) && $vote >= 1 && $vote <= 80;
+        });
+
+        # take only the first 20 votes
+        $votes = array_unique($votes);
+        $votes = array_slice($votes, 0, 20);
+
+        # pick 20 random numbers from 1 to 80
+        $randomNumbers = [];
+        foreach (range(1, 20) as $i) {
+            $randomNumbers[] = random_int(1, 80);
+        }
+
+        # how many votes did they get right?
+        $correctVotes = array_intersect($votes, $randomNumbers);
+        $correctVotes = count($correctVotes);
+
+        /** */
+
+        # constants
+        $factorial20 = 2.432902e+18;
+        $factorial80 = 7.156946e+118;
+
+
+        ##
+        # calculate ( n | r )
+        # https://www.calculatorsoup.com/calculators/discretemathematics/combinations.php
+        #
+
+        $factorialHits = 1;
+        foreach (range(1, $correctVotes) as $i) {
+            $factorialHits *= $i;
+        }
+
+        $divisor = ($factorialHits * $factorial20 - $factorialHits);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr1
+        $nCr1 = $factorial20 / $divisor;
+
+
+        ##
+        # calculate ( 80 - r | 20 - n )
+        #
+
+        $factorial80MinusR = 1;
+        foreach (range(1, 80 - $correctVotes) as $i) {
+            $factorial80MinusR *= $i;
+        }
+
+        $factorial20MinusN = 1;
+        foreach (range(1, 20 - $correctVotes) as $i) {
+            $factorial20MinusN *= $i;
+        }
+
+        $divisor = ($factorial20MinusN * $factorial80MinusR - $factorial20MinusN);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr2
+        $nCr2 = $factorial80MinusR / $divisor;
+
+
+        ##
+        # calculate ( 80 | 20 )
+        #
+
+        $divisor = ($factorial20 * $factorial80 - $factorial20);
+        if ($divisor === 0) {
+            $divisor = 1;
+        }
+
+        # nCr3
+        $nCr3 = $factorial80 / $divisor;
+
+
+        ##
+        # calculate the probability of hitting exactly r spots on an n-spot ticket
+        # https://en.wikipedia.org/wiki/Hypergeometric_distribution#Application_to_Keno
+        #
+
+        $probability = $nCr1 * $nCr2 / $nCr3;
+
+        # find the badge array value closest to the weighted probability
+        $weightedProbability = $probability / $bet;
+
+        $closest = null;
+        foreach ($this->lotteryBadges as $id => $chance) {
+            if ($closest === null || abs($chance - $weightedProbability) < abs($closest - $weightedProbability)) {
+                $closest = $chance;
+            }
+        }
+
+        /** */
+
+        # get the badgeId for the closest weighted probability
+        $badgeId = array_search($closest, $this->lotteryBadges);
+
+        # do they already have the badge?
+        $hasBadge = \Badges::hasBadge($this->user->core["id"], $badgeId);
+        if ($hasBadge) {
+            $query = "select icon from badges where id = ?";
+            $icon = $app->dbNew->single($query, [$badgeId]);
+
+            # gambling is bad
+            $this->deductPoints($bet);
+
+            throw new \Exception("you already own the badge {$icon}, please play again");
+        }
+
+        # deduct the bonus points and award the badge
+        $this->deductPoints($bet);
+        \Badges::awardBadge($this->user->core["id"], $badgeId);
+
+        return [
+            "badgeId" => $badgeId,
+            "bet" => $bet,
+            "closest" => $closest,
+            "correctVotes" => $correctVotes,
+            "probability" => $probability,
+            "randomNumbers" => $randomNumbers,
+            "votes" => $votes,
+            "weightedProbability" => $weightedProbability,
+        ];
+    }
+
+
+    /**
+     * auctionBadge
+     *
+     * Purchase a badge in an auction.
+     * The high bidder wins the badge.
+     *
+     * @param int $bid
+     * @return int new cost
+     */
+    public function auctionBadge(int $payment): int
+    {
+        $app = \Gazelle\App::go();
+
+        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->auctionBadgeId);
+        if ($hasBadge) {
+            throw new \Exception("you already own this badge");
+        }
+
+        # did they pay enough bonus points?
+        if ($payment < $this->auctionBadgeCurrentCost + $this->auctionBadgePremium) {
+            throw new \Exception("insufficient payment amount; the minimum payment is " . $this->auctionBadgeCurrentCost + $this->auctionBadgePremium);
+        }
+
+        # deduct the bonus points
+        $this->deductPoints($payment);
+
+        # enter the bid
+        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
+        $app->dbNew->do($query, [$this->user->core["id"], "auctionBadge", $payment]);
+
+        return $payment + $this->auctionBadgePremium;
+    }
+
+
+    /**
+     * coinBadge
+     *
+     * Purchase a badge as in a pyramid scheme.
+     * The cost increases with each purchase.
+     *
+     * @param int $payment
+     * @return int new cost
+     */
+    public function coinBadge(int $payment): int
+    {
+        $app = \Gazelle\App::go();
+
+        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->coinBadgeId);
+        if ($hasBadge) {
+            throw new \Exception("you already own this badge");
+        }
+
+        # did they pay enough bonus points?
+        if ($payment < $this->coinBadgeCurrentCost + $this->coinBadgePremium) {
+            throw new \Exception("insufficient payment amount; the minimum payment is " . $this->coinBadgeCurrentCost + $this->coinBadgePremium);
+        }
+
+        # deduct the bonus points and award the badge
+        $this->deductPoints($payment);
+        \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
+
+        # update the cost
+        $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
+        $app->dbNew->do($query, [$this->user->core["id"], "coinBadge", $payment]);
+
+        return $payment + $this->coinBadgePremium;
+    }
+
+
+    /**
+     * randomBadge
+     *
+     * Awards a unique emoji badge.
+     *
+     * @return array
+     */
+    public function randomBadge(): array
+    {
+        $app = \Gazelle\App::go();
+
+        $allEmojis = \Spatie\Emoji\Emoji::all();
+        $randomEmoji = array_rand($allEmojis);
+
+        $randomBadgeIcon = $allEmojis[$randomEmoji];
+        $randomBadgeDescription = $this->normalizeEmojiName($randomEmoji);
+
+        # deduct the bonus points
+        $this->deductPoints($this->randomBadgeCost);
+
+        # create the new badge
+        $badgeId = $app->dbNew->uuidShort();
+        $query = "insert into badges (id, icon, name, description) values (?, ?, ?, ?)";
+        $app->dbNew->do($query, [$badgeId, $randomBadgeIcon, "Random Badge", $randomBadgeDescription]);
+
+        # award the badge
+        \Badges::awardBadge($this->user->core["id"], $badgeId);
+
+        return [
+            "id" => $badgeId,
+            "icon" => $randomBadgeIcon,
+            "name" => "Random Badge",
+            "description" => $randomBadgeDescription,
+        ];
+    }
+
+
+    /**
+     * normalizeEmojiName
+     *
+     * Converts, e.g., CHARACTER_MUSICAL_KEYBOARD into Musical Keyboard.
+     * This is used to generate badge names and is specific to spatie/emoji.
+     *
+     * @param string $string
+     * @return string
+     */
+    public function normalizeEmojiName(string $string): string
+    {
+        $string = \Illuminate\Support\Str::replace("CHARACTER_", "", $string);
+        $string = \Illuminate\Support\Str::replace("_", " ", $string);
+        $string = \Illuminate\Support\Str::title($string);
+
+        return $string;
     }
 } # class

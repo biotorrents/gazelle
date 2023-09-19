@@ -273,6 +273,11 @@ class Twig # extends Twig\Environment
             );
         }));
 
+        # Badges::hasBadge
+        $twig->addFunction(new Twig\TwigFunction("hasBadge", function ($userId, $badgeId) {
+            return boolval(Badges::hasBadge($userId, $badgeId));
+        }));
+
         # Badges::displayBadge
         $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId, $tooltip = true) {
             return new Twig\Markup(

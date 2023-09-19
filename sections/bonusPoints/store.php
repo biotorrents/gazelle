@@ -33,7 +33,9 @@ $hasSnowflakeProfile = $app->dbNew->single($query, [$app->user->core["id"], "sno
 # random badge sample
 $allEmojis = \Spatie\Emoji\Emoji::all();
 $randomEmoji = array_rand($allEmojis);
-$randomBadge = $allEmojis[$randomEmoji];
+
+$randomBadgeIcon = $allEmojis[$randomEmoji];
+$randomBadgeDescription = $bonusPoints->normalizeEmojiName($randomEmoji);
 
 # twig template
 $app->twig->display("bonusPoints/store.twig", [
@@ -45,5 +47,6 @@ $app->twig->display("bonusPoints/store.twig", [
     "hasGlitchUsername" => $hasGlitchUsername,
     "hasSnowflakeProfile" => $hasSnowflakeProfile,
 
-    "randomBadge" => $randomBadge,
+    "randomBadgeIcon" => $randomBadgeIcon,
+    "randomBadgeDescription" => $randomBadgeDescription,
 ]);

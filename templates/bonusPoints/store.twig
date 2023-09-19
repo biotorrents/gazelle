@@ -181,6 +181,10 @@
     To buy the next one, you first need all the prior ones.
 </p>
 
+<p>
+    <a href="/store/checkout/sequentialBadge" class="button button-primary">buy</a>
+</p>
+
 <table>
     <thead>
         <tr>
@@ -193,9 +197,14 @@
     <tbody>
         {% for key, value in bonusPoints.sequentialBadges %}
         <tr>
-            <td><a href="/store/checkout/sequentialBadge?badgeId={{ key }}">Buy</a> {{ displayBadge(key, false) }}</td>
+            <td>{{ displayBadge(key, false) }}</td>
             <td>{{ value|number_format }}</td>
-            <td>{{ badgeDescription(key) }}</td>
+
+            {% if hasBadge(user.core.id, key) %}
+                <td><s>{{ badgeDescription(key) }}</s></td>
+            {% else %}
+                <td>{{ badgeDescription(key) }}</td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>
@@ -206,7 +215,7 @@
 <h4>Lottery badges</h4>
 
 <p>
-    <a href="https://en.wikipedia.org/wiki/Keno" class="external">Play a game of keno</a> for the chance to win a badge.
+    <a href="https://en.wikipedia.org/wiki/Keno" target="_blank" class="external">Play a game of keno</a> for the chance to win a badge.
     The rules are simple: pick up to 20 numbers between 1 and 80, and bet {{ env.bonusPoints }} to increase your odds of winning a rare badge.
 </p>
 
@@ -240,7 +249,11 @@
 
 <p>
     Bid on a chance to win this badge.
-    The highest bidder wins, and the auction resets every week.
+    The highest bidder wins, and the auction resets every month.
+</p>
+
+<p>
+    <a href="/store/checkout/auctionBadge" class="button button-primary">bid</a>
 </p>
 
 <table>
@@ -254,7 +267,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/auctionBadge">Bid</a> {{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
+            <td>{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
             <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
         </tr>
@@ -270,6 +283,10 @@
     Purchase this coveted badge now, because its price will only increase in the future.
 </p>
 
+<p>
+    <a href="/store/checkout/coinBadge" class="button button-primary">invest</a>
+</p>
+
 <table>
     <thead>
         <tr>
@@ -281,7 +298,7 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/coinBadge">Invest</a> {{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
+            <td>{{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
             <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
         </tr>
@@ -296,6 +313,10 @@
     There's no guarantee the pictured badge is what you get.
 </p>
 
+<p>
+    <a href="/store/checkout/randomBadge" class="button button-primary">buy</a>
+</p>
+
 <table>
     <thead>
         <tr>
@@ -307,9 +328,9 @@
 
     <tbody>
         <tr>
-            <td><a href="/store/checkout/randomBadge">Buy</a> <span class="badge">{{ randomBadge }}</span></td>
+            <td><span class="badge">{{ randomBadgeIcon }}</span></td>
             <td>{{ bonusPoints.randomBadgeCost|number_format }}</td>
-            <td>Random Badge: Purchased {{ "now"|date("Y-m-d") }}</td>
+            <td>Random Badge: {{ randomBadgeDescription }}</td>
         </tr>
     </tbody>
 </table>

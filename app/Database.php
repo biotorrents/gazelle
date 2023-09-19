@@ -202,6 +202,22 @@ class Database extends \PDO
 
 
     /**
+     * uuidShort
+     *
+     * Generate a short uuid.
+     *
+     * @return int e.g., 100455158982377479
+     *
+     * @see https://mariadb.com/kb/en/uuid_short/
+     */
+    public function uuidShort(): int
+    {
+        $query = "select uuid_short()";
+        return $this->single($query);
+    }
+
+
+    /**
      * uuid
      *
      * Generate a unique id suitable for a database key.

@@ -225,15 +225,15 @@
 {% endif %} {# {% if item == "lotteryBadge" %} #}
 
 
-{# auctionBadge or coinBadge #}
-{% if item == "auctionBadge" or item == "coinBadge" %}
+{# auctionBadge #}
+{% if item == "auctionBadge" %}
 <form method="post" action="/store/confirm">
     {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="number" class="grow" name="amount" id="amount" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+    <input type="number" class="grow" name="amount" id="amount" min="{{ bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
 </p>
 
 <p class="flexRow">
@@ -241,7 +241,26 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "auctionBadge" or item == "coinBadge" %} #}
+{% endif %} {# {% if item == "auctionBadge" %} #}
+
+
+{# coinBadge #}
+{% if item == "coinBadge" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="number" class="grow" name="amount" id="amount" min="{{ bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# {% if item == "coinBadge" %} #}
 
 
 </section>
