@@ -26,23 +26,23 @@ class View
         $ENV = ENV::go();
 
         $uri = preg_replace(".$ENV->staticServer.", '', $uri);
-        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->serverRoot/$uri", true));
+        #$integrity = base64_encode(hash_file($ENV->subresourceIntegrity, "$ENV->serverRoot/$uri", true));
 
         switch ($type) {
             case 'script':
                 $HTML = "<script src='$uri' crossorigin='anonymous'></script>";
-                #$HTML = "<script defer src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
+                #$HTML = "<script defer src='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'></script>";
                 break;
 
             case 'style':
                 $HTML = "<link rel='stylesheet' href='$uri' crossorigin='anonymous'>";
-                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
-                #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
                 break;
 
             case 'font':
                 $HTML = "<link rel='preload' as='font' href='$uri' crossorigin='anonymous'>";
-                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
                 break;
 
             default:

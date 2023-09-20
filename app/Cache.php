@@ -97,7 +97,7 @@ class Cache # extends \Redis
         $app = \Gazelle\App::go();
 
         # https://github.com/phpredis/phpredis/blob/develop/cluster.md
-        if ($app->env->redisClusterEnabled) {
+        if ($app->env->enableRedisCluster) {
             $this->redis = new \RedisCluster(
                 null,
                 $app->env->getPriv("redisNodes"),
@@ -117,7 +117,7 @@ class Cache # extends \Redis
         }
 
         # single redis server (not a cluster)
-        if (!$app->env->redisClusterEnabled) {
+        if (!$app->env->enableRedisCluster) {
             $this->redis = new \Redis();
             $this->redis->connect(
                 $app->env->getPriv("redisHost"),

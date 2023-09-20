@@ -131,7 +131,7 @@ class Database extends \PDO
         $this->last = $this->source;
 
         # bail out if replicas aren't defined
-        if (!$app->env->databaseReplicationEnabled || empty($replicas)) {
+        if (!$app->env->enableDatabaseReplication || empty($replicas)) {
             return;
         }
 

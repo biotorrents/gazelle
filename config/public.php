@@ -4,16 +4,27 @@ declare(strict_types=1);
 
 
 /**
- * public
+ * public configuration
  */
 
+# which environment are we running in?
+# expected values are ["production", "development"]
+ENV::setPub("environment", "development");
+
+
 # development or production?
-ENV::setPub("dev", true);
+match ($env->environment) {
+    "production" => $env->dev = false,
+    "development" => $env->dev = true,
+    default => throw new Exception("invalid environment"),
+};
+
 
 # disable kint on production
 if (!$env->dev) {
     Kint\Kint::$enabled_mode = false;
 }
+
 
 # https://stackify.com/display-php-errors/
 if ($env->dev) {
@@ -22,15 +33,22 @@ if ($env->dev) {
     error_reporting(E_ALL);
 }
 
+
 # allow the site encryption key to be set without an account
 # (should only be used for initial setup)
-ENV::setPub("enablePublicEncryptionKey", false);
+match ($env->environment) {
+    "production" => $env->enablePublicEncryptionKey = false,
+    "development" => $env->enablePublicEncryptionKey = true,
+    default => throw new Exception("invalid environment"),
+};
+
 
 # is there an apcu database key loaded?
-ENV::setPub("apcuKey", apcu_exists("DBKEY"));
+$env->apcuExists = apcu_exists("DBKEY");
+
 
 # mariadb date format
-ENV::setPub("sqlDate", "Y-m-d H:i:s");
+$env->sqlDate = "Y-m-d H:i:s";
 
 
 /**
@@ -40,148 +58,139 @@ ENV::setPub("sqlDate", "Y-m-d H:i:s");
  * e.g., /var/www = good, /var/www/ = bad
  */
 
-# site name
-ENV::setPub(
-    "siteName",
-    (!$env->dev
-        ? "torrents.bio" # production
-        : "dev.torrents.bio") # development
-);
+# site name, e.g., BioTorrents.de
+match ($env->environment) {
+    "production" => $env->siteName = "BioTorrents.de",
+    "development" => $env->siteName = "[dev] BioTorrents.de",
+    default => throw new Exception("invalid environment"),
+};
 
-# meta description
-ENV::setPub("siteDescription", "An open platform for libre biology data");
-
-# navigation glyphs
-ENV::setPub("separator", "-"); # e.g., News - dev.torrents.bio
-ENV::setPub("crumb", "›"); # e.g., Forums › Board › Thread
 
 # website FQDN, e.g., dev.torrents.bio
-( # old format
+match ($env->environment) {
+    "production" => $env->siteDomain = "torrents.bio",
+    "development" => $env->siteDomain = "dev.torrents.bio",
+    default => throw new Exception("invalid environment"),
+};
+
+
+# old domain, to handle the biotorrents.de => torrents.bio migration
+# if not needed, simply set to the same values as $env->siteDomain
+match ($env->environment) {
+    "production" => $env->oldSiteDomain = "biotorrents.de",
+    "development" => $env->oldSiteDomain = "dev.biotorrents.de",
+    default => throw new Exception("invalid environment"),
+};
+
+
+# REMOVE ME
+(
     !$env->dev
         ? define("siteDomain", "torrents.bio") # production
         : define("siteDomain", "dev.torrents.bio") # development
 );
+# REMOVE ME
 
-ENV::setPub(
-    "siteDomain",
-    (!$env->dev
-        ? "torrents.bio" # production
-        : "dev.torrents.bio") # development
-);
 
-# old domain, to handle the biotorrents.de => torrents.bio migration
-# if not needed, simply set to the same values as $env->siteDomain
-ENV::setPub(
-    "oldSiteDomain",
-    (!$env->dev
-        ? "biotorrents.de" # production
-        : "dev.torrents.bio") # pevelopment
-);
+# meta description
+$env->siteDescription = "An open platform for libre biology data";
+
+
+# navigation glyphs
+$env->separator = "-"; # e.g., News - dev.torrents.bio
+$env->crumb = "›"; # e.g., Forums › Board › Thread
+
 
 # image host FQDN, e.g., pics.torrents.bio
-ENV::setPub("imageDomain", "pics.torrents.bio");
+$env->imageDomain = "pics.torrents.bio";
+
 
 # documentation site
-ENV::setPub("docsDomain", "docs.torrents.bio");
+$env->docsDomain = "docs.torrents.bio";
 
 # web root: currently used for twig
-ENV::setPub("webRoot", "/var/www");
+$env->webRoot = "/var/www";
+
 
 # app filesystem route (not web root)
-# e.g., /var/www/html/dev.torrents.bio
-( # old format
+# e.g., /var/www/html/gazelle
+match ($env->environment) {
+    "production" => $env->serverRoot = "/var/www/html/gazelle",
+    "development" => $env->serverRoot = "/var/www/html/gazelle",
+    default => throw new Exception("invalid environment"),
+};
+
+
+# REMOVE ME
+(
     !$env->dev
         ? define("serverRoot", "/var/www/html/gazelle") # production
         : define("serverRoot", "/var/www/html/gazelle") # development
 );
+# REMOVE ME
 
-ENV::setPub(
-    "serverRoot",
-    (!$env->dev
-      ? "/var/www/html/gazelle" # production
-      : "/var/www/html/gazelle") # development
-);
 
 # where torrent files are stored, e.g., /var/www/torrents
-ENV::setPub(
-    "torrentStore",
-    (!$env->dev
-        ? "/var/www/torrents" # production
-        : "/var/www/torrents") # development);
-);
+match ($env->environment) {
+    "production" => $env->torrentStore = "/var/www/torrents",
+    "development" => $env->torrentStore = "/var/www/torrents",
+    default => throw new Exception("invalid environment"),
+};
+
 
 # allows you to run static content off another server
 # the default is usually what you want though
+match ($env->environment) {
+    "production" => $env->staticServer = "/public",
+    "development" => $env->staticServer = "/public",
+    default => throw new Exception("invalid environment"),
+};
+
+
+# REMOVE ME
 define("staticServer", "/public");
-ENV::setPub("staticServer", "/public");
+# REMOVE ME
+
 
 # hash algorithm used for SRI
-ENV::setPub("SRI", "sha512");
+# https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+$env->subresourceIntegrity = "sha512";
 
 
 /**
- *  tracker
- *
- * @see http://bittorrent.org/beps/bep_0012.html
+ * toggle announce channels
  */
 
-# production
-if (!$env->dev) {
-    define("ANNOUNCE_URLS", [
-         [ # tier 1
-           "https://track.torrents.bio:443",
-          ], [] # tier 2
-      ]);
-
-    $AnnounceURLs = [
-      [ # tier 1
-        "https://track.torrents.bio:443",
-      ],
-      [ # tier 2
-        #"udp://tracker.coppersurfer.tk:6969/announce",
-        #"udp://tracker.cyberia.is:6969/announce",
-        #"udp://tracker.leechers-paradise.org:6969/announce",
-      ],
-    ];
-    ENV::setPub(
-        "ANNOUNCE_URLS",
-        $env->convert($AnnounceURLs)
-    );
-}
-
-# development
-else {
-    define("ANNOUNCE_URLS", [
-      [ # tier 1
-        "https://trx.torrents.bio:443",
-      ],
-      [ # tier 2
-      #"udp://tracker.coppersurfer.tk:6969/announce",
-      #"udp://tracker.cyberia.is:6969/announce",
-      #"udp://tracker.leechers-paradise.org:6969/announce",
-    ],
-    ]);
-
-    $AnnounceURLs = [
-      [ # tier 1
-        "https://trx.torrents.bio:443",
-      ], [], # tier 2
-    ];
-    ENV::setPub(
-        "ANNOUNCE_URLS",
-        $env->convert($AnnounceURLs)
-    );
-}
+# irc
+match ($env->environment) {
+    "production" => $env->announceIrc = true,
+    "development" => $env->announceIrc = true,
+    default => throw new Exception("invalid environment"),
+};
 
 
-/**
- * announce channels
- */
+# rss
+match ($env->environment) {
+    "production" => $env->announceRss = true,
+    "development" => $env->announceRss = true,
+    default => throw new Exception("invalid environment"),
+};
 
-ENV::setPub("announceIrc", true);
-ENV::setPub("announceRss", true);
-ENV::setPub("announceSlack", true);
-ENV::setPub("announceTwitter", true);
+
+# slack
+match ($env->environment) {
+    "production" => $env->announceSlack = true,
+    "development" => $env->announceSlack = true,
+    default => throw new Exception("invalid environment"),
+};
+
+
+# twitter
+match ($env->environment) {
+    "production" => $env->announceTwitter = true,
+    "development" => $env->announceTwitter = true,
+    default => throw new Exception("invalid environment"),
+};
 
 
 /**
@@ -214,119 +223,156 @@ define("DISABLED_CHAN", "#support");
 
 
 /**
- * features
+ * features and settings
  */
 
 # enable donation page
-ENV::setPub("enableDonations", true);
+$env->enableDonations = true;
+
 
 # send re-enable requests to user's email
+$env->FEATURE_EMAIL_REENABLE = true;
+
+
+# REMOVE ME
 define("FEATURE_EMAIL_REENABLE", true);
-ENV::setPub("FEATURE_EMAIL_REENABLE", true);
-
-# attempt to send email from the site
-ENV::setPub("enableSiteEmail", true);
+# REMOVE ME
 
 
-# Attempt to support the BioPHP library
+# attempt to support the BioPHP library
 # https://packagist.org/packages/biotorrents/biophp
 # https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash
-ENV::setPub("enableBioPhp", true);
+$env->enableBioPhp = true;
 
 
-/**
- * Settings
- */
+# set to false to disable open registration, true to allow anyone to register
+match ($env->environment) {
+    "production" => $env->openRegistration = true,
+    "development" => $env->openRegistration = false,
+    default => throw new Exception("invalid environment"),
+};
 
-# Set to false to disable open registration, true to allow anyone to register
-ENV::setPub(
-    "openRegistration",
-    (!$env->dev
-        ? true # Production
-        : true) # Development
-);
 
-# The maximum number of users the site can have, 0 for no limit
+# the maximum number of users the site can have, 0 for no limit
+match ($env->environment) {
+    "production" => $env->userLimit = 0,
+    "development" => $env->userLimit = 0,
+    default => throw new Exception("invalid environment"),
+};
+
+
+# REMOVE ME
 define("userLimit", 0);
-ENV::setPub("userLimit", 0);
+# REMOVE ME
+
 
 # user perks on new registration
-ENV::setPub("newUserInvites", 2);
-ENV::setPub("newUserTokens", 2);
-ENV::setPub("newUserUpload", 5368709120); # 5 GiB
+$env->newUserInvites = 2;
+$env->newUserTokens = 2;
+$env->newUserUpload = 5 * 1024 ** 3; # 5 GiB
+
 
 # bonus points (unit name)
+$env->bonusPoints = "Bonus Points";
+
+
+# REMOVE ME
 define("bonusPoints", "Bonus Points");
-ENV::setPub("bonusPoints", "Bonus Points");
+# REMOVE ME
+
 
 # award formula coefficient
-ENV::setPub("bonusPointsCoefficient", 1.5); # oppaitime default 0.5
+$env->bonusPointsCoefficient = 1.5; # oppaitime default 0.5
 
-# tag namespaces (configurable via CSS selectors)
-#ENV::setPub("tagNamespaces", ["male", "female", "parody", "character"]);
 
 # https://www.mtu.edu/umc/services/websites/writing/characters-avoid/
-ENV::setPub(
-    "illegalCharacters",
-    [ "#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "\/", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "=" ]
-);
+$env->illegalCharacters = [ "#", "%", "&", "{", "}", "\\", "<", ">", "*", "?", "\/", "$", "!", "'", "\"", ":", "@", "+", "`", "|", "=" ];
+
 
 /*
 # inherited from oppaitime
-ENV::setPub(
-    "illegalCharacters",
-    ["\"", "*", "\/", ":", "<", ">", "?", "\\", "|"]
-);
+$env->illegalCharacters = ["\"", "*", "\/", ":", "<", ">", "?", "\\", "|"];
 */
 
-# default site options
-$defaultSiteOptions = [
-  "autoSubscribe" => true,
-  "calmMode" => false,
-  "communityStats" => true,
-  "coverArtCollections" => 20,
-  "coverArtTorrents" => true,
-  "coverArtTorrentsExtra" => true,
-  "darkMode" => false,
-  "donorIcon" => true,
-  "font" => "",
-  "listUnreadsFirst" => true,
-  "openaiContent" => true,
-  "percentileStats" => true,
-  "recentCollages" => true,
-  "recentRequests" => true,
-  "recentSnatches" => true,
-  "recentUploads" => true,
-  "requestStats" => true,
-  "searchPagination" => 20,
-  "searchType" => "simple",
-  "showSnatched" => true,
-  "styleId" => 1,
-  "styleUri" => "",
-  "torrentGrouping" => "open",
-  "torrentGrouping" => true,
-  "torrentStats" => true,
-  "unseededAlerts" => true,
-  "userAvatars" => true,
-];
 
-ENV::setPub("defaultSiteOptions", json_encode($defaultSiteOptions));
+# ratio requirements, in descending order
+$env->ratioRequirements = $env->convert([
+    # downloaded       req (0% seed) req (100% seed)
+     [200 * 1024 ** 3, 0.60,         0.60],
+     [160 * 1024 ** 3, 0.60,         0.50],
+     [120 * 1024 ** 3, 0.50,         0.40],
+     [100 * 1024 ** 3, 0.40,         0.30],
+     [80  * 1024 ** 3, 0.30,         0.20],
+     [60  * 1024 ** 3, 0.20,         0.10],
+     [40  * 1024 ** 3, 0.15,         0.00],
+     [20  * 1024 ** 3, 0.10,         0.00],
+     [10  * 1024 ** 3, 0.05,         0.00],
+]);
+
+
+# REMOVE ME
+define("RATIO_REQUIREMENTS", [
+    # downloaded       req (0% seed) req (100% seed)
+     [200 * 1024 ** 3, 0.60,         0.60],
+     [160 * 1024 ** 3, 0.60,         0.50],
+     [120 * 1024 ** 3, 0.50,         0.40],
+     [100 * 1024 ** 3, 0.40,         0.30],
+     [80  * 1024 ** 3, 0.30,         0.20],
+     [60  * 1024 ** 3, 0.20,         0.10],
+     [40  * 1024 ** 3, 0.15,         0.00],
+     [20  * 1024 ** 3, 0.10,         0.00],
+     [10  * 1024 ** 3, 0.05,         0.00],
+]);
+# REMOVE ME
+
+
+# default site options
+$env->defaultSiteOptions = json_encode([
+    "autoSubscribe" => true,
+    "calmMode" => false,
+    "communityStats" => true,
+    "coverArtCollections" => 20,
+    "coverArtTorrents" => true,
+    "coverArtTorrentsExtra" => true,
+    "darkMode" => false,
+    "donorIcon" => true,
+    "font" => "",
+    "listUnreadsFirst" => true,
+    "openaiContent" => true,
+    "percentileStats" => true,
+    "recentCollages" => true,
+    "recentRequests" => true,
+    "recentSnatches" => true,
+    "recentUploads" => true,
+    "requestStats" => true,
+    "searchPagination" => 20,
+    "searchType" => "simple",
+    "showSnatched" => true,
+    "styleId" => 1,
+    "styleUri" => "",
+    "torrentGrouping" => "open",
+    "torrentGrouping" => true,
+    "torrentStats" => true,
+    "unseededAlerts" => true,
+    "userAvatars" => true,
+]);
 
 
 /**
  * services
  *
- * Public APIs, domains, etc.
- * Not intended for private API keys.
+ * public apis, domains, etc.
+ * not intended for private keys
  */
 
-# Current Sci-Hub domains
+# current sci-hub domains
 # https://lovescihub.wordpress.com
+$env->sciHubTlds = ["ren", "tw", "se"];
+
+
+# REMOVE ME
 define("SCI_HUB", "se");
-ENV::setPub(
-    "SCI_HUB",
-    ["ren", "tw", "se"]
-);
+# REMOVE ME
 
 
 /**
@@ -374,96 +420,6 @@ define("REQUESTS_PER_PAGE", 25);
 define("MESSAGES_PER_PAGE", 25);
 define("LOG_ENTRIES_PER_PAGE", 50);
 
-ENV::setPub("paginationDefault", 25);
 
 # Cache catalogues
 define("THREAD_CATALOGUE", 500); // Limit to THREAD_CATALOGUE posts per cache key
-
-# Miscellaneous values
-define("MAX_RANK", 6);
-define("MAX_EXTRA_RANK", 8);
-define("MAX_SPECIAL_RANK", 3);
-
-ENV::setPub("DONOR_FORUM_RANK", 6);
-
-
-/**
- * ratio and badges
- */
-
-# ratio requirements, in descending order
-define("RATIO_REQUIREMENTS", [
- # downloaded       req (0% seed) req (100% seed)
-  [200 * 1024 ** 3, 0.60,         0.60],
-  [160 * 1024 ** 3, 0.60,         0.50],
-  [120 * 1024 ** 3, 0.50,         0.40],
-  [100 * 1024 ** 3, 0.40,         0.30],
-  [80  * 1024 ** 3, 0.30,         0.20],
-  [60  * 1024 ** 3, 0.20,         0.10],
-  [40  * 1024 ** 3, 0.15,         0.00],
-  [20  * 1024 ** 3, 0.10,         0.00],
-  [10  * 1024 ** 3, 0.05,         0.00],
-]);
-
-# [badgeId => quantity]
-$activityBadgeIds = [
-    # theme: eating a meal
-    "download" => [
-        10 => 16, # GiB
-        21 => 32,
-        22 => 64,
-        23 => 128,
-        24 => 256,
-        25 => 512,
-        26 => 1024,
-        27 => 2048,
-        28 => 4096,
-        29 => 8192,
-    ],
-
-    # theme: advances in technology
-    "upload" => [
-        20 => 16, # GiB
-        21 => 32,
-        22 => 64,
-        23 => 128,
-        24 => 256,
-        25 => 512,
-        26 => 1024,
-        27 => 2048,
-        28 => 4096,
-        29 => 8192,
-    ],
-
-    # theme: memes and shitposts
-    "posts" => [
-        30 => 10,
-        31 => 20,
-        32 => 50,
-        33 => 100,
-        34 => 200,
-        35 => 500,
-        36 => 1000,
-        37 => 2000,
-        38 => 5000,
-        39 => 10000,
-    ],
-
-    # theme: various biology items
-    "random" => [
-        40 => null,
-        41 => null,
-        42 => null,
-        43 => null,
-        44 => null,
-        45 => null,
-        46 => null,
-        47 => null,
-        48 => null,
-        49 => null,
-    ],
-];
-ENV::setPub(
-    "activityBadgeIds",
-    $env->convert($activityBadgeIds)
-);

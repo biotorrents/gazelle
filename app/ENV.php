@@ -68,6 +68,12 @@ class ENV
             : false;
     }
 
+    # $this->foo = "bar"
+    public function __set($key, $value)
+    {
+        return self::$public[$key] = $value;
+    }
+
     # isset
     public function __isset($key)
     {
