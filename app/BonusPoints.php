@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * BonusPoints
+ * Gazelle\BonusPoints
  *
  * Offload the store section into its own class to allow API purchases, etc.
  */
@@ -16,9 +16,6 @@ class BonusPoints
     # cache settings
     private $cachePrefix = "bonusPoints:";
     private $cacheDuration = "1 minute";
-
-    # the current user data
-    public $user = null;
 
     # the available bonus points
     public $bonusPoints = 0;
@@ -46,42 +43,12 @@ class BonusPoints
 
     /** */
 
-    # sequential badges [id => bonus point cost]
-    public $sequentialBadges = [
-        50 => 1000,
-        51 => 2000,
-        52 => 5000,
-        53 => 10000,
-        54 => 20000,
-        55 => 50000,
-        56 => 100000,
-        57 => 200000,
-        58 => 500000,
-        59 => 1000000,
-    ];
-
-    # lottery badges [id => chance to win]
-    public $lotteryBadges = [
-        60 => 0.9,
-        61 => 0.09,
-        62 => 0.009,
-        63 => 0.0009,
-        64 => 0.00009,
-        65 => 0.000009,
-        66 => 0.0000009,
-        67 => 0.00000009,
-        68 => 0.000000009,
-        69 => 0.0000000009,
-    ];
-
-    # auction badge id
-    public $auctionBadgeId = 70;
+    # auction badge stuff
     public $auctionBadgeStartingCost = 9000; # starting cost
     public $auctionBadgeCurrentCost = 0; # current cost
     public $auctionBadgePremium = 1000; # minimum step
 
     # coin badge stuff
-    public $coinBadgeId = 80;
     public $coinBadgeStartingCost = 9000; # starting cost
     public $coinBadgeCurrentCost = 0; # current cost
     public $coinBadgePremium = 1000; # minimum step
@@ -140,28 +107,19 @@ class BonusPoints
      * __construct
      *
      * Create a user-specific instance based on torrent activity.
-     *
-     * @param ?int $userId
      */
-    public function __construct(?int $userId = null)
+    public function __construct()
     {
         $app = \Gazelle\App::go();
 
-        $userId ??= $app->user->core["id"];
-        if ($userId === $app->user->core["id"]) {
-            $this->user = $app->user;
-        } else {
-            $this->user = $app->user->readProfile($userId);
-        }
-
-        if (!$this->user || empty($this->user->core)) {
+        if (!$app->user || empty($app->user->core)) {
             throw new \Exception("user not found");
         }
 
         /** */
 
         # bonus points data
-        $this->bonusPoints = $this->user->extra["BonusPoints"] ?? 0;
+        $this->bonusPoints = $app->user->extra["BonusPoints"] ?? 0;
         $this->pointsRate = $this->calculatePointsRate() ?? 0.0;
 
         $this->pointsOverTime = [
@@ -213,12 +171,8 @@ class BonusPoints
     {
         $app = \Gazelle\App::go();
 
-        if (empty($this->user->core)) {
-            throw new \Exception("user not found");
-        }
-
         # return cached if available
-        $cacheKey = $this->cachePrefix . __FUNCTION__ . ":{$this->user->core["id"]}";
+        $cacheKey = $this->cachePrefix . __FUNCTION__ . ":{$app->user->core["id"]}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -245,7 +199,7 @@ class BonusPoints
                 and xbt_files_users.remaining = 0
             group by users_main.userId
         ";
-        $row = $app->dbNew->row($query, [ $this->user->core["id"] ]);
+        $row = $app->dbNew->row($query, [ $app->user->core["id"] ]);
 
         $pointsRate = 0.0;
         if ($row) {
@@ -282,7 +236,7 @@ class BonusPoints
         $this->bonusPoints = max(0, $this->bonusPoints);
 
         $query = "update users_main set bonusPoints = ? where userId = ?";
-        $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $this->bonusPoints, $app->user->core["id"] ]);
 
         return $this->bonusPoints;
     }
@@ -316,11 +270,11 @@ class BonusPoints
 
         # add the upload
         $query = "update users_main set uploaded = uploaded + ? where userId = ?";
-        $app->dbNew->do($query, [ $uploadAmount, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $uploadAmount, $app->user->core["id"] ]);
 
         # return the new upload
         $query = "select uploaded from users_main where userId = ?";
-        $upload = $app->dbNew->single($query, [ $this->user->core["id"] ]);
+        $upload = $app->dbNew->single($query, [ $app->user->core["id"] ]);
 
         return intval($upload);
     }
@@ -341,7 +295,7 @@ class BonusPoints
         $app = \Gazelle\App::go();
 
         # can they afford it?
-        if ($amount > $this->user->extra["Uploaded"]) {
+        if ($amount > $app->user->extra["Uploaded"]) {
             throw new \Exception("insufficient upload for this purchase");
         }
 
@@ -353,12 +307,12 @@ class BonusPoints
 
         # subtract the upload
         $query = "update users_main set uploaded = uploaded - ? where userId = ?";
-        $app->dbNew->do($query, [ $amount, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $amount, $app->user->core["id"] ]);
 
         # add the bonus points
         $this->bonusPoints += $pointsAmount;
         $query = "update users_main set bonusPoints = ? where userId = ?";
-        $app->dbNew->do($query, [ $this->bonusPoints, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $this->bonusPoints, $app->user->core["id"] ]);
 
         # return the new bonus points
         return intval($this->bonusPoints);
@@ -475,7 +429,7 @@ class BonusPoints
 
         # award the token
         $query = "update users_main set flTokens = flTokens + 1 where userId = ?";
-        $app->dbNew->do($query, [ $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $app->user->core["id"] ]);
     }
 
 
@@ -703,7 +657,7 @@ class BonusPoints
 
         # award the invite
         $query = "update users_main set invites = invites + 1 where userId = ?";
-        $app->dbNew->do($query, [ $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $app->user->core["id"] ]);
     }
 
 
@@ -729,7 +683,7 @@ class BonusPoints
 
         # update the user's title
         $query = "update users_main set title = ? where userId = ?";
-        $app->dbNew->do($query, [ $title, $this->user->core["id"] ]);
+        $app->dbNew->do($query, [ $title, $app->user->core["id"] ]);
     }
 
 
@@ -780,7 +734,7 @@ class BonusPoints
 
         # update the user's snowflake
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
-        $app->dbNew->do($query, [$this->user->core["id"], "snowflakeProfile", $snowflake]);
+        $app->dbNew->do($query, [$app->user->core["id"], "snowflakeProfile", $snowflake]);
     }
 
 
@@ -801,8 +755,8 @@ class BonusPoints
 
         # what badge, if any, do they currently own?
         $currentBadge = null;
-        foreach ($this->sequentialBadges as $id => $cost) {
-            $hasBadge = \Badges::hasBadge($this->user->core["id"], $id);
+        foreach ($app->env->sequentialBadges as $id => $cost) {
+            $hasBadge = \Badges::hasBadge($app->user->core["id"], $id);
             if (!$hasBadge) {
                 $currentBadge = $id;
                 break;
@@ -815,11 +769,11 @@ class BonusPoints
         }
 
         # can they afford the current badge?
-        $currentCost = $this->sequentialBadges[$currentBadge];
+        $currentCost = $app->env->sequentialBadges->$currentBadge;
 
         # deduct the bonus points and award the badge
         $this->deductPoints($currentCost);
-        \Badges::awardBadge($this->user->core["id"], $currentBadge);
+        \Badges::awardBadge($app->user->core["id"], $currentBadge);
 
         return $currentBadge;
     }
@@ -950,7 +904,7 @@ class BonusPoints
         $weightedProbability = $probability / $bet;
 
         $closest = null;
-        foreach ($this->lotteryBadges as $id => $chance) {
+        foreach ($app->env->lotteryBadges as $id => $chance) {
             if ($closest === null || abs($chance - $weightedProbability) < abs($closest - $weightedProbability)) {
                 $closest = $chance;
             }
@@ -959,10 +913,10 @@ class BonusPoints
         /** */
 
         # get the badgeId for the closest weighted probability
-        $badgeId = array_search($closest, $this->lotteryBadges);
+        $badgeId = array_search($closest, $app->env->lotteryBadges);
 
         # do they already have the badge?
-        $hasBadge = \Badges::hasBadge($this->user->core["id"], $badgeId);
+        $hasBadge = \Badges::hasBadge($app->user->core["id"], $badgeId);
         if ($hasBadge) {
             $query = "select icon from badges where id = ?";
             $icon = $app->dbNew->single($query, [$badgeId]);
@@ -975,7 +929,7 @@ class BonusPoints
 
         # deduct the bonus points and award the badge
         $this->deductPoints($bet);
-        \Badges::awardBadge($this->user->core["id"], $badgeId);
+        \Badges::awardBadge($app->user->core["id"], $badgeId);
 
         return [
             "badgeId" => $badgeId,
@@ -1003,7 +957,7 @@ class BonusPoints
     {
         $app = \Gazelle\App::go();
 
-        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->auctionBadgeId);
+        $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->auctionBadgeId);
         if ($hasBadge) {
             throw new \Exception("you already own this badge");
         }
@@ -1018,7 +972,7 @@ class BonusPoints
 
         # enter the bid
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
-        $app->dbNew->do($query, [$this->user->core["id"], "auctionBadge", $payment]);
+        $app->dbNew->do($query, [$app->user->core["id"], "auctionBadge", $payment]);
 
         return $payment + $this->auctionBadgePremium;
     }
@@ -1037,7 +991,7 @@ class BonusPoints
     {
         $app = \Gazelle\App::go();
 
-        $hasBadge = \Badges::hasBadge($this->user->core["id"], $this->coinBadgeId);
+        $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->coinBadgeId);
         if ($hasBadge) {
             throw new \Exception("you already own this badge");
         }
@@ -1049,11 +1003,11 @@ class BonusPoints
 
         # deduct the bonus points and award the badge
         $this->deductPoints($payment);
-        \Badges::awardBadge($this->user->core["id"], $this->coinBadgeId);
+        \Badges::awardBadge($app->user->core["id"], $app->env->coinBadgeId);
 
         # update the cost
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
-        $app->dbNew->do($query, [$this->user->core["id"], "coinBadge", $payment]);
+        $app->dbNew->do($query, [$app->user->core["id"], "coinBadge", $payment]);
 
         return $payment + $this->coinBadgePremium;
     }
@@ -1085,7 +1039,7 @@ class BonusPoints
         $app->dbNew->do($query, [$badgeId, $randomBadgeIcon, "Random Badge", $randomBadgeDescription]);
 
         # award the badge
-        \Badges::awardBadge($this->user->core["id"], $badgeId);
+        \Badges::awardBadge($app->user->core["id"], $badgeId);
 
         return [
             "id" => $badgeId,

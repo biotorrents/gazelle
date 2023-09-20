@@ -98,19 +98,9 @@ $env->lotteryBadges = $env->convert([
 ]);
 
 
-# auction badge stuff
+# auction badge id
 $env->auctionBadgeId = 70;
-$env->auctionBadgeStartingCost = 9000; # starting cost
-$env->auctionBadgeCurrentCost = 0; # current cost
-$env->auctionBadgePremium = 1000; # minimum step
 
 
-# coin badge stuff
+# coin badge id
 $env->coinBadgeId = 80;
-$env->coinBadgeStartingCost = 9000; # starting cost
-$env->coinBadgeCurrentCost = 0; # current cost
-$env->coinBadgePremium = 1000; # minimum step
-
-
-# random badges (unique emoji badge)
-$env->randomBadgeCost = 1000000;

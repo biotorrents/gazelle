@@ -195,7 +195,7 @@
     </thead>
 
     <tbody>
-        {% for key, value in bonusPoints.sequentialBadges %}
+        {% for key, value in env.sequentialBadges %}
         <tr>
             <td>{{ displayBadge(key, false) }}</td>
             <td>{{ value|number_format }}</td>
@@ -233,7 +233,7 @@
     </thead>
 
     <tbody>
-        {% for key, value in bonusPoints.lotteryBadges %}
+        {% for key, value in env.lotteryBadges %}
         <tr>
             <td>{{ displayBadge(key, false) }}</td>
             <td>{{ value }}</td>
@@ -267,9 +267,9 @@
 
     <tbody>
         <tr>
-            <td>{{ displayBadge(bonusPoints.auctionBadgeId, false) }}</td>
+            <td>{{ displayBadge(env.auctionBadgeId, false) }}</td>
             <td>{{ (bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium)|number_format }}</td>
-            <td>{{ badgeDescription(bonusPoints.auctionBadgeId) }}</td>
+            <td>{{ badgeDescription(env.auctionBadgeId) }}</td>
         </tr>
     </tbody>
 </table>
@@ -298,9 +298,9 @@
 
     <tbody>
         <tr>
-            <td>{{ displayBadge(bonusPoints.coinBadgeId, false) }}</td>
+            <td>{{ displayBadge(env.coinBadgeId, false) }}</td>
             <td>{{ (bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium)|number_format }}</td>
-            <td>{{ badgeDescription(bonusPoints.coinBadgeId) }}</td>
+            <td>{{ badgeDescription(env.coinBadgeId) }}</td>
         </tr>
     </tbody>
 </table>
