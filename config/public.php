@@ -108,6 +108,7 @@ $env->imageDomain = "pics.torrents.bio";
 # documentation site
 $env->docsDomain = "docs.torrents.bio";
 
+
 # web root: currently used for twig
 $env->webRoot = "/var/www";
 
@@ -194,32 +195,42 @@ match ($env->environment) {
 
 
 /**
- * IRC/Slack
+ * irc
  */
 
-# IRC server address. Used for onsite chat tool
-define("BOT_SERVER", "irc.$env->siteDomain");
+# hostname for the onsite chat tool
 $env->ircHostname = "irc.{$env->siteDomain}";
 
 
-define("SOCKET_LISTEN_ADDRESS", "10.10.10.60");
+# server address
 $env->ircAddress = "10.10.10.60";
 
-define("SOCKET_LISTEN_PORT", 51010);
+
+# port (raw commands)
 $env->ircPort = 51010;
 
-define("BOT_NICK", "ebooks");
+
+# bot nickname
 $env->ircBotNick = "ebooks";
 
-# IRC channels for official business
+
+# REMOVE ME
+define("BOT_SERVER", "irc.$env->siteDomain");
+define("SOCKET_LISTEN_ADDRESS", "10.10.10.60");
+define("SOCKET_LISTEN_PORT", 51010);
+define("BOT_NICK", "ebooks");
+# REMOVE ME
+
+
+# REMOVE ME
+# irc channels for official business
 define("ANNOUNCE_CHAN", "#announce");
 define("DEBUG_CHAN", "#debug");
 define("REQUEST_CHAN", "#requests");
 define("STAFF_CHAN", "#staff");
 define("ADMIN_CHAN", "#staff");
-define("HELP_CHAN", "#support");
 define("DISABLED_CHAN", "#support");
-#define("BOT_CHAN", "#userbots");
+# REMOVE ME
 
 
 /**
@@ -376,41 +387,48 @@ define("SCI_HUB", "se");
 
 
 /**
- * User class IDs
+ * user class ids
  *
- * Needed for automatic promotions.
- * Found in the `permissions` table.
+ * needed for automatic promotions
+ * found in the `permissions` table
  */
 
-#       Name of class     Class ID (not level)
-define("ADMIN", "1");
-define("USER", "2");
-define("MEMBER", "3");
-define("POWER", "4");
-define("ELITE", "5");
-define("LEGEND", "8");
-define("MOD", "11");
-define("SYSOP", "15");
-define("ARTIST", "19");
-define("DONOR", "20");
-define("VIP", "21");
-define("TORRENT_MASTER", "23");
-define("POWER_TM", "24");
-define("FLS_TEAM", "33");
-define("FORUM_MOD", "9001");
+# REMOVE ME
+# name of class => class id (not level)
+define("ADMIN", 1);
+define("USER", 2);
+define("MEMBER", 3);
+define("POWER", 4);
+define("ELITE", 5);
+define("LEGEND", 8);
+define("MOD", 11);
+define("SYSOP", 15);
+define("ARTIST", 19);
+define("DONOR", 20);
+define("VIP", 21);
+define("TORRENT_MASTER", 23);
+define("POWER_TM", 24);
+define("FLS_TEAM", 33);
+define("FORUM_MOD", 9001);
+# REMOVE ME
 
 
 /**
- * Forums
+ * forums
  */
 
+$env->ANNOUNCEMENT_FORUM = 1;
+$env->TRASH_FORUM = 8;
+
+
+# REMOVE ME
 define("STAFF_FORUM", 3);
 define("DONOR_FORUM", 7);
+# REMOVE ME
 
-$env->TRASH_FORUM = 8;
-$env->ANNOUNCEMENT_FORUM = 1;
 
-# Pagination
+# REMOVE ME
+# pagination
 define("TORRENT_COMMENTS_PER_PAGE", 10);
 define("POSTS_PER_PAGE", 25);
 define("TOPICS_PER_PAGE", 50);
@@ -418,7 +436,10 @@ define("TORRENTS_PER_PAGE", 50);
 define("REQUESTS_PER_PAGE", 25);
 define("MESSAGES_PER_PAGE", 25);
 define("LOG_ENTRIES_PER_PAGE", 50);
+# REMOVE ME
 
 
-# Cache catalogues
-define("THREAD_CATALOGUE", 500); // Limit to THREAD_CATALOGUE posts per cache key
+# REMOVE ME
+# cache catalogues
+define("THREAD_CATALOGUE", 500); # limit to THREAD_CATALOGUE posts per cache key
+# REMOVE ME
