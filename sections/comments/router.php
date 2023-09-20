@@ -57,10 +57,6 @@ switch ($Action) {
         require serverRoot . '/sections/commentsOld/get.php';
         break;
 
-    case 'jump':
-        require serverRoot . '/sections/commentsOld/jump.php';
-        break;
-
     case 'artist':
     case 'collages':
     case 'requests':
