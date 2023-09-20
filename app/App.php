@@ -208,7 +208,7 @@ class App
         }
 
         set_time_limit(3600); # one hour
-        ini_set("memory_limit", "2G"); # all the shit hetzner memory
+        ini_set("memory_limit", "2G"); # half the shit hetzner memory
     }
 
 
