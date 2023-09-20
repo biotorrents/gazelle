@@ -66,3 +66,51 @@ $env->activityBadgeIds = $env->convert([
         49 => null,
     ],
 ]);
+
+
+# sequential badges [id => bonus point cost]
+$env->sequentialBadges = $env->convert([
+    50 => 1000,
+    51 => 2000,
+    52 => 5000,
+    53 => 10000,
+    54 => 20000,
+    55 => 50000,
+    56 => 100000,
+    57 => 200000,
+    58 => 500000,
+    59 => 1000000,
+]);
+
+
+# lottery badges [id => chance to win]
+$env->lotteryBadges = $env->convert([
+    60 => 0.9,
+    61 => 0.09,
+    62 => 0.009,
+    63 => 0.0009,
+    64 => 0.00009,
+    65 => 0.000009,
+    66 => 0.0000009,
+    67 => 0.00000009,
+    68 => 0.000000009,
+    69 => 0.0000000009,
+]);
+
+
+# auction badge stuff
+$env->auctionBadgeId = 70;
+$env->auctionBadgeStartingCost = 9000; # starting cost
+$env->auctionBadgeCurrentCost = 0; # current cost
+$env->auctionBadgePremium = 1000; # minimum step
+
+
+# coin badge stuff
+$env->coinBadgeId = 80;
+$env->coinBadgeStartingCost = 9000; # starting cost
+$env->coinBadgeCurrentCost = 0; # current cost
+$env->coinBadgePremium = 1000; # minimum step
+
+
+# random badges (unique emoji badge)
+$env->randomBadgeCost = 1000000;
