@@ -145,8 +145,8 @@ if (isset($Err)) { ?>
           <td>
             <select name="category" <?=$ChangeJS?>>
               <?php
-array_shift($CollageCats);
-foreach ($CollageCats as $CatID => $CatName) { ?>
+array_shift($app->env->collageCategories);
+foreach ($app->env->collageCategories as $CatID => $CatName) { ?>
               <option value="<?=$CatID + 1 ?>" <?=(($CatID + 1 === $Category) ? ' selected="selected"' : '')?>><?=$CatName?>
               </option>
               <?php

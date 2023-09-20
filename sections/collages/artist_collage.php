@@ -152,7 +152,7 @@ View::header($Name, 'browse,collage,recommend');
     <div class="box box_category">
       <div class="head"><strong>Category</strong></div>
       <div class="pad"><a
-          href="collages.php?action=search&amp;cats[<?=(int)$CollageCategoryID?>]=1"><?=$CollageCats[(int)$CollageCategoryID]?></a></div>
+          href="collages.php?action=search&amp;cats[<?=(int)$CollageCategoryID?>]=1"><?=$app->env->collageCategories[(int)$CollageCategoryID]?></a></div>
     </div>
 
     <div class="box box_description">

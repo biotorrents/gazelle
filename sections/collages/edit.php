@@ -61,7 +61,7 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
           <td>
             <select name="category">
               <?php
-        foreach ($CollageCats as $CatID => $CatName) {
+        foreach ($app->env->collageCategories as $CatID => $CatName) {
             if (!check_perms('site_collages_delete') && $CatID == 0) {
                 // Only mod-type get to make things personal
                 continue;

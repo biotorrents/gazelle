@@ -564,7 +564,7 @@ class BonusPoints
         }
 
         # deduct the bonus points
-        $this->deductPoints($this->neutralLeechTagCost);
+        $this->deductPoints($this->freeleechTagCost);
 
         # get the torrent groups
         $query = "select groupId from torrents_tags where tagId = ?";
@@ -596,17 +596,54 @@ class BonusPoints
      *
      * Make all torrent groups in a category neutral leech.
      *
-     * @param int $categoryId
+     * @param int|string $categoryId
      * @return void
      */
-    public function neutralLeechCategory(int $categoryId): void
+    public function neutralLeechCategory(int|string $categoryId)
     {
         $app = \Gazelle\App::go();
+
+        # did they pass a categoryId?
+        if (is_numeric($categoryId)) {
+            $categoryId = intval($categoryId);
+        }
+
+        # or is it a string?
+        if (!is_numeric($categoryId)) {
+            $query = "select id from tags where name = ?";
+            $tagId = $app->dbNew->single($query, [$tagId]);
+        }
+
+        # bail out, they messed up
+        if (empty($tagId) || !is_numeric($tagId)) {
+            throw new \Exception("tag not found");
+        }
 
         # deduct the bonus points
         $this->deductPoints($this->neutralLeechCategoryCost);
 
-        # todo
+        # get the torrent groups
+        $query = "select groupId from torrents_tags where tagId = ?";
+        $ref = $app->dbNew->multi($query, [$tagId]);
+
+        foreach ($ref as $row) {
+            # get the group's torrents
+            $query = "select id from torrents where groupId = ? and deleted_at is null";
+            $groupIds = $app->dbNew->multi($query, [ $row["groupId"] ]);
+
+            foreach ($groupIds as $groupId) {
+                # make the torrent freeleech
+                $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+                $app->dbNew->do($query, [ $groupId["id"] ]);
+                \Torrents::freeleech_torrents($groupId["id"], 1);
+            }
+        }
+
+        # return the tag
+        $query = "select * from tags where id = ?";
+        $row = $app->dbNew->row($query, [$tagId]);
+
+        return $row;
     }
 
 

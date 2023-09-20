@@ -765,15 +765,6 @@ ENV::setPub(
  * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
-# legacy
-$CollageCats = [
-  0 => "Personal",
-  1 => "Theme",
-  2 => "Staff Picks",
-  3 => "Group Picks",
-];
-
-# modern
 ENV::setPub(
     "collageCategories",
     $env->convert([
