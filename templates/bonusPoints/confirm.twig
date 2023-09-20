@@ -43,6 +43,23 @@
 {% endif %} {# if item == "freeleechToken" #}
 
 
+{# neutralLeechTag #}
+{% if item == "neutralLeechTag" %}
+<p>
+    You made neutral leech all the torrent groups with the tag <strong>{{ result.Name }}.</strong>
+</p>    
+{% endif %} {# if item == "neutralLeechTag" #}
+
+
+{# freeleechTag #}
+{% if item == "freeleechTag" %}
+<p>
+    You made freeleech all the torrent groups with the tag <strong>{{ result.Name }}.</strong>
+</p>    
+{% endif %} {# if item == "freeleechTag" #}
+
+
+
 {# sequentialBadge #}
 {% if item == "sequentialBadge" %}
 <p>

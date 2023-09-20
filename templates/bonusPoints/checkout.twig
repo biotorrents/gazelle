@@ -96,7 +96,7 @@
 
 <p class="flexRow">
     <label for="tagId">Which tag would you like to use?</label>
-    <select class="grow select" placeholder="Select a tag" required>
+    <select class="grow select" name="tagId" placeholder="Select a tag" required>
         {% for item in tagList %}
         <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}

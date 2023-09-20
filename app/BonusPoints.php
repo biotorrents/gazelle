@@ -398,7 +398,7 @@ class BonusPoints
             # make the torrent freeleech
             $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
             $app->dbNew->do($query, [ $row["id"] ]);
-            \Torrents::freeleech_torrents($row["id"], 1, 3);
+            \Torrents::freeleech_torrents($row["id"], 1);
         }
 
         # return the torrent group
@@ -448,7 +448,7 @@ class BonusPoints
             # make the torrent freeleech
             $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
             $app->dbNew->do($query, [ $row["id"] ]);
-            \Torrents::freeleech_torrents($row["id"], 1, 3);
+            \Torrents::freeleech_torrents($row["id"], 1);
         }
 
         # return the torrent group
@@ -484,22 +484,54 @@ class BonusPoints
      *
      * Make all torrent groups with a tag neutral leech.
      *
-     * @param int $tagId
-     * @return void
+     * @param int|string $tagId
+     * @return array tag data
      */
-    public function neutralLeechTag(int $tagId): void
+    public function neutralLeechTag(int|string $tagId): array
     {
         $app = \Gazelle\App::go();
+
+        # did they pass a tagId?
+        if (is_numeric($tagId)) {
+            $tagId = intval($tagId);
+        }
+
+        # or is it a string?
+        if (!is_numeric($tagId)) {
+            $query = "select id from tags where name = ?";
+            $tagId = $app->dbNew->single($query, [$tagId]);
+        }
+
+        # bail out, they messed up
+        if (empty($tagId) || !is_numeric($tagId)) {
+            throw new \Exception("tag not found");
+        }
 
         # deduct the bonus points
         $this->deductPoints($this->neutralLeechTagCost);
 
-        /*
-        # make the torrents freeleech
-        $query = "replace into shop_freeleeches (torrentId, expiryTime) select id, now() + interval 1 day from torrents where groupId in (select groupId from torrents_tags where tagId = ?) and deleted_at is null";
-        $app->dbNew->do($query, [$tag]);
-        \Torrents::freeleech_torrents($torrentId, 1, 3);
-        */
+        # get the torrent groups
+        $query = "select groupId from torrents_tags where tagId = ?";
+        $ref = $app->dbNew->multi($query, [$tagId]);
+
+        foreach ($ref as $row) {
+            # get the group's torrents
+            $query = "select id from torrents where groupId = ? and deleted_at is null";
+            $groupIds = $app->dbNew->multi($query, [ $row["groupId"] ]);
+
+            foreach ($groupIds as $groupId) {
+                # make the torrent freeleech
+                $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+                $app->dbNew->do($query, [ $groupId["id"] ]);
+                \Torrents::freeleech_torrents($groupId["id"], 2);
+            }
+        }
+
+        # return the tag
+        $query = "select * from tags where id = ?";
+        $row = $app->dbNew->row($query, [$tagId]);
+
+        return $row;
     }
 
 
@@ -508,23 +540,56 @@ class BonusPoints
      *
      * Make all torrent groups with a tag freeleech.
      *
-     * @param string $tag
-     * @return void
+     * @param int|string $tagId
+     * @return array tag data
      */
-    public function freeleechTag(string $tag): void
+    public function freeleechTag(int|string $tagId): array
     {
         $app = \Gazelle\App::go();
 
-        # deduct the bonus points
-        $this->deductPoints($this->freeleechTagCost);
+        # did they pass a tagId?
+        if (is_numeric($tagId)) {
+            $tagId = intval($tagId);
+        }
 
-        /*
-        # make the torrents freeleech
-        $query = "replace into shop_freeleeches (torrentId, expiryTime) select id, now() + interval 1 day from torrents where groupId in (select groupId from torrents_tags where tagId = ?) and deleted_at is null";
-        $app->dbNew->do($query, [$tag]);
-        \Torrents::freeleech_torrents($torrentId, 1, 3);
-        */
+        # or is it a string?
+        if (!is_numeric($tagId)) {
+            $query = "select id from tags where name = ?";
+            $tagId = $app->dbNew->single($query, [$tagId]);
+        }
+
+        # bail out, they messed up
+        if (empty($tagId) || !is_numeric($tagId)) {
+            throw new \Exception("tag not found");
+        }
+
+        # deduct the bonus points
+        $this->deductPoints($this->neutralLeechTagCost);
+
+        # get the torrent groups
+        $query = "select groupId from torrents_tags where tagId = ?";
+        $ref = $app->dbNew->multi($query, [$tagId]);
+
+        foreach ($ref as $row) {
+            # get the group's torrents
+            $query = "select id from torrents where groupId = ? and deleted_at is null";
+            $groupIds = $app->dbNew->multi($query, [ $row["groupId"] ]);
+
+            foreach ($groupIds as $groupId) {
+                # make the torrent freeleech
+                $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
+                $app->dbNew->do($query, [ $groupId["id"] ]);
+                \Torrents::freeleech_torrents($groupId["id"], 1);
+            }
+        }
+
+        # return the tag
+        $query = "select * from tags where id = ?";
+        $row = $app->dbNew->row($query, [$tagId]);
+
+        return $row;
     }
+
 
     /**
      * neutralLeechCategory
