@@ -100,11 +100,11 @@ class Cache # extends \Redis
         if ($app->env->enableRedisCluster) {
             $this->redis = new \RedisCluster(
                 null,
-                $app->env->getPriv("redisNodes"),
+                $app->env->private("redisNodes"),
                 1.5,
                 1.5,
                 true,
-                $app->env->getPriv("redisPassphrase")
+                $app->env->private("redisPassphrase")
             );
 
             # failure
@@ -120,13 +120,13 @@ class Cache # extends \Redis
         if (!$app->env->enableRedisCluster) {
             $this->redis = new \Redis();
             $this->redis->connect(
-                $app->env->getPriv("redisHost"),
-                $app->env->getPriv("redisPort"),
+                $app->env->private("redisHost"),
+                $app->env->private("redisPort"),
             );
 
             # authentication
-            $redisUsername = $app->env->getPriv("redisUsername") ?? null;
-            $redisPassphrase = $app->env->getPriv("redisPassphrase") ?? null;
+            $redisUsername = $app->env->private("redisUsername") ?? null;
+            $redisPassphrase = $app->env->private("redisPassphrase") ?? null;
 
             if ($redisUsername && $redisPassphrase) {
                 $this->redis->auth([

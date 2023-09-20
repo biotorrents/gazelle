@@ -138,7 +138,7 @@ class Twig # extends Twig\Environment
         # session internal api key
         $frontendKey = implode(".", [
             Http::readCookie("sessionId"),
-            $app->env->getPriv("siteApiSecret"),
+            $app->env->private("siteApiSecret"),
         ]);
 
         $frontendHash = password_hash($frontendKey, PASSWORD_DEFAULT);

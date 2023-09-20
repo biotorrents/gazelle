@@ -177,7 +177,7 @@ class User
             $this->extra["torrent_pass"] ??= null;
             $this->extra["RSS_Auth"] = md5(
                 $userId
-                . $app->env->getPriv("rssHash")
+                . $app->env->private("rssHash")
                 . $this->extra["torrent_pass"]
             );
 
@@ -1254,7 +1254,7 @@ class User
         # rss auth
         $data["extra"]["RSS_Auth"] = md5(
             $userId
-            . $app->env->getPriv("rssHash")
+            . $app->env->private("rssHash")
             . $data["extra"]["torrent_pass"]
         );
 

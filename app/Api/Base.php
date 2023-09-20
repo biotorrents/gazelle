@@ -118,7 +118,7 @@ class Base
         $ref = $app->dbNew->multi($query, [ $app->user->core["id"] ]);
 
         foreach ($ref as $row) {
-            $backendKey = implode(".", [$row["sessionId"], $app->env->getPriv("siteApiSecret")]);
+            $backendKey = implode(".", [$row["sessionId"], $app->env->private("siteApiSecret")]);
             $good = password_verify($backendKey, $token);
 
             if ($good) {

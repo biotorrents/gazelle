@@ -32,7 +32,7 @@ class Images
     {
         $app = \Gazelle\App::go();
 
-        $presharedKey = $app->env->getPriv("imagePsk");
+        $presharedKey = $app->env->private("imagePsk");
 
         if (empty($uri)) {
             return "";

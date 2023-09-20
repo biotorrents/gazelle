@@ -39,7 +39,7 @@ class Stats
 
         $this->baseUri = $app->env->plausibleUri;
         $this->siteId = $app->env->siteDomain;
-        $this->token = $app->env->getPriv("plausibleKey");
+        $this->token = $app->env->private("plausibleKey");
     }
 
 
@@ -153,7 +153,7 @@ class Stats
 
         # entry_page
         $options["property"] = "visit:entry_page";
-        $entry_page= $this->export(
+        $entry_page = $this->export(
             $this->breakdown($options),
             "entry_page",
             "visitors"
@@ -194,7 +194,7 @@ class Stats
 
         # source
         $options["property"] = "visit:source";
-        $source= $this->export(
+        $source = $this->export(
             $this->breakdown($options),
             "source",
             "visitors"
@@ -327,7 +327,7 @@ class Stats
 
         # browser
         $options["property"] = "visit:browser";
-        $browser= $this->export(
+        $browser = $this->export(
             $this->breakdown($options),
             "browser",
             "visitors"

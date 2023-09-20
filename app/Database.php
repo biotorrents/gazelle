@@ -101,8 +101,8 @@ class Database extends \PDO
         }
 
         # database variables
-        $source = $app->env->getPriv("databaseSource");
-        $replicas = $app->env->getPriv("databaseReplicas");
+        $source = $app->env->private("databaseSource");
+        $replicas = $app->env->private("databaseReplicas");
 
         # default options
         $defaultOptions = [

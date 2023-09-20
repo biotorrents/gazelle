@@ -150,11 +150,11 @@ class App
             $mail->isSMTP();
             $mail->SMTPAuth = true;
 
-            $mail->Host = $app->env->getPriv("emailHost");
-            $mail->Port = $app->env->getPriv("emailPort");
+            $mail->Host = $app->env->private("emailHost");
+            $mail->Port = $app->env->private("emailPort");
 
-            $mail->Username = $app->env->getPriv("emailUsername");
-            $mail->Password = $app->env->getPriv("emailPassphrase");
+            $mail->Username = $app->env->private("emailUsername");
+            $mail->Password = $app->env->private("emailPassphrase");
 
             # determine starttls or smtps
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
@@ -164,7 +164,7 @@ class App
             }
 
             # from address
-            $mail->setFrom($app->env->getPriv("emailUsername"), $app->env->siteName);
+            $mail->setFrom($app->env->private("emailUsername"), $app->env->siteName);
 
             # recipient(s)
             $mail->addAddress($to);

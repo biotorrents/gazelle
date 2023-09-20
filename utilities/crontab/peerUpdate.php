@@ -19,7 +19,7 @@ require_once __DIR__."/../../bootstrap/cli.php";
 
 # kill on bad auth
 $argv[1] ??= null;
-if (empty($argv[1]) || $argv[1] !== $app->env->getPriv("scheduleKey")) {
+if (empty($argv[1]) || $argv[1] !== $app->env->private("scheduleKey")) {
     \Gazelle\Text::figlet("bad key", "red");
     exit;
 }

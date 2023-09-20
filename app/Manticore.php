@@ -111,8 +111,8 @@ class Manticore
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
             $this->connection = new \Foolz\SphinxQL\Drivers\Pdo\Connection();
             $this->connection->setParams([
-                "host" => $app->env->getPriv("manticoreHost"),
-                "port" => $app->env->getPriv("manticorePort"),
+                "host" => $app->env->private("manticoreHost"),
+                "port" => $app->env->private("manticorePort"),
             ]);
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#sphinxql
@@ -193,7 +193,7 @@ class Manticore
         $offset = 0;
         $this->query->limit(
             $offset,
-            $app->env->getPriv("manticoreMaxMatches")
+            $app->env->private("manticoreMaxMatches")
         );
 
         # orderBy and orderWay

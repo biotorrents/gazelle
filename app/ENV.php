@@ -9,12 +9,12 @@ declare(strict_types=1);
  * The PHP singleton is considered bad design for nebulous reasons,
  * but for securely loading a site config it does exactly what we need:
  *
- *  - Ensure that only one instance of itself can ever exist
- *  - Load the instance everywhere we need to do $app->env->configValue
- *  - No memory penalty because of multiple app instances
- *  - Static values in config/foo.php are immutable
- *  - Site configs don't exist in the constants table
- *  - Separate public and private config values
+ *  - ensure that only one instance of itself can ever exist
+ *  - load the instance everywhere we need to do $app->env->configValue
+ *  - no memory penalty because of multiple app instances
+ *  - static values in config/foo.php are immutable
+ *  - site configs don't exist in the constants table
+ *  - separate public and private config values
  *
  * @see https://stackoverflow.com/a/3724689
  * @see https://phpenthusiast.com/blog/the-singleton-design-pattern-in-php
@@ -63,9 +63,7 @@ class ENV
     # $this->key returns public->key
     public function __get($key)
     {
-        return isset(self::$public[$key])
-            ? self::$public[$key]
-            : false;
+        return self::$public[$key] ?? null;
     }
 
     # $this->foo = "bar"
@@ -84,9 +82,9 @@ class ENV
     /**
      * go
      *
-     * calls its self's creation or returns itself
+     * Calls its self's creation or returns itself.
      */
-    public static function go(array $options = []): ENV
+    public static function go(array $options = []): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -97,40 +95,24 @@ class ENV
 
 
     /**
-     * gets n sets: public
+     * private
+     *
+     * Sets a private key if $value !== null.
+     * Otherwise, returns the value of $key.
+     *
+     * @param string $key the key to set or get
+     * @param mixed $value the value to set
+     * @return mixed the value of the key
      */
 
-    # getPub
-    public function getPub($key)
+    public function private(string $key, mixed $value = null): mixed
     {
-        return isset(self::$public[$key])
-            ? self::$public[$key]
-            : false;
-    }
+        # get
+        if (!$value) {
+            return self::$private[$key] ?? null;
+        }
 
-    # setPub
-    public static function setPub($key, $value)
-    {
-        return self::$public[$key] = $value;
-    }
-
-
-    /**
-     * gets n sets: private
-     */
-
-    # getPriv
-    public function getPriv($key)
-    {
-        return isset(self::$private[$key])
-            ? self::$private[$key]
-            : false;
-    }
-
-
-    # setPriv
-    public static function setPriv($key, $value)
-    {
+        # set
         return self::$private[$key] = $value;
     }
 
@@ -317,6 +299,8 @@ class ENV
 
 
 /**
+ * RecursiveArrayObject
+ *
  * @author: etconsilium@github
  * @license: BSDLv2
  * @see https://github.com/etconsilium/php-recursive-array-object
@@ -339,37 +323,37 @@ class RecursiveArrayObject extends ArrayObject
     }
 
     # __get
-    public function __get($name)
+    public function __get($key)
     {
-        if ($this->offsetExists($name)) {
-            return $this->offsetGet($name);
-        } elseif (array_key_exists($name, $this)) {
-            return $this[$name];
+        if ($this->offsetExists($key)) {
+            return $this->offsetGet($key);
+        } elseif (array_key_exists($key, $this)) {
+            return $this[$key];
         } else {
-            throw new InvalidArgumentException("the instance doesn't have the property {$name}");
+            throw new InvalidArgumentException("the instance doesn't have the property {$key}");
         }
     }
 
     # __set
-    public function __set($name, $value)
+    public function __set($key, $value)
     {
         if (is_array($value) || is_object($value)) {
-            $this->offsetSet($name, (new self($value)));
+            $this->offsetSet($key, (new self($value)));
         } else {
-            $this->offsetSet($name, $value);
+            $this->offsetSet($key, $value);
         }
     }
 
     # __isset
-    public function __isset($name)
+    public function __isset($key)
     {
-        return array_key_exists($name, $this);
+        return array_key_exists($key, $this);
     }
 
     # __unset
-    public function __unset($name)
+    public function __unset($key)
     {
-        unset($this[$name]);
+        unset($this[$key]);
     }
 
 

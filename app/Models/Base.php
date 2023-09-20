@@ -39,8 +39,8 @@ class Base extends \Illuminate\Database\Eloquent\Model
         $app = \Gazelle\App::go();
 
         # database variables
-        $source = $app->env->getPriv("databaseSource");
-        $replicas = $app->env->getPriv("databaseReplicas");
+        $source = $app->env->private("databaseSource");
+        $replicas = $app->env->private("databaseReplicas");
 
         # default options
         $defaultOptions = [

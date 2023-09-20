@@ -11,7 +11,7 @@ declare(strict_types=1);
 require_once __DIR__."/bootstrap/cli.php";
 
 # use the source database for this
-$databaseSource = $app->env->getPriv("databaseSource");
+$databaseSource = $app->env->private("databaseSource");
 
 # config array
 return

@@ -51,7 +51,7 @@ class Tracker
         }
 
         # build the request
-        $get = $app->env->getPriv("trackerSecret") . "/update?action={$action}";
+        $get = $app->env->private("trackerSecret") . "/update?action={$action}";
         foreach ($updates as $k => $v) {
             $get .= "&{$k}={$v}";
         }
@@ -152,12 +152,12 @@ class Tracker
         $ENV = ENV::go();
 
         # no report key
-        if (!defined($ENV->getPriv('trackerReportKey'))) {
+        if (!defined($ENV->private('trackerReportKey'))) {
             return false;
         }
 
         # there is a report key
-        $get = $ENV->getPriv('trackerReportKey') . '/report?';
+        $get = $ENV->private('trackerReportKey') . '/report?';
 
         # main stats
         if ($type === self::STATS_MAIN) {
@@ -218,8 +218,8 @@ class Tracker
 
             // Send request
             $file = fsockopen(
-                $ENV->getPriv('trackerHost'),
-                $ENV->getPriv('trackerPort'),
+                $ENV->private('trackerHost'),
+                $ENV->private('trackerPort'),
                 $errorNum,
                 $errorString
             );

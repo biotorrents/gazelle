@@ -22,7 +22,7 @@ $signature ??= null;
 
 
 # 1. Validate the signature: ensure that HMAC-SHA256 of PAYLOAD (using discourse_connect_secret, as the key) is equal to the sig (sig will be hex encoded).
-$connectSecret = $app->env->getPriv("connectSecret") ?? null;
+$connectSecret = $app->env->private("connectSecret") ?? null;
 if ($connectSecret === null) {
     throw new Exception("you must set \$app->env->connectSecret in config/private.php");
 }

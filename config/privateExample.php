@@ -11,48 +11,48 @@ declare(strict_types=1);
 
 # database key for encrypting sensitive data
 match ($env->environment) {
-    "production" => ENV::setPriv("databaseKey", ""),
-    "development" => ENV::setPriv("databaseKey", ""),
+    "production" => $env->private("databaseKey", ""),
+    "development" => $env->private("databaseKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # pre-shared key for generating hmacs for the image proxy
 match ($env->environment) {
-    "production" => ENV::setPriv("imagePsk", ""),
-    "development" => ENV::setPriv("imagePsk", ""),
+    "production" => $env->private("imagePsk", ""),
+    "development" => $env->private("imagePsk", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # currently used for api token auth
 match ($env->environment) {
-    "production" => ENV::setPriv("siteCryptoKey", ""),
-    "development" => ENV::setPriv("siteCryptoKey", ""),
+    "production" => $env->private("siteCryptoKey", ""),
+    "development" => $env->private("siteCryptoKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # alphanumeric random key: the scheduler argument
 match ($env->environment) {
-    "production" => ENV::setPriv("scheduleKey", ""),
-    "development" => ENV::setPriv("scheduleKey", ""),
+    "production" => $env->private("scheduleKey", ""),
+    "development" => $env->private("scheduleKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # used for generating unique rss auth keys
 match ($env->environment) {
-    "production" => ENV::setPriv("rssHash", ""),
-    "development" => ENV::setPriv("rssHash", ""),
+    "production" => $env->private("rssHash", ""),
+    "development" => $env->private("rssHash", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # hashed with the sessionId for internal api calls
 match ($env->environment) {
-    "production" => ENV::setPriv("siteApiSecret", ""),
-    "development" => ENV::setPriv("siteApiSecret", ""),
+    "production" => $env->private("siteApiSecret", ""),
+    "development" => $env->private("siteApiSecret", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -72,7 +72,7 @@ match ($env->environment) {
 # production
 if ($env->environment === "production") {
     # source: or the settings for only one database
-    ENV::setPriv("databaseSource", [
+    $env->private("databaseSource", [
         "host" => "",
         "port" => 3306,
         "socket" => null,
@@ -85,7 +85,7 @@ if ($env->environment === "production") {
     ]);
 
     # replicas: array of structures as above
-    ENV::setPriv("databaseReplicas", [
+    $env->private("databaseReplicas", [
         "someLabel" => [
             "host" => "",
             "port" => 3306,
@@ -117,7 +117,7 @@ if ($env->environment === "production") {
 
 # development
 if ($env->environment === "development") {
-    ENV::setPriv("databaseSource", [
+    $env->private("databaseSource", [
         "host" => "",
         "port" => 3306,
         "socket" => null,
@@ -129,7 +129,7 @@ if ($env->environment === "development") {
         "charset" => "",
     ]);
 
-    ENV::setPriv("databaseReplicas", [
+    $env->private("databaseReplicas", [
          "someLabel" => [
             "host" => "",
             "port" => 3306,
@@ -167,7 +167,7 @@ match ($env->environment) {
 
 # this should be an array of at least three "host:port" strings
 # https://redis.io/docs/management/scaling/#create-a-redis-cluster
-ENV::setPriv("redisNodes", [
+$env->private("redisNodes", [
     "",
     "",
     "",
@@ -175,32 +175,32 @@ ENV::setPriv("redisNodes", [
 
 # single server (not a cluster)
 match ($env->environment) {
-    "production" => ENV::setPriv("redisHost", ""),
-    "development" => ENV::setPriv("redisHost", ""),
+    "production" => $env->private("redisHost", ""),
+    "development" => $env->private("redisHost", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # port
 match ($env->environment) {
-    "production" => ENV::setPriv("redisPort", 6379),
-    "development" => ENV::setPriv("redisPort", 6379),
+    "production" => $env->private("redisPort", 6379),
+    "development" => $env->private("redisPort", 6379),
     default => throw new Exception("invalid environment"),
 };
 
 
 # username
 match ($env->environment) {
-    "production" => ENV::setPriv("redisUsername", ""),
-    "development" => ENV::setPriv("redisUsername", ""),
+    "production" => $env->private("redisUsername", ""),
+    "development" => $env->private("redisUsername", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # passphrase
 match ($env->environment) {
-    "production" => ENV::setPriv("redisPassphrase", ""),
-    "development" => ENV::setPriv("redisPassphrase", ""),
+    "production" => $env->private("redisPassphrase", ""),
+    "development" => $env->private("redisPassphrase", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -213,32 +213,32 @@ match ($env->environment) {
 
 # tracker host, e.g., 0.0.0.0
 match ($env->environment) {
-    "production" => ENV::setPriv("trackerHost", ""),
-    "development" => ENV::setPriv("trackerHost", ""),
+    "production" => $env->private("trackerHost", ""),
+    "development" => $env->private("trackerHost", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # tracker port, e.g., 34000
 match ($env->environment) {
-    "production" => ENV::setPriv("trackerPort", 34000),
-    "development" => ENV::setPriv("trackerPort", 34000),
+    "production" => $env->private("trackerPort", 34000),
+    "development" => $env->private("trackerPort", 34000),
     default => throw new Exception("invalid environment"),
 };
 
 
 # must be 32 alphanumeric characters and match site_password in ocelot.conf
 match ($env->environment) {
-    "production" => ENV::setPriv("trackerSecret", ""),
-    "development" => ENV::setPriv("trackerSecret", ""),
+    "production" => $env->private("trackerSecret", ""),
+    "development" => $env->private("trackerSecret", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # must be 32 alphanumeric characters and match report_password in ocelot.conf
 match ($env->environment) {
-    "production" => ENV::setPriv("trackerReportKey", ""),
-    "development" => ENV::setPriv("trackerReportKey", ""),
+    "production" => $env->private("trackerReportKey", ""),
+    "development" => $env->private("trackerReportKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -299,32 +299,32 @@ if ($env->environment === "development") {
 
 # host
 match ($env->environment) {
-    "production" => ENV::setPriv("manticoreHost", ""),
-    "development" => ENV::setPriv("manticoreHost", ""),
+    "production" => $env->private("manticoreHost", ""),
+    "development" => $env->private("manticoreHost", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # port
 match ($env->environment) {
-    "production" => ENV::setPriv("manticorePort", 9306),
-    "development" => ENV::setPriv("manticorePort", 9306),
+    "production" => $env->private("manticorePort", 9306),
+    "development" => $env->private("manticorePort", 9306),
     default => throw new Exception("invalid environment"),
 };
 
 
 # socket
 match ($env->environment) {
-    "production" => ENV::setPriv("manticoreSocket", null),
-    "development" => ENV::setPriv("manticoreSocket", null),
+    "production" => $env->private("manticoreSocket", null),
+    "development" => $env->private("manticoreSocket", null),
     default => throw new Exception("invalid environment"),
 };
 
 
 # must be <= server max_matches (default 1000)
 match ($env->environment) {
-    "production" => ENV::setPriv("manticoreMaxMatches", 1000),
-    "development" => ENV::setPriv("manticoreMaxMatches", 1000),
+    "production" => $env->private("manticoreMaxMatches", 1000),
+    "development" => $env->private("manticoreMaxMatches", 1000),
     default => throw new Exception("invalid environment"),
 };
 
@@ -343,32 +343,32 @@ match ($env->environment) {
 
 # host
 match ($env->environment) {
-    "production" => ENV::setPriv("emailHost", ""),
-    "development" => ENV::setPriv("emailHost", ""),
+    "production" => $env->private("emailHost", ""),
+    "development" => $env->private("emailHost", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # port
 match ($env->environment) {
-    "production" => ENV::setPriv("emailPort", 587),
-    "development" => ENV::setPriv("emailPort", 587),
+    "production" => $env->private("emailPort", 587),
+    "development" => $env->private("emailPort", 587),
     default => throw new Exception("invalid environment"),
 };
 
 
 # username
 match ($env->environment) {
-    "production" => ENV::setPriv("emailUsername", ""),
-    "development" => ENV::setPriv("emailUsername", ""),
+    "production" => $env->private("emailUsername", ""),
+    "development" => $env->private("emailUsername", ""),
     default => throw new Exception("invalid environment"),
 };
 
 
 # passphrase
 match ($env->environment) {
-    "production" => ENV::setPriv("emailPassphrase", ""),
-    "development" => ENV::setPriv("emailPassphrase", ""),
+    "production" => $env->private("emailPassphrase", ""),
+    "development" => $env->private("emailPassphrase", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -397,8 +397,8 @@ match ($env->environment) {
 
 # api key
 match ($env->environment) {
-    "production" => ENV::setPriv("plausibleKey", ""),
-    "development" => ENV::setPriv("plausibleKey", ""),
+    "production" => $env->private("plausibleKey", ""),
+    "development" => $env->private("plausibleKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -411,7 +411,7 @@ match ($env->environment) {
 
 # production
 if ($env->environment === "production") {
-    ENV::setPriv(
+    $env->private(
         "slackWebhooks",
         [
             "announce" => "",
@@ -424,7 +424,7 @@ if ($env->environment === "production") {
 
 # development
 if ($env->environment === "development") {
-    ENV::setPriv(
+    $env->private(
         "slackWebhooks",
         [
             "announce" => "",
@@ -459,8 +459,8 @@ match ($env->environment) {
 
 # api key
 match ($env->environment) {
-    "production" => ENV::setPriv("discourseKey", ""),
-    "development" => ENV::setPriv("discourseKey", ""),
+    "production" => $env->private("discourseKey", ""),
+    "development" => $env->private("discourseKey", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -468,8 +468,8 @@ match ($env->environment) {
 # discourse connect shared secret
 # see https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
 match ($env->environment) {
-    "production" => ENV::setPriv("connectSecret", ""),
-    "development" => ENV::setPriv("connectSecret", ""),
+    "production" => $env->private("connectSecret", ""),
+    "development" => $env->private("connectSecret", ""),
     default => throw new Exception("invalid environment"),
 };
 
@@ -504,7 +504,7 @@ match ($env->environment) {
 
 # secret key and organization id
 if ($env->environment === "production") {
-    ENV::setPriv(
+    $env->private(
         "openAiApi",
         [
             "secretKey" => "",
@@ -516,7 +516,7 @@ if ($env->environment === "production") {
 
 # development
 if ($env->environment === "development") {
-    ENV::setPriv(
+    $env->private(
         "openAiApi",
         [
             "secretKey" => "",
@@ -542,7 +542,7 @@ match ($env->environment) {
 
 # secret key and organization id
 if ($env->environment === "production") {
-    ENV::setPriv(
+    $env->private(
         "twitterApi",
         [
             "consumerKey" => "",
@@ -557,7 +557,7 @@ if ($env->environment === "production") {
 
 # development
 if ($env->environment === "development") {
-    ENV::setPriv(
+    $env->private(
         "twitterApi",
         [
             "consumerKey" => "",

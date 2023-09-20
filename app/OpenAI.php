@@ -78,7 +78,7 @@ class OpenAI
             throw new \Exception("OpenAI support is disabled in the app config");
         }
 
-        $openAiApi = $app->env->getPriv("openAiApi");
+        $openAiApi = $app->env->private("openAiApi");
         $this->client = \OpenAI::client($openAiApi["secretKey"]);
     }
 

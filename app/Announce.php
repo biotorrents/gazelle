@@ -149,7 +149,7 @@ class Announce
         }
 
         # webhooks must remain private
-        $webhooks = $app->env->getPriv("slackWebhooks");
+        $webhooks = $app->env->private("slackWebhooks");
         foreach ($channels as $channel) {
             try {
                 # set up
@@ -187,7 +187,7 @@ class Announce
         }
 
         try {
-            $twitterCredentials = $app->env->getPriv("twitterApi");
+            $twitterCredentials = $app->env->private("twitterApi");
 
             $connection = new Abraham\TwitterOAuth\TwitterOAuth(
                 $twitterCredentials["consumerKey"],

@@ -12,7 +12,7 @@ declare(strict_types=1);
  *
  *   $app = Gazelle\App::go();
  *   $app->env->publicValue;
- *   $app->env->getPriv("privateValue");
+ *   $app->env->private("privateValue");
  *
  *
  * Using a central static singleton class has additional benefits.

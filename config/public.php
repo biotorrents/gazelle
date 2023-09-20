@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 # which environment are we running in?
 # expected values are ["production", "development"]
-ENV::setPub("environment", "development");
+$env->environment = "development";
 
 
 # development or production?
@@ -199,17 +199,17 @@ match ($env->environment) {
 
 # IRC server address. Used for onsite chat tool
 define("BOT_SERVER", "irc.$env->siteDomain");
-ENV::setPub("ircHostname", "irc.{$env->siteDomain}");
+$env->ircHostname = "irc.{$env->siteDomain}";
 
 
 define("SOCKET_LISTEN_ADDRESS", "10.10.10.60");
-ENV::setPub("ircAddress", "10.10.10.60");
+$env->ircAddress = "10.10.10.60";
 
 define("SOCKET_LISTEN_PORT", 51010);
-ENV::setPub("ircPort", 51010);
+$env->ircPort = 51010;
 
 define("BOT_NICK", "ebooks");
-ENV::setPub("ircBotNick", "ebooks");
+$env->ircBotNick = "ebooks";
 
 # IRC channels for official business
 define("ANNOUNCE_CHAN", "#announce");
@@ -407,9 +407,8 @@ define("FORUM_MOD", "9001");
 define("STAFF_FORUM", 3);
 define("DONOR_FORUM", 7);
 
-ENV::setPub("TRASH_FORUM", 8);
-ENV::setPub("ANNOUNCEMENT_FORUM", 1);
-ENV::setPub("SUGGESTIONS_FORUM", 2);
+$env->TRASH_FORUM = 8;
+$env->ANNOUNCEMENT_FORUM = 1;
 
 # Pagination
 define("TORRENT_COMMENTS_PER_PAGE", 10);

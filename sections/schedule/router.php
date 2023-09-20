@@ -46,13 +46,13 @@ function run_all_in($Dir)
         include($Dir.'/'.$Task);
 
         if ($ScheduleDebug) {
-            echo $Dir.'/'.$Task.': '.\Gazelle\Text::float(microtime(true)-$TimeStart, 3).($AS ? "<br>" : "\n");
+            echo $Dir.'/'.$Task.': '.\Gazelle\Text::float(microtime(true) - $TimeStart, 3).($AS ? "<br>" : "\n");
         }
     }
 }
 
-if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->getPriv('scheduleKey'))
-    #|| (!isset($argv[1]) || $argv[1] !== $ENV->getPriv('scheduleKey'))
+if ((!isset($_REQUEST['key']) || $_REQUEST['key'] !== $ENV->private('scheduleKey'))
+    #|| (!isset($argv[1]) || $argv[1] !== $ENV->private('scheduleKey'))
     && !$AS) {
     error(403);
 }
