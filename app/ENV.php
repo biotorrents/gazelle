@@ -60,20 +60,19 @@ class ENV
     }
 
     # $this->key returns self::$public["key"]
-    public function __get(string $key)
+    public function __get(mixed $key)
     {
         return self::$public[$key] ?? null;
     }
 
     # $this->key = "value"
-    public function __set(string $key, mixed $value)
+    public function __set(mixed $key, mixed $value)
     {
         return self::$public[$key] = $this->toObject($value);
-        #return self::$public[$key] = $value;
     }
 
     # isset
-    public function __isset(string $key)
+    public function __isset(mixed $key)
     {
         return isset(self::$public[$key]);
     }
@@ -100,12 +99,12 @@ class ENV
      * Sets a private key if $value !== null.
      * Otherwise, returns the value of $key.
      *
-     * @param string $key the key to set or get
+     * @param mixed $key the key to set or get
      * @param mixed $value the value to set
      * @return mixed the value of the key
      */
 
-    public function private(string $key, mixed $value = null): mixed
+    public function private(mixed $key, mixed $value = null): mixed
     {
         # get
         if (!$value) {
@@ -114,40 +113,7 @@ class ENV
 
         # set
         return self::$private[$key] = $this->toObject($value);
-        #return self::$private[$key] = $value;
     }
-
-
-    /**
-     * convert
-     *
-     * Take a mixed input and returns a RecursiveArrayObject.
-     * This function is the sausage grinder, so to speak.
-     *
-     * @param mixed $object the thing to convert
-     * @return RecursiveArrayObject the converted thing
-     */
-    /*
-    public function convert(mixed $object): RecursiveArrayObject
-    {
-        switch (gettype($object)) {
-            case "string":
-                $return = json_decode($object, true);
-                return (json_last_error() === JSON_ERROR_NONE)
-                    ? new RecursiveArrayObject($return)
-                    : trigger_error("json_last_error_msg: " . json_last_error_msg(), E_USER_ERROR);
-                break;
-
-            case "array":
-            case "object":
-                return new RecursiveArrayObject($object);
-
-            default:
-                return trigger_error("ENV->convert expects a JSON string, array, or object", E_USER_ERROR);
-                break;
-        }
-    }
-    */
 
 
     /**
@@ -208,8 +174,11 @@ class ENV
      * Takes a collection (usually an array) of various jumbled $app->env slices.
      * Returns a once-deduplicated RecursiveArrayObject with original nesting intact.
      * Simple and handy if you need to populate a form with arbitrary collections of metadata.
+     *
+     * @param iterable $object the thing(s) to dedupe
+     * @return RecursiveArrayObject the deduplicated collection
      */
-    public function dedupe(array|object $object): RecursiveArrayObject
+    public function dedupe(iterable $object): RecursiveArrayObject
     {
         $object = $this->toArray($object);
 
@@ -225,13 +194,13 @@ class ENV
      * Takes an $app->env node or an array of them.
      * Flattens it to $depth and returns a RecursiveArrayObject.
      *
-     * @param array|object $object the thing(s) to flatten
-     * @param int $depth how far down the rabbit hole to go
+     * @param iterable $object the thing(s) to flatten
+     * @param int|float $depth how far down the rabbit hole to go
      * @return RecursiveArrayObject the flattened collection
      *
      * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
      */
-    public function flatten(array|object $object, int|float $depth = INF): RecursiveArrayObject
+    public function flatten(iterable $object, int|float $depth = INF): RecursiveArrayObject
     {
         $object = $this->toArray($object);
 
@@ -285,13 +254,13 @@ class ENV
      *   iteratorClass: "ArrayIterator",
      * }
      *
-     * @param mixed $object object or property to operate on
+     * @param iterable $object object or property to operate on
      * @param callable $callback the callback function
-     * @return object function-mapped RecursiveArrayObject
+     * @return RecursiveArrayObject the mapped result
      *
      * @see https://stackoverflow.com/a/39637749
      */
-    public function map(mixed $object, callable $callback): RecursiveArrayObject
+    public function map(iterable $object, callable $callback): RecursiveArrayObject
     {
         $object = $this->toArray($object);
 
@@ -312,14 +281,14 @@ class ENV
      *
      * Recursively sorts an object.
      *
-     * @param mixed $object the object to sort
+     * @param iterable $object the object to sort
      * @param int $options the sort options
      * @param bool $descending whether to sort descending
      * @return RecursiveArrayObject the sorted object
      *
      * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
      */
-    public function sort(mixed $object, $options = SORT_REGULAR, $descending = false): RecursiveArrayObject
+    public function sort(iterable $object, int $options = SORT_REGULAR, bool $descending = false): RecursiveArrayObject
     {
         $object = $this->toArray($object);
 
@@ -347,10 +316,55 @@ class ENV
      * sortDescending
      *
      * Recursively sorts an object descending.
+     *
+     * @param iterable $object the object to sort
+     * @param int $options the sort options
+     * @return RecursiveArrayObject the sorted object
+     *
+     * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
      */
-    public function sortDescending(mixed $object, $options = SORT_REGULAR): RecursiveArrayObject
+    public function sortDescending(iterable $object, int $options = SORT_REGULAR): RecursiveArrayObject
     {
         return $this->sort($object, $options, true);
+    }
+
+
+    /**
+     * pluck
+     *
+     * Pluck an object of values from an object.
+     *
+     * @param iterable $object the haystack
+     * @param mixed $value the needle (value)
+     * @param mixed $key the needle (key)
+     * @return RecursiveArrayObject the results
+     *
+     * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
+     */
+    public function pluck(iterable $object, mixed $value, mixed $key = null): RecursiveArrayObject
+    {
+        $object = $this->toArray($object);
+
+        foreach ($object as $item) {
+            $itemValue = data_get($item, $value);
+
+            # if the key is "null," we will just append the value to the array and keep looping
+            # otherwise we will key the array using the value of the key we received from the developer
+            # then we'll return the final array form
+            if (is_null($key)) {
+                $results[] = $itemValue;
+            } else {
+                $itemKey = data_get($item, $key);
+
+                if (is_object($itemKey) && method_exists($itemKey, "__toString")) {
+                    $itemKey = strval($itemKey);
+                }
+
+                $results[$itemKey] = $itemValue;
+            }
+        }
+
+        return new RecursiveArrayObject($results);
     }
 } # class
 
@@ -374,7 +388,7 @@ class RecursiveArrayObject extends ArrayObject
      */
 
     # __construct
-    public function __construct(mixed $input = null, int $flags = self::ARRAY_AS_PROPS, string $iterator_class = "ArrayIterator")
+    public function __construct(mixed $input = null, int $flags = self::ARRAY_AS_PROPS, string $iteratorClass = "ArrayIterator")
     {
         foreach ($input as $key => $value) {
             $this->__set($key, $value);
@@ -449,6 +463,10 @@ class RecursiveArrayObject extends ArrayObject
 
     /**
      * toArray
+     *
+     * Returns the object as an array.
+     *
+     * @return array the object as an array
      */
     public function toArray(): array
     {
