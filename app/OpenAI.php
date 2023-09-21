@@ -79,7 +79,7 @@ class OpenAI
         }
 
         $openAiApi = $app->env->private("openAiApi");
-        $this->client = \OpenAI::client($openAiApi["secretKey"]);
+        $this->client = \OpenAI::client($openAiApi->secretKey);
     }
 
 

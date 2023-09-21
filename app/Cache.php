@@ -100,7 +100,7 @@ class Cache # extends \Redis
         if ($app->env->enableRedisCluster) {
             $this->redis = new \RedisCluster(
                 null,
-                $app->env->private("redisNodes"),
+                $app->env->private("redisNodes")->toArray(),
                 1.5,
                 1.5,
                 true,

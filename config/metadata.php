@@ -241,7 +241,7 @@ $database = [
     "seqhash" => ["name" => "Seqhash", "desc" => "One sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash' target='_blank' class='external'>the reference implementation</a>"],
 ];
 
-$env->DB = $env->convert($database);
+$env->DB = $database;
 
 
 /** */
@@ -747,7 +747,7 @@ $metadata = [
     ], # end $env->metadata->licenses
 ];
 
-$env->META = $env->convert($metadata);
+$env->META = $metadata;
 
 
 /** */
@@ -759,12 +759,12 @@ $env->META = $env->convert($metadata);
  * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
-$env->collageCategories = $env->convert([
+$env->collageCategories = [
     0 => "Personal",
     1 => "Theme",
     2 => "Staff Picks",
     3 => "Group Picks",
-]);
+];
 
 # main torrent categories
 $categories = [
@@ -959,4 +959,4 @@ $categories = [
     ],
 ];
 
-$env->CATS = $env->convert($categories);
+$env->CATS = $categories;

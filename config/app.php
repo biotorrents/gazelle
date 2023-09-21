@@ -18,9 +18,6 @@ declare(strict_types=1);
  * Using a central static singleton class has additional benefits.
  * The RecursiveArrayObject class included in ENV.php is a powerful tool:
  *
- *   $longArray = ["foo" => "bar"];
- *   $env->config = $env->convert($longArray);
- *
  *   $app = Gazelle\App::go();
  *   foreach ($app->env->categories as $category) {
  *     var_dump($category->name);

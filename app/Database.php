@@ -115,14 +115,14 @@ class Database extends \PDO
         $options = array_replace($defaultOptions, $options);
 
         # construct the source dsn
-        $dsn = "mysql:host={$source["host"]};dbname={$source["database"]};port={$source["port"]};charset={$source["charset"]}";
-        if ($source["socket"]) {
-            $dsn = str_replace("port={$source["port"]}", "unix_socket={$source["socket"]}", $dsn);
+        $dsn = "mysql:host={$source->host};dbname={$source->database};port={$source->port};charset={$source->charset}";
+        if ($source->socket) {
+            $dsn = str_replace("port={$source->port}", "unix_socket={$source->socket}", $dsn);
         }
 
         try {
             # try to instantiate the source
-            $this->source = new \PDO($dsn, $source["username"], $source["passphrase"], $options);
+            $this->source = new \PDO($dsn, $source->username, $source->passphrase, $options);
         } catch (\Throwable $e) {
             throw new \Exception($e->getMessage());
         }
@@ -138,14 +138,14 @@ class Database extends \PDO
         # set up the replicas
         foreach ($replicas as $key => $replica) {
             # construct the replica dsn
-            $dsn = "mysql:host={$replica["host"]};dbname={$replica["database"]};port={$replica["port"]};charset={$replica["charset"]}";
-            if ($replica["socket"]) {
-                $dsn = str_replace("port={$replica["port"]}", "unix_socket={$replica["socket"]}", $dsn);
+            $dsn = "mysql:host={$replica->host};dbname={$replica->database};port={$replica->port};charset={$replica->charset}";
+            if ($replica->socket) {
+                $dsn = str_replace("port={$replica->port}", "unix_socket={$replica->socket}", $dsn);
             }
 
             try {
                 # try to instantiate the replica
-                $this->replicas[$key] = new \PDO($dsn, $replica["username"], $replica["passphrase"], $options);
+                $this->replicas[$key] = new \PDO($dsn, $replica->username, $replica->passphrase, $options);
             } catch (\Throwable $e) {
                 throw new \Exception($e->getMessage());
             }

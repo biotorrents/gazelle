@@ -153,7 +153,7 @@ class Announce
         foreach ($channels as $channel) {
             try {
                 # set up
-                $curl = curl_init($webhooks[$channel]);
+                $curl = curl_init($webhooks->$channel);
                 $data = json_encode(["text" => $message], JSON_UNESCAPED_SLASHES);
 
                 # options
@@ -190,10 +190,10 @@ class Announce
             $twitterCredentials = $app->env->private("twitterApi");
 
             $connection = new Abraham\TwitterOAuth\TwitterOAuth(
-                $twitterCredentials["consumerKey"],
-                $twitterCredentials["consumerSecret"],
-                $twitterCredentials["accessToken"],
-                $twitterCredentials["accessTokenSecret"]
+                $twitterCredentials->consumerKey,
+                $twitterCredentials->consumerSecret,
+                $twitterCredentials->accessToken,
+                $twitterCredentials->accessTokenSecret
             );
 
             # set api version

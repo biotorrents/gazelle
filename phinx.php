@@ -29,22 +29,22 @@ return
         # they transparently switch databases on $app->env->dev
         "production" => [
             "adapter" => "mysql",
-            "host" => $databaseSource["host"],
-            "name" => $databaseSource["database"],
-            "user" => $databaseSource["username"],
-            "pass" => $databaseSource["passphrase"],
-            "port" => $databaseSource["port"],
-            "charset" => $databaseSource["charset"],
+            "host" => $databaseSource->host,
+            "name" => $databaseSource->database,
+            "user" => $databaseSource->username,
+            "pass" => $databaseSource->passphrase,
+            "port" => $databaseSource->port,
+            "charset" => $databaseSource->charset,
         ],
 
         "development" => [
             "adapter" => "mysql",
-            "host" => $databaseSource["host"],
-            "name" => $databaseSource["database"],
-            "user" => $databaseSource["username"],
-            "pass" => $databaseSource["passphrase"],
-            "port" => $databaseSource["port"],
-            "charset" => $databaseSource["charset"],
+            "host" => $databaseSource->host,
+            "name" => $databaseSource->database,
+            "user" => $databaseSource->username,
+            "pass" => $databaseSource->passphrase,
+            "port" => $databaseSource->port,
+            "charset" => $databaseSource->charset,
         ],
 
         /*

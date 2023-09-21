@@ -307,7 +307,7 @@ $env->illegalCharacters = ["\"", "*", "\/", ":", "<", ">", "?", "\\", "|"];
 
 
 # ratio requirements, in descending order
-$env->ratioRequirements = $env->convert([
+$env->ratioRequirements = [
     # downloaded       req (0% seed) req (100% seed)
      [200 * 1024 ** 3, 0.60,         0.60],
      [160 * 1024 ** 3, 0.60,         0.50],
@@ -318,7 +318,7 @@ $env->ratioRequirements = $env->convert([
      [40  * 1024 ** 3, 0.15,         0.00],
      [20  * 1024 ** 3, 0.10,         0.00],
      [10  * 1024 ** 3, 0.05,         0.00],
-]);
+];
 
 
 # REMOVE ME

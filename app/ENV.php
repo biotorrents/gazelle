@@ -16,7 +16,6 @@ declare(strict_types=1);
  *  - site configs don't exist in the constants table
  *  - separate public and private config values
  *
- * @see https://stackoverflow.com/a/3724689
  * @see https://phpenthusiast.com/blog/the-singleton-design-pattern-in-php
  */
 
@@ -60,20 +59,21 @@ class ENV
         );
     }
 
-    # $this->key returns public->key
-    public function __get($key)
+    # $this->key returns self::$public["key"]
+    public function __get(string $key)
     {
         return self::$public[$key] ?? null;
     }
 
-    # $this->foo = "bar"
-    public function __set($key, $value)
+    # $this->key = "value"
+    public function __set(string $key, mixed $value)
     {
-        return self::$public[$key] = $value;
+        return self::$public[$key] = $this->toObject($value);
+        #return self::$public[$key] = $value;
     }
 
     # isset
-    public function __isset($key)
+    public function __isset(string $key)
     {
         return isset(self::$public[$key]);
     }
@@ -113,7 +113,8 @@ class ENV
         }
 
         # set
-        return self::$private[$key] = $value;
+        return self::$private[$key] = $this->toObject($value);
+        #return self::$private[$key] = $value;
     }
 
 
@@ -122,14 +123,18 @@ class ENV
      *
      * Take a mixed input and returns a RecursiveArrayObject.
      * This function is the sausage grinder, so to speak.
+     *
+     * @param mixed $object the thing to convert
+     * @return RecursiveArrayObject the converted thing
      */
-    public function convert(array|object|string $object): RecursiveArrayObject
+    /*
+    public function convert(mixed $object): RecursiveArrayObject
     {
         switch (gettype($object)) {
             case "string":
-                $out = json_decode($object, true);
+                $return = json_decode($object, true);
                 return (json_last_error() === JSON_ERROR_NONE)
-                    ? new RecursiveArrayObject($out)
+                    ? new RecursiveArrayObject($return)
                     : trigger_error("json_last_error_msg: " . json_last_error_msg(), E_USER_ERROR);
                 break;
 
@@ -142,6 +147,7 @@ class ENV
                 break;
         }
     }
+    */
 
 
     /**
@@ -149,27 +155,50 @@ class ENV
      *
      * Takes an object and returns an array.
      *
-     * @param object|string $object thing to turn into an array
-     * @return array|string $new new recursive array with $object contents
+     * @param mixed $object thing to turn into an array
+     * @return mixed $new array with $object contents
      *
-     * @see https://ben.lobaugh.net/blog/567/php-recursively-convert-an-object-to-an-array
+     * @see https://stackoverflow.com/a/54131002
      */
-    public function toArray(object|string $object): array|string
+    public function toArray(mixed $object): mixed
     {
-        if (is_object($object)) {
-            $object = (array) $object;
-        }
+        if (is_object($object) || is_array($object)) {
+            $return = (array) $object;
 
-        if (is_array($object)) {
-            $new = [];
-            foreach ($object as $key => $value) {
-                $new[$key] = $this->toArray($value);
+            foreach ($return as &$item) {
+                $item = $this->toArray($item);
             }
-        } else {
-            $new = $object;
+
+            return $return;
         }
 
-        return $new;
+        return $object;
+    }
+
+
+    /**
+     * toObject
+     *
+     * Takes an array and returns an object.
+     *
+     * @param mixed $object thing to turn into an object
+     * @return mixed $new object with $array contents
+     *
+     * @see https://stackoverflow.com/a/54131002
+     */
+    public function toObject(mixed $array): mixed
+    {
+        if (is_object($array) || is_array($array)) {
+            $return = new RecursiveArrayObject($array);
+
+            foreach ($return as &$item) {
+                $item = $this->toObject($item);
+            }
+
+            return $return;
+        }
+
+        return $array;
     }
 
 
@@ -182,12 +211,10 @@ class ENV
      */
     public function dedupe(array|object $object): RecursiveArrayObject
     {
-        if (is_object($object)) {
-            $object = (array) $object;
-        }
+        $object = $this->toArray($object);
 
         return new RecursiveArrayObject(
-            array_unique($this->toArray($object))
+            array_unique($object)
         );
     }
 
@@ -195,31 +222,34 @@ class ENV
     /**
      * flatten
      *
-     * Takes an $app->env node or array of them,
-     * and flattens out the multi-dimensionality.
-     * It returns a flat array with keys intact.
+     * Takes an $app->env node or an array of them.
+     * Flattens it to $depth and returns a RecursiveArrayObject.
      *
-     * @param array|object $object the thing to flatten
-     * @param int $level currently unused (this function is buggy)
-     * @return array the flattened array
+     * @param array|object $object the thing(s) to flatten
+     * @param int $depth how far down the rabbit hole to go
+     * @return RecursiveArrayObject the flattened collection
+     *
+     * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
      */
-    public function flatten(array|object $object, int $level = null): array
+    public function flatten(array|object $object, int|float $depth = INF): RecursiveArrayObject
     {
-        $new = [];
+        $object = $this->toArray($object);
 
-        foreach ($object as $key => $value) {
-            if (is_object($value)) {
-                $value = $this->toArray($value);
-            }
-
-            if (is_array($value)) {
-                $new = array_merge($new, $this->flatten($value));
+        foreach ($object as $item) {
+            if (!is_array($item)) {
+                $result[] = $item;
             } else {
-                $new[$key] = $value;
+                $values = $depth === 1
+                    ? array_values($item)
+                    : $this->flatten($item, $depth - 1);
+
+                foreach ($values as $value) {
+                    $result[] = $value;
+                }
             }
         }
 
-        return $new;
+        return new RecursiveArrayObject($result);
     }
 
 
@@ -227,70 +257,100 @@ class ENV
      * map
      *
      * Simple array_map() object wrapper.
-     * Maps a callback (or default) to an object.
      *
-     * Example output:
-     * $hashes = $app->env->map("md5", $app->env->categories->{6});
-     * var_dump($hashes);
-     *
-     * object(RecursiveArrayObject)#324 (1) {
-     *   ["storage":"ArrayObject":private]=>
-     *   array(6) {
-     *     ["id"]=>
-     *     string(32) "28c8edde3d61a0411511d3b1866f0636"
-     *     ["name"]=>
-     *     string(32) "fe83ccb5dc96dbc0658b3c4672c7d5fe"
-     *     ["icon"]=>
-     *     string(32) "52963afccc006d2bce3c890ad9e8f73a"
-     *     ["platforms"]=>
-     *     string(32) "d41d8cd98f00b204e9800998ecf8427e"
-     *     ["formats"]=>
-     *     string(32) "d41d8cd98f00b204e9800998ecf8427e"
-     *     ["description"]=>
-     *     string(32) "ca6628e8c13411c800d1d9d0eaccd849"
-     *   }
+     * gazelle ⟫ $app->env->map($app->env->metadata->licenses, "md5");
+     * ⇒ RecursiveArrayObject {#6447
+     *   storage: [
+     *     "637e33dbf653615ccc4e48e6e3c24cbe",
+     *     "7164f3d949c8d27791d49cfb7db2fa8e",
+     *     "93b8aa3b4b7c90318495b755a8cca651",
+     *     "550596d3aa29e66436673fdd4b12e90b",
+     *     "80f70ce738a55c3a85c0ed2defb63845",
+     *     "1b2c755e5a804c1decc86b0fc2f17bc3",
+     *     "4521335a360750bb34abc3a633c08ad2",
+     *     "b7c403f3ddf62cc25965e8ff69eee9c4",
+     *     "497384593e1d7e469ebd7c6220419f50",
+     *     "809b7e8881077933e846dc06a6b22359",
+     *     "2efae3af6e3b8bb3118e5d49468c3b15",
+     *     "f29b2d7d5554892edb79590ae0de2999",
+     *     "7abc1a233092fc104c7af72a89c0829c",
+     *     "d02b9a00c3e3e946f6d1704a2e09fe13",
+     *     "88d654d41cf692e98e6cb8c68f0642af",
+     *     "a1eda56dc13a7dcf186ca6895c5f5422",
+     *     "1282faaaab2ab95c41052afbc71de28e",
+     *     "6fcdc090caeade09d0efd6253932b6f5",
+     *   ],
+     *   flag::STD_PROP_LIST: false,
+     *   flag::ARRAY_AS_PROPS: false,
+     *   iteratorClass: "ArrayIterator",
      * }
      *
-     * @param string $function callback function
-     * @param object|string $object object or property to operate on
+     * @param mixed $object object or property to operate on
+     * @param callable $callback the callback function
      * @return object function-mapped RecursiveArrayObject
+     *
+     * @see https://stackoverflow.com/a/39637749
      */
-    public function map(string $function = "", object|string $object = null): RecursiveArrayObject
+    public function map(mixed $object, callable $callback): RecursiveArrayObject
     {
-        # set a default function if desired
-        if (empty($function) && !is_object($function)) {
-            $function = "array_filter";
-        }
+        $object = $this->toArray($object);
 
-        # quick sanity check
-        if ($function === "array_map") {
-            throw new Exception("ENV->map can't invoke the function it wraps");
-        }
+        $function = function ($item) use (&$function, &$callback) {
+            return is_array($item)
+                ? array_map($function, $item)
+                : call_user_func($callback, $item);
+        };
 
-        /**
-         * $function not a closure
-         *
-         * var_dump(
-         *   gettype(
-         *     (function() { return; })
-         * ));
-         * string(6) "object"
-         */
-        if (is_string($function) && !is_object($function)) {
-            $function = trim(strtok($function, " "));
-        }
-
-        # map the sanitized function name
-        # to a mapped array conversion
         return new RecursiveArrayObject(
-            array_map(
-                $function,
-                array_map(
-                    $function,
-                    $this->toArray($object)
-                )
-            )
+            array_map($function, $object)
         );
+    }
+
+
+    /**
+     * sort
+     *
+     * Recursively sorts an object.
+     *
+     * @param mixed $object the object to sort
+     * @param int $options the sort options
+     * @param bool $descending whether to sort descending
+     * @return RecursiveArrayObject the sorted object
+     *
+     * @see https://github.com/laravel/framework/blob/master/src/Illuminate/Collections/Arr.php
+     */
+    public function sort(mixed $object, $options = SORT_REGULAR, $descending = false): RecursiveArrayObject
+    {
+        $object = $this->toArray($object);
+
+        foreach ($object as &$value) {
+            if (is_array($value)) {
+                $value = $this->sort($value, $options, $descending);
+            }
+        }
+
+        if (!array_is_list($object)) {
+            $descending
+                ? krsort($object, $options)
+                : ksort($object, $options);
+        } else {
+            $descending
+                ? rsort($object, $options)
+                : sort($object, $options);
+        }
+
+        return new RecursiveArrayObject($object);
+    }
+
+
+    /**
+     * sortDescending
+     *
+     * Recursively sorts an object descending.
+     */
+    public function sortDescending(mixed $object, $options = SORT_REGULAR): RecursiveArrayObject
+    {
+        return $this->sort($object, $options, true);
     }
 } # class
 
@@ -303,6 +363,7 @@ class ENV
  *
  * @author: etconsilium@github
  * @license: BSDLv2
+ *
  * @see https://github.com/etconsilium/php-recursive-array-object
  */
 
@@ -313,7 +374,7 @@ class RecursiveArrayObject extends ArrayObject
      */
 
     # __construct
-    public function __construct($input = null, $flags = self::ARRAY_AS_PROPS, $iterator_class = "ArrayIterator")
+    public function __construct(mixed $input = null, int $flags = self::ARRAY_AS_PROPS, string $iterator_class = "ArrayIterator")
     {
         foreach ($input as $key => $value) {
             $this->__set($key, $value);
@@ -323,19 +384,21 @@ class RecursiveArrayObject extends ArrayObject
     }
 
     # __get
-    public function __get($key)
+    public function __get(mixed $key)
     {
         if ($this->offsetExists($key)) {
             return $this->offsetGet($key);
-        } elseif (array_key_exists($key, $this)) {
-            return $this[$key];
-        } else {
-            throw new InvalidArgumentException("the instance doesn't have the property {$key}");
         }
+
+        if (array_key_exists($key, $this)) {
+            return $this[$key];
+        }
+
+        throw new InvalidArgumentException("the instance doesn't have the property {$key}");
     }
 
     # __set
-    public function __set($key, $value)
+    public function __set(mixed $key, mixed $value)
     {
         if (is_array($value) || is_object($value)) {
             $this->offsetSet($key, (new self($value)));
@@ -345,13 +408,13 @@ class RecursiveArrayObject extends ArrayObject
     }
 
     # __isset
-    public function __isset($key)
+    public function __isset(mixed $key)
     {
         return array_key_exists($key, $this);
     }
 
     # __unset
-    public function __unset($key)
+    public function __unset(mixed $key)
     {
         unset($this[$key]);
     }
@@ -363,16 +426,19 @@ class RecursiveArrayObject extends ArrayObject
      * Enables the use of all PHP array functions,
      * e.g., $app->env->array_keys() and similar.
      *
+     * @param string $callback the function to call
+     * @param mixed $arguments the arguments to pass
+     *
      * @see https://www.php.net/manual/en/class.arrayobject.php#107079
      */
-    public function __call($function, $arguments)
+    public function __call(string $callback, mixed $arguments = null)
     {
-        if (!is_callable($function) || substr($function, 0, 6) !== "array_") {
-            throw new BadMethodCallException(__CLASS__ . "->" . $function);
+        if (!is_callable($callback) || !str_starts_with($callback, "array_")) {
+            throw new BadMethodCallException(__CLASS__ . "->" . $callback);
         }
 
         return call_user_func_array(
-            $function,
+            $callback,
             array_merge(
                 [$this->getArrayCopy()],
                 $arguments
@@ -384,10 +450,8 @@ class RecursiveArrayObject extends ArrayObject
     /**
      * toArray
      */
-    public function toArray(): array|string
+    public function toArray(): array
     {
-        $app = \Gazelle\App::go();
-
-        return $app->env->toArray($this);
+        return $this->getArrayCopy();
     }
 } # class

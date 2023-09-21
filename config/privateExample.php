@@ -245,7 +245,7 @@ match ($env->environment) {
 
 # production
 if ($env->environment === "production") {
-    $env->ANNOUNCE_URLS = $env->convert([
+    $env->ANNOUNCE_URLS = [
         [ # tier 1
             "",
         ],
@@ -254,7 +254,7 @@ if ($env->environment === "production") {
             #"udp://tracker.cyberia.is:6969/announce",
             #"udp://tracker.leechers-paradise.org:6969/announce",
         ],
-    ]);
+    ];
 
     # REMOVE ME
     define("ANNOUNCE_URLS", [
@@ -270,7 +270,7 @@ if ($env->environment === "production") {
 
 # development
 if ($env->environment === "development") {
-    $env->ANNOUNCE_URLS = $env->convert([
+    $env->ANNOUNCE_URLS = [
         [ # tier 1
             "",
         ],
@@ -279,7 +279,7 @@ if ($env->environment === "development") {
             #"udp://tracker.cyberia.is:6969/announce",
             #"udp://tracker.leechers-paradise.org:6969/announce",
         ],
-    ]);
+    ];
 
     # REMOVE ME
     define("ANNOUNCE_URLS", [
@@ -475,7 +475,7 @@ match ($env->environment) {
 
 
 # discourse forum categories
-$env->discourseCategories = $env->convert([
+$env->discourseCategories = [
     # [id, slug]
     2 => "site-feedback",
     3 => "staff",
@@ -485,7 +485,7 @@ $env->discourseCategories = $env->convert([
     "site-feedback" => 2,
     "staff" => 3,
     "general" => 4,
-]);
+];
 
 
 /**

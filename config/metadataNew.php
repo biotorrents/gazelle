@@ -11,7 +11,7 @@ declare(strict_types=1);
  * Gazelle's job is to query the right tables, which will shift.
  */
 
-$env->database = $env->convert([
+$env->database = [
 
     /**
      * torrents_group
@@ -42,7 +42,7 @@ $env->database = $env->convert([
      */
     "seqhash" => ["name" => "Seqhash", "description" => "One sample genome sequence in FASTA format (GenBank pending)", "note" => "Please see <a href='https://pkg.go.dev/github.com/TimothyStiles/poly/seqhash' target='_blank' class='external'>the reference implementation</a>"],
 
-]);
+];
 
 
 /** */
@@ -55,7 +55,7 @@ $env->database = $env->convert([
  * These eventually go into the database, so take care to define them well here.
  */
 
-$env->metadata = $env->convert([
+$env->metadata = [
 
     /**
      * 1. platforms
@@ -502,7 +502,7 @@ $env->metadata = $env->convert([
         "Unspecified",
     ], # end $env->metadata->licenses
 
-]);
+];
 
 
 /** */
@@ -514,16 +514,16 @@ $env->metadata = $env->convert([
  * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
-$env->collageCategories = $env->convert([
+$env->collageCategories = [
     0 => "Personal",
     1 => "Theme",
     2 => "Staff Picks",
     3 => "Group Picks",
-]);
+];
 
 
 # main torrent categories
-$env->categories = $env->convert([
+$env->categories = [
 
     /**
      * sequences
@@ -751,4 +751,4 @@ $env->categories = $env->convert([
         ],
     ],
 
-]);
+];

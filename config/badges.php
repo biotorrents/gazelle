@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 # automated activity badges
 # [badgeId => quantity]
-$env->activityBadgeIds = $env->convert([
+$env->activityBadgeIds = [
     # theme: eating a meal
     "download" => [
         10 => 16, # GiB
@@ -65,11 +65,11 @@ $env->activityBadgeIds = $env->convert([
         48 => null,
         49 => null,
     ],
-]);
+];
 
 
 # sequential badges [id => bonus point cost]
-$env->sequentialBadges = $env->convert([
+$env->sequentialBadges = [
     50 => 1000,
     51 => 2000,
     52 => 5000,
@@ -80,11 +80,11 @@ $env->sequentialBadges = $env->convert([
     57 => 200000,
     58 => 500000,
     59 => 1000000,
-]);
+];
 
 
 # lottery badges [id => chance to win]
-$env->lotteryBadges = $env->convert([
+$env->lotteryBadges = [
     60 => 0.9,
     61 => 0.09,
     62 => 0.009,
@@ -95,7 +95,7 @@ $env->lotteryBadges = $env->convert([
     67 => 0.00000009,
     68 => 0.000000009,
     69 => 0.0000000009,
-]);
+];
 
 
 # auction badge id
