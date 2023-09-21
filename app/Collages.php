@@ -106,31 +106,46 @@ class Collages extends \Gazelle\ObjectCrud
 
     /**
      * createPersonal
+     *
+     * Creates a personal collage.
+     *
+     * @return array collage data
      */
-    public static function createPersonal(): void
+    public static function createPersonal(): array
     {
         $app = \Gazelle\App::go();
 
         $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
         $collageCount = $app->dbNew->single($query, [$app->user->core["id"], 0, 0]) ?? 0;
 
-        # todo: permissions are meh and this iss hardcoded
-        $maxCollages = $app->user->permissions["MaxCollages"] ?? 2;
+        # todo: permissions are meh and this is hardcoded
+        $maxCollages = $app->user->permissions["MaxCollages"] ?? 5;
         if ($collageCount >= $maxCollages) {
-            return;
+            throw new Exception("you may only create {$maxCollages} personal collages");
         }
 
         # default title and description
-        $title = "{$app->user->core["username"]}'s personal collage";
+        $title = "{$app->user->core["username"]}'s personal collage #{$collageCount}";
         $description = "Personal collage for {$app->user->core["username"]}";
 
         # database insert
         $query = "insert into collages (name, description, categoryId, userId) values (?, ?, ?, ?)";
         $app->dbNew->do($query, [ $title, $description, 0, $app->user->core["id"] ]);
 
+        # return the collage data
+        $collageId = $app->dbNew->lastInsertId();
+
+        return [
+            "id" => $collageId,
+            "name" => $title,
+            "description" => $description,
+        ];
+
+        /*
         # redirect to new collage
         $collageId = $app->dbNew->lastInsertId();
         Http::redirect("/collages.php?id={$collageId}");
+        */
     }
 
 

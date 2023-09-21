@@ -125,19 +125,11 @@
             <td>Purchase an invite for a friend or a fun enemy</td>
         </tr>
 
-        {% if not hasCustomTitle %}
         <tr>
             <td><a href="/store/checkout/customTitle">Custom title</a></td>
             <td>{{ bonusPoints.customTitleCost|number_format }}</td>
             <td>Purchase a cusom title that's displayed with your username</td>
         </tr>
-        {% else %}
-        <tr>
-            <td><a href="/store/checkout/customTitle">Custom title</a></td>
-            <td>{{ bonusPoints.customTitleUpdateCost|number_format }}</td>
-            <td>Update of delete your custom title</td>
-        </tr>
-        {% endif %}
 
         {% if not hasGlitchUsername %}
         <tr>

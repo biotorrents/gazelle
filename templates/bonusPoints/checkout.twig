@@ -36,6 +36,9 @@
 </p>
 
 
+{# currency exchange #}
+
+
 {# pointsToUpload or uploadToPoints #}
 {% if item == "pointsToUpload" or item == "uploadToPoints"  %}
 <p>
@@ -66,6 +69,9 @@
 </p>
 </form>
 {% endif %} {# {% if item == "pointsToUpload" or item == "uploadToPoints"  %} #}
+
+
+{# torrents #}
 
 
 {# specificFreeleech #}
@@ -135,6 +141,9 @@
 {% endif %} {# {% if item == "neutralLeechCategory" or item == "freeleechCategory" %} #}
 
 
+{# user profile #}
+
+
 {# customTitle #}
 {% if item == "customTitle" %}
 <form method="post" action="/store/confirm">
@@ -143,7 +152,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="text" class="grow" name="customTitle" id="customTitle" max="64" placeholder="Please enter your custom title (64 characters)" required>
+    <input type="text" class="grow" name="customTitle" max="64" placeholder="Please enter your custom title (64 characters)">
 </p>
 
 <p class="flexRow">
@@ -192,6 +201,9 @@
 </p>
 </form>
 {% endif %} {# {% if item == "snowflakeProfile" %} #}
+
+
+{# badges #}
 
 
 {# lotteryBadge #}

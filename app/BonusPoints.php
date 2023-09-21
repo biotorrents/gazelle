@@ -628,16 +628,20 @@ class BonusPoints
      *
      * Purchase a personal collage.
      *
-     * @return void
+     * @return array collage data
      */
-    public function personalCollage(): void
+    public function personalCollage(): array
     {
         $app = \Gazelle\App::go();
+
+        # create a personal collage (uncaught exception intended)
+        $collageData = \Collages::createPersonal();
 
         # deduct the bonus points
         $this->deductPoints($this->personalCollageCost);
 
-        # todo
+        # okay
+        return $collageData;
     }
 
 
@@ -646,9 +650,9 @@ class BonusPoints
      *
      * Purchase an invite.
      *
-     * @return void
+     * @return int inviteCount
      */
-    public function invite(): void
+    public function invite(): int
     {
         $app = \Gazelle\App::go();
 
@@ -658,6 +662,12 @@ class BonusPoints
         # award the invite
         $query = "update users_main set invites = invites + 1 where userId = ?";
         $app->dbNew->do($query, [ $app->user->core["id"] ]);
+
+        # return the inviteCount
+        $query = "select invites from users_main where userId = ?";
+        $inviteCount = $app->dbNew->single($query, [ $app->user->core["id"] ]);
+
+        return $inviteCount;
     }
 
 
@@ -667,9 +677,9 @@ class BonusPoints
      * Purchase a custom title.
      *
      * @param string $title
-     * @return void
+     * @return ?string $title
      */
-    public function customTitle(string $title): void
+    public function customTitle(string $title): ?string
     {
         $app = \Gazelle\App::go();
 
@@ -678,12 +688,20 @@ class BonusPoints
             throw new \Exception("your chosen title is too long");
         }
 
+        # leave blank to remove the title
+        if (empty($title)) {
+            $title = null;
+        }
+
         # deduct the bonus points
         $this->deductPoints($this->customTitleCost);
 
         # update the user's title
         $query = "update users_main set title = ? where userId = ?";
         $app->dbNew->do($query, [ $title, $app->user->core["id"] ]);
+
+        # return the title
+        return $title;
     }
 
 
@@ -692,16 +710,25 @@ class BonusPoints
      *
      * Purchase a glitchy username effect.
      *
+     * @param bool $isDelete whether to delete the effect
      * @return void
      */
-    public function glitchUsername(): void
+    public function glitchUsername(bool $isDelete = false): void
     {
         $app = \Gazelle\App::go();
 
-        # deduct the bonus points
-        $this->deductPoints($this->glitchUsernameCost);
+        if (!$isDelete) {
+            # deduct the bonus points
+            $this->deductPoints($this->glitchUsernameCost);
 
-        # todo
+            # award the effect
+            $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
+            $app->dbNew->do($query, [$app->user->core["id"], "glitchUsername", true]);
+        } else {
+            # remove the effect
+            $query = "delete from bonus_point_purchases where userId = ? and `key` = ?";
+            $app->dbNew->do($query, [$app->user->core["id"], "glitchUsername"]);
+        }
     }
 
 

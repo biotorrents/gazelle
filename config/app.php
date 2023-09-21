@@ -14,25 +14,19 @@ declare(strict_types=1);
  *   $app->env->publicValue;
  *   $app->env->private("privateValue");
  *
- *
  * Using a central static singleton class has additional benefits.
  * The RecursiveArrayObject class included in ENV.php is a powerful tool:
  *
  *   $app = Gazelle\App::go();
  *   foreach ($app->env->categories as $category) {
- *     var_dump($category->name);
+ *     !d($category->title);
  *   }
  *
+ *   $app = Gazelle\App::go();
+ *   $app->env->pluck("$app->env->categories, "id");
+ *   $app->env->map($app->env->metadata->licenses, "md5");
  *
- * One more example using custom RecursiveArrayObject methods:
  * @see https://www.php.net/manual/en/class.arrayobject.php
- *
- *   var_dump(
- *     $app->env->dedupe(
- *       $app->env->meta->formats->sequences,
- *       $app->env->meta->formats->proteins->toArray()
- *     )
- *   );
  */
 
 # important php.ini params

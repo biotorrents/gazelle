@@ -19,20 +19,15 @@
 </p>
 
 
+{# torrents #}
+
+
 {# randomFreeleech or specificFreeleech #}
 {% if item == "randomFreeleech" or item == "specificFreeleech" %}
 <p>
     You made freelech all the torrents in <a href="/torrents.php?id={{ result.id }}">{{ result.title }}</a>.
 </p>    
 {% endif %} {# if item == "randomFreeleech" or item == "specificFreeleech" #}
-
-
-{# invite #}
-{% if item == "invite" %}
-<p>
-    You now have {{ user.extra.Invites|number_format }} invites to use as you wish.
-</p>    
-{% endif %} {# if item == "invite" #}
 
 
 {# freeleechToken #}
@@ -58,6 +53,41 @@
 </p>    
 {% endif %} {# if item == "freeleechTag" #}
 
+
+{# user profile #}
+
+
+{# personalCollage #}
+{% if item == "personalCollage" %}
+<p>
+    You created the personal collage <a href="/collages.php?id={{ result.id }}">{{ result.name }}</a>.
+</p>
+{% endif %} {# if item == "personalCollage" #}
+
+
+{# invite #}
+{% if item == "invite" %}
+<p>
+    You now have {{ user.extra.Invites|number_format }} invites to use as you wish.
+</p>    
+{% endif %} {# if item == "invite" #}
+
+
+{# customTitle #}
+{% if item == "customTitle" and result is not empty %}
+<p>
+    You now have a custom title: <strong>{{ result }}</strong>.
+</p>
+{% endif %} {# if item == "customTitle" and result is not empty #}
+
+{% if item == "customTitle" and result is empty %}
+<p>
+    You removed your custom title.
+</p>
+{% endif %} {# if item == "customTitle" and result is empty #}
+
+
+{# badges #}
 
 
 {# sequentialBadge #}

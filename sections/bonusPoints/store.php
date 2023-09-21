@@ -18,9 +18,11 @@ if (!empty($post)) {
     Http::redirect("/store/confirm/exchange");
 }
 
+/*
 # did they buy a custom title?
 $query = "select 1 from users_main where userId = ? and title is not null";
 $hasCustomTitle = $app->dbNew->single($query, [ $app->user->core["id"] ]);
+*/
 
 # did they buy a glitch effect?
 $query = "select 1 from bonus_point_purchases where userId = ? and `key` = ?";
@@ -43,7 +45,7 @@ $app->twig->display("bonusPoints/store.twig", [
     "sidebar" => true,
 
     "bonusPoints" => $bonusPoints,
-    "hasCustomTitle" => $hasCustomTitle,
+    #"hasCustomTitle" => $hasCustomTitle,
     "hasGlitchUsername" => $hasGlitchUsername,
     "hasSnowflakeProfile" => $hasSnowflakeProfile,
 
