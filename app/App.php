@@ -216,15 +216,21 @@ class App
     /**
      * recursiveGlob
      *
+     * Recursively require all files in a folder.
+     *
+     * @param string $folder
+     * @param string $extension
+     * @return void
+     *
      * @see https://stackoverflow.com/a/12172557
      */
-    public static function recursiveGlob($folder, $extension)
+    public function recursiveGlob(string $folder, string $extension = "php"): void
     {
         $globFiles = glob("{$folder}/*.{$extension}");
         $globFolders  = glob("{$folder}/*", GLOB_ONLYDIR);
 
         foreach ($globFolders as $folder) {
-            self::recursiveGlob($folder, $extension);
+            $this->recursiveGlob($folder, $extension);
         }
 
         foreach ($globFiles as $file) {

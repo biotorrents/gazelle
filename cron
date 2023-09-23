@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+
+/**
+ * cron
+ *
+ * usage: php cron <interval> <token>
+ */
+
+# cli bootstrap
+require_once __DIR__ . "/bootstrap/cli.php";
+
+/** */
+
+# check the interval
+$interval = $argv[1] ?? null;
+$allowedIntervals = ["every", "hourly", "daily", "weekly", "monthly", "yearly"];
+if (!in_array($interval, $allowedIntervals)) {
+    Gazelle\Text::figlet("bad interval", "red");
+    exit;
+}
+
+# check the token
+$token = $argv[2] ?? null;
+if ($token !== $app->env->private("cronToken")) {
+    Gazelle\Text::figlet("bad token", "red");
+    exit;
+}
+
+# set the process title
+$processTitle = "{$interval}GazelleCron";
+cli_set_process_title($processTitle);
+
+# ensure only one is running
+$currentWorkers = intval(exec("ps ax | grep {$processTitle} | grep -v grep | wc -l"));
+if ($currentWorkers > 1) {
+    Gazelle\Text::figlet("too many workers", "red");
+    exit;
+}
+
+/** */
+
+# unlimit
+$app->unlimit();
+
+# run the scripts for this interval
+$app->recursiveGlob(__DIR__ . "/utilities/crontab/{$interval}");
