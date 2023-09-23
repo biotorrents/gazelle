@@ -19,14 +19,14 @@ $interval = $argv[1] ?? null;
 $allowedIntervals = ["every", "hourly", "daily", "weekly", "monthly", "yearly"];
 if (!in_array($interval, $allowedIntervals)) {
     Gazelle\Text::figlet("bad interval", "red");
-    exit;
+    return;
 }
 
 # check the token
 $token = $argv[2] ?? null;
 if ($token !== $app->env->private("cronToken")) {
     Gazelle\Text::figlet("bad token", "red");
-    exit;
+    return;
 }
 
 # set the process title
@@ -37,7 +37,7 @@ cli_set_process_title($processTitle);
 $currentWorkers = intval(exec("ps ax | grep {$processTitle} | grep -v grep | wc -l"));
 if ($currentWorkers > 1) {
     Gazelle\Text::figlet("too many workers", "red");
-    exit;
+    return;
 }
 
 /** */

@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+
+/**
+ * bonus point shop freeleeches
+ */
+
+$app = Gazelle\App::go();
+
 // BP shop freeleeches
 $date = date('Y-m-d H:i:s');
 $app->dbOld->query("

@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 
 /**
+ * openAi
+ *
  * Generate OpenAI stuff for torrent groups missing it.
  * First do a summary, then do keywords to keep token use down.
  */
+
+$app = Gazelle\App::go();
 
 # load up an openai instance
 $openai = new Gazelle\OpenAI();
@@ -21,7 +25,7 @@ $query = "
 ";
 
 $ref = $app->dbNew->multi($query, []);
-#!d($ref);exit;
+#!d($ref);return;
 
 # loop through each groupId
 foreach ($ref as $row) {
@@ -34,7 +38,7 @@ foreach ($ref as $row) {
     $failCount = 0;
     while ($failCount < 3) {
         try {
-            \Gazelle\Text::figlet("summary: groupId {$row["id"]}", "green");
+            Gazelle\Text::figlet("summary: groupId {$row["id"]}", "green");
             $openai->summarize($row["id"]);
 
             echo "\n\n sleeping 10s \n\n";
@@ -42,7 +46,7 @@ foreach ($ref as $row) {
 
             break;
         } catch (Throwable $e) {
-            \Gazelle\Text::figlet("error", "red");
+            Gazelle\Text::figlet("error", "red");
             ~d($e->getMessage());
 
             # update failCount
@@ -57,7 +61,7 @@ foreach ($ref as $row) {
     $failCount = 0;
     while ($failCount < 3) {
         try {
-            \Gazelle\Text::figlet("keywords: groupId {$row["id"]}", "green");
+            Gazelle\Text::figlet("keywords: groupId {$row["id"]}", "green");
             $openai->keywords($row["id"]);
 
             echo "\n\n sleeping 10s \n\n";
@@ -65,7 +69,7 @@ foreach ($ref as $row) {
 
             break;
         } catch (Throwable $e) {
-            \Gazelle\Text::figlet("error", "red");
+            Gazelle\Text::figlet("error", "red");
             ~d($e->getMessage());
 
             # update failCount

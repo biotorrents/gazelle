@@ -4,64 +4,52 @@ declare(strict_types=1);
 
 
 /**
+ * peerUpdate
+ *
  * We keep torrent groups cached.
- * However, the peer counts change often,
- * so our solutions are to not cache them for long,
- * or to update them.
- * Here is where we updated them.
+ * However, the peer counts change often.
+ * So our solutions are to not cache them for long.
+ * Here is where we update them.
  */
 
-# strictly cli now
-\Gazelle\Text::figlet("starting peerUpdate", "blue");
-
-# kill on bad auth
-$argv[1] ??= null;
-if (empty($argv[1]) || $argv[1] !== $app->env->private("scheduleKey")) {
-    \Gazelle\Text::figlet("bad key", "red");
-    exit;
-}
-
-# garbage collect, etc.
-ignore_user_abort();
-ini_set("max_execution_time", 300);
-gc_enable();
+$app = Gazelle\App::go();
 
 # database stuff
 $app->dbOld->query("TRUNCATE TABLE torrents_peerlists_compare");
 
 $app->dbOld->query("
-  INSERT INTO torrents_peerlists_compare
-  SELECT ID, GroupID, Seeders, Leechers, Snatched
-  FROM torrents
-  ON DUPLICATE KEY UPDATE
-    Seeders = VALUES(Seeders),
-    Leechers = VALUES(Leechers),
-    Snatches = VALUES(Snatches)
+    INSERT INTO torrents_peerlists_compare
+    SELECT ID, GroupID, Seeders, Leechers, Snatched
+    FROM torrents
+    ON DUPLICATE KEY UPDATE
+        Seeders = VALUES(Seeders),
+        Leechers = VALUES(Leechers),
+        Snatches = VALUES(Snatches)
 ");
 
 $app->dbOld->query("
-  CREATE TEMPORARY TABLE tpc_temp
-    (TorrentID int, GroupID int, Seeders int, Leechers int, Snatched int,
-  PRIMARY KEY (GroupID, TorrentID))
+    CREATE TEMPORARY TABLE tpc_temp
+        (TorrentID int, GroupID int, Seeders int, Leechers int, Snatched int,
+    PRIMARY KEY (GroupID, TorrentID))
 ");
 
 $app->dbOld->query("
-  INSERT INTO tpc_temp
-  SELECT t2.*
-  FROM torrents_peerlists AS t1
-    JOIN torrents_peerlists_compare AS t2
-  USING(TorrentID)
-  WHERE t1.Seeders != t2.Seeders
-    OR t1.Leechers != t2.Leechers
-    OR t1.Snatches != t2.Snatches
+    INSERT INTO tpc_temp
+    SELECT t2.*
+    FROM torrents_peerlists AS t1
+        JOIN torrents_peerlists_compare AS t2
+    USING(TorrentID)
+    WHERE t1.Seeders != t2.Seeders
+        OR t1.Leechers != t2.Leechers
+        OR t1.Snatches != t2.Snatches
 ");
 
 $stepSize = 30000;
 $app->dbOld->query("
-  SELECT *
-  FROM tpc_temp
-  ORDER BY GroupID ASC, TorrentID ASC
-  LIMIT {$stepSize}
+    SELECT *
+    FROM tpc_temp
+    ORDER BY GroupID ASC, TorrentID ASC
+    LIMIT {$stepSize}
 ");
 
 $row = 0;

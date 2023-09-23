@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 # bail out if not enabled
 if (!$app->env->enableSatis) {
-    exit;
+    return;
 }
 
 # unlimit

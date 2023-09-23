@@ -7,8 +7,10 @@ declare(strict_types=1);
  * last git commit
  */
 
+$app = Gazelle\App::go();
+
 if (!$app->env->dev) {
-    exit;
+    return;
 }
 
 # this is stupid but it doesn't work from twig

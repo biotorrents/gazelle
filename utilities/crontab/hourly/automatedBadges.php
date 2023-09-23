@@ -7,6 +7,8 @@ declare(strict_types=1);
  * award automated badges
  */
 
+$app = Gazelle\App::go();
+
 $GiB = 1024 * 1024 * 1024;
 
 # badges for downloading data
@@ -15,8 +17,8 @@ foreach ($app->env->activityBadgeIds->download as $badgeId => $requiredAmount) {
     $ref = $app->dbNew->multi($query, [$requiredAmount * $GiB, $badgeId]);
 
     foreach ($ref as $row) {
-        \Badges::awardBadge($row["userId"], $badgeId);
-        \Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for downloading " . number_format($requiredAmount) . " GiB of data.");
+        Badges::awardBadge($row["userId"], $badgeId);
+        Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for downloading " . number_format($requiredAmount) . " GiB of data.");
     }
 }
 
@@ -26,8 +28,8 @@ foreach ($app->env->activityBadgeIds->upload as $badgeId => $requiredAmount) {
     $ref = $app->dbNew->multi($query, [$requiredAmount * $GiB, $badgeId]);
 
     foreach ($ref as $row) {
-        \Badges::awardBadge($row["userId"], $badgeId);
-        \Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for uploading " . number_format($requiredAmount) . " GiB of data.");
+        Badges::awardBadge($row["userId"], $badgeId);
+        Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for uploading " . number_format($requiredAmount) . " GiB of data.");
     }
 }
 
@@ -41,8 +43,8 @@ foreach ($app->env->activityBadgeIds->post as $badgeId => $requiredAmount) {
             continue;
         }
 
-        \Badges::awardBadge($row["userId"], $badgeId);
-        \Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for making " . number_format($requiredAmount) . " forum posts.");
+        Badges::awardBadge($row["userId"], $badgeId);
+        Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for making " . number_format($requiredAmount) . " forum posts.");
     }
 }
 
@@ -64,13 +66,13 @@ foreach ($ref as $row) {
     shuffle($badgeIds);
 
     foreach ($badgeIds as $badgeId) {
-        $hasBadge = \Badges::hasBadge($row["id"], $badgeId);
+        $hasBadge = Badges::hasBadge($row["id"], $badgeId);
         if ($hasBadge) {
             continue;
         }
 
-        \Badges::awardBadge($row["id"], $badgeId);
-        \Misc::send_pm($row["id"], 0, "You've received a badge!", "You've been randomly selected to receive a badge based on a recent login.");
+        Badges::awardBadge($row["id"], $badgeId);
+        Misc::send_pm($row["id"], 0, "You've received a badge!", "You've been randomly selected to receive a badge based on a recent login.");
 
         break;
     }
