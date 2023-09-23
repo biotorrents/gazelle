@@ -37,6 +37,7 @@ try {
     $post["tagId"] = intval($post["tagId"] ?? null);
     $post["categoryId"] = intval($post["categoryId"] ?? null);
     $post["customTitle"] = strval($post["customTitle"] ?? null);
+    $post["isDelete"] ??= null; # boolval("false") = true
     $post["snowflakeEmoji"] = strval($post["snowflakeEmoji"] ?? null);
     $post["bet"] = intval($post["bet"] ?? null);
     $post["votes"] ??= null; # array
@@ -56,7 +57,7 @@ try {
         "personalCollage" => $bonusPoints->personalCollage(),
         "invite" => $bonusPoints->invite(),
         "customTitle" => $bonusPoints->customTitle($post["customTitle"]),
-        "glitchUsername" => $bonusPoints->glitchUsername(),
+        "glitchUsername" => $bonusPoints->glitchUsername($post["isDelete"]),
         "snowflakeProfile" => $bonusPoints->snowflakeProfile($post["snowflakeEmoji"]),
 
         "sequentialBadge" => $bonusPoints->sequentialBadge(),

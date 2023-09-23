@@ -710,19 +710,25 @@ class BonusPoints
      *
      * Purchase a glitchy username effect.
      *
-     * @param bool $isDelete whether to delete the effect
+     * @param bool|string $isDelete whether to delete the effect
      * @return void
      */
-    public function glitchUsername(bool $isDelete = false): void
+    public function glitchUsername(bool|string $isDelete = false): void
     {
         $app = \Gazelle\App::go();
+
+        # because html forms pass strings
+        match ($isDelete) {
+            "true" => $isDelete = true,
+            "false" => $isDelete = false,
+        };
 
         if (!$isDelete) {
             # deduct the bonus points
             $this->deductPoints($this->glitchUsernameCost);
 
             # award the effect
-            $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";
+            $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
             $app->dbNew->do($query, [$app->user->core["id"], "glitchUsername", true]);
         } else {
             # remove the effect
@@ -742,9 +748,15 @@ class BonusPoints
      *
      * @see https://pajasevi.github.io/CSSnowflakes/
      */
-    public function snowflakeProfile(string $snowflake, bool $isUpdate): void
+    public function snowflakeProfile(string $snowflake, bool|string $isUpdate): void
     {
         $app = \Gazelle\App::go();
+
+        # because html forms pass strings
+        match ($isDelete) {
+            "true" => $isDelete = true,
+            "false" => $isDelete = false,
+        };
 
         # make sure it's one emoji
         $allEmojis = \Spatie\Emoji\Emoji::all();
@@ -753,11 +765,10 @@ class BonusPoints
         }
 
         # deduct the bonus points
-        if (!$isUpdate) {
-            $this->deductPoints($this->snowflakeCreateCost);
-        } else {
-            $this->deductPoints($this->snowflakeUpdateCost);
-        }
+        match ($isUpdate) {
+            true => $this->deductPoints($this->snowflakeUpdateCost),
+            false => $this->deductPoints($this->snowflakeCreateCost),
+        };
 
         # update the user's snowflake
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?)";

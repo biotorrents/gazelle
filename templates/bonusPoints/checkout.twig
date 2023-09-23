@@ -164,20 +164,46 @@
 
 
 {# glitchUsername #}
-{% if item == "glitchUsername" %}
+{% if item == "glitchUsername" and not hasGlitchUsername %}
 <form method="post" action="/store/confirm">
     {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
+    <input type="hidden" name="isDelete" value="false">
 
-    {# todo: delete the effect #}
+    <p>
+        Preview the glitch effect below.
+        Is it to your liking?
+    </p>
+
+    <p class="glitch xx-large" data-text="{{ user.username }}">{{ user.username }}</p>
 
 <p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "glitchUsername" %} #}
+{% endif %} {# if item == "glitchUsername" and not hasGlitchUsername #}
+
+
+{% if item == "glitchUsername" and hasGlitchUsername %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+    <input type="hidden" name="isDelete" value="true">
+
+    <p>
+        Are you sure you'd like to delete the glitch username effect?
+        You'll need to buy it again at full price to reinstate it later.
+    </p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-red" value="delete the effect">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "glitchUsername" and hasGlitchUsername #}
 
 
 {# snowflakeProfile #}

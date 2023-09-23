@@ -207,8 +207,8 @@ class App
             ob_end_clean(); # clear output buffer
         }
 
-        set_time_limit(3600); # one hour
-        ini_set("memory_limit", "2G"); # half the shit hetzner memory
+        set_time_limit(0);
+        ini_set("memory_limit", -1);
     }
 
 

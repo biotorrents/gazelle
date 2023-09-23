@@ -82,6 +82,20 @@ if (in_array($item, $followupItems)) {
     $actionRequired = true;
 }
 
+/*
+# did they buy a custom title?
+$query = "select 1 from users_main where userId = ? and title is not null";
+$hasCustomTitle = $app->dbNew->single($query, [ $app->user->core["id"] ]);
+*/
+
+# did they buy a glitch effect?
+$query = "select 1 from bonus_point_purchases where userId = ? and `key` = ?";
+$hasGlitchUsername = $app->dbNew->single($query, [$app->user->core["id"], "glitchUsername"]);
+
+# did they buy a snowflake effect?
+$query = "select 1 from bonus_point_purchases where userId = ? and `key` = ?";
+$hasSnowflakeProfile = $app->dbNew->single($query, [$app->user->core["id"], "snowflakeProfile"]);
+
 # twig template
 $app->twig->display("bonusPoints/checkout.twig", [
     "title" => "Store",
@@ -99,4 +113,8 @@ $app->twig->display("bonusPoints/checkout.twig", [
     "dataUnit" => $post["dataUnit"] ?? null,
     "newPointsBalance" => $newPointsBalance ?? null,
     "newUploadBalance" => $newUploadBalance ?? null,
+
+    #"hasCustomTitle" => $hasCustomTitle,
+    "hasGlitchUsername" => $hasGlitchUsername,
+    "hasSnowflakeProfile" => $hasSnowflakeProfile,
 ]);

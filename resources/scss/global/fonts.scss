@@ -1,6 +1,11 @@
 /**
  * font size wrappers
  */
+
+.xx-small {
+  font-size: xx-small;
+}
+
 .x-small {
   font-size: x-small;
 }
@@ -21,6 +26,10 @@
   font-size: x-large;
 }
 
+.xx-large {
+  font-size: xx-large;
+}
+
 /* search results */
 .torrentTitle {
   font-size: larger;
@@ -31,7 +40,7 @@
  */
 
 .center {
-  margin: auto;
+  /* margin: auto; */
   text-align: center;
   vertical-align: middle;
 }
