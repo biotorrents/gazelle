@@ -41,7 +41,7 @@ class TorrentsDL
         $app = \Gazelle\App::go();
 
         #$app->cacheOld->InternalCache = false; // The internal cache is almost completely useless for this
-        \Gazelle\App::unlimit(); // Need more memory and longer timeout
+        $app->unlimit(); // Need more memory and longer timeout
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = $app->user;

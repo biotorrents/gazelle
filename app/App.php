@@ -201,10 +201,11 @@ class App
      *
      * Beef the specs for a time.
      */
-    public static function unlimit()
+    public function unlimit()
     {
+        # clear output buffer
         if (ob_get_status()) {
-            ob_end_clean(); # clear output buffer
+            ob_end_clean();
         }
 
         set_time_limit(0);

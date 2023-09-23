@@ -124,7 +124,7 @@ match ($env->environment) {
 
 # do we want to maintain a local satis archive?
 match ($env->environment) {
-    "production" => $env->enableSatis = true,
+    "production" => $env->enableSatis = false,
     "development" => $env->enableSatis = true,
     default => throw new Exception("invalid environment"),
 };
@@ -132,7 +132,7 @@ match ($env->environment) {
 
 # location of the satis archive on disk
 match ($env->environment) {
-    "production" => $env->satisRoot = "/var/www/htmlsatis",
+    "production" => $env->satisRoot = "/var/www/html/satis",
     "development" => $env->satisRoot = "/var/www/html/satis",
     default => throw new Exception("invalid environment"),
 };

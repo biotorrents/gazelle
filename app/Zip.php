@@ -123,7 +123,7 @@ class Zip
         $this->Data .= pack('V', $ZipLength); // Compressed file size
         $this->Data .= pack('V', $DataLength); // Uncompressed file size
         $this->Data .= pack('v', strlen($ArchivePath)); // Path name length
-        $this->Data .="\x00\x00"; // Extra field length (0'd so we can ignore this)
+        $this->Data .= "\x00\x00"; // Extra field length (0'd so we can ignore this)
         $this->Data .= $ArchivePath; // File name & Extra Field (length set to 0 so ignored)
         /* END file header */
 
@@ -145,20 +145,20 @@ class Zip
 
         /* Central Directory Structure */
         $CDS = "\x50\x4b\x01\x02"; // CDS signature
-        $CDS .="\x14\x00"; // Constructor version
-        $CDS .="\x14\x00"; // Version requirements
-        $CDS .="\x00\x08"; // Bit flag - 0x8 = UTF-8 file names
-        $CDS .="\x08\x00"; // Compression
-        $CDS .="\x00\x00\x00\x00"; // Last modified
+        $CDS .= "\x14\x00"; // Constructor version
+        $CDS .= "\x14\x00"; // Version requirements
+        $CDS .= "\x00\x08"; // Bit flag - 0x8 = UTF-8 file names
+        $CDS .= "\x08\x00"; // Compression
+        $CDS .= "\x00\x00\x00\x00"; // Last modified
         $CDS .= pack('V', $CRC32); // CRC-32
         $CDS .= pack('V', $ZipLength); // Compressed file size
         $CDS .= pack('V', $DataLength); // Uncompressed file size
         $CDS .= pack('v', strlen($ArchivePath)); // Path name length
-        $CDS .="\x00\x00"; // Extra field length (0'd so we can ignore this)
-        $CDS .="\x00\x00"; // File comment length  (no comment, 0'd)
-        $CDS .="\x00\x00"; // Disk number start (0 seems valid)
-        $CDS .="\x00\x00"; // Internal file attributes (again with the 0's)
-        $CDS .="\x20\x00\x00\x00"; // External file attributes
+        $CDS .= "\x00\x00"; // Extra field length (0'd so we can ignore this)
+        $CDS .= "\x00\x00"; // File comment length  (no comment, 0'd)
+        $CDS .= "\x00\x00"; // Disk number start (0 seems valid)
+        $CDS .= "\x00\x00"; // Internal file attributes (again with the 0's)
+        $CDS .= "\x20\x00\x00\x00"; // External file attributes
         $CDS .= pack('V', $this->FileOffset); // Offsets
         $CDS .= $ArchivePath; // File name & Extra Field (length set to 0 so ignored)
         /* END central Directory Structure */
