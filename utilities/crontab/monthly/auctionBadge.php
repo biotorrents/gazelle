@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-$bonusPoints = new \Gazelle\BonusPoints();
+$bonusPoints = new Gazelle\BonusPoints();
 
 $query = "select * from bonus_point_purchases where `key` = ? order by value desc limit 1";
 $row = $app->dbNew->row($query, ["auctionBadge"]);
