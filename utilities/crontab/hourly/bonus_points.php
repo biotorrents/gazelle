@@ -2,6 +2,15 @@
 
 #declare(strict_types=1);
 
+
+/**
+ * update bonus points
+ *
+ * todo: rewrite this
+ */
+
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $getUsers = $app->dbOld->query("
   SELECT um.ID,
     um.BonusPoints,

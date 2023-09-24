@@ -7,6 +7,8 @@ declare(strict_types=1);
  * record seeding stats
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 # record who's seeding how much, used for ratio watch

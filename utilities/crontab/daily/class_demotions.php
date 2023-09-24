@@ -1,5 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
+
+/**
+ * demote users
+ *
+ * todo: rewrite this
+ */
+
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
+$app = Gazelle\App::go();
+
 //------------- Demote users --------------------------------------------//
 
 // Disabled in favor of store-based promotions

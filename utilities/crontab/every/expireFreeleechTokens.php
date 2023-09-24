@@ -7,6 +7,8 @@ declare(strict_types=1);
  * expire freeleech tokens
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $query = "

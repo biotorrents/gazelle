@@ -10,6 +10,8 @@ declare(strict_types=1);
  * First do a summary, then do keywords to keep token use down.
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 # load up an openai instance

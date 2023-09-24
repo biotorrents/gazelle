@@ -7,6 +7,10 @@ declare(strict_types=1);
  * rebuild the local dependency archive
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
+$app = Gazelle\App::go();
+
 # bail out if not enabled
 if (!$app->env->enableSatis) {
     return;

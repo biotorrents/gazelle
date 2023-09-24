@@ -7,6 +7,8 @@ declare(strict_types=1);
  * update top snatchers
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $query = "truncate table top_snatchers";

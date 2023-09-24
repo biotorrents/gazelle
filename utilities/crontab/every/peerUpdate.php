@@ -10,7 +10,11 @@ declare(strict_types=1);
  * However, the peer counts change often.
  * So our solutions are to not cache them for long.
  * Here is where we update them.
+ *
+ * todo: this is buggy
  */
+
+require_once __DIR__ . "/../../../bootstrap/cli.php";
 
 $app = Gazelle\App::go();
 

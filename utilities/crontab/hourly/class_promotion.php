@@ -2,6 +2,15 @@
 
 #declare(strict_types=1);
 
+
+/**
+ * promote users
+ *
+ * todo: rewrite this
+ */
+
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $ENV = ENV::go();
 
 sleep(5);

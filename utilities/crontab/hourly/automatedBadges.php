@@ -7,6 +7,8 @@ declare(strict_types=1);
  * award automated badges
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $GiB = 1024 * 1024 * 1024;
@@ -34,7 +36,7 @@ foreach ($app->env->activityBadgeIds->upload as $badgeId => $requiredAmount) {
 }
 
 # badges for making forum posts
-foreach ($app->env->activityBadgeIds->post as $badgeId => $requiredAmount) {
+foreach ($app->env->activityBadgeIds->posts as $badgeId => $requiredAmount) {
     $query = "select authorId, count(id) as postCount from forums_posts where authorId not in (select userId from users_badges where badgeId = ?) group by authorId";
     $ref = $app->dbNew->multi($query, [50]);
 
@@ -43,8 +45,8 @@ foreach ($app->env->activityBadgeIds->post as $badgeId => $requiredAmount) {
             continue;
         }
 
-        Badges::awardBadge($row["userId"], $badgeId);
-        Misc::send_pm($row["userId"], 0, "You've received a badge!", "You've received a badge for making " . number_format($requiredAmount) . " forum posts.");
+        Badges::awardBadge($row["authorId"], $badgeId);
+        Misc::send_pm($row["authorId"], 0, "You've received a badge!", "You've received a badge for making " . number_format($requiredAmount) . " forum posts.");
     }
 }
 

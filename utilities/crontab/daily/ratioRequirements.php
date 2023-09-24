@@ -7,6 +7,8 @@ declare(strict_types=1);
  * update ratio requirements
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 # clear old seed time history

@@ -7,6 +7,8 @@ declare(strict_types=1);
  * resolve staff PMs
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $query = "

@@ -7,6 +7,8 @@ declare(strict_types=1);
  * delete expired warnings
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $now = Carbon\Carbon::now()->toDateTimeString();

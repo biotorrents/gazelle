@@ -25,6 +25,8 @@ declare(strict_types=1);
  * ) ENGINE=InnoDB;
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 # find torrent groups with identifiers

@@ -5,7 +5,11 @@ declare(strict_types=1);
 
 /**
  * bonus point shop freeleeches
+ *
+ * todo: rewrite this
  */
+
+require_once __DIR__ . "/../../../bootstrap/cli.php";
 
 $app = Gazelle\App::go();
 

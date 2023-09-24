@@ -7,6 +7,8 @@ declare(strict_types=1);
  * update seed times
  */
 
+require_once __DIR__ . "/../../../bootstrap/cli.php";
+
 $app = Gazelle\App::go();
 
 $query = "
