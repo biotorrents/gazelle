@@ -168,7 +168,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
             });
 
             if (!is_int($response)) {
@@ -614,7 +614,7 @@ class Auth # extends Delight\Auth\Auth
                 $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
                 Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
@@ -776,7 +776,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/changeEmail.twig", ["uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($newEmail, $subject, $body);
+                $app->email($newEmail, $subject, $body);
             });
         } catch (Throwable $e) {
             return $message;
@@ -826,7 +826,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
             });
         } catch (\Delight\Auth\ConfirmationRequestNotFound $e) {
             return $message;

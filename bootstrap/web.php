@@ -7,12 +7,11 @@ declare(strict_types=1);
  * web app bootstrap
  */
 
-# quick sanity checks
-\Gazelle\App::gotcha();
-
 # load the app
 $app = \Gazelle\App::go();
-#!d($app->user->permissions);
+
+# quick sanity checks
+$app->gotcha();
 
 # query vars
 $get = Http::request("get");

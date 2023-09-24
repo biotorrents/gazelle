@@ -214,7 +214,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                \Gazelle\App::email($Email, $Subject, $email);
+                $app->email($Email, $Subject, $email);
             }
         } else {
             foreach ($Results as $Result) {

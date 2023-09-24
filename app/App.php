@@ -111,7 +111,7 @@ class App
      * Basic sanity checks, just in case.
      * You know, for <? and other such nonsense.
      */
-    public static function gotcha()
+    public function gotcha()
     {
         return true;
     }
@@ -127,7 +127,7 @@ class App
      *
      * @see https://github.com/PHPMailer/PHPMailer
      */
-    public static function email(string $to, string $subject, string $body, bool $isHtml = false)
+    public function email(string $to, string $subject, string $body, bool $isHtml = false)
     {
         $app = self::go();
 

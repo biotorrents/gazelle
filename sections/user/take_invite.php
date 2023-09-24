@@ -123,7 +123,7 @@ EOT;
           */
     }
 
-    \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
+    $app->email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
 Http::redirect("user.php?action=invite");

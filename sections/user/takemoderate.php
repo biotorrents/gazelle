@@ -437,7 +437,7 @@ if (check_perms('users_edit_badges')) {
         $len = count($Badges);
         foreach ($Badges as $i => $BadgeID) {
             $query .= "($UserID, $BadgeID)";
-            if ($i < ($len-1)) {
+            if ($i < ($len - 1)) {
                 $query .= ", ";
             }
         }
@@ -721,7 +721,7 @@ if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
 
 if ($SendHackedMail && check_perms('users_disable_any')) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
-    \Gazelle\App::email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
+    $app->email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
 if ($MergeStatsFrom && check_perms('users_edit_ratio')) {

@@ -186,7 +186,9 @@ with help from other personally-vetted libraries that may be lighter.
 ### App singleton
 
 [The main site configuration](config/public.php)
-uses extensible ArrayObjects with by the
+uses recursive
+[Laravel Collections](https://laravel.com/docs/master/collections)
+with the
 [ENV special class](app/ENV.php).
 Also, the whole app is always instantly available:
 the config, database, cache, current user, Twig engine, etc.,
