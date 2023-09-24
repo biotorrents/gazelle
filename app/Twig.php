@@ -104,7 +104,7 @@ class Twig # extends Twig\Environment
 
         # globals: app and env
         $twig->addGlobal("app", $app);
-        $twig->addGlobal("env", $app->env::$public);
+        $twig->addGlobal("env", $app->env->public);
 
         # user and authenticated
         $twig->addGlobal("user", $app->user);

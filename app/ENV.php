@@ -25,8 +25,8 @@ class ENV
     private static $instance = null;
 
     # config option receptacles
-    public static $public = []; # site meta, options, resources, etc.
-    private static $private = []; # passwords, app keys, database, etc.
+    public $public = []; # site meta, options, resources, etc.
+    private $private = []; # passwords, app keys, database, etc.
 
 
     /**
@@ -59,22 +59,22 @@ class ENV
         );
     }
 
-    # $this->key returns self::$public["key"]
-    public function __get(mixed $key)
+    # $this->key returns $this->public[$key]
+    public function __get(mixed $key): mixed
     {
-        return self::$public[$key] ?? null;
+        return $this->public[$key] ?? null;
     }
 
     # $this->key = "value"
-    public function __set(mixed $key, mixed $value)
+    public function __set(mixed $key, mixed $value): void
     {
-        return self::$public[$key] = $this->toObject($value);
+        $this->public[$key] = $this->toObject($value);
     }
 
     # isset
-    public function __isset(mixed $key)
+    public function __isset(mixed $key): bool
     {
-        return isset(self::$public[$key]);
+        return isset($this->public[$key]);
     }
 
 
@@ -108,11 +108,11 @@ class ENV
     {
         # get
         if (!$value) {
-            return self::$private[$key] ?? null;
+            return $this->private[$key] ?? null;
         }
 
         # set
-        return self::$private[$key] = $this->toObject($value);
+        return $this->private[$key] = $this->toObject($value);
     }
 
 
@@ -128,7 +128,7 @@ class ENV
      */
     public function toArray(mixed $object): mixed
     {
-        if (is_object($object) || is_array($object)) {
+        if (is_iterable($object)) {
             $return = (array) $object;
 
             foreach ($return as &$item) {
@@ -154,7 +154,7 @@ class ENV
      */
     public function toObject(mixed $array): mixed
     {
-        if (is_object($array) || is_array($array)) {
+        if (is_iterable($array)) {
             $return = new RecursiveArrayObject($array);
 
             foreach ($return as &$item) {
@@ -384,53 +384,80 @@ class ENV
 class RecursiveArrayObject extends ArrayObject
 {
     /**
-     * __functions
+     * __construct
+     *
+     * @param mixed $input the input to construct
+     * @param int $flags the flags to set
+     * @param string $iteratorClass the iterator class to set
+     *
+     * @see https://www.php.net/manual/en/arrayobject.construct.php
      */
-
-    # __construct
-    public function __construct(mixed $input = null, int $flags = self::ARRAY_AS_PROPS, string $iteratorClass = "ArrayIterator")
+    public function __construct(mixed $input = [], int $flags = self::ARRAY_AS_PROPS, string $iteratorClass = "ArrayIterator")
     {
+        # set the flage and iterator
+        $this->setFlags($flags);
+        $this->setIteratorClass($iteratorClass);
+
+        # set the input properties
         foreach ($input as $key => $value) {
             $this->__set($key, $value);
         }
 
+        # return the object
         return $this;
     }
 
-    # __get
-    public function __get(mixed $key)
+
+    /**
+     * __get
+     *
+     * @param mixed $key the key to get
+     * @return mixed the value of the key
+     */
+    public function __get(mixed $key): mixed
     {
-        if ($this->offsetExists($key)) {
-            return $this->offsetGet($key);
-        }
-
-        if (array_key_exists($key, $this)) {
-            return $this[$key];
-        }
-
-        throw new InvalidArgumentException("the instance doesn't have the property {$key}");
+        return $this->offsetGet($key) ?? null;
     }
 
-    # __set
-    public function __set(mixed $key, mixed $value)
+
+    /**
+     * __set
+     *
+     * @param mixed $key the key to set
+     * @param mixed $value the value to set
+     * @return void
+     */
+    public function __set(mixed $key, mixed $value): void
     {
-        if (is_array($value) || is_object($value)) {
-            $this->offsetSet($key, (new self($value)));
+        if (is_iterable($value)) {
+            $this->offsetSet($key, new self($value));
         } else {
             $this->offsetSet($key, $value);
         }
     }
 
-    # __isset
-    public function __isset(mixed $key)
+
+    /**
+     * __isset
+     *
+     * @param mixed $key the key to check
+     * @return bool whether the key is set
+     */
+    public function __isset(mixed $key): bool
     {
-        return array_key_exists($key, $this);
+        return $this->offsetExists($key);
     }
 
-    # __unset
-    public function __unset(mixed $key)
+
+    /**
+     * __unset
+     *
+     * @param mixed $key the key to unset
+     * @return void
+     */
+    public function __unset(mixed $key): void
     {
-        unset($this[$key]);
+        $this->offsetUnset($key);
     }
 
 
@@ -447,9 +474,15 @@ class RecursiveArrayObject extends ArrayObject
      */
     public function __call(string $callback, mixed $arguments = null)
     {
+        if (!is_callable($callback)) {
+            throw new BadMethodCallException(__CLASS__ . "->" . $callback);
+        }
+
+        /*
         if (!is_callable($callback) || !str_starts_with($callback, "array_")) {
             throw new BadMethodCallException(__CLASS__ . "->" . $callback);
         }
+        */
 
         return call_user_func_array(
             $callback,

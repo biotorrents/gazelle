@@ -74,6 +74,7 @@
     "snipe/banbuilder": "^2.3",
     "sofa/eloquence": "dev-master",
     "spatie/emoji": "^4.0",
+    "spatie/laravel-collection-macros": "^7.12",
     "spatie/once": "^3.1",
     "twig/twig": "^3.7.1",
     "vanilla/nbbc": "^2.4",
