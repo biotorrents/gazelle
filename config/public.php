@@ -409,6 +409,119 @@ define("SCI_HUB", "se");
  * found in the `permissions` table
  */
 
+$GiB = 1024 * 1024 * 1024;
+$week = 3600 * 24 * 7;
+
+# https://redacted.ch/wiki.php?action=article&name=userclasses
+$env->classPromotions = [
+
+    "user" => [
+        "id" => 2,
+        "title" => "User",
+
+        "nextId" => 3,
+        "nextTitle" => "Member",
+
+        "dataUploaded" => 0,
+        "torrentsUploaded" => 0,
+        "minimumRatio" => 0.0,
+        "maximumTime" => null,
+    ],
+
+    "member" => [
+        "id" => 3,
+        "title" => "Member",
+
+        "nextId" => 4,
+        "nextTitle" => "Power User",
+
+        "dataUploaded" => 10 * $GiB,
+        "torrentsUploaded" => 1,
+        "minimumRatio" => 0.8,
+        "maximumTime" => time() - $week * 1,
+    ],
+
+    "powerUser" => [
+        "id" => 4,
+        "title" => "Power User",
+
+        "nextId" => 5,
+        "nextTitle" => "Elite",
+
+        "dataUploaded" => 20 * $GiB,
+        "torrentsUploaded" => 2,
+        "minimumRatio" => 1.0,
+        "maximumTime" => time() - $week * 2,
+    ],
+
+    "elite" => [
+        "id" => 5,
+        "title" => "Elite",
+
+        "nextId" => 23,
+        "nextTitle" => "Torrent Master",
+
+        "dataUploaded" => 50 * $GiB,
+        "torrentsUploaded" => 5,
+        "minimumRatio" => 1.2,
+        "maximumTime" => time() - $week * 4,
+    ],
+
+    "torrentMaster" => [
+        "id" => 23,
+        "title" => "Torrent Master",
+
+        "nextId" => 24,
+        "nextTitle" => "Power Master",
+
+        "dataUploaded" => 100 * $GiB,
+        "torrentsUploaded" => 10,
+        "minimumRatio" => 1.4,
+        "maximumTime" => time() - $week * 8,
+    ],
+
+    "powerMaster" => [
+        "id" => 24,
+        "title" => "Power Master",
+
+        "nextId" => 25,
+        "nextTitle" => "Elite Master",
+
+        "dataUploaded" => 200 * $GiB,
+        "torrentsUploaded" => 20,
+        "minimumRatio" => 1.6,
+        "maximumTime" => time() - $week * 16,
+    ],
+
+    "eliteMaster" => [
+        "id" => 25,
+        "title" => "Elite Master",
+
+        "nextId" => 8,
+        "nextTitle" => "Legend",
+
+        "dataUploaded" => 500 * $GiB,
+        "torrentsUploaded" => 50,
+        "minimumRatio" => 1.8,
+        "maximumTime" => time() - $week * 32,
+    ],
+
+    "legend" => [
+        "id" => 8,
+        "title" => "Legend",
+
+        "nextId" => null,
+        "nextTitle" => null,
+
+        "dataUploaded" => 1000 * $GiB,
+        "torrentsUploaded" => 100,
+        "minimumRatio" => 2.0,
+        "maximumTime" => time() - $week * 64,
+    ],
+
+];
+
+
 # REMOVE ME
 # name of class => class id (not level)
 define("ADMIN", 1);
@@ -424,6 +537,7 @@ define("DONOR", 20);
 define("VIP", 21);
 define("TORRENT_MASTER", 23);
 define("POWER_TM", 24);
+define("ELITE_TM", 25);
 define("FLS_TEAM", 33);
 define("FORUM_MOD", 9001);
 # REMOVE ME
