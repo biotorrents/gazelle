@@ -33,10 +33,10 @@ match ($env->environment) {
 };
 
 
-# alphanumeric random key: the scheduler argument
+# alphanumeric random key: the cron argument
 match ($env->environment) {
-    "production" => $env->private("scheduleKey", ""),
-    "development" => $env->private("scheduleKey", ""),
+    "production" => $env->private("cronToken", ""),
+    "development" => $env->private("cronToken", ""),
     default => throw new Exception("invalid environment"),
 };
 
