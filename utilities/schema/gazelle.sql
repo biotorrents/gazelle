@@ -357,13 +357,6 @@ CREATE TABLE `forums_posts` (
 
 
 -- 2020-03-09
-CREATE TABLE `forums_specific_rules` (
-  `ForumID` int unsigned DEFAULT NULL,
-  `ThreadID` int DEFAULT NULL
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `forums_topics` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `Title` varchar(150) NOT NULL, -- todo: 150 vs. 255?
@@ -974,14 +967,6 @@ CREATE TABLE `users_dupes` (
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `users_dupes_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users_main` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `users_dupes_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `dupe_groups` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `users_enable_recommendations` (
-  `ID` int NOT NULL,
-  `Enable` tinyint DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Enable` (`Enable`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 

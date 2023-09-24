@@ -21,9 +21,6 @@ SELECT
   u.`Username`
 FROM
   `friends` AS f
-RIGHT JOIN `users_enable_recommendations` AS r
-ON
-  r.`ID` = f.`FriendID` AND r.`Enable` = 1
 RIGHT JOIN `users_main` AS u
 ON
   u.`ID` = f.`FriendID`
@@ -44,8 +41,8 @@ $Link = '';
 $Article = 'a';
 switch ($Type) {
     case 'torrent':
-    $Link = "torrents.php?id=$ID";
-    $app->dbOld->query("
+        $Link = "torrents.php?id=$ID";
+        $app->dbOld->query("
     SELECT
       `title`
     FROM
@@ -53,12 +50,12 @@ switch ($Type) {
     WHERE
       `id` = '$ID'
     ");
-    break;
+        break;
 
     case 'artist':
-    $Article = 'an';
-    $Link = "artist.php?id=$ID";
-    $app->dbOld->query("
+        $Article = 'an';
+        $Link = "artist.php?id=$ID";
+        $app->dbOld->query("
     SELECT
       `Name`
     FROM
@@ -66,11 +63,11 @@ switch ($Type) {
     WHERE
       `ArtistID` = '$ID'
     ");
-    break;
+        break;
 
     case 'collage':
-    $Link = "collages.php?id=$ID";
-    $app->dbOld->query("
+        $Link = "collages.php?id=$ID";
+        $app->dbOld->query("
     SELECT
       `Name`
     FROM
@@ -78,10 +75,10 @@ switch ($Type) {
     WHERE
       `ID` = '$ID'
     ");
-    break;
+        break;
 
     default:
-    break;
+        break;
 }
 
 list($Name) = $app->dbOld->next_record();
