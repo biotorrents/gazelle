@@ -673,14 +673,6 @@ CREATE TABLE `requests_votes` (
 
 
 -- 2020-03-09
-CREATE TABLE `schedule` (
-  `NextHour` int NOT NULL DEFAULT '0',
-  `NextDay` int NOT NULL DEFAULT '0',
-  `NextBiWeekly` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `shop_freeleeches` (
   `TorrentID` int NOT NULL,
   `ExpiryTime` datetime,

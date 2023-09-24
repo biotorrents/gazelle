@@ -102,10 +102,6 @@
 
     <ul>
         {% if can("site_debug") %}
-            <li><a href="/schedule.php?auth={{ user.extra.AuthKey }}">Run the schedule</a></li>
-        {% endif %}
-
-        {% if can("site_debug") %}
             <li><a href="/tools.php?action=service_stats">Service stats</a></li>
         {% endif %}
 
