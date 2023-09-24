@@ -35,7 +35,7 @@ $ref = $app->dbNew->multi($query, [$userId]);
 
 # current user count
 $query = "select count(id) from users where status = ?";
-$userCount = $app->dbNew->single($query, [User::STATUS_ENABLED]);
+$userCount = $app->dbNew->single($query, [User::NORMAL]);
 
 
 # twig template
@@ -67,7 +67,7 @@ if (isset($_GET['userid']) && check_perms('users_view_invites')) {
         error(403);
     }
 
-    $UserID=$_GET['userid'];
+    $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
     if (!$UserCount = $app->cache->get('stats_user_count')) {
