@@ -625,16 +625,16 @@ class Database extends \PDO
         $columns = array_keys($data);
         $values = array_values($data);
 
-        # generate the comma-separated list of columns and named placeholders
+        # comma-separated list of columns and named placeholders
         $insertColumns = implode(", ", $columns);
         $insertPlaceholders = ":" . implode(", :", $columns);
 
-        # generate the update column expressions with named placeholders
+        # update column expressions with named placeholders
         $updateColumns = array_map(function ($column) {
             return "{$column} = :{$column}_update";
         }, $columns);
 
-        # generate the named placeholders for the update column values
+        # named placeholders for the update column values
         $updatePlaceholders = array_map(function ($column) {
             return ":{$column}_update";
         }, $columns);

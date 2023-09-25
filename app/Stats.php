@@ -763,7 +763,7 @@ class Stats
 
         # get category names
         foreach ($categoryDistribution as $k => $v) {
-            $categoryDistribution[$k] = $app->env->CATS->$v->Name;
+            $categoryDistribution[$k] = $app->env->categories->where("id", $v)->value("title");
         }
 
         $categoryDistribution = array_flip($categoryDistribution);

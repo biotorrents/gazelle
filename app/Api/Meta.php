@@ -38,7 +38,7 @@ class Meta extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         try {
-            $data = $app->env->CATS;
+            $data = $app->env->categories;
 
             self::success(200, $data);
         } catch (\Throwable $e) {

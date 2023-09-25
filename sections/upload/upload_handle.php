@@ -103,7 +103,7 @@ if ($data["groupId"]) {
 
 # categoryId
 $validate->setField("categoryId", [
-    "inArray" => $app->env->CATS->array_keys(),
+    "inArray" => $app->env->categories->pluck("id")->toArray(),
     "required" => true,
     "type" => "integer",
 ]);
@@ -209,7 +209,7 @@ $validate->setField("anonymous", [
 
 # archive
 $validate->setField("archive", [
-    "inArray" => $app->env->META->Formats->Archives->array_keys(),
+    "inArray" => $app->env->metadata->formats->archives->keys()->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -224,7 +224,7 @@ $validate->setField("format", [
 
 # license
 $validate->setField("license", [
-    "inArray" => $app->env->META->Licenses->toArray(),
+    "inArray" => $app->env->metadata->licenses->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -238,7 +238,7 @@ $validate->setField("mirrors", [
 
 # platform
 $validate->setField("platform", [
-    #"inArray" => $app->env->META->Platforms->toArray(),
+    "inArray" => $app->env->metadata->platforms->values()->flatten()->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -246,7 +246,7 @@ $validate->setField("platform", [
 
 # scope
 $validate->setField("scope", [
-    #"inArray" => $app->env->META->Scopes->toArray(),
+    "inArray" => $app->env->metadata->scopes->values()->flatten()->toArray(),
     "maxLength" => 32,
     "required" => true,
     "type" => "string",
@@ -452,7 +452,7 @@ $data["mirrors"] = array_unique($data["mirrors"]);
 
 # key shorthand variables
 $categoryId = $data["categoryId"];
-$categoryName = $app->env->CATS->{$categoryId}->Name;
+$categoryName = $app->env->categories->where("id", $categoryId)->value("title");
 
 $groupId = $data["groupId"] ?? null;
 $revisionId = $data["revisionId"] ?? null;

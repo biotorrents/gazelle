@@ -40,11 +40,28 @@ require_once __DIR__ . "/../app/ENV.php";
 $env = ENV::go();
 
 
-# include the configs
-require_once __DIR__ . "/public.php"; # basic info, options, fratures, etc.
-require_once __DIR__."/private.php"; # ALL THE SITE'S PRIVATE KEYS ARE HERE!
+/** */
 
-require_once __DIR__ . "/badges.php"; # site badges and badge accessories
-require_once __DIR__ . "/metadata.php"; # this copy will eventually go away
-require_once __DIR__ . "/metadataNew.php"; # master metadata map for twig templates
-require_once __DIR__ . "/regex.php"; # regular expressions used throughout the site
+
+# basic info, options, features, etc.
+require_once __DIR__ . "/public.php";
+
+
+# ALL THE SITE'S PRIVATE KEYS ARE HERE!
+require_once __DIR__."/private.php";
+
+
+# site badges and badge accessories
+require_once __DIR__ . "/badges.php";
+
+
+# master metadata map for twig templates
+require_once __DIR__ . "/metadata.php";
+
+
+# this copy will eventually go away
+require_once __DIR__ . "/metadataOld.php";
+
+
+# regular expressions used throughout the site
+require_once __DIR__ . "/regex.php";
