@@ -10,6 +10,8 @@ declare(strict_types=1);
  *
  * @see https://phpdelusions.net/pdo/pdo_wrapper
  * @see https://github.com/DoctorMcKay/php-mypdoms
+ *
+ * todo: consider updating this to use RecursiveCollection instances
  */
 
 namespace Gazelle;
@@ -66,6 +68,9 @@ class Database extends \PDO
             E_USER_ERROR
         );
     }
+
+
+    /** */
 
 
     /**
@@ -319,8 +324,11 @@ class Database extends \PDO
      *
      * Determine the identifier to use for a query.
      * Used for finding stuff by id, uuid, or slug.
+     *
+     * @param int|string $id
+     * @return string
      */
-    public function determineIdentifier(int|string $id)
+    public function determineIdentifier(int|string $id): string
     {
         $app = \Gazelle\App::go();
 
@@ -351,7 +359,7 @@ class Database extends \PDO
      * @param array $row single database row
      * @return array translated row
      */
-    private function translateBinary(array $row)
+    private function translateBinary(array $row): array
     {
         # uuid v7
         $row["uuid"] ??= null;
@@ -469,8 +477,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $arguments
      * @param ?string $hostname
+     * @return mixed
      */
-    public function single(string $query, array $arguments = [], ?string $hostname = null)
+    public function single(string $query, array $arguments = [], ?string $hostname = null): mixed
     {
         $app = \Gazelle\App::go();
 
@@ -502,8 +511,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $arguments
      * @param ?string $hostname
+     * @return ?array
      */
-    public function row(string $query, array $arguments = [], ?string $hostname = null)
+    public function row(string $query, array $arguments = [], ?string $hostname = null): ?array
     {
         $app = \Gazelle\App::go();
 

@@ -31,8 +31,8 @@ class ENV
     private static $instance = null;
 
     # config option receptacles
-    public RecursiveCollection $public; # site meta, options, resources, etc.
-    private RecursiveCollection $private; # passwords, app keys, database, etc.
+    public Gazelle\RecursiveCollection $public; # site meta, options, resources, etc.
+    private Gazelle\RecursiveCollection $private; # passwords, app keys, database, etc.
 
 
     /**
@@ -164,8 +164,8 @@ class ENV
      */
     private function factory(array $options = []): void
     {
-        $this->public = new RecursiveCollection();
-        $this->private = new RecursiveCollection();
+        $this->public = new Gazelle\RecursiveCollection();
+        $this->private = new Gazelle\RecursiveCollection();
     }
 
 
@@ -231,7 +231,7 @@ class ENV
     public function toObject(mixed $array): mixed
     {
         if (is_iterable($array)) {
-            $return = new RecursiveCollection($array);
+            $return = new Gazelle\RecursiveCollection($array);
 
             foreach ($return as &$item) {
                 $item = $this->toObject($item);

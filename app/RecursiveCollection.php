@@ -15,7 +15,9 @@ declare(strict_types=1);
  * @see https://github.com/etconsilium/php-recursive-array-object
  */
 
-class RecursiveCollection extends Illuminate\Support\Collection
+namespace Gazelle;
+
+class RecursiveCollection extends \Illuminate\Support\Collection
 {
     /**
      * __construct
@@ -28,12 +30,13 @@ class RecursiveCollection extends Illuminate\Support\Collection
     {
         /*
         # https://laravel.com/docs/master/collections#extending-collections
+        self::make($this->macros())
+            ->reject(fn ($class, $macro) => self::hasMacro($macro))
+            ->each(fn ($class, $macro) => self::macro($macro, $class()));
+
+        # second try, maybe this works
         foreach ($this->macros() as $macro => $class) {
-            self::macro($macro, function () use ($class) {
-                return $this->map(function ($value) use ($class) {
-                    return new self(new $class($value));
-                });
-            });
+            self::macro($macro, $class());
         }
         */
 
@@ -53,7 +56,7 @@ class RecursiveCollection extends Illuminate\Support\Collection
      */
     public function __get(mixed $key): mixed
     {
-        return $this->get($key) ?? null;
+        return $this->get($key);
     }
 
 

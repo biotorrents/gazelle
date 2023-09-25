@@ -14,6 +14,10 @@ require_once __DIR__ . "/../../../bootstrap/cli.php";
 
 $app = Gazelle\App::go();
 
+if ($app->env->dev) {
+    return;
+}
+
 # load up an openai instance
 $openai = new Gazelle\OpenAI();
 
@@ -31,10 +35,12 @@ $ref = $app->dbNew->multi($query, []);
 
 # loop through each groupId
 foreach ($ref as $row) {
+    /*
     # skip previously failed jobs
     if ($row["failCount"] > 2) {
         continue;
     }
+    */
 
     # summary
     $failCount = 0;
