@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3eb97e4313de08b8c51fdc1518151804",
+    "content-hash": "7aaa983704edc0e05f6aa811dfd47e8e",
     "packages": [
         {
             "name": "abraham/twitteroauth",
@@ -3128,16 +3128,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.70.0",
+            "version": "2.71.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "d3298b38ea8612e5f77d38d1a99438e42f70341d"
+                "reference": "98276233188583f2ff845a0f992a235472d9466a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/d3298b38ea8612e5f77d38d1a99438e42f70341d",
-                "reference": "d3298b38ea8612e5f77d38d1a99438e42f70341d",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/98276233188583f2ff845a0f992a235472d9466a",
+                "reference": "98276233188583f2ff845a0f992a235472d9466a",
                 "shasum": ""
             },
             "require": {
@@ -3230,7 +3230,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-09-07T16:43:50+00:00"
+            "time": "2023-09-25T11:31:05+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -6683,46 +6683,29 @@
             "time": "2022-09-22T07:46:11+00:00"
         },
         {
-            "name": "spatie/laravel-collection-macros",
-            "version": "7.12.5",
+            "name": "spatie/regex",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/spatie/laravel-collection-macros.git",
-                "reference": "c95233e712298fa4b79baeeda77952ca1a533150"
+                "url": "https://github.com/spatie/regex.git",
+                "reference": "d543de2019a0068e7b80da0ba24f1c51c7469303"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/laravel-collection-macros/zipball/c95233e712298fa4b79baeeda77952ca1a533150",
-                "reference": "c95233e712298fa4b79baeeda77952ca1a533150",
+                "url": "https://api.github.com/repos/spatie/regex/zipball/d543de2019a0068e7b80da0ba24f1c51c7469303",
+                "reference": "d543de2019a0068e7b80da0ba24f1c51c7469303",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^8.71|^9.0|^10.0",
-                "php": "^8.0"
+                "php": "^8.0|^8.1"
             },
             "require-dev": {
-                "amphp/parallel": "^1.4.1",
-                "amphp/parallel-functions": "^1.1.0",
-                "mockery/mockery": "^1.4.2",
-                "orchestra/testbench": "^6.23|^7.0|^8.0",
-                "phpunit/phpunit": "^9.4.4",
-                "spatie/laravel-ray": "^1.29",
-                "symfony/stopwatch": "^5.2|^6.0"
-            },
-            "suggest": {
-                "amphp/parallel-functions": "Required when using the parallel*-macros."
+                "phpunit/phpunit": "^9.3"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Spatie\\CollectionMacros\\CollectionMacroServiceProvider"
-                    ]
-                }
-            },
             "autoload": {
                 "psr-4": {
-                    "Spatie\\CollectionMacros\\": "src"
+                    "Spatie\\Regex\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6730,97 +6713,37 @@
                 "MIT"
             ],
             "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "homepage": "https://github.com/freekmurze",
-                    "role": "Developer"
-                },
                 {
                     "name": "Sebastian De Deyne",
                     "email": "sebastian@spatie.be",
-                    "homepage": "https://github.com/sebastiandedeyne",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A set of useful Laravel collection macros",
-            "homepage": "https://github.com/spatie/laravel-collection-macros",
-            "keywords": [
-                "laravel-collection-macros",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/laravel-collection-macros/tree/7.12.5"
-            },
-            "funding": [
-                {
-                    "url": "https://github.com/spatie",
-                    "type": "github"
-                }
-            ],
-            "time": "2023-05-11T14:36:36+00:00"
-        },
-        {
-            "name": "spatie/once",
-            "version": "3.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/once.git",
-                "reference": "aab3fc8694e7caec98b2d330c4a8420391c7559d"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/once/zipball/aab3fc8694e7caec98b2d330c4a8420391c7559d",
-                "reference": "aab3fc8694e7caec98b2d330c4a8420391c7559d",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "pestphp/pest": "^1.21",
-                "symfony/var-dumper": "^5.1"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "Spatie\\Once\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
                     "homepage": "https://spatie.be",
                     "role": "Developer"
                 }
             ],
-            "description": "A magic memoization function",
-            "homepage": "https://github.com/spatie/once",
+            "description": "A sane interface for php's built in preg_* functions",
+            "homepage": "https://github.com/spatie/regex",
             "keywords": [
-                "cache",
-                "callable",
-                "memoization",
-                "once",
+                "expression",
+                "expressions",
+                "regex",
+                "regular",
                 "spatie"
             ],
             "support": {
-                "source": "https://github.com/spatie/once/tree/3.1.0"
+                "issues": "https://github.com/spatie/regex/issues",
+                "source": "https://github.com/spatie/regex/tree/3.1.1"
             },
             "funding": [
                 {
                     "url": "https://spatie.be/open-source/support-us",
                     "type": "custom"
+                },
+                {
+                    "url": "https://github.com/spatie",
+                    "type": "github"
                 }
             ],
-            "time": "2022-04-21T12:23:20+00:00"
+            "time": "2021-11-30T21:13:59+00:00"
         },
         {
             "name": "spomky-labs/base64url",

@@ -7,7 +7,12 @@ declare(strict_types=1);
  * RecursiveCollection
  *
  * Laravel Collections that support recursive access.
- * This used to be the RecursiveArrayObject class.
+ *
+ * @see https://laravel.com/docs/master/collections
+ * @see https://github.com/spatie/laravel-collection-macros
+ *
+ *
+ * The underlying objects used to be native ArrayObject instances.
  *
  * @author: etconsilium@github
  * @license: BSDLv2
@@ -28,17 +33,9 @@ class RecursiveCollection extends \Illuminate\Support\Collection
      */
     public function __construct(mixed $input = [])
     {
-        /*
-        # https://laravel.com/docs/master/collections#extending-collections
-        self::make($this->macros())
-            ->reject(fn ($class, $macro) => self::hasMacro($macro))
-            ->each(fn ($class, $macro) => self::macro($macro, $class()));
-
-        # second try, maybe this works
-        foreach ($this->macros() as $macro => $class) {
-            self::macro($macro, $class());
+        if (!is_iterable($input)) {
+            $input = [$input];
         }
-        */
 
         foreach ($input as $key => $value) {
             $this->$key = $value;
@@ -108,69 +105,29 @@ class RecursiveCollection extends \Illuminate\Support\Collection
 
 
     /**
-     * macros
+     * toArray
      *
-     * @see https://github.com/spatie/laravel-collection-macros/blob/main/src/CollectionMacroServiceProvider.php
+     * Recursively convert the collection to an array.
+     *
+     * @return array
      */
-    private function macros(): array
+    public function toArray(): array
     {
-        return [
-            'after' => \Spatie\CollectionMacros\Macros\After::class,
-            'at' => \Spatie\CollectionMacros\Macros\At::class,
-            'before' => \Spatie\CollectionMacros\Macros\Before::class,
-            'chunkBy' => \Spatie\CollectionMacros\Macros\ChunkBy::class,
-            'collectBy' => \Spatie\CollectionMacros\Macros\CollectBy::class,
-            'containsAll' => \Spatie\CollectionMacros\Macros\ContainsAll::class,
-            'containsAny' => \Spatie\CollectionMacros\Macros\ContainsAny::class,
-            'eachCons' => \Spatie\CollectionMacros\Macros\EachCons::class,
-            'eighth' => \Spatie\CollectionMacros\Macros\Eighth::class,
-            'extract' => \Spatie\CollectionMacros\Macros\Extract::class,
-            'fifth' => \Spatie\CollectionMacros\Macros\Fifth::class,
-            'filterMap' => \Spatie\CollectionMacros\Macros\FilterMap::class,
-            'firstOrFail' => \Spatie\CollectionMacros\Macros\FirstOrFail::class,
-            'firstOrPush' => \Spatie\CollectionMacros\Macros\FirstOrPush::class,
-            'fourth' => \Spatie\CollectionMacros\Macros\Fourth::class,
-            'fromPairs' => \Spatie\CollectionMacros\Macros\FromPairs::class,
-            'getCaseInsensitive' => \Spatie\CollectionMacros\Macros\GetCaseInsensitive::class,
-            'getNth' => \Spatie\CollectionMacros\Macros\GetNth::class,
-            'glob' => \Spatie\CollectionMacros\Macros\Glob::class,
-            'groupByModel' => \Spatie\CollectionMacros\Macros\GroupByModel::class,
-            'hasCaseInsensitive' => \Spatie\CollectionMacros\Macros\HasCaseInsensitive::class,
-            'head' => \Spatie\CollectionMacros\Macros\Head::class,
-            'if' => \Spatie\CollectionMacros\Macros\IfMacro::class,
-            'ifAny' => \Spatie\CollectionMacros\Macros\IfAny::class,
-            'ifEmpty' => \Spatie\CollectionMacros\Macros\IfEmpty::class,
-            'insertAfter' => \Spatie\CollectionMacros\Macros\InsertAfter::class,
-            'insertAfterKey' => \Spatie\CollectionMacros\Macros\InsertAfterKey::class,
-            'insertAt' => \Spatie\CollectionMacros\Macros\InsertAt::class,
-            'insertBefore' => \Spatie\CollectionMacros\Macros\InsertBefore::class,
-            'insertBeforeKey' => \Spatie\CollectionMacros\Macros\InsertBeforeKey::class,
-            'ninth' => \Spatie\CollectionMacros\Macros\Ninth::class,
-            'none' => \Spatie\CollectionMacros\Macros\None::class,
-            'paginate' => \Spatie\CollectionMacros\Macros\Paginate::class,
-            'parallelMap' => \Spatie\CollectionMacros\Macros\ParallelMap::class,
-            'path' => \Spatie\CollectionMacros\Macros\Path::class,
-            'pluckMany' => \Spatie\CollectionMacros\Macros\PluckMany::class,
-            'pluckManyValues' => \Spatie\CollectionMacros\Macros\PluckManyValues::class,
-            'pluckToArray' => \Spatie\CollectionMacros\Macros\PluckToArray::class,
-            'prioritize' => \Spatie\CollectionMacros\Macros\Prioritize::class,
-            'recursive' => \Spatie\CollectionMacros\Macros\Recursive::class,
-            'rotate' => \Spatie\CollectionMacros\Macros\Rotate::class,
-            'second' => \Spatie\CollectionMacros\Macros\Second::class,
-            'sectionBy' => \Spatie\CollectionMacros\Macros\SectionBy::class,
-            'seventh' => \Spatie\CollectionMacros\Macros\Seventh::class,
-            'simplePaginate' => \Spatie\CollectionMacros\Macros\SimplePaginate::class,
-            'sixth' => \Spatie\CollectionMacros\Macros\Sixth::class,
-            'sliceBefore' => \Spatie\CollectionMacros\Macros\SliceBefore::class,
-            'tail' => \Spatie\CollectionMacros\Macros\Tail::class,
-            'tenth' => \Spatie\CollectionMacros\Macros\Tenth::class,
-            'third' => \Spatie\CollectionMacros\Macros\Third::class,
-            'toPairs' => \Spatie\CollectionMacros\Macros\ToPairs::class,
-            'transpose' => \Spatie\CollectionMacros\Macros\Transpose::class,
-            'try' => \Spatie\CollectionMacros\Macros\TryCatch::class,
-            'validate' => \Spatie\CollectionMacros\Macros\Validate::class,
-            'weightedRandom' => \Spatie\CollectionMacros\Macros\WeightedRandom::class,
-            'withSize' => \Spatie\CollectionMacros\Macros\WithSize::class,
-        ];
+        $array = [];
+
+        foreach ($this as $key => $value) {
+            if ($value instanceof self) {
+                $array[$key] = $value->toArray();
+            } else {
+                $array[$key] = $value;
+            }
+        }
+
+        return $array;
+
+        /*
+        # the old standy, just in case
+        return json_decode($this->toJson(), true);
+        */
     }
 } # class

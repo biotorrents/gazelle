@@ -20,7 +20,7 @@ declare(strict_types=1);
  *
  *
  * Oh yeah, it also supports all of Laravel's Collection methods.
- * The underlying structure is a Collection not a RecursiveArrayObject.
+ * The underlying structure is a Collection not an ArrayObject.
  *
  * @see https://laravel.com/docs/master/collections#available-methods
  */
@@ -90,7 +90,7 @@ class ENV
      */
     public function __set(mixed $key, mixed $value): void
     {
-        $this->public[$key] = $this->toObject($value);
+        $this->public[$key] = $this->collect($value);
     }
 
 
@@ -124,7 +124,7 @@ class ENV
      * @param string $method the method to call
      * @param array $arguments the arguments to pass
      */
-    public function __call(string $method, array $arguments = [])
+    public function __call(string $method, array $arguments = []): mixed
     {
         if (!method_exists($this->public, $method)) {
             return trigger_error(
@@ -144,6 +144,9 @@ class ENV
      * go
      *
      * Calls its self's creation or returns itself.
+     *
+     * @param array $options the options to use
+     * @return self
      */
     public static function go(array $options = []): self
     {
@@ -170,76 +173,50 @@ class ENV
 
 
     /**
-     * private
+     * collect
      *
-     * Sets a private key if $value !== null.
-     * Otherwise, returns the value of $key.
+     * Converts stuff into a RecursiveCollection
      *
-     * @param mixed $key the key to set or get
-     * @param mixed $value the value to set
-     * @return mixed the value of the key
-     */
-
-    public function private(mixed $key, mixed $value = null): mixed
-    {
-        # get
-        if (!$value) {
-            return $this->private[$key] ?? null;
-        }
-
-        # set
-        return $this->private[$key] = $this->toObject($value);
-    }
-
-
-    /**
-     * toArray
-     *
-     * Takes an object and returns an array.
-     *
-     * @param mixed $object thing to turn into an array
-     * @return mixed $new array with $object contents
+     * @param mixed $array the stuff to convert
+     * @return mixed a scalar or RecursiveCollection
      *
      * @see https://stackoverflow.com/a/54131002
      */
-    public function toArray(mixed $object): mixed
-    {
-        if (is_iterable($object)) {
-            $return = (array) $object;
-
-            foreach ($return as &$item) {
-                $item = $this->toArray($item);
-            }
-
-            return $return;
-        }
-
-        return $object;
-    }
-
-
-    /**
-     * toObject
-     *
-     * Takes an array and returns an object.
-     *
-     * @param mixed $object thing to turn into an object
-     * @return mixed $new object with $array contents
-     *
-     * @see https://stackoverflow.com/a/54131002
-     */
-    public function toObject(mixed $array): mixed
+    public function collect(mixed $array = []): mixed
     {
         if (is_iterable($array)) {
             $return = new Gazelle\RecursiveCollection($array);
 
             foreach ($return as &$item) {
-                $item = $this->toObject($item);
+                $item = $this->collect($item);
             }
 
             return $return;
         }
 
         return $array;
+    }
+
+
+    /**
+     * private
+     *
+     * Sets a private key if $value !== null.
+     * Otherwise, returns the value of $key.
+     * This returns the value on set, not void!
+     *
+     * @param mixed $key the key to set or get
+     * @param mixed $value the value to set
+     * @return mixed the value of the key
+     */
+    public function private(mixed $key, mixed $value = null): mixed
+    {
+        # get
+        if (is_null($value)) {
+            return $this->private[$key] ?? null;
+        }
+
+        # set
+        return $this->private[$key] = $this->collect($value);
     }
 } # class

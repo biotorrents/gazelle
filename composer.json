@@ -59,7 +59,7 @@
     "maximebf/debugbar": "^1.19.0",
     "mikecao/flight": "^2.0.1",
     "minishlink/web-push": "^8.0",
-    "nesbot/carbon": "^2.70",
+    "nesbot/carbon": "^2.71",
     "openai-php/client": "^0.2.1",
     "orpheusnet/bencode-torrent": "^1.2",
     "paragonie/anti-csrf": "^2.3",
@@ -74,8 +74,7 @@
     "snipe/banbuilder": "^2.3",
     "sofa/eloquence": "dev-master",
     "spatie/emoji": "^4.0",
-    "spatie/laravel-collection-macros": "^7.12",
-    "spatie/once": "^3.1",
+    "spatie/regex": "^3.1.1",
     "twig/twig": "^3.7.1",
     "vanilla/nbbc": "^2.4",
     "web-auth/webauthn-lib": "^4.7.1"
