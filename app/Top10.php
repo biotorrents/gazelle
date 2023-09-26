@@ -598,7 +598,7 @@ class Top10
      */
     public static function render_linkbox($selected)
     {
-        $ENV = ENV::go(); ?>
+        $ENV = \Gazelle\ENV::go(); ?>
 <div class="linkbox">
   <a href="/top10" class="brackets"><?=self::get_selected_link("Torrents", $selected === "torrents")?></a>
   <a href="/top10/users" class="brackets"><?=self::get_selected_link("Users", $selected === "users")?></a>

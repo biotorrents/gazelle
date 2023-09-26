@@ -187,7 +187,7 @@ class DatabaseOld
      */
     public function halt($Msg)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         #$debug = Debug::go();
 
         global $argv;
@@ -315,7 +315,7 @@ class DatabaseOld
      */
     public function query($Query, &...$BindVars)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         #$debug = Debug::go();
 
         $this->connect();

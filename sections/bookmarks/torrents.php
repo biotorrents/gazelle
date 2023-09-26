@@ -4,7 +4,7 @@
 $app = \Gazelle\App::go();
 
 # todo: Go through line by line
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 //~~~~~~~~~~~ Main bookmarks page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 

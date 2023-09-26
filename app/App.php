@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * The main app is now a singleton.
  * Holds the various globals and some methods.
- * Supersedes G::class and ENV::go().
+ * Supersedes G::class and Gazelle\ENV::go().
  * Will eventually kill Misc::class.
  */
 
@@ -17,21 +17,21 @@ namespace Gazelle;
 class App
 {
     # singleton
-    private static $instance = null;
+    private static $instance;
 
     # env is special
-    public $env = null;
+    public ENV $env;
 
     # the rest of the globals
-    public $cache = null;
+    public Cache $cache;
 
-    public $dbNew = null;
-    public $dbOld = null;
+    public Database $dbNew;
+    public \DatabaseOld $dbOld;
 
-    public $debug = null;
-    public $twig = null;
+    public \DebugBar\StandardDebugBar $debug;
+    public \Twig\Environment $twig;
 
-    public $user = null;
+    public \User $user;
 
 
     /**
@@ -82,13 +82,13 @@ class App
     private function factory(array $options = [])
     {
         # env: FIRST
-        $this->env = \ENV::go();
+        $this->env = ENV::go();
 
         # cache
-        $this->cache = \Gazelle\Cache::go();
+        $this->cache = Cache::go();
 
         # database
-        $this->dbNew = \Gazelle\Database::go();
+        $this->dbNew = Database::go();
         $this->dbOld = new \DatabaseOld();
 
         # debug
@@ -98,7 +98,7 @@ class App
         $this->user = \User::go();
 
         # twig: LAST
-        $this->twig = \Twig::go();
+        $this->twig = Twig::go();
     }
 
 
@@ -129,10 +129,8 @@ class App
      */
     public function email(string $to, string $subject, string $body, bool $isHtml = false)
     {
-        $app = self::go();
-
         # check if email is enabled
-        if (!$app->env->enableSiteEmail) {
+        if (!$this->env->enableSiteEmail) {
             return false;
         }
 
@@ -142,7 +140,7 @@ class App
         try {
             # debug on development
             $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_OFF;
-            if ($app->env->dev) {
+            if ($this->env->dev) {
                 #$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
             }
 
@@ -150,11 +148,11 @@ class App
             $mail->isSMTP();
             $mail->SMTPAuth = true;
 
-            $mail->Host = $app->env->private("emailHost");
-            $mail->Port = $app->env->private("emailPort");
+            $mail->Host = $this->env->private("emailHost");
+            $mail->Port = $this->env->private("emailPort");
 
-            $mail->Username = $app->env->private("emailUsername");
-            $mail->Password = $app->env->private("emailPassphrase");
+            $mail->Username = $this->env->private("emailUsername");
+            $mail->Password = $this->env->private("emailPassphrase");
 
             # determine starttls or smtps
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
@@ -164,7 +162,7 @@ class App
             }
 
             # from address
-            $mail->setFrom($app->env->private("emailUsername"), $app->env->siteName);
+            $mail->setFrom($this->env->private("emailUsername"), $this->env->siteName);
 
             # recipient(s)
             $mail->addAddress($to);
@@ -253,13 +251,13 @@ class App
         # https://developer.mozilla.org/en-US/docs/Web/Manifest
         $manifest = [
             "\$schema" => "https://json.schemastore.org/web-manifest-combined.json",
-            "name" => $app->env->siteName,
-            "short_name" => $app->env->siteName,
+            "name" => $this->env->siteName,
+            "short_name" => $this->env->siteName,
             "start_url" => "/",
             "display" => "standalone",
             "background_color" => "#ffffff",
             "theme_color" => "#0288d1",
-            "description" => $app->env->siteDescription,
+            "description" => $this->env->siteDescription,
             "icons" => [
                 [
                     "src" => "/images/logos/colorfulWaves-whiteShadow-2k.webp",
@@ -330,8 +328,6 @@ class App
      */
     public function error(int|string $error = 400): void
     {
-        $app = \Gazelle\App::go();
-
         # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
         $map = [
             400 => [
@@ -360,7 +356,7 @@ class App
         }
 
         # twig
-        $app->twig->display("error.twig", [
+        $this->twig->display("error.twig", [
             "title" => $subject,
             "subject" => $subject,
             "body" => $body

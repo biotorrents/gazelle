@@ -5,7 +5,7 @@
 $app = \Gazelle\App::go();
 
 authorize();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 // todo: Remove all the stupid queries that could get their information just as easily from the cache
 /*********************************************************************\

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 
 /**
+ * index.php
+ *
  * @see https://en.wikipedia.org/wiki/Front_controller
  * @see https://github.com/OPSnet/Gazelle/blob/master/gazelle.php
  *

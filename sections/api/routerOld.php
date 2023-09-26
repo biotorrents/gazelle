@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 
 /**

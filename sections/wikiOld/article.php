@@ -1,8 +1,8 @@
 <?php
 #declare(strict_types=1);
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 
 $ArticleID = false;
 

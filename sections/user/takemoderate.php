@@ -17,7 +17,7 @@ if (!apcu_exists('DBKEY')) {
     error('Decrypt database first');
 }
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 $UserID = $_POST['userid'];
 $DeleteKeys = false;
 

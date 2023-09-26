@@ -8,7 +8,7 @@ $app = \Gazelle\App::go();
  * they visit reportsv2.php?id=xxx
  */
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 
 // If we're not coming from torrents.php, check we're being returned because of an error.

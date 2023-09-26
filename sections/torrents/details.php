@@ -126,8 +126,8 @@ exit;
 
 
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 
 define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
@@ -253,7 +253,7 @@ View::header(
       onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
     <?php
     # Remove category-specific options to add a new format
-    if ($Categories[$GroupCategoryID-1]) { ?>
+    if ($Categories[$GroupCategoryID - 1]) { ?>
     <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
       format</a>
     <?php
@@ -428,7 +428,7 @@ if (!empty($DeletedTag)) { ?>
           ?>
       <ul class="stats nobullet">
         <?php
-        foreach ($Tags as $TagKey=>$Tag) {
+        foreach ($Tags as $TagKey => $Tag) {
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"

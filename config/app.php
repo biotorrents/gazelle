@@ -37,7 +37,7 @@ date_default_timezone_set("UTC");
 
 # initialize
 require_once __DIR__ . "/../app/ENV.php";
-$env = ENV::go();
+$env = Gazelle\ENV::go();
 
 
 /** */

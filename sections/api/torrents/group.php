@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 # Either id or hash
 $GroupID = (int) $_GET['id'];
@@ -48,7 +48,7 @@ if ($TorrentDetails['category_id'] === 0) {
 
 # Get tag list (name and id)
 $TagIDs = explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`ID` SEPARATOR '|')"]);
-$TagNames= explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
+$TagNames = explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
 
 $TagList = [];
 foreach ($TagIDs as $Key => $ID) {

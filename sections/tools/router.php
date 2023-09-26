@@ -23,7 +23,7 @@ $app = \Gazelle\App::go();
  * This page acts as a switch for the tools pages.
  */
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 #!d(Http::request());exit;
 
 if (isset($argv[1])) {
@@ -174,7 +174,7 @@ switch ($_REQUEST['action']) {
                   SELECT ID
                   FROM permissions
                   WHERE Level = '".db_string($_REQUEST['level'])."'");
-                    list($DupeCheck)=$app->dbOld->next_record();
+                    list($DupeCheck) = $app->dbOld->next_record();
 
                     if ($DupeCheck) {
                         $Err = 'There is already a permission class with that level.';

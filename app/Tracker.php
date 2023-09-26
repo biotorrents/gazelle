@@ -149,7 +149,7 @@ class Tracker
      */
     private static function get_stats($type, $params = false)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         # no report key
         if (!defined($ENV->private('trackerReportKey'))) {
@@ -198,7 +198,7 @@ class Tracker
      */
     private static function send_request($get, $maxAttempts = 1, &$err = false)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         $header = "GET /{$get} HTTP/1.1\r\nConnection: Close\r\n\r\n";
         $attempts = 0;

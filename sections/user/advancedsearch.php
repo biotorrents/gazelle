@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 $app = \Gazelle\App::go();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 if (!empty($_GET['search'])) {
     if (preg_match("/{$app->env->regexIp4}/", $_GET['search'])) {
@@ -122,12 +122,12 @@ function num_compare($Field, $Operand, $Num1, $Num2 = '')
 
 // Arrays, regexes, and all that fun stuff we can use for validation, form generation, etc
 
-$DateChoices = array('inarray'=>array('on', 'before', 'after', 'between'));
-$SingleDateChoices = array('inarray'=>array('on', 'before', 'after'));
-$NumberChoices = array('inarray'=>array('equal', 'above', 'below', 'between', 'buffer'));
-$YesNo = array('inarray'=>array('any', 'yes', 'no'));
-$OrderVals = array('inarray'=>array('Username', 'Ratio', 'IP', 'Email', 'Joined', 'Last Seen', 'Uploaded', 'Downloaded', 'Invites', 'Snatches'));
-$WayVals = array('inarray'=>array('Ascending', 'Descending'));
+$DateChoices = array('inarray' => array('on', 'before', 'after', 'between'));
+$SingleDateChoices = array('inarray' => array('on', 'before', 'after'));
+$NumberChoices = array('inarray' => array('equal', 'above', 'below', 'between', 'buffer'));
+$YesNo = array('inarray' => array('any', 'yes', 'no'));
+$OrderVals = array('inarray' => array('Username', 'Ratio', 'IP', 'Email', 'Joined', 'Last Seen', 'Uploaded', 'Downloaded', 'Invites', 'Snatches'));
+$WayVals = array('inarray' => array('Ascending', 'Descending'));
 
 if (count($_GET)) {
     $DateRegex = array('regex' => '/\d{4}-\d{2}-\d{2}/');
@@ -206,7 +206,7 @@ if (count($_GET)) {
         'Invites' => 'um1.Invites',
         'Snatches' => 'Snatches');
 
-        $WayTable = array('Ascending'=>'ASC', 'Descending'=>'DESC');
+        $WayTable = array('Ascending' => 'ASC', 'Descending' => 'DESC');
 
         $Where = [];
         $Having = [];
@@ -463,7 +463,7 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>After
             </option>
-            <option value="between" <?php if ($_GET['joined']==='between') {
+            <option value="between" <?php if ($_GET['joined'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -482,15 +482,15 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="0" <?php if ($_GET['enabled']==='0') {
+            <option value="0" <?php if ($_GET['enabled'] === '0') {
                 echo ' selected="selected"' ;
             } ?>>Unconfirmed
             </option>
-            <option value="1" <?php if ($_GET['enabled']==='1') {
+            <option value="1" <?php if ($_GET['enabled'] === '1') {
                 echo ' selected="selected"' ;
             } ?>>Enabled
             </option>
-            <option value="2" <?php if ($_GET['enabled']==='2') {
+            <option value="2" <?php if ($_GET['enabled'] === '2') {
                 echo ' selected="selected"' ;
             } ?>>Disabled
             </option>
@@ -518,7 +518,7 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>After
             </option>
-            <option value="between" <?php if ($_GET['lastactive']==='between') {
+            <option value="between" <?php if ($_GET['lastactive'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>
               >Between
@@ -534,7 +534,7 @@ View::header('User search');
         <td class="label nobr">Primary class:</td>
         <td>
           <select name="class">
-            <option value="" <?php if ($_GET['class']==='') {
+            <option value="" <?php if ($_GET['class'] === '') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
@@ -544,7 +544,7 @@ View::header('User search');
                 } ?>
             <option value="<?=$Class['ID'] ?>"
               <?php
-                          if ($_GET['class']===$Class['ID']) {
+                          if ($_GET['class'] === $Class['ID']) {
                               echo ' selected="selected"' ;
                           } ?>><?=\Gazelle\Text::limit($Class['Name'], 10).' ('.$Class['Level'].')'?>
             </option>
@@ -564,15 +564,15 @@ View::header('User search');
         <td class="label nobr">Locked Account:</td>
         <td>
           <select name="lockedaccount">
-            <option value="any" <?php if ($_GET['lockedaccount']=='any') {
+            <option value="any" <?php if ($_GET['lockedaccount'] == 'any') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
-            <option value="locked" <?php if ($_GET['lockedaccount']=='locked') {
+            <option value="locked" <?php if ($_GET['lockedaccount'] == 'locked') {
                 echo ' selected="selected"' ;
             } ?>>Locked
             </option>
-            <option value="unlocked" <?php if ($_GET['lockedaccount']=='unlocked') {
+            <option value="unlocked" <?php if ($_GET['lockedaccount'] == 'unlocked') {
                 echo ' selected="selected"' ;
             } ?>
               >Unlocked
@@ -582,7 +582,7 @@ View::header('User search');
         <td class="label nobr">Secondary class:</td>
         <td>
           <select name="secclass">
-            <option value="" <?php if ($_GET['secclass']==='') {
+            <option value="" <?php if ($_GET['secclass'] === '') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
@@ -603,7 +603,7 @@ foreach ($Secondaries as $Class) {
     ?>
             <option value="<?=$Class['ID'] ?>"
               <?php
-            if ($_GET['secclass']===$Class['ID']) {
+            if ($_GET['secclass'] === $Class['ID']) {
                 echo ' selected="selected"' ;
             } ?>><?=\Gazelle\Text::limit($Class['Name'], 20)?>
             </option>
@@ -628,7 +628,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['ratio']==='between') {
+            <option value="between" <?php if ($_GET['ratio'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -645,7 +645,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['donor']==='yes') {
+            <option value="yes" <?php if ($_GET['donor'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -683,7 +683,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['uploaded']==='between') {
+            <option value="between" <?php if ($_GET['uploaded'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -704,7 +704,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['warned']==='yes') {
+            <option value="yes" <?php if ($_GET['warned'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -732,7 +732,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['invites']==='between') {
+            <option value="between" <?php if ($_GET['invites'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -757,7 +757,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['downloaded']==='between') {
+            <option value="between" <?php if ($_GET['downloaded'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>
               >Between
@@ -786,7 +786,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['disabled_invites']==='yes') {
+            <option value="yes" <?php if ($_GET['disabled_invites'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -811,7 +811,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if (isset($_GET['snatched']) && $_GET['snatched']==='between') {
+            <option value="between" <?php if (isset($_GET['snatched']) && $_GET['snatched'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -832,7 +832,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if (isset($_GET['disabled_uploads']) && $_GET['disabled_uploads']==='yes') {
+            <option value="yes" <?php if (isset($_GET['disabled_uploads']) && $_GET['disabled_uploads'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -901,7 +901,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Equals
             </option>
-            <option value="not_equal" <?php if ($_GET['cc_op']==='not_equal') {
+            <option value="not_equal" <?php if ($_GET['cc_op'] === 'not_equal') {
                 echo ' selected="selected"' ;
             } ?>>Not
               equal
@@ -917,7 +917,7 @@ foreach ($Secondaries as $Class) {
         <td>
           <ul class="options_list nobullet">
             <li>
-              <input type="radio" name="matchtype" id="strict_match_type" value="strict" <?php if ($_GET['matchtype']=='strict' || !$_GET['matchtype']) {
+              <input type="radio" name="matchtype" id="strict_match_type" value="strict" <?php if ($_GET['matchtype'] == 'strict' || !$_GET['matchtype']) {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip"
@@ -925,7 +925,7 @@ foreach ($Secondaries as $Class) {
                 for="strict_match_type">Strict</label>
             </li>
             <li>
-              <input type="radio" name="matchtype" id="fuzzy_match_type" value="fuzzy" <?php if ($_GET['matchtype']=='fuzzy' || !$_GET['matchtype']) {
+              <input type="radio" name="matchtype" id="fuzzy_match_type" value="fuzzy" <?php if ($_GET['matchtype'] == 'fuzzy' || !$_GET['matchtype']) {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip"
@@ -933,7 +933,7 @@ foreach ($Secondaries as $Class) {
                 for="fuzzy_match_type">Fuzzy</label>
             </li>
             <li>
-              <input type="radio" name="matchtype" id="regex_match_type" value="regex" <?php if ($_GET['matchtype']=='regex') {
+              <input type="radio" name="matchtype" id="regex_match_type" value="regex" <?php if ($_GET['matchtype'] == 'regex') {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip" title="A &quot;regex&quot; search uses MySQL's regular expression syntax."
@@ -947,7 +947,7 @@ foreach ($Secondaries as $Class) {
             <?php
                         foreach (array_shift($OrderVals) as $Cur) { ?>
             <option value="<?=$Cur?>" <?php if (isset($_GET['order']) &&
-                          $_GET['order']==$Cur || (!isset($_GET['order']) && $Cur=='Joined')) {
+                          $_GET['order'] == $Cur || (!isset($_GET['order']) && $Cur == 'Joined')) {
                 echo ' selected="selected"' ;
             } ?>
               ><?=$Cur?>
@@ -957,7 +957,7 @@ foreach ($Secondaries as $Class) {
           <select name="way">
             <?php foreach (array_shift($WayVals) as $Cur) { ?>
             <option value="<?=$Cur?>" <?php if (isset($_GET['way']) &&
-              $_GET['way']==$Cur || (!isset($_GET['way']) && $Cur=='Descending')) {
+              $_GET['way'] == $Cur || (!isset($_GET['way']) && $Cur == 'Descending')) {
                 echo ' selected="selected"' ;
             } ?>
               ><?=$Cur?>
@@ -968,15 +968,15 @@ foreach ($Secondaries as $Class) {
         <td class="label nobr"># of emails:</td>
         <td>
           <select name="emails_opt">
-            <option value="equal" <?php if ($_GET['emails_opt']==='equal') {
+            <option value="equal" <?php if ($_GET['emails_opt'] === 'equal') {
                 echo ' selected="selected"' ;
             } ?>>Equal
             </option>
-            <option value="above" <?php if ($_GET['emails_opt']==='above') {
+            <option value="above" <?php if ($_GET['emails_opt'] === 'above') {
                 echo ' selected="selected"' ;
             } ?>>Above
             </option>
-            <option value="below" <?php if ($_GET['emails_opt']==='below') {
+            <option value="below" <?php if ($_GET['emails_opt'] === 'below') {
                 echo ' selected="selected"' ;
             } ?>>Below
             </option>

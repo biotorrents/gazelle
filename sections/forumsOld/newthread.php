@@ -25,7 +25,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
     error(403);
 }
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 View::header(
     "Forums $ENV->crumb ".$Forum['Name']." $ENV->crumb New Topic",
     'vendor/easymde.min',

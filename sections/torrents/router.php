@@ -27,7 +27,7 @@ Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
 */
 
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 if (empty($_REQUEST['action']) && empty($_REQUEST["id"]) && empty($_REQUEST["type"])) {
     require_once "$ENV->serverRoot/sections/torrents/browse.php";

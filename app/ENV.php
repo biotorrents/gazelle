@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * ENV
+ * Gazelle\ENV
  *
  * The PHP singleton is considered bad design for nebulous reasons,
  * but for securely loading a site config it does exactly what we need:
@@ -25,14 +25,16 @@ declare(strict_types=1);
  * @see https://laravel.com/docs/master/collections#available-methods
  */
 
+namespace Gazelle;
+
 class ENV
 {
     # disinstantiates itself
     private static $instance = null;
 
     # config option receptacles
-    public Gazelle\RecursiveCollection $public; # site meta, options, resources, etc.
-    private Gazelle\RecursiveCollection $private; # passwords, app keys, database, etc.
+    public RecursiveCollection $public; # site meta, options, resources, etc.
+    private RecursiveCollection $private; # passwords, app keys, database, etc.
 
 
     /**
@@ -128,7 +130,7 @@ class ENV
     {
         if (!method_exists($this->public, $method)) {
             return trigger_error(
-                "method {$method} doesn't exist",
+                "the method {$method} doesn't exist",
                 E_USER_ERROR
             );
         }
@@ -167,8 +169,8 @@ class ENV
      */
     private function factory(array $options = []): void
     {
-        $this->public = new Gazelle\RecursiveCollection();
-        $this->private = new Gazelle\RecursiveCollection();
+        $this->public = new RecursiveCollection();
+        $this->private = new RecursiveCollection();
     }
 
 
@@ -185,7 +187,7 @@ class ENV
     public function collect(mixed $array = []): mixed
     {
         if (is_iterable($array)) {
-            $return = new Gazelle\RecursiveCollection($array);
+            $return = new RecursiveCollection($array);
 
             foreach ($return as &$item) {
                 $item = $this->collect($item);

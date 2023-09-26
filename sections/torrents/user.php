@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 $Orders = ['Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size'];
 $Ways = ['DESC' => 'Descending', 'ASC' => 'Ascending'];
@@ -58,7 +58,7 @@ if (!empty($_GET['format'])) {
 
 # Get release specifics
 if (isset($_GET['container'])
- && in_array($_GET['container'], $ENV-flatten($ENV->META->Formats))) {
+ && in_array($_GET['container'], $ENV - flatten($ENV->META->Formats))) {
     $SearchWhere[] = "t.`Container` = '".db_string($_GET['container'])."'";
 }
 
@@ -68,7 +68,7 @@ if (isset($_GET['bitrate'])
 }
 
 if (isset($_GET['media'])
- && in_array($_GET['media'], $ENV-flatten($ENV->META->Platforms))) {
+ && in_array($_GET['media'], $ENV - flatten($ENV->META->Platforms))) {
     $SearchWhere[] = "t.`Media` = '".db_string($_GET['media'])."'";
 }
 
@@ -419,7 +419,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             </select>
 
             <select name="way" class="ft_order_way">
-              <?php foreach ($Ways as $WayKey=>$WayText) { ?>
+              <?php foreach ($Ways as $WayKey => $WayText) { ?>
               <option value="<?= $WayKey ?>" <?php Format::selected('way', $WayKey) ?>><?= $WayText ?>
               </option>
               <?php } ?>
@@ -444,8 +444,8 @@ foreach ($Categories as $CatKey => $CatName) {
     $x++; ?>
           <td>
             <input type="checkbox"
-              name="categories[<?= ($CatKey+1) ?>]"
-              id="cat_<?= ($CatKey+1) ?>" value="1" <?php if (isset($_GET['categories'][$CatKey + 1])) { ?>
+              name="categories[<?= ($CatKey + 1) ?>]"
+              id="cat_<?= ($CatKey + 1) ?>" value="1" <?php if (isset($_GET['categories'][$CatKey + 1])) { ?>
             checked="checked"<?php } ?> />
             <label for="cat_<?= ($CatKey + 1) ?>"><?= $CatName ?></label>
           </td>

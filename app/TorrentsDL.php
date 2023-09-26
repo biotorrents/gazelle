@@ -193,7 +193,7 @@ class TorrentsDL
      */
     public function summary($FilterStats)
     {
-        $ENV = ENV::go;
+        $ENV = \Gazelle\ENV::go;
 
         $Used = Format::get_size(memory_get_usage(true));
         $Date = date("M d Y, H:i");

@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 $Key = $_REQUEST['key'];
 $Type = $_REQUEST['type'];

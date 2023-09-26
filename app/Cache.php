@@ -26,21 +26,21 @@ class Cache # extends \Redis
     private $redis = null;
 
     # global default cache settings
-    private $cachePrefix = "gazelle:"; # e.g., gazelle:development:stats:overview
-    private $cacheDuration = 3600; # default one hour, if not otherwise specified
+    private string $cachePrefix = "gazelle:"; # e.g., gazelle:development:stats:overview
+    private int $cacheDuration = 3600; # default one hour, if not otherwise specified
 
     # torrent group cache version
-    public $groupVersion = "2023-04-01";
+    public string $groupVersion = "2023-04-01";
 
     # are we in a transaction?
-    private $transactionMode = false;
+    private bool $transactionMode = false;
 
     # are we running a cluster or a single server?
     private $clusterMode = null;
 
     # reserved characters
     # see https://github.com/symfony/cache-contracts/blob/main/ItemInterface.php
-    private $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@"]; # you can totally use ":"
+    private array $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@"]; # you can totally use ":"
     #private $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@", ":"];
 
 
@@ -94,7 +94,7 @@ class Cache # extends \Redis
      */
     private function factory(array $options = []): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # https://github.com/phpredis/phpredis/blob/develop/cluster.md
         if ($app->env->enableRedisCluster) {

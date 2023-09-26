@@ -60,7 +60,7 @@ if (!isset($Data) || !$Data) {
 // Reset avatar, add mod note
 function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
 {
-    $ENV = ENV::go();
+    $ENV = \Gazelle\ENV::go();
 
     if ($Type === 'avatar') {
         $cacheKey = "user_info_$UserID";

@@ -157,7 +157,7 @@ EOT;
             error(404);
         }
 
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         $UserInfo = [];
         $IDs = (!is_array($IDs)) ? [$IDs] : $IDs;
 

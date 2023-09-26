@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 enforce_login();
 define('INDEX_ARTICLE', '1');
@@ -30,12 +30,12 @@ function class_list($Selected = 0)
 
     foreach ($Classes as $ID => $Class) {
         if ($Class['Level'] <= $app->user->extra['EffectiveClass']) {
-            $Return.='<option value="'.$Class['Level'].'"';
+            $Return .= '<option value="'.$Class['Level'].'"';
 
             if ($Selected === $Class['Level']) {
-                $Return.=' selected="selected"';
+                $Return .= ' selected="selected"';
             }
-            $Return.='>'.\Gazelle\Text::limit($Class['Name'], 20).'</option>'."\n";
+            $Return .= '>'.\Gazelle\Text::limit($Class['Name'], 20).'</option>'."\n";
         }
     }
 

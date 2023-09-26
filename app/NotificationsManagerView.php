@@ -7,7 +7,7 @@ class NotificationsManagerView
 
     public static function load_js()
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         # Adapted from design/privateheader.php
         $Scripts = [
@@ -27,7 +27,7 @@ class NotificationsManagerView
 
     public static function render_settings($Settings)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         self::$Settings = $Settings; ?>
 <tr>
   <td class="label">
@@ -130,7 +130,7 @@ class NotificationsManagerView
   Traditional
 </label>
 <?php
-      }
+}
     }
 
     public static function format_traditional($Contents)

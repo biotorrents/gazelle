@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 
 /**
- * Twig
+ * \Twig
  *
  * Converted to a singleton class.
  * One instance should only ever exist,
  * because of its separate disk cache.
  *
  * Based on OPS's useful rule set:
- * https://github.com/OPSnet/Gazelle/blob/master/app/Util/Twig.php
+ * https://github.com/OPSnet/Gazelle/blob/master/app/Util/\Twig.php
  */
 
-class Twig # extends Twig\Environment
+namespace Gazelle;
+
+class Twig extends \Twig\Environment
 {
     # singleton
     private static $instance = null;
@@ -71,13 +73,13 @@ class Twig # extends Twig\Environment
     /**
      * factory
      */
-    private static function factory(array $options = []): Twig\Environment
+    private static function factory(array $options = []): \Twig\Environment
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # https://twig.symfony.com/doc/3.x/api.html
-        $twig = new Twig\Environment(
-            new Twig\Loader\FilesystemLoader("{$app->env->serverRoot}/templates"),
+        $twig = new \Twig\Environment(
+            new \Twig\Loader\FilesystemLoader("{$app->env->serverRoot}/templates"),
             [
                 "auto_reload" => true,
                 "autoescape" => "name",
@@ -90,7 +92,7 @@ class Twig # extends Twig\Environment
 
         # debug stuff
         if ($app->env->dev) {
-            $twig->addExtension(new Twig\Extension\DebugExtension());
+            $twig->addExtension(new \Twig\Extension\DebugExtension());
 
             # last commit banner
             $twig->addGlobal(
@@ -114,7 +116,7 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("siteOptions", $app->user->siteOptions ?? []);
 
         # todo: put these elsewhere later
-        $twig->addGlobal("inbox", Inbox::get_inbox_link());
+        $twig->addGlobal("inbox", \Inbox::get_inbox_link());
         $twig->addGlobal("notify", check_perms("site_torrents_notify"));
 
         /** */
@@ -137,7 +139,7 @@ class Twig # extends Twig\Environment
 
         # session internal api key
         $frontendKey = implode(".", [
-            Http::readCookie("sessionId"),
+            \Http::readCookie("sessionId"),
             $app->env->private("siteApiSecret"),
         ]);
 
@@ -145,20 +147,20 @@ class Twig # extends Twig\Environment
         $twig->addGlobal("frontendHash", $frontendHash);
 
         # query
-        $query = Http::request();
+        $query = \Http::request();
         $twig->addGlobal("query", $query);
         #!d($twig->getGlobals());exit;
 
         # https://github.com/paragonie/anti-csrf
-        $twig->addFunction(new Twig\TwigFunction(
+        $twig->addFunction(new \Twig\TwigFunction(
             "form_token",
             function ($lock_to = null) {
                 static $csrf;
 
                 if ($csrf === null) {
                     try {
-                        $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
-                    } catch (Throwable $e) {
+                        $csrf = new \ParagonIE\AntiCSRF\AntiCSRF();
+                    } catch (\Throwable $e) {
                         return;
                     }
                 }
@@ -170,10 +172,10 @@ class Twig # extends Twig\Environment
 
         /*
         # DebugBar
-        $profile = new Twig\Profiler\Profile();
+        $profile = new \Twig\Profiler\Profile();
         $debug = Debug::go();
         $twig->addExtension(
-            new DebugBar\Bridge\Twig\TimeableTwigExtensionProfiler(
+            new DebugBar\Bridge\Twig\Timeable\TwigExtensionProfiler(
                 $profile,
                 $debug["time"]
             )
@@ -181,76 +183,76 @@ class Twig # extends Twig\Environment
         */
 
         # DebugBar: header
-        $twig->addFunction(new Twig\TwigFunction("debugHeader", function () {
-            $app = \Gazelle\App::go();
+        $twig->addFunction(new \Twig\TwigFunction("debugHeader", function () {
+            $app = App::go();
             $render = $app->debug->getJavascriptRenderer();
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $render->renderHead(),
                 "UTF-8"
             );
         }));
 
         # DebugBar: footer
-        $twig->addFunction(new Twig\TwigFunction("debugFooter", function () {
-            $app = \Gazelle\App::go();
+        $twig->addFunction(new \Twig\TwigFunction("debugFooter", function () {
+            $app = App::go();
             $render = $app->debug->getJavascriptRenderer();
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $render->render(),
                 "UTF-8"
             );
         }));
 
         # can
-        $twig->addFunction(new Twig\TwigFunction("can", function ($permission) {
-            $app = \Gazelle\App::go();
+        $twig->addFunction(new \Twig\TwigFunction("can", function ($permission) {
+            $app = App::go();
 
             return $app->user->can($permission);
         }));
 
         # cant
-        $twig->addFunction(new Twig\TwigFunction("cant", function ($permission) {
-            $app = \Gazelle\App::go();
+        $twig->addFunction(new \Twig\TwigFunction("cant", function ($permission) {
+            $app = App::go();
 
             return $app->user->cant($permission);
         }));
 
         # Gazelle\Images::process
-        $twig->addFunction(new Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
-            return new Twig\Markup(
-                \Gazelle\Images::process($uri, $thumbnail),
+        $twig->addFunction(new \Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
+            return new \Twig\Markup(
+                Images::process($uri, $thumbnail),
                 "UTF-8"
             );
         }));
 
         # Torrents::can_use_token
-        $twig->addFunction(new Twig\TwigFunction("canUseToken", function ($torrentId) {
-            return new Twig\Markup(
-                Torrents::can_use_token($torrentId),
+        $twig->addFunction(new \Twig\TwigFunction("canUseToken", function ($torrentId) {
+            return new \Twig\Markup(
+                \Torrents::can_use_token($torrentId),
                 "UTF-8"
             );
         }));
 
         # Format::pretty_category
-        $twig->addFilter(new Twig\TwigFilter("categoryIcon", function ($categoryId) {
-            $markup = "<div title='" . Format::pretty_category($categoryId) . "' class='" . Format::css_category($categoryId) . "' />";
-            return new Twig\Markup(
+        $twig->addFilter(new \Twig\TwigFilter("categoryIcon", function ($categoryId) {
+            $markup = "<div title='" . \Format::pretty_category($categoryId) . "' class='" . Format::css_category($categoryId) . "' />";
+            return new \Twig\Markup(
                 $markup,
                 "UTF-8"
             );
         }));
 
         # Gazelle\Text::parse
-        $twig->addFilter(new Twig\TwigFilter("parse", function ($string) {
-            return new Twig\Markup(
-                \Gazelle\Text::parse($string),
+        $twig->addFilter(new \Twig\TwigFilter("parse", function ($string) {
+            return new \Twig\Markup(
+                Text::parse($string),
                 "UTF-8"
             );
         }));
 
         # https://philfrilling.com/blog/2017-01/php-convert-seconds-hhmmss-format
-        $twig->addFilter(new Twig\TwigFilter("hhmmss", function ($seconds) {
+        $twig->addFilter(new \Twig\TwigFilter("hhmmss", function ($seconds) {
             return sprintf(
                 "%02dm %02ds", # mm:ss
                 #"%02d:%02d:%02d", # hh:mm:ss
@@ -261,68 +263,68 @@ class Twig # extends Twig\Environment
         }));
 
         # Format::relativeTime
-        $twig->addFilter(new Twig\TwigFilter("relativeTime", function ($time) {
-            return Format::relativeTime($time);
+        $twig->addFilter(new \Twig\TwigFilter("relativeTime", function ($time) {
+            return \Format::relativeTime($time);
         }));
 
         # curlyBraces (for biblatex)
-        $twig->addFilter(new Twig\TwigFilter("curlyBraces", function ($string) {
-            return new Twig\Markup(
+        $twig->addFilter(new \Twig\TwigFilter("curlyBraces", function ($string) {
+            return new \Twig\Markup(
                 "{{$string}}",
                 "UTF-8"
             );
         }));
 
         # Badges::hasBadge
-        $twig->addFunction(new Twig\TwigFunction("hasBadge", function ($userId, $badgeId) {
-            return boolval(Badges::hasBadge($userId, $badgeId));
+        $twig->addFunction(new \Twig\TwigFunction("hasBadge", function ($userId, $badgeId) {
+            return boolval(\Badges::hasBadge($userId, $badgeId));
         }));
 
         # Badges::displayBadge
-        $twig->addFunction(new Twig\TwigFunction("displayBadge", function ($badgeId, $tooltip = true) {
-            return new Twig\Markup(
-                Badges::displayBadge($badgeId, $tooltip),
+        $twig->addFunction(new \Twig\TwigFunction("displayBadge", function ($badgeId, $tooltip = true) {
+            return new \Twig\Markup(
+                \Badges::displayBadge($badgeId, $tooltip),
                 "UTF-8"
             );
         }));
 
         # Badges::badgeDescription
-        $twig->addFunction(new Twig\TwigFunction("badgeDescription", function ($badgeId) {
-            return new Twig\Markup(
-                Badges::badgeDescription($badgeId),
+        $twig->addFunction(new \Twig\TwigFunction("badgeDescription", function ($badgeId) {
+            return new \Twig\Markup(
+                \Badges::badgeDescription($badgeId),
                 "UTF-8"
             );
         }));
 
         # Artists::display_artists
-        $twig->addFunction(new Twig\TwigFunction("displayCreators", function ($creators) {
-            return new Twig\Markup(
-                Artists::display_artists($creators),
+        $twig->addFunction(new \Twig\TwigFunction("displayCreators", function ($creators) {
+            return new \Twig\Markup(
+                \Artists::display_artists($creators),
                 "UTF-8"
             );
         }));
 
         # Artists::display_artist
-        $twig->addFunction(new Twig\TwigFunction("displayCreator", function ($creator) {
-            return new Twig\Markup(
-                Artists::display_artist($creator),
+        $twig->addFunction(new \Twig\TwigFunction("displayCreator", function ($creator) {
+            return new \Twig\Markup(
+                \Artists::display_artist($creator),
                 "UTF-8"
             );
         }));
 
         # Artists::getNameById
-        $twig->addFunction(new Twig\TwigFunction("creatorNameById", function ($id, $html = false) {
-            return new Twig\Markup(
-                Artists::getNameById($id, $html),
+        $twig->addFunction(new \Twig\TwigFunction("creatorNameById", function ($id, $html = false) {
+            return new \Twig\Markup(
+                \Artists::getNameById($id, $html),
                 "UTF-8"
             );
         }));
 
         # displayTags
-        $twig->addFunction(new Twig\TwigFunction("displayTags", function ($tagList) {
-            $tags = new Tags($tagList);
+        $twig->addFunction(new \Twig\TwigFunction("displayTags", function ($tagList) {
+            $tags = new \Tags($tagList);
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $tags->format(""),
                 "UTF-8"
             );
@@ -330,65 +332,65 @@ class Twig # extends Twig\Environment
 
         # displayTagsFromArray
         # this is extremely stupid
-        $twig->addFunction(new Twig\TwigFunction("displayTagsFromArray", function ($tagList) {
+        $twig->addFunction(new \Twig\TwigFunction("displayTagsFromArray", function ($tagList) {
             $tagList = implode(" ", $tagList);
             $tags = new Tags($tagList);
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $tags->format(""),
                 "UTF-8"
             );
         }));
 
         # Tags::getNameById
-        $twig->addFunction(new Twig\TwigFunction("tagNameById", function ($id, $html = true) {
-            return new Twig\Markup(
-                Tags::getNameById($id, $html),
+        $twig->addFunction(new \Twig\TwigFunction("tagNameById", function ($id, $html = true) {
+            return new \Twig\Markup(
+                \Tags::getNameById($id, $html),
                 "UTF-8"
             );
         }));
 
         # Format::breadcrumbs
-        $twig->addFunction(new Twig\TwigFunction("breadcrumbs", function () {
-            return Format::breadcrumbs();
+        $twig->addFunction(new \Twig\TwigFunction("breadcrumbs", function () {
+            return \Format::breadcrumbs();
         }));
 
         # Format::get_size
-        $twig->addFilter(new Twig\TwigFilter("get_size", function ($size, $levels = 2) {
-            return Format::get_size($size, $levels);
+        $twig->addFilter(new \Twig\TwigFilter("get_size", function ($size, $levels = 2) {
+            return \Format::get_size($size, $levels);
         }));
 
-        # \Gazelle\Text::float
-        $twig->addFilter(new Twig\TwigFilter("float", function ($number, $decimals = 2) {
-            return \Gazelle\Text::float($number, $decimals);
+        # Gazelle\Text::float
+        $twig->addFilter(new \Twig\TwigFilter("float", function ($number, $decimals = 2) {
+            return Text::float($number, $decimals);
         }));
 
         # Illuminate\Support\Str::camel
-        $twig->addFilter(new Twig\TwigFilter("camel", function ($string) {
-            $string = Illuminate\Support\Str::camel($string);
+        $twig->addFilter(new \Twig\TwigFilter("camel", function ($string) {
+            $string = \Illuminate\Support\Str::camel($string);
             $string = preg_replace("/[\W]/", '', $string);
 
             return $string;
         }));
 
         # User::displayAvatar
-        $twig->addFunction(new Twig\TwigFunction("displayAvatar", function ($uri, $username) {
-            return new Twig\Markup(
-                User::displayAvatar($uri, $username),
+        $twig->addFunction(new \Twig\TwigFunction("displayAvatar", function ($uri, $username) {
+            return new \Twig\Markup(
+                \User::displayAvatar($uri, $username),
                 "UTF-8"
             );
         }));
 
         # User::format_username
-        $twig->addFilter(new Twig\TwigFilter("formatUsername", function ($userId) {
-            return new Twig\Markup(
-                User::format_username($userId),
+        $twig->addFilter(new \Twig\TwigFilter("formatUsername", function ($userId) {
+            return new \Twig\Markup(
+                \User::format_username($userId),
                 "UTF-8"
             );
         }));
 
         # random creator
-        $twig->addFunction(new Twig\TwigFunction("randomCreator", function () {
+        $twig->addFunction(new \Twig\TwigFunction("randomCreator", function () {
             $randomCreators = [
                 "Alexander Fleming",
                 "Alfonso Valencia",
@@ -445,20 +447,20 @@ class Twig # extends Twig\Environment
 
             $randomKey = array_rand($randomCreators);
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $randomCreators[$randomKey],
                 "UTF-8"
             );
         }));
 
         # random tag
-        $twig->addFunction(new Twig\TwigFunction("randomTag", function () {
-            $app = \Gazelle\App::go();
+        $twig->addFunction(new \Twig\TwigFunction("randomTag", function () {
+            $app = App::go();
 
             $query = "select name from tags where tagType = ? order by rand() limit 1";
             $randomTag = $app->dbNew->single($query, ["genre"]);
 
-            return new Twig\Markup(
+            return new \Twig\Markup(
                 $randomTag,
                 "UTF-8"
             );
@@ -469,45 +471,45 @@ class Twig # extends Twig\Environment
          * OPS
          */
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "article",
             function ($word) {
                 return preg_match("/^[aeiou]/i", $word) ? "an" : "a";
             }
         ));
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "b64",
             function (string $binary) {
                 return base64_encode($binary);
             }
         ));
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "image",
             function ($i) {
-                return new Twig\Markup(\Gazelle\Images::process($i, true), "UTF-8");
+                return new \Twig\Markup(\Gazelle\Images::process($i, true), "UTF-8");
             }
         ));
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "octet_size",
             function ($size, array $option = []) {
-                return Format::get_size($size, empty($option)
+                return \Format::get_size($size, empty($option)
                     ? 2
                     : $option[0]);
             },
             ["is_variadic" => true]
         ));
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "time_diff",
             function ($time) {
-                return new Twig\Markup(time_diff($time), "UTF-8");
+                return new \Twig\Markup(time_diff($time), "UTF-8");
             }
         ));
 
-        $twig->addFilter(new Twig\TwigFilter(
+        $twig->addFilter(new \Twig\TwigFilter(
             "ucfirst",
             function ($text) {
                 return ucfirst($text);
@@ -515,9 +517,9 @@ class Twig # extends Twig\Environment
         ));
 
         # Format::get_ratio_html
-        $twig->addFunction(new Twig\TwigFunction("ratio", function ($up, $down) {
-            return new Twig\Markup(
-                Format::get_ratio_html($up, $down),
+        $twig->addFunction(new \Twig\TwigFunction("ratio", function ($up, $down) {
+            return new \Twig\Markup(
+                \Format::get_ratio_html($up, $down),
                 "UTF-8"
             );
         }));

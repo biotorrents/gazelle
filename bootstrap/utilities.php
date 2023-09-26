@@ -83,7 +83,7 @@ function authorize($Ajax = false)
  */
 function send_irc($Channels = null, $Message = '')
 {
-    $ENV = ENV::go();
+    $ENV = \Gazelle\ENV::go();
 
     // Check if IRC is enabled
     if (!$ENV->announceIrc || !$Channels) {
@@ -223,7 +223,7 @@ function json_error($Code)
  */
 function add_json_info($Json)
 {
-    $ENV = ENV::go();
+    $ENV = \Gazelle\ENV::go();
 
     if (!isset($Json['info'])) {
         $Json = array_merge($Json, [

@@ -9,8 +9,8 @@
 $app = \Gazelle\App::go();
 #!d($app->user);exit;
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 $View = new View();
 
 if ($ENV->dev) {

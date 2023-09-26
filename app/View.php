@@ -23,7 +23,7 @@ class View
      */
     public static function pushAsset(string $uri, string $type)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         $uri = preg_replace(".$ENV->staticServer.", '', $uri);
         #$integrity = base64_encode(hash_file($ENV->subresourceIntegrity, "$ENV->serverRoot/$uri", true));
@@ -64,7 +64,7 @@ class View
      */
     public static function header($PageTitle = '', $JSIncludes = '', $CSSIncludes = '')
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         global $Document, $Mobile, $Classes;
 
         if ($PageTitle !== '') {

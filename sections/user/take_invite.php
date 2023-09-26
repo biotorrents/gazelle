@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 $app = \Gazelle\App::go();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 if (!$UserCount = $app->cache->get('stats_user_count')) {
     $app->dbOld->query("

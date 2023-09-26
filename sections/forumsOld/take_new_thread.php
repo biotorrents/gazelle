@@ -5,7 +5,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 authorize();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 /*
 'new' if the user is creating a new thread
