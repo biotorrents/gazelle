@@ -78,7 +78,7 @@
 
 				{# title, subject, and object #}
 				{% set variables = {
-					"db": env.DB,
+					"db": env.database,
 					"title": (data.title) ? data.title : "",
 					"subject": (data.subject) ? data.subject : "",
 					"object": (data.object) ? data.object : "",
@@ -88,51 +88,51 @@
 				{## #}
 
 				{# year #}
-				{% set variables = {"db": env.DB.year, "value": (data.year) ? data.year : ""} %}
+				{% set variables = {"db": env.database.year, "value": (data.year) ? data.year : ""} %}
 				{% include "torrentForm/year.twig" with variables %}
 
 				{# workgroup #}
-				{% set variables = {"db": env.DB.workgroup, "value": (data.workgroup) ? data.workgroup : ""} %}
+				{% set variables = {"db": env.database.workgroup, "value": (data.workgroup) ? data.workgroup : ""} %}
 				{% include "torrentForm/workgroup.twig" with variables %}
 
 				{# location #}
-				{% set variables = {"db": env.DB.location, "value": (data.location) ? data.location : ""} %}
+				{% set variables = {"db": env.database.location, "value": (data.location) ? data.location : ""} %}
 				{% include "torrentForm/location.twig" with variables %}
 
 				{## #}
 
 				{# identifier #}
-				{% set variables = {"db": env.DB.identifier, "value": (data.identifier) ? data.identifier : ""} %}
+				{% set variables = {"db": env.database.identifier, "value": (data.identifier) ? data.identifier : ""} %}
 				{% include "torrentForm/identifier.twig" with variables %}
 
 				{# version #}
-				{% set variables = {"db": env.DB.version, "value": (data.version) ? data.version : ""} %}
+				{% set variables = {"db": env.database.version, "value": (data.version) ? data.version : ""} %}
 				{% include "torrentForm/version.twig" with variables %}
 
 				{## #}
 
 				{# groupDescription #}
-				{% set variables = {"db": env.DB.description, "value": (data.groupDescription) ? data.groupDescription : "", "required": true} %}
+				{% set variables = {"db": env.database.description, "value": (data.groupDescription) ? data.groupDescription : "", "required": true} %}
 				{% include "torrentForm/groupDescription.twig" with variables %}
 
 				{## #}
 
 				{# creatorList #}
-				{% set variables = {"db": env.DB.version, "value": (data.creatorList) ? data.creatorList : ""} %}
+				{% set variables = {"db": env.database.version, "value": (data.creatorList) ? data.creatorList : ""} %}
 				{% include "torrentForm/creatorList.twig" with variables %}
 
 				{# tagList #}
-				{% set variables = {"db": env.DB.tag_list, "value": (data.tagList) ? data.tagList : ""} %}
+				{% set variables = {"db": env.database.tag_list, "value": (data.tagList) ? data.tagList : ""} %}
 				{% include "torrentForm/tagList.twig" with variables %}
 
 				{## #}
 
 				{# picture #}
-				{% set variables = {"db": env.DB.picture, "value": (data.picture) ? data.picture : ""} %}
+				{% set variables = {"db": env.database.picture, "value": (data.picture) ? data.picture : ""} %}
 				{% include "torrentForm/picture.twig" with variables %}
 
 				{# literature #}
-				{% set variables = {"db": env.DB.picture, "value": (data.literature) ? data.literature : ""} %}
+				{% set variables = {"db": env.database.picture, "value": (data.literature) ? data.literature : ""} %}
 				{% include "torrentForm/literature.twig" with variables %}
 
 			</table>
@@ -152,53 +152,53 @@
 			<table class="torrentForm">
 
 				{# platform #}
-				{% set variables = {"db": env.META.Platforms, "value": (data.platform) ? data.platform : ""} %}
+				{% set variables = {"db": env.metadata.platforms, "value": (data.platform) ? data.platform : ""} %}
 				{% include "torrentForm/platforms.twig" with variables %}
 
 				{# format #}
-				{% set variables = {"db": env.META.Formats, "value": (data.format) ? data.format : ""} %}
+				{% set variables = {"db": env.metadata.formats, "value": (data.format) ? data.format : ""} %}
 				{% include "torrentForm/formats.twig" with variables %}
 
 				{# scopes #}
-				{% set variables = {"db": env.META.Formats, "value": (data.scope) ? data.scope : ""} %}
+				{% set variables = {"db": env.metadata.formats, "value": (data.scope) ? data.scope : ""} %}
 				{% include "torrentForm/scopes.twig" with variables %}
 
 				{# archive #}
-				{% set variables = {"db": env.META.Formats, "value": (data.archive) ? data.archive : ""} %}
+				{% set variables = {"db": env.metadata.formats, "value": (data.archive) ? data.archive : ""} %}
 				{% include "torrentForm/archive.twig" with variables %}
 
 				{# license #}
-				{% set variables = {"db": env.DB.license, "value": (data.license) ? data.license : ""} %}
+				{% set variables = {"db": env.database.license, "value": (data.license) ? data.license : ""} %}
 				{% include "torrentForm/license.twig" with variables %}
 
 				{## #}
 
 				{# torrentDescription #}
-				{% set variables = {"db": env.DB.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
+				{% set variables = {"db": env.database.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
 				{% include "torrentForm/torrentDescription.twig" with variables %}
 
 				{## #}
 
 				{# mirrors #}
-				{% set variables = {"db": env.DB.mirrors, "value": (data.mirrors) ? data.mirrors : ""} %}
+				{% set variables = {"db": env.database.mirrors, "value": (data.mirrors) ? data.mirrors : ""} %}
 				{% include "torrentForm/mirrors.twig" with variables %}
 
 				{# seqhash #}
-				{% set variables = {"db": env.DB.seqhash, "value": (data.seqhash) ? data.seqhash : ""} %}
+				{% set variables = {"db": env.database.seqhash, "value": (data.seqhash) ? data.seqhash : ""} %}
 				{% include "torrentForm/seqhash.twig" with variables %}
 
 				{## #}
 
 				{# booleans #}
 				{% set variables = {
-					"db": env.DB.description,
+					"db": env.database.description,
 					"annotated": (data.annotated) ? data.annotated : "",
 					"anonymous": (data.anonymous) ? data.anonymous : "",
 				} %}
 				{% include "torrentForm/booleans.twig" with variables %}
 
 				{# freeleech #}
-				{% set variables = {"db": env.DB.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
+				{% set variables = {"db": env.database.description, "value": (data.torrentDescription) ? data.torrentDescription : ""} %}
 				{% include "torrentForm/freeleech.twig" with variables %}
 
 			</table>

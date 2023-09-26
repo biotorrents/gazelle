@@ -1,7 +1,7 @@
 {# platforms #}
 {% if newTorrent %}
-	{% for key, items in env.CATS %}
-		<tr id="{{ items.Name|camel }}Platform">
+	{% for key, items in env.categories %}
+		<tr id="{{ items.title|camel }}Platform">
 			<th>
 				<label for="platform" class="required">Platform</label>
 			</th>
@@ -10,7 +10,7 @@
 			{# can't be required #}
 				<select id="platform" name="platform" class="select">
 					<option value="">The class of technology used</option>
-					{% for item in items.Platforms %}
+					{% for item in items.platforms %}
 						<option value="{{ item }}" {{ (value == item) ? "selected" : "" }}>{{ item }}</option>
 					{% endfor %}
 				</select>

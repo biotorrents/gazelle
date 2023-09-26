@@ -127,8 +127,8 @@
 <p class="flexRow">
     <label for="categoryId">Which category would you like to use?</label>
     <select class="grow select" name="categoryId" placeholder="Select a category" required>
-        {% for item in env.CATS %}
-        <option value="{{ item.ID }}">{{ item.Name }}</option>
+        {% for item in env.categories %}
+        <option value="{{ item.id }}">{{ item.title }}</option>
         {% endfor %}
     </select>
 </p>

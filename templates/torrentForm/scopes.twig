@@ -1,7 +1,7 @@
 {# scopes #}
 {% if newTorrent %}
-	{% for key, value in env.CATS %}
-		<tr id="{{ value.Name|camel }}Scope">
+	{% for key, value in env.categories %}
+		<tr id="{{ value.title|camel }}Scope">
 			<th>
 				<label for="scope" class="required">Scope</label>
 			</th>

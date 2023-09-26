@@ -183,10 +183,10 @@
 
 			{# new category uploads #}
 			{#
-			    {% for category in env.CATS %}
+			    {% for category in env.categories %}
 			    <link rel="alternate" type="application/rss+xml"
 			        href="feeds?feed=torrents_{{ category.Name|lower }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-			        title="New {{ category.Name }} Torrents {{ env.separator }} {{ env.siteName }}" />
+			        title="New {{ category.title }} Torrents {{ env.separator }} {{ env.siteName }}" />
 			    {% endfor %}
 			    #}
 
