@@ -30,6 +30,9 @@ class Database extends \PDO
     private string $cachePrefix = "database:";
     private string $cacheDuration = "1 minute";
 
+    # bitmask of json_encode flags
+    private int $jsonFlags = JSON_INVALID_UTF8_SUBSTITUTE;
+
     # commands that should only hit the source
     private array $sourceCommands = [
         "alter",
@@ -463,7 +466,7 @@ class Database extends \PDO
     {
         $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options]));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -503,7 +506,7 @@ class Database extends \PDO
     {
         $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options]));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -541,7 +544,7 @@ class Database extends \PDO
     {
         $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options]));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -586,7 +589,7 @@ class Database extends \PDO
     {
         $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options]));
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
