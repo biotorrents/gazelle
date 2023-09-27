@@ -86,7 +86,7 @@
 
 			{# plausible analytics #}
 			{% if env.enablePlausible %}
-				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
+				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js" crossorigin="anonymous"></script>
 			{% endif %}
 
 			{# easymde and highlight.js #}

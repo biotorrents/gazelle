@@ -134,7 +134,7 @@ if ($app->dbOld->has_results()) {
         }
 
         if ($Ratio < $Classes[$To]['MinRatio']) {
-            $Err[] = "Your ratio is too low to be promoted. The minimum ratio required for this promotion is ".$Classes[$To]['MinRatio'].".";
+            $Err[] = "Your ratio is too low to be promoted. The minimum ratio required for this promotion is " . $Classes[$To]['MinRatio'] . ".";
         }
 
         if ($Upload < $Classes[$To]['MinUpload'] * $GiB) {
@@ -145,32 +145,32 @@ if ($app->dbOld->has_results()) {
                 $Amount = $Classes[$To]['MinUpload'];
                 $Unit = 'GiB';
             }
-            $Err[] = "You have not uploaded enough to be promoted. The minimum uploaded amount for this promotion is ".$Amount."".$Unit.".";
+            $Err[] = "You have not uploaded enough to be promoted. The minimum uploaded amount for this promotion is " . $Amount . "" . $Unit . ".";
         }
 
         if ($Download < $Classes[$To]['MinDownload'] * $GiB) {
-            $Err[] = "You have not downloaded enough to be promoted. The minimum downloaded amount for this promotion is ".$Classes[$To]['MinDownload']."GiB.";
+            $Err[] = "You have not downloaded enough to be promoted. The minimum downloaded amount for this promotion is " . $Classes[$To]['MinDownload'] . "GiB.";
         }
 
         if ($Uploads < $Classes[$To]['MinUploads']) {
-            $Err[] = "You have not uploaded enough torrents to be promoted. The minimum number of uploaded torrents for this promotion is ".$Classes[$To]['MinUploads'].".";
+            $Err[] = "You have not uploaded enough torrents to be promoted. The minimum number of uploaded torrents for this promotion is " . $Classes[$To]['MinUploads'] . ".";
         }
 
         if ($Classes[$To]['UniqueTor'] && $Groups < $Classes[$To]['MinUploads']) {
-            $Err[] = "You have not uploaded to enough unique torrent groups to be promoted. The minimum number of unique groups for this promotion is ".$Classes[$To]['MinUploads'].".";
+            $Err[] = "You have not uploaded to enough unique torrent groups to be promoted. The minimum number of unique groups for this promotion is " . $Classes[$To]['MinUploads'] . ".";
         }
 
         if (!isset($Err)) {
             $app->dbOld->prepared_query("
               UPDATE users_main
               SET
-                BonusPoints = BonusPoints - ".$Classes[$To]['Price'].",
+                BonusPoints = BonusPoints - " . $Classes[$To]['Price'] . ",
                 PermissionID = $To
               WHERE ID = $UserID");
 
             $app->dbOld->prepared_query("
               UPDATE users_info
-              SET AdminComment = CONCAT('".sqltime()." - Class changed to ".$To." via store purchase\n\n', AdminComment)
+              SET AdminComment = CONCAT('" . sqltime() . " - Class changed to " . $To . " via store purchase\n\n', AdminComment)
               WHERE UserID = $UserID");
 
             $app->cache->delete("user_info_$UserID");
@@ -185,7 +185,7 @@ View::header('Store'); ?>
   </h2>
   <div class="box">
     <p>
-      <?=isset($Err) ? "Error: ".implode("<br>Error: ", $Err) : "You have been promoted to ".$Classes[$To]['Name']."!"?>
+      <?=isset($Err) ? "Error: " . implode("<br>Error: ", $Err) : "You have been promoted to " . $Classes[$To]['Name'] . "!"?>
     </p>
     <p>
       <a href="/store.php">Back to Store</a>

@@ -23,7 +23,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if not actionRequired %} #}
+{% endif %} {# if not actionRequired #}
 </section>
 
 {% if actionRequired %}
@@ -40,7 +40,7 @@
 
 
 {# pointsToUpload or uploadToPoints #}
-{% if item == "pointsToUpload" or item == "uploadToPoints"  %}
+{% if item == "pointsToUpload" or item == "uploadToPoints" %}
 <p>
     If you approve this transaction, your new balances will be:
 </p>
@@ -57,18 +57,18 @@
 
     {% if item == "pointsToUpload" %}
     <input type="hidden" name="amount" value="{{ post.pointsAmount }}">
-    {% endif %} {# {% if item == "pointsToUpload" %} #}
+    {% endif %} {# if item == "pointsToUpload" #}
 
     {% if item == "uploadToPoints" %}
     <input type="hidden" name="amount" value="{{ post.dataAmount }}">
-    {% endif %} {# {% if item == "uploadToPoints" %} #}
+    {% endif %} {# if item == "uploadToPoints" #}
 
 <p class="flexRow">
     <input type="submit" class="button button-primary" value="complete purchase">
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "pointsToUpload" or item == "uploadToPoints"  %} #}
+{% endif %} {# if item == "pointsToUpload" or item == "uploadToPoints" #}
 
 
 {# torrents #}
@@ -82,7 +82,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="text" name="torrentId" placeholder="Torrent group link, e.g., https://torrents.bio/torrents.php?id=33" class="grow" required>
+    <input type="text" name="identifier" placeholder="Torrent group link, e.g., https://torrents.bio/torrents.php?id=33" class="grow" required>
 </p>
 
 <p class="flexRow">
@@ -90,7 +90,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "specificFreeleech" %} #}
+{% endif %} {# if item == "specificFreeleech" #}
 
 
 {# neutralLeechTag or freeleechTag #}
@@ -101,8 +101,8 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="tagId">Which tag would you like to use?</label>
-    <select class="grow select" name="tagId" placeholder="Select a tag" required>
+    <label for="identifier">Which tag would you like to use?</label>
+    <select class="grow select" name="identifier" placeholder="Select a tag" required>
         {% for item in tagList %}
         <option value="{{ item.ID }}">{{ item.Name }}</option>
         {% endfor %}
@@ -114,7 +114,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "neutralLeechTag" or item == "freeleechTag" %} #}
+{% endif %} {# if item == "neutralLeechTag" or item == "freeleechTag" #}
 
 
 {# neutralLeechCategory or freeleechCategory #}
@@ -125,8 +125,8 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <label for="categoryId">Which category would you like to use?</label>
-    <select class="grow select" name="categoryId" placeholder="Select a category" required>
+    <label for="identifier">Which category would you like to use?</label>
+    <select class="grow select" name="identifier" placeholder="Select a category" required>
         {% for item in env.categories %}
         <option value="{{ item.id }}">{{ item.title }}</option>
         {% endfor %}
@@ -138,7 +138,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "neutralLeechCategory" or item == "freeleechCategory" %} #}
+{% endif %} {# if item == "neutralLeechCategory" or item == "freeleechCategory" #}
 
 
 {# user profile #}
@@ -152,7 +152,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="text" class="grow" name="customTitle" max="64" placeholder="Please enter your custom title (64 characters)">
+    <input type="text" class="grow" name="customTitle" max="64" placeholder="Please enter your custom title (64 characters max)">
 </p>
 
 <p class="flexRow">
@@ -160,7 +160,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "customTitle" %} #}
+{% endif %} {# if item == "customTitle" #}
 
 
 {# glitchUsername #}
@@ -169,7 +169,7 @@
     {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
-    <input type="hidden" name="isDelete" value="false">
+    <input type="hidden" name="delete" value="false">
 
     <p>
         Preview the glitch effect below.
@@ -191,7 +191,7 @@
     {{ form_token("/store/confirm") }}
 
     <input type="hidden" name="item" value="{{ item }}">
-    <input type="hidden" name="isDelete" value="true">
+    <input type="hidden" name="delete" value="true">
 
     <p>
         Are you sure you'd like to delete the glitch username effect?
@@ -226,7 +226,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "snowflakeProfile" %} #}
+{% endif %} {# if item == "snowflakeProfile" #}
 
 
 {# badges #}
@@ -240,7 +240,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="number" class="grow" name="bet" id="bet" placeholder="How many {{ env.bonusPoints }} would you like to bet?" max={{ bonusPoints.bonusPoints }} required>
+    <input type="number" class="grow" name="amount" placeholder="How many {{ env.bonusPoints }} would you like to bet?" max={{ bonusPoints.bonusPoints }} required>
 </p>
 
 <p>
@@ -248,7 +248,7 @@
 </p>
 
 <p class="flexRow">
-    <select class="grow select" name="votes[]" multiple>
+    <select class="grow select" name="ticket[]" multiple>
         {% for i in range(1, 80) %}
         <option value="{{ i }}">{{ i }}</option>
         {% endfor %}
@@ -260,7 +260,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "lotteryBadge" %} #}
+{% endif %} {# if item == "lotteryBadge" #}
 
 
 {# auctionBadge #}
@@ -271,7 +271,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="number" class="grow" name="amount" id="amount" min="{{ bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+    <input type="number" class="grow" name="amount" min="{{ bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
 </p>
 
 <p class="flexRow">
@@ -279,7 +279,7 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "auctionBadge" %} #}
+{% endif %} {# if item == "auctionBadge" #}
 
 
 {# coinBadge #}
@@ -290,7 +290,7 @@
     <input type="hidden" name="item" value="{{ item }}">
 
 <p class="flexRow">
-    <input type="number" class="grow" name="amount" id="amount" min="{{ bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+    <input type="number" class="grow" name="amount" min="{{ bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
 </p>
 
 <p class="flexRow">
@@ -298,11 +298,11 @@
     <a href="/store" class="button">cancel and return</a>
 </p>
 </form>
-{% endif %} {# {% if item == "coinBadge" %} #}
+{% endif %} {# if item == "coinBadge" #}
 
 
 </section>
-{% endif %} {# {% if actionRequired %} #}
+{% endif %} {# if actionRequired #}
 
 {% endblock %}
 

@@ -34,7 +34,7 @@
 <section>
     <div class="flexHeader">
         <h3>{{ news.Title }}</h3>
-        <p>{{ news.Time|relativeTime }}</p>
+        <p class="tooltip" title="{{ news.Time }}">{{ news.Time|relativeTime }}</p>
     </div>
 
     {{ news.Body|parse }}

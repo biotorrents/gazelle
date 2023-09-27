@@ -32,7 +32,7 @@ if (isset($_POST['donation'])) {
               UPDATE misc
               SET First = First + $Donation
               WHERE Name = 'FreeleechPool'");
-            $app->cache->delete('user_info_heavy_'.$UserID);
+            $app->cache->delete('user_info_heavy_' . $UserID);
 
             // Check to see if we're now over the target pool size
             $app->dbOld->prepared_query("

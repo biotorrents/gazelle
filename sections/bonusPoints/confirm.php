@@ -18,7 +18,6 @@ $bonusPoints = new \Gazelle\BonusPoints();
 $post = Http::post();
 if (empty($post)) {
     Http::redirect("store");
-    #$app->error(400);
 }
 
 # error message
@@ -33,35 +32,32 @@ try {
     }
 
     $post["amount"] = intval($post["amount"] ?? null);
-    $post["torrentId"] ??= null; # int|string
-    $post["tagId"] = intval($post["tagId"] ?? null);
-    $post["categoryId"] = intval($post["categoryId"] ?? null);
+    $post["identifier"] ??= null; # int|string
     $post["customTitle"] = strval($post["customTitle"] ?? null);
-    $post["isDelete"] ??= null; # boolval("false") = true
+    $post["delete"] ??= null; # boolval("false") = true
     $post["snowflakeEmoji"] = strval($post["snowflakeEmoji"] ?? null);
-    $post["bet"] = intval($post["bet"] ?? null);
-    $post["votes"] ??= null; # array
+    $post["ticket"] ??= null; # array
 
     $result = match ($item) {
         "pointsToUpload" => $bonusPoints->pointsToUpload($post["amount"]),
         "uploadToPoints" => $bonusPoints->uploadToPoints($post["amount"]),
 
         "randomFreeleech" => $bonusPoints->randomFreeleech(),
-        "specificFreeleech" => $bonusPoints->specificFreeleech($post["torrentId"]),
+        "specificFreeleech" => $bonusPoints->specificFreeleech($post["identifier"]),
         "freeleechToken" => $bonusPoints->freeleechToken(),
-        "neutralLeechTag" => $bonusPoints->neutralLeechTag($post["tagId"]),
-        "freeleechTag" => $bonusPoints->freeleechTag($post["tagId"]),
-        "neutralLeechCategory" => $bonusPoints->neutralLeechCategory($post["categoryId"]),
-        "freeleechCategory" => $bonusPoints->freeleechCategory($post["categoryId"]),
+        "neutralLeechTag" => $bonusPoints->neutralLeechTag($post["identifier"]),
+        "freeleechTag" => $bonusPoints->freeleechTag($post["identifier"]),
+        "neutralLeechCategory" => $bonusPoints->neutralLeechCategory($post["identifier"]),
+        "freeleechCategory" => $bonusPoints->freeleechCategory($post["identifier"]),
 
         "personalCollage" => $bonusPoints->personalCollage(),
         "invite" => $bonusPoints->invite(),
         "customTitle" => $bonusPoints->customTitle($post["customTitle"]),
-        "glitchUsername" => $bonusPoints->glitchUsername($post["isDelete"]),
+        "glitchUsername" => $bonusPoints->glitchUsername($post["delete"]),
         "snowflakeProfile" => $bonusPoints->snowflakeProfile($post["snowflakeEmoji"]),
 
         "sequentialBadge" => $bonusPoints->sequentialBadge(),
-        "lotteryBadge" => $bonusPoints->lotteryBadge($post["bet"], $post["votes"]),
+        "lotteryBadge" => $bonusPoints->lotteryBadge($post["amount"], $post["ticket"]),
         "auctionBadge" => $bonusPoints->auctionBadge($post["amount"]),
         "coinBadge" => $bonusPoints->coinBadge($post["amount"]),
         "randomBadge" => $bonusPoints->randomBadge(),
