@@ -684,6 +684,14 @@ class User
             $badgeHtml = "";
         }
 
+        # did they buy a glich username effect?
+        $query = "select 1 from bonus_point_purchases where `key` = ? and userId = ?";
+        $glitchUsername = $app->dbNew->single($query, ["glitchUsername", $userId]);
+
+        if ($glitchUsername) {
+            return "<a href='/user.php?id={$userId}' class='glitch' data-text='{$row["username"]}'>{$row["username"]}</a>" . $badgeHtml;
+        }
+
         # donor icon
         $siteOptions = json_decode($row["siteOptions"] ?? "{}", true);
         if ($siteOptions["donorIcon"] && !empty($row["donor"])) {
@@ -696,7 +704,7 @@ class User
         }
 
         # banned
-        if ($row["status"] === 2) {
+        if ($row["status"] === self::BANNED) {
             return "<a href='/user.php?id={$userId}' class='banned'>{$row["username"]}</a>" . $badgeHtml;
         }
 
