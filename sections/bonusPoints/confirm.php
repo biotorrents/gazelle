@@ -32,11 +32,12 @@ try {
     }
 
     $post["amount"] = intval($post["amount"] ?? null);
-    $post["identifier"] ??= null; # int|string
-    $post["customTitle"] = strval($post["customTitle"] ?? null);
     $post["delete"] ??= null; # boolval("false") = true
-    $post["snowflakeEmoji"] = strval($post["snowflakeEmoji"] ?? null);
+    $post["emoji"] = strval($post["emoji"] ?? null);
+    $post["identifier"] ??= null; # int|string
     $post["ticket"] ??= null; # array
+    $post["title"] = strval($post["title"] ?? null);
+    $post["update"] ??= null; # boolval("false") = true
 
     $result = match ($item) {
         "pointsToUpload" => $bonusPoints->pointsToUpload($post["amount"]),
@@ -54,7 +55,7 @@ try {
         "invite" => $bonusPoints->invite(),
         "customTitle" => $bonusPoints->customTitle($post["customTitle"]),
         "glitchUsername" => $bonusPoints->glitchUsername($post["delete"]),
-        "snowflakeProfile" => $bonusPoints->snowflakeProfile($post["snowflakeEmoji"]),
+        "snowflakeProfile" => $bonusPoints->snowflakeProfile($post["emoji"]),
 
         "sequentialBadge" => $bonusPoints->sequentialBadge(),
         "lotteryBadge" => $bonusPoints->lotteryBadge($post["amount"], $post["ticket"]),
