@@ -29,7 +29,7 @@ array_push($rateLimitExceptions, 0, 1);
 
 # donors
 $query = "select id from users_main where permissionId = 20"; # donors
-$ref = $app->dbNew->column("id", $query, []);
+$ref = $app->dbNew->column($query, []);
 array_push($rateLimitExceptions, ...$ref);
 
 # rate limit = [x requests, y seconds]

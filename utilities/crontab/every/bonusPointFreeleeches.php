@@ -12,7 +12,7 @@ require_once __DIR__ . "/../../../bootstrap/cli.php";
 $app = Gazelle\App::go();
 
 $query = "select torrentId from shop_freeleeches where expiryTime < now()";
-$torrentIds = $app->dbNew->column("torrentId", $query, []);
+$torrentIds = $app->dbNew->column($query, []);
 
 Torrents::freeleech_torrents($torrentIds, 0, 0);
 

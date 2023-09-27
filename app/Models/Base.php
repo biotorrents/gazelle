@@ -121,7 +121,7 @@ class Base extends \Illuminate\Database\Eloquent\Model
         $app = \Gazelle\App::go();
 
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
-            get: fn (string $value) => $app->dbNew->uuidString($value),
+            get: fn (string $value) => $app->dbNew->stringUuid($value),
         );
 
     }

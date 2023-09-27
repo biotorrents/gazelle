@@ -157,7 +157,7 @@ class Collages extends \Gazelle\ObjectCrud
         $app = \Gazelle\App::go();
 
         $query = "select groupId from collages_torrents where collageId = ?";
-        $groupIds = $app->dbNew->column("groupId", $query, [$this->id]);
+        $groupIds = $app->dbNew->column($query, [$this->id]);
 
         return Torrents::get_groups($groupIds);
     }
@@ -222,7 +222,7 @@ class Collages extends \Gazelle\ObjectCrud
 
             # get the topTags
             $query = "select tagId, groupId from torrents_tags where groupId = ?";
-            $topTags = $app->dbNew->column("tagId", $query, [$row["groupId"]]);
+            $topTags = $app->dbNew->column($query, [ $row["groupId"] ]);
 
             foreach ($topTags as $tagId) {
                 $return["topTags"][$tagId] ??= 0;
@@ -283,7 +283,7 @@ class Collages extends \Gazelle\ObjectCrud
 
         # clear user subscriptions
         $query = "select userId from users_collage_subs where collageId = ?";
-        $ref = $app->dbNew->column("userId", $query, [$collageId]);
+        $ref = $app->dbNew->column($query, [$collageId]);
 
         foreach ($ref as $userId) {
             $app->cache->delete("collage_subs_user_new_{$userId}");

@@ -127,7 +127,7 @@ class User
         /*
         # get the most recent session
         $query = "select sessionId from users_sessions where userId = ? and expires > ? order by expires desc";
-        $sessions = $app->dbNew->column("sessionId", $query, [$userId, $now]);
+        $sessions = $app->dbNew->column($query, [$userId, $now]);
 
         # bad session from list
         if (!in_array($sessionId, $sessions)) {
@@ -426,7 +426,7 @@ class User
         $app = \Gazelle\App::go();
 
         global $Classes;
-        $UserInfo = $app->cache->get("user_info_".$UserID);
+        $UserInfo = $app->cache->get("user_info_" . $UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
         if (empty($UserInfo)) {

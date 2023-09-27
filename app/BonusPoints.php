@@ -1072,7 +1072,7 @@ class BonusPoints
         $this->deductPoints($this->randomBadgeCost);
 
         # create the new badge
-        $badgeId = $app->dbNew->uuidShort();
+        $badgeId = $app->dbNew->shortUuid();
         $query = "insert into badges (id, icon, name, description) values (?, ?, ?, ?)";
         $app->dbNew->do($query, [$badgeId, $randomBadgeIcon, "Random Badge", $randomBadgeDescription]);
 

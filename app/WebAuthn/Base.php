@@ -222,7 +222,7 @@ class Base
         # create a user entity
         $userEntity = PublicKeyCredentialUserEntity::create(
             $app->user->core["username"], # name
-            $app->dbNew->uuidBinary($app->user->core["uuid"]), # id
+            $app->dbNew->binaryUuid($app->user->core["uuid"]), # id
             $app->user->core["username"], # display name
             null # icon
         );
