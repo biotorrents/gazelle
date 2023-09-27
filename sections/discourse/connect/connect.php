@@ -43,7 +43,7 @@ if ($hmac !== $signature) {
 # todo
 /*
 $query = "select id from users_main where email = ?";
-$good = $app->dbNew->single($query, [ Crypto::encrypt($app->user->email) ]);
+$good = $app->dbNew->single($query, [ \Gazelle\Crypto::encrypt($app->user->email) ]);
 if (!$good) {
     throw new Exception("user email doesn't exist");
 }

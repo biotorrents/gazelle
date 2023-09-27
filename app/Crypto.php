@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Crypto
+ * Gazelle\Crypto
  */
+
+namespace Gazelle;
 
 class Crypto
 {

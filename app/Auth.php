@@ -208,7 +208,7 @@ class Auth # extends Delight\Auth\Auth
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
-        $encryptedEmail = \Crypto::encrypt($email);
+        $encryptedEmail = \Gazelle\Crypto::encrypt($email);
 
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
@@ -262,7 +262,7 @@ class Auth # extends Delight\Auth\Auth
                 "passHash" => password_hash($passphrase, PASSWORD_DEFAULT),
 
                 # everything else
-                "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
+                "ip" => \Gazelle\Crypto::encrypt($server["REMOTE_ADDR"]),
                 "uploaded" => $app->env->newUserUpload,
                 "enabled" => 1,
                 "invites" => $app->env->newUserInvites,
@@ -432,10 +432,10 @@ class Auth # extends Delight\Auth\Auth
             $query = "select email from users where id = ?";
             $email = $app->dbNew->single($query, [$userId]);
 
-            $decryptedEmail = \Crypto::decrypt($email);
-            if (!$decryptedEmail && \Crypto::apcuExists()) {
+            $decryptedEmail = \Gazelle\Crypto::decrypt($email);
+            if (!$decryptedEmail && \Gazelle\Crypto::apcuExists()) {
                 $query = "update users set email = ? where id = ?";
-                $app->dbNew->do($query, [ \Crypto::encrypt($email), $userId ]);
+                $app->dbNew->do($query, [ \Gazelle\Crypto::encrypt($email), $userId ]);
             }
 
             # legacy: remove after 2024-04-01
@@ -692,7 +692,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # passphrase = email
-            $row["email"] = \Crypto::decrypt($row["email"]);
+            $row["email"] = \Gazelle\Crypto::decrypt($row["email"]);
             if ($passphrase === $row["email"]) {
                 throw new Exception("Your passphrase can't be the same as your email");
             }
@@ -747,7 +747,7 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to update email";
 
         $newEmail = \Gazelle\Esc::email($newEmail);
-        $newEmail = \Crypto::encrypt($newEmail);
+        $newEmail = \Gazelle\Crypto::encrypt($newEmail);
 
         try {
             $query = "update users set email = ? where id = ?";
@@ -809,7 +809,7 @@ class Auth # extends Delight\Auth\Auth
         $query = "select email from users where {$column} = ?";
         $email = $app->dbNew->single($query, [$identifier]);
 
-        $email = \Crypto::decrypt($email);
+        $email = \Gazelle\Crypto::decrypt($email);
         if (!$email) {
             return $message;
         }

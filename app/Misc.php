@@ -28,7 +28,7 @@ class Misc
         $UnescapedSubject = $Subject;
         $UnescapedBody = $Body;
         $Subject = db_string($Subject);
-        $Body = Crypto::encrypt(substr($Body, 0, 49135)); // 49135 -> encryption -> 65536 (max length in mysql)
+        $Body = \Gazelle\Crypto::encrypt(substr($Body, 0, 49135)); // 49135 -> encryption -> 65536 (max length in mysql)
 
         if ($ToID === 0) {
             // Don't allow users to send messages to the system
@@ -73,7 +73,7 @@ class Misc
               InInbox = '1',
               UnRead = '1',
               ReceivedDate = NOW()
-            WHERE UserID IN (".implode(',', $ToID).")
+            WHERE UserID IN (" . implode(',', $ToID) . ")
               AND ConvID = '$ConvID'");
 
             $app->dbOld->query("
@@ -281,9 +281,9 @@ class Misc
           'EditedTime' => null,
           'Username' => ''
       );
-        $app->cache->set('thread_'.$TopicID.'_catalogue_'.$CatalogueID, $Post, 0);
+        $app->cache->set('thread_' . $TopicID . '_catalogue_' . $CatalogueID, $Post, 0);
 
-        $app->cache->set('thread_'.$TopicID.'_info', array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID), 0);
+        $app->cache->set('thread_' . $TopicID . '_info', array('Posts' => '+1', 'LastPostAuthorID' => $AuthorID), 0);
 
         $app->dbOld->set_query_id($QueryID);
         return $TopicID;
@@ -348,14 +348,14 @@ class Misc
             $app->dbOld->query("
             SELECT ID, Name
             FROM tags
-              WHERE Name IN ('".implode("', '", $TagNames)."')");
+              WHERE Name IN ('" . implode("', '", $TagNames) . "')");
 
             $SQLTagIDs = $app->dbOld->to_array();
             $app->dbOld->set_query_id($QueryID);
 
             foreach ($SQLTagIDs as $Tag) {
                 $TagIDs[$Tag['ID']] = $Tag['Name'];
-                $app->cache->set('tag_id_'.$Tag['Name'], $Tag, 0);
+                $app->cache->set('tag_id_' . $Tag['Name'], $Tag, 0);
             }
         }
         return($TagIDs);

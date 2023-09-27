@@ -152,7 +152,7 @@ class User
             $this->core = $row ?? [];
 
             # decrypt the email address
-            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            $this->core["email"] = \Gazelle\Crypto::decrypt($this->core["email"]);
             #!d($this->core);exit;
 
             # extra: gazelle, users_main and users_info
@@ -235,12 +235,12 @@ class User
             }
 
             # ip changed
-            $this->extra["IP"] = Crypto::decrypt($this->extra["IP"]);
+            $this->extra["IP"] = \Gazelle\Crypto::decrypt($this->extra["IP"]);
             if ($this->extra["IP"]) { # not false
                 $ipChanged = $this->extra["IP"] !== $server["REMOTE_ADDR"];
                 if ($ipChanged) {
                     $this->extra["IP"] = $server["REMOTE_ADDR"];
-                    $encryptedIp = Crypto::encrypt($this->extra["IP"]);
+                    $encryptedIp = \Gazelle\Crypto::encrypt($this->extra["IP"]);
 
                     $query = "update users_main set IP = ? where userId = ?";
                     $app->dbNew->do($query, [$encryptedIp, $userId]);

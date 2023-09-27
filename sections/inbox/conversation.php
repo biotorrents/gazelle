@@ -77,7 +77,7 @@ $app->dbOld->query("
   ORDER BY ID");
 ?>
 <div>
-  <h2><?=$Subject.($ForwardedID > 0 ? " (Forwarded to $ForwardedName)" : '')?>
+  <h2><?=$Subject . ($ForwardedID > 0 ? " (Forwarded to $ForwardedName)" : '')?>
   </h2>
   <div class="linkbox">
     <a href="<?=Inbox::get_inbox_link(); ?>" class="brackets">Back to
@@ -86,7 +86,7 @@ $app->dbOld->query("
   <?php
 
 while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record()) {
-    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[url=https://'.siteDomain.'/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
+    $Body = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Body) : '[url=https://' . siteDomain . '/wiki.php?action=article&name=databaseencryption][Encrypted][/url]'; ?>
   <div class="box vertical_space">
     <div class="head" style="overflow: hidden;">
       <div class="u-pull-left">
@@ -174,7 +174,7 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
             $app->dbOld->query("
   SELECT SupportFor
   FROM users_info
-  WHERE UserID = ".$app->user->core['id']);
+  WHERE UserID = " . $app->user->core['id']);
 list($FLS) = $app->dbOld->next_record();
 if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->user->core['id'])) {
     ?>

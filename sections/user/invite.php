@@ -164,7 +164,7 @@ View::header('Invites');
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
-          echo '&amp;userid='.$UserID;
+          echo '&amp;userid=' . $UserID;
       } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
@@ -266,7 +266,7 @@ if (!empty($Pending)) {
       <?php
   foreach ($Pending as $Invite) {
       list($InviteKey, $Email, $Expires) = $Invite;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
         <td><?=\Gazelle\Text::esc($Email)?>
         </td>
@@ -313,7 +313,7 @@ if (!empty($Pending)) {
       <?php
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'
       ?>
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>

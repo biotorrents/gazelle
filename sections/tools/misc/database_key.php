@@ -29,5 +29,5 @@ if (!empty($post) && $post["databaseKey"]) {
 $app->twig->display("admin/databaseKey.twig", [
     "title" => "Database encryption key",
     "sidebar" => true,
-    "isKeySet" => \Crypto::apcuExists(),
+    "isKeySet" => Gazelle\Crypto::apcuExists(),
 ]);

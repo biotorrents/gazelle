@@ -460,7 +460,7 @@ if ($ParanoiaLevel == 0) {
         <?php }
 
         if (check_perms('users_view_ips', $Class)) {
-            $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
+            $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
         <li>IP: <?=\Gazelle\Text::esc($IP)?>
         </li>
         <?php
@@ -503,7 +503,7 @@ if (!isset($SupportFor)) {
     $app->dbOld->query('
     SELECT SupportFor
     FROM users_info
-    WHERE UserID = '.$user['ID']);
+    WHERE UserID = ' . $user['ID']);
     list($SupportFor) = $app->dbOld->next_record();
 }
 if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)) {
@@ -523,7 +523,7 @@ if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)
       </ul>
     </div>
     <?php
-include(serverRoot.'/sections/user/community_stats.php');
+include(serverRoot . '/sections/user/community_stats.php');
 ?>
   </div>
   <div class="main_column two-thirds column">
@@ -742,7 +742,7 @@ foreach ($Collages as $CollageInfo) {
             extract(Torrents::array_group($Group[$C['GroupID']]));
 
             if (!$C['WikiImage']) {
-                $C['WikiImage'] = staticServer.'/images/noartwork.webp';
+                $C['WikiImage'] = staticServer . '/images/noartwork.webp';
             }
 
             $Name = '';
@@ -768,12 +768,12 @@ foreach ($Collages as $CollageInfo) {
 
 // Linked accounts
 if (check_perms('users_mod')) {
-    include(serverRoot.'/sections/user/linkedfunctions.php');
+    include(serverRoot . '/sections/user/linkedfunctions.php');
     user_dupes_table($userId);
 }
 
 if ((check_perms('users_view_invites')) && $Invited > 0) {
-    include(serverRoot.'/classes/invite_tree.class.php');
+    include(serverRoot . '/classes/invite_tree.class.php');
     $Tree = new INVITE_TREE($userId, array('visible' => false)); ?>
     <div class="box" id="invitetree_box">
       <div class="head">
@@ -802,7 +802,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
       ResolverID
     FROM staff_pm_conversations
     WHERE UserID = $userId
-      AND (Level <= $UserLevel OR AssignedToUser = '".$user['ID']."')
+      AND (Level <= $UserLevel OR AssignedToUser = '" . $user['ID'] . "')
     ORDER BY Date DESC");
     if ($app->dbOld->has_results()) {
         $StaffPMs = $app->dbOld->to_array(); ?>
@@ -943,7 +943,7 @@ if (check_perms('users_mod', $Class)) { ?>
                 php-cs-fixer misinterpretation
               -->
             <option value="<?=$CurClass['ID']?>"
-              <?=$Selected?>><?=$CurClass['Name'].' ('.$CurClass['Level'].')'?>
+              <?=$Selected?>><?=$CurClass['Name'] . ' (' . $CurClass['Level'] . ')'?>
             </option>
             <?php
     } ?>
@@ -1055,11 +1055,11 @@ if (!$DisablePoints) {
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints / 1440)), 0));
-    $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
-    $PointsPerDay = \Gazelle\Text::float($PointsRate * 24)." ".bonusPoints."/day";
+    $PointsPerHour = \Gazelle\Text::float($PointsRate) . " " . bonusPoints . "/hour";
+    $PointsPerDay = \Gazelle\Text::float($PointsRate * 24) . " " . bonusPoints . "/day";
 } else {
-    $PointsPerHour = "0 ".bonusPoints."/hour";
-    $PointsPerDay = bonusPoints." disabled";
+    $PointsPerHour = "0 " . bonusPoints . "/hour";
+    $PointsPerDay = bonusPoints . " disabled";
 } ?>
           <?=$PointsPerHour?> (<?=$PointsPerDay?>)
         </td>

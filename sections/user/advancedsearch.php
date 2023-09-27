@@ -15,7 +15,7 @@ if (!empty($_GET['search'])) {
         $app->dbOld->query("
       SELECT ID
       FROM users_main
-      WHERE Username = '".db_string($_GET['search'])."'");
+      WHERE Username = '" . db_string($_GET['search']) . "'");
         if (list($ID) = $app->dbOld->next_record()) {
             Http::redirect("user.php?id=$ID");
             error();
@@ -258,17 +258,17 @@ if (count($_GET)) {
 
 
         if (!empty($_GET['username'])) {
-            $Where[] = 'um1.Username'.$Match.wrap($_GET['username']);
+            $Where[] = 'um1.Username' . $Match . wrap($_GET['username']);
         }
 
         if (!empty($_GET['email'])) {
             $Join['the'] = ' JOIN users_emails_decrypted AS he ON he.ID = um1.ID ';
-            $Where[] = ' he.Email '.$Match.wrap($_GET['email']);
+            $Where[] = ' he.Email ' . $Match . wrap($_GET['email']);
         }
 
         if (!empty($_GET['ip'])) {
             $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
-            $Where[] = ' tip.IP '.$Match.wrap($_GET['ip'], '', true);
+            $Where[] = ' tip.IP ' . $Match . wrap($_GET['ip'], '', true);
         }
 
 
@@ -286,7 +286,7 @@ if (count($_GET)) {
         if (!empty($_GET['tracker_ip'])) {
             $Distinct = 'DISTINCT ';
             $Join['xfu'] = ' JOIN xbt_files_users AS xfu ON um1.ID = xfu.uid ';
-            $Where[] = ' xfu.ip '.$Match.wrap($_GET['tracker_ip'], '', true);
+            $Where[] = ' xfu.ip ' . $Match . wrap($_GET['tracker_ip'], '', true);
         }
 
         //    if (!empty($_GET['tracker_ip'])) {
@@ -296,7 +296,7 @@ if (count($_GET)) {
         //    }
 
         if (!empty($_GET['comment'])) {
-            $Where[] = 'ui1.AdminComment'.$Match.wrap($_GET['comment']);
+            $Where[] = 'ui1.AdminComment' . $Match . wrap($_GET['comment']);
         }
 
         if (strlen($_GET['invites1'])) {
@@ -362,16 +362,16 @@ if (count($_GET)) {
         }
 
         if ($_GET['enabled'] != '') {
-            $Where[] = 'um1.Enabled = '.wrap($_GET['enabled'], '=');
+            $Where[] = 'um1.Enabled = ' . wrap($_GET['enabled'], '=');
         }
 
         if ($_GET['class'] != '') {
-            $Where[] = 'um1.PermissionID = '.wrap($_GET['class'], '=');
+            $Where[] = 'um1.PermissionID = ' . wrap($_GET['class'], '=');
         }
 
         if ($_GET['secclass'] != '') {
             $Join['ul'] = ' JOIN users_levels AS ul ON um1.ID = ul.UserID ';
-            $Where[] = 'ul.PermissionID = '.wrap($_GET['secclass'], '=');
+            $Where[] = 'ul.PermissionID = ' . wrap($_GET['secclass'], '=');
         }
 
         if ($_GET['donor'] == 'yes') {
@@ -392,28 +392,28 @@ if (count($_GET)) {
         }
 
         if (!empty($_GET['passkey'])) {
-            $Where[] = 'um1.torrent_pass'.$Match.wrap($_GET['passkey']);
+            $Where[] = 'um1.torrent_pass' . $Match . wrap($_GET['passkey']);
         }
 
         if (!empty($_GET['avatar'])) {
-            $Where[] = 'ui1.Avatar'.$Match.wrap($_GET['avatar']);
+            $Where[] = 'ui1.Avatar' . $Match . wrap($_GET['avatar']);
         }
 
         if ($_GET['stylesheet'] != '') {
-            $Where[] = 'ui1.StyleID = '.wrap($_GET['stylesheet'], '=');
+            $Where[] = 'ui1.StyleID = ' . wrap($_GET['stylesheet'], '=');
         }
 
         if ($OrderTable[$_GET['order']] && $WayTable[$_GET['way']]) {
-            $Order = ' ORDER BY '.$OrderTable[$_GET['order']].' '.$WayTable[$_GET['way']].' ';
+            $Order = ' ORDER BY ' . $OrderTable[$_GET['order']] . ' ' . $WayTable[$_GET['way']] . ' ';
         }
 
         //---------- Finish generating the search string
 
-        $SQL = 'SELECT '.$Distinct.$SQL;
+        $SQL = 'SELECT ' . $Distinct . $SQL;
         $SQL .= implode(' ', $Join);
 
         if (count($Where)) {
-            $SQL .= ' WHERE '.implode(' AND ', $Where);
+            $SQL .= ' WHERE ' . implode(' AND ', $Where);
         }
 
         if (count($Group)) {
@@ -421,7 +421,7 @@ if (count($_GET)) {
         }
 
         if (count($Having)) {
-            $SQL .= ' HAVING '.implode(' AND ', $Having);
+            $SQL .= ' HAVING ' . implode(' AND ', $Having);
         }
 
         $SQL .= $Order;
@@ -546,7 +546,7 @@ View::header('User search');
               <?php
                           if ($_GET['class'] === $Class['ID']) {
                               echo ' selected="selected"' ;
-                          } ?>><?=\Gazelle\Text::limit($Class['Name'], 10).' ('.$Class['Level'].')'?>
+                          } ?>><?=\Gazelle\Text::limit($Class['Name'], 10) . ' (' . $Class['Level'] . ')'?>
             </option>
             <?php
             } ?>
@@ -998,18 +998,18 @@ if ($RunQuery) {
     if (!empty($_GET['ip'])) {
         $app->dbOld->query("SELECT ID, IP FROM users_main");
         while (list($ID, $EncIP) = $app->dbOld->next_record()) {
-            $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
+            $IPs[] = $ID . ", '" . \Gazelle\Crypto::decrypt($EncIP) . "'";
         }
         $app->dbOld->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
-        $app->dbOld->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
+        $app->dbOld->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(" . implode("),(", $IPs) . ")");
     }
     if (!empty($_GET['email'])) {
         $app->dbOld->query("SELECT ID, Email FROM users_main");
         while (list($ID, $EncEmail) = $app->dbOld->next_record()) {
-            $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
+            $Emails[] = $ID . ", '" . \Gazelle\Crypto::decrypt($EncEmail) . "'";
         }
         $app->dbOld->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
-        $app->dbOld->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
+        $app->dbOld->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(" . implode("),(", $Emails) . ")");
     }
     $Results = $app->dbOld->query($SQL);
     $app->dbOld->query('SELECT FOUND_ROWS()');
@@ -1053,8 +1053,8 @@ echo $Pages;
     </tr>
     <?php
 while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $app->dbOld->next_record()) {
-    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
-    $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+    $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]';
+    $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
     <tr>
       <td><?=User::format_username($UserID, true, true, true, true)?>
       </td>

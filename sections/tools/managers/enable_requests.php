@@ -141,9 +141,9 @@ SELECT SQL_CALC_FOUND_ROWS
 FROM
   `users_enable_requests` AS uer
 JOIN `users_info` ui ON
-  ui.`UserID` = uer.`UserID` ".implode(' ', $Joins)."
+  ui.`UserID` = uer.`UserID` " . implode(' ', $Joins) . "
 WHERE
-  ".implode(' AND ', $Where)."
+  " . implode(' AND ', $Where) . "
 ORDER BY
   $OrderBy $OrderWay
 LIMIT
@@ -442,11 +442,11 @@ $Pages = Format::get_pages($Page, $NumResults, $RequestsPerPage);
         </td>
 
         <td>
-            <?=\Gazelle\Text::esc(Crypto::decrypt($Email))?>
+            <?=\Gazelle\Text::esc(\Gazelle\Crypto::decrypt($Email))?>
         </td>
 
         <td>
-            <?=\Gazelle\Text::esc(Crypto::decrypt($IP))?>
+            <?=\Gazelle\Text::esc(\Gazelle\Crypto::decrypt($IP))?>
         </td>
 
         <td>
