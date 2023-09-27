@@ -10,6 +10,7 @@ declare(strict_types=1);
 # browse
 Flight::route("POST /api/groups/browse", ["Gazelle\Api\Groups", "browse"]);
 
+
 # crud
 Flight::route("POST /api/groups", ["Gazelle\Api\Groups", "create"]);
 Flight::route("GET /api/groups/@identifier", ["Gazelle\Api\Groups", "read"]);
