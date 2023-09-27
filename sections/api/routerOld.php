@@ -119,5 +119,5 @@ switch ($_GET['action']) {
 
     default:
         // If they're screwing around with the query string
-        json_die('failure');
+        \Gazelle\Api\Base::failure(400);
 }

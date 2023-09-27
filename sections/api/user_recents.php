@@ -9,7 +9,7 @@ $UserID = (int) $_GET['userid'];
 $Limit = (int) $_GET['limit'];
 
 if (empty($UserID) || $Limit > 50) {
-    json_die('failure', 'bad parameters');
+    \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
 if (empty($Limit)) {
@@ -86,7 +86,7 @@ if (check_paranoia_here('uploads')) {
     $Results['uploads'] = 'hidden';
 }
 
-json_die('success', $Results);
+\Gazelle\Api\Base::success(200, $Results);
 
 function check_paranoia_here($Setting)
 {

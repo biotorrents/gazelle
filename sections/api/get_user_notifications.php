@@ -6,4 +6,4 @@ $Skip = [];
 $Skip[] = db_string($_GET['skip']);
 
 $NotificationsManager = new NotificationsManager($app->user->core['id'], $Skip);
-json_die('success', $NotificationsManager->get_notifications());
+\Gazelle\Api\Base::success(200, $NotificationsManager->get_notifications());

@@ -5,7 +5,7 @@
 $app = \Gazelle\App::go();
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    json_die('failure', 'bad parameters');
+    \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
 $CollageID = $_GET['id'];
@@ -34,7 +34,7 @@ if ($CollageData) {
     ");
 
     if (!$app->dbOld->has_results()) {
-        json_die("failure");
+        \Gazelle\Api\Base::failure(400);
     }
 
     list($Name, $Description, $CreatorID, $Deleted, $CollageCategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Updated, $Subscribers) = $app->dbOld->next_record(MYSQLI_NUM);
@@ -140,4 +140,4 @@ if (isset($SetCache)) {
     $app->cache->set($cacheKey, $CollageData, 3600);
 }
 
-json_print('success', $JSON);
+\Gazelle\Api\Base::success(200, $JSON);

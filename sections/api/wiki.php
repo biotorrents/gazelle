@@ -9,27 +9,27 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
     // Retrieve article ID via alias
     $ArticleID = Wiki::alias_to_id($_GET['name']);
 } else {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 // No article found
 if (!$ArticleID) {
-    json_die('failure', 'article not found');
+    \Gazelle\Api\Base::failure(400, 'article not found');
 }
 
 $Article = Wiki::get_article($ArticleID, false);
 if (!$Article) {
-    json_die('failure', 'article not found');
+    \Gazelle\Api\Base::failure(400, 'article not found');
 }
 
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
 if ($Read > $app->user->extra['EffectiveClass']) {
-    json_die('failure', 'higher user class required to view article');
+    \Gazelle\Api\Base::failure(400, 'higher user class required to view article');
 }
 
 $TextBody = \Gazelle\Text::parse($Body, false);
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'title'      => $Title,
   'bbBody'     => $Body,
   'body'       => $TextBody,

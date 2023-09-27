@@ -11,16 +11,16 @@ if (!empty($_GET['artistreleases'])) {
 }
 
 if ($_GET['id'] && $_GET['artistname']) {
-    json_die('failure', 'bad parameters');
+    \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
 $ArtistID = $_GET['id'];
 if ($ArtistID && !is_numeric($ArtistID)) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 if (empty($ArtistID)) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
@@ -28,7 +28,7 @@ if (!empty($_GET['revisionid'])) { // if they're viewing an old revision
     if (!is_numeric($RevisionID)) {
         error(0);
     }
-    $Data = $app->cache->get("artist_$ArtistID"."_revision_$RevisionID");
+    $Data = $app->cache->get("artist_$ArtistID" . "_revision_$RevisionID");
 } else { // viewing the live version
     $Data = $app->cache->get("artist_$ArtistID");
     $RevisionID = false;
@@ -59,7 +59,7 @@ if ($Data) {
     $app->dbOld->query($sql);
 
     if (!$app->dbOld->has_results()) {
-        json_die('failure');
+        \Gazelle\Api\Base::failure(400);
     }
 
     //  list($Name, $Image, $Body, $VanityHouseArtist) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
@@ -135,7 +135,7 @@ $NumGroups = count($TorrentList);
 
 //Get list of used release types
 $UsedReleases = [];
-foreach ($TorrentList as $GroupID=>$Group) {
+foreach ($TorrentList as $GroupID => $Group) {
     if ($Importances[$GroupID]['Importance'] == '2') {
         $TorrentList[$GroupID]['ReleaseType'] = 1024;
         $GuestAlbums = true;
@@ -277,7 +277,7 @@ foreach ($Requests as $RequestID => $Request) {
 //notifications disabled by default
 $notificationsEnabled = false;
 if (check_perms('site_torrents_notify')) {
-    if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
+    if (($Notify = $app->cache->get('notify_artists_' . $app->user->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
@@ -285,7 +285,7 @@ if (check_perms('site_torrents_notify')) {
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
-        $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
+        $app->cache->set('notify_artists_' . $app->user->core['id'], $Notify, 0);
     }
     if (stripos($Notify['Artists'], "|$Name|") === false) {
         $notificationsEnabled = false;
@@ -297,7 +297,7 @@ if (check_perms('site_torrents_notify')) {
 // Cache page for later use
 
 if ($RevisionID) {
-    $Key = "artist_$ArtistID"."_revision_$RevisionID";
+    $Key = "artist_$ArtistID" . "_revision_$RevisionID";
 } else {
     $Key = "artist_$ArtistID";
 }
@@ -306,7 +306,7 @@ $Data = array(array($Name, $Image, $Body));
 
 $app->cache->set($Key, $Data, 3600);
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'id' => (int)$ArtistID,
   'name' => $Name,
   'notificationsEnabled' => $notificationsEnabled,

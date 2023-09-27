@@ -11,7 +11,7 @@ $Count = (int)$_GET['count'];
 $Offset = (int)$_GET['offset'];
 
 if (!isset($_GET['count']) || !isset($_GET['offset']) || $Count <= 0 || $Offset < 0 || $Count > $SizeLimit) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 $app->dbOld->query("
@@ -39,4 +39,4 @@ foreach ($News as $NewsItem) {
     );
 }
 
-json_die('success', json_encode($NewsResponse));
+\Gazelle\Api\Base::success(200, json_encode($NewsResponse));

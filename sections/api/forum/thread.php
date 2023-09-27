@@ -58,7 +58,7 @@ if (isset($_GET['pp'])) {
 // Thread information, constant across all pages
 $ThreadInfo = Forums::get_thread_info($ThreadID, true, true);
 if ($ThreadInfo === null) {
-    json_die('failure', 'no such thread exists');
+    \Gazelle\Api\Base::failure(400, 'no such thread exists');
 }
 $ForumID = $ThreadInfo['ForumID'];
 
@@ -92,7 +92,7 @@ if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
 list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-if (!$Catalogue = $app->cache->get("thread_$ThreadID"."_catalogue_$CatalogueID")) {
+if (!$Catalogue = $app->cache->get("thread_$ThreadID" . "_catalogue_$CatalogueID")) {
     $app->dbOld->query("
     SELECT
       p.ID,
@@ -103,11 +103,11 @@ if (!$Catalogue = $app->cache->get("thread_$ThreadID"."_catalogue_$CatalogueID")
       p.EditedTime
     FROM forums_posts AS p
     WHERE p.TopicID = '$ThreadID'
-      AND p.ID != '".$ThreadInfo['StickyPostID']."'
+      AND p.ID != '" . $ThreadInfo['StickyPostID'] . "'
     LIMIT $CatalogueLimit");
     $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
-        $app->cache->set("thread_$ThreadID"."_catalogue_$CatalogueID", $Catalogue, 0);
+        $app->cache->set("thread_$ThreadID" . "_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
 $Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
@@ -133,7 +133,7 @@ if ($_GET['updatelastread'] !== '0') {
             INSERT INTO forums_last_read_topics
               (UserID, TopicID, PostID)
             VALUES
-              ('{$app->user->core['id']}', '$ThreadID', '".db_string($LastPost)."')
+              ('{$app->user->core['id']}', '$ThreadID', '" . db_string($LastPost) . "')
             ON DUPLICATE KEY UPDATE
               PostID = '$LastPost'");
         }
@@ -148,7 +148,7 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
+    $app->cache->delete('subscriptions_user_new_' . $app->user->core['id']);
 }
 
 $JsonPoll = [];
@@ -195,11 +195,11 @@ if ($ThreadInfo['NoPoll'] === 0) {
     $app->dbOld->query("
     SELECT Vote
     FROM forums_polls_votes
-      WHERE UserID = '".$app->user->core['id']."'
+      WHERE UserID = '" . $app->user->core['id'] . "'
       AND TopicID = '$ThreadID'");
     list($UserResponse) = $app->dbOld->next_record();
     if (!empty($UserResponse) && $UserResponse !== 0) {
-        $Answers[$UserResponse] = '&rsaquo; '.$Answers[$UserResponse];
+        $Answers[$UserResponse] = '&rsaquo; ' . $Answers[$UserResponse];
     } /* else {
         if (!empty($UserResponse) && $RevealVoters) {
             $Answers[$UserResponse] = '&rsaquo; '.$Answers[$UserResponse];

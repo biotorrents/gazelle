@@ -1,11 +1,11 @@
 <?php
 
 if (!check_perms('users_mod')) {
-    json_error(403);
+    \Gazelle\Api\Base::failure(403);
 }
 
 if (!FEATURE_EMAIL_REENABLE) {
-    json_error("This feature is currently disabled.");
+    \Gazelle\Api\Base::failure(400, "This feature is currently disabled.");
 }
 
 $Type = $_GET['type'];
@@ -23,13 +23,13 @@ if ($Type == "resolve") {
     } elseif ($Status == "Discard" || $Status == "Discard Selected") {
         $Status = AutoEnable::DISCARDED;
     } else {
-        json_error("Invalid resolution option");
+        \Gazelle\Api\Base::failure(400, "Invalid resolution option");
     }
 
     if (is_array($IDs) && count($IDs) == 0) {
-        json_error("You must select at least one reuqest to use this option");
+        \Gazelle\Api\Base::failure(400, "You must select at least one reuqest to use this option");
     } elseif (!is_array($IDs) && !is_numeric($IDs)) {
-        json_error("You must select at least 1 request");
+        \Gazelle\Api\Base::failure(400, "You must select at least 1 request");
     }
 
     // Handle request
@@ -38,13 +38,7 @@ if ($Type == "resolve") {
     $ID = (int) $_GET['id'];
     AutoEnable::unresolve_request($ID);
 } else {
-    json_error("Invalid type");
+    \Gazelle\Api\Base::failure(400, "Invalid type");
 }
 
 echo json_encode(array("status" => "success"));
-
-function json_error($Message)
-{
-    echo json_encode(array("status" => $Message));
-    error();
-}

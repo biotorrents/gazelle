@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 list($NumComments, $Page, $Thread) = Comments::load('torrents', (int)$_GET['id'], false);
@@ -36,7 +36,7 @@ foreach ($Thread as $Key => $Post) {
     ];
 }
 
-json_die('success', [
+\Gazelle\Api\Base::success(200, [
   'page' => (int) $Page,
   'pages' => ceil($NumComments / TORRENT_COMMENTS_PER_PAGE),
   'comments' => $JsonComments

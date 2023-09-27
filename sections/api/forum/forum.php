@@ -70,16 +70,16 @@ if (!isset($Forum) || !is_array($Forum)) {
 }
 
 if (!isset($Forums[$ForumID])) {
-    json_die("failure");
+    \Gazelle\Api\Base::failure(400);
 }
 // Make sure they're allowed to look at the page
 if (!check_perms('site_moderate_forums')) {
     if (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] === 0) {
-        json_die("failure", "insufficient permissions to view page");
+        \Gazelle\Api\Base::failure(400, "insufficient permissions to view page");
     }
 }
 if ($app->user->extra['CustomForums'][$ForumID] != 1 && $Forums[$ForumID]['MinClassRead'] > $app->user->extra['Class']) {
-    json_die("failure", "insufficient permissions to view page");
+    \Gazelle\Api\Base::failure(400, "insufficient permissions to view page");
 }
 
 $ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
@@ -118,8 +118,8 @@ if (count($Forum) === 0) {
         ) / $PerPage
       ) AS Page
     FROM forums_last_read_topics AS l
-    WHERE l.TopicID IN(".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$app->user->core['id'].'\'');
+    WHERE l.TopicID IN(" . implode(', ', array_keys($Forum)) . ')
+      AND l.UserID = \'' . $app->user->core['id'] . '\'');
 
     // Turns the result set into a multi-dimensional array, with
     // forums_last_read_topics.TopicID as the key.
@@ -135,7 +135,7 @@ if (count($Forum) === 0) {
         if ((!$Locked || $Sticky)
         && ((empty($LastRead[$TopicID]) || $LastRead[$TopicID]['PostID'] < $LastID)
           && strtotime($LastTime) > $app->user->extra['CatchupTime'])
-    ) {
+        ) {
             $Read = 'unread';
         } else {
             $Read = 'read';
