@@ -18,21 +18,21 @@ declare(strict_types=1);
 class Auth # extends Delight\Auth\Auth
 {
     # library instance
-    public $library = null;
+    public \Delight\Auth\Auth $library;
 
     # 2fa libraries
-    private $twoFactor = null;
+    private \RobThree\Auth\TwoFactorAuth $twoFactor;
 
     # seconds * minutes * hours * days
-    private $shortRemember = 60 * 60 * 24 * 1;
-    private $longRemember = 60 * 60 * 24 * 7;
+    private int $shortRemember = 60 * 60 * 24 * 1;
+    private int $longRemember = 60 * 60 * 24 * 7;
 
     # hash algo for passwords
     # legacy: remove after 2024-04-01
-    private static $algorithm = "sha512";
+    private static string $algorithm = "sha512";
 
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages
-    private $message = "Invalid username, passphrase, or 2FA";
+    private string $message = "Invalid username, passphrase, or 2FA";
 
 
     /**

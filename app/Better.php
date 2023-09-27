@@ -15,7 +15,7 @@ namespace Gazelle;
 class Better
 {
     # how many results to fetch?
-    private static $resultCount = 20;
+    private static int $resultCount = 20;
 
 
     /**

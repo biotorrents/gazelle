@@ -10,7 +10,10 @@ declare(strict_types=1);
 class Crypto
 {
     # databse crypto cipher
-    private static $cipher = "aes-256-cbc";
+    private static string $cipher = "aes-256-cbc";
+
+    # the apcu key to use
+    private static string $key = "DBKEY";
 
 
     /**
@@ -23,7 +26,7 @@ class Crypto
      */
     public static function encrypt(mixed $plaintext): string|bool
     {
-        if (!apcu_exists("DBKEY")) {
+        if (!self::apcuExists()) {
             return false;
         }
 
@@ -37,7 +40,7 @@ class Crypto
             $iv . openssl_encrypt(
                 $plaintext,
                 self::$cipher,
-                apcu_fetch("DBKEY"),
+                apcu_fetch(self::$key),
                 OPENSSL_RAW_DATA,
                 $iv
             )
@@ -55,7 +58,7 @@ class Crypto
      */
     public static function decrypt(mixed $ciphertext): string|bool
     {
-        if (!apcu_exists("DBKEY")) {
+        if (!self::apcuExists()) {
             return false;
         }
 
@@ -69,7 +72,7 @@ class Crypto
         return openssl_decrypt(
             $ciphertext,
             self::$cipher,
-            apcu_fetch("DBKEY"),
+            apcu_fetch(self::$key),
             OPENSSL_RAW_DATA,
             $iv
         );
@@ -79,12 +82,12 @@ class Crypto
     /**
      * apcuExists
      *
-     * Is the DBKEY present?
+     * Is self::$key present?
      *
      * @return bool
      */
     public static function apcuExists(): bool
     {
-        return apcu_exists("DBKEY");
+        return apcu_exists(self::$key);
     }
 } # class

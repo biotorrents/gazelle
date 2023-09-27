@@ -22,7 +22,7 @@ class Base extends \Illuminate\Database\Eloquent\Model
     use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
     # eloquent capsule
-    public $eloquent = null;
+    public \Illuminate\Database\Capsule\Manager $eloquent;
 
 
     /**

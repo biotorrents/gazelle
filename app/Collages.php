@@ -10,7 +10,7 @@ declare(strict_types=1);
 class Collages extends \Gazelle\ObjectCrud
 {
     # database table
-    public $object = "collages";
+    public string $object = "collages";
 
     # object properties
     public $uuid;
@@ -33,7 +33,7 @@ class Collages extends \Gazelle\ObjectCrud
     public $deletedAt;
 
     # ["database" => "display"]
-    protected $maps = [
+    protected array $maps = [
         "uuid" => "uuid",
         "ID" => "id",
         "Name" => "title",
@@ -55,8 +55,8 @@ class Collages extends \Gazelle\ObjectCrud
     ];
 
     # cache settings
-    private $cachePrefix = "collages:";
-    private $cacheDuration = "1 hour";
+    private string $cachePrefix = "collages:";
+    private string $cacheDuration = "1 hour";
 
 
     /**

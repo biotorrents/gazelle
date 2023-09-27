@@ -14,15 +14,15 @@ namespace Gazelle;
 class BonusPoints
 {
     # cache settings
-    private $cachePrefix = "bonusPoints:";
-    private $cacheDuration = "1 minute";
+    private string $cachePrefix = "bonusPoints:";
+    private string $cacheDuration = "1 minute";
 
     # the available bonus points
-    public $bonusPoints = 0;
-    public $pointsRate = 0.0;
+    public int $bonusPoints = 0;
+    public float $pointsRate = 0.0;
 
     # various bonus point stats
-    public $pointsOverTime = [
+    public array $pointsOverTime = [
         "hourly" => 0.0,
         "daily" => 0.0,
         "weekly" => 0.0,
@@ -30,54 +30,54 @@ class BonusPoints
     ];
 
     # how much do bonus points decay over time?
-    public $decayRate = 0.5; # 50%
+    public float $decayRate = 0.5; # 50%
 
     # how much does it cost to exchange upload and bonus points?
-    public $exchangeTax = 0.2; # 20%
+    public float $exchangeTax = 0.2; # 20%
 
     # how much does it cost to send bonus points to another user?
-    public $giftTax = 0.1; # 10%
+    public float $giftTax = 0.1; # 10%
 
     # how much does it cost to vote on a request? (new feature)
-    public $requestTax = 0.1; # 10%
+    public float $requestTax = 0.1; # 10%
 
     /** */
 
     # auction badge stuff
-    public $auctionBadgeStartingCost = 9000; # starting cost
-    public $auctionBadgeCurrentCost = 0; # current cost
-    public $auctionBadgePremium = 1000; # minimum step
+    public int $auctionBadgeStartingCost = 9000; # starting cost
+    public int $auctionBadgeCurrentCost = 0; # current cost
+    public int $auctionBadgePremium = 1000; # minimum step
 
     # coin badge stuff
-    public $coinBadgeStartingCost = 9000; # starting cost
-    public $coinBadgeCurrentCost = 0; # current cost
-    public $coinBadgePremium = 1000; # minimum step
+    public int $coinBadgeStartingCost = 9000; # starting cost
+    public int $coinBadgeCurrentCost = 0; # current cost
+    public int $coinBadgePremium = 1000; # minimum step
 
     # random badges (unique emoji badge)
-    public $randomBadgeCost = 1000000;
+    public int $randomBadgeCost = 1000000;
 
     /** */
 
-    public $randomFreeleechCost = 1000;
-    public $specificFreeleechCost = 2000;
-    public $freeleechTokenCost = 5000;
-    public $neutralLeechTagCost = 10000;
-    public $freeleechTagCost = 20000;
-    public $neutralLeechCategoryCost = 50000;
-    public $freeleechCategoryCost = 100000;
+    public int $randomFreeleechCost = 1000;
+    public int $specificFreeleechCost = 2000;
+    public int $freeleechTokenCost = 5000;
+    public int $neutralLeechTagCost = 10000;
+    public int $freeleechTagCost = 20000;
+    public int $neutralLeechCategoryCost = 50000;
+    public int $freeleechCategoryCost = 100000;
 
-    public $personalCollageCost = 10000;
-    public $inviteCost = 20000;
-    public $customTitleCost = 50000;
-    public $customTitleUpdateCost = 5000;
-    public $glitchUsernameCost = 100000;
+    public int $personalCollageCost = 10000;
+    public int $inviteCost = 20000;
+    public int $customTitleCost = 50000;
+    public int $customTitleUpdateCost = 5000;
+    public int $glitchUsernameCost = 100000;
 
-    public $snowflakeCreateCost = 200000;
-    public $snowflakeUpdateCost = 20000;
+    public int $snowflakeCreateCost = 200000;
+    public int $snowflakeUpdateCost = 20000;
 
     /** */
 
-    public $friendlyItemNames = [
+    public array $friendlyItemNames = [
         "pointsToUpload" => "Convert bonus points to upload",
         "uploadToPoints" => "Convert upload to bonus points",
 
@@ -110,10 +110,10 @@ class BonusPoints
      */
     public function __construct()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (!$app->user || empty($app->user->core)) {
-            throw new \Exception("user not found");
+            throw new Exception("user not found");
         }
 
         /** */
@@ -169,7 +169,7 @@ class BonusPoints
      */
     private function calculatePointsRate(): float
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = $this->cachePrefix . __FUNCTION__ . ":{$app->user->core["id"]}";
@@ -223,10 +223,10 @@ class BonusPoints
      */
     private function deductPoints(int|float $amount): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if ($amount > $this->bonusPoints) {
-            throw new \Exception("insufficient bonus points for this purchase");
+            throw new Exception("insufficient bonus points for this purchase");
         }
 
         # convert to an int
@@ -257,7 +257,7 @@ class BonusPoints
      */
     public function pointsToUpload(int $amount): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # KiB
         $KiB = 1024;
@@ -292,11 +292,11 @@ class BonusPoints
      */
     public function uploadToPoints(int $amount): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # can they afford it?
         if ($amount > $app->user->extra["Uploaded"]) {
-            throw new \Exception("insufficient upload for this purchase");
+            throw new Exception("insufficient upload for this purchase");
         }
 
         # MiB
@@ -331,14 +331,14 @@ class BonusPoints
      */
     public function randomFreeleech(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # get a random torrent group
         $query = "select id from torrents_group where deleted_at is null order by rand() limit 1";
         $groupId = $app->dbNew->single($query);
 
         if (!$groupId) {
-            throw new \Exception("torrent group not found");
+            throw new Exception("torrent group not found");
         }
 
         # deduct the bonus points
@@ -373,7 +373,7 @@ class BonusPoints
      */
     public function specificFreeleech(int|string $groupId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $parsed = parse_url($groupId);
 
@@ -391,7 +391,7 @@ class BonusPoints
 
         # bail out, they messed up
         if (!is_numeric($groupId)) {
-            throw new \Exception("torrent group not found");
+            throw new Exception("torrent group not found");
         }
 
         # get the group's torrents
@@ -422,7 +422,7 @@ class BonusPoints
      */
     public function freeleechToken(): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # deduct the bonus points
         $this->deductPoints($this->freeleechTokenCost);
@@ -443,7 +443,7 @@ class BonusPoints
      */
     public function neutralLeechTag(int|string $tagId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # did they pass a tagId?
         if (is_numeric($tagId)) {
@@ -458,7 +458,7 @@ class BonusPoints
 
         # bail out, they messed up
         if (empty($tagId) || !is_numeric($tagId)) {
-            throw new \Exception("tag not found");
+            throw new Exception("tag not found");
         }
 
         # deduct the bonus points
@@ -499,7 +499,7 @@ class BonusPoints
      */
     public function freeleechTag(int|string $tagId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # did they pass a tagId?
         if (is_numeric($tagId)) {
@@ -514,7 +514,7 @@ class BonusPoints
 
         # bail out, they messed up
         if (empty($tagId) || !is_numeric($tagId)) {
-            throw new \Exception("tag not found");
+            throw new Exception("tag not found");
         }
 
         # deduct the bonus points
@@ -555,7 +555,7 @@ class BonusPoints
      */
     public function neutralLeechCategory(int|string $categoryId)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # did they pass a categoryId?
         if (is_numeric($categoryId)) {
@@ -570,7 +570,7 @@ class BonusPoints
 
         # bail out, they messed up
         if (empty($tagId) || !is_numeric($tagId)) {
-            throw new \Exception("tag not found");
+            throw new Exception("tag not found");
         }
 
         # deduct the bonus points
@@ -611,7 +611,7 @@ class BonusPoints
      */
     public function freeleechCategory(int $categoryId): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # deduct the bonus points
         $this->deductPoints($this->freeleechCategoryCost);
@@ -632,7 +632,7 @@ class BonusPoints
      */
     public function personalCollage(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # create a personal collage (uncaught exception intended)
         $collageData = \Collages::createPersonal();
@@ -654,7 +654,7 @@ class BonusPoints
      */
     public function invite(): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # deduct the bonus points
         $this->deductPoints($this->inviteCost);
@@ -681,11 +681,11 @@ class BonusPoints
      */
     public function customTitle(string $title): ?string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # check the title length
         if (strlen($title) > 64) {
-            throw new \Exception("your chosen title is too long");
+            throw new Exception("your chosen title is too long");
         }
 
         # leave blank to remove the title
@@ -715,7 +715,7 @@ class BonusPoints
      */
     public function glitchUsername(bool|string $isDelete = false): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # because html forms pass strings
         match ($isDelete) {
@@ -750,7 +750,7 @@ class BonusPoints
      */
     public function snowflakeProfile(string $snowflake, bool|string $isUpdate): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # because html forms pass strings
         match ($isDelete) {
@@ -761,7 +761,7 @@ class BonusPoints
         # make sure it's one emoji
         $allEmojis = \Spatie\Emoji\Emoji::all();
         if (!in_array($snowflake, $allEmojis)) {
-            throw new \Exception("your chosen snowflake isn't a single emoji");
+            throw new Exception("your chosen snowflake isn't a single emoji");
         }
 
         # deduct the bonus points
@@ -789,7 +789,7 @@ class BonusPoints
      */
     public function sequentialBadge(): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # what badge, if any, do they currently own?
         $currentBadge = null;
@@ -803,7 +803,7 @@ class BonusPoints
 
         # did they already buy all the badges?
         if (!$currentBadge) {
-            throw new \Exception("you already have all the badges");
+            throw new Exception("you already have all the badges");
         }
 
         # can they afford the current badge?
@@ -831,14 +831,14 @@ class BonusPoints
      */
     public function lotteryBadge(int $bet, array|string $votes): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (empty($bet) || empty($votes)) {
-            throw new \Exception("your bet and votes can't be empty");
+            throw new Exception("your bet and votes can't be empty");
         }
 
         if ($bet > $this->bonusPoints) {
-            throw new \Exception("you're betting more than you have");
+            throw new Exception("you're betting more than you have");
         }
 
         # do we need to handle a string argument?
@@ -962,7 +962,7 @@ class BonusPoints
             # gambling is bad
             $this->deductPoints($bet);
 
-            throw new \Exception("you already own the badge {$icon}, please play again");
+            throw new Exception("you already own the badge {$icon}, please play again");
         }
 
         # deduct the bonus points and award the badge
@@ -993,16 +993,16 @@ class BonusPoints
      */
     public function auctionBadge(int $payment): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->auctionBadgeId);
         if ($hasBadge) {
-            throw new \Exception("you already own this badge");
+            throw new Exception("you already own this badge");
         }
 
         # did they pay enough bonus points?
         if ($payment < $this->auctionBadgeCurrentCost + $this->auctionBadgePremium) {
-            throw new \Exception("insufficient payment amount; the minimum payment is " . $this->auctionBadgeCurrentCost + $this->auctionBadgePremium);
+            throw new Exception("insufficient payment amount; the minimum payment is " . $this->auctionBadgeCurrentCost + $this->auctionBadgePremium);
         }
 
         # deduct the bonus points
@@ -1027,16 +1027,16 @@ class BonusPoints
      */
     public function coinBadge(int $payment): int
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->coinBadgeId);
         if ($hasBadge) {
-            throw new \Exception("you already own this badge");
+            throw new Exception("you already own this badge");
         }
 
         # did they pay enough bonus points?
         if ($payment < $this->coinBadgeCurrentCost + $this->coinBadgePremium) {
-            throw new \Exception("insufficient payment amount; the minimum payment is " . $this->coinBadgeCurrentCost + $this->coinBadgePremium);
+            throw new Exception("insufficient payment amount; the minimum payment is " . $this->coinBadgeCurrentCost + $this->coinBadgePremium);
         }
 
         # deduct the bonus points and award the badge
@@ -1060,7 +1060,7 @@ class BonusPoints
      */
     public function randomBadge(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $allEmojis = \Spatie\Emoji\Emoji::all();
         $randomEmoji = array_rand($allEmojis);

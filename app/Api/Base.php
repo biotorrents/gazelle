@@ -16,7 +16,7 @@ namespace Gazelle\Api;
 class Base
 {
     # https://jsonapi.org/format/#document-jsonapi-object
-    private static $version = "1.2.0";
+    private static string $version = "1.2.0";
 
 
     /**
