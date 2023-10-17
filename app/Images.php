@@ -30,7 +30,7 @@ class Images
      */
     public static function process(string|array $uri, $thumbnail = false): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $presharedKey = $app->env->private("imagePsk");
 

@@ -204,7 +204,7 @@ class Esc
 
         if (!preg_match("/{$app->env->regexUsername}/iD", $safe)) {
             # todo: throw
-            #throw new \Exception("invalid username");
+            #throw new Exception("invalid username");
         }
 
         return strval($safe);

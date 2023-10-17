@@ -17,6 +17,9 @@ class Friends
      * create
      *
      * Adds a friend.
+     *
+     * @param array $data
+     * @return ?int
      */
     public static function create(array $data = []): ?int
     {
@@ -42,8 +45,11 @@ class Friends
      * read
      *
      * Returns an array of friends.
+     *
+     * @param array $data
+     * @return ?array
      */
-    public static function read(array $data = []): array
+    public static function read(array $data = []): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -88,6 +94,9 @@ class Friends
      * update
      *
      * Changes a friend's comment.
+     *
+     * @param array $data
+     * @return ?int
      */
     public static function update(array $data = []): ?int
     {
@@ -99,6 +108,9 @@ class Friends
      * delete
      *
      * Removes a friend.
+     *
+     * @param array $data
+     * @return void
      */
     public static function delete(array $data = []): void
     {
@@ -122,8 +134,11 @@ class Friends
      * isFriend
      *
      * Returns true if a friend exists.
+     *
+     * @param array $data
+     * @return ?bool
      */
-    public static function isFriend(array $data = []): bool
+    public static function isFriend(array $data = []): ?bool
     {
         $app = \Gazelle\App::go();
 
@@ -162,8 +177,11 @@ class Friends
      * validate
      *
      * Validates an array of function arguments.
+     *
+     * @param array $data
+     * @return ?array
      */
-    private static function validate(array $data = []): array
+    private static function validate(array $data = []): ?array
     {
         $app = \Gazelle\App::go();
 

@@ -85,6 +85,9 @@ class Top10
      * dailyTorrents
      *
      * Gets the top daily torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function dailyTorrents(int $limit = null): ?array
     {
@@ -112,6 +115,9 @@ class Top10
      * weeklyTorrents
      *
      * Gets the top weekly torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function weeklyTorrents(int $limit = null): ?array
     {
@@ -139,6 +145,9 @@ class Top10
      * monthlyTorrents
      *
      * Gets the top monthly torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function monthlyTorrents(int $limit = null): ?array
     {
@@ -166,6 +175,9 @@ class Top10
      * yearlyTorrents
      *
      * Gets the top yearly torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function yearlyTorrents(int $limit = null): ?array
     {
@@ -192,6 +204,9 @@ class Top10
      * overallTorrents
      *
      * Gets the top torrents of all time.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function overallTorrents(int $limit = null): ?array
     {
@@ -219,6 +234,9 @@ class Top10
      * torrentSeeders
      *
      * Gets the top torrents by seed count.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function torrentSeeders(int $limit = null): ?array
     {
@@ -246,6 +264,9 @@ class Top10
      * torrentSnatches
      *
      * Gets the top snatched torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function torrentSnatches(int $limit = null): ?array
     {
@@ -273,6 +294,9 @@ class Top10
      * torrentData
      *
      * Gets the top torrents by data transferred.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function torrentData(int $limit = null): ?array
     {
@@ -300,6 +324,9 @@ class Top10
      * torrentHistory
      *
      * Gets the top torrent history.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function torrentHistory(int $limit = null): ?array
     {
@@ -314,6 +341,9 @@ class Top10
      * torrentTags
      *
      * Gets the top torrent tags.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function torrentTags(int $limit = null): ?array
     {
@@ -348,6 +378,9 @@ class Top10
      * requestTags
      *
      * Gets the top request tags.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function requestTags(int $limit = null): ?array
     {
@@ -385,6 +418,9 @@ class Top10
      * hydrateUserVariables
      *
      * Gets around the static property issues in user queries.
+     *
+     * @param int $limit
+     * @return ?array
      */
     private static function hydrateUserVariables(int $limit = null): ?array
     {
@@ -432,6 +468,9 @@ class Top10
      *     AND u.ID > 2
      *     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
      *   GROUP BY u.ID";
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function dataUploaded(int $limit = null): ?array
     {
@@ -461,6 +500,9 @@ class Top10
      * dataDownloaded
      *
      * Gets the top users by download amount.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function dataDownloaded(int $limit = null): ?array
     {
@@ -490,6 +532,9 @@ class Top10
      * uploadCount
      *
      * Gets the top users by upload count.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public static function uploadCount(int $limit = null): ?array
     {
@@ -520,7 +565,8 @@ class Top10
      *
      * Gets the top users by upload speed.
      *
-     * todo
+     * @param int $limit
+     * @return ?array
      */
     public static function uploadSpeed(int $limit = null): ?array
     {
@@ -551,7 +597,8 @@ class Top10
      *
      * Gets the top users by download speed.
      *
-     * todo
+     * @param int $limit
+     * @return ?array
      */
     public static function downloadSpeed(int $limit = null): ?array
     {
@@ -583,6 +630,9 @@ class Top10
      * donors
      *
      * Gets the top donors.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public function donors()
     {

@@ -61,6 +61,9 @@ class Collages extends \Gazelle\ObjectCrud
 
     /**
      * addSubscription
+     *
+     * @param int $collageId
+     * @return void
      */
     public static function addSubscription(int $collageId): void
     {
@@ -73,6 +76,9 @@ class Collages extends \Gazelle\ObjectCrud
 
     /**
      * subtractSubscription
+     *
+     * @param int $collageId
+     * @return void
      */
     public static function subtractSubscription(int $collageId): void
     {
@@ -92,6 +98,8 @@ class Collages extends \Gazelle\ObjectCrud
 
     /**
      * isSubscribed
+     *
+     * @return bool
      */
     public function isSubscribed(): bool
     {
@@ -151,6 +159,8 @@ class Collages extends \Gazelle\ObjectCrud
 
     /**
      * torrentGroups
+     *
+     * @return array
      */
     public function torrentGroups(): array
     {
@@ -221,7 +231,7 @@ class Collages extends \Gazelle\ObjectCrud
             $return["topContributors"][$row["userId"]] += 1;
 
             # get the topTags
-            $query = "select tagId, groupId from torrents_tags where groupId = ?";
+            $query = "select tagId from torrents_tags where groupId = ?";
             $topTags = $app->dbNew->column($query, [ $row["groupId"] ]);
 
             foreach ($topTags as $tagId) {
@@ -254,6 +264,10 @@ class Collages extends \Gazelle\ObjectCrud
      * addCreator
      *
      * Taken from the sections, potentially useful for "workgroup feature pages."
+     *
+     * @param int $collageId
+     * @param int $creatorId
+     * @return void
      */
     public function addCreator($collageId, $creatorId): void
     {
