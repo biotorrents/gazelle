@@ -1,0 +1,17 @@
+{##
+ # https://github.com/gzuidhof/starboard-wrap
+ #}
+
+<div id="mount-point"></div>
+
+<script type="module">
+    import {StarboardEmbed} from "/js/vendor/starboard-wrap.js"
+    const mount = document.querySelector("#mount-point");
+
+    const el = new StarboardEmbed({
+        notebookContent: "# %% [javascript]\n3+5\n",
+        src: "https://cdn.starboard.gg/npm/starboard-notebook@0.13.2/dist/index.html"
+    });
+
+    mount.appendChild(el);
+</script>
