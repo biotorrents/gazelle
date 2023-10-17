@@ -221,6 +221,7 @@ function toggleChecks(formElem, masterElem, elemSelector) {
 /**
  * lightbox
  */
+/*
 var lightbox = {
   init: function (image, size) {
     if ($("#lightbox").length == 0 || $("#curtain").length == 0) {
@@ -310,6 +311,7 @@ window.onkeydown = function (e) {
     }
   }
 };
+*/
 
 
 /**
@@ -434,6 +436,7 @@ function ungetCover(event) {
 /**
  * iife
  */
+/*
 $(function () {
   document.querySelectorAll("[data-toggle-target]").forEach(function (el) {
     el.addEventListener("click", function (event) {
@@ -456,3 +459,4 @@ $(function () {
     );
   });
 });
+*/
