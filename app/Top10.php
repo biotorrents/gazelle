@@ -86,7 +86,7 @@ class Top10
      *
      * Gets the top daily torrents.
      */
-    public static function dailyTorrents(int $limit = null): array
+    public static function dailyTorrents(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -113,7 +113,7 @@ class Top10
      *
      * Gets the top weekly torrents.
      */
-    public static function weeklyTorrents(int $limit = null): array
+    public static function weeklyTorrents(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -140,7 +140,7 @@ class Top10
      *
      * Gets the top monthly torrents.
      */
-    public static function monthlyTorrents(int $limit = null): array
+    public static function monthlyTorrents(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -167,7 +167,7 @@ class Top10
      *
      * Gets the top yearly torrents.
      */
-    public static function yearlyTorrents(int $limit = null): array
+    public static function yearlyTorrents(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -193,7 +193,7 @@ class Top10
      *
      * Gets the top torrents of all time.
      */
-    public static function overallTorrents(int $limit = null): array
+    public static function overallTorrents(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -220,7 +220,7 @@ class Top10
      *
      * Gets the top torrents by seed count.
      */
-    public static function torrentSeeders(int $limit = null): array
+    public static function torrentSeeders(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -247,7 +247,7 @@ class Top10
      *
      * Gets the top snatched torrents.
      */
-    public static function torrentSnatches(int $limit = null): array
+    public static function torrentSnatches(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -274,7 +274,7 @@ class Top10
      *
      * Gets the top torrents by data transferred.
      */
-    public static function torrentData(int $limit = null): array
+    public static function torrentData(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -301,7 +301,7 @@ class Top10
      *
      * Gets the top torrent history.
      */
-    public static function torrentHistory(int $limit = null): array
+    public static function torrentHistory(int $limit = null): ?array
     {
         throw new \Exception("not implemented");
     }
@@ -315,7 +315,7 @@ class Top10
      *
      * Gets the top torrent tags.
      */
-    public static function torrentTags(int $limit = null): array
+    public static function torrentTags(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -349,7 +349,7 @@ class Top10
      *
      * Gets the top request tags.
      */
-    public static function requestTags(int $limit = null): array
+    public static function requestTags(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -386,7 +386,7 @@ class Top10
      *
      * Gets around the static property issues in user queries.
      */
-    private static function hydrateUserVariables(int $limit = null): array
+    private static function hydrateUserVariables(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -433,7 +433,7 @@ class Top10
      *     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
      *   GROUP BY u.ID";
      */
-    public static function dataUploaded(int $limit = null): array
+    public static function dataUploaded(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -462,7 +462,7 @@ class Top10
      *
      * Gets the top users by download amount.
      */
-    public static function dataDownloaded(int $limit = null): array
+    public static function dataDownloaded(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -491,7 +491,7 @@ class Top10
      *
      * Gets the top users by upload count.
      */
-    public static function uploadCount(int $limit = null): array
+    public static function uploadCount(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -522,7 +522,7 @@ class Top10
      *
      * todo
      */
-    public static function uploadSpeed(int $limit = null): array
+    public static function uploadSpeed(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -553,7 +553,7 @@ class Top10
      *
      * todo
      */
-    public static function downloadSpeed(int $limit = null): array
+    public static function downloadSpeed(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 

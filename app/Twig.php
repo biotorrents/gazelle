@@ -236,7 +236,7 @@ class Twig extends \Twig\Environment
 
         # Format::pretty_category
         $twig->addFilter(new \Twig\TwigFilter("categoryIcon", function ($categoryId) {
-            $markup = "<div title='" . \Format::pretty_category($categoryId) . "' class='" . Format::css_category($categoryId) . "' />";
+            $markup = "<div title='" . \Format::pretty_category($categoryId) . "' class='" . \Format::css_category($categoryId) . "' />";
             return new \Twig\Markup(
                 $markup,
                 "UTF-8"
