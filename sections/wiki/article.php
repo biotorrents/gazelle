@@ -18,18 +18,26 @@ if (!is_numeric($identifier)) {
     $identifier = \Gazelle\Wiki::alias_to_id($identifier);
 }
 
-# unable to resolve identifier to an articleId
-if (!$identifier) {
+# load the article
+$article = new \Gazelle\Wiki($identifier);
+if (!$article) {
     $app->error(404);
+}
+
+!d($article->body);
+
+# make sure it's a valid starboard notebook
+$good = preg_match("/{$app->env->regexStarboard}/", $article->body);
+if (!$good) {
+    # default to markdown
+    $article->body = "# %% [markdown]\n" . $article->body;
 }
 
 # twig template
 $app->twig->display("wiki/article.twig", [
-
-    'article' => \Gazelle\Wiki::get_article($identifier),
-    'auth'    => $app->user->auth(),
-    'classes' => $app->user->classList(),
-    'user'    => $app->user->toArray(),
+    "title" => $article->title,
+    "sidebar" => true,
+    "article" => $article,
 ]);
 exit;
 

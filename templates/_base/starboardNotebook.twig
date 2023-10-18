@@ -1,4 +1,7 @@
 {##
+ # {% set vars = { "id": someVar, "content": someVar } %}
+ # {% include "_base/starboardNotebook.twig" with vars %}
+ #
  # https://github.com/gzuidhof/starboard-wrap
  #}
 
@@ -9,7 +12,7 @@
     const mount = document.querySelector("#starboardNotebook");
 
     const el = new StarboardEmbed({
-        notebookContent: "{{ content|raw }}",
+        notebookContent: `{{ content|raw }}`,
         src: "https://{{ env.starboardDomain }}"
     });
 

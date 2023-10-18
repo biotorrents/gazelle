@@ -66,9 +66,11 @@ if ($app->env->enableDiscourse) {
     /** WIKI */
 
 
+    /*
     # e.g., /wiki/bonus-points
     Flight::route("/wiki(/@slug)", function ($slug) {
         $app = \Gazelle\App::go();
         require_once "{$app->env->serverRoot}/sections/discourse/wiki/index.php";
     });
+    */
 } # if enableDiscourse

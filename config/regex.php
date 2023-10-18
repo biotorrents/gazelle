@@ -127,3 +127,8 @@ $env->regexRefSeq = "\w{2}_\d{1,}\.\d{1,}";
 # https://www.uniprot.org/help/accession_numbers
 # flags: none
 $env->regexUniProt = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}";
+
+
+# https://github.com/gzuidhof/starboard-notebook/blob/master/docs/format.md
+# flags: none
+$env->regexStarboard = "^(#|\/\/)\s*%{2,}-*";

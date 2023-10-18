@@ -1,0 +1,22 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+<h2>{{ article.title }}</h2>
+
+{% set vars = { "id": article.id, "content": article.body } %}
+{% include "_base/starboardNotebook.twig" with vars %}
+
+</section>
+
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("wiki/sidebar.twig") }}
+
+{% endblock %}
