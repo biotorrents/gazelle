@@ -6,7 +6,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $ArticleID = (int) $_GET['id'];
-$Article = Wiki::get_article($ArticleID);
+$Article = \Gazelle\Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $Author) = array_shift($Article);
 
 if ($Edit > $app->user->extra['EffectiveClass']) {
@@ -14,7 +14,7 @@ if ($Edit > $app->user->extra['EffectiveClass']) {
 }
 
 View::header(
-    'Edit '.$Title,
+    'Edit ' . $Title,
     'vendor/easymde.min',
     'vendor/easymde.min'
 );
@@ -41,7 +41,7 @@ $ReplyText = View::textarea(
     value: \Gazelle\Text::esc($Body) ?? '',
 );
 
-  if (check_perms('admin_manage_wiki')) { ?>
+if (check_perms('admin_manage_wiki')) { ?>
         <h3>Access</h3>
         <p>
           There are some situations in which the viewing

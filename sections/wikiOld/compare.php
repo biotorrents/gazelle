@@ -26,21 +26,21 @@ function diff($OldText, $NewText)
         }
 
         if ($Found === '-1') { // We never found the old line in the new array
-            $Result[] = '<span class="line_deleted">&larr; '.$OldString.'</span><br>';
+            $Result[] = '<span class="line_deleted">&larr; ' . $OldString . '</span><br>';
             $LineOffset = $LineOffset - 1;
         } elseif ($Found === $OldLine + $LineOffset) {
-            $Result[] = '<span class="line_unchanged">&#8597; '.$OldString.'</span><br>';
+            $Result[] = '<span class="line_unchanged">&#8597; ' . $OldString . '</span><br>';
         } elseif ($Found !== $OldLine + $LineOffset) {
             if ($Found < $OldLine + $LineOffset) {
-                $Result[] = '<span class="line_moved">&#8676; '.$OldString.'</span><br>';
+                $Result[] = '<span class="line_moved">&#8676; ' . $OldString . '</span><br>';
             } else {
-                $Result[] = '<span class="line_moved">&larr; '.$OldString.'</span><br>';
+                $Result[] = '<span class="line_moved">&larr; ' . $OldString . '</span><br>';
                 $Key = $OldLine + $LineOffset;
                 while ($Key < $Found) {
-                    $Result[] = '<span class="line_new">&rarr; '.$LineArrayNew[$Key].'</span><br>';
+                    $Result[] = '<span class="line_new">&rarr; ' . $LineArrayNew[$Key] . '</span><br>';
                     $Key++;
                 }
-                $Result[] = '<span class="line_moved">&rarr; '.$OldString.'</span><br>';
+                $Result[] = '<span class="line_moved">&rarr; ' . $OldString . '</span><br>';
             }
             $LineOffset = $Found - $OldLine;
         }
@@ -49,7 +49,7 @@ function diff($OldText, $NewText)
     if (count($LineArrayNew) > count($LineArrayOld) + $LineOffset) {
         $Key = count($LineArrayOld) + $LineOffset;
         while ($Key < count($LineArrayNew)) {
-            $Result[] = '<span class="line_new">&rarr; '.$LineArrayNew[$Key].'</span><br>';
+            $Result[] = '<span class="line_new">&rarr; ' . $LineArrayNew[$Key] . '</span><br>';
             $Key++;
         }
     }
@@ -68,17 +68,17 @@ function get_body($ID, $Rev)
         $Str = $Body;
     } else {
         */
-        $app->dbOld->prepared_query("
+    $app->dbOld->prepared_query("
           SELECT Body
           FROM wiki_revisions
           WHERE ID = '$ID'
             AND Revision = '$Rev'");
 
-        if (!$app->dbOld->has_results()) {
-            error(404);
-            exit;
-        }
-        list($Str) = $app->dbOld->next_record();
+    if (!$app->dbOld->has_results()) {
+        error(404);
+        exit;
+    }
+    list($Str) = $app->dbOld->next_record();
     #}
     return $Str;
 }
@@ -98,7 +98,7 @@ if ($_GET['old'] > $_GET['new']) {
 }
 
 $ArticleID = (int) $_GET['id'];
-$Article = Wiki::get_article($ArticleID);
+$Article = \Gazelle\Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Article);
 
 /*

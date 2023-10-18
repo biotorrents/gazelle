@@ -10,7 +10,7 @@
 
     const el = new StarboardEmbed({
         notebookContent: "{{ content|raw }}",
-        src: "https://starboard.torrents.bio"
+        src: "https://{{ env.starboardDomain }}"
     });
 
     mount.appendChild(el);

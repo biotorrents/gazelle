@@ -7,7 +7,7 @@ if (!empty($_GET['id']) && is_numeric($_GET['id'])) {
     $ArticleID = $_GET['id'];
 } elseif ($_GET['name'] !== '') {
     // Retrieve article ID via alias
-    $ArticleID = Wiki::alias_to_id($_GET['name']);
+    $ArticleID = \Gazelle\Wiki::alias_to_id($_GET['name']);
 } else {
     \Gazelle\Api\Base::failure(400);
 }
@@ -17,7 +17,7 @@ if (!$ArticleID) {
     \Gazelle\Api\Base::failure(400, 'article not found');
 }
 
-$Article = Wiki::get_article($ArticleID, false);
+$Article = \Gazelle\Wiki::get_article($ArticleID, false);
 if (!$Article) {
     \Gazelle\Api\Base::failure(400, 'article not found');
 }

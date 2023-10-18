@@ -1,5 +1,41 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * read wiki article
+ */
+
+$app = \Gazelle\App::go();
+
+# is there an identifier?
+$identifier ??= 1; # default to articleId 1
+
+# is the identifier an integer?
+if (!is_numeric($identifier)) {
+    # no, it's not an integer, so it must be an alias
+    $identifier = \Gazelle\Wiki::alias_to_id($identifier);
+}
+
+# unable to resolve identifier to an articleId
+if (!$identifier) {
+    $app->error(404);
+}
+
+# twig template
+$app->twig->display("wiki/article.twig", [
+
+    'article' => \Gazelle\Wiki::get_article($identifier),
+    'auth'    => $app->user->auth(),
+    'classes' => $app->user->classList(),
+    'user'    => $app->user->toArray(),
+]);
+exit;
+
+
+/** legacy code */
+
 
 $ENV = \Gazelle\ENV::go();
 $twig = \Gazelle\Twig::go();
@@ -11,9 +47,9 @@ $_GET["id"] ??= null;
 if (!empty($_GET['id'])) {
     $ArticleID = (int) $_GET['id'];
 } elseif ($_GET['name'] !== '') {
-    $ArticleID = Wiki::alias_to_id($_GET['name']);
+    $ArticleID = \Gazelle\Wiki::alias_to_id($_GET['name']);
 } else {
-    error('Unknown article: '.\Gazelle\Text::esc($_GET['id']));
+    error('Unknown article: ' . \Gazelle\Text::esc($_GET['id']));
 }
 
 Security::int($ArticleID);
@@ -34,7 +70,7 @@ if (!$ArticleID) { // No article found
         for an article similar to this.</li>
 
       <li><a
-          href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(Wiki::normalize_alias($_GET['name']))?>">Create</a>
+          href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(\Gazelle\Wiki::normalize_alias($_GET['name']))?>">Create</a>
         an article in its place.</li>
     </ul>
   </div>
@@ -44,7 +80,7 @@ if (!$ArticleID) { // No article found
     #error();
 }
 
-$Article = Wiki::get_article($ArticleID);
+$Article = \Gazelle\Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName, $Aliases, $UserIDs) = array_shift($Article);
 
 /*

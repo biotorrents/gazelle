@@ -109,6 +109,14 @@ $env->imageDomain = "pics.torrents.bio";
 $env->docsDomain = "docs.torrents.bio";
 
 
+# starboard notebook site
+# https://github.com/gzuidhof/starboard-notebook
+$env->starboardDomain = "starboard.torrents.bio"; # set as null to use guido's cdn
+if (!$env->starboardDomain) {
+    $env->starboardDomain = "cdn.starboard.gg/npm/starboard-notebook@0.13.2/dist/index.html";
+}
+
+
 # web root: currently used for twig
 $env->webRoot = "/var/www";
 

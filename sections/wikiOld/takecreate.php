@@ -9,7 +9,7 @@ authorize();
 $P = [];
 $P = db_array($_POST);
 
-include serverRoot.'/classes/validate.class.php';
+include serverRoot . '/classes/validate.class.php';
 $Val = new Validate();
 
 $Val->SetFields('title', '1', 'string', 'The title must be between 3 and 100 characters', array('maxlength' => 100, 'minlength' => 3));
@@ -24,7 +24,7 @@ if (!$Err) {
 
     if ($app->dbOld->has_results()) {
         list($ID) = $app->dbOld->next_record();
-        $Err = 'An article with that name already exists <a href="wiki.php?action=article&amp;id='.$ID.'">here</a>.';
+        $Err = 'An article with that name already exists <a href="wiki.php?action=article&amp;id=' . $ID . '">here</a>.';
     }
 }
 
@@ -63,15 +63,15 @@ $app->dbOld->prepared_query("
     ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '{{$app->user->core['id']}}')");
 
 $ArticleID = $app->dbOld->inserted_id();
-$TitleAlias = Wiki::normalize_alias($_POST['title']);
-$Dupe = Wiki::alias_to_id($_POST['title']);
+$TitleAlias = \Gazelle\Wiki::normalize_alias($_POST['title']);
+$Dupe = \Gazelle\Wiki::alias_to_id($_POST['title']);
 
 if ($TitleAlias !== '' && $Dupe === false) {
     $app->dbOld->prepared_query("
       INSERT INTO wiki_aliases (Alias, ArticleID)
-      VALUES ('".db_string($TitleAlias)."', '$ArticleID')");
-    Wiki::flush_aliases();
+      VALUES ('" . db_string($TitleAlias) . "', '$ArticleID')");
+    \Gazelle\Wiki::flush_aliases();
 }
 
-Misc::write_log("Wiki article $ArticleID (".$_POST['title'].") was created by ".$app->user->core['username']);
+Misc::write_log("Wiki article $ArticleID (" . $_POST['title'] . ") was created by " . $app->user->core['username']);
 Http::redirect("wiki.php?action=article&id=$ArticleID");

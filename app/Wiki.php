@@ -4,13 +4,54 @@ declare(strict_types=1);
 
 
 /**
- * Wiki
+ * Gazelle\Wiki
  *
- * THIS IS GOING AWAY
+ * Literal notebooks powered by Starboard Notebook.
+ *
+ * @see https://github.com/gzuidhof/starboard-notebook
  */
 
-class Wiki
+namespace Gazelle;
+
+class Wiki extends ObjectCrud
 {
+    # database table
+    public string $object = "wiki_articles";
+
+    # object properties
+    public $uuid;
+    public $id;
+    public $revision;
+    public $title;
+    public $body;
+    public $minClassRead;
+    public $minClassEdit;
+    public $authorId;
+    public $createdAt;
+    public $updatedAt;
+    public $deletedAt;
+
+    # ["database" => "display"]
+    protected array $maps = [
+        "uuid" => "uuid",
+        "ID" => "id",
+        "Revision" => "revision",
+        "Title" => "title",
+        "Body" => "body",
+        "MinClassRead" => "minClassRead",
+        "MinClassEdit" => "minClassEdit",
+        #"Date" => "createdAt",
+        "Author" => "authorId",
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+
+    # cache settings
+    private string $cachePrefix = "wiki:";
+    private string $cacheDuration = "1 hour";
+
+
     /**
      * Normalize a wiki alias.
      * The database determines length:
@@ -109,7 +150,7 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $Contents = $app->cache->get('wiki_article_'.$ArticleID);
+        $Contents = $app->cache->get('wiki_article_' . $ArticleID);
         if (!$Contents) {
             $QueryID = $app->dbOld->get_query_id();
 
@@ -149,7 +190,7 @@ class Wiki
 
             $Contents = $app->dbOld->to_array();
             $app->dbOld->set_query_id($QueryID);
-            $app->cache->set('wiki_article_'.$ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
+            $app->cache->set('wiki_article_' . $ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
         }
 
         return $Contents;
@@ -166,6 +207,6 @@ class Wiki
     {
         $app = \Gazelle\App::go();
 
-        $app->cache->delete('wiki_article_'.$ArticleID);
+        $app->cache->delete('wiki_article_' . $ArticleID);
     }
 }

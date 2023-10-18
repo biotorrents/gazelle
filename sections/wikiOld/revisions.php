@@ -8,7 +8,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 }
 
 $ArticleID = (int) $_GET['id'];
-$Latest = Wiki::get_article($ArticleID);
+$Latest = \Gazelle\Wiki::get_article($ArticleID);
 list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Latest);
 
 /*
@@ -21,7 +21,7 @@ if ($Edit > $app->user->extra['EffectiveClass']) {
 }
 */
 
-View::header("Revisions of ".$Title);
+View::header("Revisions of " . $Title);
 ?>
 
 <div>

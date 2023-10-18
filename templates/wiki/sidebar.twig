@@ -1,0 +1,23 @@
+<h3>Actions</h3>
+
+<form>
+    <a href="/better/single" {{ (currentPage == "single") ? "class='button button-primary'" : "class='button'" }}>single seeder</a>
+
+    <a href="/better/literature" {{ (currentPage == "literature") ? "class='button button-primary'" : "class='button'" }}>doi numbers</a>
+
+    <a href="/better/pictures" {{ (currentPage == "pictures") ? "class='button button-primary'" : "class='button'" }}>pictures</a>
+
+    <a href="/better/tags" {{ (currentPage == "tags") ? "class='button button-primary'" : "class='button'" }}>tags</a>
+
+    <a href="/better/folders" {{ (currentPage == "folders") ? "class='button button-primary'" : "class='button'" }}>folder names</a>
+
+    <hr>
+
+    {% if snatchedOnly %}
+        <a href="/better/{{ currentPage }}" class="button">show all torrents</a>
+    {% else %}
+        <a href="/better/{{ currentPage }}?snatches=true" class="button">show snatched torrents</a>
+    {% endif %}
+
+    <a href="/better" class="button button-orange">back to index</a>
+</form>

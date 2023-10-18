@@ -4,10 +4,10 @@
 $app = \Gazelle\App::go();
 
 if (empty($_GET['nojump'])) {
-    $ArticleID = Wiki::alias_to_id($_GET['search']);
+    $ArticleID = \Gazelle\Wiki::alias_to_id($_GET['search']);
     if ($ArticleID) {
         // Found the article!
-        header('Location: wiki.php?action=article&id='.$ArticleID);
+        header('Location: wiki.php?action=article&id=' . $ArticleID);
         error();
     }
 }
@@ -17,9 +17,9 @@ list($Page, $Limit) = Format::page_limit(ARTICLES_PER_PAGE);
 
 $OrderVals = array('Title', 'Created', 'Edited');
 $WayVals = array('Ascending', 'Descending');
-$TypeTable = array('Title'=>'Title', 'Body'=>'Body');
-$OrderTable = array('Title'=>'Title', 'Created'=>'ID', 'Edited'=>'Date');
-$WayTable = array('Ascending'=>'ASC', 'Descending'=>'DESC');
+$TypeTable = array('Title' => 'Title', 'Body' => 'Body');
+$OrderTable = array('Title' => 'Title', 'Created' => 'ID', 'Edited' => 'Date');
+$WayTable = array('Ascending' => 'ASC', 'Descending' => 'DESC');
 
 // What are we looking for? Let's make sure it isn't dangerous
 $Search = db_string(trim($_GET['search']));
@@ -54,7 +54,7 @@ $SQL = "
     Date,
     Author
   FROM wiki_articles
-  WHERE MinClassRead <= '".$app->user->extra['EffectiveClass']."'";
+  WHERE MinClassRead <= '" . $app->user->extra['EffectiveClass'] . "'";
 
 if ($Search !== '') {
     $SQL .= " AND $Type LIKE '%";
@@ -78,7 +78,7 @@ $app->dbOld->set_query_id($RS);
   <div class="header">
     <h2>Search articles</h2>
     <div class="linkbox">
-      <a href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(Wiki::normalize_alias($_GET['search']))?>"
+      <a href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(\Gazelle\Wiki::normalize_alias($_GET['search']))?>"
         class="brackets">Create an article</a>
     </div>
   </div>
@@ -166,7 +166,7 @@ $app->dbOld->set_query_id($RS);
 
   <?php
   $Pages = Format::get_pages($Page, $NumResults, ARTICLES_PER_PAGE);
-  if ($Pages) { ?>
+if ($Pages) { ?>
   <div class="linkbox pager">
     <?=($Pages)?>
   </div>
@@ -180,7 +180,7 @@ $app->dbOld->set_query_id($RS);
     </tr>
 
     <?php
-    while (list($ID, $Title, $Date, $UserID) = $app->dbOld->next_record()) { ?>
+  while (list($ID, $Title, $Date, $UserID) = $app->dbOld->next_record()) { ?>
     <tr>
       <td><a href="wiki.php?action=article&amp;id=<?=$ID?>"><?=$Title?></a></td>
       <td><?=$Date?>

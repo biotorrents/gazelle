@@ -36,7 +36,7 @@ abstract class ObjectCrud
      */
     public function create(array $data = []): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # map display => database
         $transform = $this->displayToDatabase($data);
@@ -66,7 +66,7 @@ abstract class ObjectCrud
      */
     public function read(int|string $identifier): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
@@ -90,7 +90,7 @@ abstract class ObjectCrud
      */
     public function update(int|string $identifier, array $data = [])
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # does the object exist?
         if (!$this->exists($identifier)) {
@@ -114,7 +114,7 @@ abstract class ObjectCrud
      */
     public function delete(int|string $identifier): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # does the object exist?
         if (!$this->exists($identifier)) {
@@ -138,7 +138,7 @@ abstract class ObjectCrud
      */
     public function exists(int|string $identifier): bool
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
@@ -158,7 +158,7 @@ abstract class ObjectCrud
      */
     public function save()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         foreach ($this->maps as $key => $value) {
             $data[$key] = $this->$value;
