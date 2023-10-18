@@ -24,8 +24,6 @@ if (!$article) {
     $app->error(404);
 }
 
-!d($article->body);
-
 # make sure it's a valid starboard notebook
 $good = preg_match("/{$app->env->regexStarboard}/", $article->body);
 if (!$good) {
@@ -38,6 +36,7 @@ $app->twig->display("wiki/article.twig", [
     "title" => $article->title,
     "sidebar" => true,
     "article" => $article,
+    "aliases" => $article->getAliases(),
 ]);
 exit;
 

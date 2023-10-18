@@ -7,13 +7,6 @@ declare(strict_types=1);
  * wiki
  */
 
-# article
-Flight::route("/wiki(/@identifier)", function ($identifier = null) {
-    $app = \Gazelle\App::go();
-    require_once "{$app->env->serverRoot}/sections/wiki/article.php";
-});
-
-
 # compare
 Flight::route("/wiki/@identifier/compare", function ($identifier = null) {
     $app = \Gazelle\App::go();
@@ -32,4 +25,18 @@ Flight::route("/wiki/@identifier/edit", function ($identifier = null) {
 Flight::route("/wiki/browse", function ($identifier = null) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/browse.php";
+});
+
+
+# create
+Flight::route("/wiki/create", function ($identifier = null) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/wiki/create.php";
+});
+
+
+# article: must be last!
+Flight::route("/wiki(/@identifier)", function ($identifier = null) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/wiki/article.php";
 });

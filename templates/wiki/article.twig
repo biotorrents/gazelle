@@ -4,13 +4,11 @@
 {% block content %}
 
 <section>
-<h2>{{ article.title }}</h2>
+    <h2>{{ article.title }}</h2>
 
-{% set vars = { "id": article.id, "content": article.body } %}
-{% include "_base/starboardNotebook.twig" with vars %}
-
+    {% set vars = { "id": article.id, "content": article.body } %}
+    {% include "_base/starboardNotebook.twig" with vars %}
 </section>
-
 
 {% endblock %}
 

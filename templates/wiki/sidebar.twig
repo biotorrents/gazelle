@@ -1,6 +1,95 @@
+<section>
 <h3>Actions</h3>
 
-<form>
-    <a href="/better/single" class="button">single seeder</a>
+<form method="post" action="/wiki/search">
+    {{ form_token("/wiki/search") }}
 
+    <input type="text" name="query" placeholder="Find wiki articles" required>
+
+    <button type="submit" class="button button button-primary">search the wiki</button>
 </form>
+
+<hr>
+<br>
+
+<form>
+    <a href="/wiki/create" class="button button-primary">create a new article</a>
+
+    <a href="/wiki/{{ article.id }}/history" class="button button-green">view this article's history</a>
+
+    <a href="/wiki/{{ article.id }}/edit" class="button button-orange">save your edits</a>
+
+    <a href="/wiki/{{ article.id }}/delete" class="button button-red">delete this article</a>
+</form>
+</section>
+
+
+<section>
+<h3>About this article</h3>
+
+<table class="compact">
+    <tr>
+        <th>Revision</th>
+        <td>{{ article.revision }}</td>
+    </tr>
+
+    <tr>
+        <th>Last edited by</th>
+        <td>{{ article.authorId|formatUsername }}</td>
+    </tr>
+
+    <tr>
+        <th>Last updated</th>
+        {% if not article.updatedAt %}
+            <td>
+                <span class="tooltip" title="{{ article.createdAt }}">{{ article.createdAt|relativeTime }}</span>
+            </td>
+        {% else %}
+            <td>
+                <span class="tooltip" title="{{ article.updatedAt }}">{{ article.updatedAt|relativeTime }}</span>
+            </td>
+        {% endif %}
+    </tr>
+
+{#
+    <tr>
+        <td colspan="2"><hr></td>
+    </tr>
+#}
+
+{#
+    <tr>
+        <th>Minimum read class</th>
+        <td>{{ article.minClassRead }}</td>
+    </tr>
+#}
+
+{#
+    <tr>
+        <th>Minimum edit class</th>
+        <td>{{ article.minClassEdit }}</td>
+    </tr>
+#}
+</table>
+</section>
+
+
+<section>
+<h3>Aliases</h3>
+
+<table class="compact">
+    {% for item in aliases %}
+        <tr>
+            <th>{{ item }}</th>
+            <td class="right">
+                <a class="button deleteWikiAlias" data-alias={{ item }}>delete</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+<form>
+    <input type="text" name="alias" id="newAliasContent" data-articleid={{ article.id }} placeholder="e.g., someDescriptiveSlug">
+
+    <a class="button button-primary" id="createWikiAlias">add an alias</a>
+</section>

@@ -53,6 +53,34 @@ class Wiki extends ObjectCrud
 
 
     /**
+     * getAliases
+     *
+     * Gets the aliases for a wiki article by id.
+     *
+     * @return ?array
+     */
+    public function getAliases(): ?array
+    {
+        $app = App::go();
+
+        $query = "select alias from wiki_aliases where articleId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        /*
+        $aliases = [];
+        foreach ($ref as $row) {
+            $aliases[$row["id"]] = $row["alias"];
+        }
+        */
+
+        return $ref;
+    }
+
+
+    /** legacy code */
+
+
+    /**
      * Normalize a wiki alias.
      * The database determines length:
      * wiki_aliases.Alias
