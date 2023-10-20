@@ -22,14 +22,14 @@ Flight::route("/wiki/create", function () {
 
 
 # compare
-Flight::route("/wiki/@identifier/compare", function ($identifier) {
+Flight::route("/wiki/compare/@identifier", function ($identifier) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/compare.php";
 });
 
 
 # delete
-Flight::route("/wiki/@identifier/delete", function ($identifier) {
+Flight::route("/wiki/delete/@identifier", function ($identifier) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/delete.php";
 });

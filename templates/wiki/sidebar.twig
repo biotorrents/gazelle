@@ -16,12 +16,12 @@
 <form>
     <a href="/wiki/create" class="button button-primary">create a new article</a>
 
-    <a href="/wiki/{{ article.id }}/compare" class="button button-green">view this article's history</a>
+    <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
     <a id="updateWikiArticle" data-articleid="{{ article.id }}" class="button button-orange">save your edits</a>
 
     {% if can("admin_manage_wiki") and article.id != 1 %}
-        <a href="/wiki/{{ article.id }}/delete" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
+        <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
     {% endif %}
 </form>
 </section>

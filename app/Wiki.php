@@ -154,6 +154,45 @@ class Wiki extends ObjectCrud
     }
 
 
+    /**
+     * getOneRevision
+     *
+     * Gets one revision for a wiki article by id and revision.
+     */
+    public function getOneRevision(int $revision): array
+    {
+        $app = App::go();
+
+        $query = "select * from wiki_revisions where id = ? and revision = ?";
+        $ref = $app->dbNew->row($query, [$this->id, $revision]);
+
+        return $ref;
+    }
+
+
+    /**
+     * getAllRevisions
+     *
+     * Gets all the revisions for a wiki article by id.
+     *
+     * @return array e.g., [revisionId => date] in descending order
+     */
+    public function getAllRevisions(): array
+    {
+        $app = App::go();
+
+        $query = "select revision, created_at from wiki_revisions where id = ? order by revision desc";
+        $ref = $app->dbNew->multi($query, [$this->id]);
+
+        $revisions = [];
+        foreach ($ref as $row) {
+            $revisions[$row["revision"]] = $row["created_at"];
+        }
+
+        return $revisions;
+    }
+
+
     /** legacy code */
 
 

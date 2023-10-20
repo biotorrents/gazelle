@@ -14,14 +14,6 @@ if (!empty($_REQUEST['action'])) {
             }
             break;
 
-        case 'revisions':
-            require_once "$ENV->serverRoot/sections/wikiOld/revisions.php";
-            break;
-
-        case 'compare':
-            require_once "$ENV->serverRoot/sections/wikiOld/compare.php";
-            break;
-
         case 'add_alias':
             require_once "$ENV->serverRoot/sections/wikiOld/add_alias.php";
             break;

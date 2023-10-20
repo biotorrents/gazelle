@@ -1,131 +1,69 @@
 <?php
-#declare(strict_types=1);
 
-// Diff function by Leto of StC
-function diff($OldText, $NewText)
-{
-    $LineArrayOld = explode("\n", $OldText);
-    $LineArrayNew = explode("\n", $NewText);
-    $LineOffset = 0;
-    $Result = [];
+declare(strict_types=1);
 
-    foreach ($LineArrayOld as $OldLine => $OldString) {
-        $Key = $OldLine + $LineOffset;
-        if ($Key < 0) {
-            $Key = 0;
-        }
-        $Found = -1;
 
-        while ($Key < count($LineArrayNew)) {
-            if ($OldString !== $LineArrayNew[$Key]) {
-                $Key++;
-            } elseif ($OldString === $LineArrayNew[$Key]) {
-                $Found = $Key;
-                break;
-            }
-        }
+/**
+ * compare wiki article revisions
+ */
 
-        if ($Found === '-1') { // We never found the old line in the new array
-            $Result[] = '<span class="line_deleted">&larr; ' . $OldString . '</span><br>';
-            $LineOffset = $LineOffset - 1;
-        } elseif ($Found === $OldLine + $LineOffset) {
-            $Result[] = '<span class="line_unchanged">&#8597; ' . $OldString . '</span><br>';
-        } elseif ($Found !== $OldLine + $LineOffset) {
-            if ($Found < $OldLine + $LineOffset) {
-                $Result[] = '<span class="line_moved">&#8676; ' . $OldString . '</span><br>';
-            } else {
-                $Result[] = '<span class="line_moved">&larr; ' . $OldString . '</span><br>';
-                $Key = $OldLine + $LineOffset;
-                while ($Key < $Found) {
-                    $Result[] = '<span class="line_new">&rarr; ' . $LineArrayNew[$Key] . '</span><br>';
-                    $Key++;
-                }
-                $Result[] = '<span class="line_moved">&rarr; ' . $OldString . '</span><br>';
-            }
-            $LineOffset = $Found - $OldLine;
-        }
-    }
+$app = \Gazelle\App::go();
 
-    if (count($LineArrayNew) > count($LineArrayOld) + $LineOffset) {
-        $Key = count($LineArrayOld) + $LineOffset;
-        while ($Key < count($LineArrayNew)) {
-            $Result[] = '<span class="line_new">&rarr; ' . $LineArrayNew[$Key] . '</span><br>';
-            $Key++;
-        }
-    }
-    return $Result;
+# is there an identifier?
+$identifier ??= null;
+if (!$identifier) {
+    $app->error(404);
 }
 
-function get_body($ID, $Rev)
-{
-    $app = \Gazelle\App::go();
-
-    # $Rev is a str, $Revision an int
-    #global $Revision, $Body;
-
-    /*
-    if ((int) $Rev === $Revision) {
-        $Str = $Body;
-    } else {
-        */
-    $app->dbOld->prepared_query("
-          SELECT Body
-          FROM wiki_revisions
-          WHERE ID = '$ID'
-            AND Revision = '$Rev'");
-
-    if (!$app->dbOld->has_results()) {
-        error(404);
-        exit;
-    }
-    list($Str) = $app->dbOld->next_record();
-    #}
-    return $Str;
+# is the identifier an integer?
+if (!is_numeric($identifier)) {
+    # no, it's not an integer, so it must be an alias
+    $identifier = \Gazelle\Wiki::alias_to_id($identifier);
 }
 
-if (!isset($_GET['old'])
-  || !isset($_GET['new'])
-  || !isset($_GET['id'])
-  || !is_numeric($_GET['old'])
-  || !is_numeric($_GET['new'])
-  || !is_numeric($_GET['id'])
-) {
-    error(400);
+# load the article
+$article = new \Gazelle\Wiki($identifier);
+if (!$article->id) {
+    $app->error(404);
 }
 
-if ($_GET['old'] > $_GET['new']) {
-    error('The new revision compared must be newer than the old revision to compare against.');
+/** */
+
+# get the article revisions
+$revisions = $article->getAllRevisions();
+#!d($revisions);exit;
+
+# note the reversed order of the revisions
+$post = Http::post();
+$secondRevision = intval($post["secondRevision"] ?? null);
+$firstRevision = intval($post["firstRevision"] ?? null);
+
+# if not requested, use the first and second revisions
+if (empty($secondRevision) || empty($firstRevision)) {
+    $revisionIds = array_keys($revisions);
+    $secondRevision = $revisionIds[1];
+    $firstRevision = $revisionIds[0];
 }
 
-$ArticleID = (int) $_GET['id'];
-$Article = \Gazelle\Wiki::get_article($ArticleID);
-list($Revision, $Title, $Body, $Read, $Edit, $Date, $AuthorID, $AuthorName) = array_shift($Article);
+# get the revision bodies
+$secondBody = $article->getOneRevision($secondRevision);
+$firstBody = $article->getOneRevision($firstRevision);
 
-/*
-if ($Edit > $app->user->extra['EffectiveClass']) {
-    error(404);
-}
-*/
+# diff the bodies
+$differ = new SebastianBergmann\Diff\Differ();
+$diff =  $differ->diff($secondBody["Body"], $firstBody["Body"]);
 
-View::header('Compare Article Revisions');
-$Diff2 = get_body($ArticleID, $_GET['new']);
-$Diff1 = get_body($ArticleID, $_GET['old']);
-?>
+# twig template
+$app->twig->display("wiki/compare.twig", [
+    "title" => "Revision history for {$article->title}",
+    "sidebar" => true,
+    "js" => ["wiki"],
+    "article" => $article,
+    "aliases" => $article->getAliases(),
+    "roles" => Permissions::listRoles(),
 
-<div>
-    <div class="header">
-        <h2>Compare <a
-                href="wiki.php?action=article&amp;id=<?=$ArticleID?>"><?=$Title?></a> Revisions</h2>
-    </div>
-
-    <div class="box center_revision" id="center">
-        <div class="body">
-            <?php
-      foreach (diff($Diff1, $Diff2) as $Line) {
-          echo $Line;
-      } ?>
-        </div>
-    </div>
-</div>
-<?php
-View::footer();
+    "revisions" => $revisions,
+    "secondRevision" => $secondRevision ??= null,
+    "firstRevision" => $firstRevision ??= null,
+    "diff" => $diff,
+]);
