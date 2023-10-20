@@ -54,11 +54,12 @@
             </td>
         {% endif %}
     </tr>
+</table>
 
-    <tr>
-        <td colspan="2"><hr></td>
-    </tr>
+<hr>
+<br>
 
+<table class="compact">
     <tr>
         <th>Minimum read class</th>
         {% if can("admin_manage_wiki") and user.extra.Class >= article.minClassEdit %}
