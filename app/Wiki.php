@@ -94,6 +94,42 @@ class Wiki extends ObjectCrud
 
 
     /**
+     * delete
+     */
+    public function delete(int|string $identifier): void
+    {
+        $app = App::go();
+
+        # check permissions
+        if ($app->user->cant("admin_manage_wiki")) {
+            throw new Exception("invalid permissions");
+        }
+
+        if ($this->minClassEdit > $app->user->extra["Class"]) {
+            throw new Exception("invalid permissions");
+        }
+
+        # prevent deleting the wiki index
+        if ($this->id === 1) {
+            throw new Exception("can't delete the index article");
+        }
+
+        # write to the site log
+        \Misc::write_log("the wiki article {$identifier} with the title {$this->title} was deleted by {$app->user->core["username"]}");
+
+        # delete aliases and revisions
+        $query = "delete from wiki_aliases where articleId = ?";
+        $app->dbNew->do($query, [$this->id]);
+
+        $query = "delete from wiki_revisions where id = ?";
+        $app->dbNew->do($query, [$this->id]);
+
+        # perform a soft delete on the article itself
+        parent::delete($this->id);
+    }
+
+
+    /**
      * getAliases
      *
      * Gets the aliases for a wiki article by id.

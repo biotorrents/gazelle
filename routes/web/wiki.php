@@ -7,13 +7,6 @@ declare(strict_types=1);
  * wiki
  */
 
-# compare
-Flight::route("/wiki/@identifier/compare", function ($identifier) {
-    $app = \Gazelle\App::go();
-    require_once "{$app->env->serverRoot}/sections/wiki/compare.php";
-});
-
-
 # browse
 Flight::route("/wiki/browse", function () {
     $app = \Gazelle\App::go();
@@ -25,6 +18,20 @@ Flight::route("/wiki/browse", function () {
 Flight::route("/wiki/create", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/create.php";
+});
+
+
+# compare
+Flight::route("/wiki/@identifier/compare", function ($identifier) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/wiki/compare.php";
+});
+
+
+# delete
+Flight::route("/wiki/@identifier/delete", function ($identifier) {
+    $app = \Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/wiki/delete.php";
 });
 
 

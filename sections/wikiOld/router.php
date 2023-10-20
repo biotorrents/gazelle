@@ -2,20 +2,6 @@
 
 declare(strict_types=1);
 
-/**
- * Flight router
- * @see https://flightphp.com/learn
- */
-
-# endpoints go here
-
-# start the router
-#Flight::start();
-
-
-/** LEGACY ROUTES */
-
-
 $ENV = \Gazelle\ENV::go();
 
 if (!empty($_REQUEST['action'])) {
@@ -26,10 +12,6 @@ if (!empty($_REQUEST['action'])) {
             } else {
                 require_once "$ENV->serverRoot/sections/wikiOld/create.php";
             }
-            break;
-
-        case 'delete':
-            require_once "$ENV->serverRoot/sections/wikiOld/delete.php";
             break;
 
         case 'revisions':
@@ -60,6 +42,4 @@ if (!empty($_REQUEST['action'])) {
             require_once "$ENV->serverRoot/sections/wikiOld/search.php";
             break;
     }
-} else {
-    require_once "$ENV->serverRoot/sections/wikiOld/article.php";
 }

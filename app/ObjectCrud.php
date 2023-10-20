@@ -122,6 +122,9 @@ abstract class ObjectCrud
     {
         $app = App::go();
 
+        # determine the identifier
+        $column = $app->dbNew->determineIdentifier($identifier);
+
         # does the object exist?
         if (!$this->exists($identifier)) {
             throw new \Exception("can't delete from {$this->object} where the {$column} is {$identifier}");

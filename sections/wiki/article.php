@@ -8,7 +8,6 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
-#!d($app->user);exit;
 
 # is there an identifier?
 $identifier ??= 1; # default to articleId 1
@@ -21,7 +20,7 @@ if (!is_numeric($identifier)) {
 
 # load the article
 $article = new \Gazelle\Wiki($identifier);
-if (!$article) {
+if (!$article->id) {
     $app->error(404);
 }
 
