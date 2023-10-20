@@ -53,6 +53,47 @@ class Wiki extends ObjectCrud
 
 
     /**
+     * update
+     */
+    public function update(int|string $identifier, array $data = []): void
+    {
+        $app = App::go();
+
+        # check permissions
+        if ($app->user->cant("site_edit_wiki")) {
+            throw new Exception("invalid permissions");
+        }
+
+        if ($this->minClassEdit > $app->user->extra["Class"]) {
+            throw new Exception("invalid permissions");
+        }
+
+        # first, create a revision
+        $query = "
+            insert into wiki_revisions (id, revision, title, body, date, author)
+            values (:id, :revision, :title, :body, :date, :author)
+        ";
+
+        $variables = [
+            "id" => $this->id,
+            "revision" => $this->revision,
+            "title" => $this->title,
+            "body" => $this->body,
+            "date" => $this->updatedAt ?? $this->createdAt,
+            "author" => $this->authorId,
+        ];
+
+        $app->dbNew->do($query, $variables);
+
+        # then, update the article
+        $data["revision"] = $this->revision + 1;
+        $data["author"] = $app->user->core["id"];
+
+        parent::update($this->id, $data);
+    }
+
+
+    /**
      * getAliases
      *
      * Gets the aliases for a wiki article by id.

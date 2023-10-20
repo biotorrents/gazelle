@@ -20,7 +20,9 @@
 
     <a id="updateWikiArticle" data-articleid="{{ article.id }}" class="button button-orange">save your edits</a>
 
-    <a href="/wiki/{{ article.id }}/delete" class="button button-red">delete this article</a>
+    {% if can("admin_manage_wiki") and article.id != 1 %}
+        <a href="/wiki/{{ article.id }}/delete" class="button button-red">delete this article</a>
+    {% endif %}
 </form>
 </section>
 
@@ -53,25 +55,39 @@
         {% endif %}
     </tr>
 
-{#
     <tr>
         <td colspan="2"><hr></td>
     </tr>
-#}
 
-{#
     <tr>
         <th>Minimum read class</th>
-        <td>{{ article.minClassRead }}</td>
+        {% if can("admin_manage_wiki") and user.extra.Class >= article.minClassEdit %}
+            <td>
+                <select id="minClassRead">
+                    {% for key, value in roles %}
+                        <option value="{{ key }}" {{ (article.minClassRead == key) ? "selected" : "" }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        {% else %}
+            <td>{{ roles[article.minClassRead] }}</td>
+        {% endif %}
     </tr>
-#}
 
-{#
     <tr>
         <th>Minimum edit class</th>
-        <td>{{ article.minClassEdit }}</td>
+        {% if can("admin_manage_wiki") and user.extra.Class >= article.minClassEdit %}
+            <td>
+                <select id="minClassEdit">
+                    {% for key, value in roles %}
+                        <option value="{{ key }}" {{ (article.minClassEdit == key) ? "selected" : "" }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        {% else %}
+            <td>{{ roles[article.minClassEdit] }}</td>
+        {% endif %}
     </tr>
-#}
 </table>
 </section>
 

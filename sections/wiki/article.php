@@ -8,6 +8,7 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
+#!d($app->user);exit;
 
 # is there an identifier?
 $identifier ??= 1; # default to articleId 1
@@ -39,4 +40,5 @@ $app->twig->display("wiki/article.twig", [
     "js" => ["wiki"],
     "article" => $article,
     "aliases" => $article->getAliases(),
+    "roles" => Permissions::listRoles(),
 ]);

@@ -41,9 +41,17 @@
   $("#updateWikiArticle").on("click", (event) => {
     // the data to send
     var request = {
-      articleId: $(event.target).data("articleid"),
-      content: window.notebookContent,
+      id: $(event.target).data("articleid"),
+      title: $("#articleTitle").val(),
+      body: window.notebookContent,
+      minClassRead: $("#minClassRead").val(),
+      minClassEdit: $("#minClassEdit").val(),
     };
+
+    // remove the body if it's empty
+    if (!request.body) {
+      delete request.body;
+    }
 
     // ajax request
     $.ajax("/api/internal/updateWikiArticle", {

@@ -687,19 +687,20 @@ class Internal extends Base
         self::validateFrontendHash();
 
         $request = \Http::json();
-        $request["articleId"] ??= null;
-        $request["content"] ??= null;
-
-        if (empty($request["articleId"]) || empty($request["content"])) {
-            self::failure(400, "articleId and content required");
-        }
+        $request["id"] ??= null;
 
         try {
-            $article = new \Gazelle\Wiki($request["articleId"]);
-            $article->body = $request["content"];
-            $article->save();
+            if ($request["id"]) {
+                # update
+                $article = new \Gazelle\Wiki($request["id"]);
+                $article->update($article->id, $request);
+            } else {
+                # create
+                throw new \Exception("not implemented");
+            }
 
-            self::success(200, "updated article {$request["articleId"]}");
+            # todo: not returning the *new* data
+            self::success(200, $article);
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

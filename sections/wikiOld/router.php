@@ -18,31 +18,6 @@ declare(strict_types=1);
 
 $ENV = \Gazelle\ENV::go();
 
-enforce_login();
-define('INDEX_ARTICLE', '1');
-
-function class_list($Selected = 0)
-{
-    $app = \Gazelle\App::go();
-
-    global $Classes;
-    $Return = '';
-
-    foreach ($Classes as $ID => $Class) {
-        if ($Class['Level'] <= $app->user->extra['EffectiveClass']) {
-            $Return .= '<option value="' . $Class['Level'] . '"';
-
-            if ($Selected === $Class['Level']) {
-                $Return .= ' selected="selected"';
-            }
-            $Return .= '>' . \Gazelle\Text::limit($Class['Name'], 20) . '</option>' . "\n";
-        }
-    }
-
-    reset($Classes);
-    return $Return;
-}
-
 if (!empty($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case 'create':
@@ -50,14 +25,6 @@ if (!empty($_REQUEST['action'])) {
                 require_once "$ENV->serverRoot/sections/wikiOld/takecreate.php";
             } else {
                 require_once "$ENV->serverRoot/sections/wikiOld/create.php";
-            }
-            break;
-
-        case 'edit':
-            if ($_POST['action']) {
-                require_once "$ENV->serverRoot/sections/wikiOld/takeedit.php";
-            } else {
-                require_once "$ENV->serverRoot/sections/wikiOld/edit.php";
             }
             break;
 
@@ -94,6 +61,5 @@ if (!empty($_REQUEST['action'])) {
             break;
     }
 } else {
-    $_GET['id'] = INDEX_ARTICLE;
     require_once "$ENV->serverRoot/sections/wikiOld/article.php";
 }

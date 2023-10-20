@@ -14,13 +14,6 @@ Flight::route("/wiki/@identifier/compare", function ($identifier) {
 });
 
 
-# edit
-Flight::route("/wiki/@identifier/edit", function ($identifier) {
-    $app = \Gazelle\App::go();
-    require_once "{$app->env->serverRoot}/sections/wiki/edit.php";
-});
-
-
 # browse
 Flight::route("/wiki/browse", function () {
     $app = \Gazelle\App::go();

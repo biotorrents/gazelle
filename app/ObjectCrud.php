@@ -88,7 +88,7 @@ abstract class ObjectCrud
     /**
      * update
      */
-    public function update(int|string $identifier, array $data = [])
+    public function update(int|string $identifier, array $data = []): void
     {
         $app = App::go();
 
@@ -104,8 +104,14 @@ abstract class ObjectCrud
         $column = $app->dbNew->determineIdentifier($identifier);
         $transform[$column] = $identifier;
 
+        # SQLSTATE[42000]: Syntax error or access violation: 1110 Column 'ID' specified twice
+        $transform["id"] ??= null;
+        if ($transform["id"]) {
+            unset($transform["id"]);
+        }
+
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->object, $translatedRows);
+        $upsert = $app->dbNew->upsert($this->object, $transform);
     }
 
 
