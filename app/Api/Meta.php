@@ -16,10 +16,12 @@ class Meta extends Base
      */
     public static function manifest(): void
     {
+        $app = \Gazelle\App::go();
+
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         try {
-            $data = \Gazelle\App::manifest();
+            $data = $app->manifest();
 
             self::success(200, $data);
         } catch (\Throwable $e) {

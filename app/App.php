@@ -244,42 +244,46 @@ class App
      *
      * Prints an app manifest.
      */
-    public static function manifest()
+    public function manifest()
     {
-        $app = self::go();
-
         # https://developer.mozilla.org/en-US/docs/Web/Manifest
         $manifest = [
+            # schema
             "\$schema" => "https://json.schemastore.org/web-manifest-combined.json",
+
+            # identity
             "name" => $this->env->siteName,
             "short_name" => $this->env->siteName,
-            "start_url" => "/",
-            "display" => "standalone",
-            "background_color" => "#ffffff",
-            "theme_color" => "#0288d1",
             "description" => $this->env->siteDescription,
+            "id" => $this->env->siteName,
+
+            # presentation
+            "start_url" => ".",
+            "theme_color" => "#0288d1",
+            "background_color" => "#ffffff",
+            "orientation" => "landscape-primary",
+            "display" => "standalone",
+
+            # icons
             "icons" => [
                 [
                     "src" => "/images/logos/colorfulWaves-whiteShadow-2k.webp",
                     "sizes" => "2048x2048",
                     "type" => "image/webp",
                 ],
-            ],
-            /*
-            "related_applications" => [
                 [
-                    "platform" => "play",
-                    "url" => "https://play.google.com/store/apps/details?id=cheeaun.hackerweb",
+                    "src" => "/images/logos/simpleFavicon-2k.webp",
+                    "sizes" => "2048x2048",
+                    "type" => "image/webp",
                 ],
             ],
-            */
+
+            # window controls overlay
+            "display_override" => ["window-controls-overlay"],
         ];
 
-        # return array
-        return $manifest;
-
         # return json
-        #return json_encode($manifest, JSON_UNESCAPED_SLASHES);
+        return json_encode($manifest, JSON_UNESCAPED_SLASHES);
     }
 
 

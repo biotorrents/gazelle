@@ -45,8 +45,11 @@ Flight::route("/dmca", function () {
 
 # manifest
 Flight::route("/manifest", function () {
-    header("Content-Type: application/vnd.api+json; charset=utf-8");
-    echo json_encode(\Gazelle\App::manifest(), JSON_UNESCAPED_SLASHES);
+    $app = \Gazelle\App::go();
+
+    header("Content-Type: application/manifest+json; charset=utf-8");
+    echo $app->manifest();
+
     exit;
 });
 
