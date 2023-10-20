@@ -8,28 +8,28 @@ declare(strict_types=1);
  */
 
 # compare
-Flight::route("/wiki/@identifier/compare", function ($identifier = null) {
+Flight::route("/wiki/@identifier/compare", function ($identifier) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/compare.php";
 });
 
 
 # edit
-Flight::route("/wiki/@identifier/edit", function ($identifier = null) {
+Flight::route("/wiki/@identifier/edit", function ($identifier) {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/edit.php";
 });
 
 
 # browse
-Flight::route("/wiki/browse", function ($identifier = null) {
+Flight::route("/wiki/browse", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/browse.php";
 });
 
 
 # create
-Flight::route("/wiki/create", function ($identifier = null) {
+Flight::route("/wiki/create", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/wiki/create.php";
 });

@@ -1,5 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
+
+/**
+ * create wiki article
+ */
 
 View::header(
     'Create an article',
@@ -26,7 +32,7 @@ $ReplyText = View::textarea(
     id: 'body',
 );
 
-  if (check_perms('admin_manage_wiki')) { ?>
+if (check_perms('admin_manage_wiki')) { ?>
         <h3>Access</h3>
         <p>There are some situations in which the viewing or editing of an article should be restricted to a certain
           class.</p>

@@ -654,4 +654,54 @@ class Internal extends Base
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** wiki */
+
+
+    /**
+     * createWikiAlias
+     *
+     * Creates a new wiki article alias.
+     */
+    public static function createWikiAlias(): void {}
+
+
+    /**
+     * deleteWikiAlias
+     *
+     * Deletes a wiki article alias.
+     */
+    public static function deleteWikiAlias(): void {}
+
+
+    /**
+     * updateWikiArticle
+     *
+     * Updates a wiki article's content.
+     */
+    public static function updateWikiArticle(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["articleId"] ??= null;
+        $request["content"] ??= null;
+
+        if (empty($request["articleId"]) || empty($request["content"])) {
+            self::failure(400, "articleId and content required");
+        }
+
+        try {
+            $article = new \Gazelle\Wiki($request["articleId"]);
+            $article->body = $request["content"];
+            $article->save();
+
+            self::success(200, "updated article {$request["articleId"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 } # class

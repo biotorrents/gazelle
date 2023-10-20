@@ -670,7 +670,7 @@ class Database extends \PDO
         $lastInsertId = $this->lastInsertId(); # 0 if not inserted
         if (!empty($lastInsertId)) {
             $query = "select * from {$table} where id = ?";
-            return $this->row($query, [$lastInsertId], "source");
+            return $this->row($query, [$lastInsertId], ["hostname" => "source"]);
         }
 
         # it was updated, resolve a key from the data
@@ -678,7 +678,7 @@ class Database extends \PDO
             if (in_array(strtolower(strval($key)), ["id", "uuid", "slug"])) {
                 $column = $this->determineIdentifier($value);
                 $query = "select * from {$table} where {$column} = ?";
-                return $this->row($query, [$value], "source");
+                return $this->row($query, [$value], ["hostname" => "source"]);
             }
         }
 

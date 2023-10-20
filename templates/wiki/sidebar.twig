@@ -1,3 +1,4 @@
+{# actions #}
 <section>
 <h3>Actions</h3>
 
@@ -15,15 +16,16 @@
 <form>
     <a href="/wiki/create" class="button button-primary">create a new article</a>
 
-    <a href="/wiki/{{ article.id }}/history" class="button button-green">view this article's history</a>
+    <a href="/wiki/{{ article.id }}/compare" class="button button-green">view this article's history</a>
 
-    <a href="/wiki/{{ article.id }}/edit" class="button button-orange">save your edits</a>
+    <a id="updateWikiArticle" data-articleid="{{ article.id }}" class="button button-orange">save your edits</a>
 
     <a href="/wiki/{{ article.id }}/delete" class="button button-red">delete this article</a>
 </form>
 </section>
 
 
+{# about this article #}
 <section>
 <h3>About this article</h3>
 
@@ -74,6 +76,7 @@
 </section>
 
 
+{# aliases #}
 <section>
 <h3>Aliases</h3>
 
