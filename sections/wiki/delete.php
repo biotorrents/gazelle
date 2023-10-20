@@ -18,7 +18,7 @@ if (!$identifier) {
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
     # no, it's not an integer, so it must be an alias
-    $identifier = \Gazelle\Wiki::alias_to_id($identifier);
+    $identifier = \Gazelle\Wiki::getIdByAlias($identifier);
 }
 
 # prevent deleting the wiki index

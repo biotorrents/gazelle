@@ -15,7 +15,7 @@ $identifier ??= 1; # default to articleId 1
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
     # no, it's not an integer, so it must be an alias
-    $identifier = \Gazelle\Wiki::alias_to_id($identifier);
+    $identifier = \Gazelle\Wiki::getIdByAlias($identifier);
 }
 
 # load the article

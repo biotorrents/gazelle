@@ -63,14 +63,13 @@ $app->dbOld->prepared_query("
     ('1', '$P[title]', '$P[body]', '$Read', '$Edit', NOW(), '{{$app->user->core['id']}}')");
 
 $ArticleID = $app->dbOld->inserted_id();
-$TitleAlias = \Gazelle\Wiki::normalize_alias($_POST['title']);
-$Dupe = \Gazelle\Wiki::alias_to_id($_POST['title']);
+$TitleAlias = \Gazelle\Wiki::normalizeAlias($_POST['title']);
+$Dupe = \Gazelle\Wiki::getIdByAlias($_POST['title']);
 
 if ($TitleAlias !== '' && $Dupe === false) {
     $app->dbOld->prepared_query("
       INSERT INTO wiki_aliases (Alias, ArticleID)
       VALUES ('" . db_string($TitleAlias) . "', '$ArticleID')");
-    \Gazelle\Wiki::flush_aliases();
 }
 
 Misc::write_log("Wiki article $ArticleID (" . $_POST['title'] . ") was created by " . $app->user->core['username']);

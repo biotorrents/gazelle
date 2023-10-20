@@ -4,7 +4,7 @@
 $app = \Gazelle\App::go();
 
 if (empty($_GET['nojump'])) {
-    $ArticleID = \Gazelle\Wiki::alias_to_id($_GET['search']);
+    $ArticleID = \Gazelle\Wiki::getIdByAlias($_GET['search']);
     if ($ArticleID) {
         // Found the article!
         header('Location: wiki.php?action=article&id=' . $ArticleID);
@@ -78,7 +78,7 @@ $app->dbOld->set_query_id($RS);
   <div class="header">
     <h2>Search articles</h2>
     <div class="linkbox">
-      <a href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(\Gazelle\Wiki::normalize_alias($_GET['search']))?>"
+      <a href="wiki.php?action=create&amp;alias=<?=\Gazelle\Text::esc(\Gazelle\Wiki::normalizeAlias($_GET['search']))?>"
         class="brackets">Create an article</a>
     </div>
   </div>

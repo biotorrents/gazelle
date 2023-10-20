@@ -73,4 +73,20 @@
     });
   });
 
+
+  /**
+   * createWikiAlias
+   */
+  $("#createWikiAlias").on("click", (event) => {
+    // todo
+  });
+
+
+  /**
+   * deleteWikiAlias
+   */
+  $("#deleteWikiAlias").on("click", (event) => {
+    // todo
+  });
+
 })();

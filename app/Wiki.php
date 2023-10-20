@@ -6,7 +6,7 @@ declare(strict_types=1);
 /**
  * Gazelle\Wiki
  *
- * Literal notebooks powered by Starboard Notebook.
+ * Literate programming notebooks powered by Starboard Notebook.
  *
  * @see https://github.com/gzuidhof/starboard-notebook
  */
@@ -54,6 +54,10 @@ class Wiki extends ObjectCrud
 
     /**
      * update
+     *
+     * @param int|string $identifier
+     * @param array $data
+     * @return void
      */
     public function update(int|string $identifier, array $data = []): void
     {
@@ -95,6 +99,9 @@ class Wiki extends ObjectCrud
 
     /**
      * delete
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public function delete(int|string $identifier): void
     {
@@ -129,6 +136,9 @@ class Wiki extends ObjectCrud
     }
 
 
+    /** */
+
+
     /**
      * getAliases
      *
@@ -143,13 +153,6 @@ class Wiki extends ObjectCrud
         $query = "select alias from wiki_aliases where articleId = ?";
         $ref = $app->dbNew->column($query, [$this->id]);
 
-        /*
-        $aliases = [];
-        foreach ($ref as $row) {
-            $aliases[$row["id"]] = $row["alias"];
-        }
-        */
-
         return $ref;
     }
 
@@ -158,8 +161,11 @@ class Wiki extends ObjectCrud
      * getOneRevision
      *
      * Gets one revision for a wiki article by id and revision.
+     *
+     * @param int $revision
+     * @return ?array
      */
-    public function getOneRevision(int $revision): array
+    public function getOneRevision(int $revision): ?array
     {
         $app = App::go();
 
@@ -193,164 +199,48 @@ class Wiki extends ObjectCrud
     }
 
 
-    /** legacy code */
+    /** static */
 
 
     /**
-     * Normalize a wiki alias.
-     * The database determines length:
-     * wiki_aliases.Alias
+     * normalizeAlias
      *
-     * @param string $str
+     * Normalize a wiki alias.
+     *
+     * @param string $string
      * @return string
      */
-    public static function normalize_alias($str)
+    public static function normalizeAlias($string): string
     {
-        return substr(
-            preg_replace(
-                '/[^a-z0-9]/',
-                '',
-                strtolower(
-                    htmlentities(
-                        trim($str)
-                    )
-                )
-            ),
-            0,
-            50
-        );
+        $string = Text::utf8($string);
+
+        # only allow alphanumeric characters
+        $string = preg_replace("/[^a-z0-9]/", "", strtolower($string));
+
+        # limit to 64 characters
+        $string = substr($string, 0, 64);
+
+        return $string;
     }
 
 
     /**
-     * Get all aliases in an associative array of Alias => ArticleID.
+     * getIdByAlias
      *
-     * @return array
-     */
-    public static function get_aliases()
-    {
-        $app = \Gazelle\App::go();
-
-        $Aliases = $app->cache->get('wiki_aliases');
-        if (!$Aliases) {
-            $QueryID = $app->dbOld->get_query_id();
-
-            $app->dbOld->prepared_query("
-            SELECT
-              `Alias`,
-              `ArticleID`
-            FROM
-              `wiki_aliases`
-            ");
-
-            $Aliases = $app->dbOld->to_pair('Alias', 'ArticleID');
-            $app->dbOld->set_query_id($QueryID);
-            $app->cache->set('wiki_aliases', $Aliases, 3600 * 24 * 14); // 2 weeks
-        }
-
-        return $Aliases;
-    }
-
-
-    /**
-     * Flush the alias cache.
-     * Call this whenever you touch the wiki_aliases table.
-     */
-    public static function flush_aliases()
-    {
-        $app = \Gazelle\App::go();
-
-        $app->cache->delete('wiki_aliases');
-    }
-
-
-    /**
-     * Get the ArticleID corresponding to an alias.
+     * Gets the article id by alias.
      *
-     * @param string $Alias
-     * @return int
+     * @param string $alias
+     * @return ?int
      */
-    public static function alias_to_id($Alias)
+    public static function getIdByAlias(string $alias): ?int
     {
-        $Aliases = self::get_aliases();
-        $Alias = self::normalize_alias($Alias);
+        $app = App::go();
 
-        if (!isset($Aliases[$Alias])) {
-            return false;
-        } else {
-            return (int) $Aliases[$Alias];
-        }
+        $alias = self::normalizeAlias($alias);
+
+        $query = "select articleId from wiki_aliases where alias = ?";
+        $ref = $app->dbNew->single($query, [$alias]);
+
+        return $ref;
     }
-
-
-    /**
-     * Get an article; returns false on error if $Error = false.
-     *
-     * @param int $ArticleID
-     * @param bool $Error
-     * @return array|bool
-     */
-    public static function get_article($ArticleID, $Error = true)
-    {
-        $app = \Gazelle\App::go();
-
-        $Contents = $app->cache->get('wiki_article_' . $ArticleID);
-        if (!$Contents) {
-            $QueryID = $app->dbOld->get_query_id();
-
-            $app->dbOld->prepared_query("
-            SELECT
-              w.`Revision`,
-              w.`Title`,
-              w.`Body`,
-              w.`MinClassRead`,
-              w.`MinClassEdit`,
-              w.`Date`,
-              w.`Author`,
-              u.`Username`,
-              GROUP_CONCAT(a.`Alias`),
-              GROUP_CONCAT(a.`UserID`)
-            FROM
-              `wiki_articles` AS w
-            LEFT JOIN `wiki_aliases` AS a
-            ON
-              w.`ID` = a.`ArticleID`
-            LEFT JOIN `users_main` AS u
-            ON
-              u.`ID` = w.`Author`
-            WHERE
-              w.`ID` = '$ArticleID'
-            GROUP BY
-              w.`ID`
-            ");
-
-            if (!$app->dbOld->has_results()) {
-                if ($Error) {
-                    error(404);
-                } else {
-                    return false;
-                }
-            }
-
-            $Contents = $app->dbOld->to_array();
-            $app->dbOld->set_query_id($QueryID);
-            $app->cache->set('wiki_article_' . $ArticleID, $Contents, 3600 * 24 * 14); // 2 weeks
-        }
-
-        return $Contents;
-    }
-
-
-    /**
-     * Flush an article's cache.
-     * Call this whenever you edited a wiki article or its aliases.
-     *
-     * @param int $ArticleID
-     */
-    public static function flush_article($ArticleID)
-    {
-        $app = \Gazelle\App::go();
-
-        $app->cache->delete('wiki_article_' . $ArticleID);
-    }
-}
+} # class
