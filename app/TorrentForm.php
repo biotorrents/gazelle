@@ -174,7 +174,7 @@ HTML;
         FROM
           `torrents`
         WHERE
-          `UserID` = ".$app->user->core["id"]
+          `UserID` = " . $app->user->core["id"]
         );
         list($Uploads) = $app->dbOld->next_record();
 
@@ -279,7 +279,7 @@ HTML;
                   <p id="category_description" class="">
                   <!-- $Cat->Description will live here -->
                   Please see the
-                  <a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
+                  <a href="/wiki/categories">Categories Wiki</a>
                   for details
                   </p>
                 </td>

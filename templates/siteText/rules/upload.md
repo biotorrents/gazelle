@@ -87,7 +87,7 @@ I also strongly recommend you compress only large files or long image series, an
 
 - **Torrent File.** Please click the checkbox marked private and optionally add the announce URL when you make the torrent. The site will force torrent privacy and dynamically construct `.torrent` files with your passkey embedded. This passkey lets the tracker know who's uploading and downloading, and leaking it will nuke your ratio. Please don't share any `.torrent` files you download for this reason.
 
-- **Category.** Please see the [Site Categories wiki page](/wiki.php?action=article&id=29) for detailed info about the top-level organization.
+- **Category.** Please see the [Site Categories wiki page](/wiki/categories) for detailed info about the top-level organization.
 
 - **Accession Number.** Please add accession numbers if they come with the data or if you acquired them for your own data. The number can be any format but it must correspond to the actual nucleotide or amino acid sequences represented on disk. Don't add accession numbers just because the metadata matches. RefSeq and UniProt integration, including autofill, is in development.
 

@@ -34,7 +34,7 @@ Flight::route("/universalSearch", function () {
             exit;
 
         case "wiki":
-            Http::redirect("wiki.php?{$queryString}");
+            Http::redirect("wiki?{$queryString}");
             exit;
 
         case "log":
