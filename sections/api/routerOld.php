@@ -83,10 +83,6 @@ switch ($_GET['action']) {
         /**
          * Forums
          */
-    case 'forum':
-        require_once "$ENV->serverRoot/sections/api/forum/index.php";
-        break;
-
     case 'subscriptions':
         require_once "$ENV->serverRoot/sections/api/subscriptions.php";
         break;
@@ -100,17 +96,6 @@ switch ($_GET['action']) {
 
     case 'announcements':
         require_once "$ENV->serverRoot/sections/api/announcements.php";
-        break;
-
-        /**
-         * Under construction
-         */
-    case 'news_ajax':
-        require_once "$ENV->serverRoot/sections/api/news_ajax.php";
-        break;
-
-    case 'send_recommendation':
-        require_once "$ENV->serverRoot/sections/api/send_recommendation.php";
         break;
 
     default:
