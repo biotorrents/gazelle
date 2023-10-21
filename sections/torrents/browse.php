@@ -146,72 +146,42 @@ $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
 
 
-/** legacy variables */
-
-
-# shims
-$Resolutions = [
-  "Contig",
-  "Scaffold",
-  "Chromosome",
-  "Genome",
-  "Proteome",
-  "Transcriptome",
-];
-
-$Categories = [
-  "Sequences",
-  "Graphs",
-  "Systems",
-  "Geometric",
-  "Scalars/Vectors",
-  "Patterns",
-  "Constraints",
-  "Images",
-  "Spatial",
-  "Models",
-  "Documents",
-  "Machine Data",
-];
-$GroupedCategories = $Categories;
-
-
 /** twig template */
+
 
 $app->twig->display("torrents/browse.twig", [
     "title" => "Browse",
-    "js" => ["vendor/tom-select.complete.min", "browse"],
+    "js" => ["vendor/tom-select.base.min", "browse"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
-    # todo: this situation
-    "categories" => $Categories,
-    "resolutions" => $Resolutions,
+    "categories" => $app->env->categories->pluck("title"),
+    "resolutions" => $app->env->metadata->scopes->values()->flatten(),
 
     "xmls" => array_merge(
-        $app->env->toArray($app->env->META->Formats->GraphXml),
-        $app->env->toArray($app->env->META->Formats->GraphTxt)
+        $app->env->metadata->formats->graphStructured->toArray(),
+        $app->env->metadata->formats->graphPlainText->toArray()
     ),
 
     "raster" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgRaster),
-        $app->env->toArray($app->env->META->Formats->MapRaster)
+        $app->env->metadata->formats->imageRaster->toArray(),
+        $app->env->metadata->formats->mapRaster->toArray()
     ),
 
     "vector" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgVector),
-        $app->env->toArray($app->env->META->Formats->MapVector)
+        $app->env->metadata->formats->imageVector->toArray(),
+        $app->env->metadata->formats->mapVector->toArray()
     ),
 
     "extras" => array_merge(
-        $app->env->toArray($app->env->META->Formats->BinDoc),
-        $app->env->toArray($app->env->META->Formats->CpuGen),
-        $app->env->toArray($app->env->META->Formats->Plain)
+        $app->env->metadata->formats->binaryDocuments->toArray(),
+        $app->env->metadata->formats->computerGenerated->toArray(),
+        $app->env->metadata->formats->plainText->toArray()
     ),
 
     "searchResults" => $searchResults,
     "torrentGroups" => $torrentGroups,
 
-    "bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    "bookmarks" => Bookmarks::all_bookmarks("torrent"),
     "officialTags" => $officialTags,
 
     "searchTerms" => $searchTerms,

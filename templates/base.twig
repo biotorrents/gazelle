@@ -79,14 +79,14 @@
 			<script src="/js/vendor/jquery.min.js"> </script>
 
 			{# lodash #}
-			<script src="/js/vendor/lodash.core.min.js"></script>
+			<script src="/js/vendor/lodash.min.js"></script>
 
 			{# smart quotes #}
 			<script src="/js/vendor/smartquotes.min.js"></script>
 
 			{# plausible analytics #}
 			{% if env.enablePlausible %}
-				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js"></script>
+				<script defer data-domain="{{ env.siteDomain }}" src="https://stats.torrents.bio/js/script.js" crossorigin="anonymous"></script>
 			{% endif %}
 
 			{# easymde and highlight.js #}
@@ -97,7 +97,7 @@
 			<script src="/js/vendor/tom-select.base.min.js"></script>
 
 			{# end libraries #}
-
+			
 			{# extra js # }
 			{# todo: figure out a way to not defer vendor scripts # }
 			{% if js is defined %}
@@ -183,10 +183,10 @@
 
 			{# new category uploads #}
 			{#
-			    {% for category in env.CATS %}
+			    {% for category in env.categories %}
 			    <link rel="alternate" type="application/rss+xml"
 			        href="feeds?feed=torrents_{{ category.Name|lower }}&user={{ userId }}&auth={{ rssKey }}&passkey={{ passKey }}&authkey={{ authKey }}"
-			        title="New {{ category.Name }} Torrents {{ env.separator }} {{ env.siteName }}" />
+			        title="New {{ category.title }} Torrents {{ env.separator }} {{ env.siteName }}" />
 			    {% endfor %}
 			    #}
 
@@ -229,12 +229,18 @@
 
 	{# start header #}
 
-		{# there's no crypto key loaded! #}
-	{% if not env.apcuKey %}
+	{# there's no crypto key loaded! #}
+	{% if not env.apcuExists %}
 		<div id="systemError">
+
 			<strong>Error!</strong>
 			Couldn't detect an APCu key to decrypt the database.
 			Certain user account functionality is degraded.
+
+			{% if authenticated and can("site_debug") %}
+        		<a href="/tools.php?action=database_key">Load the database key.</a>
+    		{% endif %}
+
 		</div>
 	{% endif %}
 
@@ -276,12 +282,18 @@
 
 
 		<main class="container">
+
+			{# admin bar #}
+			{% if authenticated and can("users_mod") %}
+				{{ include("_base/adminBar.twig") }}
+			{% endif %}
+			
 			<div class="row">
 
 				{# splash logo #}
 				{% if not authenticated %}
 					<figure id="publicLogo">
-						<img src="/images/logos/torrents.bio.png" alt="logo">
+						<img src="/images/logos/torrents.bio.webp" alt="logo">
 					</figure>
 				{% endif %}
 
@@ -315,20 +327,13 @@
 		{# start footer block #}
 		<footer id="bottom">
 			{% block footer %}
-				{% if authenticated %}
-					{# private #}
-					{{ include("_base/privateFooter.twig") }}
-				{% else %}
-					{# public #}
-					{{ include("_base/privateFooter.twig") }}
-					{# {{ include("_base/publicFooter.twig") }} #}
-				{% endif %}
+				{# there's only one footer #}
+				{{ include("_base/footer.twig") }}
 
 				{# DebugBar: footer #}
 				{% if env.dev %}
 					{{ debugFooter() }}
 				{% endif %}
-
 			{% endblock %}
 		</footer>
 		{# end footer block #}

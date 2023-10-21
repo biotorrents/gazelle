@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$CollageID = $_POST['collageid'];
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(0);
 }
@@ -83,7 +83,7 @@ if (check_perms('site_collages_delete')
 }
 
 if (isset($_POST['category'])
-&& !empty($CollageCats[$_POST['category']])
+&& !empty($app->env->collageCategories[$_POST['category']])
 && $_POST['category'] !== $CategoryID
 && ($_POST['category'] !== 0
 || check_perms('site_collages_delete'))) {

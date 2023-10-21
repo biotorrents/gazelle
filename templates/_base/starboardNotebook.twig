@@ -1,0 +1,20 @@
+{##
+ # {% set vars = { "id": someVar, "content": someVar } %}
+ # {% include "_base/starboardNotebook.twig" with vars %}
+ #
+ # https://github.com/gzuidhof/starboard-wrap
+ #}
+
+<div id="starboardNotebook"></div>
+
+<script type="module">
+    import {StarboardEmbed} from "/js/vendor/starboard-wrap.js"
+    const mount = document.querySelector("#starboardNotebook");
+
+    const el = new StarboardEmbed({
+        notebookContent: `{{ content|escape("js") }}`,
+        src: "https://{{ env.starboardDomain }}"
+    });
+
+    mount.appendChild(el);
+</script>

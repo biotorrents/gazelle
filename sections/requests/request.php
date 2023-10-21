@@ -39,7 +39,7 @@ $ArtistLink = Artists::display_artists($ArtistForm, true, true);
 
 if ($IsFilled) {
     $DisplayLink = "<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
-#$DisplayLink = "$ArtistLink<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
+    #$DisplayLink = "$ArtistLink<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
 } else {
     $DisplayLink = '<span dir="ltr">'.$Title."</span>";
     #$DisplayLink = $ArtistLink.'<span dir="ltr">'.$Title."</span>";
@@ -142,7 +142,7 @@ $encoded_artist = urlencode($encoded_artist);
         <?php
     } else { ?>
         <img style="width: 100%;"
-          src="<?=staticServer?>/images/noartwork.png"
+          src="<?=staticServer?>/images/noartwork.webp"
           alt="<?=$CategoryName?>" class="tooltip"
           title="<?=$CategoryName?>" height="220" border="0" />
         <?php } ?>

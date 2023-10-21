@@ -39,7 +39,7 @@ class Esc
 
         if (!$valid) {
             # try to decrypt it
-            $safe = \Crypto::decrypt($safe);
+            $safe = Crypto::decrypt($safe);
             $valid = filter_var($safe, FILTER_VALIDATE_EMAIL);
 
             if (!$valid) {
@@ -204,7 +204,7 @@ class Esc
 
         if (!preg_match("/{$app->env->regexUsername}/iD", $safe)) {
             # todo: throw
-            #throw new \Exception("invalid username");
+            #throw new Exception("invalid username");
         }
 
         return strval($safe);

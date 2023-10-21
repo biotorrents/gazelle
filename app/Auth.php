@@ -18,21 +18,21 @@ declare(strict_types=1);
 class Auth # extends Delight\Auth\Auth
 {
     # library instance
-    public $library = null;
+    public \Delight\Auth\Auth $library;
 
     # 2fa libraries
-    private $twoFactor = null;
+    private \RobThree\Auth\TwoFactorAuth $twoFactor;
 
     # seconds * minutes * hours * days
-    private $shortRemember = 60 * 60 * 24 * 1;
-    private $longRemember = 60 * 60 * 24 * 7;
+    private int $shortRemember = 60 * 60 * 24 * 1;
+    private int $longRemember = 60 * 60 * 24 * 7;
 
     # hash algo for passwords
     # legacy: remove after 2024-04-01
-    private static $algorithm = "sha512";
+    private static string $algorithm = "sha512";
 
     # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#authentication-and-error-messages
-    private $message = "Invalid username, passphrase, or 2FA";
+    private string $message = "Invalid username, passphrase, or 2FA";
 
 
     /**
@@ -135,6 +135,15 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("Open registration is disabled, no invite code provided");
             }
 
+            # is the email blacklisted?
+            $domain = explode("@", $email)[1] ?? null;
+            $query = "select 1 from email_blacklist where email like '%{$domain}%' limit 1";
+            $bad = $app->dbNew->single($query, []);
+
+            if ($bad) {
+                throw new Exception("This email address can't be used to register an account");
+            }
+
             # check the validity of the invite code
             if (!empty($invite)) {
                 $query = "select 1 from invites where inviteKey = ?";
@@ -159,7 +168,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
             });
 
             if (!is_int($response)) {
@@ -199,7 +208,7 @@ class Auth # extends Delight\Auth\Auth
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
-        $encryptedEmail = \Crypto::encrypt($email);
+        $encryptedEmail = \Gazelle\Crypto::encrypt($email);
 
         $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
@@ -253,7 +262,7 @@ class Auth # extends Delight\Auth\Auth
                 "passHash" => password_hash($passphrase, PASSWORD_DEFAULT),
 
                 # everything else
-                "ip" => Crypto::encrypt($server["REMOTE_ADDR"]),
+                "ip" => \Gazelle\Crypto::encrypt($server["REMOTE_ADDR"]),
                 "uploaded" => $app->env->newUserUpload,
                 "enabled" => 1,
                 "invites" => $app->env->newUserInvites,
@@ -423,10 +432,10 @@ class Auth # extends Delight\Auth\Auth
             $query = "select email from users where id = ?";
             $email = $app->dbNew->single($query, [$userId]);
 
-            $decryptedEmail = \Crypto::decrypt($email);
-            if (!$decryptedEmail && \Crypto::apcuExists()) {
+            $decryptedEmail = \Gazelle\Crypto::decrypt($email);
+            if (!$decryptedEmail && \Gazelle\Crypto::apcuExists()) {
                 $query = "update users set email = ? where id = ?";
-                $app->dbNew->do($query, [ \Crypto::encrypt($email), $userId ]);
+                $app->dbNew->do($query, [ \Gazelle\Crypto::encrypt($email), $userId ]);
             }
 
             # legacy: remove after 2024-04-01
@@ -605,7 +614,7 @@ class Auth # extends Delight\Auth\Auth
                 $subject = "Your {$app->env->siteName} passphrase recovery";
                 $body = $app->twig->render("email/passphraseReset.twig", ["uri" => $uri, "ip" => $ip]);
 
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
                 Announce::slack("{$email}\n{$subject}\n{$body}", ["debug"]);
             });
         } catch (Throwable $e) {
@@ -683,7 +692,7 @@ class Auth # extends Delight\Auth\Auth
             }
 
             # passphrase = email
-            $row["email"] = \Crypto::decrypt($row["email"]);
+            $row["email"] = \Gazelle\Crypto::decrypt($row["email"]);
             if ($passphrase === $row["email"]) {
                 throw new Exception("Your passphrase can't be the same as your email");
             }
@@ -738,7 +747,7 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to update email";
 
         $newEmail = \Gazelle\Esc::email($newEmail);
-        $newEmail = \Crypto::encrypt($newEmail);
+        $newEmail = \Gazelle\Crypto::encrypt($newEmail);
 
         try {
             $query = "update users set email = ? where id = ?";
@@ -767,7 +776,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/changeEmail.twig", ["uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($newEmail, $subject, $body);
+                $app->email($newEmail, $subject, $body);
             });
         } catch (Throwable $e) {
             return $message;
@@ -800,7 +809,7 @@ class Auth # extends Delight\Auth\Auth
         $query = "select email from users where {$column} = ?";
         $email = $app->dbNew->single($query, [$identifier]);
 
-        $email = \Crypto::decrypt($email);
+        $email = \Gazelle\Crypto::decrypt($email);
         if (!$email) {
             return $message;
         }
@@ -817,7 +826,7 @@ class Auth # extends Delight\Auth\Auth
                 $body = $app->twig->render("email/verifyRegistration.twig", ["env" => $app->env, "uri" => $uri]);
 
                 # send the email
-                \Gazelle\App::email($email, $subject, $body);
+                $app->email($email, $subject, $body);
             });
         } catch (\Delight\Auth\ConfirmationRequestNotFound $e) {
             return $message;
@@ -1131,7 +1140,7 @@ class Auth # extends Delight\Auth\Auth
         $name ??= \Gazelle\Text::random(16);
 
         $query = "
-            insert into api_user_tokens (uuid, userId, name, token, permissions)
+            insert into api_tokens (uuid, userId, name, token, permissions)
             values (:uuid, :userId, :name, :token, :permissions)
         ";
 
@@ -1159,7 +1168,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = \Gazelle\App::go();
 
-        $query = "select * from api_user_tokens where userId = ? and deleted_at is null";
+        $query = "select * from api_tokens where userId = ? and deleted_at is null";
         $ref = $app->dbNew->multi($query, [$app->user->core["id"]]);
 
         return $ref;
@@ -1185,7 +1194,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = \Gazelle\App::go();
 
-        $query = "update api_user_tokens set deleted_at = now() where id = ?";
+        $query = "update api_tokens set deleted_at = now() where id = ?";
         $app->dbNew->do($query, [$tokenId]);
     }
 } # class

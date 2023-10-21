@@ -6,7 +6,7 @@ User topic subscription page
 $app = \Gazelle\App::go();
 
 if (!empty($app->user->extra['DisableForums'])) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 if (isset($app->user->extra['PostsPerPage'])) {
@@ -27,7 +27,7 @@ $sql = '
     JOIN users_subscriptions AS s ON s.TopicID = t.ID
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN forums_last_read_topics AS l ON p.TopicID = l.TopicID AND l.UserID = s.UserID
-  WHERE s.UserID = '.$app->user->core['id'].'
+  WHERE s.UserID = ' . $app->user->core['id'] . '
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {
@@ -68,7 +68,7 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS um ON um.ID = p.AuthorID
       LEFT JOIN users_info AS ui ON ui.UserID = um.ID
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
-    WHERE p.ID IN ('.implode(',', $PostIDs).')
+    WHERE p.ID IN (' . implode(',', $PostIDs) . ')
     ORDER BY f.Name ASC, t.LastPostID DESC';
     $app->dbOld->query($sql);
 }
@@ -88,6 +88,6 @@ while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $L
     $JsonPosts[] = $JsonPost;
 }
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'threads' => $JsonPosts
 ));

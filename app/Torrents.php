@@ -9,20 +9,37 @@
 
 class Torrents
 {
-    public const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
-    public const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
-    public const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
-
-    // Some constants for self::display_string's $Mode parameter
-    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
-    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
-    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
-    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
-    // Keep this in mind when defining presets below!
-
-    // Presets to facilitate the use of $Mode
-    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+    # object properties
+    public $uuid;
+    public $id;
+    public $groupId;
+    public $userId;
+    public $platform;
+    public $format;
+    public $license;
+    public $scope;
+    public $version;
+    public $aligned;
+    public $anonymous;
+    public $infoHash;
+    public $fileCount;
+    public $fileList;
+    public $filePath;
+    public $dataSize;
+    public $leecherCount;
+    public $seederCount;
+    public $lastAction;
+    public $freeleech;
+    public $freeleechType;
+    #public $createdAt;
+    public $description;
+    public $snatchCount;
+    public $balance;
+    public $lastReseedRequest;
+    public $archive;
+    public $createdAt;
+    public $updatedAt;
+    public $deletedAt;
 
     # ["database" => "display"]
     private $maps = [
@@ -59,13 +76,34 @@ class Torrents
     ];
 
 
+    # hex for ÷, must be the same as phrase_boundary in manticore.conf
+    public const FILELIST_DELIM = 0xF7;
+
+    # how often we want to update users' snatch lists
+    public const SNATCHED_UPDATE_INTERVAL = 3600;
+
+    # how long after a torrent download we want to update a user's snatch lists
+    public const SNATCHED_UPDATE_AFTERDL = 300;
+
+    // Some constants for self::display_string's $Mode parameter
+    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
+    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
+    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
+    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
+    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
+    // Keep this in mind when defining presets below!
+
+    // Presets to facilitate the use of $Mode
+    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+
+
     /**
      * __construct
      */
     public function __construct(int|string $identifier = null)
     {
         if ($identifier) {
-            return $this->read($identifier);
+            $this->read($identifier);
         }
     }
 
@@ -1098,11 +1136,12 @@ class Torrents
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
-            Misc::write_log(($app->user->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
-            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
+            Misc::write_log(($app->user->core["username"] ?? 'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
+            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
-                send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
+                # todo: fsockopen(): Unable to connect to 10.10.10.60:51010 (Connection refused)
+                #send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
             }
         }
 
@@ -1240,7 +1279,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurSnatchedTorrents =& $SnatchedTorrents[$BucketID];
+        $CurSnatchedTorrents = & $SnatchedTorrents[$BucketID];
         if ($CurSnatchedTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1326,7 +1365,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected seeding lists
-        $CurSeedingTorrents =& $SeedingTorrents[$BucketID];
+        $CurSeedingTorrents = & $SeedingTorrents[$BucketID];
         if ($CurSeedingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1418,7 +1457,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurLeechingTorrents =& $LeechingTorrents[$BucketID];
+        $CurLeechingTorrents = & $LeechingTorrents[$BucketID];
         if ($CurLeechingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1549,8 +1588,9 @@ class Torrents
 
     /**
      * get_reports
+     *
+     * Used to get reports info on a unison cache in both browsing pages and torrent pages.
      */
-    // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
         $app = \Gazelle\App::go();

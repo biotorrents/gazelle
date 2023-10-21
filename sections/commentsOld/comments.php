@@ -90,7 +90,7 @@ switch ($Action) {
             $Title = 'Comments left on collages ' . ($Self ? 'you' : $Username) . ' created';
             $Header = 'Comments left on collages ' . ($Self ? 'you' : User::format_username($UserID, false, false, false)) . ' created';
         } elseif ($Type == 'contributed') {
-            $Conditions[] = 'IF(`collages`.`CategoryID` = ' . array_search('Artists', $CollageCats) . ', `collages_artists`.`ArtistID`, `collages_torrents`.`GroupID`) IS NOT NULL';
+            $Conditions[] = 'IF(`collages`.`CategoryID` = ' . array_search('Artists', $app->env->collageCategories) . ', `collages_artists`.`ArtistID`, `collages_torrents`.`GroupID`) IS NOT NULL';
             $Conditions[] = "`comments`.`AuthorID` != $UserID";
             $Join[] = "LEFT JOIN `collages_torrents` ON `collages_torrents`.`CollageID` = `collages`.`ID` AND `collages_torrents`.`UserID` = $UserID";
             $Join[] = "LEFT JOIN `collages_artists` ON `collages_artists`.`CollageID` = `collages`.`ID` AND `collages_artists`.`UserID` = $UserID";

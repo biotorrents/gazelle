@@ -96,7 +96,7 @@ if ($CurrentBlog === false) {
 // Subscriptions
 $NewSubscriptions = Subscriptions::has_new_subscriptions();
 
-json_die("success", array(
+\Gazelle\Api\Base::success(200, array(
   'username' => $app->user->core['username'],
   'id' => (int)$app->user->core['id'],
   'authkey' => $app->user->extra['AuthKey'],

@@ -9,8 +9,8 @@
 $app = \Gazelle\App::go();
 #!d($app->user);exit;
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 $View = new View();
 
 if ($ENV->dev) {
@@ -183,7 +183,7 @@ if (empty($app->user->extra['StyleURL'])) {
         'style'
     );
     */
-    $userStyle = "$ENV->staticServer/css/" . "bookish". ".css";
+    $userStyle = "$ENV->staticServer/css/" . "bookish" . ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'
@@ -193,8 +193,8 @@ if (empty($app->user->extra['StyleURL'])) {
     if (substr($app->user->extra['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
         && ($StyleURLInfo['host'] === siteDomain)
-        && file_exists(serverRoot.$StyleURLInfo['path'])) {
-        $StyleURL = $app->user->extra['StyleURL'].'?v='.filemtime(serverRoot.$StyleURLInfo['path']);
+        && file_exists(serverRoot . $StyleURLInfo['path'])) {
+        $StyleURL = $app->user->extra['StyleURL'] . '?v=' . filemtime(serverRoot . $StyleURLInfo['path']);
     } else {
         $StyleURL = $app->user->extra['StyleURL'];
     } ?>
@@ -245,13 +245,13 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 
 <?php
   if (!empty($app->user->extra['StyleAdditions'])) {
-      $BodyStyles = 'style_'.implode(' style_', $app->user->extra['StyleAdditions']);
+      $BodyStyles = 'style_' . implode(' style_', $app->user->extra['StyleAdditions']);
   }
 ?>
 
 <body
   id="<?=$Document === 'collages' ? 'collage' : $Document?>"
-  class="<?=($BodyStyles??'')?>">
+  class="<?=($BodyStyles ?? '')?>">
   <div id="wrapper">
     <h1 class="hidden">
       <?= $ENV->siteName ?>
@@ -363,7 +363,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
+            <a href="/store"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
           </span>
         </li>
 
@@ -380,7 +380,7 @@ if (check_perms('site_send_unlimited_invites')) {
 -->
 
     <?php if (!apcu_exists('DBKEY')) { ?>
-    <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption"
+    <a id="dbcrypt" class="tooltip" href="wiki/databaseEncryption"
       title="Database is not fully decrypted. Site functionality will be reduced until staff can provide the decryption key. Click to learn more."></a>
     <?php } ?>
   </div>
@@ -473,7 +473,7 @@ if (check_perms('admin_reports')) {
         $app->cache->set('num_torrent_reportsv2', $NumTorrentReports, 0);
     }
 
-    $ModBar[] = '<a href="reportsv2.php">'.$NumTorrentReports.(($NumTorrentReports === 1) ? ' Report' : ' Reports').'</a>';
+    $ModBar[] = '<a href="reportsv2.php">' . $NumTorrentReports . (($NumTorrentReports === 1) ? ' Report' : ' Reports') . '</a>';
 
     // Other reports code
     $NumOtherReports = $app->cache->get('num_other_reports');
@@ -488,7 +488,7 @@ if (check_perms('admin_reports')) {
     }
 
     if ($NumOtherReports > 0) {
-        $ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports === 1) ? ' Other report' : ' Other reports').'</a>';
+        $ModBar[] = '<a href="reports.php">' . $NumOtherReports . (($NumTorrentReports === 1) ? ' Other report' : ' Other reports') . '</a>';
     }
 } elseif (check_perms('project_team')) {
     $NumUpdateReports = $app->cache->get('num_update_reports');
@@ -520,7 +520,7 @@ if (check_perms('admin_reports')) {
     }
 
     if ($NumForumReports > 0) {
-        $ModBar[] = '<a href="reports.php">'.$NumForumReports.(($NumForumReports === 1) ? ' Forum report' : ' Forum reports').'</a>';
+        $ModBar[] = '<a href="reports.php">' . $NumForumReports . (($NumForumReports === 1) ? ' Forum report' : ' Forum reports') . '</a>';
     }
 }
 

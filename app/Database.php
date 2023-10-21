@@ -10,6 +10,8 @@ declare(strict_types=1);
  *
  * @see https://phpdelusions.net/pdo/pdo_wrapper
  * @see https://github.com/DoctorMcKay/php-mypdoms
+ *
+ * todo: consider updating this to use RecursiveCollection instances
  */
 
 namespace Gazelle;
@@ -20,16 +22,19 @@ class Database extends \PDO
     private static $instance;
 
     # database meta
-    public $source = null;
-    public $replicas = [];
-    public $last = null;
+    public \PDO $source;
+    public array $replicas = [];
+    public \PDO $last;
 
     # cache settings
-    private $cachePrefix = "database:";
-    private $cacheDuration = "1 minute";
+    private string $cachePrefix = "database:";
+    private string $cacheDuration = "1 minute";
+
+    # bitmask of json_encode flags
+    private int $jsonFlags = JSON_INVALID_UTF8_SUBSTITUTE;
 
     # commands that should only hit the source
-    private $sourceCommands = [
+    private array $sourceCommands = [
         "alter",
         "create",
         "delete",
@@ -68,6 +73,9 @@ class Database extends \PDO
     }
 
 
+    /** */
+
+
     /**
      * go
      *
@@ -93,7 +101,7 @@ class Database extends \PDO
      */
     private function factory(array $options = []): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # don't cache on dev
         if ($app->env->dev) {
@@ -101,8 +109,8 @@ class Database extends \PDO
         }
 
         # database variables
-        $source = $app->env->getPriv("databaseSource");
-        $replicas = $app->env->getPriv("databaseReplicas");
+        $source = $app->env->private("databaseSource");
+        $replicas = $app->env->private("databaseReplicas");
 
         # default options
         $defaultOptions = [
@@ -115,39 +123,39 @@ class Database extends \PDO
         $options = array_replace($defaultOptions, $options);
 
         # construct the source dsn
-        $dsn = "mysql:host={$source["host"]};dbname={$source["database"]};port={$source["port"]};charset={$source["charset"]}";
-        if ($source["socket"]) {
-            $dsn = str_replace("port={$source["port"]}", "unix_socket={$source["socket"]}", $dsn);
+        $dsn = "mysql:host={$source->host};dbname={$source->database};port={$source->port};charset={$source->charset}";
+        if ($source->socket) {
+            $dsn = str_replace("port={$source->port}", "unix_socket={$source->socket}", $dsn);
         }
 
         try {
             # try to instantiate the source
-            $this->source = new \PDO($dsn, $source["username"], $source["passphrase"], $options);
+            $this->source = new \PDO($dsn, $source->username, $source->passphrase, $options);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         # set the last host to the source
         $this->last = $this->source;
 
         # bail out if replicas aren't defined
-        if (!$app->env->databaseReplicationEnabled || empty($replicas)) {
+        if (!$app->env->enableDatabaseReplication || empty($replicas)) {
             return;
         }
 
         # set up the replicas
         foreach ($replicas as $key => $replica) {
             # construct the replica dsn
-            $dsn = "mysql:host={$replica["host"]};dbname={$replica["database"]};port={$replica["port"]};charset={$replica["charset"]}";
-            if ($replica["socket"]) {
-                $dsn = str_replace("port={$replica["port"]}", "unix_socket={$replica["socket"]}", $dsn);
+            $dsn = "mysql:host={$replica->host};dbname={$replica->database};port={$replica->port};charset={$replica->charset}";
+            if ($replica->socket) {
+                $dsn = str_replace("port={$replica->port}", "unix_socket={$replica->socket}", $dsn);
             }
 
             try {
                 # try to instantiate the replica
-                $this->replicas[$key] = new \PDO($dsn, $replica["username"], $replica["passphrase"], $options);
+                $this->replicas[$key] = new \PDO($dsn, $replica->username, $replica->passphrase, $options);
             } catch (\Throwable $e) {
-                throw new \Exception($e->getMessage());
+                throw new Exception($e->getMessage());
             }
         }
     }
@@ -218,54 +226,49 @@ class Database extends \PDO
 
 
     /**
-     * uuidBinary
+     * binaryUuid
      *
      * Gets the binary representation of a string uuid.
      *
      * @param string $string uuid v7 string
      * @return string uuid v7 binary
-     *
-     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
-     * @see https://uuid.ramsey.dev/en/stable/database.html
-     */
-    public function uuidBinary(string $string): string
+    */
+    public function binaryUuid(string $string): string
     {
         return \Ramsey\Uuid\Uuid::fromString($string)->getBytes();
     }
 
 
     /**
-     * binaryUuid
-     */
-    public function binaryUuid(string $string): string
-    {
-        return $this->uuidBinary($string);
-    }
-
-
-    /**
-     * uuidString
+     * stringUuid
      *
      * Get the string representation of a binary uuid.
      *
      * @param string $binary uuid v7 binary
      * @return string uuid v7 string
-     *
-     * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
-     * @see https://uuid.ramsey.dev/en/stable/database.html
-     */
-    public function uuidString(string $binary): string
+    */
+    public function stringUuid(string $binary): string
     {
         return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
     }
 
 
     /**
-     * stringUuid
+     * shortUuid
+     *
+     * Generate a short uuid.
+     *
+     * @return int e.g., 100455158982377479
+     *
+     * @see https://mariadb.com/kb/en/uuid_short/
      */
-    public function stringUuid(string $binary): string
+    public function shortUuid(): int
     {
-        return $this->uuidString($binary);
+        # prevent query caching on production
+        $query = "select uuid_short()";
+        $options = [ "preventCache" => bin2hex(random_bytes(16)) ];
+
+        return $this->single($query, [], [$options]);
     }
 
 
@@ -291,7 +294,7 @@ class Database extends \PDO
 
         # lazy af
         if (strlen($good) > 255) {
-            throw new \Exception("slug too long");
+            throw new Exception("slug too long");
         }
 
         return $good;
@@ -303,10 +306,13 @@ class Database extends \PDO
      *
      * Determine the identifier to use for a query.
      * Used for finding stuff by id, uuid, or slug.
+     *
+     * @param int|string $id
+     * @return string
      */
-    public function determineIdentifier(int|string $id)
+    public function determineIdentifier(int|string $id): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (is_int($id) || is_numeric($id)) {
             return "id";
@@ -318,7 +324,7 @@ class Database extends \PDO
         }
 
         # is it binary?
-        if (\Gazelle\Text::isBinary($id) && strlen($id) === 16) {
+        if (Text::isBinary($id) && strlen($id) === 16) {
             return "uuid";
         }
 
@@ -335,12 +341,12 @@ class Database extends \PDO
      * @param array $row single database row
      * @return array translated row
      */
-    private function translateBinary(array $row)
+    private function translateBinary(array $row): array
     {
         # uuid v7
         $row["uuid"] ??= null;
         if ($row["uuid"]) {
-            $row["uuid"] = $this->uuidString($row["uuid"]);
+            $row["uuid"] = $this->stringUuid($row["uuid"]);
         } else {
             unset($row["uuid"]);
         }
@@ -348,7 +354,7 @@ class Database extends \PDO
         # webauthn
         $row["aaguid"] ??= null;
         if ($row["aaguid"]) {
-            $row["aaguid"] = $this->uuidString($row["aaguid"]);
+            $row["aaguid"] = $this->stringUuid($row["aaguid"]);
         } else {
             unset($row["aaguid"]);
         }
@@ -398,15 +404,16 @@ class Database extends \PDO
      * For update, insert, etc.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
      * @return \PDOStatement
      */
-    public function do(string $query, array $arguments = [], ?string $hostname = null): \PDOStatement
+    public function do(string $query, array $parameters = [], array $options = []): \PDOStatement
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # determine the host
+        $hostname = $options["hostname"] ?? null;
         $host = $this->determineHost($query, $hostname);
 
         # prepare
@@ -420,24 +427,24 @@ class Database extends \PDO
         }
 
         # no params
-        if (empty($arguments)) {
+        if (empty($parameters)) {
             return $host->query($query);
         }
 
         # https://ihateregex.io/expr/uuid/
-        foreach ($arguments as $key => $value) {
+        foreach ($parameters as $key => $value) {
             if (is_string($value) && strlen($value) === 36 && preg_match("/{$app->env->regexUuid}/iD", $value)) {
-                $arguments[$key] = $this->uuidBinary($value);
+                $parameters[$key] = $this->binaryUuid($value);
             }
         }
 
         # execute
-        $statement->execute($arguments);
+        $statement->execute($parameters);
 
         # errors
         $errors = $host->errorInfo();
         if ($errors[0] !== "00000") {
-            throw new \Exception("{$errors[0]}: {$errors[2]}");
+            throw new Exception("{$errors[0]}: {$errors[2]}");
         }
 
         # good
@@ -451,20 +458,27 @@ class Database extends \PDO
      * Gets a single value.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
+     * @return mixed
      */
-    public function single(string $query, array $arguments = [], ?string $hostname = null)
+    public function single(string $query, array $parameters = [], array $options = []): mixed
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
-        if ($app->cache->get($cacheKey) && !$app->env->dev) {
-            return $app->cache->get($cacheKey);
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
-        $statement = $this->do($query, $arguments, $hostname);
-        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $statement = $this->do($query, $parameters, $options);
+        $ref = $statement->fetchAll();
+
+        if (!$ref) {
+            return null;
+        }
 
         foreach ($ref as $row) {
             # translate binary
@@ -484,20 +498,27 @@ class Database extends \PDO
      * Gets a single row.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
+     * @return ?array
      */
-    public function row(string $query, array $arguments = [], ?string $hostname = null)
+    public function row(string $query, array $parameters = [], array $options = []): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
-        if ($app->cache->get($cacheKey) && !$app->env->dev) {
-            return $app->cache->get($cacheKey);
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
-        $statement = $this->do($query, $arguments, $hostname);
-        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $statement = $this->do($query, $parameters, $options);
+        $ref = $statement->fetchAll();
+
+        if (!$ref) {
+            return null;
+        }
 
         foreach ($ref as $row) {
             # translate binary
@@ -514,37 +535,43 @@ class Database extends \PDO
      *
      * Gets a single column.
      *
-     * @param string $column
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
      * @return ?array
      */
-    public function column(string $column, string $query, array $arguments = [], ?string $hostname = null): ?array
+    public function column(string $query, array $parameters = [], array $options = []): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
-        if ($app->cache->get($cacheKey) && !$app->env->dev) {
-            return $app->cache->get($cacheKey);
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
-        /*
-        $statement = $this->do($query, $arguments, $hostname);
-        $ref = $statement->fetchColumn();
-        */
+        # get all rows to process
+        $ref = $this->multi($query, $parameters, $options);
 
-        $ref = $this->multi($query, $arguments, $hostname);
+        if (!$ref) {
+            return null;
+        }
+
         foreach ($ref as $key => $row) {
+            if (count($row) !== 1) {
+                throw new Exception("column query returned more than one column");
+            }
+
             # translate binary
             $ref[$key] = $this->translateBinary($row);
         }
 
-        # technically incorrect variable name
-        $row = array_column($ref, $column);
+        # flatten to a single array
+        $column = \Illuminate\Support\Arr::flatten($ref);
 
-        $app->cache->set($cacheKey, $row, $this->cacheDuration);
-        return $row;
+        $app->cache->set($cacheKey, $column, $this->cacheDuration);
+        return $column;
     }
 
 
@@ -554,21 +581,27 @@ class Database extends \PDO
      * Gets all results.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
-     * @return array
+     * @param array $parameters
+     * @param array $options
+     * @return ?array
      */
-    public function multi(string $query, array $arguments = [], ?string $hostname = null): array
+    public function multi(string $query, array $parameters = [], array $options = []): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, strval(json_encode([$query, $arguments])));
-        if ($app->cache->get($cacheKey) && !$app->env->dev) {
-            return $app->cache->get($cacheKey);
+        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([$query, $parameters, $options], $this->jsonFlags));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
         }
 
-        $statement = $this->do($query, $arguments, $hostname);
-        $ref = $statement->fetchAll(\PDO::FETCH_ASSOC);
+        $statement = $this->do($query, $parameters, $options);
+        $ref = $statement->fetchAll();
+
+        if (!$ref) {
+            return null;
+        }
 
         foreach ($ref as $key => $row) {
             # translate binary
@@ -591,27 +624,35 @@ class Database extends \PDO
      *
      * @param string $table
      * @param array $data
-     * @return \PDOStatement
+     * @return ?array
      */
-    public function upsert(string $table, array $data = []): \PDOStatement
+    public function upsert(string $table, array $data = []): ?array
     {
         # extract the columns and values
         $columns = array_keys($data);
         $values = array_values($data);
 
-        # generate the comma-separated list of columns and named placeholders
+        # comma-separated list of columns and named placeholders
         $insertColumns = implode(", ", $columns);
         $insertPlaceholders = ":" . implode(", :", $columns);
 
-        # generate the update column expressions with named placeholders
+        # update column expressions with named placeholders
         $updateColumns = array_map(function ($column) {
             return "{$column} = :{$column}_update";
         }, $columns);
 
-        # generate the named placeholders for the update column values
+        # named placeholders for the update column values
         $updatePlaceholders = array_map(function ($column) {
             return ":{$column}_update";
         }, $columns);
+
+        /*
+        # construct the sql query string for the upsert operation
+        $query = "
+            replace into {$table} ({$insertColumns})
+            values ({$insertPlaceholders})
+        ";
+        */
 
         # construct the sql query string for the upsert operation
         $query = "
@@ -623,7 +664,26 @@ class Database extends \PDO
         $data = array_merge($data, array_combine($updatePlaceholders, $values));
 
         # execute the query with the data
-        return $this->do($query, $data);
+        $statement = $this->do($query, $data);
+
+        # return the newly created or updated row
+        $lastInsertId = $this->lastInsertId(); # 0 if not inserted
+        if (!empty($lastInsertId)) {
+            $query = "select * from {$table} where id = ?";
+            return $this->row($query, [$lastInsertId], ["hostname" => "source"]);
+        }
+
+        # it was updated, resolve a key from the data
+        foreach ($data as $key => $value) {
+            if (in_array(strtolower(strval($key)), ["id", "uuid", "slug"])) {
+                $column = $this->determineIdentifier($value);
+                $query = "select * from {$table} where {$column} = ?";
+                return $this->row($query, [$value], ["hostname" => "source"]);
+            }
+        }
+
+        # this should never happen
+        throw new Exception("unable to upsert into {$table}");
     }
 
 
@@ -633,22 +693,21 @@ class Database extends \PDO
      * Finds a single row by a set of contraints.
      *
      * @param string $table
-     * @param array $data ["column" => "value"]
+     * @param array $conditions ["column" => "value"]
      * @return ?array
      */
-    public function findOne(string $table, array $data = []): ?array
+    public function findOne(string $table, array $conditions = []): ?array
     {
         # important! trailing whitespace
         $query = "select * from {$table} where ";
 
         $parameters = [];
-        foreach ($data as $key => $value) {
+        foreach ($conditions as $key => $value) {
             $parameters[] = "{$key} = :{$key}";
         }
 
         $query .= implode(" and ", $parameters);
-
-        return $this->row($query, $data);
+        return $this->row($query, $conditions);
     }
 
 
@@ -658,22 +717,21 @@ class Database extends \PDO
      * Finds all rows by a set of contraints.
      *
      * @param string $table
-     * @param array $data ["column" => "value"]
+     * @param array $conditions ["column" => "value"]
      * @return array
      */
-    public function findAll(string $table, array $data = []): array
+    public function findAll(string $table, array $conditions = []): array
     {
         # important! trailing whitespace
         $query = "select * from {$table} where ";
 
         $parameters = [];
-        foreach ($data as $key => $value) {
+        foreach ($conditions as $key => $value) {
             $parameters[] = "{$key} = :{$key}";
         }
 
         $query .= implode(" and ", $parameters);
-
-        return $this->multi($query, $data);
+        return $this->multi($query, $conditions);
     }
 
 
@@ -701,13 +759,13 @@ class Database extends \PDO
      * Gets the number of rows.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
      * @return int
      */
-    public function rowCount(string $query, array $arguments = [], ?string $hostname = null): int
+    public function rowCount(string $query, array $parameters = [], array $options = []): int
     {
-        $statement = $this->do($query, $arguments, $hostname);
+        $statement = $this->do($query, $parameters, $options);
         $rowCount = $statement->rowCount();
 
         return $rowCount;
@@ -720,13 +778,13 @@ class Database extends \PDO
      * Gets the number of columns.
      *
      * @param string $query
-     * @param array $arguments
-     * @param ?string $hostname
+     * @param array $parameters
+     * @param array $options
      * @return int
      */
-    public function columnCount(string $query, array $arguments = [], ?string $hostname = null): int
+    public function columnCount(string $query, array $parameters = [], array $options = []): int
     {
-        $statement = $this->do($query, $arguments, $hostname);
+        $statement = $this->do($query, $parameters, $options);
         $columnCount = $statement->columnCount();
 
         return $columnCount;

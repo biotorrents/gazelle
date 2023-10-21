@@ -28,10 +28,10 @@ heart. -A9
 */
 
 if (
-    !isset($_REQUEST['collageid'])
+    !isset($_REQUEST['collageId'])
     || !isset($_REQUEST['preference'])
     || !is_numeric($_REQUEST['preference'])
-    || !is_numeric($_REQUEST['collageid'])
+    || !is_numeric($_REQUEST['collageId'])
     || $_REQUEST['preference'] > 2
     || count($_REQUEST['list']) === 0
 ) {
@@ -44,7 +44,7 @@ if (!check_perms('zip_downloader')) {
 
 $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 
-$CollageID = $_REQUEST['collageid'];
+$CollageID = $_REQUEST['collageId'];
 $Preference = $Preferences[$_REQUEST['preference']];
 
 $app->dbOld->query("
@@ -90,7 +90,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     foreach ($TorrentIDs as $TorrentID) {
         file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
         $GroupID = $GroupIDs[$TorrentID];
-        $Download =& $Downloads[$GroupID];
+        $Download = & $Downloads[$GroupID];
         $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);
         if ($Download['Rank'] == 100) {
             $Collector->skip_file($Download);

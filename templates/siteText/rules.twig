@@ -10,59 +10,6 @@
 
 {% block sidebar %}
 
-<h2>Other rule pages</h2>
-
-<ul>
-    <li>
-        {# upload #}
-        <strong><a href="/rules/upload">Upload</a></strong>
-        &mdash;
-        <strong>If you only read one rules page, this is the one to read</strong>
-
-    </li>
-
-    <li>
-        {# ratio #}
-        <strong><a href="/rules/ratio">Ratio</a></strong>
-        &mdash;
-        <strong>There's really two pages: required ratio table and calculation</strong>
-    </li>
-
-    <li>
-        {# requests #}
-        <a href="/rules/requests">Requests</a>
-        &mdash;
-        These rules govern requests
-    </li>
-
-    <li>
-        {# collages #}
-        <a href="/rules/collages">Collections</a>
-        &mdash;
-        These rules govern collections
-    </li>
-
-    <li>
-        {# clients #}
-        <a href="/rules/clients">Clients</a>
-        &mdash;
-        We allow these clients to connect to our tracker
-    </li>
-
-    <li>
-        {# chat #}
-        <a href="/rules/chat">Chat</a>
-        &mdash;
-        Read before posting in our forums or talking on Slack
-    </li>
-
-    <li>
-        {# tags #}
-        <a href="/rules/tags">Tagging</a>
-        &mdash;
-        These rules govern tags
-    </li>
-
-</ul>
+	{% include "siteText/rules/sidebar.twig" %}
 
 {% endblock %}

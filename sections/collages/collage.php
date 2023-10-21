@@ -1,8 +1,43 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
+
+
+/**
+ * collage details page
+ */
 
 $app = \Gazelle\App::go();
+
+# http request
+$get = Http::get();
+$id = $get["id"];
+
+# collage details
+$collage = new Collages($id);
+
+if (!$collage->uuid) {
+    $app->error(404);
+}
+
+$torrentGroups = $collage->torrentGroups();
+$isSubscribed = $collage->isSubscribed();
+$stats = $collage->readStats();
+
+# twig template
+$app->twig->display("collages/details.twig", [
+  "title" => $collage->title,
+  "sidebar" => true,
+  "collage" => $collage,
+  "torrentGroups" => $torrentGroups,
+  "isSubscribed" => $isSubscribed,
+  "isBookmarked" => false, # todo
+  "stats" => $stats,
+]);
+
+exit;
+
+/****** */
 
 $CollageID = (int) $_GET['id'];
 Security::int($CollageID);
@@ -72,11 +107,7 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
     $app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
 }
 
-if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    include serverRoot.'/sections/collages/artist_collage.php';
-} else {
-    include serverRoot.'/sections/collages/torrent_collage.php';
-}
+include serverRoot.'/sections/collages/torrent_collage.php';
 
 if (isset($SetCache)) {
     $CollageData = array(

@@ -6,8 +6,8 @@
 
 	<td>
 		<select id="categoryId" name="categoryId" required>
-			{% for item in env.CATS %}
-				<option value="{{ item.ID }}" {{ (value == item.ID) ? "selected" : "" }}>{{ item.Name }}</option>
+			{% for item in env.categories %}
+				<option value="{{ item.id }}" {{ (value == item.id) ? "selected" : "" }}>{{ item.title }}</option>
 			{% endfor %}
 		</select>
 

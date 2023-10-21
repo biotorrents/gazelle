@@ -85,7 +85,7 @@ EOT;
                   AND `HandledTimestamp` IS NULL)
                   OR(
                     `Timestamp` > NOW() - INTERVAL 2 MONTH
-                    AND Outcome = '".self::DENIED."')
+                    AND Outcome = '" . self::DENIED . "')
                 )
             ");
         }
@@ -114,8 +114,8 @@ EOT;
                 )
                 VALUES(?, ?, ?, ?, NOW())",
                 $UserID,
-                Crypto::encrypt($Email),
-                Crypto::encrypt($IP),
+                \Gazelle\Crypto::encrypt($Email),
+                \Gazelle\Crypto::encrypt($IP),
                 $UserAgent
             );
             $RequestID = $app->dbOld->inserted_id();
@@ -157,7 +157,7 @@ EOT;
             error(404);
         }
 
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         $UserInfo = [];
         $IDs = (!is_array($IDs)) ? [$IDs] : $IDs;
 
@@ -179,7 +179,7 @@ EOT;
         FROM
           `users_enable_requests`
         WHERE
-          `ID` IN(".implode(',', $IDs).")
+          `ID` IN(" . implode(',', $IDs) . ")
           AND `Outcome` IS NULL
         ");
         $Results = $app->dbOld->to_array(false, MYSQLI_NUM);
@@ -188,7 +188,7 @@ EOT;
             // Prepare email
             foreach ($Results as $Result) {
                 list($Email, $ID, $UserID) = $Result;
-                $Email = Crypto::decrypt($Email);
+                $Email = \Gazelle\Crypto::decrypt($Email);
                 $UserInfo[] = array($ID, $UserID);
 
                 if ($Status === self::APPROVED) {
@@ -214,7 +214,7 @@ EOT;
                 // Send email
                 $Subject = "Your enable request for $ENV->siteName has been ";
                 $Subject .= ($Status === self::APPROVED) ? 'approved' : 'denied';
-                \Gazelle\App::email($Email, $Subject, $email);
+                $app->email($Email, $Subject, $email);
             }
         } else {
             foreach ($Results as $Result) {
@@ -244,7 +244,7 @@ EOT;
 
         foreach ($UserInfo as $User) {
             list($ID, $UserID) = $User;
-            $BaseComment = sqltime()." - Enable request $ID ".strtolower(self::get_outcome_string($Status)).' by [user]'.$StaffUser.'[/user]';
+            $BaseComment = sqltime() . " - Enable request $ID " . strtolower(self::get_outcome_string($Status)) . ' by [user]' . $StaffUser . '[/user]';
             $BaseComment .= (!empty($Comment)) ? "\nReason: $Comment\n\n" : "\n\n";
             Tools::update_user_notes($UserID, $BaseComment);
         }
@@ -256,7 +256,7 @@ EOT;
         SET
           `HandledTimestamp` = NOW(), `CheckedBy` = ?, `Outcome` = ?
         WHERE
-          `ID` IN(".implode(',', $IDs)."),
+          `ID` IN(" . implode(',', $IDs) . "),
           $StaffID,
           $Status
         ");
@@ -298,11 +298,11 @@ EOT;
         FROM
           `users_main`
         WHERE
-          `ID` = '".$app->user->core['id']."'
+          `ID` = '" . $app->user->core['id'] . "'
         ");
         list($StaffUser) = $app->dbOld->next_record();
 
-        Tools::update_user_notes($UserID, sqltime()." - Enable request $ID unresolved by [user]".$StaffUser.'[/user]'."\n\n");
+        Tools::update_user_notes($UserID, sqltime() . " - Enable request $ID unresolved by [user]" . $StaffUser . '[/user]' . "\n\n");
         $app->dbOld->query("
         UPDATE
           `users_enable_requests`
@@ -376,12 +376,12 @@ EOT;
 
             if ($Timestamp < time_minus(3600 * 48)) {
                 // Old request
-                Tools::update_user_notes($UserID, sqltime()." - Tried to use an expired enable token from ".$_SERVER['REMOTE_ADDR']."\n\n");
-                $Err = "Token has expired. Please visit ".DISABLED_CHAN." on ".BOT_SERVER." to discuss this with staff.";
+                Tools::update_user_notes($UserID, sqltime() . " - Tried to use an expired enable token from " . $_SERVER['REMOTE_ADDR'] . "\n\n");
+                $Err = "Token has expired. Please visit " . DISABLED_CHAN . " on " . BOT_SERVER . " to discuss this with staff.";
             } else {
                 // Good request, decrement cache value and enable account
                 $app->cache->decrement(AutoEnable::CACHE_KEY_NAME);
-                $VisibleTrIP = ($Visible && Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
+                $VisibleTrIP = ($Visible && \Gazelle\Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
                 Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
                 $app->dbOld->query("

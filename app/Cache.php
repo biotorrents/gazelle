@@ -26,17 +26,22 @@ class Cache # extends \Redis
     private $redis = null;
 
     # global default cache settings
-    private $cachePrefix = "gazelle:"; # e.g., gazelle:development:stats:overview
-    private $cacheDuration = 3600; # default one hour, if not otherwise specified
+    private string $cachePrefix = "gazelle:"; # e.g., gazelle:development:stats:overview
+    private int $cacheDuration = 3600; # default one hour, if not otherwise specified
 
     # torrent group cache version
-    public $groupVersion = "2023-04-01";
+    public string $groupVersion = "2023-04-01";
 
     # are we in a transaction?
-    private $transactionMode = false;
+    private bool $transactionMode = false;
 
     # are we running a cluster or a single server?
     private $clusterMode = null;
+
+    # reserved characters
+    # see https://github.com/symfony/cache-contracts/blob/main/ItemInterface.php
+    private array $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@"]; # you can totally use ":"
+    #private $reservedCharacters = ["{", "}", "(", ")", "/", "\\", "@", ":"];
 
 
     /**
@@ -89,17 +94,17 @@ class Cache # extends \Redis
      */
     private function factory(array $options = []): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # https://github.com/phpredis/phpredis/blob/develop/cluster.md
-        if ($app->env->redisClusterEnabled) {
+        if ($app->env->enableRedisCluster) {
             $this->redis = new \RedisCluster(
                 null,
-                $app->env->getPriv("redisNodes"),
+                $app->env->private("redisNodes")->toArray(),
                 1.5,
                 1.5,
                 true,
-                $app->env->getPriv("redisPassphrase")
+                $app->env->private("redisPassphrase")
             );
 
             # failure
@@ -112,16 +117,16 @@ class Cache # extends \Redis
         }
 
         # single redis server (not a cluster)
-        if (!$app->env->redisClusterEnabled) {
+        if (!$app->env->enableRedisCluster) {
             $this->redis = new \Redis();
             $this->redis->connect(
-                $app->env->getPriv("redisHost"),
-                $app->env->getPriv("redisPort"),
+                $app->env->private("redisHost"),
+                $app->env->private("redisPort"),
             );
 
             # authentication
-            $redisUsername = $app->env->getPriv("redisUsername") ?? null;
-            $redisPassphrase = $app->env->getPriv("redisPassphrase") ?? null;
+            $redisUsername = $app->env->private("redisUsername") ?? null;
+            $redisPassphrase = $app->env->private("redisPassphrase") ?? null;
 
             if ($redisUsername && $redisPassphrase) {
                 $this->redis->auth([
@@ -189,6 +194,9 @@ class Cache # extends \Redis
      */
     public function set(string $key, mixed $value, int|string $cacheDuration = null): array
     {
+        # reserved characters
+        $key = $this->sanitize($key);
+
         # we passed an integer
         if (is_int($cacheDuration)) {
             $cacheDuration = time() + $cacheDuration;
@@ -242,6 +250,8 @@ class Cache # extends \Redis
      */
     public function get(string $key): mixed
     {
+        $key = $this->sanitize($key);
+
         try {
             return $this->redis->get($key);
         } catch (\Throwable $e) {
@@ -260,6 +270,8 @@ class Cache # extends \Redis
      */
     public function exists(string $key): bool
     {
+        $key = $this->sanitize($key);
+
         try {
             return boolval($this->redis->exists($key));
         } catch (\Throwable $e) {
@@ -279,6 +291,8 @@ class Cache # extends \Redis
      */
     public function append(string $key, string $value): int
     {
+        $key = $this->sanitize($key);
+
         try {
             return $this->redis->append($key, $value);
         } catch (\Throwable $e) {
@@ -299,6 +313,8 @@ class Cache # extends \Redis
      */
     public function increment(string $key, int|float $value = 1): int|float
     {
+        $key = $this->sanitize($key);
+
         try {
             if (!is_int($value)) {
                 return $this->redis->incrByFloat($key, $value);
@@ -322,11 +338,13 @@ class Cache # extends \Redis
      */
     public function decrement(string $key, int $value = 1): int
     {
-        # cast to an int
-        $unsafe = $this->redis->get($key);
-        $safe = intval($unsafe);
+        $key = $this->sanitize($key);
 
         try {
+            # cast to an int
+            $unsafe = $this->redis->get($key);
+            $safe = intval($unsafe);
+
             # set the integer value
             $this->redis->set($key, $safe);
 
@@ -347,6 +365,8 @@ class Cache # extends \Redis
      */
     public function persist(string $key): bool
     {
+        $key = $this->sanitize($key);
+
         try {
             return $this->redis->persist($key);
         } catch (\Throwable $e) {
@@ -367,6 +387,7 @@ class Cache # extends \Redis
     {
         try {
             foreach ($keys as $key) {
+                $key = $this->sanitize($key);
                 $this->redis->unlink($key);
             }
         } catch (\Throwable $e) {
@@ -425,6 +446,20 @@ class Cache # extends \Redis
 
 
     /** meta */
+
+
+    /**
+     * sanitize
+     *
+     * Sanitize a cache key.
+     *
+     * @param string $key the cache key
+     * @return string the sanitized key
+     */
+    private function sanitize(string $key): string
+    {
+        return str_replace($this->reservedCharacters, "-", $key);
+    }
 
 
     /**

@@ -1,0 +1,77 @@
+{# information #}
+<section>
+<h3>Information</h3>
+
+<table>
+    <tr>
+        <th>Available balance</th>
+        <td>{{ bonusPoints.bonusPoints|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Accrual per hour</th>
+        <td>{{ bonusPoints.pointsOverTime.hourly|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per day</th>
+        <td>{{ bonusPoints.pointsOverTime.daily|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per week</th>
+        <td>{{ bonusPoints.pointsOverTime.weekly|number_format }}</td>
+    </tr>
+
+    <tr>
+        <th>Per month</th>
+        <td>{{ bonusPoints.pointsOverTime.monthly|number_format }}</td>
+    </tr>
+</table>
+
+</section>
+
+{# exchange currency #}
+<section>
+<h3>Exchange currency</h3>
+
+<p>
+    Each transaction incurs a {{ bonusPoints.exchangeTax * 100 }}% processing fee.
+    You'll be able to review your purchase before it's submitted.
+</p>
+
+{# 1 point = 1 KiB #}
+<form method="post" action="/store/checkout/pointsToUpload">
+    {{ form_token("/store/checkout/pointsToUpload") }}
+
+    <input type ="number" name="pointsAmount" placeholder="1 point = 1 KiB" max="{{ bonusPoints.bonusPoints }}" required>
+
+    <button type="submit" class="button button-primary">{{ env.bonusPoints }} → upload</button>
+</form>
+
+    <hr>
+    <br>
+
+{# 1 MiB = 1 point #}
+<form method="post" action="/store/checkout/uploadToPoints">
+    {{ form_token("/store/checkout/uploadToPoints") }}
+
+    <input type="number" name="dataAmount" placeholder="1 MiB = 1 point" required>
+
+    <select name="dataUnit" class="select">
+        <option value="MiB">MiB</option>
+        <option value="GiB">GiB</option>
+        <option value="TiB">TiB</option>
+        <option value="PiB">PiB</option>
+    </select>
+
+    <button type="submit" class="button button-primary">upload → {{ env.bonusPoints }}</button>
+</form>
+
+    <hr>
+    <br>
+
+    <form>
+        <a href="/store" class="button button-orange">back to the storefront</a>
+    </form>
+</section>

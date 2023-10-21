@@ -43,6 +43,7 @@
   display: flex;
   flex-flow: row wrap;
   gap: 1rem;
+  user-select: none;
 }
 
 /* recent torrent activity, e.g., last five uploads */

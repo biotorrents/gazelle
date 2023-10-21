@@ -78,8 +78,8 @@ class OpenAI
             throw new \Exception("OpenAI support is disabled in the app config");
         }
 
-        $openAiApi = $app->env->getPriv("openAiApi");
-        $this->client = \OpenAI::client($openAiApi["secretKey"]);
+        $openAiApi = $app->env->private("openAiApi");
+        $this->client = \OpenAI::client($openAiApi->secretKey);
     }
 
 
@@ -91,7 +91,7 @@ class OpenAI
      * @param string $prompt
      * @return OpenAI\Responses\Completions\CreateResponse
      */
-    public function test(string $prompt = "hello"): OpenAI\Responses\Completions\CreateResponse
+    public function test(string $prompt = "hello"): \OpenAI\Responses\Completions\CreateResponse
     {
         $response = $this->client->completions()->create([
             "model" => $this->model,

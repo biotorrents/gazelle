@@ -109,7 +109,7 @@ foreach ($Results as $Result) {
         $Links .= '<a href="artist.php?id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
     } elseif ($Result['Page'] == 'collages') {
         $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . \Gazelle\Text::esc($Result['CollageName']) . '</a> &gt; ';
-        $Links .= '<a href="collages.php?action=comments&amp;collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
+        $Links .= '<a href="collages.php?action=comments&amp;collageId=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '">Post #' . $Result['PostID'] . '</a>';
     } elseif ($Result['Page'] == 'requests') {
         if (!isset($Requests[$Result['PageID']])) {
             continue;

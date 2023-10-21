@@ -94,8 +94,8 @@ class TorrentForm
     {
         $app = \Gazelle\App::go();
 
-        $ENV = ENV::go();
-        $twig  = Twig::go();
+        $ENV = \Gazelle\ENV::go();
+        $twig  = \Gazelle\Twig::go();
 
         /**
          * Upload notice
@@ -166,7 +166,7 @@ HTML;
     {
         $app = \Gazelle\App::go();
 
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         $app->dbOld->query(
             "
         SELECT
@@ -174,7 +174,7 @@ HTML;
         FROM
           `torrents`
         WHERE
-          `UserID` = ".$app->user->core["id"]
+          `UserID` = " . $app->user->core["id"]
         );
         list($Uploads) = $app->dbOld->next_record();
 
@@ -279,7 +279,7 @@ HTML;
                   <p id="category_description" class="">
                   <!-- $Cat->Description will live here -->
                   Please see the
-                  <a href="/wiki.php?action=article&name=categories">Categories Wiki</a>
+                  <a href="/wiki/categories">Categories Wiki</a>
                   for details
                   </p>
                 </td>
@@ -420,8 +420,8 @@ HTML;
     {
         $app = \Gazelle\App::go();
 
-        $ENV = ENV::go();
-        $twig = Twig::go();
+        $ENV = \Gazelle\ENV::go();
+        $twig = \Gazelle\Twig::go();
 
         $QueryID = $app->dbOld->get_query_id();
         $Torrent = $this->Torrent;
@@ -1001,7 +1001,7 @@ HTML;
                 ");
 
                 $GenreTags = $app->dbOld->collect('Name');
-                $app->cache->set('genre_tags', $GenreTags, 3600*6);
+                $app->cache->set('genre_tags', $GenreTags, 3600 * 6);
             }
 
             # todo: Find a better place for these

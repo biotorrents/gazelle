@@ -290,6 +290,147 @@ class Tags
         $query = "select * from tags where tagType = ?";
         $ref = $app->dbNew->multi($query, ["genre"]);
 
+        # sort the array by the "name" key
+        usort($ref, function ($a, $b) {
+            return strcmp($a["Name"], $b["Name"]);
+        });
+
         return $ref;
     }
-}
+
+
+    /**
+     * getNameById
+     *
+     * Get the name of a tag by their id.
+     * Optionally, return a link to a search.
+     *
+     * @param int $id
+     * @param bool $html
+     * @return string
+     */
+    public static function getNameById(int $id, ?bool $html = false): string
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select name from tags where id = ?";
+        $name = $app->dbNew->single($query, [$id]);
+
+        if (!$name) {
+            throw new Exception("not found");
+        }
+
+        # todo
+        if ($html) {
+            # e.g., /collages.php?action=search&tags=protocol.available
+            return $name;
+        }
+
+        return $name;
+    }
+
+
+    /**
+     * updateGroupTags
+     *
+     * Add tags to a group.
+     */
+    public static function updateGroupTags(int $groupId, array $tagIds): void
+    {
+        $app = \Gazelle\App::go();
+
+        $app->dbNew->beginTransaction();
+
+        try {
+            # does the group exist?
+            $query = "select 1 from torrents_group where id = ?";
+            $good = $app->dbNew->single($query, [$groupId]);
+
+            if (!$good) {
+                throw new Exception("group not found");
+            }
+
+            foreach ($tagIds as $key => $tagId) {
+                # does the tag exist?
+                $query = "select 1 from tags where id = ?";
+                $good = $app->dbNew->single($query, [$tagId]);
+
+                if (!$good) {
+                    unset($tagIds[$key]);
+                    continue;
+                }
+
+                # add the tag
+                $query = "
+                    insert into torrents_tags (groupId, tagId, userId) values (?, ?, ?)
+                    on duplicate key update tagId = tagId
+                ";
+                $app->dbNew->do($query, [ $groupId, $tagId, $app->user->core["id"] ]);
+            }
+
+            # write to the group log
+            $message = "added tags: " . implode(", ", $tagIds);
+            $query = "
+                insert into group_log (groupId, userId, time, info)
+                values (?, ?, now(), ?)
+            ";
+            $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
+
+            # delete torrent group cache
+            Torrents::update_hash($groupId);
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+            throw $e;
+        }
+
+        $app->dbNew->commit();
+    }
+
+
+    /**
+     * deleteGroupTags
+     *
+     * Delete a tag from a group.
+     *
+     * @param int $groupId
+     * @param array $tagIds
+     * @return void
+     */
+    public static function deleteGroupTags(int $groupId, array $tagIds): void
+    {
+        $app = \Gazelle\App::go();
+
+        $app->dbNew->beginTransaction();
+
+        try {
+            # does the group exist?
+            $query = "select 1 from torrents_group where id = ?";
+            $good = $app->dbNew->single($query, [$groupId]);
+
+            if (!$good) {
+                throw new Exception("group not found");
+            }
+
+            foreach ($tagIds as $tagId) {
+                $query = "delete from torrents_tags where groupId = ? and tagId = ?";
+                $app->dbNew->do($query, [$groupId, $tagId]);
+            }
+
+            # write to the group log
+            $message = "removed tags: " . implode(", ", $tagIds);
+            $query = "
+                insert into group_log (groupId, userId, time, info)
+                values (?, ?, now(), ?)
+            ";
+            $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
+
+            # delete torrent group cache
+            Torrents::update_hash($groupId);
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+            throw $e;
+        }
+
+        $app->dbNew->commit();
+    }
+} # class

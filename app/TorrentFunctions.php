@@ -138,13 +138,11 @@ class TorrentFunctions
           tbf.TorrentID AS BadFolders,
           tfi.TorrentID AS BadFiles,
           t.LastReseedRequest,
-          tln.TorrentID AS LogInDB,
           t.ID AS HasFile
         FROM torrents AS t
           LEFT JOIN torrents_bad_tags AS tbt ON tbt.TorrentID = t.ID
           LEFT JOIN torrents_bad_folders AS tbf ON tbf.TorrentID = t.ID
           LEFT JOIN torrents_bad_files AS tfi ON tfi.TorrentID = t.ID
-          LEFT JOIN torrents_logs_new AS tln ON tln.TorrentID = t.ID
         WHERE t.GroupID = '".db_string($GroupID)."'
         GROUP BY t.ID
         ORDER BY
@@ -296,25 +294,6 @@ class TorrentFunctions
 
 
     /**
-     * set_torrent_logscore
-     */
-    // After adjusting / deleting logs, recalculate the score for the torrent
-    public static function set_torrent_logscore($TorrentID)
-    {
-        $app = \Gazelle\App::go();
-
-        $app->dbOld->query("
-      UPDATE torrents
-      SET LogScore = (
-        SELECT FLOOR(AVG(Score))
-        FROM torrents_logs_new
-        WHERE TorrentID = $TorrentID
-        )
-      WHERE ID = $TorrentID");
-    }
-
-
-    /**
      * get_group_requests
      */
     public static function get_group_requests($GroupID)
@@ -361,7 +340,7 @@ class TorrentFunctions
                 $Censored, $Anonymous, $Archive, $FileCount, $Size, $Seeders, $Leechers, $Snatched,
                 $FreeTorrent, $FreeLeechType, $TorrentTime, $Description, $FileList, $FilePath, $UserID,
                 $LastActive, $InfoHash, $BadTags, $BadFolders, $BadFiles, $LastReseedRequest,
-                $LogInDB, $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
+                $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
 
             $Reported = false;
             $Reports = Torrents::get_reports($TorrentID);

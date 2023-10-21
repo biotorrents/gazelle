@@ -170,8 +170,8 @@ class DatabaseOld
         $app = \Gazelle\App::go();
 
         # database variables
-        $source = $app->env->getPriv("databaseSource");
-        $replicas = $app->env->getPriv("databaseReplicas");
+        $source = $app->env->private("databaseSource");
+        $replicas = $app->env->private("databaseReplicas");
 
         $this->Database = $source["database"];
         $this->User = $source["username"];
@@ -187,7 +187,7 @@ class DatabaseOld
      */
     public function halt($Msg)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         #$debug = Debug::go();
 
         global $argv;
@@ -267,7 +267,7 @@ class DatabaseOld
 
         if (!empty($BindVars)) {
             $Types = '';
-            $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];
+            $TypeMap = ['string' => 's', 'double' => 'd', 'integer' => 'i', 'boolean' => 'i'];
 
             foreach ($BindVars as $BindVar) {
                 $Types .= $TypeMap[gettype($BindVar)] ?? 'b';
@@ -315,7 +315,7 @@ class DatabaseOld
      */
     public function query($Query, &...$BindVars)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         #$debug = Debug::go();
 
         $this->connect();
@@ -326,7 +326,7 @@ class DatabaseOld
             $this->StatementID = mysqli_prepare($this->LinkID, $Query);
             if (!empty($BindVars)) {
                 $Types = '';
-                $TypeMap = ['string'=>'s', 'double'=>'d', 'integer'=>'i', 'boolean'=>'i'];
+                $TypeMap = ['string' => 's', 'double' => 'd', 'integer' => 'i', 'boolean' => 'i'];
 
                 foreach ($BindVars as $BindVar) {
                     $Types .= $TypeMap[gettype($BindVar)] ?? 'b';

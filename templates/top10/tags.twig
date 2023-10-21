@@ -5,66 +5,64 @@
 	<h2>Top tags</h2>
 
 	{# torrentTags #}
+	{% if torrentTags is not empty %}
 	<section>
-		<div class="flexHeader">
-			<h3>{{ limit }} most used torrent tags</h3>
+		<h3>{{ limit }} most used torrent tags</h3>
 
-			<span class="flexHeader">
-				<a class="button {{ (limit == 10) ? " button-primary" : " " }}" href="/top10/tags?limit=10">top 10</a>
-				<a class="button {{ (limit == 20) ? " button-primary" : " " }}" href="/top10/tags?limit=20">top 20</a>
-				<a class="button {{ (limit == 50) ? " button-primary" : " " }}" href="/top10/tags?limit=50">top 50</a>
-				<a class="button {{ (limit == 100) ? " button-primary" : " " }}" href="/top10/tags?limit=100">top 100</a>
-			</span>
-		</div>
-
-		<table>
-			<tr>
-				<th/>
-				<th>Tag name</th>
-				<th class="center">Uses</th>
-			</tr>
-
-			{% for key, item in torrentTags %}
+		<table data-sortable>
+			<thead>
 				<tr>
-					<td class="center">{{ key + 1 }}</td>
-					<td><a href="/torrents.php?tagList[]={{ item.name }}">{{ item.name }}</a></td>
-					<td class="center">{{ item.uses|number_format }}</td>
+					<th class="center">Rank</th>
+					<th>Tag name</th>
+					<th class="center">Uses</th>
 				</tr>
-			{% endfor %}
+			</thead>
 
+			<tbody>
+				{% for key, item in torrentTags %}
+					<tr>
+						<td class="center">{{ key + 1 }}</td>
+						<th><a href="/torrents.php?tagList[]={{ item.name }}">{{ item.name }}</a></td>
+						<td class="center">{{ item.uses|number_format }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
 		</table>
 	</section>
-
+	{% endif %}
 
 	{# requestTags #}
+	{% if requestTags is not empty %}
 	<section>
-		<div class="flexHeader">
-			<h3>{{ limit }} most used request tags</h3>
+		<h3>{{ limit }} most used request tags</h3>
 
-			<span class="flexHeader">
-				<a class="button {{ (limit == 10) ? " button-primary" : " " }}" href="/top10/tags?limit=10">top 10</a>
-				<a class="button {{ (limit == 20) ? " button-primary" : " " }}" href="/top10/tags?limit=20">top 20</a>
-				<a class="button {{ (limit == 50) ? " button-primary" : " " }}" href="/top10/tags?limit=50">top 50</a>
-				<a class="button {{ (limit == 100) ? " button-primary" : " " }}" href="/top10/tags?limit=100">top 100</a>
-			</span>
-		</div>
-
-		<table>
-			<tr>
-				<th/>
-				<th>Tag name</th>
-				<th class="center">Uses</th>
-			</tr>
-
-			{% for key, item in requestTags %}
+		<table data-sortable>
+			<thead>
 				<tr>
-					<td class="center">{{ key + 1 }}</td>
-					<td><a href="/requests.php?tagList[]={{ item.name }}">{{ item.name }}</a></td>
-					<td class="center">{{ item.uses|number_format }}</td>
+					<th class="center">Rank</th>
+					<th>Tag name</th>
+					<th class="center">Uses</th>
 				</tr>
-			{% endfor %}
+			</thead>
 
+			<tbody>
+				{% for key, item in requestTags %}
+					<tr>
+						<td class="center">{{ key + 1 }}</td>
+						<td><a href="/requests.php?tagList[]={{ item.name }}">{{ item.name }}</a></td>
+						<td class="center">{{ item.uses|number_format }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
 		</table>
 	</section>
+	{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "top10/sidebar.twig" %}
 
 {% endblock %}

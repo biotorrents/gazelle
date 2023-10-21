@@ -14,11 +14,13 @@ Flight::route("/top10(/torrents)", function () {
 });
 
 
+/*
 # torrent history
 Flight::route("/top10/history", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/top10/history.php";
 });
+*/
 
 
 # tags
@@ -35,8 +37,10 @@ Flight::route("/top10/users", function () {
 });
 
 
+/*
 # donors
 Flight::route("/top10/donors", function () {
     $app = \Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/top10/donors.php";
 });
+*/

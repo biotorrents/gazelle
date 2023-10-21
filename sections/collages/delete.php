@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-$CollageID = $_GET['collageid'];
+$CollageID = $_GET['collageId'];
 if (!is_numeric($CollageID) || !$CollageID) {
     error(404);
 }
@@ -29,7 +29,7 @@ View::header('Delete collage');
       <form class="delete_form" name="collage" action="collages.php" method="post">
         <input type="hidden" name="action" value="take_delete">
         <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-        <input type="hidden" name="collageid" value="<?=$CollageID?>">
+        <input type="hidden" name="collageId" value="<?=$CollageID?>">
 <?php
 if ($CategoryID == 0) {
     ?>

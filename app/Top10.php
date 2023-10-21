@@ -11,6 +11,8 @@ declare(strict_types=1);
  * todo: test the user functions in production
  */
 
+namespace Gazelle;
+
 class Top10
 {
     # cache settings
@@ -19,6 +21,33 @@ class Top10
 
     # default result limit
     public static $defaultLimit = 10;
+
+    # shared torrent query
+    private static $torrentQuery = "
+        select torrents_group.id, (torrents.size * torrents.snatched) + (torrents.size * 0.5 * torrents.leechers) as dataTransfer
+        from torrents left join torrents_group on torrents_group.id = torrents.groupId
+    ";
+
+    /*
+    private static $torrentQuery = "
+        select
+            torrents.*, torrents_group.*,
+            (torrents.size * torrents.snatched) + (torrents.size * 0.5 * torrents.leechers) as dataTransfer
+        from torrents
+            left join torrents_group on torrents_group.id = torrents.groupId
+    ";
+    */
+
+    /*
+    private static $torrentQuery = "
+        select
+            torrents.id, torrents.leechers, torrents.media, torrents.seeders, torrents.size, torrents.snatched,
+            torrents_group.id, torrents_group.category_id, torrents_group.object, torrents_group.picture, torrents_group.subject, torrents_group.tag_list, torrents_group.title, torrents_group.workgroup, torrents_group.year,
+            (torrents.size * torrents.snatched) + (torrents.size * 0.5 * torrents.leechers) as dataTransfer
+        from torrents
+            left join torrents_group on torrents_group.id = torrents.groupId
+    ";
+    */
 
     # shared user query
     private static $userQuery = "
@@ -49,41 +78,283 @@ class Top10
     ];
 
 
+    /** torrents */
+
+
     /**
-     * torrents
+     * dailyTorrents
      *
-     * Gets the top torrents.
+     * Gets the top daily torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public function torrents()
+    public static function dailyTorrents(int $limit = null): ?array
     {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 day) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
 
 
     /**
-     * history
+     * weeklyTorrents
      *
-     * Gets the top history.
+     * Gets the top weekly torrents.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public function history()
+    public static function weeklyTorrents(int $limit = null): ?array
     {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 week) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
     }
+
+
+    /**
+     * monthlyTorrents
+     *
+     * Gets the top monthly torrents.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function monthlyTorrents(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 month) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * yearlyTorrents
+     *
+     * Gets the top yearly torrents.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function yearlyTorrents(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 year) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+    /**
+     * overallTorrents
+     *
+     * Gets the top torrents of all time.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function overallTorrents(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * torrentSeeders
+     *
+     * Gets the top torrents by seed count.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function torrentSeeders(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "order by torrents.seeders desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * torrentSnatches
+     *
+     * Gets the top snatched torrents.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function torrentSnatches(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "order by torrents.snatched desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * torrentData
+     *
+     * Gets the top torrents by data transferred.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function torrentData(int $limit = null): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # return cached if available
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # set limit and query extras
+        $limit ??= self::$defaultLimit;
+        $query = self::$torrentQuery . "order by dataTransfer desc limit :limit";
+        $ref = $app->dbNew->multi($query, ["limit" => $limit]);
+
+        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
+        return $ref;
+    }
+
+
+    /**
+     * torrentHistory
+     *
+     * Gets the top torrent history.
+     *
+     * @param int $limit
+     * @return ?array
+     */
+    public static function torrentHistory(int $limit = null): ?array
+    {
+        throw new \Exception("not implemented");
+    }
+
+
+    /** tags */
 
 
     /**
      * torrentTags
      *
      * Gets the top torrent tags.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function torrentTags(int $limit = null): array
+    public static function torrentTags(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit
@@ -107,17 +378,20 @@ class Top10
      * requestTags
      *
      * Gets the top request tags.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function requestTags(int $limit = null): array
+    public static function requestTags(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit
@@ -137,12 +411,18 @@ class Top10
     }
 
 
+    /** users */
+
+
     /**
      * hydrateUserVariables
      *
      * Gets around the static property issues in user queries.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    private static function hydrateUserVariables(int $limit = null): array
+    private static function hydrateUserVariables(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
@@ -183,22 +463,25 @@ class Top10
      *     JOIN users_info AS ui ON ui.UserID = u.ID
      *     LEFT JOIN torrents AS t ON t.UserID=u.ID
      *   WHERE u.Enabled='1'
-     *     AND Uploaded>='". 500*1024*1024 ."'
+     *     AND Uploaded>='". 500 * 1024 * 1024 ."'
      *     AND Downloaded>='". 0 ."'
      *     AND u.ID > 2
      *     AND (Paranoia IS NULL OR (Paranoia NOT LIKE '%\"uploaded\"%' AND Paranoia NOT LIKE '%\"downloaded\"%'))
      *   GROUP BY u.ID";
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function dataUploaded(int $limit = null): array
+    public static function dataUploaded(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -217,17 +500,20 @@ class Top10
      * dataDownloaded
      *
      * Gets the top users by download amount.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function dataDownloaded(int $limit = null): array
+    public static function dataDownloaded(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -246,17 +532,20 @@ class Top10
      * uploadCount
      *
      * Gets the top users by upload count.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function uploadCount(int $limit = null): array
+    public static function uploadCount(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -275,17 +564,20 @@ class Top10
      * uploadSpeed
      *
      * Gets the top users by upload speed.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function uploadSpeed(int $limit = null): array
+    public static function uploadSpeed(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -304,17 +596,20 @@ class Top10
      * downloadSpeed
      *
      * Gets the top users by download speed.
+     *
+     * @param int $limit
+     * @return ?array
      */
-    public static function downloadSpeed(int $limit = null): array
+    public static function downloadSpeed(int $limit = null): ?array
     {
         $app = \Gazelle\App::go();
 
         # return cached if available
-        $cacheKey = self::$cachePrefix . __FUNCTION__ . "_{$limit}";
+        $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # set limit and variables
@@ -328,17 +623,24 @@ class Top10
         return $ref;
     }
 
+
+    /** donors */
+
     /**
      * donors
      *
      * Gets the top donors.
+     *
+     * @param int $limit
+     * @return ?array
      */
     public function donors()
     {
+        throw new \Exception("not implemented");
     }
 
 
-    /** static */
+    /** legacy */
 
 
     /**
@@ -346,7 +648,7 @@ class Top10
      */
     public static function render_linkbox($selected)
     {
-        $ENV = ENV::go(); ?>
+        $ENV = \Gazelle\ENV::go(); ?>
 <div class="linkbox">
   <a href="/top10" class="brackets"><?=self::get_selected_link("Torrents", $selected === "torrents")?></a>
   <a href="/top10/users" class="brackets"><?=self::get_selected_link("Users", $selected === "users")?></a>
@@ -370,87 +672,4 @@ class Top10
             return $string;
         }
     }
-
-
-    /**
-     * render_artist_tile
-     */
-    public static function render_artist_tile($artist, $category)
-    {
-        if (self::is_valid_artist($artist)) {
-            switch ($category) {
-                case "weekly":
-                case "hyped":
-                    self::render_tile("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
-    /**
-     * render_tile
-     */
-    private static function render_tile($url, $name, $image)
-    {
-        if (!empty($image)) {
-            $name = \Gazelle\Text::esc($name); ?>
-<li>
-  <a
-    href="<?=$url?><?=$name?>">
-    <img class="tooltip large_tile" alt="<?=$name?>"
-      title="<?=$name?>"
-      src="<?=\Gazelle\Images::process($image)?>" />
-  </a>
-</li>
-<?php
-        }
-    }
-
-
-    /**
-     * render_artist_list
-     */
-    public static function render_artist_list($artist, $category)
-    {
-        if (self::is_valid_artist($artist)) {
-            switch ($category) {
-                case "weekly":
-                case "hyped":
-                    self::render_list("artist.php?artistname=", $artist["name"], $artist["image"][3]["#text"]);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-
-    /**
-     * render_list
-     */
-    private static function render_list($url, $name, $image)
-    {
-        if (!empty($image)) {
-            $image = \Gazelle\Images::process($image);
-            $title = "title=\"&lt;img class=&quot;large_tile&quot; src=&quot;$image&quot; alt=&quot;&quot; /&gt;\"";
-            $name = \Gazelle\Text::esc($name); ?>
-
-<li>
-  <a class="tooltip_image" data-title-plain="<?=$name?>" <?=$title?> href="<?=$url?><?=$name?>"><?=$name?></a>
-</li>
-<?php
-        }
-    }
-
-
-    /**
-     * is_valid_artist
-     */
-    private static function is_valid_artist($artist)
-    {
-        return $artist["name"] !== "[unknown]";
-    }
-}
+} # class

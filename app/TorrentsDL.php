@@ -41,7 +41,7 @@ class TorrentsDL
         $app = \Gazelle\App::go();
 
         #$app->cacheOld->InternalCache = false; // The internal cache is almost completely useless for this
-        \Gazelle\App::unlimit(); // Need more memory and longer timeout
+        $app->unlimit(); // Need more memory and longer timeout
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = $app->user;
@@ -193,7 +193,7 @@ class TorrentsDL
      */
     public function summary($FilterStats)
     {
-        $ENV = ENV::go;
+        $ENV = \Gazelle\ENV::go;
 
         $Used = Format::get_size(memory_get_usage(true));
         $Date = date("M d Y, H:i");

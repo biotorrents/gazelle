@@ -48,11 +48,11 @@ ON
 $OuterResults = [];
 
 if ($Details == 'all' || $Details == 'day') {
-    if (!$TopTorrentsActiveLastDay = $app->cache->get('top10tor_day_'.$Limit.$WhereSum)) {
+    if (!$TopTorrentsActiveLastDay = $app->cache->get('top10tor_day_' . $Limit . $WhereSum)) {
         $DayAgo = time_minus(86400);
-        $Query = $BaseQuery.' WHERE t.Seeders>0 AND ';
+        $Query = $BaseQuery . ' WHERE t.Seeders>0 AND ';
         if (!empty($Where)) {
-            $Query .= $Where.' AND ';
+            $Query .= $Where . ' AND ';
         }
         $Query .= "
       t.Time>'$DayAgo'
@@ -60,16 +60,16 @@ if ($Details == 'all' || $Details == 'day') {
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsActiveLastDay = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cache->set('top10tor_day_'.$Limit.$WhereSum, $TopTorrentsActiveLastDay, 3600 * 2);
+        $app->cache->set('top10tor_day_' . $Limit . $WhereSum, $TopTorrentsActiveLastDay, 3600 * 2);
     }
     $OuterResults[] = generate_torrent_json('Most Active Torrents Uploaded in the Past Day', 'day', $TopTorrentsActiveLastDay, $Limit);
 }
 if ($Details == 'all' || $Details == 'week') {
-    if (!$TopTorrentsActiveLastWeek = $app->cache->get('top10tor_week_'.$Limit.$WhereSum)) {
+    if (!$TopTorrentsActiveLastWeek = $app->cache->get('top10tor_week_' . $Limit . $WhereSum)) {
         $WeekAgo = time_minus(604800);
-        $Query = $BaseQuery.' WHERE ';
+        $Query = $BaseQuery . ' WHERE ';
         if (!empty($Where)) {
-            $Query .= $Where.' AND ';
+            $Query .= $Where . ' AND ';
         }
         $Query .= "
       t.Time>'$WeekAgo'
@@ -77,7 +77,7 @@ if ($Details == 'all' || $Details == 'week') {
       LIMIT $Limit;";
         $app->dbOld->query($Query);
         $TopTorrentsActiveLastWeek = $app->dbOld->to_array(false, MYSQLI_NUM);
-        $app->cache->set('top10tor_week_'.$Limit.$WhereSum, $TopTorrentsActiveLastWeek, 3600*6);
+        $app->cache->set('top10tor_week_' . $Limit . $WhereSum, $TopTorrentsActiveLastWeek, 3600 * 6);
     }
     $OuterResults[] = generate_torrent_json('Most Active Torrents Uploaded in the Past Week', 'week', $TopTorrentsActiveLastWeek, $Limit);
 }
@@ -126,7 +126,7 @@ if (($Details == 'all' || $Details == 'data') && empty($Where)) {
 
 if (($Details == 'all' || $Details == 'seeded') && empty($Where)) {
     if (!$TopTorrentsSeeded = $app->cache->get("top10tor_seeded_$Limit$WhereSum")) {
-        $Query = $BaseQuery."
+        $Query = $BaseQuery . "
       ORDER BY t.Seeders DESC
       LIMIT $Limit;";
         $app->dbOld->query($Query);
@@ -136,7 +136,7 @@ if (($Details == 'all' || $Details == 'seeded') && empty($Where)) {
     $OuterResults[] = generate_torrent_json('Best Seeded Torrents', 'seeded', $TopTorrentsSeeded, $Limit);
 }
 
-json_print("success", $OuterResults);
+\Gazelle\Api\Base::success(200, $OuterResults);
 
 function generate_torrent_json($Caption, $Tag, $Details, $Limit)
 {
@@ -144,8 +144,8 @@ function generate_torrent_json($Caption, $Tag, $Details, $Limit)
     $results = [];
     foreach ($Details as $Detail) {
         list($TorrentID, $GroupID, $GroupName, $GroupCategoryID, $WikiImage, $TorrentTags,
-      $Media, $GroupYear,
-      $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
+            $Media, $GroupYear,
+            $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
 
         # todo: Make JSON object if multiple artists
         $Artist = Artists::display_artists(Artists::get_artist($GroupID), false, false);

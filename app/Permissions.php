@@ -12,6 +12,30 @@ class Permissions
     # delight-im/auth
     public $library = null;
 
+    # https://github.com/delight-im/PHP-Auth/blob/master/src/Role.php
+    public const ADMIN = 1;
+    public const AUTHOR = 2;
+    public const COLLABORATOR = 4;
+    public const CONSULTANT = 8;
+    public const CONSUMER = 16;
+    public const CONTRIBUTOR = 32;
+    public const COORDINATOR = 64;
+    public const CREATOR = 128;
+    public const DEVELOPER = 256;
+    public const DIRECTOR = 512;
+    public const EDITOR = 1024;
+    public const EMPLOYEE = 2048;
+    public const MAINTAINER = 4096;
+    public const MANAGER = 8192;
+    public const MODERATOR = 16384;
+    public const PUBLISHER = 32768;
+    public const REVIEWER = 65536;
+    public const SUBSCRIBER = 131072;
+    public const SUPER_ADMIN = 262144;
+    public const SUPER_EDITOR = 524288;
+    public const SUPER_MODERATOR = 1048576;
+    public const TRANSLATOR = 2097152;
+
 
     /**
      * listRoles
@@ -288,9 +312,7 @@ class Permissions
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
-    public static function givePermissionTo(string $permission)
-    {
-    }
+    public static function givePermissionTo(string $permission) {}
 
 
     /**
@@ -300,9 +322,7 @@ class Permissions
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
-    public static function revokePermissionTo(string $permission)
-    {
-    }
+    public static function revokePermissionTo(string $permission) {}
 
 
     /**
@@ -312,9 +332,7 @@ class Permissions
      *
      * @see https://github.com/delight-im/PHP-Auth#assigning-roles-to-users
      */
-    public static function assignRole(string $role)
-    {
-    }
+    public static function assignRole(string $role) {}
 
 
     /**
@@ -324,9 +342,7 @@ class Permissions
      *
      * @see https://github.com/delight-im/PHP-Auth#taking-roles-away-from-users
      */
-    public static function removeRole(string $role)
-    {
-    }
+    public static function removeRole(string $role) {}
 
 
     /**

@@ -1,6 +1,6 @@
 ## Budget breakdown
 
-We have no advertisements, aren't sponsored, and provides our services gratis.
+We have no advertisements, aren't sponsored, and provide our services gratis.
 If you're financially able, please help pay our bills by donating.
 We use the donations to cover the costs of running the site and tracker.
 
@@ -12,15 +12,15 @@ We operate on a shoestring budget.
 The costs of running the site, and all its technical and legal infrastructure, are minimal by design.
 Please find a detailed site budget below.
 
-- **Server.** We use three budget VPSes at 2.50€ per month each.
+- **Servers.** We use six budget VPS at 3.50€ per month each.
 
-- **Domain.** The primary domain name (biotorrents.de) is $15 per year. The secondary one (torrents.bio) is $80 per year.
+- **Domain.** The primary domain name (torrents.bio) is $80 per year. The secondary one (biotorrents.de) is $15 per year.
 
 - **Company.** The parent company costs $50 per year for annual reports and $125 for resident agent services.
 
 - **Legal.** Registering a U.S. copyright agent is $6 per year.
 
-- **Total.** Depending on the exchange rate, it costs about $350 per year to run the site.
+- **Total.** Depending on the exchange rate, it costs about $525 per year to run the site.
 
 ## How to donate
 
@@ -36,7 +36,7 @@ direct donations are used exclusively for the site's operating costs.
 Please see [Patreon](https://www.patreon.com/biotorrents)
 for an overview of funding goals.
 
-[![Become a patron](/images/logos/patreon.png)](https://www.patreon.com/bePatron?u=27142321)
+[![Become a patron](/images/logos/patreon.webp)](https://www.patreon.com/bePatron?u=27142321)
 
 There are two donor tiers on Patreon, both with the same benefits:
 [unlimited API calls](https://docs.torrents.bio),
@@ -71,7 +71,7 @@ There are many ways to provide alternative support, use your imagination!
   title  = {Serving P2P biology data on Debian 9 with BitTorrent},
   year   = {2020},
   url    = \href{https://github.com/biotorrents/announcement}{biotorrents/announcement},
-  note   = {Online; accessed <?=date('Y-m-d')?>},
+  note   = {Online; accessed 2023-09-12},
 }
 ```
 

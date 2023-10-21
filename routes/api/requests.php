@@ -8,10 +8,11 @@ declare(strict_types=1);
  */
 
 # browse
-Flight::route("POST /api/requests/browse", ["Gazelle\API\Requests", "browse"]);
+Flight::route("POST /api/requests/browse", ["Gazelle\Api\Requests", "browse"]);
 
-# requests
-Flight::route("POST /api/requests", ["Gazelle\API\Requests", "create"]);
-Flight::route("GET /api/requests/@identifier", ["Gazelle\API\Requests", "read"]);
-Flight::route("PATCH /api/requests/@identifier", ["Gazelle\API\Requests", "update"]);
-Flight::route("DELETE /api/requests/@identifier", ["Gazelle\API\Requests", "delete"]);
+
+# crud
+Flight::route("POST /api/requests", ["Gazelle\Api\Requests", "create"]);
+Flight::route("GET /api/requests/@identifier", ["Gazelle\Api\Requests", "read"]);
+Flight::route("PATCH /api/requests/@identifier", ["Gazelle\Api\Requests", "update"]);
+Flight::route("DELETE /api/requests/@identifier", ["Gazelle\Api\Requests", "delete"]);

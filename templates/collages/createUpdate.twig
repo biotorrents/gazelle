@@ -1,0 +1,163 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>{{ pageTitle|raw }}</h2>
+
+  {# collage form #}
+  <section>
+    <h3 class="hidden">collageForm</h3>
+
+{# any errors? #}
+    {% if errorMessage %}
+     <p class="error">{{ errorMessage }}</p>
+    {% endif %}
+
+{# admonition #}
+    <p>
+      Please consult the
+      <a href="/rules/collages">collage rules</a>
+      before using this form.
+      This page has helpful guidelines for using the collage system.
+      Thanks for contributing to the site's data ecosystem.
+    </p>
+
+    
+    <form name="collage" method="post">
+
+      {# hidden fields #}
+      {{ form_token(query.server.REQUEST_URI) }}
+		  <input type="hidden" name="id" value={{ collageId }}>
+		  <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
+		  <input type="hidden" name="userId" value="{{ user.core.id }}">
+
+      {# visible fields #}
+			<table>
+
+      {# title #}
+	    <tr>
+		    <th>
+          <label for="title">Title</label>
+		    </th>
+
+		    <td>
+			    <input type="text" id="title" name="title" maxlength="128" placeholder="The collage's title" value="{{ (collage) ? collage.title : "" }}">
+		    </td>
+	    </tr>
+
+      {# category #}
+	    <tr>
+		    <th>
+          <label for="category">Category</label>
+		    </th>
+
+		    <td>
+          <select name="category">
+          {% for key, value in env.collageCategories %}
+            <option value="{{ key }}" {{ (collage and collage.categoryId == key) ? " selected" : "" }}>{{ value }}</option>
+          {% endfor %}
+          </select>
+
+          {# todo: this is hardcoded #}
+          <br><br>
+          <ul>
+            <li>
+              <strong>Personal</strong> &mdash; A collage that appears on your profile page
+            </li>
+
+            <li>
+              <strong>Theme</strong> &mdash; A collage with thematically grouped torrents
+            </li>
+
+{#
+            <li>
+              <strong>Staff Picks</strong> &mdash; A list of staff recommendations for special occasions
+            </li>
+
+            <li>
+              <strong>Group Picks</strong> &mdash; A collage that appears on your profile page
+            </li>
+#}
+          </ul>
+
+		    </td>
+	    </tr>
+
+      {# description #}
+	    <tr>
+		    <th>
+          <label for="description">Description</label>
+		    </th>
+
+		    <td>
+          {% set variables = {"id": "description", "name": "description", "placeholder": "Detailed description of the collage's content and purpose", "value": (collage) ? collage.description : "", "required": true} %}
+			    {% include "_base/textarea.twig" with variables %}
+		    </td>
+	    </tr>
+
+      {# tags #}
+			<tr>
+				<th>Tags</th>
+				<td>
+					<select id="tagList" name="tagList[]" class="select" placeholder="Add or remove tags" multiple>
+						{% for item in officialTags %}
+							<option value="{{ item }}" {{ (item in tagList) ? "selected" : "" }}>
+								{{ item }}
+							</option>
+						{% endfor %}
+					</select>
+					
+				</td>
+			</tr>
+
+      {# max groups #}
+      <tr>
+				<th>Max groups</th>
+				<td>
+          <input type="number" name="maxGroups" value="{{ (collage and collage.maxGroups) ? collage.maxGroups : 0 }}">
+				</td>
+			</tr>
+
+      {# max groups per user #}
+      <tr>
+				<th>Max groups per user</th>
+				<td>
+          <input type="number" name="maxGroupsPerUser" value="{{ (collage and collage.maxGroupsPerUser) ? collage.maxGroupsPerUser : 0 }}">
+				</td>
+			</tr>
+
+      {# locked #}
+      <tr>
+				<th>Lock this collage?</th>
+				<td>
+          <input type="checkbox" name="isLocked" value="1" {{ (collage and collage.isLocked) ? "checked" : "" }}>
+				</td>
+			</tr>
+
+{# update button #}
+      {% if collage %}
+        <tr>
+          <td colspan="2" class="center">
+            <input type="submit" class="button-orange" value="update">
+          </td>
+        </tr>
+
+{# create button #}
+      {% else %}
+        <tr>
+          <td colspan="2" class="center">
+            <input type="submit" class="button-primary" value="create">
+          </td>
+        </tr>
+      {% endif %}
+
+
+
+  </table>
+
+
+    </form>
+
+  </section>
+
+{% endblock %}

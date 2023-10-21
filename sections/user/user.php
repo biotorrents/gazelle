@@ -52,10 +52,10 @@ $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"
 # badges
 if ($isOwnProfile) {
     $badges = Badges::getBadges($userId);
-    $badgesDisplay = Badges::displayBadges(array_keys($badges), true);
+    $badgesDisplay = Badges::displayBadges(array_keys($badges));
 } else {
     $badges = Badges::getDisplayedBadges($userId);
-    $badgesDisplay = Badges::displayBadges($badges, true);
+    $badgesDisplay = Badges::displayBadges($badges);
 }
 
 
@@ -460,7 +460,7 @@ if ($ParanoiaLevel == 0) {
         <?php }
 
         if (check_perms('users_view_ips', $Class)) {
-            $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
+            $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
         <li>IP: <?=\Gazelle\Text::esc($IP)?>
         </li>
         <?php
@@ -503,7 +503,7 @@ if (!isset($SupportFor)) {
     $app->dbOld->query('
     SELECT SupportFor
     FROM users_info
-    WHERE UserID = '.$user['ID']);
+    WHERE UserID = ' . $user['ID']);
     list($SupportFor) = $app->dbOld->next_record();
 }
 if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)) {
@@ -523,7 +523,7 @@ if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)
       </ul>
     </div>
     <?php
-include(serverRoot.'/sections/user/community_stats.php');
+include(serverRoot . '/sections/user/community_stats.php');
 ?>
   </div>
   <div class="main_column two-thirds column">
@@ -742,7 +742,7 @@ foreach ($Collages as $CollageInfo) {
             extract(Torrents::array_group($Group[$C['GroupID']]));
 
             if (!$C['WikiImage']) {
-                $C['WikiImage'] = staticServer.'/images/noartwork.png';
+                $C['WikiImage'] = staticServer . '/images/noartwork.webp';
             }
 
             $Name = '';
@@ -768,12 +768,12 @@ foreach ($Collages as $CollageInfo) {
 
 // Linked accounts
 if (check_perms('users_mod')) {
-    include(serverRoot.'/sections/user/linkedfunctions.php');
+    include(serverRoot . '/sections/user/linkedfunctions.php');
     user_dupes_table($userId);
 }
 
 if ((check_perms('users_view_invites')) && $Invited > 0) {
-    include(serverRoot.'/classes/invite_tree.class.php');
+    include(serverRoot . '/classes/invite_tree.class.php');
     $Tree = new INVITE_TREE($userId, array('visible' => false)); ?>
     <div class="box" id="invitetree_box">
       <div class="head">
@@ -802,7 +802,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
       ResolverID
     FROM staff_pm_conversations
     WHERE UserID = $userId
-      AND (Level <= $UserLevel OR AssignedToUser = '".$user['ID']."')
+      AND (Level <= $UserLevel OR AssignedToUser = '" . $user['ID'] . "')
     ORDER BY Date DESC");
     if ($app->dbOld->has_results()) {
         $StaffPMs = $app->dbOld->to_array(); ?>
@@ -943,7 +943,7 @@ if (check_perms('users_mod', $Class)) { ?>
                 php-cs-fixer misinterpretation
               -->
             <option value="<?=$CurClass['ID']?>"
-              <?=$Selected?>><?=$CurClass['Name'].' ('.$CurClass['Level'].')'?>
+              <?=$Selected?>><?=$CurClass['Name'] . ' (' . $CurClass['Level'] . ')'?>
             </option>
             <?php
     } ?>
@@ -957,7 +957,7 @@ if (check_perms('users_mod', $Class)) { ?>
       ?>
       <tr>
         <td class="label">Donor:</td>
-        <td><input type="checkbox" name="Donor" <?php if ($Donor==1) { ?> checked="checked"
+        <td><input type="checkbox" name="Donor" <?php if ($Donor == 1) { ?> checked="checked"
           <?php } ?> />
         </td>
       </tr>
@@ -993,7 +993,7 @@ if (check_perms('users_mod', $Class)) { ?>
       ?>
       <tr>
         <td class="label">Visible in peer lists:</td>
-        <td><input type="checkbox" name="Visible" <?php if ($Visible==1) { ?> checked="checked"
+        <td><input type="checkbox" name="Visible" <?php if ($Visible == 1) { ?> checked="checked"
           <?php } ?> />
         </td>
       </tr>
@@ -1050,16 +1050,16 @@ if (!$DisablePoints) {
     if ($app->dbOld->has_results()) {
         list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
-        $ENV = ENV::go();
-        $PointsRate = ($ENV->bonusPointsCoefficient + (0.55*($NumTorr * (sqrt(($TSize/$NumTorr)/1073741824) * pow(1.5, ($TTime/$NumTorr)/(24*365))))) / (max(1, sqrt(($TSeeds/$NumTorr)+4)/3)))**0.95;
+        $ENV = \Gazelle\ENV::go();
+        $PointsRate = ($ENV->bonusPointsCoefficient + (0.55 * ($NumTorr * (sqrt(($TSize / $NumTorr) / 1073741824) * pow(1.5, ($TTime / $NumTorr) / (24 * 365))))) / (max(1, sqrt(($TSeeds / $NumTorr) + 4) / 3))) ** 0.95;
     }
 
-    $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints/1440)), 0));
-    $PointsPerHour = \Gazelle\Text::float($PointsRate)." ".bonusPoints."/hour";
-    $PointsPerDay = \Gazelle\Text::float($PointsRate*24)." ".bonusPoints."/day";
+    $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints / 1440)), 0));
+    $PointsPerHour = \Gazelle\Text::float($PointsRate) . " " . bonusPoints . "/hour";
+    $PointsPerDay = \Gazelle\Text::float($PointsRate * 24) . " " . bonusPoints . "/day";
 } else {
-    $PointsPerHour = "0 ".bonusPoints."/hour";
-    $PointsPerDay = bonusPoints." disabled";
+    $PointsPerHour = "0 " . bonusPoints . "/hour";
+    $PointsPerDay = bonusPoints . " disabled";
 } ?>
           <?=$PointsPerHour?> (<?=$PointsPerDay?>)
         </td>
@@ -1147,7 +1147,7 @@ if (!$DisablePoints) {
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID, true)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br>";
@@ -1240,7 +1240,7 @@ if (!$DisablePoints) {
         <td>
           <select name="LockReason">
             <option value="---">---</option>
-            <option value="<?=STAFF_LOCKED?>" <?php if ($LockedAccount==STAFF_LOCKED) { ?> selected
+            <option value="<?=STAFF_LOCKED?>" <?php if ($LockedAccount == STAFF_LOCKED) { ?> selected
               <?php } ?>>Staff Lock
             </option>
           </select>
@@ -1259,49 +1259,49 @@ if (!$DisablePoints) {
       <tr>
         <td class="label">Disable:</td>
         <td>
-          <input type="checkbox" name="DisablePosting" id="DisablePosting" <?php if ($DisablePosting==1) { ?>
+          <input type="checkbox" name="DisablePosting" id="DisablePosting" <?php if ($DisablePosting == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisablePosting">Posting</label>
           <?php if (check_perms('users_disable_any')) { ?>
           |
-          <input type="checkbox" name="DisableAvatar" id="DisableAvatar" <?php if ($DisableAvatar==1) { ?>
+          <input type="checkbox" name="DisableAvatar" id="DisableAvatar" <?php if ($DisableAvatar == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableAvatar">Avatar</label> |
-          <input type="checkbox" name="DisableForums" id="DisableForums" <?php if ($DisableForums==1) { ?>
+          <input type="checkbox" name="DisableForums" id="DisableForums" <?php if ($DisableForums == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableForums">Forums</label> |
-          <input type="checkbox" name="DisableIRC" id="DisableIRC" <?php if ($DisableIRC==1) { ?> checked="checked"
+          <input type="checkbox" name="DisableIRC" id="DisableIRC" <?php if ($DisableIRC == 1) { ?> checked="checked"
           <?php } ?> /> <label for="DisableIRC">IRC</label> |
-          <input type="checkbox" name="DisablePM" id="DisablePM" <?php if ($DisablePM==1) { ?> checked="checked"
+          <input type="checkbox" name="DisablePM" id="DisablePM" <?php if ($DisablePM == 1) { ?> checked="checked"
           <?php } ?> /> <label for="DisablePM">PM</label> |
           <br><br>
 
-          <input type="checkbox" name="DisableLeech" id="DisableLeech" <?php if ($DisableLeech==0) { ?> checked="checked"
+          <input type="checkbox" name="DisableLeech" id="DisableLeech" <?php if ($DisableLeech == 0) { ?> checked="checked"
           <?php } ?> /> <label for="DisableLeech">Leech</label> |
-          <input type="checkbox" name="DisableRequests" id="DisableRequests" <?php if ($DisableRequests==1) { ?>
+          <input type="checkbox" name="DisableRequests" id="DisableRequests" <?php if ($DisableRequests == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableRequests">Requests</label>
           |
-          <input type="checkbox" name="DisableUpload" id="DisableUpload" <?php if ($DisableUpload==1) { ?>
+          <input type="checkbox" name="DisableUpload" id="DisableUpload" <?php if ($DisableUpload == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableUpload">Torrent
             upload</label> |
-          <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints==1) { ?>
+          <input type="checkbox" name="DisablePoints" id="DisablePoints" <?php if ($DisablePoints == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisablePoints"><?=bonusPoints?></label>
           <br><br>
 
-          <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging==1) { ?>
+          <input type="checkbox" name="DisableTagging" id="DisableTagging" <?php if ($DisableTagging == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableTagging" class="tooltip"
             title="This only disables a user's ability to delete tags.">Tagging</label> |
-          <input type="checkbox" name="DisableWiki" id="DisableWiki" <?php if ($DisableWiki==1) { ?> checked="checked"
+          <input type="checkbox" name="DisableWiki" id="DisableWiki" <?php if ($DisableWiki == 1) { ?> checked="checked"
           <?php } ?> /> <label for="DisableWiki">Wiki</label> |
-          <input type="checkbox" name="DisablePromotion" id="DisablePromotion" <?php if ($DisablePromotion==1) { ?>
+          <input type="checkbox" name="DisablePromotion" id="DisablePromotion" <?php if ($DisablePromotion == 1) { ?>
           checked="checked"
           <?php } ?> /> <label
             for="DisablePromotion">Promotions</label> |
-          <input type="checkbox" name="DisableInvites" id="DisableInvites" <?php if ($DisableInvites==1) { ?>
+          <input type="checkbox" name="DisableInvites" id="DisableInvites" <?php if ($DisableInvites == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisableInvites">Invites</label>
         </td>
@@ -1324,15 +1324,15 @@ if (!$DisablePoints) {
         <td class="label">Account:</td>
         <td>
           <select name="UserStatus">
-            <option value="0" <?php if ($Enabled=='0') { ?>
+            <option value="0" <?php if ($Enabled == '0') { ?>
               selected="selected"
               <?php } ?>>Unconfirmed
             </option>
-            <option value="1" <?php if ($Enabled=='1') { ?>
+            <option value="1" <?php if ($Enabled == '1') { ?>
               selected="selected"
               <?php } ?>>Enabled
             </option>
-            <option value="2" <?php if ($Enabled=='2') { ?>
+            <option value="2" <?php if ($Enabled == '2') { ?>
               selected="selected"
               <?php } ?>>Disabled
             </option>

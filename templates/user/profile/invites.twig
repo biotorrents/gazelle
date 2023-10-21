@@ -1,0 +1,28 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h2>Invites for {{ user.core.username }}</h2>
+
+{# admonition #}
+<section>
+
+    <p>
+      Do not trade or sell invites under any circumstances.
+      Do not send an invite to anyone who has previously had a {{ env.siteName }} account.
+      Please direct them to <code>#disabled</code> on Slack if they wish to reactivate their account.
+    </p>
+
+    <p>
+      You may invite anyone so long as you and they both lack malicious intent, but keep in mind that you are responsible for anyone you invite.
+      If you invite someone you don't know well and they surprise you by breaking the rules or being a generally poor user, you will likely end up punished for it.
+      For that reason, we stongly recommend you only invite people you personally know and trust.
+    </p>
+
+    <p>
+    <strong>Do not send an invite if you haven't read or don't understand this information.</strong>
+    </p>
+
+</section>
+
+{% endblock %}

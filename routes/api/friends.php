@@ -7,7 +7,8 @@ declare(strict_types=1);
  * friends
  */
 
-Flight::route("POST /api/friends", ["Gazelle\API\Friends", "create"]);
-Flight::route("GET /api/friends", ["Gazelle\API\Friends", "read"]);
-Flight::route("PUT /api/friends", ["Gazelle\API\Friends", "update"]);
-Flight::route("DELETE /api/friends", ["Gazelle\API\Friends", "delete"]);
+# crud
+Flight::route("POST /api/friends", ["Gazelle\Api\Friends", "create"]);
+Flight::route("GET /api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"]);
+Flight::route("PATCH /api/friends/@identifier", ["Gazelle\Api\Friends", "update"]);
+Flight::route("DELETE /api/friends/@identifier", ["Gazelle\Api\Friends", "delete"]);

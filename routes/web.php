@@ -8,7 +8,8 @@ declare(strict_types=1);
  */
 
 # require the route files
-\Gazelle\App::recursiveGlob(__DIR__."/web", "php");
+$app = Gazelle\App::go();
+$app->recursiveGlob(__DIR__ . "/web");
 
 /*
 # todo: universal search in main menu
@@ -33,7 +34,7 @@ Flight::route("/universalSearch", function () {
             exit;
 
         case "wiki":
-            Http::redirect("wiki.php?{$queryString}");
+            Http::redirect("wiki?{$queryString}");
             exit;
 
         case "log":

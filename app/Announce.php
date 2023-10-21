@@ -15,7 +15,7 @@ class Announce
 {
     # IRC bot config options
     private static $ircChannels = ["announce", "debug"];
-    private static $ircAddress = "10.0.0.4";
+    private static $ircAddress = "10.0.0.6";
     private static $ircPort = 51010;
 
     # RSS bot config options
@@ -149,11 +149,11 @@ class Announce
         }
 
         # webhooks must remain private
-        $webhooks = $app->env->getPriv("slackWebhooks");
+        $webhooks = $app->env->private("slackWebhooks");
         foreach ($channels as $channel) {
             try {
                 # set up
-                $curl = curl_init($webhooks[$channel]);
+                $curl = curl_init($webhooks->$channel);
                 $data = json_encode(["text" => $message], JSON_UNESCAPED_SLASHES);
 
                 # options
@@ -187,13 +187,13 @@ class Announce
         }
 
         try {
-            $twitterCredentials = $app->env->getPriv("twitterApi");
+            $twitterCredentials = $app->env->private("twitterApi");
 
             $connection = new Abraham\TwitterOAuth\TwitterOAuth(
-                $twitterCredentials["consumerKey"],
-                $twitterCredentials["consumerSecret"],
-                $twitterCredentials["accessToken"],
-                $twitterCredentials["accessTokenSecret"]
+                $twitterCredentials->consumerKey,
+                $twitterCredentials->consumerSecret,
+                $twitterCredentials->accessToken,
+                $twitterCredentials->accessTokenSecret
             );
 
             # set api version

@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 
 # todo: Go through line by line
 if (!check_perms('site_torrents_notify')) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 define('NOTIFICATIONS_PER_PAGE', 50);
@@ -23,10 +23,10 @@ $Results = $app->dbOld->query("
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
-    WHERE unt.UserID = {$app->user->core['id']}".
+    WHERE unt.UserID = {$app->user->core['id']}" .
     ((!empty($_GET['filterid']) && is_numeric($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
-      : '')."
+      : '') . "
     ORDER BY TorrentID DESC
     LIMIT $Limit");
 $GroupIDs = array_unique($app->dbOld->collect('GroupID'));
@@ -65,7 +65,7 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
     unset($FilterResults['FilterLabel']);
     foreach ($FilterResults as $Result) {
         $TorrentID = $Result['TorrentID'];
-//    $GroupID = $Result['GroupID'];
+        //    $GroupID = $Result['GroupID'];
 
         $GroupInfo = $TorrentGroups[$Result['GroupID']];
         extract(Torrents::array_group($GroupInfo)); // all group data
@@ -105,7 +105,7 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
     }
 }
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'currentPages' => intval($Page),
   'pages' => ceil($TorrentCount / NOTIFICATIONS_PER_PAGE),
   'numNew' => $NumNew,

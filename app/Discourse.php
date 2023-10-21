@@ -40,9 +40,9 @@ class Discourse
 
         try {
             $this->baseUri = $app->env->discourseUri;
-            $this->token = $app->env->getPriv("discourseKey");
+            $this->token = $app->env->private("discourseKey");
             $this->username = "system"; # todo
-            $this->connectSecret = $app->env->getPriv("connectSecret");
+            $this->connectSecret = $app->env->private("connectSecret");
         } catch (Throwable $e) {
             return $e->getMessage();
         }
@@ -145,9 +145,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/createTopicPostPM
      */
-    public function createTopicPostPM()
-    {
-    }
+    public function createTopicPostPM() {}
 
 
     /**
@@ -155,9 +153,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Search/operation/search
      */
-    public function search()
-    {
-    }
+    public function search() {}
 
 
     /**
@@ -379,9 +375,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Posts/operation/performPostAction
      */
-    public function performPostAction()
-    {
-    }
+    public function performPostAction() {}
 
 
     /** TOPICS */
@@ -392,9 +386,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/getSpecificPostsFromTopic
      */
-    public function getSpecificPostsFromTopic()
-    {
-    }
+    public function getSpecificPostsFromTopic() {}
 
 
     /**
@@ -439,9 +431,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/inviteToTopic
      */
-    public function inviteToTopic()
-    {
-    }
+    public function inviteToTopic() {}
 
 
     /**
@@ -459,9 +449,7 @@ class Discourse
     /**
      * updateTopicStatus
      */
-    public function updateTopicStatus()
-    {
-    }
+    public function updateTopicStatus() {}
 
 
     /**
@@ -493,9 +481,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/setNotificationLevel
      */
-    public function setNotificationLevel()
-    {
-    }
+    public function setNotificationLevel() {}
 
 
     /**
@@ -503,9 +489,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/updateTopicTimestamp
      */
-    public function updateTopicTimestamp()
-    {
-    }
+    public function updateTopicTimestamp() {}
 
 
     /**
@@ -513,9 +497,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/createTopicTimer
      */
-    public function createTopicTimer()
-    {
-    }
+    public function createTopicTimer() {}
 
 
     /**
@@ -523,9 +505,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Topics/operation/getTopicByExternalId
      */
-    public function getTopicByExternalId()
-    {
-    }
+    public function getTopicByExternalId() {}
 
 
     /** PRIVATE MESSAGES */
@@ -614,9 +594,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Users/operation/updateAvatar
      */
-    public function updateAvatar()
-    {
-    }
+    public function updateAvatar() {}
 
 
     /**
@@ -624,9 +602,7 @@ class Discourse
      *
      * @see https://docs.discourse.org/#tag/Users/operation/listUsersPublic
      */
-    public function listUsersPublic()
-    {
-    }
+    public function listUsersPublic() {}
 
 
     /**

@@ -51,7 +51,7 @@ class Tracker
         }
 
         # build the request
-        $get = $app->env->getPriv("trackerSecret") . "/update?action={$action}";
+        $get = $app->env->private("trackerSecret") . "/update?action={$action}";
         foreach ($updates as $k => $v) {
             $get .= "&{$k}={$v}";
         }
@@ -149,15 +149,15 @@ class Tracker
      */
     private static function get_stats($type, $params = false)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         # no report key
-        if (!defined($ENV->getPriv('trackerReportKey'))) {
+        if (!defined($ENV->private('trackerReportKey'))) {
             return false;
         }
 
         # there is a report key
-        $get = $ENV->getPriv('trackerReportKey') . '/report?';
+        $get = $ENV->private('trackerReportKey') . '/report?';
 
         # main stats
         if ($type === self::STATS_MAIN) {
@@ -198,7 +198,7 @@ class Tracker
      */
     private static function send_request($get, $maxAttempts = 1, &$err = false)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         $header = "GET /{$get} HTTP/1.1\r\nConnection: Close\r\n\r\n";
         $attempts = 0;
@@ -218,8 +218,8 @@ class Tracker
 
             // Send request
             $file = fsockopen(
-                $ENV->getPriv('trackerHost'),
-                $ENV->getPriv('trackerPort'),
+                $ENV->private('trackerHost'),
+                $ENV->private('trackerPort'),
                 $errorNum,
                 $errorString
             );

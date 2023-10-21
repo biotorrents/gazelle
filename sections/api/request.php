@@ -13,7 +13,7 @@ $MinimumVote = 20 * 1024 * 1024;
  */
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    json_die("failure");
+    \Gazelle\Api\Base::failure(400);
 }
 
 $RequestID = (int)$_GET['id'];
@@ -22,7 +22,7 @@ $RequestID = (int)$_GET['id'];
 
 $Request = Requests::get_request($RequestID);
 if ($Request === false) {
-    json_die("failure");
+    \Gazelle\Api\Base::failure(400);
 }
 
 $CategoryID = $Request['CategoryID'];
@@ -86,7 +86,7 @@ $JsonTags = [];
 foreach ($Request['Tags'] as $Tag) {
     $JsonTags[] = $Tag;
 }
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'requestId'       => (int)$RequestID,
   'requestorId'     => (int)$Request['UserID'],
   'requestorName'   => $Requestor['Username'],

@@ -10,11 +10,22 @@
 $app = \Gazelle\App::go();
 
 $get = Http::request("get");
+$post = Http::request("post");
+
 $groupId = intval($get["id"] ?? 0);
 $revisionId = intval($get["revisionId"] ?? 0);
 
-if (empty($groupId)) {
-    # render error page
+# handle any necessary for stuff
+if (!empty($post)) {
+    # add tags
+    $tagIds = $post["tagIds"] ?? [];
+    if (!empty($tagIds)) {
+        try {
+            Tags::updateGroupTags($groupId, $tagIds);
+        } catch (\Throwable $e) {
+            $errorMessage = $e->getMessage();
+        }
+    }
 }
 
 # get torrent/group info
@@ -47,6 +58,10 @@ $query = "
 $tagList = $app->dbNew->multi($query, [$groupId]);
 #!d($tagList);exit;
 
+# official tags
+$officialTags = Tags::getOfficialTags();
+#!d($officialTags);exit;
+
 /*
 # tagList: old
 $tagList = [];
@@ -68,8 +83,9 @@ foreach ($tagNames as $key => $value) {
 $app->twig->display("torrents/details.twig", [
     "title" => $groupDetails["title"],
     "sidebar" => true,
+    "errorMessage" => $errorMessage ?? null,
 
-    "js" => ["vendor/easymde.min", "vendor/tom-select.complete.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
+    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
 
     "groupId" => $groupId,
@@ -84,6 +100,7 @@ $app->twig->display("torrents/details.twig", [
 
     "coverArt" => $coverArt,
     "tagList" => $tagList,
+    "officialTags" => $officialTags,
 
     "isBookmarked" => Bookmarks::isBookmarked("torrent", $groupId),
     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
@@ -109,8 +126,8 @@ exit;
 
 
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 
 define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
@@ -236,7 +253,7 @@ View::header(
       onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
     <?php
     # Remove category-specific options to add a new format
-    if ($Categories[$GroupCategoryID-1]) { ?>
+    if ($Categories[$GroupCategoryID - 1]) { ?>
     <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
       format</a>
     <?php
@@ -304,7 +321,7 @@ View::header(
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
-              src="<?=staticServer?>/images/noartwork.png"
+              src="<?=staticServer?>/images/noartwork.webp"
               alt="<?=$Categories[$GroupCategoryID - 1]?>"
               class="brackets tooltip"
               title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>
@@ -411,7 +428,7 @@ if (!empty($DeletedTag)) { ?>
           ?>
       <ul class="stats nobullet">
         <?php
-        foreach ($Tags as $TagKey=>$Tag) {
+        foreach ($Tags as $TagKey => $Tag) {
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"

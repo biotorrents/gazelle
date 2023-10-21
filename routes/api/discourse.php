@@ -10,111 +10,99 @@ declare(strict_types=1);
 
 # $discourse->getSite()
 Flight::route("/api/social/site", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getSite());
+    \Gazelle\Api\Base::success($discourse->getSite());
 });
 
 
-    /** CATEGORIES */
+/** CATEGORIES */
 
 
 # $discourse->listCategories()
 Flight::route("/api/social/categories", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listCategories());
+    \Gazelle\Api\Base::success($discourse->listCategories());
 });
 
 
 # $discourse->listCategoryTopics()
 Flight::route("/api/social/categories/@slug/topics", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listCategoryTopics($slug));
+    \Gazelle\Api\Base::success($discourse->listCategoryTopics($slug));
 });
 
 
 # $discourse->getCategory()
 Flight::route("/api/social/categories/@slug", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getCategory($slug));
+    \Gazelle\Api\Base::success($discourse->getCategory($slug));
 });
 
 
-    /** GROUPS */
+/** GROUPS */
 
 
 # $discourse->getGroup()
 Flight::route("/api/social/groups/@name", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getGroup($name));
+    \Gazelle\Api\Base::success($discourse->getGroup($name));
 });
 
 
 # $discourse->listGroupMembers()
 Flight::route("/api/social/groups/@name/members", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listGroupMembers($name));
+    \Gazelle\Api\Base::success($discourse->listGroupMembers($name));
 });
 
 
 # $discourse->listGroups()
 Flight::route("/api/social/groups", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listGroups());
+    \Gazelle\Api\Base::success($discourse->listGroups());
 });
 
 
-    /** NOTIFICATIONS */
+/** NOTIFICATIONS */
 
 
 # $discourse->getNotifications()
 Flight::route("/api/social/notifications", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getNotifications());
+    \Gazelle\Api\Base::success($discourse->getNotifications());
 });
 
 
 # $discourse->markNotificatinsAsRead()
 Flight::route("/api/social/notifications/markRead(/@id)", function () {
-    $json = new Json();
     $discourse = new Discourse();
     $id ??= 0;
-    $json->success($discourse->markNotificationsAsRead($id));
+    \Gazelle\Api\Base::success($discourse->markNotificationsAsRead($id));
 });
 
 
-    /** POSTS */
+/** POSTS */
 
 
 # $discourse->listPosts()
 Flight::route("/api/social/posts", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listPosts());
+    \Gazelle\Api\Base::success($discourse->listPosts());
 });
 
 
 # $discourse->getPost()
 Flight::route("/api/social/posts/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getPost($id));
+    \Gazelle\Api\Base::success($discourse->getPost($id));
 });
 
 
 /*
 # $discourse->updatePost()
 Flight::route("/api/social/posts/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->updatePost($id));
+    \Gazelle\Api\Base::success($discourse->updatePost($id));
 });
 */
 
@@ -122,54 +110,48 @@ Flight::route("/api/social/posts/@id", function () {
 /*
 # $discourse->deletePost()
 Flight::route("/api/social/posts/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->deletePost($id));
+    \Gazelle\Api\Base::success($discourse->deletePost($id));
 });
 */
 
 
 # $discourse->postReplies()
 Flight::route("/api/social/posts/@id/replies", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->postReplies($id));
+    \Gazelle\Api\Base::success($discourse->postReplies($id));
 });
 
 
-    /** TOPICS */
+/** TOPICS */
 
 
 # $discourse->listLatestTopics()
 Flight::route("/api/social/topics/latest", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listLatestTopics());
+    \Gazelle\Api\Base::success($discourse->listLatestTopics());
 });
 
 
 # $discourse->listTopTopics()
 Flight::route("/api/social/topics/top", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listTopTopics());
+    \Gazelle\Api\Base::success($discourse->listTopTopics());
 });
 
 
 # $discourse->getTopic()
 Flight::route("/api/social/topics/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getTopic($id));
+    \Gazelle\Api\Base::success($discourse->getTopic($id));
 });
 
 
 /*
 # $discourse->removeTopic()
 Flight::route("/api/social/topics/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->removeTopic($id));
+    \Gazelle\Api\Base::success($discourse->removeTopic($id));
 });
 */
 
@@ -177,9 +159,8 @@ Flight::route("/api/social/topics/@id", function () {
 /*
 # $discourse->updateTopic()
 Flight::route("/api/social/topics/@id", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->updateTopic($id));
+    \Gazelle\Api\Base::success($discourse->updateTopic($id));
 });
 */
 
@@ -187,22 +168,20 @@ Flight::route("/api/social/topics/@id", function () {
 /*
 # $discourse->bookmarkTopic()
 Flight::route("/api/social/topics/@id", function ($id) {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->bookmarkTopic($id));
+    \Gazelle\Api\Base::success($discourse->bookmarkTopic($id));
 });
 */
 
 
-    /** PRIVATE MESSAGES */
+/** PRIVATE MESSAGES */
 
 
 /*
 # $discourse->listUserPrivateMessages()
 Flight::route("/api/social/inbox", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listUserPrivateMessages($app->env->user["name"]));
+    \Gazelle\Api\Base::success($discourse->listUserPrivateMessages($app->env->user["name"]));
 });
 */
 
@@ -210,55 +189,50 @@ Flight::route("/api/social/inbox", function () {
 /*
 # $discourse->getUserSentPrivateMessages()
 Flight::route("/api/social/outbox", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->getUserSentPrivateMessages($app->env->user["name"]));
+    \Gazelle\Api\Base::success($discourse->getUserSentPrivateMessages($app->env->user["name"]));
 });
 */
 
 
-    /** TAGS */
+/** TAGS */
 
 
 # $discourse->listTags()
 Flight::route("/api/social/tags", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listTags());
+    \Gazelle\Api\Base::success($discourse->listTags());
 });
 
 
 # $discourse->getTag()
 Flight::route("/api/social/tags/@name", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listTags($name));
+    \Gazelle\Api\Base::success($discourse->listTags($name));
 });
 
 
-    /** USERS */
-    /** START HERE */
+/** USERS */
+/** START HERE */
 
 
 /*
 # $discourse->getTag()
 Flight::route("/api/social/tags/@name", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listTags($name));
+    \Gazelle\Api\Base::success($discourse->listTags($name));
 });
 */
 
 
-    /** ADMIN */
-    /** START HERE */
+/** ADMIN */
+/** START HERE */
 
 
 /*
 # $discourse->getTag()
 Flight::route("/api/social/tags/@name", function () {
-    $json = new Json();
     $discourse = new Discourse();
-    $json->success($discourse->listTags($name));
+    \Gazelle\Api\Base::success($discourse->listTags($name));
 });
 */

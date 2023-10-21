@@ -14,11 +14,12 @@ declare(strict_types=1);
  */
 
 # require the route files
-\Gazelle\App::recursiveGlob(__DIR__."/api", "php");
+$app = Gazelle\App::go();
+$app->recursiveGlob(__DIR__ . "/api");
 
 # not found
 Flight::route("*", function () {
-    \Gazelle\API\Base::failure(404, "not found");
+    \Gazelle\Api\Base::failure(404, "not found");
 });
 
 # start the router

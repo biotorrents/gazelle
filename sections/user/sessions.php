@@ -29,11 +29,11 @@ if (isset($_POST['session'])) {
     $app->dbOld->query("
     DELETE FROM users_sessions
     WHERE UserID = '$UserID'
-      AND SessionID = '".db_string($_POST['session'])."'");
+      AND SessionID = '" . db_string($_POST['session']) . "'");
     $app->cache->delete("users_sessions_$UserID");
 }
 
-$UserSessions = $app->cache->get('users_sessions_'.$UserID);
+$UserSessions = $app->cache->get('users_sessions_' . $UserID);
 if (!is_array($UserSessions)) {
     $app->dbOld->query("select * from users_sessions where userId = {$UserID} order by expires desc");
     $UserSessions = $app->dbOld->to_array('SessionID', MYSQLI_ASSOC);
@@ -41,7 +41,7 @@ if (!is_array($UserSessions)) {
 }
 
 list($UserID, $Username) = array_values(User::user_info($UserID));
-View::header($Username.' &gt; Sessions');
+View::header($Username . ' &gt; Sessions');
 ?>
 <div>
 <h2><?=User::format_username($UserID, $Username)?> &gt; Sessions</h2>
@@ -67,7 +67,7 @@ View::header($Username.' &gt; Sessions');
 <?php
   foreach ($UserSessions as $Session) {
       list($ThisSessionID, $Browser, $OperatingSystem, $IP, $LastUpdate) = array_values($Session);
-      $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]'; ?>
+      $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
       <tr class="row">
         <td class="nobr"><?=$IP?></td>
         <td><?=$Browser?></td>

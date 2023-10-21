@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-$CollageID = (int) $_GET['collageid'];
+$CollageID = (int) $_GET['collageId'];
 Security::int($CollageID);
 
 $app->dbOld->prepared_query("
@@ -20,10 +20,6 @@ list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 
 if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && !check_perms('site_collages_delete')) {
     error(403);
-}
-
-if ($CategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    error(404);
 }
 
 $app->dbOld->prepared_query("
@@ -142,13 +138,13 @@ foreach ($GroupIDs as $GroupID) {
           </td>
           <td><?=trim($TorrentLink)?>
           </td>
-          <td class="nobr"><?=User::format_username($UserID, $Username, false, false, false)?>
+          <td class="nobr"><?=User::format_username(intval($UserID), $Username, false, false, false)?>
           </td>
           <td class="nobr">
             <input type="hidden" name="action" value="manage_handle">
             <input type="hidden" name="auth"
               value="<?=$app->user->extra['AuthKey']?>">
-            <input type="hidden" name="collageid"
+            <input type="hidden" name="collageId"
               value="<?=$CollageID?>">
             <input type="hidden" name="groupid"
               value="<?=$GroupID?>">
@@ -169,7 +165,7 @@ foreach ($GroupIDs as $GroupID) {
       <input type="hidden" name="action" value="manage_handle">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
-      <input type="hidden" name="collageid"
+      <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <input type="hidden" name="groupid" value="1">
       <input type="hidden" name="drag_drop_collage_sort_order" id="drag_drop_collage_sort_order" readonly="readonly"

@@ -53,7 +53,7 @@ To opt out, please block `stats.torrents.bio` according to the
 [Plausible documentation](https://plausible.io/docs/excluding).
 The uMatrix browser plugin lets you easily opt out of web analytics:
 
-![The uMatrix browser plugin lets you easily opt out of web analytics](/images/plausible-optout.png)
+![The uMatrix browser plugin lets you easily opt out of web analytics](/images/plausibleOptOut.webp)
 
 ### GDPR: European Union residents
 

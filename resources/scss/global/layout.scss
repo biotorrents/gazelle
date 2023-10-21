@@ -50,6 +50,17 @@ section {
   display: flex;
   flex-flow: row wrap;
   gap: 0 2rem;
+  align-items: baseline;
+}
+
+/**
+ * grid elements
+ */
+
+#adminGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 2rem;
 }
 
 /**

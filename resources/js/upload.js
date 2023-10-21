@@ -25,14 +25,14 @@
         let platforms = [];
         let scopes = [];
 
-        Object.values(env.CATS).forEach(element => {
+        Object.values(env.categories).forEach(element => {
             categories.push(
-                { [element.ID]: _.camelCase(element.Name) }
+                { [element.id]: _.camelCase(element.title) }
             );
 
-            formats.push("#" + _.camelCase(element.Name) + "Format");
-            platforms.push("#" + _.camelCase(element.Name) + "Platform");
-            scopes.push("#" + _.camelCase(element.Name) + "Scope");
+            formats.push("#" + _.camelCase(element.title) + "Format");
+            platforms.push("#" + _.camelCase(element.title) + "Platform");
+            scopes.push("#" + _.camelCase(element.title) + "Scope");
         });
 
         // hide all but selected
@@ -82,7 +82,8 @@
         }
 
         // display the correct category description
-        $("#categoryDescription").html(env.CATS[categoryId].Description);
+        // todo: this is broken with the new metadata
+        $("#categoryDescription").html(env.categories[categoryId].description);
     });
 
 
@@ -182,7 +183,7 @@
         ScreenshotField.size = 45;
 
         var a = document.createElement("a");
-        a.className = "brackets";
+        a.classtitle = "brackets";
         a.innerHTML = "−";
         a.onclick = function () {
             RemoveScreenshotField(this);

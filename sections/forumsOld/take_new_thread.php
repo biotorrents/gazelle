@@ -5,7 +5,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 authorize();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 /*
 'new' if the user is creating a new thread
@@ -121,21 +121,6 @@ $app->dbOld->query("
 
 if (isset($_POST['subscribe'])) {
     Subscriptions::subscribe($TopicID);
-}
-
-//Award a badge if necessary
-$app->dbOld->query("
-  SELECT COUNT(ID)
-  FROM forums_posts
-  WHERE AuthorID = '{$app->user->core['id']}'");
-list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
-foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
-    if ((int) $UserPosts >= $Count) {
-        $Success = Badges::awardBadge($app->user->core['id'], $Badge);
-        if ($Success) {
-            Misc::send_pm($app->user->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-        }
-    }
 }
 
 if (!$NoPoll) { // god, I hate double negatives...

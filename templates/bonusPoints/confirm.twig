@@ -1,0 +1,153 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+{% if errorMessage %}
+<h2>An error occurred</h2>
+
+<div class="alertbar error">
+{{ errorMessage }}
+</div>
+
+{% else %}
+<h2>Thank you</h2>
+
+<p>
+    Your purchase of <strong>{{ bonusPoints.friendlyItemNames[item] }}</strong> is complete!
+</p>
+
+
+{# torrents #}
+
+
+{# randomFreeleech or specificFreeleech #}
+{% if item == "randomFreeleech" or item == "specificFreeleech" %}
+<p>
+    You made freelech all the torrents in <a href="/torrents.php?id={{ result.id }}">{{ result.title }}</a>.
+</p>    
+{% endif %} {# if item == "randomFreeleech" or item == "specificFreeleech" #}
+
+
+{# freeleechToken #}
+{% if item == "freeleechToken" %}
+<p>
+    You now have {{ user.extra.FLTokens|number_format }} freeleech tokens to use as you wish.
+</p>    
+{% endif %} {# if item == "freeleechToken" #}
+
+
+{# neutralLeechTag #}
+{% if item == "neutralLeechTag" %}
+<p>
+    You made neutral leech all the torrent groups with the tag <strong>{{ result.Name }}.</strong>
+</p>    
+{% endif %} {# if item == "neutralLeechTag" #}
+
+
+{# freeleechTag #}
+{% if item == "freeleechTag" %}
+<p>
+    You made freeleech all the torrent groups with the tag <strong>{{ result.Name }}.</strong>
+</p>    
+{% endif %} {# if item == "freeleechTag" #}
+
+
+{# user profile #}
+
+
+{# personalCollage #}
+{% if item == "personalCollage" %}
+<p>
+    You created the personal collage <a href="/collages.php?id={{ result.id }}">{{ result.name }}</a>.
+</p>
+{% endif %} {# if item == "personalCollage" #}
+
+
+{# invite #}
+{% if item == "invite" %}
+<p>
+    You now have {{ user.extra.Invites|number_format }} invites to use as you wish.
+</p>    
+{% endif %} {# if item == "invite" #}
+
+
+{# customTitle #}
+{% if item == "customTitle" and result is not empty %}
+<p>
+    You now have a custom title: <strong>{{ result }}</strong>.
+</p>
+{% endif %} {# if item == "customTitle" and result is not empty #}
+
+{% if item == "customTitle" and result is empty %}
+<p>
+    You removed your custom title.
+</p>
+{% endif %} {# if item == "customTitle" and result is empty #}
+
+
+{# badges #}
+
+
+{# sequentialBadge #}
+{% if item == "sequentialBadge" %}
+<p>
+    You received this badge: {{ displayBadge(result) }}.
+</p>    
+{% endif %} {# if item == "sequentialBadge" #}
+
+
+{# lotteryBadge #}
+{% if item == "lotteryBadge" %}
+<p>
+    You won the badge {{ displayBadge(result.badgeId) }}!
+</p>
+
+<p>
+    You bet {{ result.bet|number_format }} {{ env.bonusPoints }} and got {{ result.correctVotes }} correct votes.
+    This increased your probability of winning to {{ result.weightedProbability }}.
+</p>
+{% endif %} {# if item == "lotteryBadge" #}
+
+
+{# auctionBadge #}
+{% if item == "auctionBadge" %}
+<p>
+    The next bidder must pay at least {{ result|number_format }} {{ env.bonusPoints }}.
+    The action restarts each month, so please check back often.
+</p>    
+{% endif %} {# if item == "auctionBadge" #}
+
+
+{# coinBadge #}
+{% if item == "coinBadge" %}
+<p>
+    The next investor must pay at least {{ result|number_format }} {{ env.bonusPoints }}.
+</p>    
+{% endif %} {# if item == "coinBadge" #}
+
+
+{# randomBadge #}
+{% if item == "randomBadge" %}
+<p>
+    You received this badge: {{ displayBadge(result.id) }}.
+</p>    
+{% endif %} {# if item == "randomBadge" #}
+
+
+{% endif %} {# if errorMessage #}
+
+<p>
+    <a class="button button-primary" href="/store">back to the storefront</a>
+</p>
+</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("bonusPoints/sidebar.twig") }}
+
+{% endblock %}

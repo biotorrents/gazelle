@@ -84,7 +84,7 @@ if (!Forums::check_forumperm($ForumID)) {
 }
 
 // Start printing
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
 ?>
 

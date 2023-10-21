@@ -16,7 +16,7 @@ the front page.
 
 \*********************************************************************/
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 // Quick SQL injection check
 if (!is_numeric($_POST['threadid'])) {

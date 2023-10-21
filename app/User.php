@@ -127,7 +127,7 @@ class User
         /*
         # get the most recent session
         $query = "select sessionId from users_sessions where userId = ? and expires > ? order by expires desc";
-        $sessions = $app->dbNew->column("sessionId", $query, [$userId, $now]);
+        $sessions = $app->dbNew->column($query, [$userId, $now]);
 
         # bad session from list
         if (!in_array($sessionId, $sessions)) {
@@ -152,7 +152,7 @@ class User
             $this->core = $row ?? [];
 
             # decrypt the email address
-            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            $this->core["email"] = \Gazelle\Crypto::decrypt($this->core["email"]);
             #!d($this->core);exit;
 
             # extra: gazelle, users_main and users_info
@@ -177,7 +177,7 @@ class User
             $this->extra["torrent_pass"] ??= null;
             $this->extra["RSS_Auth"] = md5(
                 $userId
-                . $app->env->getPriv("rssHash")
+                . $app->env->private("rssHash")
                 . $this->extra["torrent_pass"]
             );
 
@@ -198,7 +198,7 @@ class User
             }
 
             # api bearer tokens
-            $query = "select * from api_user_tokens where userId = ? and deleted_at is not null";
+            $query = "select * from api_tokens where userId = ? and deleted_at is not null";
             $bearerTokens = $app->dbNew->multi($query, [$userId]);
             $this->extra["bearerTokens"] = $bearerTokens ?? [];
 
@@ -235,12 +235,12 @@ class User
             }
 
             # ip changed
-            $this->extra["IP"] = Crypto::decrypt($this->extra["IP"]);
+            $this->extra["IP"] = \Gazelle\Crypto::decrypt($this->extra["IP"]);
             if ($this->extra["IP"]) { # not false
                 $ipChanged = $this->extra["IP"] !== $server["REMOTE_ADDR"];
                 if ($ipChanged) {
                     $this->extra["IP"] = $server["REMOTE_ADDR"];
-                    $encryptedIp = Crypto::encrypt($this->extra["IP"]);
+                    $encryptedIp = \Gazelle\Crypto::encrypt($this->extra["IP"]);
 
                     $query = "update users_main set IP = ? where userId = ?";
                     $app->dbNew->do($query, [$encryptedIp, $userId]);
@@ -264,6 +264,31 @@ class User
 
         # end debug
         $app->debug["time"]->stopMeasure("users", "user handling");
+    }
+
+
+    /** */
+
+
+    /**
+     * read
+     *
+     * Gets a user profile (public info only).
+     */
+    public static function read(int|string $id): ?array
+    {
+        $app = \Gazelle\App::go();
+
+        # allow usernames instead of slugs
+        $column = $app->dbNew->determineIdentifier($id);
+        if ($column === "slug") {
+            $column = "username";
+        }
+
+        # database query
+        $query = "
+            todo
+        ";
     }
 
 
@@ -401,7 +426,7 @@ class User
         $app = \Gazelle\App::go();
 
         global $Classes;
-        $UserInfo = $app->cache->get("user_info_".$UserID);
+        $UserInfo = $app->cache->get("user_info_" . $UserID);
 
         // the !isset($UserInfo['Paranoia']) can be removed after a transition period
         if (empty($UserInfo)) {
@@ -654,9 +679,17 @@ class User
 
         # badges
         if ($showBadges) {
-            $badgeHtml = Badges::displayBadges(Badges::getDisplayedBadges($userId), true);
+            $badgeHtml = Badges::displayBadges(Badges::getDisplayedBadges($userId));
         } else {
             $badgeHtml = "";
+        }
+
+        # did they buy a glich username effect?
+        $query = "select 1 from bonus_point_purchases where `key` = ? and userId = ?";
+        $glitchUsername = $app->dbNew->single($query, ["glitchUsername", $userId]);
+
+        if ($glitchUsername) {
+            return "<a href='/user.php?id={$userId}' class='glitch' data-text='{$row["username"]}'>{$row["username"]}</a>" . $badgeHtml;
         }
 
         # donor icon
@@ -671,7 +704,7 @@ class User
         }
 
         # banned
-        if ($row["status"] === 2) {
+        if ($row["status"] === self::BANNED) {
             return "<a href='/user.php?id={$userId}' class='banned'>{$row["username"]}</a>" . $badgeHtml;
         }
 
@@ -735,7 +768,7 @@ class User
         # disabled or missing: show default
         if (empty($uri)) {
             #if (!self::hasAvatarsEnabled() || empty($uri)) {
-            $uri = "/images/avatars/default.png";
+            $uri = "/images/avatars/default.webp";
 
             return "<img src='{$uri}' alt='default avatar' title='default avatar' width='120'>";
         }
@@ -1229,7 +1262,7 @@ class User
         # rss auth
         $data["extra"]["RSS_Auth"] = md5(
             $userId
-            . $app->env->getPriv("rssHash")
+            . $app->env->private("rssHash")
             . $data["extra"]["torrent_pass"]
         );
 
@@ -1722,7 +1755,7 @@ class User
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # get the user data

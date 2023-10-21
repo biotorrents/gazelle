@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-$CollageID = $_POST['collageid'];
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(404);
 }
@@ -74,4 +74,4 @@ if ($_POST['submit'] === 'Remove') {
 }
 
 $app->cache->delete("collage_$CollageID");
-Http::redirect("collages.php?action=manage&collageid=$CollageID");
+Http::redirect("collages.php?action=manage&collageId=$CollageID");

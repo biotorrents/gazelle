@@ -143,40 +143,16 @@ $officialTags = array_column($ref, "name");
 
 $app->twig->display("requests/browse.twig", [
     "title" => "Requests",
-    "js" => ["vendor/tom-select.complete.min", "requests"],
+    "js" => ["vendor/tom-select.base.min", "requests"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
-    # todo: this situation
-    "categories" => $Categories,
-    "resolutions" => $Resolutions,
-
-    /*
-    "xmls" => array_merge(
-        $app->env->toArray($app->env->META->Formats->GraphXml),
-        $app->env->toArray($app->env->META->Formats->GraphTxt)
-    ),
-
-    "raster" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgRaster),
-        $app->env->toArray($app->env->META->Formats->MapRaster)
-    ),
-
-    "vector" => array_merge(
-        $app->env->toArray($app->env->META->Formats->ImgVector),
-        $app->env->toArray($app->env->META->Formats->MapVector)
-    ),
-
-    "extras" => array_merge(
-        $app->env->toArray($app->env->META->Formats->BinDoc),
-        $app->env->toArray($app->env->META->Formats->CpuGen),
-        $app->env->toArray($app->env->META->Formats->Plain)
-    ),
-    */
+    "categories" => $app->env->categories->pluck("title"),
+    "resolutions" => $app->env->metadata->scopes->values()->flatten(),
 
     "searchResults" => $searchResults,
     "requestData" => $requestData,
 
-    #"bookmarks" => Bookmarks::all_bookmarks('torrent'),
+    #"bookmarks" => Bookmarks::all_bookmarks("torrent"),
     "officialTags" => $officialTags,
 
     "searchTerms" => $searchTerms,

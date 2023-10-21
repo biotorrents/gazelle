@@ -3,8 +3,8 @@
 $app = \Gazelle\App::go();
 
 authorize();
-if ($_REQUEST['collageid'] && is_numeric($_REQUEST['collageid'])) {
-    $Where = ' AND CollageID = '.$_REQUEST['collageid'];
+if ($_REQUEST['collageId'] && is_numeric($_REQUEST['collageId'])) {
+    $Where = ' AND CollageID = '.$_REQUEST['collageId'];
 } else {
     $Where = '';
 }

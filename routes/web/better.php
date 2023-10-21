@@ -13,6 +13,8 @@ Flight::route("/better", function () {
     $app->twig->display("better/index.twig", [
         "title" => "Better",
         "sidebar" => true,
+        "currentPage" => "index",
+        "snatchedOnly" => null,
     ]);
 });
 

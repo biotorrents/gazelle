@@ -66,7 +66,7 @@ if (!$Err) {
 }
 
 if (!$Err) {
-    if (empty($CollageCats[$P['category']])) {
+    if (empty($app->env->collageCategories[$P['category']])) {
         $Err = 'Please select a category';
     }
 }

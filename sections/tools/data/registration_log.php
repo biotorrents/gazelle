@@ -65,7 +65,7 @@ $RS = "
 if ($DateSearch) {
     $RS .= " i.JoinDate BETWEEN '$AfterDate' AND '$BeforeDate' ";
 } else {
-    $RS .= " i.JoinDate > '".time_minus(3600 * 24 * 3)."'";
+    $RS .= " i.JoinDate > '" . time_minus(3600 * 24 * 3) . "'";
 }
 
 $RS .= "
@@ -107,10 +107,10 @@ if ($app->dbOld->has_results()) {
   <?php
   while (list($UserID, $IP, $Email, $Username, $PermissionID, $Uploaded, $Downloaded, $Enabled, $Donor, $Warned, $Joined, $InviterID, $InviterIP, $InviterEmail, $InviterUsername, $InviterPermissionID, $InviterUploaded, $InviterDownloaded, $InviterEnabled, $InviterDonor, $InviterWarned, $InviterJoined) = $app->dbOld->next_record()) {
       $RowClass = $IP === $InviterIP ? 'warning' : '';
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]';
-      $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
-      $InviterEmail = apcu_exists('DBKEY') ? Crypto::decrypt($InviterEmail) : '[Encrypted]';
-      $InviterIP = apcu_exists('DBKEY') ? Crypto::decrypt($InviterIP) : '[Encrypted]'; ?>
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]';
+      $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]';
+      $InviterEmail = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($InviterEmail) : '[Encrypted]';
+      $InviterIP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($InviterIP) : '[Encrypted]'; ?>
 
   <tr class="<?=$RowClass?>">
     <td>

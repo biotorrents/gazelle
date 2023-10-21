@@ -80,7 +80,7 @@
         {# freeleech tokens #}
         {% if user.extra.FLTokens > 0 %}
         <li id="fl_tokens">
-            <a href="/wiki.php?action=article&name=tokens">Tokens</a>:
+            <a href="/wiki/tokens">Tokens</a>:
             <span class="stat">
                 <a href="/userhistory.php?action=token_history&userid={{ user.core.id }}">
                     {{ user.extra.FLTokens }}
@@ -91,9 +91,9 @@
 
         {# bonus points #}
         <li id="bonus_points">
-            <a href="/wiki.php?action=article&name=bonuspoints">{{ env.bonusPoints }}</a>:
+            <a href="/wiki/bonusPoints">{{ env.bonusPoints }}</a>:
             <span class="stat">
-                <a href="/store.php">{{ user.extra.BonusPoints|number_format }}</a>
+                <a href="/store">{{ user.extra.BonusPoints|number_format }}</a>
             </span>
         </li>
 

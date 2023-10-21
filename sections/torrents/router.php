@@ -27,52 +27,7 @@ Flight::route("/torrents(/@group(/@torrent))", function ($group, $torrent) {
 */
 
 
-$ENV = ENV::go();
-
-
-#enforce_login();
-
-/*
-if (!empty($_GET['id'])) {
-    require_once "$ENV->serverRoot/sections/torrents/details.php";
-} elseif (isset($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
-    $app->dbOld->query("
-    SELECT
-      `GroupID`
-    FROM
-      `torrents`
-    WHERE
-      `ID` = '$_GET[torrentid]'
-    ");
-    list($GroupID) = $app->dbOld->next_record();
-
-    if ($GroupID) {
-        header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
-    } else {
-        Http::redirect("log.php?search=Torrent+$_GET[torrentid]");
-    }
-} elseif (!empty($_GET['type'])) {
-    require_once "$ENV->serverRoot/sections/torrents/user.php";
-} elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-    $app->dbOld->prepared_query("
-    SELECT
-      `id`
-    FROM
-      `torrents_group`
-    WHERE
-      `title` LIKE '$_GET[groupname]'
-    ");
-    list($GroupID) = $app->dbOld->next_record();
-
-    if ($GroupID) {
-        Http::redirect("torrents.php?id=$GroupID");
-    } else {
-        require_once "$ENV->serverRoot/sections/torrents/browse.php";
-    }
-} else {
-    require_once "$ENV->serverRoot/sections/torrents/browse.php";
-}
-*/
+$ENV = \Gazelle\ENV::go();
 
 if (empty($_REQUEST['action']) && empty($_REQUEST["id"]) && empty($_REQUEST["type"])) {
     require_once "$ENV->serverRoot/sections/torrents/browse.php";
@@ -210,17 +165,6 @@ if (!empty($_REQUEST['action'])) {
             require_once "$ENV->serverRoot/sections/torrents/takemasspm.php";
             break;
 
-        case 'add_tag':
-            enforce_login();
-            require_once "$ENV->serverRoot/sections/torrents/add_tag.php";
-            break;
-
-        case 'delete_tag':
-            enforce_login();
-            authorize();
-            require_once "$ENV->serverRoot/sections/torrents/delete_tag.php";
-            break;
-
         case 'notify':
             enforce_login();
             require_once "$ENV->serverRoot/sections/torrents/notify.php";
@@ -297,10 +241,6 @@ if (!empty($_REQUEST['action'])) {
             require_once "$ENV->serverRoot/sections/torrents/remove_cover_art.php";
             break;
 
-        case 'autocomplete_tags':
-            require_once "$ENV->serverRoot/sections/torrents/autocomplete_tags.php";
-            break;
-
         default:
             enforce_login();
 
@@ -326,50 +266,3 @@ if (!empty($_REQUEST['action'])) {
             break;
     } # switch
 }
-
-/*
-# If $_REQUEST['action'] is empty
-else {
-    #enforce_login();
-
-    if (!empty($_GET['id'])) {
-        require_once "$ENV->serverRoot/sections/torrents/details.php";
-    } elseif (isset($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
-        $app->dbOld->query("
-        SELECT
-          `GroupID`
-        FROM
-          `torrents`
-        WHERE
-          `ID` = '$_GET[torrentid]'
-        ");
-        list($GroupID) = $app->dbOld->next_record();
-
-        if ($GroupID) {
-            header("Location: torrents.php?id=$GroupID&torrentid=".$_GET['torrentid'].'#torrent'.$_GET['torrentid']);
-        } else {
-            Http::redirect("log.php?search=Torrent+$_GET[torrentid]");
-        }
-    } elseif (!empty($_GET['type'])) {
-        require_once "$ENV->serverRoot/sections/torrents/user.php";
-    } elseif (!empty($_GET['groupname']) && !empty($_GET['forward'])) {
-        $app->dbOld->prepared_query("
-        SELECT
-          `id`
-        FROM
-          `torrents_group`
-        WHERE
-          `title` LIKE '$_GET[groupname]'
-        ");
-        list($GroupID) = $app->dbOld->next_record();
-
-        if ($GroupID) {
-            Http::redirect("torrents.php?id=$GroupID");
-        } else {
-            require_once "$ENV->serverRoot/sections/torrents/browse.php";
-        }
-    } else {
-        require_once "$ENV->serverRoot/sections/torrents/browse.php";
-    }
-}
-*/

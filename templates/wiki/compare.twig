@@ -1,0 +1,57 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+    <h2>Revision history for <a href="/wiki/{{ article.id }}">{{ article.title }}</a></h2>
+
+    <form method="post">
+        {{ form_token("") }}
+
+        <input type="hidden" name="articleId" value="{{ article.id }}">
+
+        {# second revision #}
+        <select name="secondRevision" class="select">
+            <option disabled>Second revision</option>
+            {% for key, value in revisions %}
+            <option value="{{ key }}" {{ (key == secondRevision) ? "selected" : "" }}>{{ key }}: {{ value }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        {# first revision #}
+        <select name="firstRevision" class="select">
+            <option disabled>First revision</option>
+            {% for key, value in revisions %}
+            <option value="{{ key }}" {{ (key == firstRevision) ? "selected" : "" }}>{{ key }}: {{ value }}</option>
+            {% endfor %}
+        </select>
+
+        <br>
+
+        <input type="submit" value="compare revisions" class="button button-primary">
+    </form>
+</section>
+
+
+<section>
+    <h2>Comparing revisions {{ secondRevision }} and {{ firstRevision }}</h2>
+
+{# needs to be unindented #}
+<pre>
+<code class="language-diff">
+{{ diff }}
+</code>
+</pre>
+</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("wiki/sidebar.twig") }}
+
+{% endblock %}

@@ -5,7 +5,7 @@
 $app = \Gazelle\App::go();
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 $UserID = $_GET['id'];
@@ -63,7 +63,7 @@ GROUP BY
 
 // If user doesn't exist
 if (!$app->dbOld->has_results()) {
-    json_die('failure', 'no such user');
+    \Gazelle\Api\Base::failure(400, 'no such user');
 }
 
 list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $app->dbOld->next_record(MYSQLI_NUM, array(9, 11));
@@ -429,7 +429,7 @@ if (!$LastAccess) {
 
 header('Content-Type: text/plain; charset=utf-8');
 
-json_print('success', [
+\Gazelle\Api\Base::success(200, [
   'username'    => $Username,
   'avatar'      => $Avatar,
   'isFriend'    => (bool) $Friend,

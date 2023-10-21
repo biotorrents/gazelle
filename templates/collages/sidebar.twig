@@ -1,0 +1,161 @@
+{# actions #}
+<section>
+	<h3>Actions</h3>
+
+	<form>
+
+        {% if can("site_collages_create") %}
+            {# add new collage #}
+		    <a class="button button-primary" href="/collages.php?action=new">create a collage</a>
+        {% endif %}
+
+        {# back to search #}
+       	{# <a class="button button-green" href="/collages.php">back to search</a> #}
+ 
+
+        {# edit buttons #}
+        {% if can("site_collages_manage") and not collage.isLocked %}
+            {# edit this collage #}
+            <a class="button button-orange" href="/collages.php?action=edit&collageId={{ collage.id }}">edit this collage</a>
+
+            {# manage its torrents #}
+		        <a class="button button-orange" href="/collages.php?action=manage&collageId={{ collage.id }}">manage its torrents</a>
+        {% endif %}
+
+        {# report #}
+      <a class="button button-red" href="/reports.php?action=report&type=collage&id={{ collage.id }}">report</a>
+
+      {# delete #}
+      {% if can("site_collages_delete") or collage.creatorId == user.core.id %}
+      <a class="button button-red" href="/collages.php?action=delete&collageId={{ collage.id }}&auth={{ user.extra.AuthKey }}"
+        onclick="return confirm('Are you sure you want to delete this collage?');">delete</a>
+        {% endif %}
+
+        <hr>
+
+{# suscribe #}
+{#
+      <?php if (check_perms('site_collages_subscribe')) { ?>
+      <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
+        onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
+      <?php
+      }
+#}
+
+{# bookmark #}
+{#
+  if (Bookmarks::isBookmarked('collage', $CollageID)) {
+      ?>
+      <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
+        class="brackets"
+        onclick="Unbookmark('collage', <?=$CollageID?>, 'Bookmark'); return false;">Remove
+        bookmark</a>
+      <?php
+  } else { ?>
+      <a href="#" id="bookmarklink_collage_<?=$CollageID?>"
+        class="brackets"
+        onclick="Bookmark('collage', <?=$CollageID?>, 'Remove bookmark'); return false;">Bookmark</a>
+      <?php } ?>
+#}
+
+
+		{# toggle bookmark #}
+		{% if isBookmarked %}
+			<a class="button button-red" id="toggleCollageBookmark" data-userid="{{ user.core.id }}" data-collageid="{{ collage.id }}">remove bookmark</a>
+		{% else %}
+			<a class="button button-orange" id="toggleCollageBookmark" data-userid="{{ user.core.id }}" data-collageid="{{ collage.id }}">add bookmark</a>
+		{% endif %}
+
+{# user collage links #}
+{#
+			<a class="button" href="/collages.php?userid={{ user.core.id }}">collages you started</a>
+			<a class="button" href="/collages.php?userid={{ user.core.id }}&contrib=1">collages you contributed to</a>
+
+	</form>
+
+</section>
+
+
+{# stats #}
+<section>
+<h3>Stats</h3>
+
+<table class="compact">
+
+<tr>
+<th>Groups</th>
+<td class="right">{{ collage.torrentCount }}</td>
+</tr>
+
+<tr>
+<th>Creators</th>
+<td class="right">{{ stats.creatorCount }}</td>
+</tr>
+
+<tr>
+<th>Contributors</th>
+<td class="right">{{ stats.contributorCount }}</td>
+</tr>
+
+<tr>
+<th>Tags</th>
+<td class="right">{{ stats.tagCount }}</td>
+</tr>
+
+</table>
+</section>
+
+{# top creators #}
+<section>
+<h3>Top creators</h3>
+
+<table class="compact">
+
+
+{% for key, value in stats.topCreators %}
+
+<tr>
+<th>{{ creatorNameById(key, true) }}</th>
+<td class="right">{{ value }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+</section>
+
+{# top contributors #}
+<section>
+<h3>Top contributors</h3>
+
+<table class="compact">
+
+{% for key, value in stats.topContributors %}
+
+<tr>
+<th>{{ key|formatUsername }}</th>
+<td class="right">{{ value }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+</section>
+
+{# top tags #}
+<section>
+<h3>Top tags</h3>
+
+<table class="compact">
+
+{% for key, value in stats.topTags %}
+
+<tr>
+<th><a href="/collages.php?action=search&tags={{ tagNameById(key, false) }}">{{ tagNameById(key, false) }}</a></th>
+<td class="right">{{ value }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+</section>

@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle REPL
- * 
- * Usage: php shell
- * 
+ * shell
+ *
+ * usage: php shell
+ *
  * @see https://github.com/bobthecow/psysh
  */
 
 # bootstrap the full app in the psych config
-require_once __DIR__."/vendor/autoload.php";
+require_once __DIR__ . "/vendor/autoload.php";
 
 # https://github.com/bobthecow/psysh/wiki/Sample-config
 $config = new Psy\Configuration([
-    "defaultIncludes" => [ __DIR__."/bootstrap/cli.php" ],
+    "defaultIncludes" => [ __DIR__ . "/bootstrap/cli.php" ],
     "updateCheck" => "never",
 
     # https://github.com/bobthecow/psysh/wiki/Themes

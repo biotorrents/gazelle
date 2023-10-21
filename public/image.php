@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 # Functions and headers needed by the image proxy
-error_reporting(E_COMPILE_ERROR|E_RECOVERABLE_ERROR|E_ERROR|E_CORE_ERROR);
+error_reporting(E_COMPILE_ERROR | E_RECOVERABLE_ERROR | E_ERROR | E_CORE_ERROR);
 
 if (isset($_SERVER['HTTP_IF_MODIFIED_SINCE'])) {
     header('HTTP/1.1 304 Not Modified');
@@ -19,7 +19,7 @@ header('Last-Modified: '.date('D, d-M-Y H:i:s \U\T\C', time()));
  */
 function img_error($Type)
 {
-    $ENV = ENV::go();
+    $ENV = \Gazelle\ENV::go();
 
     header('Content-type: image/gif');
     error(file_get_contents("$ENV->serverRoot/sections/image/err_imgs/$Type.png"));
@@ -102,7 +102,7 @@ function image_height($Type, $Data)
             $Block = unpack('nLength', $Data);
             $Data = substr($Data, $Block['Length']);
             $i += $Block['Length'];
-            $Str []= 'Started 4, + '.$Block['Length'];
+            $Str [] = 'Started 4, + '.$Block['Length'];
 
             # Iterate through the blocks until we find the start of frame marker (FFC0)
             while ($Data !== '') {
@@ -116,7 +116,7 @@ function image_height($Type, $Data)
 
                 if ($Block['Type'] !== '192') { # C0
                     $Data = substr($Data, $Block['Length'] + 2); # Next block
-                    $Str []= 'Started $i, + '.($Block['Length'] + 2);
+                    $Str [] = 'Started $i, + '.($Block['Length'] + 2);
                     $i += ($Block['Length'] + 2);
                 }
 

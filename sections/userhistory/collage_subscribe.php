@@ -5,11 +5,11 @@ $app = \Gazelle\App::go();
 // perform the back end of subscribing to collages
 authorize();
 
-if (!is_numeric($_GET['collageid'])) {
+if (!is_numeric($_GET['collageId'])) {
     error(0);
 }
 
-$CollageID = (int)$_GET['collageid'];
+$CollageID = (int)$_GET['collageId'];
 
 if (!$UserSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->core['id'])) {
     $app->dbOld->prepared_query('

@@ -22,7 +22,7 @@ class Base extends \Illuminate\Database\Eloquent\Model
     use \Illuminate\Database\Eloquent\Concerns\HasUuids;
 
     # eloquent capsule
-    public $eloquent = null;
+    public \Illuminate\Database\Capsule\Manager $eloquent;
 
 
     /**
@@ -39,8 +39,8 @@ class Base extends \Illuminate\Database\Eloquent\Model
         $app = \Gazelle\App::go();
 
         # database variables
-        $source = $app->env->getPriv("databaseSource");
-        $replicas = $app->env->getPriv("databaseReplicas");
+        $source = $app->env->private("databaseSource");
+        $replicas = $app->env->private("databaseReplicas");
 
         # default options
         $defaultOptions = [
@@ -121,7 +121,7 @@ class Base extends \Illuminate\Database\Eloquent\Model
         $app = \Gazelle\App::go();
 
         return \Illuminate\Database\Eloquent\Casts\Attribute::make(
-            get: fn (string $value) => $app->dbNew->uuidString($value),
+            get: fn (string $value) => $app->dbNew->stringUuid($value),
         );
 
     }

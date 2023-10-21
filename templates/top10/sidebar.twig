@@ -1,0 +1,40 @@
+{# actions #}
+<section>
+	<h3>Actions</h3>
+
+	<form>
+        {# torrents #}
+		<a class="button {{ (page == "torrents") ? " button-primary" : " " }}" href="/top10/torrents">torrents</a>
+
+        {# users #}
+		<a class="button {{ (page == "users") ? " button-primary" : " " }}" href="/top10/users">users</a>
+
+        {# tags #}
+		<a class="button {{ (page == "tags") ? " button-primary" : " " }}" href="/top10/tags">tags</a>
+
+        {# donors #}
+		{# <a class="button {{ (page == "donors") ? " button-primary" : " " }}" href="/top10/donors">donors</a> #}
+	</form>
+
+</section>
+
+
+{# show more #}
+<section>
+	<h3>Show more</h3>
+
+	<form>
+        {# top 10 #}
+		<a class="button {{ (limit == 10) ? " button-primary" : " " }}" href="/top10/{{ page }}?limit=10">top 10</a>
+
+        {# top 20 #}
+		<a class="button {{ (limit == 20) ? " button-primary" : " " }}" href="/top10/{{ page }}?limit=20">top 20</a>
+
+        {# top 50 #}
+		<a class="button {{ (limit == 50) ? " button-primary" : " " }}" href="/top10/{{ page }}?limit=50">top 50</a>
+
+        {# top 100 #}
+		<a class="button {{ (limit == 100) ? " button-primary" : " " }}" href="/top10/{{ page }}?limit=100">top 100</a>
+	</form>
+
+</section>

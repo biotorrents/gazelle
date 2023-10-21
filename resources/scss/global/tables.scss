@@ -26,6 +26,7 @@ table {
   &.compact,
   &.dense,
   &.small {
+
     th,
     td {
       border-bottom: none;
@@ -44,54 +45,6 @@ table {
 table.sidebar {
   td {
     text-align: right;
-  }
-}
-
-/**
- * sortable tables
- */
-
-$bitmap: "/images/symbols/table-order.png";
-$nrsr: no-repeat scroll right;
-
-@mixin bitmap($px) {
-  background: url($bitmap) $nrsr $px transparent;
-}
-
-.headerSort {
-  cursor: pointer;
-}
-
-.headerSort span {
-  @include bitmap(-38px);
-  padding: 0px 20px 0 0;
-}
-
-.headerSortDown span {
-  @include bitmap(4px);
-}
-
-.headerSortUp span {
-  @include bitmap(-79px);
-}
-
-.headerSort.sorter-false,
-.headerSort.sorter-false span {
-  background-image: none;
-  cursor: default;
-}
-
-/* generic */
-#sortable {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  width: 50%;
-
-  li {
-    padding: 0px;
-    font-size: 1.2em;
-    height: 1.5em;
   }
 }
 

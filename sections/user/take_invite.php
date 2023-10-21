@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 $app = \Gazelle\App::go();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 if (!$UserCount = $app->cache->get('stats_user_count')) {
     $app->dbOld->query("
@@ -72,10 +72,10 @@ foreach ($Emails as $CurEmail) {
     $app->dbOld->query("
     SELECT Email
     FROM invites
-    WHERE InviterID = ".$app->user->core['id']);
+    WHERE InviterID = " . $app->user->core['id']);
     if ($app->dbOld->has_results()) {
         while (list($MaybeEmail) = $app->dbOld->next_record()) {
-            if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
+            if (\Gazelle\Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
                 Http::redirect("user.php?action=invite");
                 error();
@@ -108,7 +108,7 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('{$app->user->core['id']}', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('{$app->user->core['id']}', '$InviteKey', '" . \Gazelle\Crypto::encrypt($CurEmail) . "', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
         $app->dbOld->query("
@@ -123,7 +123,7 @@ EOT;
           */
     }
 
-    \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
+    $app->email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
 Http::redirect("user.php?action=invite");

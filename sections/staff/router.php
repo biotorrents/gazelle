@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 
 enforce_login();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 include serverRoot.'/sections/staff/functions.php';
 View::header(
@@ -76,7 +76,7 @@ list($FrontLineSupport, $ForumStaff, $Staff) = $SupportStaff;
         </table>
         <?php }
 
-if ($ForumStaff) { ?>
+        if ($ForumStaff) { ?>
     </div>
     <div class="box pad" style="padding: 0px 10px 10px 10px;">
         <h3 id="forum_mods">Forum Moderators</h3>
@@ -89,83 +89,83 @@ if ($ForumStaff) { ?>
                 <td><strong>Remark</strong></td>
             </tr>
             <?php
-  foreach ($ForumStaff as $Support) {
-      list($ID, $Class, $Username, $Paranoia, $LastAccess, $SupportFor) = $Support;
+          foreach ($ForumStaff as $Support) {
+              list($ID, $Class, $Username, $Paranoia, $LastAccess, $SupportFor) = $Support;
 
-      make_staff_row($ID, $Paranoia, $Class, $LastAccess, $SupportFor);
-  } ?>
+              make_staff_row($ID, $Paranoia, $Class, $LastAccess, $SupportFor);
+          } ?>
         </table>
         <?php
-}
+        }
 
   $CurClass = 0;
-  $CloseTable = false;
-  foreach ($Staff as $StaffMember) {
-      list($ID, $Class, $ClassName, $Username, $Paranoia, $LastAccess, $Remark) = $StaffMember;
-      if ($Class != $CurClass) { // Start new class of staff members
-          if ($CloseTable) {
-              $CloseTable = false;
-              // the "\t" and "\n" are used here to make the HTML look pretty
-              echo "\t\t</table>\n\t\t<br>\n";
-          }
-          $CurClass = $Class;
-          $CloseTable = true;
-          $DevDiv = false;
-          $AdminDiv = false;
+$CloseTable = false;
+foreach ($Staff as $StaffMember) {
+    list($ID, $Class, $ClassName, $Username, $Paranoia, $LastAccess, $Remark) = $StaffMember;
+    if ($Class != $CurClass) { // Start new class of staff members
+        if ($CloseTable) {
+            $CloseTable = false;
+            // the "\t" and "\n" are used here to make the HTML look pretty
+            echo "\t\t</table>\n\t\t<br>\n";
+        }
+        $CurClass = $Class;
+        $CloseTable = true;
+        $DevDiv = false;
+        $AdminDiv = false;
 
-          $HTMLID = '';
-          switch ($ClassName) {
-        case 'Moderator':
-          printSectionDiv("Moderators");
-          $HTMLID = 'mods';
-          break;
+        $HTMLID = '';
+        switch ($ClassName) {
+            case 'Moderator':
+                printSectionDiv("Moderators");
+                $HTMLID = 'mods';
+                break;
 
-        case 'Developer':
-          $HTMLID = 'devs';
-          break;
+            case 'Developer':
+                $HTMLID = 'devs';
+                break;
 
-        case 'Lead Developer':
-          $HTMLID = 'lead_devs';
-          break;
+            case 'Lead Developer':
+                $HTMLID = 'lead_devs';
+                break;
 
-        case 'System Administrator':
-          $HTMLID = 'sys_admins';
-          break;
+            case 'System Administrator':
+                $HTMLID = 'sys_admins';
+                break;
 
-        case 'Administrator':
-          $HTMLID = 'admins';
-          break;
+            case 'Administrator':
+                $HTMLID = 'admins';
+                break;
 
-        case 'Sysop':
-          $HTMLID = 'sysops';
-          break;
+            case 'Sysop':
+                $HTMLID = 'sysops';
+                break;
 
-        default:
-          $HTMLID = '';
-      }
+            default:
+                $HTMLID = '';
+        }
 
-          switch ($ClassName) {
-        case 'Developer':
-        case 'Lead Developer':
-          if (!$DevDiv) {
-              printSectionDiv("Development");
-              $DevDiv = true;
-          }
-          break;
+        switch ($ClassName) {
+            case 'Developer':
+            case 'Lead Developer':
+                if (!$DevDiv) {
+                    printSectionDiv("Development");
+                    $DevDiv = true;
+                }
+                break;
 
-        case 'System Administrator':
-        case 'Administrator':
-        case 'Sysop':
-          if (!$AdminDiv) {
-              printSectionDiv("Administration");
-              $AdminDiv = true;
-          }
-      }
-          if ($HTMLID != 'mods') {
-              echo "\t\t<h3 style=\"font-size: 17px;\" id=\"$HTMLID\"><i>".$ClassName."s</i></h3>\n";
-          } else {
-              echo "\t\t<h2 style='text-align: left'>" . $ClassName . "s</h2>\n";
-          } ?>
+            case 'System Administrator':
+            case 'Administrator':
+            case 'Sysop':
+                if (!$AdminDiv) {
+                    printSectionDiv("Administration");
+                    $AdminDiv = true;
+                }
+        }
+        if ($HTMLID != 'mods') {
+            echo "\t\t<h3 style=\"font-size: 17px;\" id=\"$HTMLID\"><i>".$ClassName."s</i></h3>\n";
+        } else {
+            echo "\t\t<h2 style='text-align: left'>" . $ClassName . "s</h2>\n";
+        } ?>
 
         <table class="staff" width="100%">
             <tr class="colhead">
@@ -174,13 +174,13 @@ if ($ForumStaff) { ?>
                 <td><strong>Remark</strong></td>
             </tr>
             <?php
-      } // End new class header
+    } // End new class header
 
-      $HiddenBy = 'Hidden by staff member';
+    $HiddenBy = 'Hidden by staff member';
 
-      // Display staff members for this class
-      make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark, $HiddenBy);
-  } ?>
+    // Display staff members for this class
+    make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark, $HiddenBy);
+} ?>
         </table>
 
     </div>

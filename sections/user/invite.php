@@ -1,16 +1,73 @@
 <?php
-#declare(strict_types=1);
+
+declare(strict_types=1);
+
+
+/**
+ * user invites page
+ */
 
 $app = \Gazelle\App::go();
 
-$ENV = ENV::go();
+# check permissions
+if ($app->user->cant("users_view_invites")) {
+    $app->error(403);
+}
+
+# http query vars
+$get = Http::get();
+$post = Http::post();
+
+# which user's invites to show
+$userId = $get["userId"] ?? $app->user->core["id"];
+$userData = $app->user->readProfile($userId);
+#!d($userData);exit;
+
+# get invited users
+$query = "
+    select users.id, users.username, users.email, users.registered, users.last_login, users_main.uploaded, users_main.downloaded
+    from users inner join users_main on users.id = users_main.userId
+    left join users_info on users.id = users_info.userId
+    where users_info.inviter = ?
+";
+$ref = $app->dbNew->multi($query, [$userId]);
+#!d($ref);exit;
+
+# current user count
+$query = "select count(id) from users where status = ?";
+$userCount = $app->dbNew->single($query, [User::NORMAL]);
+
+
+# twig template
+$app->twig->display("user/profile/invites.twig", [
+    "title" => "Invites for {$app->user->core["username"]}",
+    "sidebar" => true,
+    "invites" => $ref,
+]);
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 if (isset($_GET['userid']) && check_perms('users_view_invites')) {
     if (!is_numeric($_GET['userid'])) {
         error(403);
     }
 
-    $UserID=$_GET['userid'];
+    $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
     if (!$UserCount = $app->cache->get('stats_user_count')) {
@@ -107,7 +164,7 @@ View::header('Invites');
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
-          echo '&amp;userid='.$UserID;
+          echo '&amp;userid=' . $UserID;
       } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
@@ -209,7 +266,7 @@ if (!empty($Pending)) {
       <?php
   foreach ($Pending as $Invite) {
       list($InviteKey, $Email, $Expires) = $Invite;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
         <td><?=\Gazelle\Text::esc($Email)?>
         </td>
@@ -256,7 +313,7 @@ if (!empty($Pending)) {
       <?php
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'
       ?>
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>

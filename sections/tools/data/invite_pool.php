@@ -17,7 +17,7 @@ if (!empty($_POST['invitekey']) && check_perms('users_edit_invites')) {
 
     $app->dbOld->query("
       DELETE FROM invites
-      WHERE InviteKey = '".db_string($_POST['invitekey'])."'");
+      WHERE InviteKey = '" . db_string($_POST['invitekey']) . "'");
 }
 
 if (!empty($_GET['search'])) {
@@ -106,8 +106,8 @@ echo $Pages;
 
   <?php
   while (list($UserID, $IP, $InviteKey, $Expires, $Email) = $app->dbOld->next_record()) {
-      $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+      $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]';
+      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
   <tr class="row">
     <td>
       <?=User::format_username($UserID, true, true, true, true)?>

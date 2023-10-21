@@ -27,7 +27,7 @@ if ($app->user->extra['LastReadNews'] != $News[0][0]) {
 
     $app->dbOld->query("
     UPDATE users_info
-    SET LastReadNews = '".$News[0][0]."'
+    SET LastReadNews = '" . $News[0][0] . "'
     WHERE UserID = $UserID");
     $app->user->extra['LastReadNews'] = $News[0][0];
 }
@@ -84,7 +84,7 @@ foreach ($News as $NewsItem) {
     }
 }
 
-json_die("success", array(
+\Gazelle\Api\Base::success(200, array(
   'announcements' => $JsonAnnouncements,
   'blogPosts' => $JsonBlog
 ));

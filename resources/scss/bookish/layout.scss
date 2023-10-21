@@ -1,20 +1,9 @@
-/* Logo */
-/*
-.logo {
-  background: url("/images/logos/liquidrop-bookish-1k.png");
-  background-size: contain;
-  width: 50px;
-  min-width: 50px;
-  height: 100%;
-  min-height: 100%;
-  margin-left: 1rem;
-
-  a {
-    display: block;
-    height: 50px;
+/* https://moderncss.dev/pure-css-smooth-scroll-back-to-top/ */
+@media screen and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
   }
 }
-*/
 
 /* Links */
 .linkbox {
@@ -38,13 +27,13 @@
 .show_torrents {
   width: 21px;
   height: 28px;
-  background: url("/images/symbols/show.png") no-repeat center center;
+  background: url("/images/forums/show.png") no-repeat center center;
 }
 
 .hide_torrents {
   width: 21px;
   height: 28px;
-  background: url("/images/symbols/hide.png") no-repeat center center;
+  background: url("/images/forums/hide.png") no-repeat center center;
 }
 
 .show_torrents_link {
@@ -55,20 +44,6 @@
   cursor: pointer;
 }
 
-/* torrent search/reset/make default buttons */
-/*
-.ft_submit {
-  text-align: center;
-}
-
-.cat_list tr td {
-  border: none;
-}
-
-.torrent_table .number_column {
-  text-align: center;
-}
-*/
 
 /**
  * text elements

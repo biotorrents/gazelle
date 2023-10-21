@@ -18,7 +18,7 @@ $app = \Gazelle\App::go();
 
 
 enforce_login();
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 View::header('Blog');
 

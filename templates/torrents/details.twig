@@ -123,7 +123,7 @@
 
 
     {# torrent list #}
-    <section>
+    <section style="overflow-x: scroll;">
     <h3>Torrents</h3>
 
     {# individual torrents #}
@@ -179,7 +179,7 @@
 
   {# version #}
   {% if item.Version %}
-    <span title="Version"><img src="/images/icons/version.png" alt="version" class="icon"> {{ item.Version }}</span>
+    <span title="Version"><img src="/images/icons/version.webp" alt="version" class="icon"> {{ item.Version }}</span>
   {% endif %}
 
   {# scope #}
@@ -189,7 +189,7 @@
 
   {# archive #}
   {% if item.Archive %}
-    <span title="Archive"><img src="/images/icons/archive.png" alt="archive" class="icon"> {{ item.Archive }}</span>
+    <span title="Archive"><img src="/images/icons/archive.webp" alt="archive" class="icon"> {{ item.Archive }}</span>
   {% endif %}
 
   {# license #}
@@ -512,7 +512,7 @@
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
-              src="<?=staticServer?>common/noartwork.png"
+              src="<?=staticServer?>common/noartwork.webp"
               alt="<?=$Categories[$GroupCategoryID - 1]?>"
               class="brackets tooltip"
               title="<?=$Categories[$GroupCategoryID - 1]?>" /></div>

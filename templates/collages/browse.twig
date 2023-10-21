@@ -1,0 +1,141 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+{# include the main search form #}
+{% include "collages/search.twig" %}
+
+{# no results message #}
+{% if pagination.resultCount == 0 %}
+	<div class="alertbar warning halfwide">
+		<h3>No search results :(</h3>
+		<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+	</div>
+{% else %}
+  {# resultCount and pagination controls #}
+  <div id="searchResultsHeader">
+  <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
+
+<div id="paginationControls">
+
+  {% if pagination.currentPage != pagination.firstPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+  {% endif %}
+
+  {% if pagination.currentPage > pagination.previousPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+  {% endif %}
+
+  {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+    {% endif %}
+
+	  {% if pagination.currentPage != pagination.lastPage %}
+  <a href="/torrents.php{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+     {% endif %}
+ 
+  </div>
+  </div>
+{% endif %}
+
+{# grouping options #}
+{% if searchTerms.groupResults %}
+  {% set grouping = "grouping" %}
+{% else %}
+  {% set grouping = "no_grouping" %}
+{% endif %}
+
+
+{# start the results table #}
+<table id="torrentSearchResults" class="{{ grouping }}" data-sortable>
+
+{# start results table headings #}
+{# todo: this can be reorganized to suck less #}
+<thead>
+<tr>
+
+	{# category #}
+	<th class="categoryColumn" />
+
+	{# collage title #}
+	<th>Collage&nbsp;title</th>
+
+	{# torrent count #}
+	<th>Torrents</th>
+
+	{# subscriber count #}
+	<th>Subscribers</th>
+
+	{# last update #}
+	<th>Updated</th>
+
+	{# author #}
+	<th>Author</th>
+
+</tr>
+</thead>
+{# end results table headings #}
+
+{# start the results themselves #}
+<tbody>
+{% for item in collages %}
+
+  <tr>
+
+	{# category #}
+    <td class="center">
+	    {{ categories[item.categoryId] }}
+      {# <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$app->env->collageCategories[(int)$CategoryID]?></a> #}
+    </td>
+
+    <td>
+      <a class="torrentTitle" id="collage_name"
+        href="collages.php?id={{ item.id }}">{{ item.title }}</a>
+		{#
+      <?php if ($BookmarkView) { ?>
+      <span class="u-pull-right">
+        <a href="#"
+          onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
+          class="brackets">Remove bookmark</a>
+      </span>
+      <?php } ?>
+	  #}
+
+    {% if item.tagList is not empty %}
+      <div class="tooltip tagList" title="Tags">{{ item.tagList }}</div>
+    {% endif %}
+    </td>
+
+	{# torrent count #}
+    <td class="number_column">{{ item.torrentCount }}</td>
+
+		{# subscriber count #}
+    <td class="number_column">{{ item.subscriberCount }}</td>
+
+	{# last update #}
+	{% if item.updatedAt %}
+    <td class="nobr">{{ item.updatedAt|relativeTime }}</td>
+	{% else %}
+	    <td class="nobr">{{ item.createdAt|relativeTime }}</td>
+		{% endif %}
+
+    <td>{{ item.userId|formatUsername }}</td>
+  </tr>
+
+
+{% endfor %}
+</tbody>
+
+{# end the results table #}
+</table>
+
+{# todo: share search #}
+{# <a id="searchParamsPermalink" class="button">link this search</a> #}
+
+{# todo: download all this page #}
+{# <a id="downloadAllThisPage" class="button">download all this page</a> #}
+
+{# back to top: lazy af #}
+{# <a href="#searchResultsHeader" class="button">back to top</a> #}
+
+{% endblock %}

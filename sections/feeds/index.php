@@ -41,7 +41,7 @@ if (!$enabled) {
 }
 
 # check for RSS auth
-$rssHash = md5($userId . $app->env->getPriv("rssHash") . $_GET["passkey"]);
+$rssHash = md5($userId . $app->env->private("rssHash") . $_GET["passkey"]);
 if ($rssHash !== $_GET["auth"] || intval($enabled) !== 1) {
     $feed->open();
     $feed->channel("Blocked", "RSS feed");

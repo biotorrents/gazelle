@@ -6,12 +6,20 @@
 <section>
 <h2>{{ header }}</h2>
 
-{% for item in torrentGroups %}
+{# no torrents #}
+{% if torrentGroups is empty %}
+<h3 class="center">No torrents found :)</h3>
+{% endif %}
 
-<pre>
-{{ dump(item) }}
-</pre>
+{# torrent list #}
+<table>
+{% for group in torrentGroups %}
+
+{% include "torrents/tableEntry.twig" with group %}
+
 {% endfor %}
+</table>
+
 </section>
 
 {% endblock %}
