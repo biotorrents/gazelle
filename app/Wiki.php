@@ -243,4 +243,34 @@ class Wiki extends ObjectCrud
 
         return $ref;
     }
+
+
+    /**
+     * search
+     *
+     * Naive database like "%foo%" search.
+     * Index this with Manticorelater.
+     *
+     * @param string $searchWhat the search string, obviously
+     * @param bool $titleOnly only search article titles?
+     * @return ?array
+     */
+    public static function search(string $searchWhat, bool $titleOnly = false): ?array
+    {
+        $app = App::go();
+
+        # search titles and bodies
+        if (!$titleOnly) {
+            $query = "select id, title from wiki_articles where title like ? or body like ? order by title asc";
+            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
+
+            return $ref;
+        }
+
+        # search titles only
+        $query = "select id, title from wiki_articles where title like ? order by title asc";
+        $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
+
+        return $ref;
+    }
 } # class
