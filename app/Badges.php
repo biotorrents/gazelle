@@ -24,6 +24,11 @@ class Badges
         $query = "select badgeId, displayed from users_badges where userId = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
 
+        # foreach() argument must be of type array|object, null given
+        if (!$ref) {
+            return [];
+        }
+
         $data = [];
         foreach ($ref as $row) {
             $key = $row["badgeId"];
