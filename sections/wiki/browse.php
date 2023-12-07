@@ -15,17 +15,18 @@ $get = Http::get();
 $post = Http::post();
 
 $searchWhat = $post["search"] ?? null;
-$titleOnly = boolval($post["titleOnly"] ?? false);
+$titlesOnly = boolval($post["titlesOnly"] ?? false);
 
-$searchResults = \Gazelle\Wiki::search($searchWhat, $titleOnly);
+$searchResults = \Gazelle\Wiki::search($searchWhat, $titlesOnly);
 $resultCount = count($searchResults);
 
+# worry about pagination later, when the wiki is large
 $app->twig->display("wiki/browse.twig", [
     "title" => "Search the wiki",
     #"sidebar" => true,
 
     "searchWhat" => $searchWhat,
-    "titleOnly" => $titleOnly,
+    "titlesOnly" => $titlesOnly,
 
     "searchResults" => $searchResults,
     "resultCount" => $resultCount,

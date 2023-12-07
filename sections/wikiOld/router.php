@@ -21,17 +21,5 @@ if (!empty($_REQUEST['action'])) {
         case 'delete_alias':
             require_once "$ENV->serverRoot/sections/wikiOld/delete_alias.php";
             break;
-
-        case 'browse':
-            require_once "$ENV->serverRoot/sections/wikiOld/wiki_browse.php";
-            break;
-
-        case 'article':
-            require_once "$ENV->serverRoot/sections/wikiOld/article.php";
-            break;
-
-        case 'search':
-            require_once "$ENV->serverRoot/sections/wikiOld/search.php";
-            break;
     }
 }

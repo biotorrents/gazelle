@@ -58,6 +58,7 @@ $app->twig->display("wiki/compare.twig", [
     "title" => "Revision history for {$article->title}",
     "sidebar" => true,
     "js" => ["wiki"],
+
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),

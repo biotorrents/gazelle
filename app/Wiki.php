@@ -252,10 +252,10 @@ class Wiki extends ObjectCrud
      * Index this with Manticorelater.
      *
      * @param ?string $searchWhat the search string, obviously
-     * @param bool $titleOnly only search article titles?
+     * @param bool $titlesOnly only search article titles?
      * @return ?array array of Gazelle\Wiki objects
      */
-    public static function search(?string $searchWhat = "*", bool $titleOnly = false): ?array
+    public static function search(?string $searchWhat = "*", bool $titlesOnly = false): ?array
     {
         $app = App::go();
 
@@ -263,13 +263,13 @@ class Wiki extends ObjectCrud
         $searchWhat ??= "*";
         $searchWhat = Text::utf8($searchWhat);
 
-        if (!$titleOnly) {
+        if (!$titlesOnly) {
             # search titles and bodies
-            $query = "select id from wiki_articles where title like ? or body like ? order by title asc";
+            $query = "select id from wiki_articles where title like ? or body like ? and deleted_at is null order by title asc";
             $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
         } else {
             # search titles only
-            $query = "select id from wiki_articles where title like ? order by title asc";
+            $query = "select id from wiki_articles where title like ? and deleted_at is null order by title asc";
             $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
         }
 
