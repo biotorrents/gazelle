@@ -1,0 +1,92 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+{# search form #}
+<section>
+    <h2>Search the wiki</h2>
+
+    <form method="post">
+        {{ form_token("") }}
+
+        <input type="text" name="search" value="{{ (searchWhat) ? searchWhat : "" }}" placeholder="Leave empty to show all articles" style="width: 100%;">
+
+        <br><br>
+
+        <p class="flexRow">
+            <span class="flexItem">
+                {# boolval("") === false #}
+                <input type="radio" name="titleOnly" value="" {{ (titleOnly) ? "" : "checked" }}> Search titles and bodies
+            </span>
+
+            <span class="flexItem">
+                <input type="radio" name="titleOnly" value="true" {{ (titleOnly) ? "checked" : "" }}> Search titles only
+            </span>
+        </p>
+
+        <p class="flexRow">
+            <input type="submit" class="button-primary" value="search">
+            <a href="/wiki/browse" class="button">show all articles</a>
+        </p>
+    </form>
+</section>
+
+{# search results #}
+<section>
+    <h2>Displaying {{ resultCount }} results</h2>
+
+    <table data-sortable>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Created</th>
+                <th>Updated</th>
+                {# <th class="center">Revision</th> #}
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in searchResults %}
+                <tr>
+                    <td>
+                        <a href="/wiki/{{ item.id}}">{{ item.title }}</a>
+                    </td>
+
+                    <td>
+                        {{ item.authorId|formatUsername }}
+                    </td>
+
+                    <td data-value="{{ item.createdAt }}">
+                        <span class="tooltip" title="{{ item.createdAt }}">{{ item.createdAt|relativeTime }}</span>
+                    </td>
+
+                    <td data-value="{{ item.updatedAt }}">
+                        <span class="tooltip" title="{{ item.updatedAt }}">{{ item.updatedAt|relativeTime }}</span>
+                    </td>
+
+                    {#
+                    <td class="center">
+                        {{ item.revision }}
+                    </td>
+                    #}
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="4">No results found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+{{ include("wiki/sidebar.twig") }}
+
+{% endblock %}
+#}

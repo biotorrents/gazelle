@@ -352,6 +352,29 @@ class Text
 
 
     /**
+     * excerpt
+     *
+     * Excerpts a string and returns plaintext (best effort).
+     *
+     * @param string $string string to cut
+     * @param int $words cut at length
+     * @param string $end end with this
+     * @return string formatted string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
+     */
+    public static function excerpt(string $value, int $words = 100, string $end = "..."): string
+    {
+        $string = \Illuminate\Support\Str::words($value, $words, $end);
+        $string = self::oneLine($string);
+        $string = self::parse($string);
+        $string = strip_tags($string);
+
+        return $string;
+    }
+
+
+    /**
      * isBinary
      *
      * I asked ChatGPT about this one.

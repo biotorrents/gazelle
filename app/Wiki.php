@@ -251,26 +251,42 @@ class Wiki extends ObjectCrud
      * Naive database like "%foo%" search.
      * Index this with Manticorelater.
      *
-     * @param string $searchWhat the search string, obviously
+     * @param ?string $searchWhat the search string, obviously
      * @param bool $titleOnly only search article titles?
-     * @return ?array
+     * @return ?array array of Gazelle\Wiki objects
      */
-    public static function search(string $searchWhat, bool $titleOnly = false): ?array
+    public static function search(?string $searchWhat = "*", bool $titleOnly = false): ?array
     {
         $app = App::go();
 
-        # search titles and bodies
-        if (!$titleOnly) {
-            $query = "select id, title from wiki_articles where title like ? or body like ? order by title asc";
-            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
+        # strip garbage from the search string
+        $searchWhat ??= "*";
+        $searchWhat = Text::utf8($searchWhat);
 
-            return $ref;
+        if (!$titleOnly) {
+            # search titles and bodies
+            $query = "select id from wiki_articles where title like ? or body like ? order by title asc";
+            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
+        } else {
+            # search titles only
+            $query = "select id from wiki_articles where title like ? order by title asc";
+            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
         }
 
-        # search titles only
-        $query = "select id, title from wiki_articles where title like ? order by title asc";
-        $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
+        $results = [];
+        foreach ($ref as $row) {
+            # load it up
+            $item = new self($row["id"]);
 
-        return $ref;
+            # skip soft deletes or bad data
+            if (empty($item->id || !empty($item->deletedAt))) {
+                continue;
+            }
+
+            # add to the return array
+            $results[] = $item;
+        }
+
+        return $results;
     }
 } # class
