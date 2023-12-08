@@ -248,8 +248,8 @@ x
 EOT;
 
         # set some important defaults
+        $this->id = $app->dbNew->shortUuid();
         $this->uuid = $app->dbNew->uuid();
-        #$this->id = "gotta figure this one out";
         $this->revision = 1;
         $this->title = "What will you call your new article?";
         $this->body = $defaultBodyText;

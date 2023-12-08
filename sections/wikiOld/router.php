@@ -6,14 +6,6 @@ $ENV = \Gazelle\ENV::go();
 
 if (!empty($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
-        case 'create':
-            if ($_POST['action']) {
-                require_once "$ENV->serverRoot/sections/wikiOld/takecreate.php";
-            } else {
-                require_once "$ENV->serverRoot/sections/wikiOld/create.php";
-            }
-            break;
-
         case 'add_alias':
             require_once "$ENV->serverRoot/sections/wikiOld/add_alias.php";
             break;
