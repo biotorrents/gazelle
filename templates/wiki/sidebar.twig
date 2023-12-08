@@ -2,12 +2,12 @@
 <section>
 <h3>Actions</h3>
 
-<form method="post" action="/wiki/search">
-    {{ form_token("/wiki/search") }}
+<form method="post" action="/wiki/browse">
+    {{ form_token("/wiki/browse") }}
 
-    <input type="text" name="query" placeholder="Find wiki articles" required>
+    <input type="text" name="search" placeholder="Find wiki articles" required>
 
-    <button type="submit" class="button button button-primary">search the wiki</button>
+    <input type="submit" class="button-primary" value="search the wiki">
 </form>
 
 <hr>

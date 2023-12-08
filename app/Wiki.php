@@ -199,6 +199,66 @@ class Wiki extends ObjectCrud
     }
 
 
+    /**
+     * hydrateDefaults
+     *
+     * Hydrates a new article with some basic info such as id, title, body, etc.
+     * Used to repurpose the same interface for creating and editing articles.
+     */
+    public function hydrateDefaults(): self
+    {
+        $app = App::go();
+
+        if (!empty($this->id) || !empty($this->uuid)) {
+            throw new Exception("article already exists");
+        }
+
+        # starboard notebook default copy
+        $defaultBodyText = <<<EOT
+# %% [markdown]
+{$app->env->siteName}'s wiki uses [Starboard Notebook](https://starboard.gg) to support literate programming notebooks. Starboard brings cell-by-cell Jupyter Notebooks to the browser, to interactively visualize data and to prototype concepts.
+
+\
+The notebook runs entirely in a secure browser sandbox, and it supports Markdown, $\LaTeX$, HTML, CSS, JavaScript, and Python. Please see the examples below to get an idea for what's possible. Press the ▶️ play button on the left to run a cell's code.
+
+\
+This brief introduction only covers a small subset of Starboard's features. Some more examples from Starboard's website include [Visualizing Exchange Rate Data](https://starboard.gg/#visualization) and [Python Support in Starboard Notebook](https://starboard.gg/#python).
+
+# %% [javascript]
+// we can import code dynamically, and top level await is supported
+const {default: Confetti} = await import("https://cdn.skypack.dev/canvas-confetti");
+
+function fireConfetti(event) {
+    const x = event.clientX / document.body.clientWidth;
+    const y = event.clientY / document.body.clientHeight;
+    Confetti({origin: {x, y}});
+}
+
+// template literals are built in
+html `<button @click=\${fireConfetti}>Fire Confetti 🎉</button>`
+
+# %% [python]
+# when you first run this cell, it'll load the Python runtime
+# your browser should cache it, so it'll load faster next time
+message = "Hello Python!"
+print(message)
+
+x = [i ** 2 for i in range(5)]
+x
+EOT;
+
+        # set some important defaults
+        $this->uuid = $app->dbNew->uuid();
+        #$this->id = "gotta figure this one out";
+        $this->revision = 1;
+        $this->title = "What will you call your new article?";
+        $this->body = $defaultBodyText;
+
+        # return the object
+        return $this;
+    }
+
+
     /** static */
 
 

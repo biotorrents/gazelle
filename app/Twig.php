@@ -263,7 +263,8 @@ class Twig extends \Twig\Environment
         }));
 
         # Format::relativeTime
-        $twig->addFilter(new \Twig\TwigFilter("relativeTime", function ($time) {
+        $twig->addFilter(new \Twig\TwigFilter("relativeTime", function ($time = null) {
+            $time ??= time();
             return \Format::relativeTime($time);
         }));
 
