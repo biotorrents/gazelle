@@ -7,7 +7,7 @@ declare(strict_types=1);
  * create wiki article
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # check permissions
 if ($app->user->cant("site_edit_wiki")) {
@@ -16,7 +16,7 @@ if ($app->user->cant("site_edit_wiki")) {
 
 # instantiate a new Gazelle\Wiki object
 $article = new Gazelle\Wiki();
-$article->hydrateDefaults();
+$article->hydrateNewArticle();
 
 # twig template
 $app->twig->display("wiki/article.twig", [

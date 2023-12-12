@@ -206,6 +206,24 @@ class Database extends \PDO
     }
 
 
+    /**
+     * now
+     *
+     * Return an SQL datetime string.
+     * Defaults to the current time.
+     *
+     * @param ?int $timestamp
+     * @return string
+     */
+    public function now(?int $timestamp = null): string
+    {
+        return date(
+            "Y-m-d H:i:s",
+            $timestamp ?? time()
+        );
+    }
+
+
     /** identifiers */
 
 

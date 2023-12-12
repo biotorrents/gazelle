@@ -158,6 +158,74 @@ class Wiki extends ObjectCrud
 
 
     /**
+     * createAlias
+     *
+     * Creates an alias for a wiki article by id.
+     *
+     * @param string $alias
+     * @return void
+     */
+    public function createAlias(string $alias): void
+    {
+        $app = App::go();
+
+        # check permissions
+        if ($app->user->cant("site_edit_wiki")) {
+            throw new Exception("invalid permissions");
+        }
+
+        if ($this->minClassEdit > $app->user->extra["Class"]) {
+            throw new Exception("invalid permissions");
+        }
+
+        # normalize the alias
+        $alias = self::normalizeAlias($alias);
+
+        # check for duplicates
+        $query = "select articleId from wiki_aliases where alias = ?";
+        $ref = $app->dbNew->single($query, [$alias]);
+
+        if (!empty($ref)) {
+            throw new Exception("alias already exists");
+        }
+
+        # create the alias
+        $query = "insert into wiki_aliases (alias, articleId, userId) values (?, ?, ?)";
+        $app->dbNew->do($query, [ $alias, $this->id, $app->user->core["id"] ]);
+    }
+
+
+    /**
+     * deleteAlias
+     *
+     * Deletes an alias for a wiki article by id.
+     *
+     * @param string $alias
+     * @return void
+     */
+    public function deleteAlias(string $alias): void
+    {
+        $app = App::go();
+
+        # check permissions
+        if ($app->user->cant("site_edit_wiki")) {
+            throw new Exception("invalid permissions");
+        }
+
+        if ($this->minClassEdit > $app->user->extra["Class"]) {
+            throw new Exception("invalid permissions");
+        }
+
+        # normalize the alias
+        $alias = self::normalizeAlias($alias);
+
+        # delete the alias
+        $query = "delete from wiki_aliases where alias = ? and articleId = ?";
+        $app->dbNew->do($query, [$alias, $this->id]);
+    }
+
+
+    /**
      * getOneRevision
      *
      * Gets one revision for a wiki article by id and revision.
@@ -200,12 +268,12 @@ class Wiki extends ObjectCrud
 
 
     /**
-     * hydrateDefaults
+     * hydrateNewArticle
      *
      * Hydrates a new article with some basic info such as id, title, body, etc.
      * Used to repurpose the same interface for creating and editing articles.
      */
-    public function hydrateDefaults(): self
+    public function hydrateNewArticle(): self
     {
         $app = App::go();
 
@@ -253,6 +321,7 @@ EOT;
         $this->revision = 1;
         $this->title = "What will you call your new article?";
         $this->body = $defaultBodyText;
+        $this->createdAt = $app->dbNew->now();
 
         # return the object
         return $this;
@@ -267,20 +336,20 @@ EOT;
      *
      * Normalize a wiki alias.
      *
-     * @param string $string
+     * @param string $alias
      * @return string
      */
-    public static function normalizeAlias($string): string
+    public static function normalizeAlias(string $alias): string
     {
-        $string = Text::utf8($string);
+        $alias = Text::utf8($alias);
 
         # only allow alphanumeric characters
-        $string = preg_replace("/[^a-z0-9]/", "", strtolower($string));
+        $alias = preg_replace("/[^a-z0-9]/", "", strtolower($alias));
 
         # limit to 64 characters
-        $string = substr($string, 0, 64);
+        $alias = substr($string, 0, 64);
 
-        return $string;
+        return $alias;
     }
 
 

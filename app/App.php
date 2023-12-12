@@ -289,6 +289,8 @@ class App
 
     /**
      * sqlTime
+     *
+     * todo: remove this in favor of $app->dbNew->now()
      */
     public static function sqlTime($timestamp = null): string
     {
