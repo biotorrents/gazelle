@@ -97,13 +97,13 @@
 <section>
 <h3>Aliases</h3>
 
-<table class="compact">
+<table id="wikiAliases" class="compact">
     {% for item in aliases %}
         <tr>
             <th>{{ item }}</th>
             <td class="right">
                 {% if can("admin_manage_wiki") %}
-                    <a class="button deleteWikiAlias" data-alias={{ item }}>delete</a>
+                    <a class="button deleteWikiAlias" data-articleid="{{ article.id }}" data-alias="{{ item }}">delete</a>
                 {% endif %}
             </td>
         </tr>
@@ -111,7 +111,7 @@
 </table>
 
 <form>
-    <input type="text" name="alias" id="newAliasContent" data-articleid={{ article.id }} placeholder="e.g., someDescriptiveSlug">
+    <input type="text" name="alias" id="newAliasContent" data-articleid="{{ article.id }}" placeholder="e.g., someDescriptiveSlug">
 
     <a class="button button-primary" id="createWikiAlias">add an alias</a>
 </section>

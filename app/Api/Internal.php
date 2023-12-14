@@ -671,14 +671,14 @@ class Internal extends Base
         self::validateFrontendHash();
 
         $request = \Http::json();
-        $request["id"] ??= null;
+        $request["articleId"] ??= null;
         $request["alias"] ??= null;
 
         try {
-            $article = new \Gazelle\Wiki($request["id"]);
+            $article = new \Gazelle\Wiki($request["articleId"]);
             $article->createAlias($request["alias"]);
 
-            self::success(200, "created alias {$request["alias"]} for article {$request["id"]}");
+            self::success(200, "created alias {$request["alias"]} for article {$request["articleId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -697,14 +697,14 @@ class Internal extends Base
         self::validateFrontendHash();
 
         $request = \Http::json();
-        $request["id"] ??= null;
+        $request["articleId"] ??= null;
         $request["alias"] ??= null;
 
         try {
-            $article = new \Gazelle\Wiki($request["id"]);
+            $article = new \Gazelle\Wiki($request["articleId"]);
             $article->deleteAlias($request["alias"]);
 
-            self::success(200, "deleted alias {$request["alias"]} for article {$request["id"]}");
+            self::success(200, "deleted alias {$request["alias"]} for article {$request["articleId"]}");
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }
@@ -723,12 +723,12 @@ class Internal extends Base
         self::validateFrontendHash();
 
         $request = \Http::json();
-        $request["id"] ??= null;
+        $request["articleId"] ??= null;
 
         try {
-            if ($request["id"]) {
+            if ($request["articleId"]) {
                 # update
-                $article = new \Gazelle\Wiki($request["id"]);
+                $article = new \Gazelle\Wiki($request["articleId"]);
                 $article->update($article->id, $request);
             } else {
                 # create

@@ -347,7 +347,7 @@ EOT;
         $alias = preg_replace("/[^a-z0-9]/", "", strtolower($alias));
 
         # limit to 64 characters
-        $alias = substr($string, 0, 64);
+        $alias = substr($alias, 0, 64);
 
         return $alias;
     }

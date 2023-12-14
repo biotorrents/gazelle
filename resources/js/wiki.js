@@ -41,7 +41,7 @@
   $("#updateWikiArticle").on("click", (event) => {
     // the data to send
     var request = {
-      id: $(event.target).data("articleid"),
+      articleId: $(event.target).data("articleid"),
       title: $("#articleTitle").val(),
       body: window.notebookContent,
       minClassRead: $("#minClassRead").val(),
@@ -78,15 +78,62 @@
    * createWikiAlias
    */
   $("#createWikiAlias").on("click", (event) => {
-    // todo
+    // the data to send
+    var request = {
+      articleId: $("#newAliasContent").data("articleid"),
+      alias: $("#newAliasContent").val(),
+    };
+
+    // ajax request
+    $.ajax("/api/internal/createWikiAlias", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        // kinda lame, should match /templates/wiki/sidebar.twig
+        $("#wikiAliases").append("<tr><th>" + request.alias + "</th><td class='right'><a class='button deleteWikiAlias' data-articleid='" + request.articleId + "' data-alias='" + request.alias + "'>delete</a></td></tr>");
+      },
+
+      error: (response) => {
+        console.log(response);
+      },
+    });
   });
 
 
   /**
    * deleteWikiAlias
    */
-  $("#deleteWikiAlias").on("click", (event) => {
-    // todo
+  $(".deleteWikiAlias").on("click", (event) => {
+    // the data to send
+    var request = {
+      articleId: $(event.target).data("articleid"),
+      alias: $(event.target).data("alias"),
+    };
+
+    // ajax request
+    $.ajax("/api/internal/deleteWikiAlias", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        $(event.target).closest("tr").hide();
+      },
+
+      error: (response) => {
+        console.log(response);
+      },
+    });
   });
 
 })();
