@@ -664,7 +664,25 @@ class Internal extends Base
      *
      * Creates a new wiki article alias.
      */
-    public static function createWikiAlias(): void {}
+    public static function createWikiAlias(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["id"] ??= null;
+        $request["alias"] ??= null;
+
+        try {
+            $article = new \Gazelle\Wiki($request["id"]);
+            $article->createAlias($request["alias"]);
+
+            self::success(200, "created alias {$request["alias"]} for article {$request["id"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 
 
     /**
@@ -672,7 +690,25 @@ class Internal extends Base
      *
      * Deletes a wiki article alias.
      */
-    public static function deleteWikiAlias(): void {}
+    public static function deleteWikiAlias(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Http::json();
+        $request["id"] ??= null;
+        $request["alias"] ??= null;
+
+        try {
+            $article = new \Gazelle\Wiki($request["id"]);
+            $article->deleteAlias($request["alias"]);
+
+            self::success(200, "deleted alias {$request["alias"]} for article {$request["id"]}");
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 
 
     /**

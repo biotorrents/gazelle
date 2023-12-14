@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 /**
  * internal api routes
- * yeah, we getting crudded
  */
 
 # 2fa (totp)
@@ -53,6 +52,8 @@ Flight::route("POST /api/internal/deleteGroupTags", ["Gazelle\Api\Internal", "de
 
 # wiki
 Flight::route("POST /api/internal/updateWikiArticle", ["Gazelle\Api\Internal", "updateWikiArticle"]);
+Flight::route("POST /api/internal/createWikiAlias", ["Gazelle\Api\Internal", "createWikiAlias"]);
+Flight::route("POST /api/internal/deleteWikiAlias", ["Gazelle\Api\Internal", "deleteWikiAlias"]);
 
 
 # not found
