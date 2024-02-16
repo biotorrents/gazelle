@@ -535,7 +535,7 @@ class Database extends \PDO
         $ref = $statement->fetchAll();
 
         if (!$ref) {
-            return null;
+            return [];
         }
 
         foreach ($ref as $row) {
@@ -573,7 +573,7 @@ class Database extends \PDO
         $ref = $this->multi($query, $parameters, $options);
 
         if (!$ref) {
-            return null;
+            return [];
         }
 
         foreach ($ref as $key => $row) {
@@ -618,7 +618,7 @@ class Database extends \PDO
         $ref = $statement->fetchAll();
 
         if (!$ref) {
-            return null;
+            return [];
         }
 
         foreach ($ref as $key => $row) {
