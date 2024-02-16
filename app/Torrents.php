@@ -270,6 +270,8 @@ class Torrents
     {
         $app = \Gazelle\App::go();
 
+        $GroupIDs ??= [];
+
         $Found = $NotFound = array_fill_keys($GroupIDs, false);
         $Key = $Torrents ? 'torrent_group_' : 'torrent_group_light_';
 
@@ -612,7 +614,7 @@ class Torrents
             $app->cache->decrement('num_torrent_reportsv2', $Reports);
         }
 
-        unlink($app->env->torrentStore.'/'.$ID.'.torrent');
+        unlink($app->env->torrentStore . '/' . $ID . '.torrent');
         $app->dbOld->query("
         DELETE FROM torrents_bad_tags
           WHERE TorrentID = ?", $ID);
@@ -681,7 +683,7 @@ class Torrents
             $app->dbOld->query("
             UPDATE collages
             SET NumTorrents = NumTorrents - 1
-              WHERE ID IN (".implode(', ', $CollageIDs).')');
+              WHERE ID IN (" . implode(', ', $CollageIDs) . ')');
             $app->dbOld->query("
             DELETE FROM collages_torrents
               WHERE GroupID = ?", $GroupID);
@@ -876,7 +878,7 @@ class Torrents
           WHERE ID = ?", $TorrentID);
         if ($app->dbOld->has_results()) {
             list($GroupID) = $app->dbOld->next_record(MYSQLI_NUM, false);
-            $Contents = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
+            $Contents = file_get_contents($app->env->torrentStore . '/' . $TorrentID . '.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
                 $FilePath = (isset($Tor->Dec['info']['files']) ? \Gazelle\Text::utf8($Tor->get_name()) : '');
@@ -1077,7 +1079,7 @@ class Torrents
         if ($Data['FreeTorrent'] === '1') {
             if ($Data['FreeLeechType'] === '3') {
                 if ($Data['ExpiryTime']) {
-                    $Info[] = ($HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech') . ($HTMLy ? " <strong>(" : " (").str_replace(['month','week','day','hour','min','s'], ['m','w','d','h','m',''], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)).($HTMLy ? ")</strong>" : ")");
+                    $Info[] = ($HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech') . ($HTMLy ? " <strong>(" : " (") . str_replace(['month','week','day','hour','min','s'], ['m','w','d','h','m',''], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
                 } else {
                     $Info[] = $HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech';
                 }
@@ -1120,12 +1122,12 @@ class Torrents
         $app->dbOld->query("
           UPDATE torrents
           SET FreeTorrent = '$FreeNeutral', FreeLeechType = '$FreeLeechType'
-          WHERE ID IN (".implode(', ', $TorrentIDs).')');
+          WHERE ID IN (" . implode(', ', $TorrentIDs) . ')');
 
         $app->dbOld->query('
           SELECT ID, GroupID, info_hash
           FROM torrents
-          WHERE ID IN ('.implode(', ', $TorrentIDs).')
+          WHERE ID IN (' . implode(', ', $TorrentIDs) . ')
             ORDER BY GroupID ASC');
 
         $Torrents = $app->dbOld->to_array(false, MYSQLI_NUM, false);
@@ -1136,7 +1138,7 @@ class Torrents
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
-            Misc::write_log(($app->user->core["username"] ?? 'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
+            Misc::write_log(($app->user->core["username"] ?? 'System') . " marked torrent $TorrentID freeleech type $FreeLeechType");
             Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
@@ -1173,7 +1175,7 @@ class Torrents
         $app->dbOld->query('
           SELECT ID
           FROM torrents
-          WHERE GroupID IN ('.implode(', ', $GroupIDs).')');
+          WHERE GroupID IN (' . implode(', ', $GroupIDs) . ')');
 
         if ($app->dbOld->has_results()) {
             $TorrentIDs = $app->dbOld->collect('ID');
@@ -1297,7 +1299,7 @@ class Torrents
                     FROM xbt_snatched
                       WHERE uid = ?", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $SnatchedTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $SnatchedTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurSnatchedTorrents[$TorrentID])) {
@@ -1318,7 +1320,7 @@ class Torrents
                                 $SnatchedTorrents[$CurBucketID] = [];
                             }
                         }
-                        $SnatchedTorrents[$CurBucketID][(int)$ID] = true;
+                        $SnatchedTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1385,7 +1387,7 @@ class Torrents
                       AND active = 1
                       AND Remaining = 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $SeedingTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $SeedingTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurSeedingTorrents[$TorrentID])) {
@@ -1408,7 +1410,7 @@ class Torrents
                                 $SeedingTorrents[$CurBucketID] = [];
                             }
                         }
-                        $SeedingTorrents[$CurBucketID][(int)$ID] = true;
+                        $SeedingTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1477,7 +1479,7 @@ class Torrents
                       AND active = 1
                       AND Remaining > 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $LeechingTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $LeechingTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurLeechingTorrents[$TorrentID])) {
@@ -1500,7 +1502,7 @@ class Torrents
                                 $LeechingTorrents[$CurBucketID] = [];
                             }
                         }
-                        $LeechingTorrents[$CurBucketID][(int)$ID] = true;
+                        $LeechingTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1579,7 +1581,7 @@ class Torrents
         }
 
         if (($Mode & self::DISPLAYSTRING_RELEASETYPE) && $GroupInfo['ReleaseType'] > 0) {
-            $DisplayName .= ' ['.$ReleaseTypes[$GroupInfo['ReleaseType']].']';
+            $DisplayName .= ' [' . $ReleaseTypes[$GroupInfo['ReleaseType']] . ']';
         }
 
         return $DisplayName;

@@ -213,7 +213,9 @@ class Collages extends \Gazelle\ObjectCrud
             where collages_torrents.collageId = ?
             order by collages_torrents.sort
         ";
+
         $ref = $app->dbNew->multi($query, [$this->id]);
+        $ref ??= [];
 
         # loop through it
         foreach ($ref as $row) {
