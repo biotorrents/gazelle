@@ -195,7 +195,7 @@ class Base
         ];
 
         if ($app->env->dev) {
-            #$response["meta"]["debug"] = self::debug();
+            $response["meta"]["debug"] = self::debug();
         }
 
         /** */

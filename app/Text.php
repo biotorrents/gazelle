@@ -126,12 +126,13 @@ class Text
      * figlet
      *
      * Make a silly willy, goofery ballery.
-     * @see https://docs.laminas.dev/laminas-text/figlet/
      *
      * @param string $message the message to figlet
      * @param string $color the color of the figlet
      * @param string $font the font of the figlet
      * @return void
+     *
+     * @see https://docs.laminas.dev/laminas-text/figlet/
      */
     public static function figlet(string $message, string $color = "black", string $font = "small"): void
     {
@@ -232,11 +233,11 @@ class Text
      * Wrapper around number_format that casts to float.
      * Hopefully temporary until we clean up the data.
      *
-     * @see https://www.php.net/manual/en/function.number-format.php
-     *
      * @param mixed $number
      * @param int $decimals
      * @return float
+     *
+     * @see https://www.php.net/manual/en/function.number-format.php
      */
     public static function float(mixed $number, int $decimals = 2): float
     {
@@ -253,10 +254,11 @@ class Text
      * random
      *
      * Generate a more truly "random" alpha-numeric string.
-     * @see https://github.com/illuminate/support/blob/master/Str.php
      *
      * @param int $length
      * @return string
+     *
+     * @see https://github.com/illuminate/support/blob/master/Str.php
      */
     public static function random($length = 32): string
     {
@@ -378,6 +380,9 @@ class Text
      * isBinary
      *
      * I asked ChatGPT about this one.
+     *
+     * @param string $string
+     * @return bool
      */
     public static function isBinary(string $string): bool
     {

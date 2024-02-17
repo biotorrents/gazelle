@@ -25,7 +25,7 @@ if (!$article->id) {
 }
 
 # make sure it's a valid starboard notebook
-$good = preg_match("/{$app->env->regexStarboard}/", $article->body);
+$good = preg_match("/{$app->env->regexStarboard}/", strval($article->body));
 if (!$good) {
     # default to markdown
     $article->body = "# %% [markdown]\n" . $article->body;
