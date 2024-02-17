@@ -10,7 +10,7 @@ declare(strict_types=1);
 class Collages extends \Gazelle\ObjectCrud
 {
     # database table
-    public string $object = "collages";
+    public string $type = "collages";
 
     # object properties
     public $uuid;

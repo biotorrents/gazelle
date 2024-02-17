@@ -42,7 +42,7 @@ abstract class ObjectCrud
         $transform = $this->displayToDatabase($data);
 
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->object, $transform);
+        $upsert = $app->dbNew->upsert($this->type, $transform);
 
         # map database => display
         $transform = $this->databaseToDisplay($upsert);
@@ -70,7 +70,7 @@ abstract class ObjectCrud
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select * from {$this->object} where {$column} = ? and deleted_at is null";
+        $query = "select * from {$this->type} where {$column} = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$identifier]);
 
         if (!$row) {
@@ -94,7 +94,7 @@ abstract class ObjectCrud
 
         # does the object exist?
         if (!$this->exists($identifier)) {
-            throw new Exception("can't update on {$this->object} where the {$column} is {$identifier}");
+            throw new Exception("can't update on {$this->type} where the {$column} is {$identifier}");
         }
 
         # map display => database
@@ -113,7 +113,7 @@ abstract class ObjectCrud
         */
 
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->object, $transform);
+        $upsert = $app->dbNew->upsert($this->type, $transform);
     }
 
 
@@ -129,11 +129,11 @@ abstract class ObjectCrud
 
         # does the object exist?
         if (!$this->exists($identifier)) {
-            throw new Exception("can't delete from {$this->object} where the {$column} is {$identifier}");
+            throw new Exception("can't delete from {$this->type} where the {$column} is {$identifier}");
         }
 
         # perform a soft delete
-        $query = "update {$this->object} set deleted_at = now() where {$column} = ?";
+        $query = "update {$this->type} set deleted_at = now() where {$column} = ?";
         $app->dbNew->do($query, [$identifier]);
     }
 
@@ -153,7 +153,7 @@ abstract class ObjectCrud
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select 1 from {$this->object} where {$column} = ? and deleted_at is null";
+        $query = "select 1 from {$this->type} where {$column} = ? and deleted_at is null";
 
         $good = $app->dbNew->single($query, [$identifier]);
         return boolval($good);
@@ -175,7 +175,7 @@ abstract class ObjectCrud
             $data[$key] = $this->$value;
         }
 
-        $upsert = $app->dbNew->upsert($this->object, $data);
+        $upsert = $app->dbNew->upsert($this->type, $data);
         return boolval($upsert);
     }
 

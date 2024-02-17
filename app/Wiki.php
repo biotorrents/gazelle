@@ -16,7 +16,7 @@ namespace Gazelle;
 class Wiki extends ObjectCrud
 {
     # database table
-    public string $object = "wiki_articles";
+    public string $type = "wiki_articles";
 
     # object properties
     public $uuid;
