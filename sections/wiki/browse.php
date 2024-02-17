@@ -30,4 +30,6 @@ $app->twig->display("wiki/browse.twig", [
 
     "searchResults" => $searchResults,
     "resultCount" => $resultCount,
+
+    "isEditorAvailable" => false,
 ]);

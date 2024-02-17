@@ -26,4 +26,5 @@ $app->twig->display("wiki/article.twig", [
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),
+    "isEditorAvailable" => true,
 ]);

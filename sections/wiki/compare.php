@@ -67,4 +67,6 @@ $app->twig->display("wiki/compare.twig", [
     "secondRevision" => $secondRevision ??= null,
     "firstRevision" => $firstRevision ??= null,
     "diff" => $diff,
+
+    "isEditorAvailable" => false,
 ]);

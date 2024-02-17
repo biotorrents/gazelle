@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 # is there an identifier?
-$identifier ??= 1; # default to articleId 1
+$identifier ??= \Gazelle\Wiki::$indexArticleId; # default to articleId 1
 
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
@@ -40,4 +40,5 @@ $app->twig->display("wiki/article.twig", [
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),
+    "isEditorAvailable" => true,
 ]);
