@@ -518,9 +518,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $parameters
      * @param array $options
-     * @return ?array
+     * @return array
      */
-    public function row(string $query, array $parameters = [], array $options = []): ?array
+    public function row(string $query, array $parameters = [], array $options = []): array
     {
         $app = App::go();
 
@@ -556,9 +556,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $parameters
      * @param array $options
-     * @return ?array
+     * @return array
      */
-    public function column(string $query, array $parameters = [], array $options = []): ?array
+    public function column(string $query, array $parameters = [], array $options = []): array
     {
         $app = App::go();
 
@@ -601,9 +601,9 @@ class Database extends \PDO
      * @param string $query
      * @param array $parameters
      * @param array $options
-     * @return ?array
+     * @return array
      */
-    public function multi(string $query, array $parameters = [], array $options = []): ?array
+    public function multi(string $query, array $parameters = [], array $options = []): array
     {
         $app = App::go();
 
@@ -642,9 +642,9 @@ class Database extends \PDO
      *
      * @param string $table
      * @param array $data
-     * @return ?array
+     * @return array
      */
-    public function upsert(string $table, array $data = []): ?array
+    public function upsert(string $table, array $data = []): array
     {
         # extract the columns and values
         $columns = array_keys($data);
@@ -712,9 +712,9 @@ class Database extends \PDO
      *
      * @param string $table
      * @param array $conditions ["column" => "value"]
-     * @return ?array
+     * @return array
      */
-    public function findOne(string $table, array $conditions = []): ?array
+    public function findOne(string $table, array $conditions = []): array
     {
         # important! trailing whitespace
         $query = "select * from {$table} where ";
@@ -821,12 +821,12 @@ class Database extends \PDO
     public function meta(?\PDOStatement $statement = null, ?string $hostname = null): array
     {
         $host = $this->determineHost("", $hostname);
-        $meta = [ "attributes" => [], "pdo" => [], "statement" => [] ];
+        $metadata = [];
 
         /** */
 
         # https://www.php.net/manual/en/pdo.getattribute.php
-        $meta["attributes"] = [
+        $metadata["attributes"] = [
             "autocommit" => $host->getAttribute(\PDO::ATTR_AUTOCOMMIT),
             "case" => $host->getAttribute(\PDO::ATTR_CASE),
             "clientVersion" => $host->getAttribute(\PDO::ATTR_CLIENT_VERSION),
@@ -841,46 +841,55 @@ class Database extends \PDO
 
         /** */
 
-        # https://www.php.net/manual/en/pdo.errorcode.php
-        $meta["pdo"]["errorCode"] = $host->errorCode();
+        $metadata["pdo"] = [
+            # https://www.php.net/manual/en/pdo.errorcode.php
+            "errorCode" => $host->errorCode(),
 
-        # https://www.php.net/manual/en/pdo.errorinfo.php
-        $meta["pdo"]["errorInfo"] = $host->errorInfo();
+            # https://www.php.net/manual/en/pdo.errorinfo.php
+            "errorInfo" => $host->errorInfo(),
 
-        # https://www.php.net/manual/en/pdo.getavailabledrivers.php
-        $meta["pdo"]["availableDrivers"] = $host->getAvailableDrivers();
+            # https://www.php.net/manual/en/pdo.getavailabledrivers.php
+            "availableDrivers" => $host->getAvailableDrivers(),
 
-        # https://www.php.net/manual/en/pdo.intransaction.php
-        $meta["pdo"]["inTransaction"] = $host->inTransaction();
+            # https://www.php.net/manual/en/pdo.intransaction.php
+            "inTransaction" => $host->inTransaction(),
 
-        # https://www.php.net/manual/en/pdo.lastinsertid.php
-        $meta["pdo"]["lastInsertId"] = $host->lastInsertId();
+            # https://www.php.net/manual/en/pdo.lastinsertid.php
+            "lastInsertId" => $host->lastInsertId(),
+        ];
 
         /** */
 
-        if ($statement) {
-            # https://www.php.net/manual/en/pdostatement.columncount.php
-            $meta["statement"]["columnCount"] = $statement->columnCount();
-
-            # https://www.php.net/manual/en/pdostatement.debugdumpparams.php
-            $meta["statement"]["debugDumpParams"] = $statement->debugDumpParams();
-
-            # https://www.php.net/manual/en/pdostatement.errorcode.php
-            $meta["statement"]["errorCode"] = $statement->errorCode();
-
-            # https://www.php.net/manual/en/pdostatement.errorinfo.php
-            $meta["statement"]["errorInfo"] = $statement->errorInfo();
-
-            # https://www.php.net/manual/en/pdostatement.getcolumnmeta.php
-            #$meta["statement"]["columnMeta"] = $statement->getColumnMeta($todo);
-
-            # https://www.php.net/manual/en/pdostatement.rowcount.php
-            $meta["statement"]["rowCount"] = $statement->rowCount();
+        # return early if no statement
+        if (!$statement) {
+            return $metadata;
         }
 
         /** */
 
-        return $meta;
+        $metadata["statement"] = [
+            # https://www.php.net/manual/en/pdostatement.columncount.php
+            "columnCount" => $statement->columnCount(),
+
+            # https://www.php.net/manual/en/pdostatement.debugdumpparams.php
+            "debugDumpParams" => $statement->debugDumpParams(),
+
+            # https://www.php.net/manual/en/pdostatement.errorcode.php
+            "errorCode" => $statement->errorCode(),
+
+            # https://www.php.net/manual/en/pdostatement.errorinfo.php
+            "errorInfo" => $statement->errorInfo(),
+
+            # https://www.php.net/manual/en/pdostatement.getcolumnmeta.php
+            #"columnMeta" => $statement->getColumnMeta($todo),
+
+            # https://www.php.net/manual/en/pdostatement.rowcount.php
+            "rowCount" => $statement->rowCount(),
+        ];
+
+        /** */
+
+        return $metadata;
     }
 
 
