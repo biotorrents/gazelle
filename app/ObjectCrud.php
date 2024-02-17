@@ -94,7 +94,7 @@ abstract class ObjectCrud
 
         # does the object exist?
         if (!$this->exists($identifier)) {
-            throw new \Exception("can't update on {$this->object} where the {$column} is {$identifier}");
+            throw new Exception("can't update on {$this->object} where the {$column} is {$identifier}");
         }
 
         # map display => database
@@ -104,11 +104,13 @@ abstract class ObjectCrud
         $column = $app->dbNew->determineIdentifier($identifier);
         $transform[$column] = $identifier;
 
+        /*
         # SQLSTATE[42000]: Syntax error or access violation: 1110 Column 'ID' specified twice
         $transform["id"] ??= null;
         if ($transform["id"]) {
             unset($transform["id"]);
         }
+        */
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->object, $transform);
@@ -127,7 +129,7 @@ abstract class ObjectCrud
 
         # does the object exist?
         if (!$this->exists($identifier)) {
-            throw new \Exception("can't delete from {$this->object} where the {$column} is {$identifier}");
+            throw new Exception("can't delete from {$this->object} where the {$column} is {$identifier}");
         }
 
         # perform a soft delete

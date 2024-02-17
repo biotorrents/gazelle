@@ -51,6 +51,9 @@ class Wiki extends ObjectCrud
     private string $cachePrefix = "wiki:";
     private string $cacheDuration = "1 hour";
 
+    # index article
+    public int $indexArticleId = 1;
+
 
     /**
      * update
@@ -117,7 +120,7 @@ class Wiki extends ObjectCrud
         }
 
         # prevent deleting the wiki index
-        if ($this->id === 1) {
+        if ($this->id === $this->indexArticleId) {
             throw new Exception("can't delete the index article");
         }
 
