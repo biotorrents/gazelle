@@ -712,11 +712,11 @@ class Internal extends Base
 
 
     /**
-     * updateWikiArticle
+     * createUpdateWikiArticle
      *
-     * Updates a wiki article's content.
+     * Creates a new wiki article or updates its contents.
      */
-    public static function updateWikiArticle(): void
+    public static function createUpdateWikiArticle(): void
     {
         $app = \Gazelle\App::go();
 
@@ -726,17 +726,22 @@ class Internal extends Base
         $request["articleId"] ??= null;
 
         try {
-            if ($request["articleId"]) {
-                # update
-                $article = new \Gazelle\Wiki($request["articleId"]);
-                $article->update($article->id, $request);
-            } else {
-                # create
-                throw new \Exception("not implemented");
-            }
+            # try to load the requested article
+            $article = new \Gazelle\Wiki($request["articleId"]);
 
-            # todo: not returning the *new* data
-            self::success(200, $article);
+            if (!$article->id) {
+                # change articleId to just id
+                $request["id"] = $request["articleId"];
+                unset($request["articleId"]);
+
+                # no id loaded from database, create
+                $article->create($request);
+                self::success(200, $article);
+            } else {
+                # yes id loaded from database, update
+                $article->update($request["articleId"], $request);
+                self::success(200, $article);
+            }
         } catch (\Throwable $e) {
             self::failure(400, $e->getMessage());
         }

@@ -21,7 +21,7 @@
     <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
     {% if can("site_edit_wiki") and user.extra.Class >= article.minClassEdit and isEditorAvailable %}
-        <a id="updateWikiArticle" data-articleid="{{ article.id }}" class="button button-orange">save your edits</a>
+        <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" class="button button-orange">save your edits</a>
     {% endif %}
 
     {# todo: the index article id is hardcoded here #}

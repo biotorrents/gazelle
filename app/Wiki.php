@@ -34,7 +34,7 @@ class Wiki extends ObjectCrud
     # ["database" => "display"]
     protected array $maps = [
         "uuid" => "uuid",
-        "ID" => "id",
+        "id" => "id",
         "Revision" => "revision",
         "Title" => "title",
         "Body" => "body",

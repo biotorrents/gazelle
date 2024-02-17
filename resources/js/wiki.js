@@ -27,7 +27,7 @@
     }
 
     // reset the edit button content
-    $("#updateWikiArticle").html("save your edits");
+    $("#createUpdateWikiArticle").html("save your edits");
   };
 
   // add the event listener
@@ -35,10 +35,10 @@
 
 
   /**
-   * updateWikiArticle
+   * createUpdateWikiArticle
    */
 
-  $("#updateWikiArticle").on("click", (event) => {
+  $("#createUpdateWikiArticle").on("click", (event) => {
     // the data to send
     var request = {
       articleId: $(event.target).data("articleid"),
@@ -54,7 +54,7 @@
     }
 
     // ajax request
-    $.ajax("/api/internal/updateWikiArticle", {
+    $.ajax("/api/internal/createUpdateWikiArticle", {
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
