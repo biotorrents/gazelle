@@ -19,6 +19,10 @@ class Internal extends Base
 
     /**
      * createTwoFactor
+     *
+     * Creates a new 2FA secret for the user.
+     *
+     * @return void
      */
     public static function createTwoFactor(): void
     {
@@ -46,6 +50,10 @@ class Internal extends Base
 
     /**
      * deleteTwoFactor
+     *
+     * Deletes a 2FA secret for the user.
+     *
+     * @return void
      */
     public static function deleteTwoFactor(): void
     {
@@ -76,6 +84,10 @@ class Internal extends Base
 
     /**
      * webAuthnCreationRequest
+     *
+     * Creates a WebAuthn device for the user.
+     *
+     * @return void
      */
     public static function webAuthnCreationRequest(): void
     {
@@ -98,6 +110,10 @@ class Internal extends Base
 
     /**
      * webAuthnCreationResponse
+     *
+     * Creates a WebAuthn device for the user.
+     *
+     * @return void
      */
     public static function webAuthnCreationResponse(): void
     {
@@ -123,6 +139,10 @@ class Internal extends Base
 
     /**
      * webAuthnAssertionRequest
+     *
+     * Validates a WebAuthn device for the user.
+     *
+     * @return void
      */
     public static function webAuthnAssertionRequest(string $username): void
     {
@@ -146,6 +166,10 @@ class Internal extends Base
 
     /**
      * webAuthnAssertionResponse
+     *
+     * Validates a WebAuthn device for the user.
+     *
+     * @return void
      */
     public static function webAuthnAssertionResponse(): void
     {
@@ -187,6 +211,8 @@ class Internal extends Base
      * deleteWebAuthn
      *
      * Deletes a WebAuthn device for the user.
+     *
+     * @return void
      */
     public static function deleteWebAuthn(): void
     {
@@ -219,6 +245,8 @@ class Internal extends Base
      * createBearerToken
      *
      * Creates a bearer token for the user.
+     *
+     * @return void
      */
     public static function createBearerToken(): void
     {
@@ -244,6 +272,8 @@ class Internal extends Base
      * deleteBearerToken
      *
      * Deletes a bearer token for the user.
+     *
+     * @return void
      */
     public static function deleteBearerToken(): void
     {
@@ -273,6 +303,11 @@ class Internal extends Base
 
     /**
      * createPassphrase
+     *
+     * Suggests a passphrase for the user.
+     *
+     * @param string $type
+     * @return void
      */
     public static function createPassphrase(string $type = "diceware"): void
     {
@@ -335,6 +370,10 @@ class Internal extends Base
      * createDefaultSearch
      *
      * Adds the "make default" feature on the torrent search.
+     *
+     * @param int $userId
+     * @param string $queryString
+     * @return void
      */
     public static function createDefaultSearch(int $userId, string $queryString): void
     {
@@ -368,6 +407,9 @@ class Internal extends Base
      * deleteDefaultSearch
      *
      * Adds the "clear default" feature on the torrent search.
+     *
+     * @param int $userId
+     * @return void
      */
     public static function deleteDefaultSearch(int $userId): void
     {
@@ -382,6 +424,8 @@ class Internal extends Base
      * deleteGroupTags
      *
      * Deletes torrent group tags.
+     *
+     * @return void
      */
     public static function deleteGroupTags(): void
     {
@@ -416,6 +460,10 @@ class Internal extends Base
 
     /**
      * createBookmark
+     *
+     * Adds a bookmark to the user's bookmark list.
+     *
+     * @return void
      */
     public static function createBookmark(): void
     {
@@ -440,6 +488,10 @@ class Internal extends Base
 
     /**
      * deleteBookmark
+     *
+     * Deletes a bookmark from the user's bookmark list.
+     *
+     * @return void
      */
     public static function deleteBookmark(): void
     {
@@ -469,6 +521,8 @@ class Internal extends Base
      * doiNumberAutofill
      *
      * Fills out the torrent form with Semantic Scholar data.
+     *
+     * @return void
      */
     public static function doiNumberAutofill(): void
     {
@@ -580,6 +634,8 @@ class Internal extends Base
      * createFriend
      *
      * Adds a friend to the user's friend list.
+     *
+     * @return void
      */
     public static function createFriend(): void
     {
@@ -603,8 +659,10 @@ class Internal extends Base
      * updateFriend
      *
      * Updates a friend's comment.
+     *
+     * @return void
      */
-    public static function updateFriend(int $friendId, string $comment = ""): void
+    public static function updateFriend(): void
     {
         $app = \Gazelle\App::go();
 
@@ -632,8 +690,10 @@ class Internal extends Base
      * deleteFriend
      *
      * Deletes a friend from the user's friend list.
+     *
+     * @return void
      */
-    public static function deleteFriend(int $friendId): void
+    public static function deleteFriend(): void
     {
         $app = \Gazelle\App::go();
 
@@ -663,6 +723,8 @@ class Internal extends Base
      * createWikiAlias
      *
      * Creates a new wiki article alias.
+     *
+     * @return void
      */
     public static function createWikiAlias(): void
     {
@@ -689,6 +751,8 @@ class Internal extends Base
      * deleteWikiAlias
      *
      * Deletes a wiki article alias.
+     *
+     * @return void
      */
     public static function deleteWikiAlias(): void
     {
@@ -715,6 +779,8 @@ class Internal extends Base
      * createUpdateWikiArticle
      *
      * Creates a new wiki article or updates its contents.
+     *
+     * @return void
      */
     public static function createUpdateWikiArticle(): void
     {
