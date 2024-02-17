@@ -794,7 +794,7 @@ class BonusPoints
         # what badge, if any, do they currently own?
         $currentBadge = null;
         foreach ($app->env->sequentialBadges as $id => $cost) {
-            $hasBadge = \Badges::hasBadge($app->user->core["id"], $id);
+            $hasBadge = Badges::hasBadge($app->user->core["id"], $id);
             if (!$hasBadge) {
                 $currentBadge = $id;
                 break;
@@ -811,7 +811,7 @@ class BonusPoints
 
         # deduct the bonus points and award the badge
         $this->deductPoints($currentCost);
-        \Badges::awardBadge($app->user->core["id"], $currentBadge);
+        Badges::awardBadge($app->user->core["id"], $currentBadge);
 
         return $currentBadge;
     }
@@ -954,7 +954,7 @@ class BonusPoints
         $badgeId = array_search($closest, $app->env->lotteryBadges);
 
         # do they already have the badge?
-        $hasBadge = \Badges::hasBadge($app->user->core["id"], $badgeId);
+        $hasBadge = Badges::hasBadge($app->user->core["id"], $badgeId);
         if ($hasBadge) {
             $query = "select icon from badges where id = ?";
             $icon = $app->dbNew->single($query, [$badgeId]);
@@ -967,7 +967,7 @@ class BonusPoints
 
         # deduct the bonus points and award the badge
         $this->deductPoints($bet);
-        \Badges::awardBadge($app->user->core["id"], $badgeId);
+        Badges::awardBadge($app->user->core["id"], $badgeId);
 
         return [
             "badgeId" => $badgeId,
@@ -995,7 +995,7 @@ class BonusPoints
     {
         $app = App::go();
 
-        $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->auctionBadgeId);
+        $hasBadge = Badges::hasBadge($app->user->core["id"], $app->env->auctionBadgeId);
         if ($hasBadge) {
             throw new Exception("you already own this badge");
         }
@@ -1029,7 +1029,7 @@ class BonusPoints
     {
         $app = App::go();
 
-        $hasBadge = \Badges::hasBadge($app->user->core["id"], $app->env->coinBadgeId);
+        $hasBadge = Badges::hasBadge($app->user->core["id"], $app->env->coinBadgeId);
         if ($hasBadge) {
             throw new Exception("you already own this badge");
         }
@@ -1041,7 +1041,7 @@ class BonusPoints
 
         # deduct the bonus points and award the badge
         $this->deductPoints($payment);
-        \Badges::awardBadge($app->user->core["id"], $app->env->coinBadgeId);
+        Badges::awardBadge($app->user->core["id"], $app->env->coinBadgeId);
 
         # update the cost
         $query = "replace into bonus_point_purchases (userId, `key`, value) values (?, ?, ?)";
@@ -1077,7 +1077,7 @@ class BonusPoints
         $app->dbNew->do($query, [$badgeId, $randomBadgeIcon, "Random Badge", $randomBadgeDescription]);
 
         # award the badge
-        \Badges::awardBadge($app->user->core["id"], $badgeId);
+        Badges::awardBadge($app->user->core["id"], $badgeId);
 
         return [
             "id" => $badgeId,

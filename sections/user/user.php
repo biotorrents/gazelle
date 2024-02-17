@@ -51,11 +51,11 @@ $avatar = User::displayAvatar($data["extra"]["Avatar"], $data["core"]["username"
 
 # badges
 if ($isOwnProfile) {
-    $badges = Badges::getBadges($userId);
-    $badgesDisplay = Badges::displayBadges(array_keys($badges));
+    $badges = Gazelle\Badges::getBadges($userId);
+    $badgesDisplay = Gazelle\Badges::displayBadges(array_keys($badges));
 } else {
-    $badges = Badges::getDisplayedBadges($userId);
-    $badgesDisplay = Badges::displayBadges($badges);
+    $badges = Gazelle\Badges::getDisplayedBadges($userId);
+    $badgesDisplay = Gazelle\Badges::displayBadges($badges);
 }
 
 
@@ -198,61 +198,61 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
           </li>
           <?php
         }
-  if (($Override = check_paranoia_here('uploaded'))) {
-      ?>
+if (($Override = check_paranoia_here('uploaded'))) {
+    ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
             title="<?=Format::get_size($Uploaded, 5)?>">Uploaded:
             <?=Format::get_size($Uploaded)?>
           </li>
           <?php
-  }
-  if (($Override = check_paranoia_here('downloaded'))) {
-      ?>
+}
+if (($Override = check_paranoia_here('downloaded'))) {
+    ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
             title="<?=Format::get_size($Downloaded, 5)?>">Downloaded:
             <?=Format::get_size($Downloaded)?>
           </li>
           <?php
-  }
-  if (($Override = check_paranoia_here('ratio'))) {
-      ?>
+}
+if (($Override = check_paranoia_here('ratio'))) {
+    ?>
           <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Ratio:
             <?=Format::get_ratio_html($Uploaded, $Downloaded)?>
             </li>
             <?php
-  }
-  if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
-      ?>
+}
+if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
+    ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=\Gazelle\Text::float((float)$RequiredRatio, 5)?>"><?=\Gazelle\Text::float((float)$RequiredRatio, 2)?></span></li>
+                title="<?=\Gazelle\Text::float((float) $RequiredRatio, 5)?>"><?=\Gazelle\Text::float((float) $RequiredRatio, 2)?></span></li>
               <?php
-  }
-  if (($Override = check_paranoia_here('downloaded'))) {
-      ?>
+}
+if (($Override = check_paranoia_here('downloaded'))) {
+    ?>
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
                   title="<?=Format::get_size($TotalSeeding)?>"><?=Format::get_size($TotalSeeding)?>
                   </li>
                   <?php
-  }
-  if ($isOwnProfile || ($Override = check_paranoia_here(false)) || check_perms('users_mod')) {
-      ?>
+}
+if ($isOwnProfile || ($Override = check_paranoia_here(false)) || check_perms('users_mod')) {
+    ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$userId?>">Tokens</a>:
                     <?=\Gazelle\Text::float($FLTokens)?>
                     </li>
                     <?php
-  }
-  if (($isOwnProfile || check_perms('users_mod')) && $Warned) {
-      ?>
+}
+if (($isOwnProfile || check_perms('users_mod')) && $Warned) {
+    ?>
                     <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Warning
                       expires in: <?=time_diff((date('Y-m-d H:i', strtotime($Warned))))?>
                       </li>
                       <?php
-  } ?>
+} ?>
       </ul>
     </div>
     <?php
@@ -336,31 +336,31 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         </li>
         <?php
         }
-  if (($Override = check_paranoia_here('downloaded'))) { ?>
+if (($Override = check_paranoia_here('downloaded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($Downloaded)?>">Data downloaded:
           <?=$DownloadedRank === false ? 'Server busy' : \Gazelle\Text::float($DownloadedRank)?>
         </li>
         <?php
-  }
-  if (($Override = check_paranoia_here('uploads+'))) { ?>
+}
+if (($Override = check_paranoia_here('uploads+'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=\Gazelle\Text::float($Uploads)?>">Torrents uploaded:
           <?=$UploadsRank === false ? 'Server busy' : \Gazelle\Text::float($UploadsRank)?>
         </li>
         <?php
-  }
-  if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
+}
+if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=\Gazelle\Text::float($RequestsFilled)?>">Requests
           filled: <?=$RequestRank === false ? 'Server busy' : \Gazelle\Text::float($RequestRank)?>
         </li>
         <?php
-  }
-  if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
+}
+if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
@@ -378,21 +378,21 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         </li>
         <?php
         }
-  if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
+if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
         <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : \Gazelle\Text::float($OverallRank)?></strong>
         </li>
         <?php } ?>
       </ul>
     </div>
     <?php
-           if (check_perms('users_view_ips', $Class)) {
-               $app->dbOld->query("
+         if (check_perms('users_view_ips', $Class)) {
+             $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
         WHERE uid = '$userId'
           AND IP != ''");
-               list($TrackerIPs) = $app->dbOld->next_record();
-           }
+             list($TrackerIPs) = $app->dbOld->next_record();
+         }
 ?>
     <div class="box box_info box_userinfo_history">
       <div class="head colhead_dark">History</div>
@@ -407,13 +407,13 @@ if (check_perms('users_view_ips', $Class)) {
         <?php
         }
 }
-     if (check_perms('users_mod', $Class)) {
-         ?>
+if (check_perms('users_mod', $Class)) {
+    ?>
         <li>Stats: N/A <a
             href="userhistory.php?action=stats&amp;userid=<?=$userId?>"
             class="brackets">View</a></li>
         <?php
-     } ?>
+} ?>
       </ul>
     </div>
 
@@ -902,18 +902,18 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
       }
-  if (check_perms('users_edit_titles')) {
-      ?>
+    if (check_perms('users_edit_titles')) {
+        ?>
       <tr>
         <td class="label">Custom title:</td>
         <td><input type="text" class="wide_input_text" name="Title"
             value="<?=\Gazelle\Text::esc($CustomTitle)?>" /></td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_promote_below', $Class) || check_perms('users_promote_to', $Class - 1)) {
-      ?>
+    if (check_perms('users_promote_below', $Class) || check_perms('users_promote_to', $Class - 1)) {
+        ?>
       <tr>
         <td class="label">Primary class:</td>
         <td>
@@ -951,10 +951,10 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_give_donor')) {
-      ?>
+    if (check_perms('users_give_donor')) {
+        ?>
       <tr>
         <td class="label">Donor:</td>
         <td><input type="checkbox" name="Donor" <?php if ($Donor == 1) { ?> checked="checked"
@@ -962,21 +962,21 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <?php
-  }
-  if (check_perms('users_promote_below') || check_perms('users_promote_to')) { ?>
+    }
+    if (check_perms('users_promote_below') || check_perms('users_promote_to')) { ?>
       <tr>
         <td class="label">Secondary classes:</td>
         <td>
           <?php
-    $app->dbOld->query("
+      $app->dbOld->query("
       SELECT p.ID, p.Name, l.UserID
       FROM permissions AS p
         LEFT JOIN users_levels AS l ON l.PermissionID = p.ID AND l.UserID = '$userId'
       WHERE p.Secondary = 1
       ORDER BY p.Name");
-      $i = 0;
-      while (list($PermID, $PermName, $IsSet) = $app->dbOld->next_record()) {
-          $i++; ?>
+        $i = 0;
+        while (list($PermID, $PermName, $IsSet) = $app->dbOld->next_record()) {
+            $i++; ?>
           <input type="checkbox" id="perm_<?=$PermID?>"
             name="secondary_classes[]" value="<?=$PermID?>" <?php if ($IsSet) { ?> checked="checked"
           <?php } ?> />&nbsp;<label
@@ -985,12 +985,12 @@ if (check_perms('users_mod', $Class)) { ?>
           <?php if ($i % 3 == 0) {
               echo "\t\t\t\t<br>\n";
           }
-      } ?>
+        } ?>
         </td>
       </tr>
       <?php }
-  if (check_perms('users_make_invisible')) {
-      ?>
+    if (check_perms('users_make_invisible')) {
+        ?>
       <tr>
         <td class="label">Visible in peer lists:</td>
         <td><input type="checkbox" name="Visible" <?php if ($Visible == 1) { ?> checked="checked"
@@ -998,10 +998,10 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_edit_ratio', $Class) || (check_perms('users_edit_own_ratio') && $userId == $user['ID'])) {
-      ?>
+    if (check_perms('users_edit_ratio', $Class) || (check_perms('users_edit_own_ratio') && $userId == $user['ID'])) {
+        ?>
       <tr>
         <td class="label tooltip" title="Upload amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
           Uploaded:</td>
@@ -1078,20 +1078,20 @@ if (!$DisablePoints) {
         </td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_edit_invites')) {
-      ?>
+    if (check_perms('users_edit_invites')) {
+        ?>
       <tr>
         <td class="label tooltip" title="Number of invites">Invites:</td>
         <td><input type="text" size="5" name="Invites"
             value="<?=$Invites?>" /></td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('admin_manage_fls') || (check_perms('users_mod') && $isOwnProfile)) {
-      ?>
+    if (check_perms('admin_manage_fls') || (check_perms('users_mod') && $isOwnProfile)) {
+        ?>
       <tr>
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
           remark:</td>
@@ -1099,10 +1099,10 @@ if (!$DisablePoints) {
             value="<?=\Gazelle\Text::esc($SupportFor)?>" /></td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_edit_reset_keys')) {
-      ?>
+    if (check_perms('users_edit_reset_keys')) {
+        ?>
       <tr>
         <td class="label">Reset:</td>
         <td>
@@ -1118,10 +1118,10 @@ if (!$DisablePoints) {
         </td>
       </tr>
       <?php
-  }
+    }
 
-  if (check_perms('users_edit_password')) {
-      ?>
+    if (check_perms('users_edit_password')) {
+        ?>
       <tr>
         <td class="label">New password:</td>
         <td>
@@ -1131,7 +1131,7 @@ if (!$DisablePoints) {
         </td>
       </tr>
       <?php
-  }
+    }
 
     if (check_perms('users_edit_badges')) {
         ?>
@@ -1139,15 +1139,15 @@ if (!$DisablePoints) {
         <td class="label">Badges Owned:</td>
         <td>
           <?php
-    $AllBadges = Badges::getAllBadges();
+    $AllBadges = Gazelle\Badges::getAllBadges();
         $UserBadgeIDs = [];
-        foreach (array_keys(Badges::getBadges($userId)) as $b) {
+        foreach (array_keys(Gazelle\Badges::getBadges($userId)) as $b) {
             $UserBadgeIDs[] = $b;
         }
         $i = 0;
         foreach (array_keys($AllBadges) as $BadgeID) {
             ?><input type="checkbox" name="badges[]" class="badge_checkbox"
-            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Badges::displayBadge($BadgeID)?>
+            value="<?=$BadgeID?>" <?=(in_array($BadgeID, $UserBadgeIDs)) ? " checked" : ""?>/><?=Gazelle\Badges::displayBadge($BadgeID)?>
           <?php $i++;
             if ($i % 8 == 0) {
                 echo "<br>";
@@ -1318,8 +1318,8 @@ if (!$DisablePoints) {
           }
       }
 
-  if (check_perms('users_disable_any')) {
-      ?>
+    if (check_perms('users_disable_any')) {
+        ?>
       <tr>
         <td class="label">Account:</td>
         <td>
@@ -1366,7 +1366,7 @@ if (!$DisablePoints) {
       </tr>
 
       <?php
-  } ?>
+    } ?>
     </table>
     <?php if (check_perms('users_logout')) { ?>
     <table class="box skeletonFix" id="session_box">

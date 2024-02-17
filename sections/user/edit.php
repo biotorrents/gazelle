@@ -57,7 +57,7 @@ foreach ($webAuthnKeys as $key => $value) {
 
 
 # badges
-$badges = Badges::getBadges($app->user->core["id"]);
+$badges = Gazelle\Badges::getBadges($app->user->core["id"]);
 
 # get the stylesheets
 $query = "

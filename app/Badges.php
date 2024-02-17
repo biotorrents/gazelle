@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Badges
+ * Gazelle\Badges
  */
+
+namespace Gazelle;
 
 class Badges
 {

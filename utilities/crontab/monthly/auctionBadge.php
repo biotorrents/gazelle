@@ -19,7 +19,7 @@ if (!$row) {
 }
 
 # award the badge and send a PM
-Badges::awardBadge($row["userId"], $app->env->auctionBadgeId);
+Gazelle\Badges::awardBadge($row["userId"], $app->env->auctionBadgeId);
 Misc::send_pm($row["userId"], 0, "You won the auction badge", "Congratulations! You won this month's badge auction.");
 
 # clean up

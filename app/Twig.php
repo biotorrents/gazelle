@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * \Twig
+ * Gazelle\Twig
  *
  * Converted to a singleton class.
  * One instance should only ever exist,
@@ -278,13 +278,13 @@ class Twig extends \Twig\Environment
 
         # Badges::hasBadge
         $twig->addFunction(new \Twig\TwigFunction("hasBadge", function ($userId, $badgeId) {
-            return boolval(\Badges::hasBadge($userId, $badgeId));
+            return boolval(Badges::hasBadge($userId, $badgeId));
         }));
 
         # Badges::displayBadge
         $twig->addFunction(new \Twig\TwigFunction("displayBadge", function ($badgeId, $tooltip = true) {
             return new \Twig\Markup(
-                \Badges::displayBadge($badgeId, $tooltip),
+                Badges::displayBadge($badgeId, $tooltip),
                 "UTF-8"
             );
         }));
@@ -292,7 +292,7 @@ class Twig extends \Twig\Environment
         # Badges::badgeDescription
         $twig->addFunction(new \Twig\TwigFunction("badgeDescription", function ($badgeId) {
             return new \Twig\Markup(
-                \Badges::badgeDescription($badgeId),
+                Badges::badgeDescription($badgeId),
                 "UTF-8"
             );
         }));

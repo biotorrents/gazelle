@@ -679,7 +679,7 @@ class User
 
         # badges
         if ($showBadges) {
-            $badgeHtml = Badges::displayBadges(Badges::getDisplayedBadges($userId));
+            $badgeHtml = Gazelle\Badges::displayBadges(Gazelle\Badges::getDisplayedBadges($userId));
         } else {
             $badgeHtml = "";
         }
