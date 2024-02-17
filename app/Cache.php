@@ -610,31 +610,4 @@ class Cache # extends \Redis
             $this->handleError($e);
         }
     }
-
-
-    /** query locks (legacy) */
-
-
-    /**
-     * setQueryLock
-     *
-     * todo: remove this method
-     */
-    public function setQueryLock(string $lockName): bool
-    {
-        return true;
-        #return $this->set("queryLock:{$lockName}", true, $this->cacheDuration);
-    }
-
-
-    /**
-     * clearQueryLock
-     *
-     * todo: remove this method
-     */
-    public function clearQueryLock(string $lockName): bool
-    {
-        return true;
-        #return $this->delete("queryLock:{$lockName}");
-    }
 } # class

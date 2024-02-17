@@ -216,8 +216,8 @@ class Esc
      */
     public static function passphrase(mixed $unsafe): string
     {
-        $safe = Text::utf8($unsafe); # don't use htmlspecialchars
-        $safe = str_replace("\0", "", $safe);
+        $safe = Text::utf8($unsafe); # don't use htmlspecialchars but enforce utf8
+        $safe = str_replace("\0", "", $safe); # strip null bytes (blowfish truncates)
 
         return strval($safe);
     }
