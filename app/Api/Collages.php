@@ -27,7 +27,7 @@ class Collages extends Base
             $ids = array_column($ids, "id");
 
             foreach ($ids as $id) {
-                $data[] = new \Collages($id);
+                $data[] = new \Gazelle\Collages($id);
             }
 
             self::success(200, $data);
@@ -56,7 +56,7 @@ class Collages extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         try {
-            $data = new \Collages($identifier);
+            $data = new \Gazelle\Collages($identifier);
 
             if (!$data->uuid) {
                 throw new \Exception("collage not found");

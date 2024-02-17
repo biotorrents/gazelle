@@ -22,7 +22,7 @@ if (!is_numeric($identifier)) {
 }
 
 # prevent deleting the wiki index
-if ($identifier === 1) {
+if ($identifier === \Gazelle\Wiki::$indexArticleId) {
     $app->error("You can't delete the main wiki article");
 }
 
@@ -37,7 +37,7 @@ if ($app->user->cant("admin_manage_wiki")) {
     $app->error(403);
 }
 
-if ($article->minClassEdit > $app->user->extra["Class"]) {
+if ($article->attributes->minClassEdit > $app->user->extra["Class"]) {
     $app->error(403);
 }
 

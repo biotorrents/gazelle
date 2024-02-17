@@ -46,6 +46,7 @@
       body: window.notebookContent,
       minClassRead: $("#minClassRead").val(),
       minClassEdit: $("#minClassEdit").val(),
+      authorId: $(event.target).data("authorid"),
     };
 
     // remove the body if it's empty

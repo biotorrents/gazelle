@@ -84,13 +84,13 @@
 
 	{# category #}
     <td class="center">
-	    {{ categories[item.categoryId] }}
+	    {{ categories[item.attributes.categoryId] }}
       {# <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$app->env->collageCategories[(int)$CategoryID]?></a> #}
     </td>
 
     <td>
       <a class="torrentTitle" id="collage_name"
-        href="collages.php?id={{ item.id }}">{{ item.title }}</a>
+        href="collages.php?id={{ item.id }}">{{ item.attributes.title }}</a>
 		{#
       <?php if ($BookmarkView) { ?>
       <span class="u-pull-right">
@@ -101,25 +101,25 @@
       <?php } ?>
 	  #}
 
-    {% if item.tagList is not empty %}
-      <div class="tooltip tagList" title="Tags">{{ item.tagList }}</div>
+    {% if item.attributes.tagList is not empty %}
+      <div class="tooltip tagList" title="Tags">{{ item.attributes.tagList }}</div>
     {% endif %}
     </td>
 
 	{# torrent count #}
-    <td class="number_column">{{ item.torrentCount }}</td>
+    <td class="number_column">{{ item.attributes.torrentCount }}</td>
 
 		{# subscriber count #}
-    <td class="number_column">{{ item.subscriberCount }}</td>
+    <td class="number_column">{{ item.attributes.subscriberCount }}</td>
 
 	{# last update #}
-	{% if item.updatedAt %}
-    <td class="nobr">{{ item.updatedAt|relativeTime }}</td>
+	{% if item.attributes.updatedAt %}
+    <td class="nobr">{{ item.attributes.updatedAt|relativeTime }}</td>
 	{% else %}
-	    <td class="nobr">{{ item.createdAt|relativeTime }}</td>
+	    <td class="nobr">{{ item.attributes.createdAt|relativeTime }}</td>
 		{% endif %}
 
-    <td>{{ item.userId|formatUsername }}</td>
+    <td>{{ item.attributes.userId|formatUsername }}</td>
   </tr>
 
 

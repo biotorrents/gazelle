@@ -6,7 +6,7 @@ declare(strict_types=1);
 /**
  * Gazelle\ObjectCrud
  *
- * A simple way to perform CRUD operations on core site objects without going "full Eloquent".
+ * A simple way to perform CRUD operations on core site objects without going "full Eloquent."
  * This class is intended to be extended by other classes that represent a specific object.
  */
 
@@ -45,10 +45,15 @@ abstract class ObjectCrud
         $upsert = $app->dbNew->upsert($this->type, $transform);
 
         # map database => display
+        $attributes = [];
         $transform = $this->databaseToDisplay($upsert);
+
         foreach ($transform as $key => $value) {
-            $this->{$key} = $value;
+            $attributes[$key] = $value;
         }
+
+        # use a RecursiveCollection not an array
+        $this->attributes = new RecursiveCollection($attributes);
     }
 
 
@@ -77,11 +82,20 @@ abstract class ObjectCrud
             return;
         }
 
+        # set the id
+        $this->id = $row["id"];
+        unset($row["id"]);
+
         # map database => display
+        $attributes = [];
         $transform = $this->databaseToDisplay($row);
+
         foreach ($transform as $key => $value) {
-            $this->{$key} = $value;
+            $attributes[$key] = $value;
         }
+
+        # use a RecursiveCollection not an array
+        $this->attributes = new RecursiveCollection($attributes);
     }
 
 
@@ -103,14 +117,6 @@ abstract class ObjectCrud
         # add the identifier to the data
         $column = $app->dbNew->determineIdentifier($identifier);
         $transform[$column] = $identifier;
-
-        /*
-        # SQLSTATE[42000]: Syntax error or access violation: 1110 Column 'ID' specified twice
-        $transform["id"] ??= null;
-        if ($transform["id"]) {
-            unset($transform["id"]);
-        }
-        */
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->type, $transform);
@@ -172,12 +178,15 @@ abstract class ObjectCrud
         $app = App::go();
 
         foreach ($this->maps as $key => $value) {
-            $data[$key] = $this->$value;
+            $data[$key] = $this->attributes->$value;
         }
 
         $upsert = $app->dbNew->upsert($this->type, $data);
         return boolval($upsert);
     }
+
+
+    /** */
 
 
     /**

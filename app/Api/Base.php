@@ -192,19 +192,8 @@ class Base
     {
         $app = \Gazelle\App::go();
 
-        # https://jsonapi.org/format/1.2/#document-resource-objects
-        $id = $data->id ?? null;
-        unset($data->id);
-
-        $type = $data->type ?? null;
-        unset($data->type);
-
         $response = [
-            "data" => [
-                "id" => $id,
-                "type" => $type,
-                "attributes" => $data,
-            ],
+            "data" => $data,
 
             "meta" => [
                 "id" => $app->dbNew->stringUuid($app->dbNew->uuid()),

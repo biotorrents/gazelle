@@ -9,7 +9,7 @@ declare(strict_types=1);
  * main collage search interface
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # it's actually way better if this uses GET
 $get = Http::request("get");
@@ -138,7 +138,7 @@ $collageIds = array_slice($collageIds, $pagination["offset"], $pagination["pageS
 
 $collages = [];
 foreach ($collageIds as $collageId) {
-    $collages[] = new Collages($collageId);
+    $collages[] = new Gazelle\Collages($collageId);
 }
 
 $app->debug["time"]->stopMeasure("browse", "get collages");

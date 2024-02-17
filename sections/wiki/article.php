@@ -25,16 +25,16 @@ if (!$article->id) {
 }
 
 # make sure it's a valid starboard notebook
-$good = preg_match("/{$app->env->regexStarboard}/", strval($article->body));
+$good = preg_match("/{$app->env->regexStarboard}/", strval($article->attributes->body));
 if (!$good) {
     # default to markdown
-    $article->body = "# %% [markdown]\n" . $article->body;
+    $article->attributes->body = "# %% [markdown]\n" . $article->attributes->body;
     $article->save();
 }
 
 # twig template
 $app->twig->display("wiki/article.twig", [
-    "title" => $article->title,
+    "title" => $article->attributes->title,
     "sidebar" => true,
     "js" => ["wiki"],
     "article" => $article,

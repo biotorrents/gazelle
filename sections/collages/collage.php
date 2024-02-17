@@ -14,9 +14,9 @@ $get = Http::get();
 $id = $get["id"];
 
 # collage details
-$collage = new Collages($id);
+$collage = new Gazelle\Collages($id);
 
-if (!$collage->uuid) {
+if (!$collage->id) {
     $app->error(404);
 }
 
@@ -26,7 +26,7 @@ $stats = $collage->readStats();
 
 # twig template
 $app->twig->display("collages/details.twig", [
-  "title" => $collage->title,
+  "title" => $collage->attributes->title,
   "sidebar" => true,
   "collage" => $collage,
   "torrentGroups" => $torrentGroups,
@@ -80,7 +80,7 @@ if ($Deleted === '1') {
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->core['id'])) === false) {
+if (($CollageSubscriptions = $app->cache->get('collage_subs_user_' . $app->user->core['id'])) === false) {
     $app->dbOld->query("
     SELECT
       `CollageID`
@@ -91,7 +91,7 @@ if (($CollageSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->c
     ");
 
     $CollageSubscriptions = $app->dbOld->collect(0);
-    $app->cache->set('collage_subs_user_'.$app->user->core['id'], $CollageSubscriptions, 0);
+    $app->cache->set('collage_subs_user_' . $app->user->core['id'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
@@ -101,13 +101,13 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
     SET
       `LastVisit` = NOW()
     WHERE
-      `UserID` = ".$app->user->core['id']."
+      `UserID` = " . $app->user->core['id'] . "
       AND `CollageID` = $CollageID
     ");
-    $app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
+    $app->cache->delete('collage_subs_user_new_' . $app->user->core['id']);
 }
 
-include serverRoot.'/sections/collages/torrent_collage.php';
+include serverRoot . '/sections/collages/torrent_collage.php';
 
 if (isset($SetCache)) {
     $CollageData = array(

@@ -3,10 +3,10 @@
 {% block content %}
 
 	<h2>
-  {% if collage.isLocked %}
-    <span class="locked">{{ collage.title }}</span>
+  {% if collage.attributes.isLocked %}
+    <span class="locked">{{ collage.attributes.title }}</span>
   {% else %}
-    {{ collage.title }}
+    {{ collage.attributes.title }}
   {% endif %}
   </h2>
 
@@ -14,7 +14,7 @@
   <section>
     <h3 class="hidden">Description</h3>
 
-    {{ collage.description|parse }}
+    {{ collage.attributes.description|parse }}
     </section>
 
 
@@ -108,7 +108,7 @@ if ($CollageCovers != 0) { ?>
 }
 ?>
 
-    {{ collage.description|parse }}
+    {{ collage.attributes.description|parse }}
     </section>
     #}
 

@@ -27,7 +27,7 @@ $tagList = [];
 # are we editing an existing collage?
 if ($collageId) {
     try {
-        $collage = new Collages($collageId);
+        $collage = new Gazelle\Collages($collageId);
         if (!$collage->id) {
             throw new Exception("The requested collage doesn't exist");
         }
@@ -64,7 +64,7 @@ if ($collageId) {
 # handle a post request
 if (!empty($post)) {
     $identifier = $post["id"] ?? null;
-    $collage = new Collages($identifier);
+    $collage = new Gazelle\Collages($identifier);
 
     $collage->updateOrCreate($post);
 }

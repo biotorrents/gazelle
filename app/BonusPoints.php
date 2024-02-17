@@ -635,7 +635,7 @@ class BonusPoints
         $app = App::go();
 
         # create a personal collage (uncaught exception intended)
-        $collageData = \Collages::createPersonal();
+        $collageData = Collages::createPersonal();
 
         # deduct the bonus points
         $this->deductPoints($this->personalCollageCost);

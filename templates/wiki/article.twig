@@ -4,15 +4,15 @@
 {% block content %}
 
 <section>
-    {% if can("site_edit_wiki") and user.extra.Class >= article.minClassEdit %}
+    {% if can("site_edit_wiki") and user.extra.Class >= article.attributes.minClassEdit %}
         <h2>
-            <input type="text" id="articleTitle" maxlength="255" style="width: 100%;" value="{{ article.title }}">
+            <input type="text" id="articleTitle" maxlength="255" style="width: 100%;" value="{{ article.attributes.title }}">
         </h2>
     {% else %}
-        <h2>{{ article.title }}</h2>
+        <h2>{{ article.attributes.title }}</h2>
     {% endif %}
 
-    {% set vars = { "id": article.id, "content": article.body } %}
+    {% set vars = { "id": article.id, "content": article.attributes.body } %}
     {% include "_base/starboardNotebook.twig" with vars %}
 </section>
 

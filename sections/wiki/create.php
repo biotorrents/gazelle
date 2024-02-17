@@ -20,7 +20,7 @@ $article->hydrateNewArticle();
 
 # twig template
 $app->twig->display("wiki/article.twig", [
-    "title" => $article->title,
+    "title" => $article->attributes->title,
     "sidebar" => true,
     "js" => ["wiki"],
     "article" => $article,

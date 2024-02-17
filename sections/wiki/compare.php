@@ -55,7 +55,7 @@ $diff =  $differ->diff($secondBody["Body"], $firstBody["Body"]);
 
 # twig template
 $app->twig->display("wiki/compare.twig", [
-    "title" => "Revision history for {$article->title}",
+    "title" => "Revision history for {$article->attributes->title}",
     "sidebar" => true,
     "js" => ["wiki"],
 

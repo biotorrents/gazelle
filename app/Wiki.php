@@ -15,21 +15,10 @@ namespace Gazelle;
 
 class Wiki extends ObjectCrud
 {
-    # database table
-    public string $type = "wiki_articles";
-
-    # object properties
-    public $uuid;
-    public $id;
-    public $revision;
-    public $title;
-    public $body;
-    public $minClassRead;
-    public $minClassEdit;
-    public $authorId;
-    public $createdAt;
-    public $updatedAt;
-    public $deletedAt;
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?int $id = null; # primary key
+    public string $type = "wiki_articles"; # database table
+    public ?RecursiveCollection $attributes = null;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -71,7 +60,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -83,17 +72,17 @@ class Wiki extends ObjectCrud
 
         $variables = [
             "id" => $this->id,
-            "revision" => $this->revision,
-            "title" => $this->title,
-            "body" => $this->body,
-            "date" => $this->updatedAt ?? $this->createdAt,
-            "author" => $this->authorId,
+            "revision" => $this->attributes->revision,
+            "title" => $this->attributes->title,
+            "body" => $this->attributes->body,
+            "date" => $this->attributes->updatedAt ?? $this->attributes->createdAt,
+            "author" => $this->attributes->authorId,
         ];
 
         $app->dbNew->do($query, $variables);
 
         # then, update the article
-        $data["revision"] = $this->revision + 1;
+        $data["revision"] = $this->attributes->revision + 1;
         $data["author"] = $app->user->core["id"];
 
         parent::update($this->id, $data);
@@ -115,7 +104,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -125,7 +114,7 @@ class Wiki extends ObjectCrud
         }
 
         # write to the site log
-        \Misc::write_log("the wiki article {$identifier} with the title {$this->title} was deleted by {$app->user->core["username"]}");
+        \Misc::write_log("the wiki article {$identifier} with the title {$this->attributes->title} was deleted by {$app->user->core["username"]}");
 
         # delete aliases and revisions
         $query = "delete from wiki_aliases where articleId = ?";
@@ -177,7 +166,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -215,7 +204,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -280,7 +269,7 @@ class Wiki extends ObjectCrud
     {
         $app = App::go();
 
-        if (!empty($this->id) || !empty($this->uuid)) {
+        if ($this->id) {
             throw new Exception("article already exists");
         }
 
@@ -320,11 +309,20 @@ EOT;
 
         # set some important defaults
         $this->id = $app->dbNew->shortUuid();
-        $this->uuid = $app->dbNew->uuid();
-        $this->revision = 1;
-        $this->title = "What will you call your new article?";
-        $this->body = $defaultBodyText;
-        $this->createdAt = $app->dbNew->now();
+
+        $attributes = [
+            "uuid" => $app->dbNew->uuid(),
+            "revision" => 1,
+            "title" => "What will you call your new article?",
+            "body" => $defaultBodyText,
+            "minClassRead" => 2,
+            "minClassEdit" => 2,
+            "authorId" => $app->user->core["id"],
+            "createdAt" => $app->dbNew->now(),
+            "updatedAt" => $app->dbNew->now(),
+        ];
+
+        $this->attributes = new RecursiveCollection($attributes);
 
         # return the object
         return $this;
@@ -411,7 +409,7 @@ EOT;
             $item = new self($row["id"]);
 
             # skip soft deletes or bad data
-            if (empty($item->id || !empty($item->deletedAt))) {
+            if (empty($item->id || !empty($this->attributes->deletedAt))) {
                 continue;
             }
 

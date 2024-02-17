@@ -4,33 +4,17 @@ declare(strict_types=1);
 
 
 /**
- * Collages
+ * Gazelle\Collages
  */
 
-class Collages extends \Gazelle\ObjectCrud
-{
-    # database table
-    public string $type = "collages";
+namespace Gazelle;
 
-    # object properties
-    public $uuid;
-    public $id;
-    public $title;
-    public $description;
-    public $userId;
-    public $torrentCount;
-    #public $deletedAt;
-    public $isLocked;
-    public $categoryId;
-    public $tagList;
-    public $maxGroups;
-    public $maxGroupsPerUser;
-    public $isFeatured;
-    public $subscriberCount;
-    #public $updatedAt;
-    public $createdAt;
-    public $updatedAt;
-    public $deletedAt;
+class Collages extends ObjectCrud
+{
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?int $id = null; # primary key
+    public string $type = "collages"; # database table
+    public ?RecursiveCollection $attributes = null;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -67,7 +51,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public static function addSubscription(int $collageId): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "update collages set subscribers = subscribers + 1 where id = ?";
         $app->dbNew->do($query, [$collageId]);
@@ -82,7 +66,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public static function subtractSubscription(int $collageId): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select subscribers from collages where id = ?";
         $subscriberCount = $app->dbNew->single($query, [$collageId]) ?? 0;
@@ -103,7 +87,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public function isSubscribed(): bool
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select 1 from users_collage_subs where userId = ? and collageId = ?";
         $isSubscribed = $app->dbNew->single($query, [ $app->user->core["id"], $this->id ]);
@@ -121,7 +105,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public static function createPersonal(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
         $collageCount = $app->dbNew->single($query, [$app->user->core["id"], 0, 0]) ?? 0;
@@ -164,12 +148,12 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public function torrentGroups(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select groupId from collages_torrents where collageId = ?";
         $groupIds = $app->dbNew->column($query, [$this->id]);
 
-        return Torrents::get_groups($groupIds);
+        return \Torrents::get_groups($groupIds);
     }
 
 
@@ -184,7 +168,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public function readStats(?int $limit = 10): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = $this->cachePrefix . __FUNCTION__ . "-collageId-{$this->id}";
@@ -220,7 +204,7 @@ class Collages extends \Gazelle\ObjectCrud
         # loop through it
         foreach ($ref as $row) {
             # load the torrent group
-            $torrentGroup = \Gazelle\Models\Group::find($row["groupId"]);
+            $torrentGroup = Models\Group::find($row["groupId"]);
 
             # get the topCreators: needs refactor after creatorObjects
             foreach ($torrentGroup->creators as $creator) {
@@ -273,7 +257,7 @@ class Collages extends \Gazelle\ObjectCrud
      */
     public function addCreator($collageId, $creatorId): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # sorting info
         $query = "select max(sort) from collages_artists where collageId = ?";
