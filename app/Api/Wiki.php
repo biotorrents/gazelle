@@ -47,9 +47,10 @@ class Wiki extends Base
     /**
      * update
      *
+     * @param int|string $identifier
      * @return void
      */
-    public static function update(): void
+    public static function update(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["update"]);
 
@@ -60,9 +61,10 @@ class Wiki extends Base
     /**
      * delete
      *
+     * @param int|string $identifier
      * @return void
      */
-    public static function delete(): void
+    public static function delete(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
 

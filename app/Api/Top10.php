@@ -13,6 +13,9 @@ class Top10 extends Base
 {
     /**
      * torrents
+     *
+     * @param ?int $limit
+     * @return void
      */
     public static function torrents(?int $limit = null): void
     {
@@ -72,6 +75,9 @@ class Top10 extends Base
 
     /**
      * tags
+     *
+     * @param ?int $limit
+     * @return void
      */
     public static function tags(?int $limit = null): void
     {
@@ -94,6 +100,9 @@ class Top10 extends Base
 
     /**
      * users
+     *
+     * @param ?int $limit
+     * @return void
      */
     public static function users(?int $limit = null): void
     {

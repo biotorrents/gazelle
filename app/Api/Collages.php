@@ -13,6 +13,8 @@ class Collages extends Base
 {
     /**
      * browse
+     *
+     * @return void
      */
     public static function browse(): void
     {
@@ -39,6 +41,8 @@ class Collages extends Base
 
     /**
      * create
+     *
+     * @return void
      */
     public static function create(): void
     {
@@ -50,6 +54,9 @@ class Collages extends Base
 
     /**
      * read
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public static function read(int|string $identifier): void
     {
@@ -71,8 +78,11 @@ class Collages extends Base
 
     /**
      * update
+     *
+     * @param int|string $identifier
+     * @return void
      */
-    public static function update(): void
+    public static function update(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["update"]);
 
@@ -82,8 +92,11 @@ class Collages extends Base
 
     /**
      * delete
+     *
+     * @param int|string $identifier
+     * @return void
      */
-    public static function delete(): void
+    public static function delete(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
 

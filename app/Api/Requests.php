@@ -13,6 +13,8 @@ class Requests extends Base
 {
     /**
      * browse
+     *
+     * @return void
      */
     public static function browse(): void
     {
@@ -35,6 +37,8 @@ class Requests extends Base
 
     /**
      * create
+     *
+     * @return void
      */
     public static function create(): void
     {
@@ -46,14 +50,16 @@ class Requests extends Base
 
     /**
      * read
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public static function read(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         try {
-            $item = new \Requests();
-            $data = $item->read($identifier);
+            $data = new \Gazelle\Requests($identifier);
 
             self::success(200, $data);
         } catch (\Throwable $e) {
@@ -64,8 +70,11 @@ class Requests extends Base
 
     /**
      * update
+     *
+     * @param int|string $identifier
+     * @return void
      */
-    public static function update(): void
+    public static function update(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["update"]);
 
@@ -75,8 +84,11 @@ class Requests extends Base
 
     /**
      * delete
+     *
+     * @param int|string $identifier
+     * @return void
      */
-    public static function delete(): void
+    public static function delete(int|string $identifier): void
     {
         self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
 

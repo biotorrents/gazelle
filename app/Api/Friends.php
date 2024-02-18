@@ -15,6 +15,8 @@ class Friends extends Base
 {
     /**
      * create
+     *
+     * @return void
      */
     public static function create(): void
     {
@@ -40,6 +42,9 @@ class Friends extends Base
 
     /**
      * read
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public static function read(int|string $identifier = null): void
     {
@@ -61,6 +66,9 @@ class Friends extends Base
 
     /**
      * update
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public static function update(int|string $identifier): void
     {
@@ -87,6 +95,9 @@ class Friends extends Base
 
     /**
      * delete
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public static function delete(int|string $identifier): void
     {

@@ -13,6 +13,11 @@ class BonusPoints extends Base
 {
     /**
      * checkout
+     *
+     * Completes a bonus points transaction.
+     *
+     * @param string $item
+     * @return void
      */
     public static function checkout(string $item): void
     {

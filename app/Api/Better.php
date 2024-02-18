@@ -13,6 +13,11 @@ class Better extends Base
 {
     /**
      * badFolders
+     *
+     * Gets torrent groups with bad folder names.
+     *
+     * @param ?bool $snatchedOnly
+     * @return void
      */
     public static function badFolders(?bool $snatchedOnly = false): void
     {
@@ -32,6 +37,11 @@ class Better extends Base
 
     /**
      * badTags
+     *
+     * Gets torrent groups with bad tags.
+     *
+     * @param ?bool $snatchedOnly
+     * @return void
      */
     public static function badTags(?bool $snatchedOnly = false): void
     {
@@ -51,6 +61,11 @@ class Better extends Base
 
     /**
      * missingCitations
+     *
+     * Gets torrent groups with missing citations.
+     *
+     * @param ?bool $snatchedOnly
+     * @return void
      */
     public static function missingCitations(?bool $snatchedOnly = false): void
     {
@@ -70,6 +85,11 @@ class Better extends Base
 
     /**
      * missingPictures
+     *
+     * Gets torrent groups with missing pictures.
+     *
+     * @param ?bool $snatchedOnly
+     * @return void
      */
     public static function missingPictures(?bool $snatchedOnly = false): void
     {
@@ -89,6 +109,11 @@ class Better extends Base
 
     /**
      * singleSeeder
+     *
+     * Gets torrent groups with a single seeder.
+     *
+     * @param ?bool $snatchedOnly
+     * @return void
      */
     public static function singleSeeder(?bool $snatchedOnly = false): void
     {

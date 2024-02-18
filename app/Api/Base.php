@@ -84,6 +84,8 @@ class Base
      *
      * Checks a frontend key against a backend one.
      * The key is hash(sessionId . siteApiSecret).
+     *
+     * @return void
      */
     public static function validateFrontendHash(): void
     {
@@ -97,7 +99,6 @@ class Base
         # no header present
         if (empty($server["HTTP_AUTHORIZATION"])) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "no authorization header present");
         }
 
         # https://tools.ietf.org/html/rfc6750
@@ -139,6 +140,10 @@ class Base
      * validatePermissions
      *
      * Checks a token's permissions against a list of required permissions.
+     *
+     * @param int $tokenId the token's id
+     * @param array $permissions the required permissions
+     * @return void
      */
     public static function validatePermissions(int $tokenId, array $permissions = []): void
     {
@@ -177,6 +182,7 @@ class Base
      *
      * @param $response HTTP success code (usually 2xx)
      * @param $data the data set in the JSON response
+     * @return void
      *
      * @see https://jsonapi.org/format/#document-structure
      */
@@ -214,6 +220,7 @@ class Base
      *
      * @param $response HTTP error code (usually 4xx)
      * @param string $data the error set in the JSON response
+     * @return void
      *
      * @see https://jsonapi.org/format/#errors
      */
@@ -248,8 +255,12 @@ class Base
 
     /**
      * debug
+     *
+     * Gathers various debug information.
+     *
+     * @return array
      */
-    private static function debug()
+    private static function debug(): array
     {
         $app = \Gazelle\App::go();
 
