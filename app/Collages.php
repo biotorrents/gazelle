@@ -15,6 +15,7 @@ class Collages extends ObjectCrud
     public ?int $id = null; # primary key
     public string $type = "collages"; # database table
     public ?RecursiveCollection $attributes = null;
+    public ?RecursiveCollection $relationships = null;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -24,7 +25,7 @@ class Collages extends ObjectCrud
         "Description" => "description",
         "UserID" => "userId",
         "NumTorrents" => "torrentCount",
-        "Deleted" => "deletedAt",
+        #"Deleted" => "deletedAt",
         "Locked" => "isLocked",
         "CategoryID" => "categoryId",
         "TagList" => "tagList",
@@ -32,7 +33,7 @@ class Collages extends ObjectCrud
         "MaxGroupsPerUser" => "maxGroupsPerUser",
         "Featured" => "isFeatured",
         "Subscribers" => "subscriberCount",
-        "updated" => "updatedAt",
+        #"updated" => "updatedAt",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -41,6 +42,21 @@ class Collages extends ObjectCrud
     # cache settings
     private string $cachePrefix = "collages:";
     private string $cacheDuration = "1 hour";
+
+
+    /**
+     * relationships
+     */
+    public function relationships(): void
+    {
+        $app = App::go();
+
+        $this->relationships = new RecursiveCollection([
+            "creator" => $app->user->readProfile($this->attributes->userId),
+            #"subscribers" => $this->subscribers(),
+            #"torrentGroups" => $this->torrentGroups(),
+        ]);
+    }
 
 
     /**

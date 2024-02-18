@@ -96,6 +96,11 @@ abstract class ObjectCrud
 
         # use a RecursiveCollection not an array
         $this->attributes = new RecursiveCollection($attributes);
+
+        # check for relationships
+        if (method_exists($this, "relationships")) {
+            $this->relationships(); # method sets $this
+        }
     }
 
 
