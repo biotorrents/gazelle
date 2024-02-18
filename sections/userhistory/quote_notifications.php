@@ -67,7 +67,7 @@ foreach ($Results as $Result) {
 }
 
 $TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
-$Requests = Requests::get_requests($Requests);
+$Requests = \Gazelle\Requests::get_requests($Requests);
 
 //Start printing page
 View::header('Quote Notifications');
@@ -117,7 +117,7 @@ foreach ($Results as $Result) {
         $Request = $Requests[$Result['PageID']];
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
         $Links = 'Request: ';
-        $Links .= Artists::display_artists(Requests::get_artists($Result['PageID'])) . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a> &gt; ";
+        $Links .= Artists::display_artists(\Gazelle\Requests::get_artists($Result['PageID'])) . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a> &gt; ";
         $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '"> Post #' . $Result['PostID'] . '</a>';
     } elseif ($Result['Page'] == 'torrents') {
         if (!isset($TorrentGroups[$Result['PageID']])) {

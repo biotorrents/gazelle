@@ -120,13 +120,13 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 /** request info */
 
 
-# Requests::get_requests
+# \Gazelle\Requests::get_requests
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("requests", "get request data");
 $requestIds = array_column($searchResults, "id");
 $requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
 
-$requestData = Requests::get_requests($requestIds);
+$requestData = \Gazelle\Requests::get_requests($requestIds);
 $app->debug["time"]->stopMeasure("requests", "get request data");
 #!d($requestData);
 
@@ -469,7 +469,7 @@ try {
 } catch (Throwable $e) {
     error($e->getMessage());
 }
-$NumResults = (int)$SphQLResult->get_meta('total_found');
+$NumResults = (int) $SphQLResult->get_meta('total_found');
 if ($NumResults > 0) {
     $SphRequests = $SphQLResult->to_array('id');
     if ($OrderBy === 'random') {
@@ -675,7 +675,7 @@ View::header($Title, 'requests');
         <?php
             } else {
                 $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18
-                $Requests = Requests::get_requests(array_keys($SphRequests));
+                $Requests = \Gazelle\Requests::get_requests(array_keys($SphRequests));
                 foreach ($Requests as $RequestID => $Request) {
                     $SphRequest = $SphRequests[$RequestID];
                     $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
@@ -696,12 +696,12 @@ View::header($Title, 'requests');
 
                     $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
 
-                    $ArtistForm = Requests::get_artists($RequestID);
+                    $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
                     $ArtistLink = Artists::display_artists($ArtistForm, true, true);
                     $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
                     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                        $FullName .= 'data-cover="'.\Gazelle\Images::process($Request['Image']).'" ';
+                        $FullName .= 'data-cover="' . \Gazelle\Images::process($Request['Image']) . '" ';
                     }
 
                     $FullName .= "dir='ltr'>$Title</span></a>";
@@ -711,7 +711,7 @@ View::header($Title, 'requests');
 
                     if (!empty($Request['CatalogueNumber'])) {
                         $Label = '<br>🔑&nbsp;';
-                        $ExtraInfo .= $Label.$Request['CatalogueNumber'];
+                        $ExtraInfo .= $Label . $Request['CatalogueNumber'];
                     }
 
                     if ($ExtraInfo) {
@@ -735,7 +735,7 @@ View::header($Title, 'requests');
     $TagList = [];
                     foreach ($Request['Tags'] as $TagID => $TagName) {
                         $Split = Tags::get_name_and_class($TagName);
-                        $TagList[] = '<a class="'.$Split['class'].'" href="?tags='.$TagName.($BookmarkView ? '&amp;type=requests' : '').'">'.\Gazelle\Text::esc($Split['name']).'</a>';
+                        $TagList[] = '<a class="' . $Split['class'] . '" href="?tags=' . $TagName . ($BookmarkView ? '&amp;type=requests' : '') . '">' . \Gazelle\Text::esc($Split['name']) . '</a>';
                     }
                     $TagList = implode(', ', $TagList); ?>
                     <?=$TagList?>

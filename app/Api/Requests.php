@@ -24,7 +24,7 @@ class Requests extends Base
             $manticore = new \Gazelle\Manticore();
 
             $ids = $manticore->search("requests", $request);
-            $data = Requests::get_requests($ids);
+            $data = \Gazelle\Requests::get_requests($ids);
 
             self::success(200, $data);
         } catch (\Throwable $e) {

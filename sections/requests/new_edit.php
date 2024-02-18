@@ -30,7 +30,7 @@ if ($NewRequest && ($app->user->extra['BytesUploaded'] < 250 * 1024 * 1024 || !c
 
 if (!$NewRequest) {
     if (empty($ReturnEdit)) {
-        $Request = Requests::get_request($RequestID);
+        $Request = \Gazelle\Requests::get_request($RequestID);
         if ($Request === false) {
             error(404);
         }
@@ -44,7 +44,7 @@ if (!$NewRequest) {
         $Image = $Request['Image'];
         $GroupID = $Request['GroupID'];
 
-        $VoteArray = Requests::get_votes_array($RequestID);
+        $VoteArray = \Gazelle\Requests::get_votes_array($RequestID);
         $VoteCount = count($VoteArray['Voters']);
 
         $IsFilled = !empty($Request['TorrentID']);
@@ -57,7 +57,7 @@ if (!$NewRequest) {
             error(403);
         }
 
-        $ArtistForm = Requests::get_artists($RequestID);
+        $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
         $Tags = implode(', ', $Request['Tags']);
     }
 }
@@ -66,7 +66,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
     $app->dbOld->query("
         SELECT Name
         FROM artists_group
-        WHERE artistid = ".$_GET['artistid']."
+        WHERE artistid = " . $_GET['artistid'] . "
         LIMIT 1");
     list($ArtistName) = $app->dbOld->next_record();
     $ArtistForm = array(
@@ -89,7 +89,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
         FROM `torrents_group` AS tg
         JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
         JOIN `tags` AS t ON t.`ID` = tt.`TagID`
-        WHERE tg.`id` = ".$_GET['groupid']);
+        WHERE tg.`id` = " . $_GET['groupid']);
     if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
         $GroupID = trim($_REQUEST['groupid']);
         $CategoryName = $Categories[$CategoryID - 1];

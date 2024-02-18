@@ -760,7 +760,7 @@ if (empty($user['DisableRequests']) && count($Requests) > 0) {
           <td>Bounty</td>
         </tr>
         <?php foreach ($Requests as $Request) {
-            $RequestVotes = Requests::get_votes_array($Request['ID']);
+            $RequestVotes = \Gazelle\Requests::get_votes_array($Request['ID']);
 
             $RequestDesc = substr(explode('\n', $Request['Description'], 2)[0], 0, 70);
             if (strlen(explode('\n', $Request['Description'], 2)[0]) > 70) {

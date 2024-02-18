@@ -39,14 +39,14 @@ if ($app->user->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     INSERT IGNORE INTO requests_votes
       (RequestID, UserID, Bounty)
     VALUES
-      ($RequestID, ".$app->user->core['id'].", $Bounty)");
+      ($RequestID, " . $app->user->core['id'] . ", $Bounty)");
 
     if ($app->dbOld->affected_rows() < 1) {
         //Insert failed, probably a dupe vote, just increase their bounty.
         $app->dbOld->query("
         UPDATE requests_votes
         SET Bounty = (Bounty + $Bounty)
-        WHERE UserID = ".$app->user->core['id']."
+        WHERE UserID = " . $app->user->core['id'] . "
           AND RequestID = $RequestID");
         echo 'dupe';
     }
@@ -61,17 +61,17 @@ if ($app->user->extra['BytesUploaded'] >= $Amount && empty($Filled)) {
     $app->cache->delete("request_$RequestID");
     $app->cache->delete("request_votes_$RequestID");
 
-    $ArtistForm = Requests::get_artists($RequestID);
+    $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
     foreach ($ArtistForm as $Artist) {
-        $app->cache->delete('artists_requests_'.$Artist['id']);
+        $app->cache->delete('artists_requests_' . $Artist['id']);
     }
 
     // Subtract amount from user
     $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = (Uploaded - $Amount)
-    WHERE ID = ".$app->user->core['id']);
-    $app->cache->delete('user_stats_'.$app->user->core['id']);
+    WHERE ID = " . $app->user->core['id']);
+    $app->cache->delete('user_stats_' . $app->user->core['id']);
 
     $app->dbOld->query("
     SELECT UserID

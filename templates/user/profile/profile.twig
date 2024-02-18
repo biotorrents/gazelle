@@ -134,7 +134,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
           </td>
         </tr>
         <?php
-    $Requests = Requests::get_requests(array_keys($SphRequests));
+    $Requests = \Gazelle\Requests::get_requests(array_keys($SphRequests));
         foreach ($SphRequests as $RequestID => $SphRequest) {
             $Request = $Requests[$RequestID];
             $VotesCount = $SphRequest['votes'];
@@ -142,7 +142,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
             $CategoryName = $Categories[$Request['CategoryID'] - 1];
 
             if ($CategoryName == 'Music') {
-                $ArtistForm = Requests::get_artists($RequestID);
+                $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
                 $ArtistLink = Artists::display_artists($ArtistForm, true, true);
                 $FullName = "$ArtistLink<a href=\"requests.php?action=view&amp;id=$RequestID\">$Request[Title] [$Request[Year]]</a>";
             } elseif ($CategoryName == 'Audiobooks' || $CategoryName == 'Comedy') {

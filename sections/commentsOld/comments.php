@@ -19,7 +19,7 @@ $app = \Gazelle\App::go();
 
 // User ID
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $UserID = (int)$_GET['id'];
+    $UserID = (int) $_GET['id'];
     $UserInfo = User::user_info($UserID);
     $Username = $UserInfo['Username'];
 
@@ -95,7 +95,7 @@ switch ($Action) {
             $Join[] = "LEFT JOIN `collages_torrents` ON `collages_torrents`.`CollageID` = `collages`.`ID` AND `collages_torrents`.`UserID` = $UserID";
             $Join[] = "LEFT JOIN `collages_artists` ON `collages_artists`.`CollageID` = `collages`.`ID` AND `collages_artists`.`UserID` = $UserID";
             $Title = 'Comments left on collages ' . ($Self ? 'you\'ve' : $Username . ' has') . ' contributed to';
-            $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false).' has') . ' contributed to';
+            $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false) . ' has') . ' contributed to';
         } else {
             $Type = 'default';
             $Conditions[] = "`comments`.`AuthorID` = $UserID";
@@ -197,7 +197,7 @@ if ($Action === 'requests') {
   $Artists = [];
 
   foreach ($RequestIDs as $RequestID) {
-    $Artists[$RequestID] = Requests::get_artists($RequestID);
+    $Artists[$RequestID] = \Gazelle\Requests::get_artists($RequestID);
   }
   $app->dbOld->set_query_id($Comments);
 } elseif ($Action === 'torrents') {
@@ -243,7 +243,7 @@ switch ($Action) {
         }
 
         if ($Type !== 'created') {
-            $TypeLinks[] = '<a href="' . $BaseLink . '&amp;type=created" class="brackets">Display comments left on ' . ($Self ? 'your collections' : 'collections created by ' .$Username) . '</a>';
+            $TypeLinks[] = '<a href="' . $BaseLink . '&amp;type=created" class="brackets">Display comments left on ' . ($Self ? 'your collections' : 'collections created by ' . $Username) . '</a>';
         }
 
         if ($Type !== 'contributed') {

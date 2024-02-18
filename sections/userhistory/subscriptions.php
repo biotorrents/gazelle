@@ -107,7 +107,7 @@ foreach ($Results as $Result) {
 }
 
 $TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
-$Requests = Requests::get_requests($Requests);
+$Requests = \Gazelle\Requests::get_requests($Requests);
 ?>
 
 <div>

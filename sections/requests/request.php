@@ -15,7 +15,7 @@ $RequestID = $_GET['id'];
 
 // First things first, let's get the data for the request
 
-$Request = Requests::get_request($RequestID);
+$Request = \Gazelle\Requests::get_request($RequestID);
 if ($Request === false) {
     error(404);
 }
@@ -33,7 +33,7 @@ if ($Request['CategoryID'] === '0') {
 $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
 
 // Do we need to get artists?
-$ArtistForm = Requests::get_artists($RequestID);
+$ArtistForm = \Gazelle\Requests::get_artists($RequestID);
 $ArtistName = Artists::display_artists($ArtistForm, false, true);
 $ArtistLink = Artists::display_artists($ArtistForm, true, true);
 
@@ -41,7 +41,7 @@ if ($IsFilled) {
     $DisplayLink = "<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
     #$DisplayLink = "$ArtistLink<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
 } else {
-    $DisplayLink = '<span dir="ltr">'.$Title."</span>";
+    $DisplayLink = '<span dir="ltr">' . $Title . "</span>";
     #$DisplayLink = $ArtistLink.'<span dir="ltr">'.$Title."</span>";
 }
 
@@ -62,7 +62,7 @@ if (!empty($Request['CatalogueNumber'])) {
 $DisplayLink .= $Extra;
 
 // Votes time
-$RequestVotes = Requests::get_votes_array($RequestID);
+$RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0')));
 $UserCanEdit = (!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2);
@@ -151,7 +151,7 @@ $encoded_artist = urlencode($encoded_artist);
     <?php
     }
 
-  $ArtistVariant = "Author(s)";
+$ArtistVariant = "Author(s)";
 /*
 switch ($CategoryName) {
   case "Movies":
@@ -266,15 +266,15 @@ if (!$ViewerVote) {
           }
 
 
-          if ($Request['GroupID']) {
-              ?>
+if ($Request['GroupID']) {
+    ?>
           <tr>
             <td class="label">Torrent Group</td>
             <td><a
                 href="torrents.php?id=<?= $Request['GroupID'] ?>">torrents.php?id=<?= $Request['GroupID'] ?></a></td>
           </tr>
           <?php
-          } ?>
+} ?>
           <tr>
             <td class="label">Votes</td>
             <td>
@@ -293,8 +293,8 @@ if (!$ViewerVote) {
           </tr>
           <?php
           }
-          if ($CanVote) {
-              ?>
+if ($CanVote) {
+    ?>
           <tr id="voting">
             <td class="label">Custom Vote</td>
             <td>
@@ -329,7 +329,7 @@ if (!$ViewerVote) {
                 <input type="hidden" id="current_downloaded"
                   value="<?=$app->user->extra['Downloaded']?>">
                 <input type="hidden" id="current_rr"
-                  value="<?=(float)$app->user->extra['RequiredRatio']?>">
+                  value="<?=(float) $app->user->extra['RequiredRatio']?>">
                 <input id="total_bounty" type="hidden"
                   value="<?=$RequestVotes['TotalBounty']?>">
 
@@ -346,15 +346,15 @@ if (!$ViewerVote) {
             </td>
           </tr>
           <?php
-          } ?>
+} ?>
           <tr id="bounty">
             <td class="label">Bounty</td>
             <td id="formatted_bounty"><?=Format::get_size($RequestVotes['TotalBounty'])?>
             </td>
           </tr>
           <?php
-          if ($IsFilled) {
-              $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
+if ($IsFilled) {
+    $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18?>
           <tr>
             <td class="label">Filled</td>
             <td>
@@ -370,7 +370,7 @@ if (!$ViewerVote) {
             </td>
           </tr>
           <?php
-          } else { ?>
+} else { ?>
           <tr>
             <td class="label" valign="top">Fill Request</td>
             <td>

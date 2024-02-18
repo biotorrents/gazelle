@@ -236,14 +236,14 @@ View::header(
       class="brackets">Revert to this revision</a>
     <?php
     }
-    if (Bookmarks::isBookmarked('torrent', $GroupID)) {
-        ?>
+if (Bookmarks::isBookmarked('torrent', $GroupID)) {
+    ?>
     <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
       class="remove_bookmark brackets"
       onclick="Unbookmark('torrent', <?=$GroupID?>, 'Bookmark'); return false;">Remove
       bookmark</a>
     <?php
-    } else { ?>
+} else { ?>
     <a href="#" id="bookmarklink_torrent_<?=$GroupID?>"
       class="add_bookmark brackets"
       onclick="Bookmark('torrent', <?=$GroupID?>, 'Remove bookmark'); return false;">Bookmark</a>
@@ -252,13 +252,13 @@ View::header(
      class="brackets"
       onclick="SubscribeComments('torrents', <?=$GroupID?>); return false;"><?=Subscriptions::has_subscribed_comments('torrents', $GroupID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
     <?php
-    # Remove category-specific options to add a new format
-    if ($Categories[$GroupCategoryID - 1]) { ?>
+# Remove category-specific options to add a new format
+if ($Categories[$GroupCategoryID - 1]) { ?>
     <a href="upload.php?groupid=<?=$GroupID?>" class="brackets">Add
       format</a>
     <?php
-    }
-    if (check_perms('site_submit_requests')) { ?>
+}
+if (check_perms('site_submit_requests')) { ?>
     <a href="requests.php?action=new&amp;groupid=<?=$GroupID?>"
       class="brackets">Request format</a>
     <?php } ?>
@@ -273,9 +273,9 @@ View::header(
       <div class="head">
         <strong><?=(count($CoverArt) > 0 ? 'Pictures (' . (count($CoverArt) + 1) . ')' : 'Picture')?></strong>
         <?php
-        if (count($CoverArt) > 0) {
-            if (empty($app->user->extra['ShowExtraCovers'])) {
-                for ($Index = 0; $Index <= count($CoverArt); $Index++) { ?>
+    if (count($CoverArt) > 0) {
+        if (empty($app->user->extra['ShowExtraCovers'])) {
+            for ($Index = 0; $Index <= count($CoverArt); $Index++) { ?>
         <span id="cover_controls_<?=($Index)?>" <?=($Index > 0 ? ' style="display: none;"' : '')?>>
           <?php if ($Index === count($CoverArt)) { ?>
           <a class="brackets prev_cover"
@@ -300,14 +300,14 @@ View::header(
           <?php } ?>
         </span>
         <?php
-                }
-            } else { ?>
+            }
+        } else { ?>
         <span>
           <a class="brackets show_all_covers" href="#">Hide</a>
         </span>
         <?php
-            }
         }
+    }
 ?>
       </div>
 
@@ -338,9 +338,9 @@ $Index++;
           <div>
             <?php
           if (empty($app->user->extra['ShowExtraCovers'])) {
-              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Images::process($Image).'"';
+              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . \Gazelle\Images::process($Image) . '"';
           } else {
-              $Src = 'src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="'.\Gazelle\Images::process($Image).'"';
+              $Src = 'src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . \Gazelle\Images::process($Image) . '"';
           } ?>
             <img id="cover_<?=$Index?>" class="lightbox-init"
               width="100%" <?=$Src?> alt="<?=$Summary?>" />
@@ -407,7 +407,7 @@ $Index++;
       <div class="head">
         <strong>Tags</strong>
         <?php
-        $DeletedTag = $app->cache->get("deleted_tags_$GroupID".'_'.$app->user->core['id']);
+        $DeletedTag = $app->cache->get("deleted_tags_$GroupID" . '_' . $app->user->core['id']);
 if (!empty($DeletedTag)) { ?>
         <form style="display: none;" id="undo_tag_delete_form" name="tags" action="torrents.php" method="post">
           <input type="hidden" name="action" value="add_tag">
@@ -495,11 +495,11 @@ foreach ($TorrentList as $Torrent) {
 
     if ($NumReports > 0) {
         $Reported = true;
-        include(serverRoot.'/sections/reportsv2/array.php');
+        include(serverRoot . '/sections/reportsv2/array.php');
         $ReportInfo = '
     <table class="reportinfo_table">
       <tr class="colhead_dark" style="font-weight: bold;">
-        <td>This torrent has '.$NumReports.' active '.($NumReports === 1 ? 'report' : 'reports').":</td>
+        <td>This torrent has ' . $NumReports . ' active ' . ($NumReports === 1 ? 'report' : 'reports') . ":</td>
       </tr>";
 
         foreach ($Reports as $Report) {
@@ -522,8 +522,8 @@ foreach ($TorrentList as $Torrent) {
             }
             $ReportInfo .= "
       <tr>
-        <td>$ReportLinks ".Format::relativeTime($Report['ReportedTime']).' for the reason "'.$ReportType['title'].'":
-          <blockquote>'.\Gazelle\Text::parse($Report['UserComment']).'</blockquote>
+        <td>$ReportLinks " . Format::relativeTime($Report['ReportedTime']) . ' for the reason "' . $ReportType['title'] . '":
+          <blockquote>' . \Gazelle\Text::parse($Report['UserComment']) . '</blockquote>
         </td>
       </tr>';
         }
@@ -532,7 +532,7 @@ foreach ($TorrentList as $Torrent) {
 
     $CanEdit = (check_perms('torrents_edit') || (($UserID == $app->user->core['id'] && !$app->user->extra['DisableWiki']) && !($Remastered && !$RemasterYear)));
 
-    $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid='.$TorrentID.'" class="brackets">Regenerate</a>' : '';
+    $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
     $FileTable = '
   <table class="filelist_table">
     <tr class="colhead_dark">
@@ -570,23 +570,23 @@ foreach ($TorrentList as $Torrent) {
 
     // Similar to Torrents::torrent_info()
     if ($Media) {
-        $ExtraInfo .= '<x style="tooltip" title="Platform">'.\Gazelle\Text::esc($Media).'</x>';
+        $ExtraInfo .= '<x style="tooltip" title="Platform">' . \Gazelle\Text::esc($Media) . '</x>';
     }
 
     if ($Container) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Format">'.\Gazelle\Text::esc($Container).'</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Format">' . \Gazelle\Text::esc($Container) . '</x>';
     }
 
     if ($Archive) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Archive">'.\Gazelle\Text::esc($Archive).'</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Archive">' . \Gazelle\Text::esc($Archive) . '</x>';
     }
 
     if ($Codec) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="License">'.\Gazelle\Text::esc($Codec).'</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="License">' . \Gazelle\Text::esc($Codec) . '</x>';
     }
 
     if ($Resolution) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Scope">'.\Gazelle\Text::esc($Resolution).'</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Scope">' . \Gazelle\Text::esc($Resolution) . '</x>';
     }
 
     /*
@@ -597,9 +597,9 @@ foreach ($TorrentList as $Torrent) {
     */
 
     if ($Censored) {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">Yes</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Aligned/Annotated">Yes</x>';
     } else {
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Aligned/Annotated">No</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Aligned/Annotated">No</x>';
     }
 
     if (!$ExtraInfo) {
@@ -607,19 +607,19 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($IsLeeching) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Leeching', 'important_text_semi');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Leeching', 'important_text_semi');
     } elseif ($IsSeeding) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Seeding', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Seeding', 'important_text_alt');
     } elseif ($IsSnatched) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Snatched', 'bold');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Snatched', 'bold');
     }
 
     if ($FreeTorrent === '1') {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Freeleech', 'important_text_alt');
     }
 
     if ($FreeTorrent === '2') {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Neutral Leech', 'bold');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Neutral Leech', 'bold');
     }
 
     // Freleechizer
@@ -631,38 +631,38 @@ foreach ($TorrentList as $Torrent) {
 
         if ($app->dbOld->has_results()) {
             $ExpiryTime = $app->dbOld->next_record(MYSQLI_NUM, false)[0];
-            $ExtraInfo .= " <strong>(".str_replace(['month','week','day','hour','min'], ['m','w','d','h','m'], time_diff(max($ExpiryTime, time()), 1, false)).")</strong>";
+            $ExtraInfo .= " <strong>(" . str_replace(['month','week','day','hour','min'], ['m','w','d','h','m'], time_diff(max($ExpiryTime, time()), 1, false)) . ")</strong>";
         }
     }
 
     if ($PersonalFL) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Personal Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Personal Freeleech', 'important_text_alt');
     }
 
     if ($Reported) {
         $HtmlReportType = ucfirst($Reports[0]['Type']);
         $HtmlReportComment = htmlentities(htmlentities($Reports[0]['UserComment']));
-        $ExtraInfo .= $AddExtra."<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>".Format::torrent_label('Reported', 'important_text')."</strong>";
+        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>" . Format::torrent_label('Reported', 'important_text') . "</strong>";
     }
 
     if (!empty($BadTags)) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad Tags', 'important_text');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Tags', 'important_text');
     }
 
     if (!empty($BadFolders)) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad Folders', 'important_text');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Folders', 'important_text');
     }
 
     if (!empty($BadFiles)) {
-        $ExtraInfo .= $AddExtra.Format::torrent_label('Bad File Names', 'important_text');
+        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad File Names', 'important_text');
     }
 
-    $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->user->extra['AuthKey']."&amp;torrent_pass=".$app->user->extra['torrent_pass'];
-    if (!($TorrentFileName = $app->cache->get('torrent_file_name_'.$TorrentID))) {
-        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
+    $TorrentDL = "torrents.php?action=download&amp;id=" . $TorrentID . "&amp;authkey=" . $app->user->extra['AuthKey'] . "&amp;torrent_pass=" . $app->user->extra['torrent_pass'];
+    if (!($TorrentFileName = $app->cache->get('torrent_file_name_' . $TorrentID))) {
+        $TorrentFile = file_get_contents($app->env->torrentStore . '/' . $TorrentID . '.torrent');
         $Tor = new BencodeTorrent($TorrentFile, false, false);
         $TorrentFileName = $Tor->Dec['info']['name'];
-        $app->cache->set('torrent_file_name_'.$TorrentID, $TorrentFileName);
+        $app->cache->set('torrent_file_name_' . $TorrentID, $TorrentFileName);
     } ?>
 
         <tr
@@ -775,16 +775,16 @@ foreach ($TorrentList as $Torrent) {
             </div>
             <?php
             }
-                  if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.\Gazelle\Text::parse($Description).'</blockquote>';
-                  }
+    if (!empty($Description)) {
+        echo '<blockquote class="torrent_description">' . \Gazelle\Text::parse($Description) . '</blockquote>';
+    }
 
-                  echo "\n<blockquote>"; ?>
+    echo "\n<blockquote>"; ?>
             <div class="spoilerContainer hideContainer">
               <?php
-                  # Make a BibTeX citation
-                  # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
-                  $EntryName = "BioTorrents.de-$TorrentID";
+    # Make a BibTeX citation
+    # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
+    $EntryName = "BioTorrents.de-$TorrentID";
     $Today = strftime('%Y-%m-%d');
 
     # Author format handling
@@ -862,7 +862,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
           <td>Bounty</td>
         </tr>
         <?php foreach ($Requests as $Request) {
-            $RequestVotes = Requests::get_votes_array($Request['ID']);
+            $RequestVotes = \Gazelle\Requests::get_votes_array($Request['ID']);
 
             $RequestDesc = substr(explode('\n', $Request['Description'], 2)[0], 0, 70);
             if (strlen(explode('\n', $Request['Description'], 2)[0]) > 70) {
@@ -1001,7 +1001,7 @@ if (count($PersonalCollages) > 0) {
 
     <!-- Torrent group description -->
     <div class="box torrent_description">
-      <div class="head"><a href="#">&uarr;</a>&nbsp;<strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType].' info' : 'Info')?></strong>
+      <div class="head"><a href="#">&uarr;</a>&nbsp;<strong><?=(!empty($ReleaseType) ? $ReleaseTypes[$ReleaseType] . ' info' : 'Info')?></strong>
       </div>
       <div class="body"><?php if ($WikiBody != '') {
           echo $WikiBody;
@@ -1024,7 +1024,7 @@ if (count($PersonalCollages) > 0) {
         <?php
         }
 
-        $app->dbOld->query("
+$app->dbOld->query("
       SELECT UserID
       FROM torrents
       WHERE GroupID = $GroupID");
@@ -1044,7 +1044,7 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
         <ul>
           <?php
             foreach ($Mirrors as $Mirror) {
-                echo '<li><a href="'.$Mirror['Resource'].'" target="_blank">'.$Mirror['Resource'].'</a></li>';
+                echo '<li><a href="' . $Mirror['Resource'] . '" target="_blank">' . $Mirror['Resource'] . '</a></li>';
             }
 ?>
         </ul>
@@ -1064,7 +1064,7 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
         <?php
         }
 
-        $app->dbOld->query("
+$app->dbOld->query("
       SELECT UserID
       FROM torrents
       WHERE GroupID = $GroupID");
@@ -1084,7 +1084,7 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
         <ul>
           <?php
             foreach ($Screenshots as $Screenshot) {
-                echo '<li><a href="https://sci-hub.'.SCI_HUB.'/'.$Screenshot['Image'].'" target="_blank">'.$Screenshot['Image'].'</a></li>';
+                echo '<li><a href="https://sci-hub.' . SCI_HUB . '/' . $Screenshot['Image'] . '" target="_blank">' . $Screenshot['Image'] . '</a></li>';
 
                 /* Image proxy integration
                 $SSURL = \Gazelle\Images::process($Screenshot['Image']);
