@@ -12,19 +12,19 @@ if (!php_sapi_name() === "cli") {
 }
 
 # load the dependencies
-require_once __DIR__."/../vendor/autoload.php";
-require_once __DIR__."/../config/app.php";
-require_once __DIR__."/utilities.php";
+require_once __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../config/app.php";
+require_once __DIR__ . "/utilities.php";
 
 # load the app
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # start time
 $startTime = microtime(true);
 
 # start debug info
 $server = Http::request("server");
-\Gazelle\Text::figlet($server["SCRIPT_FILENAME"], "green");
+Gazelle\Text::figlet($server["SCRIPT_FILENAME"], "green");
 
 # basic info
 echo "\n" . php_uname();
@@ -50,7 +50,7 @@ $table
 
 # includes
 echo "\n"; # clear
-\Gazelle\Text::figlet("includes", "light_gray");
+Gazelle\Text::figlet("includes", "light_gray");
 
 $includes = get_included_files();
 foreach ($includes as $include) {

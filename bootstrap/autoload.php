@@ -10,6 +10,7 @@ declare(strict_types=1);
  * Temporary fix for class/filename mismatches.
  *
  * @param string $class the class name
+ *
  * @see https://www.php.net/manual/en/language.oop5.autoload.php
  */
 

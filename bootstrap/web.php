@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # load the app
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # quick sanity checks
 $app->gotcha();
