@@ -3,7 +3,7 @@
 #declare(strict_types = 1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * This page handles the backend from when a user submits a report.
@@ -39,7 +39,7 @@ if (!isset($_POST['type'])) {
 foreach ($ReportType['report_fields'] as $Field => $Value) {
     if ($Value === '1') {
         if (empty($_POST[$Field])) {
-            $Err = "You are missing a required field ($Field) for a ".$ReportType['title'].' report.';
+            $Err = "You are missing a required field ($Field) for a " . $ReportType['title'] . ' report.';
         }
     }
 }
@@ -52,7 +52,7 @@ if (!empty($_POST['sitelink'])) {
             $Err = "The extra permalinks you gave included the link to the torrent you're reporting!";
         }
     } else {
-        $Err = 'The permalink was incorrect. It should look like '.site_url().'torrents.php?torrentid=12345';
+        $Err = 'The permalink was incorrect. It should look like ' . site_url() . 'torrents.php?torrentid=12345';
     }
 }
 
@@ -105,7 +105,7 @@ list($GroupID) = $app->dbOld->next_record();
 
 if (!empty($Err)) {
     error($Err);
-    include(serverRoot.'/sections/reportsv2/report.php');
+    include(serverRoot . '/sections/reportsv2/report.php');
     error();
 }
 
@@ -113,10 +113,10 @@ $app->dbOld->prepared_query("
   SELECT `ID`
   FROM `reportsv2`
   WHERE `TorrentID` = '$TorrentID'
-    AND `ReporterID` = ".db_string($app->user->core['id'])."
-    AND `ReportedTime` > '".time_minus(3)."'");
+    AND `ReporterID` = " . db_string($app->user->core['id']) . "
+    AND `ReportedTime` > '" . time_minus(3) . "'");
 if ($app->dbOld->has_results()) {
-    Http::redirect("torrents.php?torrentid=$TorrentID");
+    Gazelle\Http::redirect("torrents.php?torrentid=$TorrentID");
     error();
 }
 
@@ -124,7 +124,7 @@ $app->dbOld->prepared_query("
   INSERT INTO `reportsv2`
     (`ReporterID`, `TorrentID`, `Type`, `UserComment`, `Status`, `ReportedTime`, `Track`, `Image`, `ExtraID`, `Link`)
   VALUES
-    (".db_string($app->user->core['id']).", $TorrentID, '".db_string($Type)."', '$Extra', 'New', NOW(), '".db_string($Tracks)."', '".db_string($Images)."', '".db_string($ExtraIDs)."', '".db_string($Links)."')");
+    (" . db_string($app->user->core['id']) . ", $TorrentID, '" . db_string($Type) . "', '$Extra', 'New', NOW(), '" . db_string($Tracks) . "', '" . db_string($Images) . "', '" . db_string($ExtraIDs) . "', '" . db_string($Links) . "')");
 
 $ReportID = $app->dbOld->inserted_id();
 
@@ -141,9 +141,9 @@ $app->dbOld->prepared_query("
 list($GroupNameEng, $GroupTitle2, $GroupNameJP) = $app->dbOld->next_record();
 $GroupName = $GroupNameEng ? $GroupNameEng : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
 
-Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=".site_url()."torrents.php?torrentid=$TorrentID]".$GroupName."[/url]\", was reported for the reason \"".$ReportType['title']."\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
+Misc::send_pm($UploaderID, 0, "Torrent Reported: $GroupName", "Your torrent, \"[url=" . site_url() . "torrents.php?torrentid=$TorrentID]" . $GroupName . "[/url]\", was reported for the reason \"" . $ReportType['title'] . "\".\n\nThe reporter also said: \"$Extra\"\n\nIf you think this report was in error, please contact staff. Failure to challenge some types of reports in a timely manner will be regarded as a lack of defense and may result in the torrent being deleted.");
 
 $app->cache->delete("reports_torrent_$TorrentID");
 $app->cache->increment('num_torrent_reportsv2');
 
-Http::redirect("torrents.php?torrentid=$TorrentID");
+Gazelle\Http::redirect("torrents.php?torrentid=$TorrentID");

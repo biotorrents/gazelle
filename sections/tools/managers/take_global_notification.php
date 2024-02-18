@@ -12,4 +12,4 @@ if ($_POST['set']) {
     NotificationsManager::delete_global_notification();
 }
 
-Http::redirect("tools.php?action=global_notification");
+Gazelle\Http::redirect("tools.php?action=global_notification");

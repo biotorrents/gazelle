@@ -3,7 +3,7 @@
 #declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 //******************************************************************************//
 //----------------- Take request -----------------------------------------------//
@@ -29,11 +29,11 @@ if ($NewRequest) {
         error(0);
     }
 
-    $Request = \Gazelle\Requests::get_request($RequestID);
+    $Request = Gazelle\Requests::get_request($RequestID);
     if ($Request === false) {
         error(404);
     }
-    $VoteArray = \Gazelle\Requests::get_votes_array($RequestID);
+    $VoteArray = Gazelle\Requests::get_votes_array($RequestID);
     $VoteCount = count($VoteArray['Voters']);
     $IsFilled = !empty($Request['TorrentID']);
     $CategoryName = $Categories[$Request['CategoryID'] - 1];
@@ -99,7 +99,7 @@ if (empty($_POST['image'])) {
     if (preg_match("/{$app->env->regexImage}/i", trim($_POST['image'])) > 0) {
         $Image = trim($_POST['image']);
     } else {
-        $Err = \Gazelle\Text::esc($_POST['image']) . ' does not appear to be a valid link to an image.';
+        $Err = Gazelle\Text::esc($_POST['image']) . ' does not appear to be a valid link to an image.';
     }
 }
 
@@ -352,4 +352,4 @@ if ($NewRequest) {
     $app->cache->delete("request_artists_$RequestID");
 }
 
-Http::redirect("requests.php?action=view&id=$RequestID");
+Gazelle\Http::redirect("requests.php?action=view&id=$RequestID");

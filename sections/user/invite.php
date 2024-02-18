@@ -7,7 +7,7 @@ declare(strict_types=1);
  * user invites page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # check permissions
 if ($app->user->cant("users_view_invites")) {
@@ -15,8 +15,8 @@ if ($app->user->cant("users_view_invites")) {
 }
 
 # http query vars
-$get = Http::get();
-$post = Http::post();
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
 
 # which user's invites to show
 $userId = $get["userId"] ?? $app->user->core["id"];
@@ -139,7 +139,7 @@ switch ($CurrentOrder) {
         break;
 }
 
-$CurrentURL = \Gazelle\Format::get_url(array('action', 'order', 'sort'));
+$CurrentURL = Gazelle\Format::get_url(array('action', 'order', 'sort'));
 
 $app->dbOld->query("
   SELECT
@@ -266,9 +266,9 @@ if (!empty($Pending)) {
       <?php
   foreach ($Pending as $Invite) {
       list($InviteKey, $Email, $Expires) = $Invite;
-      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
+      $Email = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
-        <td><?=\Gazelle\Text::esc($Email)?>
+        <td><?=Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($Expires)?>
         </td>
@@ -313,22 +313,22 @@ if (!empty($Pending)) {
       <?php
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
-      $Email = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Email) : '[Encrypted]'
+      $Email = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($Email) : '[Encrypted]'
       ?>
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>
         </td>
-        <td><?=\Gazelle\Text::esc($Email)?>
+        <td><?=Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($JoinDate, 1)?>
         </td>
         <td><?=time_diff($LastAccess, 1); ?>
         </td>
-        <td><?=\Gazelle\Format::get_size($Uploaded)?>
+        <td><?=Gazelle\Format::get_size($Uploaded)?>
         </td>
-        <td><?=\Gazelle\Format::get_size($Downloaded)?>
+        <td><?=Gazelle\Format::get_size($Downloaded)?>
         </td>
-        <td><?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
+        <td><?=Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
         </td>
       </tr>
       <?php

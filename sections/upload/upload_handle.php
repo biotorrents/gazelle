@@ -18,17 +18,17 @@ declare(strict_types=1);
  * 7. sings from the rooftops, announces on channels
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-#Http::csrf();
+#Gazelle\Http::csrf();
 
 authorize();
 enforce_login();
 
 # request vars
-$post = Http::request("post");
-$files = Http::request("files");
+$post = Gazelle\Http::request("post");
+$files = Gazelle\Http::request("files");
 
 # gazelle libraries
 $feed = new Feed();
@@ -38,7 +38,7 @@ $validate = new Validate();
 /**
  * collect the form data
  *
- * Http::request automagically escapes all this as strings
+ * Gazelle\Http::request automagically escapes all this as strings
  * also, we're a good boi and we use parameterized queries
  * thank god for null coalescing, it cleans this up a lot
  */
@@ -46,8 +46,8 @@ $validate = new Validate();
 $data = [];
 
 # basic info
-$data["categoryId"] = \Gazelle\Esc::int($post["categoryId"] ?? null);
-$data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Http::request() recursive
+$data["categoryId"] = Gazelle\Esc::int($post["categoryId"] ?? null);
+$data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Gazelle\Http::request() recursive
 #$data["torrentFile"] = $files["torrentFile"] ?? null;
 
 # torrent group
@@ -63,11 +63,11 @@ $data["tagList"] = $post["tagList"] ?? null;
 $data["title"] = $post["title"] ?? null;
 $data["version"] = $post["version"] ?? null;
 $data["workgroup"] = $post["workgroup"] ?? null;
-$data["year"] = \Gazelle\Esc::int($post["year"] ?? null);
+$data["year"] = Gazelle\Esc::int($post["year"] ?? null);
 
 # single torrent
-$data["annotated"] = \Gazelle\Esc::bool($post["annotated"] ?? null);
-$data["anonymous"] = \Gazelle\Esc::bool($post["anonymous"] ?? null);
+$data["annotated"] = Gazelle\Esc::bool($post["annotated"] ?? null);
+$data["anonymous"] = Gazelle\Esc::bool($post["anonymous"] ?? null);
 $data["archive"] = $post["archive"] ?? null;
 $data["format"] = $post["format"] ?? null;
 $data["license"] = $post["license"] ?? null;
@@ -83,13 +83,13 @@ $data["seqhashSequence"] = $post["seqhashSequence"] ?? null;
 $data["seqhashShape"] = $post["seqhashShape"] ?? null;
 
 # freeleech
-$data["freeleechReason"] = \Gazelle\Esc::int($post["freeleechReason"] ?? null);
-$data["freeleechType"] = \Gazelle\Esc::int($post["freeleechType"] ?? null);
+$data["freeleechReason"] = Gazelle\Esc::int($post["freeleechReason"] ?? null);
+$data["freeleechType"] = Gazelle\Esc::int($post["freeleechType"] ?? null);
 
 # hidden fields
-$data["groupId"] = \Gazelle\Esc::int($post["groupId"] ?? null);
-$data["requestId"] = \Gazelle\Esc::int($post["requestId"] ?? null);
-$data["torrentId"] = \Gazelle\Esc::int($post["torrentId"] ?? null);
+$data["groupId"] = Gazelle\Esc::int($post["groupId"] ?? null);
+$data["requestId"] = Gazelle\Esc::int($post["requestId"] ?? null);
+$data["torrentId"] = Gazelle\Esc::int($post["torrentId"] ?? null);
 
 # get creators (unsure if needed)
 if ($data["groupId"]) {
@@ -375,7 +375,7 @@ $data["creatorList"] = explode("\n", $data["creatorList"]);
 if (empty($data["groupId"])) {
     foreach ($data["creatorList"] as $key => $value) {
         # escape and normalize
-        $data["creatorList"][$key] = \Gazelle\Esc::string($value);
+        $data["creatorList"][$key] = Gazelle\Esc::string($value);
         $data["creatorList"][$key] = Artists::normalise_artist_name($value);
     }
 }
@@ -404,7 +404,7 @@ if (empty($data['GroupID']) && empty($ArtistForm)) {
 
     $ArtistForm = [];
     while (list($ArtistID, $ArtistName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
-        array_push($ArtistForm, array('id' => $ArtistID, 'name' => \Gazelle\Text::esc($ArtistName)));
+        array_push($ArtistForm, array('id' => $ArtistID, 'name' => Gazelle\Text::esc($ArtistName)));
         array_push($ArtistsUnescaped, array('name' => $ArtistName));
     }
     $LogName .= Artists::display_artists($ArtistsUnescaped, false, true, false);
@@ -770,11 +770,11 @@ chmod($fileName, 0400);
 
 # update site logs
 $torrentLogMessage = "Torrent {$torrentId} - {$data["title"]} - "
-    . \Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
-    ." MB - uploaded by {$app->user->core["username"]}";
+    . Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2)
+    . " MB - uploaded by {$app->user->core["username"]}";
 Misc::write_log($torrentLogMessage);
 
-$groupLogMessage = "uploaded " . \Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
+$groupLogMessage = "uploaded " . Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
 Torrents::write_group_log($groupId, $torrentId, $app->user->core["id"], $groupLogMessage, 0);
 
 # update hash
@@ -846,7 +846,7 @@ if ($publicTorrent) {
 } elseif ($RequestID) {
    header("Location: requests.php?action=takefill&requestid=$RequestID&torrentid=$torrentId&auth=".$app->user->extra['AuthKey']);
 } else {
-   Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentId");
+   Gazelle\Http::redirect("torrents.php?id=$GroupID&torrentid=$torrentId");
 }
 
 if (function_exists('fastcgi_finish_request')) {
@@ -944,7 +944,7 @@ if (!empty($ArtistsUnescaped)) {
     $GuestArtistNameList = [];
 
     foreach ($ArtistsUnescaped as $Importance => $Artist) {
-        $ArtistNameList[] = "Artists LIKE '%|".db_string(str_replace('\\', '\\\\', $Artist['name']), true)."|%'";
+        $ArtistNameList[] = "Artists LIKE '%|" . db_string(str_replace('\\', '\\\\', $Artist['name']), true) . "|%'";
     }
 
     $SQL .= " AND (";
@@ -964,14 +964,14 @@ $TagSQL = [];
 $NotTagSQL = [];
 
 foreach ($Tags as $Tag) {
-    $TagSQL[] = " Tags LIKE '%|".db_string(trim($Tag))."|%' ";
-    $NotTagSQL[] = " NotTags LIKE '%|".db_string(trim($Tag))."|%' ";
+    $TagSQL[] = " Tags LIKE '%|" . db_string(trim($Tag)) . "|%' ";
+    $NotTagSQL[] = " NotTags LIKE '%|" . db_string(trim($Tag)) . "|%' ";
 }
 
 $TagSQL[] = "Tags = ''";
 $SQL .= implode(' OR ', $TagSQL);
-$SQL .= ") AND !(".implode(' OR ', $NotTagSQL).')';
-$SQL .= " AND (Categories LIKE '%|".db_string(trim($Type))."|%' OR Categories = '') ";
+$SQL .= ") AND !(" . implode(' OR ', $NotTagSQL) . ')';
+$SQL .= " AND (Categories LIKE '%|" . db_string(trim($Type)) . "|%' OR Categories = '') ";
 
 
 /*
@@ -981,13 +981,13 @@ $SQL .= " AND (Categories LIKE '%|".db_string(trim($Type))."|%' OR Categories = 
 */
 
 if ($data['Format']) {
-    $SQL .= " AND (Formats LIKE '%|".db_string(trim($data['Format']))."|%' OR Formats = '') ";
+    $SQL .= " AND (Formats LIKE '%|" . db_string(trim($data['Format'])) . "|%' OR Formats = '') ";
 } else {
     $SQL .= " AND (Formats = '') ";
 }
 
 if ($data['Media']) {
-    $SQL .= " AND (Media LIKE '%|".db_string(trim($data['Media']))."|%' OR Media = '') ";
+    $SQL .= " AND (Media LIKE '%|" . db_string(trim($data['Media'])) . "|%' OR Media = '') ";
 } else {
     $SQL .= " AND (Media = '') ";
 }
@@ -999,14 +999,14 @@ $SQL .= ") OR ( NewGroupsOnly = '1' ";
 $SQL .= '))';
 
 if ($data['Year']) {
-    $SQL .= " AND (('".db_string(trim($data['Year']))."' BETWEEN FromYear AND ToYear)
+    $SQL .= " AND (('" . db_string(trim($data['Year'])) . "' BETWEEN FromYear AND ToYear)
       OR (FromYear = 0 AND ToYear = 0)) ";
 } else {
     $SQL .= " AND (FromYear = 0 AND ToYear = 0) ";
 }
 
 
-$SQL .= " AND UserID != '".$app->user->core['id']."' ";
+$SQL .= " AND UserID != '" . $app->user->core['id'] . "' ";
 $app->dbOld->query($SQL);
 $app->debug["messages"]->info('notification query finished');
 
@@ -1055,7 +1055,7 @@ while (list($UserID, $Passkey) = $app->dbOld->next_record()) {
 }
 
 $feed->populate('torrents_all', $item);
-$feed->populate('torrents_'.strtolower($Type), $item);
+$feed->populate('torrents_' . strtolower($Type), $item);
 $app->debug["messages"]->info('notifications handled');
 
 # Clear cache

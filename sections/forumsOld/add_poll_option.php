@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -53,10 +53,10 @@ $app->dbOld->query("
 UPDATE
   `forums_polls`
 SET
-  `Answers` = '".db_string($Answers)."'
+  `Answers` = '" . db_string($Answers) . "'
 WHERE
   `TopicID` = $ThreadID
 ");
 $app->cache->delete("polls_$ThreadID");
 
-Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
+Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");

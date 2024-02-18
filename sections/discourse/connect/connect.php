@@ -15,7 +15,7 @@ declare(strict_types=1);
  * nonce=ABCD&return_sso_url=https%3A%2F%2Fdiscourse_site%2Fsession%2Fsso_login, this raw payload is base 64 219 encoded.
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 $payload ??= null;
 $signature ??= null;
@@ -43,7 +43,7 @@ if ($hmac !== $signature) {
 # todo
 /*
 $query = "select id from users_main where email = ?";
-$good = $app->dbNew->single($query, [ \Gazelle\Crypto::encrypt($app->user->email) ]);
+$good = $app->dbNew->single($query, [ Gazelle\Crypto::encrypt($app->user->email) ]);
 if (!$good) {
     throw new Exception("user email doesn't exist");
 }
@@ -64,4 +64,4 @@ if (!$good) {
 
 # 6. Redirect back to the return_sso_url with an sso and sig query parameter (http://discourse_site/session/sso_login?sso=payload&sig=sig)
 # todo
-#Http::redirect("https://discourse_site/session/sso_login?sso={$payload}&sig={$sig}");
+#Gazelle\Http::redirect("https://discourse_site/session/sso_login?sso={$payload}&sig={$sig}");

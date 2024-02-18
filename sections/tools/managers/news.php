@@ -7,20 +7,20 @@ declare(strict_types=1);
  * site news
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-#Http::csrf();
+#Gazelle\Http::csrf();
 
 if (!check_perms("admin_manage_news")) {
     error(403);
 }
 
 # variables
-$get = Http::request("get");
+$get = Gazelle\Http::request("get");
 $get["newsId"] ??= null;
 $get["delete"] ??= null;
 
-$post = Http::request("post");
+$post = Gazelle\Http::request("post");
 $post["newsId"] ??= null;
 $post["formAction"] ??= null;
 $post["subject"] ??= null;
@@ -38,7 +38,7 @@ if ($post["formAction"] === "create") {
     $app->cache->delete("news_latest_title");
     $app->cache->delete("news");
 
-    Http::redirect();
+    Gazelle\Http::redirect();
 }
 
 # read

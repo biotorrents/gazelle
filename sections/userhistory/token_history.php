@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Non-mods and empty userid show $app->user->core['id']'s history.
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # Validate user ID
 if (isset($_GET['userid'])) {
@@ -69,12 +69,12 @@ if (isset($_GET['expire'])) {
             ['info_hash' => substr('%' . chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
         );
     }
-    Http::redirect("userhistory.php?action=token_history&userid=$UserID");
+    Gazelle\Http::redirect("userhistory.php?action=token_history&userid=$UserID");
 }
 
 # Render HTML
 View::header('Freeleech token history');
-list($Page, $Limit) = \Gazelle\Format::page_limit(25);
+list($Page, $Limit) = Gazelle\Format::page_limit(25);
 
 $app->dbOld->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
@@ -105,7 +105,7 @@ LIMIT $Limit
 $Tokens = $app->dbOld->to_array();
 $app->dbOld->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
-$Pages = \Gazelle\Format::get_pages($Page, $NumResults, 25);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, 25);
 ?>
 
 <div class="header">
@@ -171,7 +171,7 @@ foreach ($Tokens as $Token) {
 
     <?php if (check_perms('users_mod')) { ?>
     <td>
-      <?= \Gazelle\Format::get_size($Downloaded) ?>
+      <?= Gazelle\Format::get_size($Downloaded) ?>
     </td>
 
     <td>

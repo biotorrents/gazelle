@@ -7,17 +7,17 @@ declare(strict_types=1);
  * torrent client whitelist
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 if (!check_perms("admin_whitelist")) {
     error(403);
 }
 
 # query
-$post = Http::request("post");
+$post = Gazelle\Http::request("post");
 #!d($post);
 
 # create

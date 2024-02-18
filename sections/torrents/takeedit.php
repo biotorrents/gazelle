@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 //******************************************************************************//
 //--------------- Take edit ----------------------------------------------------//
@@ -61,7 +61,7 @@ if (check_perms('torrents_freeleech')) {
     if ($Free == 0) {
         $FreeType = 0;
     } else {
-        $FreeType = (int)$_POST['freeleechtype'];
+        $FreeType = (int) $_POST['freeleechtype'];
         if (!in_array($Free, array(0, 1, 2, 3))) {
             error(404);
         }
@@ -113,7 +113,7 @@ if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
 $AmazonReg = '/(http:\/\/ecx.images-amazon.com\/images\/.+)(\._.*_\.jpg)/i';
 $Matches = [];
 if (preg_match($RegX, $Properties['Image'], $Matches)) {
-    $Properties['Image'] = $Matches[1].'.jpg';
+    $Properties['Image'] = $Matches[1] . '.jpg';
 }
 
 if ($Err) { // Show the upload form, with the data the user entered
@@ -130,7 +130,7 @@ if ($Err) { // Show the upload form, with the data the user entered
 // Shorten and escape $Properties for database input
 $T = [];
 foreach ($Properties as $Key => $Value) {
-    $T[$Key] = "'".db_string(trim($Value))."'";
+    $T[$Key] = "'" . db_string(trim($Value)) . "'";
     if (!$T[$Key]) {
         $T[$Key] = null;
     }
@@ -165,9 +165,9 @@ foreach ($dbTorVals as $Key => $Value) {
         }
 
         if ($LogDetails == '') {
-            $LogDetails = "$Key: $Value -> ".$T[$Key];
+            $LogDetails = "$Key: $Value -> " . $T[$Key];
         } else {
-            $LogDetails = "$LogDetails, $Key: $Value -> ".$T[$Key];
+            $LogDetails = "$LogDetails, $Key: $Value -> " . $T[$Key];
         }
     }
 }
@@ -276,7 +276,7 @@ $app->dbOld->query("
   WHERE `id` = $GroupID");
 list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$app->user->core['username']." ($LogDetails)"); // TODO: this is probably broken
+Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by " . $app->user->core['username'] . " ($LogDetails)"); // TODO: this is probably broken
 Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $LogDetails, 0);
 
 $app->cache->delete("torrents_details_$GroupID");
@@ -285,4 +285,4 @@ $app->cache->delete("torrent_download_$TorrentID");
 Torrents::update_hash($GroupID);
 // All done!
 
-Http::redirect("torrents.php?id=$GroupID");
+Gazelle\Http::redirect("torrents.php?id=$GroupID");

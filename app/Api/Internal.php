@@ -30,7 +30,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["secret"] ??= null;
         $request["code"] ??= null;
 
@@ -61,7 +61,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["secret"] ??= null;
         $request["code"] ??= null;
 
@@ -220,7 +220,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["credentialId"] ??= null;
 
         if (empty($request["credentialId"])) {
@@ -254,7 +254,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["name"] ??= null;
         $request["permissions"] ??= [];
 
@@ -281,7 +281,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["tokenId"] ??= null;
 
         if (empty($request["tokenId"])) {
@@ -433,7 +433,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["groupId"] ??= null;
         $request["tagIds"] ??= null;
 
@@ -471,7 +471,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
 
         try {
             \Bookmarks::create(
@@ -499,7 +499,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
 
         try {
             \Bookmarks::delete(
@@ -530,7 +530,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $paperId = trim($request["paperId"] ?? null);
 
         if (empty($paperId)) {
@@ -643,7 +643,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
 
         try {
             \Gazelle\Friends::create($request);
@@ -668,7 +668,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["friendId"] ??= null;
         $request["comment"] ??= null;
 
@@ -699,7 +699,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["friendId"] ??= null;
 
         if (empty($request["friendId"])) {
@@ -732,7 +732,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["articleId"] ??= null;
         $request["alias"] ??= null;
 
@@ -760,7 +760,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["articleId"] ??= null;
         $request["alias"] ??= null;
 
@@ -788,7 +788,7 @@ class Internal extends Base
 
         self::validateFrontendHash();
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["articleId"] ??= null;
 
         try {

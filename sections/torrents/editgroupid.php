@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /***************************************************************
 * This page handles the backend of the "edit group ID" function
@@ -21,7 +21,7 @@ if (!is_numeric($OldGroupID) || !is_numeric($GroupID) || !is_numeric($TorrentID)
     error(0);
 }
 if ($OldGroupID == $GroupID) {
-    header('Location: '.$_SERVER['HTTP_REFERER']);
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     error();
 }
 
@@ -34,7 +34,7 @@ if (empty($_POST['confirm'])) {
     if (!$app->dbOld->has_results()) {
         //Trying to move to an empty group? I think not!
         set_message('The destination torrent group does not exist!');
-        header('Location: '.$_SERVER['HTTP_REFERER']);
+        header('Location: ' . $_SERVER['HTTP_REFERER']);
         error();
     }
     list($Name) = $app->dbOld->next_record();
@@ -111,5 +111,5 @@ if (empty($_POST['confirm'])) {
     $app->cache->delete("torrents_details_$GroupID");
     $app->cache->delete("torrent_download_$TorrentID");
 
-    Http::redirect("torrents.php?id=$GroupID");
+    Gazelle\Http::redirect("torrents.php?id=$GroupID");
 }

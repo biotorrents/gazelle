@@ -28,7 +28,7 @@ class BonusPoints extends Base
             self::failure(400, "no item selected");
         }
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
         $request["amount"] ??= null;
         $request["delete"] ??= null;
         $request["emoji"] ??= null;

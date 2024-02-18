@@ -27,7 +27,7 @@ class Session
     public function __construct(string $username = "")
     {
         # relies on cookies
-        $cookie = Http::request("cookie");
+        $cookie = \Gazelle\Http::request("cookie");
 
         # attempt to read cookies
         $this->id = $cookie["session"] ?? null;
@@ -55,10 +55,10 @@ class Session
     public function enforceLogin()
     {
         # sanitize request
-        $server = Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         if (!$this->id || !$this->userId) {
-            Http::createCookie(["redirect" => $server["REQUEST_URI"]]);
+            \Gazelle\Http::createCookie(["redirect" => $server["REQUEST_URI"]]);
             $this->logoutAll();
         }
     }
@@ -80,8 +80,8 @@ class Session
         /*
         $app = \Gazelle\App::go();
 
-        $request = Http::request("request");
-        $server = Http::request("server");
+        $request = \Gazelle\Http::request("request");
+        $server = \Gazelle\Http::request("server");
 
         # ugly workaround for API tokens
         if (!empty($server["HTTP_AUTHORIZATION"]) && $api === true) {
@@ -112,9 +112,9 @@ class Session
     {
         $app = \Gazelle\App::go();
 
-        Http::deleteCookie("session");
-        Http::deleteCookie("userid");
-        Http::deleteCookie("keeplogged");
+        \Gazelle\Http::deleteCookie("session");
+        \Gazelle\Http::deleteCookie("userid");
+        \Gazelle\Http::deleteCookie("keeplogged");
 
         if ($this->id) {
             $app->dbOld->prepared_query("
@@ -129,7 +129,7 @@ class Session
         $app->cache->delete("user_info_heavy_{$this->userId}");
 
         # send to login
-        #Http::redirect("login");
+        #\Gazelle\Http::redirect("login");
     }
     */
 
@@ -164,7 +164,7 @@ class Session
     {
         $app = \Gazelle\App::go();
 
-        $server = Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         $attempts = $this->attempts++;
         $app->cache->set("login_attempts_{$server["REMOTE_ADDR"]}", [$attempts, ($attempts > 5)], 60 * 60 * $attempts);

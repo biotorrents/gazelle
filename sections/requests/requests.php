@@ -6,9 +6,9 @@ declare(strict_types=1);
  * request search page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$get = Http::request("get");
+$get = Gazelle\Http::request("get");
 
 # workaround for main navigation search
 $get["search"] ??= null;
@@ -69,7 +69,7 @@ $queryString = http_build_query($get);
 #!d($queryString);
 
 # search manticore
-$manticore = new \Gazelle\Manticore();
+$manticore = new Gazelle\Manticore();
 $searchResults = $manticore->search("requests", $get);
 $resultCount = count($searchResults);
 #!d($searchResults);
@@ -120,13 +120,13 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 /** request info */
 
 
-# \Gazelle\Requests::get_requests
+# Gazelle\Requests::get_requests
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("requests", "get request data");
 $requestIds = array_column($searchResults, "id");
 $requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
 
-$requestData = \Gazelle\Requests::get_requests($requestIds);
+$requestData = Gazelle\Requests::get_requests($requestIds);
 $app->debug["time"]->stopMeasure("requests", "get request data");
 #!d($requestData);
 
@@ -479,11 +479,11 @@ if ($NumResults > 0) {
         if (($Page - 1) * REQUESTS_PER_PAGE > $NumResults) {
             $Page = 0;
         }
-        $PageLinks = \Gazelle\Format::get_pages($Page, $NumResults, REQUESTS_PER_PAGE);
+        $PageLinks = Gazelle\Format::get_pages($Page, $NumResults, REQUESTS_PER_PAGE);
     }
 }
 
-$CurrentURL = \Gazelle\Format::get_url(array('order', 'sort', 'page'));
+$CurrentURL = Gazelle\Format::get_url(array('order', 'sort', 'page'));
 View::header($Title, 'requests');
 ?>
 
@@ -537,7 +537,7 @@ View::header($Title, 'requests');
                     </td>
                     <td>
                         <input type="search" name="search" size="60" class="inputtext" placeholder="Search Terms" value="<?php if (isset($_GET['search'])) {
-                            echo \Gazelle\Text::esc($_GET['search']);
+                            echo Gazelle\Text::esc($_GET['search']);
                         } ?>" />
                     </td>
                 </tr>
@@ -549,10 +549,10 @@ View::header($Title, 'requests');
                     <td>
                         <input type="search" name="tags" id="tags" size="50" class="inputtext"
                             placeholder="Tags (comma-separated)"
-                            value="<?=!empty($TagNames) ? \Gazelle\Text::esc($TagNames) : ''?>" />&nbsp;
-                        <input type="radio" name="tags_type" id="tags_type0" value="0" <?php \Gazelle\Format::selected('tags_type', 0, 'checked')?>
+                            value="<?=!empty($TagNames) ? Gazelle\Text::esc($TagNames) : ''?>" />&nbsp;
+                        <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Gazelle\Format::selected('tags_type', 0, 'checked')?>
                         /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-                        <input type="radio" name="tags_type" id="tags_type1" value="1" <?php \Gazelle\Format::selected('tags_type', 1, 'checked')?>
+                        <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Gazelle\Format::selected('tags_type', 1, 'checked')?>
                         /><label for="tags_type1"> All</label>
                     </td>
                 </tr>
@@ -561,7 +561,7 @@ View::header($Title, 'requests');
                 <tr>
                   <td class="label"><!-- Requested By --></td>
                     <td>
-                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=\Gazelle\Text::esc($_GET['requester'])?>">
+                      <input type="search" name="requester" size="60" class="inputtext" placeholder="Requested By" value="<?=Gazelle\Text::esc($_GET['requester'])?>">
                     </td>
                 </tr>
                 */ ?>
@@ -675,7 +675,7 @@ View::header($Title, 'requests');
         <?php
             } else {
                 $TimeCompare = 1267643718; // Requests v2 was implemented 2010-03-03 20:15:18
-                $Requests = \Gazelle\Requests::get_requests(array_keys($SphRequests));
+                $Requests = Gazelle\Requests::get_requests(array_keys($SphRequests));
                 foreach ($Requests as $RequestID => $Request) {
                     $SphRequest = $SphRequests[$RequestID];
                     $Bounty = $SphRequest['bounty'] * 1024; // Sphinx stores bounty in kB
@@ -696,12 +696,12 @@ View::header($Title, 'requests');
 
                     $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
 
-                    $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
+                    $ArtistForm = Gazelle\Requests::get_artists($RequestID);
                     $ArtistLink = Artists::display_artists($ArtistForm, true, true);
                     $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
                     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                        $FullName .= 'data-cover="' . \Gazelle\Images::process($Request['Image']) . '" ';
+                        $FullName .= 'data-cover="' . Gazelle\Images::process($Request['Image']) . '" ';
                     }
 
                     $FullName .= "dir='ltr'>$Title</span></a>";
@@ -722,8 +722,8 @@ View::header($Title, 'requests');
 
         <tr class="request">
             <td class="center categoryColumn">
-                <div title="<?=\Gazelle\Format::pretty_category($Request['CategoryID'])?>"
-                    class="tooltip <?=\Gazelle\Format::css_category($Request['CategoryID'])?>">
+                <div title="<?=Gazelle\Format::pretty_category($Request['CategoryID'])?>"
+                    class="tooltip <?=Gazelle\Format::css_category($Request['CategoryID'])?>">
                 </div>
             </td>
             <td>
@@ -735,14 +735,14 @@ View::header($Title, 'requests');
     $TagList = [];
                     foreach ($Request['Tags'] as $TagID => $TagName) {
                         $Split = Tags::get_name_and_class($TagName);
-                        $TagList[] = '<a class="' . $Split['class'] . '" href="?tags=' . $TagName . ($BookmarkView ? '&amp;type=requests' : '') . '">' . \Gazelle\Text::esc($Split['name']) . '</a>';
+                        $TagList[] = '<a class="' . $Split['class'] . '" href="?tags=' . $TagName . ($BookmarkView ? '&amp;type=requests' : '') . '">' . Gazelle\Text::esc($Split['name']) . '</a>';
                     }
                     $TagList = implode(', ', $TagList); ?>
                     <?=$TagList?>
                 </div>
             </td>
             <td class="nobr">
-                <span id="vote_count_<?=$RequestID?>"><?=\Gazelle\Text::float($VoteCount)?></span>
+                <span id="vote_count_<?=$RequestID?>"><?=Gazelle\Text::float($VoteCount)?></span>
                 <?php if (!$IsFilled && check_perms('site_vote')) { ?>
                 &nbsp;&nbsp; <a
                     href="javascript:Vote(0, <?=$RequestID?>)"
@@ -750,7 +750,7 @@ View::header($Title, 'requests');
                 <?php } ?>
             </td>
             <td class="number_column nobr">
-                <?=\Gazelle\Format::get_size($Bounty)?>
+                <?=Gazelle\Format::get_size($Bounty)?>
             </td>
             <td class="nobr">
                 <?php if ($IsFilled) { ?>

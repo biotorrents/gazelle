@@ -330,7 +330,7 @@ class TorrentFunctions
         /*
         function filelist($Str)
         {
-            return "</td>\n<td>" . \Gazelle\\Gazelle\Format::get_size($Str[1]) . "</td>\n</tr>";
+            return "</td>\n<td>" . \Gazelle\Format::get_size($Str[1]) . "</td>\n</tr>";
         }
         */
 

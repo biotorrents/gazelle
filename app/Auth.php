@@ -69,7 +69,7 @@ class Auth # extends Delight\Auth\Auth
      * Returns a variety of different responses, unlike most.
      * We want them to register *before* they get vague messages.
      *
-     * @param array $post Http::request("post")
+     * @param array $post Gazelle\Http::request("post")
      * @return string|int error or userId
      *
      * @see https://github.com/delight-im/PHP-Auth#registration-sign-up
@@ -204,7 +204,7 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # http query vars
-        $server = Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         # escape the inputs
         $email = \Gazelle\Esc::email($data["email"] ?? null);
@@ -858,7 +858,7 @@ class Auth # extends Delight\Auth\Auth
             $this->library->destroySession();
 
             # flush all the cookies
-            Http::flushCookies();
+            \Gazelle\Http::flushCookies();
 
             # database: gazelle session
             $this->flushSessions();
@@ -1036,7 +1036,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = \Gazelle\App::go();
 
-        $server = Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         $query = "
             insert into users_sessions
@@ -1060,8 +1060,8 @@ class Auth # extends Delight\Auth\Auth
 
         $app->dbNew->do($query, $data);
 
-        Http::createCookie([ "sessionId" => $data["sessionId"] ], $expires);
-        Http::createCookie([ "userId" => $userId ], $expires);
+        \Gazelle\Http::createCookie([ "sessionId" => $data["sessionId"] ], $expires);
+        \Gazelle\Http::createCookie([ "userId" => $userId ], $expires);
     }
 
 
@@ -1104,7 +1104,7 @@ class Auth # extends Delight\Auth\Auth
         $query = "delete from users_sessions where sessionId = ?";
         $app->dbNew->do($query, [$sessionId]);
 
-        Http::flushCookies();
+        \Gazelle\Http::flushCookies();
     }
 
 
@@ -1118,7 +1118,7 @@ class Auth # extends Delight\Auth\Auth
         $query = "delete from users_sessions where userId = ?";
         $app->dbNew->do($query, [ $app->user->core["id"] ]);
 
-        Http::flushCookies();
+        \Gazelle\Http::flushCookies();
     }
 
 

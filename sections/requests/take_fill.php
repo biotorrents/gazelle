@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Fill a request
@@ -127,7 +127,7 @@ WHERE
   `ID` = '$RequestID'
 ");
 
-$ArtistForm = \Gazelle\Requests::get_artists($RequestID);
+$ArtistForm = Gazelle\Requests::get_artists($RequestID);
 $ArtistName = Artists::display_artists($ArtistForm, false, true);
 $FullName = $ArtistName . $Title;
 
@@ -146,11 +146,11 @@ foreach ($UserIDs as $User) {
     Misc::send_pm($VoterID, 0, "The request \"$FullName\" has been filled", 'One of your requests&#8202;&mdash;&#8202;[url=' . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . '[/url]&#8202;&mdash;&#8202;has been filled. You can view it here: [url]' . site_url() . "torrents.php?torrentid=$TorrentID" . '[/url]');
 }
 if ($UploaderID != $FillerID) {
-    Misc::send_pm($UploaderID, 0, "The request \"$FullName\" has been filled with your torrent", 'The request&#8202;&mdash;&#8202;[url=' . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . '[/url]&#8202;&mdash;&#8202;has been filled with a torrent you uploaded. You automatically received ' . \Gazelle\Format::get_size($RequestVotes['TotalBounty'] * (3 / 4)) . ' of the total bounty. You can view the torrent you uploaded here: [url]' . site_url() . "torrents.php?torrentid=$TorrentID" . '[/url]');
+    Misc::send_pm($UploaderID, 0, "The request \"$FullName\" has been filled with your torrent", 'The request&#8202;&mdash;&#8202;[url=' . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . '[/url]&#8202;&mdash;&#8202;has been filled with a torrent you uploaded. You automatically received ' . Gazelle\Format::get_size($RequestVotes['TotalBounty'] * (3 / 4)) . ' of the total bounty. You can view the torrent you uploaded here: [url]' . site_url() . "torrents.php?torrentid=$TorrentID" . '[/url]');
 }
 
-$RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
-Misc::write_log("Request $RequestID ($FullName) was filled by user $FillerID ($FillerUsername) with the torrent $TorrentID for a " . \Gazelle\Format::get_size($RequestVotes['TotalBounty']) . ' bounty.');
+$RequestVotes = Gazelle\Requests::get_votes_array($RequestID);
+Misc::write_log("Request $RequestID ($FullName) was filled by user $FillerID ($FillerUsername) with the torrent $TorrentID for a " . Gazelle\Format::get_size($RequestVotes['TotalBounty']) . ' bounty.');
 
 // Give bounty
 $app->dbOld->prepared_query("
@@ -185,4 +185,4 @@ foreach ($ArtistIDs as $ArtistID) {
     $app->cache->delete("artists_requests_" . $ArtistID[0]);
 }
 
-Http::redirect("requests.php?action=view&id=$RequestID");
+Gazelle\Http::redirect("requests.php?action=view&id=$RequestID");

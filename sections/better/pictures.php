@@ -7,14 +7,14 @@ declare(strict_types=1);
  * pictures
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$get = Http::request("get");
+$get = Gazelle\Http::request("get");
 $snatchedOnly = (!empty($get["snatches"]))
     ? true
     : false;
 
-$torrentGroups = \Gazelle\Better::missingPictures($snatchedOnly);
+$torrentGroups = Gazelle\Better::missingPictures($snatchedOnly);
 #!d($torrentGroups);exit;
 
 # twig template

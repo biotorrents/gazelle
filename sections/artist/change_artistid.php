@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -11,8 +11,8 @@ if (!check_perms('torrents_edit')) {
 if (!empty($_POST['newartistid']) && !empty($_POST['newartistname'])) {
     error('Please enter a valid artist ID number or a valid artist name.');
 }
-$ArtistID = (int)$_POST['artistid'];
-$NewArtistID = (int)$_POST['newartistid'];
+$ArtistID = (int) $_POST['artistid'];
+$NewArtistID = (int) $_POST['newartistid'];
 $NewArtistName = $_POST['newartistname'];
 
 
@@ -155,9 +155,9 @@ if (isset($_POST['confirm'])) {
     DELETE FROM artists_group
     WHERE ArtistID = $ArtistID");
 
-    Misc::write_log("The artist $ArtistID ($ArtistName) was made into a non-redirecting alias of artist $NewArtistID ($NewArtistName) by user ".$app->user->core['id']." (".$app->user->core['username'].')');
+    Misc::write_log("The artist $ArtistID ($ArtistName) was made into a non-redirecting alias of artist $NewArtistID ($NewArtistName) by user " . $app->user->core['id'] . " (" . $app->user->core['username'] . ')');
 
-    Http::redirect("artist.php?action=edit&artistid=$NewArtistID");
+    Gazelle\Http::redirect("artist.php?action=edit&artistid=$NewArtistID");
 } else {
     View::header('Merging Artists'); ?>
 <div class="header">
@@ -173,8 +173,8 @@ if (isset($_POST['confirm'])) {
   <input type="hidden" name="confirm" value="1">
   <div style="text-align: center;">
     <p>Please confirm that you wish to make <a
-        href="artist.php?id=<?=$ArtistID?>"><?=\Gazelle\Text::esc($ArtistName)?> (<?=$ArtistID?>)</a> into a non-redirecting alias of <a
-        href="artist.php?id=<?=$NewArtistID?>"><?=\Gazelle\Text::esc($NewArtistName)?> (<?=$NewArtistID?>)</a>.</p>
+        href="artist.php?id=<?=$ArtistID?>"><?=Gazelle\Text::esc($ArtistName)?> (<?=$ArtistID?>)</a> into a non-redirecting alias of <a
+        href="artist.php?id=<?=$NewArtistID?>"><?=Gazelle\Text::esc($NewArtistName)?> (<?=$NewArtistID?>)</a>.</p>
     <br>
     <input type="submit" value="Confirm">
   </div>

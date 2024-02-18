@@ -101,9 +101,9 @@ class User
         $this->session = $_SESSION;
 
         # untrusted input
-        $userId = Http::readCookie("userId") ?? null;
-        $sessionId = Http::readCookie("sessionId") ?? null;
-        $server = Http::request("server") ?? null;
+        $userId = \Gazelle\Http::readCookie("userId") ?? null;
+        $sessionId = \Gazelle\Http::readCookie("sessionId") ?? null;
+        $server = \Gazelle\Http::request("server") ?? null;
 
         # unauthenticated, no cookies
         if (!$userId || !$sessionId) {

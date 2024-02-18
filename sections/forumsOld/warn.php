@@ -1,13 +1,13 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('users_warn')) {
     error(404);
 }
 
-Http::assertRequest($_POST, array('postid', 'userid', 'key'));
+Gazelle\Http::assertRequest($_POST, array('postid', 'userid', 'key'));
 $PostID = (int) $_POST['postid'];
 $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];

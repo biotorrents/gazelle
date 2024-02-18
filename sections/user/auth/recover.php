@@ -7,16 +7,16 @@ declare(strict_types=1);
  * account recovery page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 $auth = new Auth();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # variables
-$post = Http::request("post");
-$server = Http::request("server");
+$post = Gazelle\Http::request("post");
+$server = Gazelle\Http::request("server");
 
 # did we send an email?
 $emailSent ??= false;
@@ -28,8 +28,8 @@ $emailSent ??= false;
 
 $stepOne ??= null;
 
-$email = \Gazelle\Esc::email($post["email"] ?? null);
-$ip = \Gazelle\Esc::ip($server["REMOTE_ADDR"] ?? null);
+$email = Gazelle\Esc::email($post["email"] ?? null);
+$ip = Gazelle\Esc::ip($server["REMOTE_ADDR"] ?? null);
 
 if (!empty($email) && !empty($ip)) {
     try {
@@ -71,13 +71,13 @@ if (!empty($selector) && !empty($token)) {
 
 $stepThree ??= null;
 
-$passphrase = \Gazelle\Esc::string($post["passphrase"] ?? null);
-$confirmPassphrase = \Gazelle\Esc::string($post["confirmPassphrase"] ?? null);
+$passphrase = Gazelle\Esc::string($post["passphrase"] ?? null);
+$confirmPassphrase = Gazelle\Esc::string($post["confirmPassphrase"] ?? null);
 
 if (!empty($passphrase) && !empty($confirmPassphrase)) {
     # putting these here to not mess up recoverMiddle
-    $selector = \Gazelle\Esc::string($post["selector"] ?? null);
-    $token = \Gazelle\Esc::string($post["token"] ?? null);
+    $selector = Gazelle\Esc::string($post["selector"] ?? null);
+    $token = Gazelle\Esc::string($post["token"] ?? null);
 
     if (!empty($selector) && !empty($token)) {
         try {

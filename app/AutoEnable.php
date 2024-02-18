@@ -53,7 +53,7 @@ EOT;
         $app = \Gazelle\App::go();
 
         if (empty($Username)) {
-            Http::redirect('login');
+            \Gazelle\Http::redirect('login');
         }
 
         // Get the user's ID
@@ -122,7 +122,7 @@ EOT;
 
             // Cache the number of requests for the modbar
             $app->cache->increment(self::CACHE_KEY_NAME);
-            Http::deleteCookie('username');
+            \Gazelle\Http::deleteCookie('username');
             $Output = self::RECEIVED_MESSAGE;
 
             Tools::update_user_notes(

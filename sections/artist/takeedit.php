@@ -2,7 +2,7 @@
 
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 /*********************************************************************\
@@ -66,4 +66,4 @@ $app->dbOld->query("
 
 // There we go, all done!
 $app->cache->delete("artist_$ArtistID"); // Delete artist cache
-Http::redirect("artist.php?id=$ArtistID");
+Gazelle\Http::redirect("artist.php?id=$ArtistID");

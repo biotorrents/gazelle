@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
@@ -17,7 +17,7 @@ if (!apcu_exists('DBKEY')) {
     error('Decrypt database first');
 }
 
-$ENV = \Gazelle\ENV::go();
+$ENV = Gazelle\ENV::go();
 $UserID = $_POST['userid'];
 $DeleteKeys = false;
 
@@ -45,12 +45,12 @@ $Warned = isset($_POST['Warned']) ? 1 : 0;
 if (isset($_POST['Uploaded']) && isset($_POST['Downloaded'])) {
     $Uploaded = ($_POST['Uploaded'] === '' ? 0 : $_POST['Uploaded']);
     if ($Arithmetic = strpbrk($Uploaded, '+-')) {
-        $Uploaded += max(-$Uploaded, \Gazelle\Format::get_bytes($Arithmetic));
+        $Uploaded += max(-$Uploaded, Gazelle\Format::get_bytes($Arithmetic));
     }
 
     $Downloaded = ($_POST['Downloaded'] === '' ? 0 : $_POST['Downloaded']);
     if ($Arithmetic = strpbrk($Downloaded, '+-')) {
-        $Downloaded += max(-$Downloaded, \Gazelle\Format::get_bytes($Arithmetic));
+        $Downloaded += max(-$Downloaded, Gazelle\Format::get_bytes($Arithmetic));
     }
 
     if (!is_numeric($Uploaded) || !is_numeric($Downloaded)) {
@@ -163,7 +163,7 @@ $app->dbOld->query("
   GROUP BY m.ID");
 
 if (!$app->dbOld->has_results()) { // If user doesn't exist
-    Http::redirect("log.php?search=User+$UserID");
+    Gazelle\Http::redirect("log.php?search=User+$UserID");
 }
 
 $Cur = $app->dbOld->next_record(MYSQLI_ASSOC, false);
@@ -193,7 +193,7 @@ if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
     $app->cache->delete("user_info_$UserID");
     Tracker::update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
 
-    Http::redirect("log.php?search=User+$UserID");
+    Gazelle\Http::redirect("log.php?search=User+$UserID");
     error();
 }
 
@@ -308,11 +308,11 @@ if ($Username != $Cur['Username'] && check_perms('users_edit_usernames', $Cur['C
     if ($app->dbOld->next_record() > 0) {
         list($UsedUsernameID) = $app->dbOld->next_record();
         error("Username already in use by <a href=\"user.php?id=$UsedUsernameID\">$Username</a>");
-        Http::redirect("user.php?id=$UserID");
+        Gazelle\Http::redirect("user.php?id=$UserID");
         error();
     } elseif ($Username == '0' || $Username == '1') {
         error('You cannot set a username of "0" or "1".');
-        Http::redirect("user.php?id=$UserID");
+        Gazelle\Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Username = '$Username'";
@@ -325,7 +325,7 @@ if ($Title != db_string($Cur['Title']) && check_perms('users_edit_titles')) {
     // Using the unescaped value for the test to avoid confusion
     if (strlen($_POST['Title']) > 1024) {
         error("Custom titles have a maximum length of 1,024 characters.");
-        Http::redirect("user.php?id=$UserID");
+        Gazelle\Http::redirect("user.php?id=$UserID");
         error();
     } else {
         $UpdateSet[] = "Title = '$Title'";
@@ -396,14 +396,14 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
 if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && (check_perms('users_edit_ratio')
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
-    $EditSummary[] = "uploaded changed from " . \Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . \Gazelle\Format::get_size($Uploaded);
+    $EditSummary[] = "uploaded changed from " . Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
 if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && (check_perms('users_edit_ratio')
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
-    $EditSummary[] = "downloaded changed from " . \Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . \Gazelle\Format::get_size($Downloaded);
+    $EditSummary[] = "downloaded changed from " . Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
@@ -675,7 +675,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
         $TrackerUserUpdates = [];
     } elseif ($EnableUser == '1') {
         $app->cache->increment('stats_user_count');
-        $VisibleTrIP = ($Visible && \Gazelle\Crypto::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
+        $VisibleTrIP = ($Visible && Gazelle\Crypto::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
         Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
         if (($Cur['Downloaded'] == 0) || ($Cur['Uploaded'] / $Cur['Downloaded'] >= $Cur['RequiredRatio'])) {
@@ -684,7 +684,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
             $UpdateSet[] = "m.can_leech = '1'";
             $UpdateSet[] = "i.RatioWatchDownload = '0'";
         } else {
-            $EnableStr .= ' (Ratio: ' . \Gazelle\Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false) . ', RR: ' . \Gazelle\Text::float($Cur['RequiredRatio'], 2) . ')';
+            $EnableStr .= ' (Ratio: ' . Gazelle\Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false) . ', RR: ' . Gazelle\Text::float($Cur['RequiredRatio'], 2) . ')';
             if ($Cur['RatioWatchEnds']) {
                 $UpdateSet[] = "i.RatioWatchEnds = NOW()";
                 $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
@@ -702,7 +702,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
 }
 
 if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
-    $Passkey = db_string(\Gazelle\Text::random());
+    $Passkey = db_string(Gazelle\Text::random());
     $UpdateSet[] = "torrent_pass = '$Passkey'";
     $EditSummary[] = 'passkey reset';
     $HeavyUpdates['torrent_pass'] = $Passkey;
@@ -713,7 +713,7 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
 }
 
 if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
-    $Authkey = db_string(\Gazelle\Text::random());
+    $Authkey = db_string(Gazelle\Text::random());
     $UpdateSet[] = "AuthKey = '$Authkey'";
     $EditSummary[] = 'authkey reset';
     $HeavyUpdates['AuthKey'] = $Authkey;
@@ -738,12 +738,12 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
           SET
             um.Uploaded = 0,
             um.Downloaded = 0,
-            ui.AdminComment = CONCAT('" . sqltime() . ' - Stats (Uploaded: ' . \Gazelle\Format::get_size($MergeUploaded) . ', Downloaded: ' . \Gazelle\Format::get_size($MergeDownloaded) . ', Ratio: ' . \Gazelle\Format::get_ratio($MergeUploaded, $MergeDownloaded) . ') merged into ' . site_url() . "user.php?id=$UserID (" . $Cur['Username'] . ') by ' . $app->user->core['username'] . "\n\n', ui.AdminComment)
+            ui.AdminComment = CONCAT('" . sqltime() . ' - Stats (Uploaded: ' . Gazelle\Format::get_size($MergeUploaded) . ', Downloaded: ' . Gazelle\Format::get_size($MergeDownloaded) . ', Ratio: ' . Gazelle\Format::get_ratio($MergeUploaded, $MergeDownloaded) . ') merged into ' . site_url() . "user.php?id=$UserID (" . $Cur['Username'] . ') by ' . $app->user->core['username'] . "\n\n', ui.AdminComment)
           WHERE ID = $MergeID");
 
         $UpdateSet[] = "Uploaded = Uploaded + '$MergeUploaded'";
         $UpdateSet[] = "Downloaded = Downloaded + '$MergeDownloaded'";
-        $EditSummary[] = 'stats merged from ' . site_url() . "user.php?id=$MergeID ($MergeStatsFrom) (previous stats: Uploaded: " . \Gazelle\Format::get_size($Cur['Uploaded']) . ', Downloaded: ' . \Gazelle\Format::get_size($Cur['Downloaded']) . ', Ratio: ' . \Gazelle\Format::get_ratio($Cur['Uploaded'], $Cur['Downloaded']) . ')';
+        $EditSummary[] = 'stats merged from ' . site_url() . "user.php?id=$MergeID ($MergeStatsFrom) (previous stats: Uploaded: " . Gazelle\Format::get_size($Cur['Uploaded']) . ', Downloaded: ' . Gazelle\Format::get_size($Cur['Downloaded']) . ', Ratio: ' . Gazelle\Format::get_ratio($Cur['Uploaded'], $Cur['Downloaded']) . ')';
         $app->cache->delete("user_stats_$UserID");
         $app->cache->delete("user_stats_$MergeID");
     }
@@ -779,7 +779,7 @@ if (empty($UpdateSet) && empty($EditSummary)) {
         if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && check_perms('users_disable_any')) {
             $UpdateSet[] = "AdminComment = '$AdminComment'";
         } else {
-            Http::redirect("user.php?id=$UserID");
+            Gazelle\Http::redirect("user.php?id=$UserID");
             error();
         }
     } else {
@@ -850,7 +850,7 @@ if (isset($ClearStaffIDCache)) {
 }
 
 // redirect to user page
-Http::redirect("user.php?id=$UserID");
+Gazelle\Http::redirect("user.php?id=$UserID");
 
 function translateUserStatus($Status)
 {

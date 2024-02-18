@@ -7,7 +7,7 @@ declare(strict_types=1);
  * compare wiki article revisions
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # is there an identifier?
 $identifier ??= null;
@@ -18,11 +18,11 @@ if (!$identifier) {
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
     # no, it's not an integer, so it must be an alias
-    $identifier = \Gazelle\Wiki::getIdByAlias($identifier);
+    $identifier = Gazelle\Wiki::getIdByAlias($identifier);
 }
 
 # load the article
-$article = new \Gazelle\Wiki($identifier);
+$article = new Gazelle\Wiki($identifier);
 if (!$article->id) {
     $app->error(404);
 }
@@ -34,7 +34,7 @@ $revisions = $article->getAllRevisions();
 #!d($revisions);exit;
 
 # note the reversed order of the revisions
-$post = Http::post();
+$post = Gazelle\Http::post();
 $secondRevision = intval($post["secondRevision"] ?? null);
 $firstRevision = intval($post["firstRevision"] ?? null);
 

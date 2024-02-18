@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * This page handles the backend of the "new group" function
@@ -48,15 +48,15 @@ if (empty($_POST['confirm'])) {
       <input type="hidden" name="oldgroupid"
         value="<?=$OldGroupID?>">
       <input type="hidden" name="artist"
-        value="<?=\Gazelle\Text::esc($_POST['artist'])?>">
+        value="<?=Gazelle\Text::esc($_POST['artist'])?>">
       <input type="hidden" name="title"
-        value="<?=\Gazelle\Text::esc($_POST['title'])?>">
+        value="<?=Gazelle\Text::esc($_POST['title'])?>">
       <input type="hidden" name="year" value="<?=$Year?>">
       <h3>You are attempting to split the torrent <a
           href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a> off into a new group:</h3>
       <ul>
-        <li><?=\Gazelle\Text::esc($_POST['artist'])?> -
-          <?=\Gazelle\Text::esc($_POST['title'])?>
+        <li><?=Gazelle\Text::esc($_POST['artist'])?> -
+          <?=Gazelle\Text::esc($_POST['title'])?>
           [<?=$Year?>]
         </li>
       </ul>
@@ -122,5 +122,5 @@ if (empty($_POST['confirm'])) {
 
     Misc::write_log("Torrent $TorrentID was edited by " . $app->user->core['username']);
 
-    Http::redirect("torrents.php?id=$GroupID");
+    Gazelle\Http::redirect("torrents.php?id=$GroupID");
 }

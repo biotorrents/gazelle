@@ -2,18 +2,18 @@
 
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('users_warn')) {
     error(404);
 }
-Http::assertRequest($_POST, array('reason', 'privatemessage', 'body', 'length', 'postid'));
+Gazelle\Http::assertRequest($_POST, array('reason', 'privatemessage', 'body', 'length', 'postid'));
 
 $Reason = $_POST['reason'];
 $PrivateMessage = $_POST['privatemessage'];
 $Body = $_POST['body'];
 $Length = $_POST['length'];
-$PostID = (int)$_POST['postid'];
+$PostID = (int) $_POST['postid'];
 
 $app->dbOld->query("
   SELECT AuthorID
@@ -31,7 +31,7 @@ if ($UserInfo['Class'] > $app->user->extra['Class']) {
 
 $URL = site_url() . Comments::get_url_query($PostID);
 if ($Length !== 'verbal') {
-    $Time = (int)$Length * (7 * 24 * 60 * 60);
+    $Time = (int) $Length * (7 * 24 * 60 * 60);
     Tools::warn_user($AuthorID, $Time, "$URL - $Reason");
     $Subject = 'You have received a warning';
     $PrivateMessage = "You have received a $Length week warning for [url=$URL]this comment[/url].\n\n[quote]{$PrivateMessage}[/quote]";
@@ -47,4 +47,4 @@ Misc::send_pm($AuthorID, $app->user->core['id'], $Subject, $PrivateMessage);
 
 Comments::edit($PostID, $Body);
 
-Http::redirect("$URL");
+Gazelle\Http::redirect("$URL");

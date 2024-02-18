@@ -20,7 +20,7 @@ class Collages extends Base
     {
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
-        $request = \Http::json();
+        $request = \Gazelle\Http::json();
 
         try {
             $manticore = new \Gazelle\Manticore();

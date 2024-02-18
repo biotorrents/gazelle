@@ -7,15 +7,15 @@ declare(strict_types=1);
  * bonus points store
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$bonusPoints = new \Gazelle\BonusPoints();
+$bonusPoints = new Gazelle\BonusPoints();
 #!d($bonusPoints);exit;
 
 # are they converting currency?
-$post = Http::post();
+$post = Gazelle\Http::post();
 if (!empty($post)) {
-    Http::redirect("/store/confirm/exchange");
+    Gazelle\Http::redirect("/store/confirm/exchange");
 }
 
 /*

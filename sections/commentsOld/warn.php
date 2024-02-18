@@ -1,13 +1,13 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('users_warn')) {
     error(404);
 }
-Http::assertRequest($_POST, array('postid'));
+Gazelle\Http::assertRequest($_POST, array('postid'));
 
-$PostID = (int)$_POST['postid'];
+$PostID = (int) $_POST['postid'];
 $app->dbOld->query("
   SELECT Body, AuthorID
   FROM comments

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -53,7 +53,7 @@ $Artists = $_POST['idols'];
 // Escape fields
 $workgroup = db_string($_POST['studio']);
 $location = db_string($_POST['series']);
-$year = db_string((int)$_POST['year']);
+$year = db_string((int) $_POST['year']);
 $identifier = db_string($_POST['catalogue']);
 
 // Get some info for the group log
@@ -147,7 +147,7 @@ foreach ($Artists as $Artist) {
           `UserID` = '{$app->user->core['id']}'
         "); // Why does this even happen
 
-        $app->cache->delete('artist_groups_'.$ArtistID);
+        $app->cache->delete('artist_groups_' . $ArtistID);
     }
 }
 
@@ -188,7 +188,7 @@ foreach ($CurrArtists as $CurrArtist) {
             ");
 
 
-            $app->cache->delete('artist_groups_'.$ArtistID);
+            $app->cache->delete('artist_groups_' . $ArtistID);
 
             if (!$app->dbOld->has_results()) {
                 $app->dbOld->prepared_query("
@@ -226,4 +226,4 @@ while (list($TorrentID) = $app->dbOld->next_record()) {
 
 Torrents::update_hash($group_id);
 $app->cache->delete("torrents_details_$group_id");
-Http::redirect("torrents.php?id=$group_id");
+Gazelle\Http::redirect("torrents.php?id=$group_id");

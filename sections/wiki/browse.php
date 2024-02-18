@@ -7,17 +7,17 @@ declare(strict_types=1);
  * search the wiki
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-Http::csrf();
+Gazelle\Http::csrf();
 
-$get = Http::get();
-$post = Http::post();
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
 
 $searchWhat = $post["search"] ?? null;
 $titlesOnly = boolval($post["titlesOnly"] ?? false);
 
-$searchResults = \Gazelle\Wiki::search($searchWhat, $titlesOnly);
+$searchResults = Gazelle\Wiki::search($searchWhat, $titlesOnly);
 $resultCount = count($searchResults);
 
 # worry about pagination later, when the wiki is large

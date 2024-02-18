@@ -7,24 +7,24 @@ declare(strict_types=1);
  * top10 users
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 enforce_login();
 if (!check_perms("site_top10")) {
     error(403);
 }
 
-$get = Http::request("get");
-$limit = intval($get["limit"] ?? \Gazelle\Top10::$defaultLimit);
+$get = Gazelle\Http::request("get");
+$limit = intval($get["limit"] ?? Gazelle\Top10::$defaultLimit);
 
 # data
-$dataUploaded = \Gazelle\Top10::dataUploaded($limit);
-$dataDownloaded = \Gazelle\Top10::dataDownloaded($limit);
+$dataUploaded = Gazelle\Top10::dataUploaded($limit);
+$dataDownloaded = Gazelle\Top10::dataDownloaded($limit);
 
-$uploadCount = \Gazelle\Top10::uploadCount($limit);
+$uploadCount = Gazelle\Top10::uploadCount($limit);
 
-#$uploadSpeed = \Gazelle\Top10::uploadSpeed($limit);
-#$downloadSpeed = \Gazelle\Top10::downloadSpeed($limit);
+#$uploadSpeed = Gazelle\Top10::uploadSpeed($limit);
+#$downloadSpeed = Gazelle\Top10::downloadSpeed($limit);
 
 # template
 $app->twig->display("top10/users.twig", [

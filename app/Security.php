@@ -24,7 +24,7 @@ class Security
     public static function int(mixed ...$ids)
     {
         foreach ($ids as $id) {
-            return ($id !== abs(intval($id))) ?? Http::response(400);
+            return ($id !== abs(intval($id))) ?? \Gazelle\Http::response(400);
         }
     }
 }

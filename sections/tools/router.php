@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -23,8 +23,8 @@ $app = \Gazelle\App::go();
  * This page acts as a switch for the tools pages.
  */
 
-$ENV = \Gazelle\ENV::go();
-#!d(Http::request());exit;
+$ENV = Gazelle\ENV::go();
+#!d(Gazelle\Http::request());exit;
 
 if (isset($argv[1])) {
     $_REQUEST['action'] = $argv[1];
@@ -39,7 +39,7 @@ if (isset($argv[1])) {
 
 # Error checking
 if (!isset($_REQUEST['action'])) {
-    include serverRoot.'/sections/tools/tools.php';
+    include serverRoot . '/sections/tools/tools.php';
     #error('Need to set an "action" parameter in sections/tools/tools.php.');
 }
 
@@ -50,93 +50,93 @@ $Feed = new Feed();
 switch ($_REQUEST['action']) {
     // Managers
     case 'forum':
-        include serverRoot.'/sections/tools/managers/forum_list.php';
+        include serverRoot . '/sections/tools/managers/forum_list.php';
         break;
 
     case 'forum_alter':
-        include serverRoot.'/sections/tools/managers/forum_alter.php';
+        include serverRoot . '/sections/tools/managers/forum_alter.php';
         break;
 
     case 'whitelist':
-        include serverRoot.'/sections/tools/managers/whitelist_list.php';
+        include serverRoot . '/sections/tools/managers/whitelist_list.php';
         break;
 
     case 'whitelist_alter':
-        include serverRoot.'/sections/tools/managers/whitelist_alter.php';
+        include serverRoot . '/sections/tools/managers/whitelist_alter.php';
         break;
 
     case 'enable_requests':
-        include serverRoot.'/sections/tools/managers/enable_requests.php';
+        include serverRoot . '/sections/tools/managers/enable_requests.php';
         break;
 
     case 'ajax_take_enable_request':
         if (FEATURE_EMAIL_REENABLE) {
-            include serverRoot.'/sections/tools/managers/ajax_take_enable_request.php';
+            include serverRoot . '/sections/tools/managers/ajax_take_enable_request.php';
         } else {
             // Prevent post requests to the ajax page
-            Http::redirect("tools.php");
+            Gazelle\Http::redirect("tools.php");
             error();
         }
         break;
 
     case 'login_watch':
-        include serverRoot.'/sections/tools/managers/login_watch.php';
+        include serverRoot . '/sections/tools/managers/login_watch.php';
         break;
 
     case 'email_blacklist':
-        include serverRoot.'/sections/tools/managers/email_blacklist.php';
+        include serverRoot . '/sections/tools/managers/email_blacklist.php';
         break;
 
     case 'email_blacklist_alter':
-        include serverRoot.'/sections/tools/managers/email_blacklist_alter.php';
+        include serverRoot . '/sections/tools/managers/email_blacklist_alter.php';
         break;
 
     case 'email_blacklist_search':
-        include serverRoot.'/sections/tools/managers/email_blacklist_search.php';
+        include serverRoot . '/sections/tools/managers/email_blacklist_search.php';
         break;
 
     case 'news':
-        include serverRoot.'/sections/tools/managers/news.php';
+        include serverRoot . '/sections/tools/managers/news.php';
         break;
 
     case 'edit_tags':
-        include serverRoot.'/sections/tools/misc/tags.php';
+        include serverRoot . '/sections/tools/misc/tags.php';
         break;
 
     case 'tokens':
-        include serverRoot.'/sections/tools/managers/tokens.php';
+        include serverRoot . '/sections/tools/managers/tokens.php';
         break;
 
     case 'multiple_freeleech':
-        include serverRoot.'/sections/tools/managers/multiple_freeleech.php';
+        include serverRoot . '/sections/tools/managers/multiple_freeleech.php';
         break;
 
     case 'ocelot':
-        include serverRoot.'/sections/tools/managers/ocelot.php';
+        include serverRoot . '/sections/tools/managers/ocelot.php';
         break;
 
     case 'ocelot_info':
-        include serverRoot.'/sections/tools/data/ocelot_info.php';
+        include serverRoot . '/sections/tools/data/ocelot_info.php';
         break;
 
     case 'official_tags':
-        include serverRoot.'/sections/tools/managers/official_tags.php';
+        include serverRoot . '/sections/tools/managers/official_tags.php';
         break;
 
     case 'freeleech':
-        include serverRoot.'/sections/tools/managers/sitewide_freeleech.php';
+        include serverRoot . '/sections/tools/managers/sitewide_freeleech.php';
         break;
 
     case 'tag_aliases':
-        include serverRoot.'/sections/tools/managers/tag_aliases.php';
+        include serverRoot . '/sections/tools/managers/tag_aliases.php';
         break;
 
     case 'global_notification':
-        include serverRoot.'/sections/tools/managers/global_notification.php';
+        include serverRoot . '/sections/tools/managers/global_notification.php';
         break;
 
     case 'take_global_notification':
-        include serverRoot.'/sections/tools/managers/take_global_notification.php';
+        include serverRoot . '/sections/tools/managers/take_global_notification.php';
         break;
 
     case 'permissions':
@@ -155,7 +155,7 @@ switch ($_REQUEST['action']) {
               SELECT p.ID, p.Name, p.Abbreviation, p.Level, p.Secondary, p.PermittedForums, p.Values, p.DisplayStaff, COUNT(u.ID)
               FROM permissions AS p
                 LEFT JOIN users_main AS u ON u.PermissionID = p.ID
-              WHERE p.ID = '".db_string($_REQUEST['id'])."'
+              WHERE p.ID = '" . db_string($_REQUEST['id']) . "'
               GROUP BY p.ID");
                 list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $app->dbOld->next_record(MYSQLI_NUM, array(6));
 
@@ -173,7 +173,7 @@ switch ($_REQUEST['action']) {
                     $app->dbOld->prepared_query("
                   SELECT ID
                   FROM permissions
-                  WHERE Level = '".db_string($_REQUEST['level'])."'");
+                  WHERE Level = '" . db_string($_REQUEST['level']) . "'");
                     list($DupeCheck) = $app->dbOld->next_record();
 
                     if ($DupeCheck) {
@@ -184,7 +184,7 @@ switch ($_REQUEST['action']) {
                 $Values = [];
                 foreach ($_REQUEST as $Key => $Perms) {
                     if (substr($Key, 0, 5) === 'perm_') {
-                        $Values[substr($Key, 5)] = (int)$Perms;
+                        $Values[substr($Key, 5)] = (int) $Perms;
                     }
                 }
 
@@ -200,31 +200,31 @@ switch ($_REQUEST['action']) {
                     if (!is_numeric($_REQUEST['id'])) {
                         $app->dbOld->prepared_query("
                       INSERT INTO permissions (Level, Name, Abbreviation, Secondary, PermittedForums, `Values`, DisplayStaff)
-                      VALUES ('".db_string($Level)."',
-                        '".db_string($Name)."',
-                        '".db_string($Abbreviation)."',
+                      VALUES ('" . db_string($Level) . "',
+                        '" . db_string($Name) . "',
+                        '" . db_string($Abbreviation) . "',
                         $Secondary,
-                        '".db_string($Forums)."',
-                        '".db_string(serialize($Values))."',
-                        '".db_string($DisplayStaff)."')");
+                        '" . db_string($Forums) . "',
+                        '" . db_string(serialize($Values)) . "',
+                        '" . db_string($DisplayStaff) . "')");
                     } else {
                         $app->dbOld->prepared_query("
                       UPDATE permissions
-                      SET Level = '".db_string($Level)."',
-                        Name = '".db_string($Name)."',
-                        Abbreviation = '".db_string($Abbreviation)."',
+                      SET Level = '" . db_string($Level) . "',
+                        Name = '" . db_string($Name) . "',
+                        Abbreviation = '" . db_string($Abbreviation) . "',
                         Secondary = $Secondary,
-                        PermittedForums = '".db_string($Forums)."',
-                        `Values` = '".db_string(serialize($Values))."',
-                        DisplayStaff = '".db_string($DisplayStaff)."'
-                      WHERE ID = '".db_string($_REQUEST['id'])."'");
+                        PermittedForums = '" . db_string($Forums) . "',
+                        `Values` = '" . db_string(serialize($Values)) . "',
+                        DisplayStaff = '" . db_string($DisplayStaff) . "'
+                      WHERE ID = '" . db_string($_REQUEST['id']) . "'");
 
-                        $app->cache->delete('perm_'.$_REQUEST['id']);
+                        $app->cache->delete('perm_' . $_REQUEST['id']);
                         if ($Secondary) {
                             $app->dbOld->prepared_query("
                           SELECT DISTINCT UserID
                           FROM users_levels
-                          WHERE PermissionID = ".db_string($_REQUEST['id']));
+                          WHERE PermissionID = " . db_string($_REQUEST['id']));
 
                             while (list($UserID) = $app->dbOld->next_record()) {
                                 $app->cache->delete("user_info_heavy_$UserID");
@@ -237,17 +237,17 @@ switch ($_REQUEST['action']) {
                 }
             }
 
-            include serverRoot.'/sections/tools/managers/permissions_alter.php';
+            include serverRoot . '/sections/tools/managers/permissions_alter.php';
         } else {
             if (!empty($_REQUEST['removeid'])) {
                 $app->dbOld->prepared_query("
               DELETE FROM permissions
-              WHERE ID = '".db_string($_REQUEST['removeid'])."'");
+              WHERE ID = '" . db_string($_REQUEST['removeid']) . "'");
 
                 $app->dbOld->prepared_query("
               SELECT UserID
               FROM users_levels
-              WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
+              WHERE PermissionID = '" . db_string($_REQUEST['removeid']) . "'");
 
                 while (list($UserID) = $app->dbOld->next_record()) {
                     $app->cache->delete("user_info_$UserID");
@@ -255,12 +255,12 @@ switch ($_REQUEST['action']) {
                 }
                 $app->dbOld->prepared_query("
               DELETE FROM users_levels
-              WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
+              WHERE PermissionID = '" . db_string($_REQUEST['removeid']) . "'");
 
                 $app->dbOld->prepared_query("
               SELECT ID
               FROM users_main
-              WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
+              WHERE PermissionID = '" . db_string($_REQUEST['removeid']) . "'");
 
                 while (list($UserID) = $app->dbOld->next_record()) {
                     $app->cache->delete("user_info_$UserID");
@@ -269,64 +269,64 @@ switch ($_REQUEST['action']) {
 
                 $app->dbOld->prepared_query("
               UPDATE users_main
-              SET PermissionID = '".USER."'
-              WHERE PermissionID = '".db_string($_REQUEST['removeid'])."'");
+              SET PermissionID = '" . USER . "'
+              WHERE PermissionID = '" . db_string($_REQUEST['removeid']) . "'");
 
                 $app->cache->delete('classes');
             }
 
-            include serverRoot.'/sections/tools/managers/permissions_list.php';
+            include serverRoot . '/sections/tools/managers/permissions_list.php';
         }
         break;
 
     case 'ip_ban':
         // todo: Clean up DB table ip_bans
-        include serverRoot.'/sections/tools/managers/bans.php';
+        include serverRoot . '/sections/tools/managers/bans.php';
         break;
 
     case 'quick_ban':
-        include serverRoot.'/sections/tools/misc/quick_ban.php';
+        include serverRoot . '/sections/tools/misc/quick_ban.php';
         break;
 
         // Data
     case 'registration_log':
-        include serverRoot.'/sections/tools/data/registration_log.php';
+        include serverRoot . '/sections/tools/data/registration_log.php';
         break;
 
     case 'upscale_pool':
-        include serverRoot.'/sections/tools/data/upscale_pool.php';
+        include serverRoot . '/sections/tools/data/upscale_pool.php';
         break;
 
     case 'invite_pool':
-        include serverRoot.'/sections/tools/data/invite_pool.php';
+        include serverRoot . '/sections/tools/data/invite_pool.php';
         break;
 
     case 'service_stats':
-        include serverRoot.'/sections/tools/development/service_stats.php';
+        include serverRoot . '/sections/tools/development/service_stats.php';
         break;
         // END Data
 
         // Misc
     case 'manipulate_tree':
-        include serverRoot.'/sections/tools/misc/manipulate_tree.php';
+        include serverRoot . '/sections/tools/misc/manipulate_tree.php';
         break;
 
     case 'misc_values':
-        include serverRoot.'/sections/tools/development/misc_values.php';
+        include serverRoot . '/sections/tools/development/misc_values.php';
         break;
 
     case 'database_key':
-        include serverRoot.'/sections/tools/misc/database_key.php';
+        include serverRoot . '/sections/tools/misc/database_key.php';
         break;
 
     case 'mass_pm':
-        include serverRoot.'/sections/tools/managers/mass_pm.php';
+        include serverRoot . '/sections/tools/managers/mass_pm.php';
         break;
 
     case 'take_mass_pm':
-        include serverRoot.'/sections/tools/managers/take_mass_pm.php';
+        include serverRoot . '/sections/tools/managers/take_mass_pm.php';
         break;
 
     default:
-        include serverRoot.'/sections/tools/tools.php';
+        include serverRoot . '/sections/tools/tools.php';
 }

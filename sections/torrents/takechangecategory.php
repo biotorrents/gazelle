@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /***************************************************************
 * Temp handler for changing the category for a single torrent.
@@ -55,4 +55,4 @@ $app->dbOld->query("
   UPDATE group_log
   SET GroupID = $GroupID
   WHERE GroupID = $OldGroupID");
-Http::redirect("torrents.php?id=$GroupID");
+Gazelle\Http::redirect("torrents.php?id=$GroupID");

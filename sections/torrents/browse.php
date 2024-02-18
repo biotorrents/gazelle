@@ -7,10 +7,10 @@ declare(strict_types=1);
  * main torrent search interface
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # it's actually way better if this uses GET
-$get = Http::request("get");
+$get = Gazelle\Http::request("get");
 
 # workaround for main navigation search
 $get["search"] ??= null;

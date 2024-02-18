@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('site_torrents_notify')) {
     error(403);
@@ -22,8 +22,8 @@ if ($_POST['formid'] && is_numeric($_POST['formid'])) {
     $FormID = $_POST['formid'];
 }
 
-if ($_POST['artists'.$FormID]) {
-    $Artists = explode(',', $_POST['artists'.$FormID]);
+if ($_POST['artists' . $FormID]) {
+    $Artists = explode(',', $_POST['artists' . $FormID]);
     $ParsedArtists = [];
     foreach ($Artists as $Artist) {
         if (trim($Artist) !== '') {
@@ -31,54 +31,54 @@ if ($_POST['artists'.$FormID]) {
         }
     }
     if (count($ParsedArtists) > 0) {
-        $ArtistList = '|'.implode('|', $ParsedArtists).'|';
+        $ArtistList = '|' . implode('|', $ParsedArtists) . '|';
         $HasFilter = true;
     }
 }
 
-if ($_POST['newgroupsonly'.$FormID]) {
+if ($_POST['newgroupsonly' . $FormID]) {
     $NewGroupsOnly = '1';
     $HasFilter = true;
 } else {
     $NewGroupsOnly = '0';
 }
 
-if ($_POST['tags'.$FormID]) {
+if ($_POST['tags' . $FormID]) {
     $TagList = '|';
-    $Tags = explode(',', $_POST['tags'.$FormID]);
+    $Tags = explode(',', $_POST['tags' . $FormID]);
     foreach ($Tags as $Tag) {
-        $TagList.=db_string(trim($Tag)).'|';
+        $TagList .= db_string(trim($Tag)) . '|';
     }
     $HasFilter = true;
 }
 
-if ($_POST['nottags'.$FormID]) {
+if ($_POST['nottags' . $FormID]) {
     $NotTagList = '|';
-    $Tags = explode(',', $_POST['nottags'.$FormID]);
+    $Tags = explode(',', $_POST['nottags' . $FormID]);
     foreach ($Tags as $Tag) {
-        $NotTagList.=db_string(trim($Tag)).'|';
+        $NotTagList .= db_string(trim($Tag)) . '|';
     }
     $HasFilter = true;
 }
 
-if ($_POST['categories'.$FormID]) {
+if ($_POST['categories' . $FormID]) {
     $CategoryList = '|';
-    foreach ($_POST['categories'.$FormID] as $Category) {
-        $CategoryList.=db_string(trim($Category)).'|';
+    foreach ($_POST['categories' . $FormID] as $Category) {
+        $CategoryList .= db_string(trim($Category)) . '|';
     }
     $HasFilter = true;
 }
 
-if ($_POST['media'.$FormID]) {
+if ($_POST['media' . $FormID]) {
     $MediaList = '|';
-    foreach ($_POST['media'.$FormID] as $Medium) {
-        $MediaList.=db_string(trim($Medium)).'|';
+    foreach ($_POST['media' . $FormID] as $Medium) {
+        $MediaList .= db_string(trim($Medium)) . '|';
     }
     $HasFilter = true;
 }
 
-if ($_POST['users'.$FormID]) {
-    $Usernames = explode(',', $_POST['users'.$FormID]);
+if ($_POST['users' . $FormID]) {
+    $Usernames = explode(',', $_POST['users' . $FormID]);
     $EscapedUsernames = [];
     foreach ($Usernames as $Username) {
         $EscapedUsernames[] = db_string(trim($Username));
@@ -100,13 +100,13 @@ if ($_POST['users'.$FormID]) {
 
 if (!$HasFilter) {
     $Err = 'You must add at least one criterion to filter by';
-} elseif (!$_POST['label'.$FormID] && !$_POST['id'.$FormID]) {
+} elseif (!$_POST['label' . $FormID] && !$_POST['id' . $FormID]) {
     $Err = 'You must add a label for the filter set';
 }
 
 if ($Err) {
     error($Err);
-    Http::redirect("user.php?action=notify");
+    Gazelle\Http::redirect("user.php?action=notify");
     error();
 }
 
@@ -115,7 +115,7 @@ $TagList = str_replace('||', '|', $TagList);
 $NotTagList = str_replace('||', '|', $NotTagList);
 $Users = str_replace('||', '|', $Users);
 
-if ($_POST['id'.$FormID] && is_numeric($_POST['id'.$FormID])) {
+if ($_POST['id' . $FormID] && is_numeric($_POST['id' . $FormID])) {
     $app->dbOld->query("
     UPDATE users_notify_filters
     SET
@@ -126,18 +126,18 @@ if ($_POST['id'.$FormID] && is_numeric($_POST['id'.$FormID])) {
       Categories='$CategoryList',
       Media='$MediaList',
       Users ='$Users'
-    WHERE ID='".$_POST['id'.$FormID]."'
+    WHERE ID='" . $_POST['id' . $FormID] . "'
       AND UserID='{$app->user->core['id']}'");
 } else {
     $app->dbOld->query("
     INSERT INTO users_notify_filters
       (UserID, Label, Artists, NewGroupsOnly, Tags, NotTags, Categories, Media, Users)
     VALUES
-      ('{$app->user->core['id']}','".db_string($_POST['label'.$FormID])."','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
+      ('{$app->user->core['id']}','" . db_string($_POST['label' . $FormID]) . "','$ArtistList','$NewGroupsOnly','$TagList','$NotTagList','$CategoryList','$MediaList','$Users')");
 }
 
-$app->cache->delete('notify_filters_'.$app->user->core['id']);
-if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) !== false && $Notify['ID'] === $_POST['id'.$FormID]) {
-    $app->cache->delete('notify_artists_'.$app->user->core['id']);
+$app->cache->delete('notify_filters_' . $app->user->core['id']);
+if (($Notify = $app->cache->get('notify_artists_' . $app->user->core['id'])) !== false && $Notify['ID'] === $_POST['id' . $FormID]) {
+    $app->cache->delete('notify_artists_' . $app->user->core['id']);
 }
-Http::redirect("user.php?action=notify");
+Gazelle\Http::redirect("user.php?action=notify");

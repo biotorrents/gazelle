@@ -7,17 +7,17 @@ declare(strict_types=1);
  * database encryption key
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 if (!check_perms("site_debug")) {
     error(403);
 }
 
 # query
-$post = Http::request("post");
+$post = Gazelle\Http::request("post");
 $post["databaseKey"] ??= null;
 
 # update

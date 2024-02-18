@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('users_mod')) {
     error(403);
@@ -9,7 +9,7 @@ if (!check_perms('users_mod')) {
 
 if (!FEATURE_EMAIL_REENABLE) {
     // This feature is disabled
-    Http::redirect("tools.php");
+    Gazelle\Http::redirect("tools.php");
     error();
 }
 
@@ -24,7 +24,7 @@ View::header('Enable Requests', 'enable_requests');
 
 // Pagination
 $RequestsPerPage = 25;
-list($Page, $Limit) = \Gazelle\Format::page_limit($RequestsPerPage);
+list($Page, $Limit) = Gazelle\Format::page_limit($RequestsPerPage);
 
 // How can things be ordered?
 $OrderBys = array(
@@ -163,23 +163,23 @@ $app->dbOld->set_query_id($QueryID);
     <a class="brackets tooltip" href="tools.php?action=enable_requests" title="Default view">Main</a>
 
     <a class="brackets tooltip"
-        href="tools.php?action=enable_requests&amp;view=perfect&amp;<?=\Gazelle\Format::get_url(array('view', 'action'))?>"
+        href="tools.php?action=enable_requests&amp;view=perfect&amp;<?=Gazelle\Format::get_url(array('view', 'action'))?>"
         title="Valid username, matching email, current IP with no matches, and inactivity disabled">Perfect</a>
 
     <a class="brackets tooltip"
-        href="tools.php?action=enable_requests&amp;view=minus_ip&amp;<?=\Gazelle\Format::get_url(array('view', 'action'))?>"
+        href="tools.php?action=enable_requests&amp;view=minus_ip&amp;<?=Gazelle\Format::get_url(array('view', 'action'))?>"
         title="Valid username, matching email, and inactivity disabled">Perfect Minus IP</a>
 
     <a class="brackets tooltip"
-        href="tools.php?action=enable_requests&amp;view=invalid_email&amp;<?=\Gazelle\Format::get_url(array('view', 'action'))?>"
+        href="tools.php?action=enable_requests&amp;view=invalid_email&amp;<?=Gazelle\Format::get_url(array('view', 'action'))?>"
         title="Non-matching email address">Invalid Email</a>
 
     <a class="brackets tooltip"
-        href="tools.php?action=enable_requests&amp;view=ip_overlap&amp;<?=\Gazelle\Format::get_url(array('view', 'action'))?>"
+        href="tools.php?action=enable_requests&amp;view=ip_overlap&amp;<?=Gazelle\Format::get_url(array('view', 'action'))?>"
         title="Requests with IP matches to other accounts">IP Overlap</a>
 
     <a class="brackets tooltip"
-        href="tools.php?action=enable_requests&amp;view=manual_disable&amp;<?=\Gazelle\Format::get_url(array('view', 'action'))?>"
+        href="tools.php?action=enable_requests&amp;view=manual_disable&amp;<?=Gazelle\Format::get_url(array('view', 'action'))?>"
         title="Requests for accounts that were not disabled for inactivity">Manual Disable</a>
 
     <a class="brackets tooltip" title="Show/Hide Search" data-toggle-target="#search_form">Search</a>
@@ -380,7 +380,7 @@ $app->dbOld->set_query_id($QueryID); ?>
 if ($NumResults > 0) { ?>
 <div class="linkbox">
     <?php
-$Pages = \Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
     echo $Pages;
     ?>
 </div>
@@ -442,15 +442,15 @@ $Pages = \Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
         </td>
 
         <td>
-            <?=\Gazelle\Text::esc(\Gazelle\Crypto::decrypt($Email))?>
+            <?=Gazelle\Text::esc(Gazelle\Crypto::decrypt($Email))?>
         </td>
 
         <td>
-            <?=\Gazelle\Text::esc(\Gazelle\Crypto::decrypt($IP))?>
+            <?=Gazelle\Text::esc(Gazelle\Crypto::decrypt($IP))?>
         </td>
 
         <td>
-            <?=\Gazelle\Text::esc($UserAgent)?>
+            <?=Gazelle\Text::esc($UserAgent)?>
         </td>
 
         <td>
@@ -502,7 +502,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
 
 <div class="linkbox">
     <?php
-    $Pages = \Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
+    $Pages = Gazelle\Format::get_pages($Page, $NumResults, $RequestsPerPage);
     echo $Pages;
     ?>
 </div>

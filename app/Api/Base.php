@@ -33,7 +33,7 @@ class Base
         /** */
 
         # escape bearer token
-        $server = \Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         # no header present
         if (empty($server["HTTP_AUTHORIZATION"])) {
@@ -94,7 +94,7 @@ class Base
         /** */
 
         # escape bearer token
-        $server = \Http::request("server");
+        $server = \Gazelle\Http::request("server");
 
         # no header present
         if (empty($server["HTTP_AUTHORIZATION"])) {

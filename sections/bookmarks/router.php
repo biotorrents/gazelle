@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -29,11 +29,11 @@ if (empty($_REQUEST['action'])) {
 
 switch ($_REQUEST['action']) {
     case 'add':
-        require serverRoot.'/sections/bookmarks/add.php';
+        require serverRoot . '/sections/bookmarks/add.php';
         break;
 
     case 'remove':
-        require serverRoot.'/sections/bookmarks/remove.php';
+        require serverRoot . '/sections/bookmarks/remove.php';
         break;
 
     case 'remove_snatched':
@@ -57,7 +57,7 @@ switch ($_REQUEST['action']) {
       WHERE b.UserID = '{$app->user->core['id']}'");
 
         $app->cache->delete("bookmarks_group_ids_$UserID");
-        Http::redirect("bookmarks.php");
+        Gazelle\Http::redirect("bookmarks.php");
         error();
         break;
 
@@ -68,21 +68,21 @@ switch ($_REQUEST['action']) {
 
         switch ($_REQUEST['type']) {
             case 'torrents':
-                require serverRoot.'/sections/bookmarks/torrents.php';
+                require serverRoot . '/sections/bookmarks/torrents.php';
                 break;
 
             case 'artists':
-                require serverRoot.'/sections/bookmarks/artists.php';
+                require serverRoot . '/sections/bookmarks/artists.php';
                 break;
 
             case 'collages':
                 $_GET['bookmarks'] = '1';
-                require serverRoot.'/sections/collages/browse.php';
+                require serverRoot . '/sections/collages/browse.php';
                 break;
 
             case 'requests':
                 $_GET['type'] = 'bookmarks';
-                require serverRoot.'/sections/requests/requests.php';
+                require serverRoot . '/sections/requests/requests.php';
                 break;
 
             default:

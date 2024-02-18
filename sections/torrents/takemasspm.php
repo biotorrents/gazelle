@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 //******************************************************************************//
 //--------------- Take mass PM -------------------------------------------------//
@@ -16,8 +16,8 @@ enforce_login();
 
 $Validate = new Validate();
 
-$TorrentID = (int)$_POST['torrentid'];
-$GroupID = (int)$_POST['groupid'];
+$TorrentID = (int) $_POST['torrentid'];
+$GroupID = (int) $_POST['groupid'];
 $Subject = $_POST['subject'];
 $Message = $_POST['message'];
 
@@ -37,7 +37,7 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if ($Err) {
     error($Err);
-    header('Location: '.$_SERVER['HTTP_REFERER']);
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     error();
 }
 
@@ -57,5 +57,5 @@ if ($app->dbOld->has_results()) {
     }
 }
 
-Misc::write_log($app->user->core['username']." sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
-Http::redirect("torrents.php?id=$GroupID");
+Misc::write_log($app->user->core['username'] . " sent mass notice to snatchers of torrent $TorrentID in group $GroupID");
+Gazelle\Http::redirect("torrents.php?id=$GroupID");

@@ -7,17 +7,17 @@ declare(strict_types=1);
  * miscellaneous values
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 if (!check_perms("admin_manage_permissions") && !check_perms("users_mod")) {
     error(403);
 }
 
 # query
-$post = Http::request("post");
+$post = Gazelle\Http::request("post");
 $post["databaseKey"] ??= null;
 
 # create

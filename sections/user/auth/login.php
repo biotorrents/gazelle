@@ -7,17 +7,17 @@ declare(strict_types=1);
  * user login page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # libraries
 $auth = new Auth();
 
 # variables
-$post = Http::request("post");
-$server = Http::request("server");
+$post = Gazelle\Http::request("post");
+$server = Gazelle\Http::request("server");
 #!d($server["REQUEST_URI"]);exit;
 
 # kinda lazy but it works
@@ -33,7 +33,7 @@ if (empty($post)) {
 
 # redirect if logged in
 if ($auth->library->isLoggedIn()) {
-    Http::redirect($_SESSION["requestedPage"] ?? "/");
+    Gazelle\Http::redirect($_SESSION["requestedPage"] ?? "/");
 }
 
 # delight-im/auth
@@ -55,7 +55,7 @@ if (!empty($post)) {
 
     # silence is golden
     if (!$response) {
-        Http::redirect($_SESSION["requestedPage"] ?? "/");
+        Gazelle\Http::redirect($_SESSION["requestedPage"] ?? "/");
     }
 }
 

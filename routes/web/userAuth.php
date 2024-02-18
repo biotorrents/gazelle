@@ -12,7 +12,7 @@ Flight::route("/login", function () {
     $app = Gazelle\App::go();
 
     if ($app->user->isLoggedIn()) {
-        Http::redirect();
+        Gazelle\Http::redirect();
     } else {
         require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     }
@@ -31,7 +31,7 @@ Flight::route("/enable/@token", function (string $token) {
     $app = Gazelle\App::go();
 
     if (isset($app->user->core["id"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
-        Http::redirect();
+        Gazelle\Http::redirect();
     }
 
     if (isset($token)) {
@@ -58,7 +58,7 @@ Flight::route("/logout", function () {
     $auth->logout();
 
     # send to login
-    Http::redirect("login");
+    Gazelle\Http::redirect("login");
 });
 
 

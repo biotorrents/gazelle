@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -36,11 +36,11 @@ if (is_numeric($ThreadID) && is_numeric($NewVote)) {
       `Vote` = $NewVote
     WHERE
       `TopicID` = $ThreadID
-      AND `UserID` = ".$app->user->core['id']
+      AND `UserID` = " . $app->user->core['id']
     );
 
     $app->cache->delete("polls_$ThreadID");
-    Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
+    Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);
 }

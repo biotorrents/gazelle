@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class User
+class User extends ObjectCrud
 {
     # singleton
     private static ?self $instance = null;
@@ -34,10 +34,6 @@ class User
     # make $_SESSION available
     public $session = null;
 
-    # cache settings
-    private string $cachePrefix = "user:";
-    private string $cacheDuration = "5 minutes";
-
     # https://github.com/delight-im/PHP-Auth/blob/master/src/Status.php
     public const NORMAL = 0;
     public const ARCHIVED = 1;
@@ -45,6 +41,24 @@ class User
     public const LOCKED = 3;
     public const PENDING_REVIEW = 4;
     public const SUSPENDED = 5;
+
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?int $id = null; # primary key
+    public string $type = "users"; # database table
+    public ?RecursiveCollection $attributes = null;
+    public ?RecursiveCollection $relationships = null;
+
+    # ["database" => "display"]
+    protected array $maps = [
+        "id" => "id",
+    ];
+
+    # cache settings
+    private string $cachePrefix = "users:";
+    private string $cacheDuration = "5 minutes";
+
+
+    /** singleton stuff */
 
 
     /**
@@ -103,9 +117,9 @@ class User
         $this->session = $_SESSION;
 
         # untrusted input
-        $userId = \Http::readCookie("userId") ?? null;
-        $sessionId = \Http::readCookie("sessionId") ?? null;
-        $server = \Http::request("server") ?? null;
+        $userId = Http::readCookie("userId") ?? null;
+        $sessionId = Http::readCookie("sessionId") ?? null;
+        $server = Http::request("server") ?? null;
 
         # unauthenticated, no cookies
         if (!$userId || !$sessionId) {
@@ -133,7 +147,7 @@ class User
 
         # bad session from list
         if (!in_array($sessionId, $sessions)) {
-            return false;
+            return;
         }
         */
 
@@ -269,7 +283,18 @@ class User
     }
 
 
-    /** */
+    /** crud */
+
+
+    /**
+     * create
+     *
+     * Handled in the Auth class.
+     */
+    public function create(): void
+    {
+        throw new Exception("not implemented");
+    }
 
 
     /**
@@ -277,12 +302,12 @@ class User
      *
      * Gets a user profile (public info only).
      */
-    public static function read(int|string $id): ?array
+    public static function read(int|string $identifier): ?array
     {
         $app = App::go();
 
         # allow usernames instead of slugs
-        $column = $app->dbNew->determineIdentifier($id);
+        $column = $app->dbNew->determineIdentifier($identifier);
         if ($column === "slug") {
             $column = "username";
         }
@@ -292,6 +317,31 @@ class User
             todo
         ";
     }
+
+
+    /**
+     * update
+     *
+     * Handled elsewhere in this class.
+     */
+    public function update(int|string $identifier, array $data = []): void
+    {
+        throw new Exception("not implemented");
+    }
+
+
+    /**
+     * delete
+     *
+     * We don't delete users yet.
+     */
+    public function delete(int|string $identifier): void
+    {
+        throw new Exception("not implemented");
+    }
+
+
+    /** user state introspection */
 
 
     /**
@@ -397,246 +447,6 @@ class User
     public function username(): ?string
     {
         return $this->core["username"] ?? null;
-    }
-
-
-    /**
-     * THIS IS GOING AWAY!
-     *
-     * Get user info, is used for the current user and usernames all over the site.
-     *
-     * @param $UserID int   The UserID to get info for
-     * @return array with the following keys:
-     *  int     ID
-     *  string  Username
-     *  int     PermissionID
-     *  array   Paranoia - $Paranoia array sent to paranoia.class
-     *  boolean Artist
-     *  boolean Donor
-     *  string  Warned - When their warning expires in international time format
-     *  string  Avatar - URL
-     *  boolean Enabled
-     *  string  Title
-     *  string  CatchupTime - When they last caught up on forums
-     *  boolean Visible - If false, they don't show up on peer lists
-     *  array   ExtraClasses - Secondary classes.
-     *  int     EffectiveClass - the highest level of their main and secondary classes
-     *  array   Badges - list of all the user's badges of the form BadgeID => Displayed
-     */
-    public static function user_info($UserID)
-    {
-        $app = App::go();
-
-        global $Classes;
-        $UserInfo = $app->cache->get("user_info_" . $UserID);
-
-        // the !isset($UserInfo['Paranoia']) can be removed after a transition period
-        if (empty($UserInfo)) {
-            $OldQueryID = $app->dbOld->get_query_id();
-
-            $app->dbOld->query("
-            SELECT
-              m.`ID`,
-              m.`Username`,
-              m.`PermissionID`,
-              m.`Paranoia`,
-              i.`Artist`,
-              i.`Donor`,
-              i.`Warned`,
-              i.`Avatar`,
-              m.`Enabled`,
-              m.`Title`,
-              i.`CatchupTime`,
-              m.`Visible`,
-              la.`Type` AS LockedAccount,
-            GROUP_CONCAT(ul.`PermissionID` SEPARATOR ',') AS Levels
-            FROM
-              `users_main` AS m
-            INNER JOIN `users_info` AS i
-            ON
-              i.`UserID` = m.`ID`
-            LEFT JOIN `locked_accounts` AS la
-            ON
-              la.`UserID` = m.`ID`
-            LEFT JOIN `users_levels` AS ul
-            ON
-              ul.`UserID` = m.`ID`
-            WHERE
-              m.`ID` = '$UserID'
-            GROUP BY
-              m.`ID`
-            ");
-
-            if (!$app->dbOld->has_results()) { // Deleted user, maybe?
-                $UserInfo = [
-                    'ID'           => $UserID,
-                    'Username'     => '',
-                    'PermissionID' => 0,
-                    'Paranoia'     => [],
-                    'Artist'       => false,
-                    'Donor'        => false,
-                    'Warned'       => null,
-                    'Avatar'       => '',
-                    'Enabled'      => 0,
-                    'Title'        => '',
-                    'CatchupTime'  => 0,
-                    'Visible'      => '1',
-                    'Levels'       => '',
-                    'Class'        => 0
-                ];
-            } else {
-                $UserInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['Paranoia', 'Title']);
-                $UserInfo['CatchupTime'] ??= null;
-                $UserInfo['CatchupTime'] = strtotime($UserInfo['CatchupTime']);
-
-                /*
-                if (!is_array($UserInfo['Paranoia'])) {
-                    $UserInfo['Paranoia'] = json_decode($UserInfo['Paranoia'] ?? "{}", true);
-                }
-                */
-
-                $UserInfo['Paranoia'] ??= [];
-                if (!$UserInfo['Paranoia']) {
-                    $UserInfo['Paranoia'] = [];
-                }
-
-                $Classes[$UserInfo['PermissionID']]['Level'] ??= null;
-                $UserInfo['Class'] = $Classes[$UserInfo['PermissionID']]['Level'] ?? null;
-
-                # Badges
-                $app->dbOld->query("
-                SELECT
-                  `BadgeID`,
-                  `Displayed`
-                FROM
-                  `users_badges`
-                WHERE
-                  `UserID` = $UserID
-                ");
-
-                $Badges = [];
-                if ($app->dbOld->has_results()) {
-                    while (list($BadgeID, $Displayed) = $app->dbOld->next_record()) {
-                        $Badges[$BadgeID] = $Displayed;
-                    }
-                }
-                $UserInfo['Badges'] = $Badges;
-            }
-
-            # Locked?
-            $UserInfo['LockedAccount'] ??= null;
-            if (isset($UserInfo['LockedAccount']) && $UserInfo['LockedAccount'] === '') {
-                unset($UserInfo['LockedAccount']);
-            }
-
-            # Classes and levels
-            $UserInfo['Levels'] ??= null;
-            if (!empty($UserInfo['Levels'])) {
-                $UserInfo['ExtraClasses'] = array_fill_keys(explode(',', $UserInfo['Levels']), 1);
-            } else {
-                $UserInfo['ExtraClasses'] = [];
-            }
-
-            unset($UserInfo['Levels']);
-            $EffectiveClass = $UserInfo['Class'];
-            foreach ($UserInfo['ExtraClasses'] as $Class => $Val) {
-                $EffectiveClass = max($EffectiveClass, $Classes[$Class]['Level']);
-            }
-            $UserInfo['EffectiveClass'] = $EffectiveClass;
-
-            $app->cache->set("user_info_$UserID", $UserInfo, 2592000);
-            $app->dbOld->set_query_id($OldQueryID);
-        }
-
-        # Warned?
-        $UserInfo['Warned'] ??= null;
-        if ($UserInfo['Warned'] && strtotime($UserInfo['Warned'] ?? "now") < time()) {
-            $UserInfo['Warned'] = null;
-            $app->cache->set("user_info_$UserID", $UserInfo, 2592000);
-        }
-
-        return $UserInfo;
-    }
-
-
-    /**
-     * THIS IS GOING AWAY!
-     *
-     * Gets the heavy user info
-     * Only used for current user
-     *
-     * @param $UserID The userid to get the information for
-     * @return fetched heavy info.
-     *    Just read the goddamn code, I don't have time to comment this shit.
-     */
-    public static function user_heavy_info($UserID)
-    {
-        $app = App::go();
-
-        $HeavyInfo = $app->cache->get("user_info_heavy_$UserID");
-        if (empty($HeavyInfo)) {
-            $QueryID = $app->dbOld->get_query_id();
-            $app->dbOld->query("
-            SELECT
-              m.`Invites`,
-              m.`torrent_pass`,
-              m.`IP`,
-              m.`CustomPermissions`,
-              m.`can_leech` AS CanLeech,
-              i.`AuthKey`,
-              i.`RatioWatchEnds`,
-              i.`RatioWatchDownload`,
-              i.`StyleID`,
-              i.`StyleURL`,
-              i.`SiteOptions`,
-              i.`LastReadNews`,
-              i.`LastReadBlog`,
-              m.`FLTokens`,
-              m.`BonusPoints`,
-              m.`HnR`,
-              m.`PermissionID`
-            FROM
-              `users_main` AS m
-            INNER JOIN `users_info` AS i
-            ON
-              i.`UserID` = m.`ID`
-            WHERE
-              m.`ID` = '$UserID'
-            ");
-
-            $HeavyInfo = $app->dbOld->next_record(MYSQLI_ASSOC, ['CustomPermissions', 'SiteOptions']);
-            $HeavyInfo['CustomPermissions'] = [];
-
-            if (!empty($HeavyInfo['CustomPermissions'])) {
-                $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'] ?? "{}", true);
-            }
-
-            $app->dbOld->query("
-            SELECT `PermissionID`
-            FROM `users_levels`
-              WHERE `UserID` = '$UserID'
-            ");
-
-            $PermIDs = $app->dbOld->collect('PermissionID');
-            foreach ($PermIDs as $PermID) {
-                $Perms = Permissions::get_permissions($PermID);
-            }
-
-            $HeavyInfo['PermissionID'] ??= null;
-            $Perms = Permissions::get_permissions($HeavyInfo['PermissionID']);
-            unset($HeavyInfo['PermissionID']);
-
-            $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'] ?? "{}", true);
-            if (!empty($HeavyInfo['SiteOptions'])) {
-                $HeavyInfo = array_merge($HeavyInfo, $HeavyInfo['SiteOptions']);
-            }
-            unset($HeavyInfo['SiteOptions']);
-
-            $app->dbOld->set_query_id($QueryID);
-            $app->cache->set("user_info_heavy_$UserID", $HeavyInfo, 0);
-        }
-
-        return $HeavyInfo;
     }
 
 

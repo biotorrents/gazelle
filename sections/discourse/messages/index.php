@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-Http::csrf();
+Gazelle\Http::csrf();
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 $discourse = new Discourse();
 
 
@@ -21,7 +21,7 @@ $allowedFilters = [
 ];
 
 if (!in_array($filter, $allowedFilters)) {
-    Http::response(404);
+    Gazelle\Http::response(404);
 }
 
 

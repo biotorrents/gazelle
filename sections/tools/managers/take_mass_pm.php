@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 set_time_limit(0);
 
@@ -28,4 +28,4 @@ while (list($UserID) = $app->dbOld->next_record()) {
     Misc::send_pm($UserID, $FromID, $Subject, $Body);
 }
 
-Http::redirect("tools.php");
+Gazelle\Http::redirect("tools.php");

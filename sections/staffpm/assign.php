@@ -1,13 +1,13 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!($IsFLS)) {
     // Logged in user is not FLS or Staff
     error(403);
 }
 
-if ($ConvID = (int)$_GET['convid']) {
+if ($ConvID = (int) $_GET['convid']) {
     // FLS, check level of conversation
     $app->dbOld->query("
     SELECT Level
@@ -20,16 +20,16 @@ if ($ConvID = (int)$_GET['convid']) {
         if (!empty($_GET['to'])) {
             $Level = 0;
             switch ($_GET['to']) {
-        case 'forum':
-          $Level = 650;
-          break;
-        case 'staff':
-          $Level = 700;
-          break;
-        default:
-          error(404);
-          break;
-      }
+                case 'forum':
+                    $Level = 650;
+                    break;
+                case 'staff':
+                    $Level = 700;
+                    break;
+                default:
+                    error(404);
+                    break;
+            }
 
             $app->dbOld->query("
         UPDATE staff_pm_conversations
@@ -37,7 +37,7 @@ if ($ConvID = (int)$_GET['convid']) {
           Level = $Level
         WHERE ID = $ConvID");
             $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
-            Http::redirect("staffpm.php");
+            Gazelle\Http::redirect("staffpm.php");
         } else {
             error(404);
         }
@@ -45,7 +45,7 @@ if ($ConvID = (int)$_GET['convid']) {
         // FLS trying to assign non-FLS conversation
         error(403);
     }
-} elseif ($ConvID = (int)$_POST['convid']) {
+} elseif ($ConvID = (int) $_POST['convid']) {
     // Staff (via AJAX), get current assign of conversation
     $app->dbOld->query("
     SELECT Level, AssignedToUser
@@ -91,5 +91,5 @@ if ($ConvID = (int)$_GET['convid']) {
     }
 } else {
     // No ID
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 }

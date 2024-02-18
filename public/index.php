@@ -15,16 +15,16 @@ declare(strict_types=1);
  */
 
 # composer autoload
-require_once __DIR__."/../vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
 # parse the path
-$server = Http::request("server");
+$server = Gazelle\Http::request("server");
 $path = pathinfo($server["SCRIPT_NAME"]);
 $file = $path["filename"];
 
 # dump tards
 if ($path["dirname"] !== "/") {
-    Http::response(403);
+    Gazelle\Http::response(403);
 }
 
 if (in_array($file, ["announce", "info_hash", "peer_id", "scrape"])) {
@@ -41,8 +41,8 @@ if ($server["REQUEST_URI"] === "/") {
 }
 
 # load the core app
-require_once __DIR__."/../config/app.php";
-require_once __DIR__."/../bootstrap/utilities.php";
+require_once __DIR__ . "/../config/app.php";
+require_once __DIR__ . "/../bootstrap/utilities.php";
 
 # start a session
 session_start();
@@ -50,7 +50,7 @@ session_start();
 # web vs. api bootstrap
 # cli is included directly
 if ($document !== "api") {
-    require_once __DIR__."/../bootstrap/web.php";
+    require_once __DIR__ . "/../bootstrap/web.php";
 } else {
-    require_once __DIR__."/../bootstrap/api.php";
+    require_once __DIR__ . "/../bootstrap/api.php";
 }

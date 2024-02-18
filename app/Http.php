@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 
 /**
- * Http
+ * Gazelle\Http
  *
  * For sending raw HTTP interactions,
  * e.g., response codes and headers.
  */
 
+namespace Gazelle;
+
 class Http
 {
     # cookie params
-    private static $cookiePrefix = "__Secure-";
-    private static $cookieDuration = "tomorrow";
+    private static string $cookiePrefix = "__Secure-";
+    private static string $cookieDuration = "tomorrow";
 
 
     /**
@@ -59,22 +61,23 @@ class Http
      *
      * @see https://github.com/paragonie/anti-csrf
      */
-    public static function csrf()
+    public static function csrf(): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         try {
-            $csrf = new ParagonIE\AntiCSRF\AntiCSRF();
+            $csrf = new \ParagonIE\AntiCSRF\AntiCSRF();
             if (!empty($_POST)) {
                 if ($csrf->validateRequest()) {
-                    return true;
+                    # good
+                    return;
                 } else {
-                    # todo: this just results in a blank page
-                    self::response(403);
+                    # bad
+                    $app->error(403);
                 }
             }
         } catch (\Throwable $e) {
-            return null;
+            $app->error(403);
         }
     }
 
@@ -113,37 +116,37 @@ class Http
         # cookie
         $safe["cookie"] = $_COOKIE;
         array_walk_recursive($safe["cookie"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # files
         $safe["files"] = $_FILES;
         array_walk_recursive($safe["files"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # get
         $safe["get"] = $_GET;
         array_walk_recursive($safe["get"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # post
         $safe["post"] = $_POST;
         array_walk_recursive($safe["post"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # request
         $safe["request"] = $_REQUEST;
         array_walk_recursive($safe["request"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # server
         $safe["server"] = $_SERVER;
         array_walk_recursive($safe["server"], function ($value) {
-            return \Gazelle\Text::esc($value);
+            return Esc::string($value);
         });
 
         # should be okay
@@ -162,7 +165,7 @@ class Http
      */
     public static function json(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $json = json_decode(file_get_contents("php://input"), true);
 
@@ -437,7 +440,7 @@ class Http
      */
     public static function createCookie(array $cookie, string $when = "tomorrow"): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         foreach ($cookie as $key => $value) {
             if (empty($key)) {
@@ -448,8 +451,8 @@ class Http
             $time = strtotime($when) ?? self::$cookieDuration;
 
             setcookie(
-                self::$cookiePrefix.$key,
-                \Gazelle\Text::esc($value),
+                self::$cookiePrefix . $key,
+                Esc::string($value),
                 [
                     "expires" => $time,
                     "path" => "/",
@@ -477,7 +480,7 @@ class Http
     {
         $cookie = self::request("cookie");
 
-        return $cookie[self::$cookiePrefix.$key] ?? null;
+        return $cookie[self::$cookiePrefix . $key] ?? null;
     }
 
 

@@ -7,20 +7,20 @@ declare(strict_types=1);
  * bonus points checkout
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$bonusPoints = new \Gazelle\BonusPoints();
+$bonusPoints = new Gazelle\BonusPoints();
 #!d($bonusPoints);exit;
 
 # path variable
 $item ??= null;
 if (!$item) {
-    Http::redirect("store");
+    Gazelle\Http::redirect("store");
 }
 
 # request variables
-$get = Http::get();
-$post = Http::post();
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
 
 # are they converting currencies?
 if (!empty($post)) {

@@ -7,10 +7,10 @@
  * torrent details page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$get = Http::request("get");
-$post = Http::request("post");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
 
 $groupId = intval($get["id"] ?? 0);
 $revisionId = intval($get["revisionId"] ?? 0);
@@ -35,7 +35,7 @@ $torrentDetails = $torrentCache[1];
 #!d($groupDetails, $torrentDetails);
 
 # description and creators
-$description = \Gazelle\Text::parse($groupDetails["description"]);
+$description = Gazelle\Text::parse($groupDetails["description"]);
 $creatorList = Artists::get_artist($groupId);
 #!d($creatorList);
 
@@ -126,8 +126,8 @@ exit;
 
 
 
-$ENV = \Gazelle\ENV::go();
-$twig = \Gazelle\Twig::go();
+$ENV = Gazelle\ENV::go();
+$twig = Gazelle\Twig::go();
 
 define('MAX_PERS_COLLAGES', 3); // How many personal collages should be shown by default
 define('MAX_COLLAGES', 5); // How many normal collages should be shown by default
@@ -153,7 +153,7 @@ list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $G
 # Make the main headings
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
-$WikiBody = \Gazelle\Text::parse($WikiBody);
+$WikiBody = Gazelle\Text::parse($WikiBody);
 $Artists = Artists::get_artist($GroupID);
 
 
@@ -199,9 +199,9 @@ $DisplayName = $twig->render(
       'db' => $ENV->DB,
       'g' => $TorrentDetails,
       #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
-      'url' => \Gazelle\Format::get_url($_GET),
+      'url' => Gazelle\Format::get_url($_GET),
       'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
-      'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
+      'thumb' => Gazelle\Images::process($CoverArt, 'thumb'),
       'artists' => Artists::display_artists($Artists),
     ]
 );
@@ -316,8 +316,8 @@ if (check_perms('site_submit_requests')) { ?>
         <div id="cover_div_<?=$Index?>">
           <?php if ($WikiImage !== '') { ?>
           <div><img width="100%" class="lightbox-init"
-              src="<?=\Gazelle\Images::process($WikiImage, 'thumb')?>"
-              lightbox-img="<?=\Gazelle\Images::process($WikiImage)?>"
+              src="<?=Gazelle\Images::process($WikiImage, 'thumb')?>"
+              lightbox-img="<?=Gazelle\Images::process($WikiImage)?>"
               alt="<?=$AltName?>" /></div>
           <?php } else { ?>
           <div><img width="100%"
@@ -338,9 +338,9 @@ $Index++;
           <div>
             <?php
           if (empty($app->user->extra['ShowExtraCovers'])) {
-              $Src = 'src="" data-gazelle-temp-src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . \Gazelle\Images::process($Image) . '"';
+              $Src = 'src="" data-gazelle-temp-src="' . Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . Gazelle\Images::process($Image) . '"';
           } else {
-              $Src = 'src="' . \Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . \Gazelle\Images::process($Image) . '"';
+              $Src = 'src="' . Gazelle\Images::process($Image, 'thumb') . '" lightbox-img="' . Gazelle\Images::process($Image) . '"';
           } ?>
             <img id="cover_<?=$Index?>" class="lightbox-init"
               width="100%" <?=$Src?> alt="<?=$Summary?>" />
@@ -432,7 +432,7 @@ if (!empty($DeletedTag)) { ?>
             ?>
         <li>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
-            class="<?=\Gazelle\Text::esc($Tag['class'])?>"><?=\Gazelle\Text::esc($Tag['display'])?></a>
+            class="<?=Gazelle\Text::esc($Tag['class'])?>"><?=Gazelle\Text::esc($Tag['display'])?></a>
           <div class="edit_tags_votes u-pull-right">
             <?php if (check_perms('users_warn')) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
@@ -522,8 +522,8 @@ foreach ($TorrentList as $Torrent) {
             }
             $ReportInfo .= "
       <tr>
-        <td>$ReportLinks " . \Gazelle\Format::relativeTime($Report['ReportedTime']) . ' for the reason "' . $ReportType['title'] . '":
-          <blockquote>' . \Gazelle\Text::parse($Report['UserComment']) . '</blockquote>
+        <td>$ReportLinks " . Gazelle\Format::relativeTime($Report['ReportedTime']) . ' for the reason "' . $ReportType['title'] . '":
+          <blockquote>' . Gazelle\Text::parse($Report['UserComment']) . '</blockquote>
         </td>
       </tr>';
         }
@@ -553,13 +553,13 @@ foreach ($TorrentList as $Torrent) {
                 $Name = str_replace(' ', '&nbsp;', substr($Name, 0, $Spaces)) . substr($Name, $Spaces);
             }
             $FileSize = substr($File, $NameEnd + 3, -3);
-            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $Name, \Gazelle\Format::get_size($FileSize));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $Name, Gazelle\Format::get_size($FileSize));
         }
     } else {
         $FileListSplit = explode("\n", $FileList);
         foreach ($FileListSplit as $File) {
             $FileInfo = Torrents::filelist_get_file($File);
-            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], \Gazelle\Format::get_size($FileInfo['size']));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], Gazelle\Format::get_size($FileInfo['size']));
         }
     }
     $FileTable .= '
@@ -570,29 +570,29 @@ foreach ($TorrentList as $Torrent) {
 
     // Similar to Torrents::torrent_info()
     if ($Media) {
-        $ExtraInfo .= '<x style="tooltip" title="Platform">' . \Gazelle\Text::esc($Media) . '</x>';
+        $ExtraInfo .= '<x style="tooltip" title="Platform">' . Gazelle\Text::esc($Media) . '</x>';
     }
 
     if ($Container) {
-        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Format">' . \Gazelle\Text::esc($Container) . '</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Format">' . Gazelle\Text::esc($Container) . '</x>';
     }
 
     if ($Archive) {
-        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Archive">' . \Gazelle\Text::esc($Archive) . '</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Archive">' . Gazelle\Text::esc($Archive) . '</x>';
     }
 
     if ($Codec) {
-        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="License">' . \Gazelle\Text::esc($Codec) . '</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="License">' . Gazelle\Text::esc($Codec) . '</x>';
     }
 
     if ($Resolution) {
-        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Scope">' . \Gazelle\Text::esc($Resolution) . '</x>';
+        $ExtraInfo .= $AddExtra . '<x style="tooltip" title="Scope">' . Gazelle\Text::esc($Resolution) . '</x>';
     }
 
     /*
     if ($Version) {
-        $ExtraInfo.=$AddExtra.\Gazelle\Text::esc($Version);
-        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.\Gazelle\Text::esc($Version).'</x>';
+        $ExtraInfo.=$AddExtra.Gazelle\Text::esc($Version);
+        $ExtraInfo .= $AddExtra.'<x style="tooltip" title="Accession Number">'.Gazelle\Text::esc($Version).'</x>';
     }
     */
 
@@ -607,19 +607,19 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($IsLeeching) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Leeching', 'important_text_semi');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Leeching', 'important_text_semi');
     } elseif ($IsSeeding) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Seeding', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Seeding', 'important_text_alt');
     } elseif ($IsSnatched) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Snatched', 'bold');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Snatched', 'bold');
     }
 
     if ($FreeTorrent === '1') {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
     }
 
     if ($FreeTorrent === '2') {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Neutral Leech', 'bold');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Neutral Leech', 'bold');
     }
 
     // Freleechizer
@@ -636,25 +636,25 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($PersonalFL) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt');
     }
 
     if ($Reported) {
         $HtmlReportType = ucfirst($Reports[0]['Type']);
         $HtmlReportComment = htmlentities(htmlentities($Reports[0]['UserComment']));
-        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>" . \Gazelle\Format::torrent_label('Reported', 'important_text') . "</strong>";
+        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>" . Gazelle\Format::torrent_label('Reported', 'important_text') . "</strong>";
     }
 
     if (!empty($BadTags)) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Tags', 'important_text');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Bad Tags', 'important_text');
     }
 
     if (!empty($BadFolders)) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Folders', 'important_text');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Bad Folders', 'important_text');
     }
 
     if (!empty($BadFiles)) {
-        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad File Names', 'important_text');
+        $ExtraInfo .= $AddExtra . Gazelle\Format::torrent_label('Bad File Names', 'important_text');
     }
 
     $TorrentDL = "torrents.php?action=download&amp;id=" . $TorrentID . "&amp;authkey=" . $app->user->extra['AuthKey'] . "&amp;torrent_pass=" . $app->user->extra['torrent_pass'];
@@ -697,13 +697,13 @@ foreach ($TorrentList as $Torrent) {
             </span>
             <a data-toggle-target="#torrent_<?=$TorrentID?>"><?=$ExtraInfo; ?></a>
           </td>
-          <td class="number_column nobr"><?=\Gazelle\Format::get_size($Size)?>
+          <td class="number_column nobr"><?=Gazelle\Format::get_size($Size)?>
           </td>
-          <td class="number_column"><?=\Gazelle\Text::float($Snatched)?>
+          <td class="number_column"><?=Gazelle\Text::float($Snatched)?>
           </td>
-          <td class="number_column"><?=\Gazelle\Text::float($Seeders)?>
+          <td class="number_column"><?=Gazelle\Text::float($Seeders)?>
           </td>
-          <td class="number_column"><?=\Gazelle\Text::float($Leechers)?>
+          <td class="number_column"><?=Gazelle\Text::float($Leechers)?>
           </td>
         </tr>
         <tr
@@ -776,7 +776,7 @@ foreach ($TorrentList as $Torrent) {
             <?php
             }
     if (!empty($Description)) {
-        echo '<blockquote class="torrent_description">' . \Gazelle\Text::parse($Description) . '</blockquote>';
+        echo '<blockquote class="torrent_description">' . Gazelle\Text::parse($Description) . '</blockquote>';
     }
 
     echo "\n<blockquote>"; ?>
@@ -852,7 +852,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">
       <div class="head">
-        <span style="font-weight: bold;">Requests (<?=\Gazelle\Text::float(count($Requests))?>)</span>
+        <span style="font-weight: bold;">Requests (<?=Gazelle\Text::float(count($Requests))?>)</span>
         <a data-toggle-target="#requests" data-toggle-replace="Hide" class="u-pull-right brackets">Show</a>
       </div>
       <table id="requests" class="request_table hidden">
@@ -862,7 +862,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
           <td>Bounty</td>
         </tr>
         <?php foreach ($Requests as $Request) {
-            $RequestVotes = \Gazelle\Requests::get_votes_array($Request['ID']);
+            $RequestVotes = Gazelle\Requests::get_votes_array($Request['ID']);
 
             $RequestDesc = substr(explode('\n', $Request['Description'], 2)[0], 0, 70);
             if (strlen(explode('\n', $Request['Description'], 2)[0]) > 70) {
@@ -880,7 +880,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
               class="brackets">+</a>
             <?php } ?>
           </td>
-          <td><?=\Gazelle\Format::get_size($RequestVotes['TotalBounty'])?>
+          <td><?=Gazelle\Format::get_size($RequestVotes['TotalBounty'])?>
           </td>
         </tr>
         <?php
@@ -915,7 +915,7 @@ if (count($Collages) > 0) {
     <div class="box">
       <table class="collage_table" id="collages">
         <tr class="colhead">
-          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
+          <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Gazelle\Text::float(count($Collages))?> collection<?=((count($Collages) > 1) ? 's' : '')?><?=$SeeAll?>
           </td>
           <td># torrents</td>
         </tr>
@@ -924,7 +924,7 @@ if (count($Collages) > 0) {
             unset($Collages[$i]); ?>
         <tr>
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
+          <td class="number_column"><?=Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -933,7 +933,7 @@ if (count($Collages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
         <tr class="collage_rows hidden">
           <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-          <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
+          <td class="number_column"><?=Gazelle\Text::float($CollageTorrents)?>
           </td>
         </tr>
         <?php
@@ -970,7 +970,7 @@ if (count($PersonalCollages) > 0) {
     } ?>
     <table class="box collage_table" id="personal_collages">
       <tr class="colhead">
-        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=\Gazelle\Text::float(count($PersonalCollages))?> personal
+        <td width="85%"><a href="#">&uarr;</a>&nbsp;This content is in <?=Gazelle\Text::float(count($PersonalCollages))?> personal
           collection<?=((count($PersonalCollages) > 1) ? 's' : '')?><?=$SeeAll?>
         </td>
         <td># torrents</td>
@@ -980,7 +980,7 @@ if (count($PersonalCollages) > 0) {
           unset($PersonalCollages[$i]); ?>
       <tr>
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
+        <td class="number_column"><?=Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php
@@ -989,7 +989,7 @@ if (count($PersonalCollages) > 0) {
         list($CollageName, $CollageTorrents, $CollageID) = $Collage; ?>
       <tr class="personal_rows hidden">
         <td><a href="collages.php?id=<?=$CollageID?>"><?=$CollageName?></a></td>
-        <td class="number_column"><?=\Gazelle\Text::float($CollageTorrents)?>
+        <td class="number_column"><?=Gazelle\Text::float($CollageTorrents)?>
         </td>
       </tr>
       <?php
@@ -1087,8 +1087,8 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
                 echo '<li><a href="https://sci-hub.' . SCI_HUB . '/' . $Screenshot['Image'] . '" target="_blank">' . $Screenshot['Image'] . '</a></li>';
 
                 /* Image proxy integration
-                $SSURL = \Gazelle\Images::process($Screenshot['Image']);
-                $ThumbURL = \Gazelle\Images::process($Screenshot['Image'], 'thumb');
+                $SSURL = Gazelle\Images::process($Screenshot['Image']);
+                $ThumbURL = Gazelle\Images::process($Screenshot['Image'], 'thumb');
                 */
 
                 /* todo: Bring this back
@@ -1112,7 +1112,7 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
 
     <?php
 // --- Comments ---
-$Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
+$Pages = Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 ?>
     <div id="torrent_comments">
       <div class="linkbox"><a name="comments"></a>

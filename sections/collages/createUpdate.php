@@ -7,7 +7,7 @@ declare(strict_types=1);
  * create or update a collage
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # check permissions
 if ($app->user->cant("site_collages_create") || $app->user->cant("site_collages_manage") || $app->user->cant("site_edit_wiki")) {
@@ -15,8 +15,8 @@ if ($app->user->cant("site_collages_create") || $app->user->cant("site_collages_
 }
 
 # http requests
-$get = Http::get();
-$post = Http::post();
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
 
 # default to create a new collage
 $collageId = $get["collageId"] ?? null;
@@ -126,7 +126,7 @@ if (isset($Err)) { ?>
             <input type="text" <?=$NoName ? ' class="hidden"' : ''; ?>
             name="name" size="60" id="namebox"
             placeholder="Collection title"
-            value="<?=\Gazelle\Text::esc($Name)?>">
+            value="<?=Gazelle\Text::esc($Name)?>">
             <span id="personal" <?=$NoName ? '' : ' class="hidden"'; ?>
               style="font-style: oblique;">
               <strong>
@@ -200,7 +200,7 @@ if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_p
 View::textarea(
     id: 'description',
     placeholder: "Detailed description of the collection's purpose",
-    value: \Gazelle\Text::esc($Description) ?? '',
+    value: Gazelle\Text::esc($Description) ?? '',
 ); ?>
           </td>
         </tr>
@@ -210,7 +210,7 @@ View::textarea(
 
           <td>
             <input type="text" id="tags" name="tags" size="60" placeholder="Tags (comma-separated)"
-              value="<?=\Gazelle\Text::esc($Tags)?>">
+              value="<?=Gazelle\Text::esc($Tags)?>">
           </td>
         </tr>
 

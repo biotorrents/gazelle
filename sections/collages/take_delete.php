@@ -1,7 +1,7 @@
 <?php
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -53,7 +53,7 @@ if ($CategoryID == 0) {
     Subscriptions::flush_quote_notifications('collages', $CollageID);
 }
 
-Misc::write_log("Collage $CollageID ($Name) was deleted by ".$app->user->core['username'].": $Reason");
+Misc::write_log("Collage $CollageID ($Name) was deleted by " . $app->user->core['username'] . ": $Reason");
 
 $app->cache->delete("collage_$CollageID");
-Http::redirect("collages.php");
+Gazelle\Http::redirect("collages.php");

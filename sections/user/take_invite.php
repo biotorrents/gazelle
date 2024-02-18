@@ -2,8 +2,8 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
-$ENV = \Gazelle\ENV::go();
+$app = Gazelle\App::go();
+$ENV = Gazelle\ENV::go();
 
 if (!$UserCount = $app->cache->get('stats_user_count')) {
     $app->dbOld->query("
@@ -18,7 +18,7 @@ $UserID = $app->user->core['id'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
-    Http::redirect("user.php?action=invite");
+    Gazelle\Http::redirect("user.php?action=invite");
     error();
 }
 
@@ -65,7 +65,7 @@ foreach ($Emails as $CurEmail) {
             continue;
         } else {
             error('Invalid email.');
-            Http::redirect("user.php?action=invite");
+            Gazelle\Http::redirect("user.php?action=invite");
             error();
         }
     }
@@ -75,14 +75,14 @@ foreach ($Emails as $CurEmail) {
     WHERE InviterID = " . $app->user->core['id']);
     if ($app->dbOld->has_results()) {
         while (list($MaybeEmail) = $app->dbOld->next_record()) {
-            if (\Gazelle\Crypto::decrypt($MaybeEmail) == $CurEmail) {
+            if (Gazelle\Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
-                Http::redirect("user.php?action=invite");
+                Gazelle\Http::redirect("user.php?action=invite");
                 error();
             }
         }
     }
-    $InviteKey = db_string(\Gazelle\Text::random());
+    $InviteKey = db_string(Gazelle\Text::random());
 
     $DisabledChan = DISABLED_CHAN;
     $IRCServer = BOT_SERVER;
@@ -108,7 +108,7 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('{$app->user->core['id']}', '$InviteKey', '" . \Gazelle\Crypto::encrypt($CurEmail) . "', '$InviteExpires', '$InviteReason')");
+      ('{$app->user->core['id']}', '$InviteKey', '" . Gazelle\Crypto::encrypt($CurEmail) . "', '$InviteExpires', '$InviteReason')");
 
     if (!check_perms('site_send_unlimited_invites')) {
         $app->dbOld->query("
@@ -126,4 +126,4 @@ EOT;
     $app->email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
-Http::redirect("user.php?action=invite");
+Gazelle\Http::redirect("user.php?action=invite");

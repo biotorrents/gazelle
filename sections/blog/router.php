@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -18,7 +18,7 @@ $app = \Gazelle\App::go();
 
 
 enforce_login();
-$ENV = \Gazelle\ENV::go();
+$ENV = Gazelle\ENV::go();
 
 View::header('Blog');
 
@@ -30,11 +30,11 @@ if (check_perms('admin_manage_blog')) {
                     $app->dbOld->prepared_query("
             UPDATE blog
             SET ThreadID = NULL
-            WHERE ID = ".$_GET['id']);
+            WHERE ID = " . $_GET['id']);
                     $app->cache->delete('blog');
                     $app->cache->delete('feed_blog');
                 }
-                Http::redirect("blog.php");
+                Gazelle\Http::redirect("blog.php");
                 break;
 
             case 'takeeditblog':
@@ -43,14 +43,14 @@ if (check_perms('admin_manage_blog')) {
                     $app->dbOld->prepared_query("
             UPDATE blog
             SET
-              Title = '".db_string($_POST['title'])."',
-              Body = '".db_string($_POST['body'])."',
-              ThreadID = ".$_POST['thread']."
-            WHERE ID = '".db_string($_POST['blogid'])."'");
+              Title = '" . db_string($_POST['title']) . "',
+              Body = '" . db_string($_POST['body']) . "',
+              ThreadID = " . $_POST['thread'] . "
+            WHERE ID = '" . db_string($_POST['blogid']) . "'");
                     $app->cache->delete('blog');
                     $app->cache->delete('feed_blog');
                 }
-                Http::redirect("blog.php");
+                Gazelle\Http::redirect("blog.php");
                 break;
 
             case 'editblog':
@@ -69,11 +69,11 @@ if (check_perms('admin_manage_blog')) {
                     authorize();
                     $app->dbOld->prepared_query("
             DELETE FROM blog
-            WHERE ID = '".db_string($_GET['id'])."'");
+            WHERE ID = '" . db_string($_GET['id']) . "'");
                     $app->cache->delete('blog');
                     $app->cache->delete('feed_blog');
                 }
-                Http::redirect("blog.php");
+                Gazelle\Http::redirect("blog.php");
                 break;
 
             case 'takenewblog':
@@ -88,7 +88,7 @@ if (check_perms('admin_manage_blog')) {
             WHERE ID = $ThreadID");
                     if (!$app->dbOld->has_results()) {
                         error('No such thread exists!');
-                        Http::redirect("blog.php");
+                        Gazelle\Http::redirect("blog.php");
                     }
                 } else {
                     $ThreadID = Misc::create_thread($ENV->ANNOUNCEMENT_FORUM, $app->user->core['id'], $Title, $Body);
@@ -101,12 +101,12 @@ if (check_perms('admin_manage_blog')) {
           INSERT INTO blog
             (UserID, Title, Body, Time, ThreadID, Important)
           VALUES
-            ('".$app->user->core['id']."',
-            '".db_string($_POST['title'])."',
-            '".db_string($_POST['body'])."',
+            ('" . $app->user->core['id'] . "',
+            '" . db_string($_POST['title']) . "',
+            '" . db_string($_POST['body']) . "',
             NOW(),
             $ThreadID,
-            '".((isset($_POST['important']) && $_POST['important'] == '1') ? '1' : '0')."')");
+            '" . ((isset($_POST['important']) && $_POST['important'] == '1') ? '1' : '0') . "')");
                 $app->cache->delete('blog');
                 if ($_POST['important'] == '1') {
                     $app->cache->delete('blog_latest_id');
@@ -115,10 +115,10 @@ if (check_perms('admin_manage_blog')) {
                     $app->dbOld->prepared_query("
             INSERT IGNORE INTO users_subscriptions
             VALUES ('{$app->user->core['id']}', $ThreadID)");
-                    $app->cache->delete('subscriptions_user_'.$app->user->core['id']);
+                    $app->cache->delete('subscriptions_user_' . $app->user->core['id']);
                 }
 
-                Http::redirect("blog.php");
+                Gazelle\Http::redirect("blog.php");
                 break;
         }
     } ?>
@@ -138,15 +138,15 @@ if (check_perms('admin_manage_blog')) {
                 value="<?=$BlogID; ?>">
             <?php } ?>
             <h3>Title</h3>
-            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="'.\Gazelle\Text::esc($Title).'"' : ''; ?>><br>
+            <input type="text" name="title" size="95" <?=!empty($Title) ? ' value="' . Gazelle\Text::esc($Title) . '"' : ''; ?>><br>
             <h3>Body</h3>
             <textarea name="body" cols="95"
-                rows="15"><?=!empty($Body) ? \Gazelle\Text::esc($Body) : ''; ?></textarea>
+                rows="15"><?=!empty($Body) ? Gazelle\Text::esc($Body) : ''; ?></textarea>
             <br>
             <input type="checkbox" value="1" name="important" id="important" checked="checked"><label
                 for="important">Important</label><br>
             <h3>Thread ID</h3>
-            <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="'.\Gazelle\Text::esc($ThreadID).'"' : ''; ?>
+            <input type="text" name="thread" size="8" <?=!empty($ThreadID) ? ' value="' . Gazelle\Text::esc($ThreadID) . '"' : ''; ?>
             />
             (Leave blank to create thread automatically)
             <br><br>
@@ -194,8 +194,8 @@ if ($app->user->extra['LastReadBlog'] < $Blog[0][0]) {
 
     $app->dbOld->prepared_query("
     UPDATE users_info
-    SET LastReadBlog = '".$Blog[0][0]."'
-    WHERE UserID = ".$app->user->core['id']);
+    SET LastReadBlog = '" . $Blog[0][0] . "'
+    WHERE UserID = " . $app->user->core['id']);
     $app->user->extra['LastReadBlog'] = $Blog[0][0];
 }
 
@@ -213,7 +213,7 @@ foreach ($Blog as $BlogItem) {
             <?php } ?>
         </div>
         <div class="pad">
-            <?=\Gazelle\Text::parse($Body)?>
+            <?=Gazelle\Text::parse($Body)?>
             <?php if ($ThreadID) { ?>
             <br><br>
             <em><a

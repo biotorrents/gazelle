@@ -7,20 +7,20 @@ declare(strict_types=1);
  * user profile page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # request vars
-$get = Http::request("get");
-$post = Http::request("post");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
 
 $get["id"] ??= null;
-$userId = \Gazelle\Esc::int($get["id"]);
+$userId = Gazelle\Esc::int($get["id"]);
 
 $get["previewMode"] ??= null;
-$previewMode = \Gazelle\Esc::bool($get["previewMode"]);
+$previewMode = Gazelle\Esc::bool($get["previewMode"]);
 
 # user data
 $data = $app->user->readProfile($userId);
@@ -180,7 +180,7 @@ if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
     $DisplayCustomTitle = preg_replace_callback(
         '~src=("?)(http.+?)(["\s>])~',
         function ($Matches) {
-            return 'src=' . $Matches[1] . \Gazelle\Images::process($Matches[2]) . $Matches[3];
+            return 'src=' . $Matches[1] . Gazelle\Images::process($Matches[2]) . $Matches[3];
         },
         $CustomTitle
     );
@@ -202,8 +202,8 @@ if (($Override = check_paranoia_here('uploaded'))) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=\Gazelle\Format::get_size($Uploaded, 5)?>">Uploaded:
-            <?=\Gazelle\Format::get_size($Uploaded)?>
+            title="<?=Gazelle\Format::get_size($Uploaded, 5)?>">Uploaded:
+            <?=Gazelle\Format::get_size($Uploaded)?>
           </li>
           <?php
 }
@@ -211,15 +211,15 @@ if (($Override = check_paranoia_here('downloaded'))) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=\Gazelle\Format::get_size($Downloaded, 5)?>">Downloaded:
-            <?=\Gazelle\Format::get_size($Downloaded)?>
+            title="<?=Gazelle\Format::get_size($Downloaded, 5)?>">Downloaded:
+            <?=Gazelle\Format::get_size($Downloaded)?>
           </li>
           <?php
 }
 if (($Override = check_paranoia_here('ratio'))) {
     ?>
           <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Ratio:
-            <?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
+            <?=Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
             </li>
             <?php
 }
@@ -227,14 +227,14 @@ if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio))
     ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
-                title="<?=\Gazelle\Text::float((float) $RequiredRatio, 5)?>"><?=\Gazelle\Text::float((float) $RequiredRatio, 2)?></span></li>
+                title="<?=Gazelle\Text::float((float) $RequiredRatio, 5)?>"><?=Gazelle\Text::float((float) $RequiredRatio, 2)?></span></li>
               <?php
 }
 if (($Override = check_paranoia_here('downloaded'))) {
     ?>
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
-                  title="<?=\Gazelle\Format::get_size($TotalSeeding)?>"><?=\Gazelle\Format::get_size($TotalSeeding)?>
+                  title="<?=Gazelle\Format::get_size($TotalSeeding)?>"><?=Gazelle\Format::get_size($TotalSeeding)?>
                   </li>
                   <?php
 }
@@ -242,7 +242,7 @@ if ($isOwnProfile || ($Override = check_paranoia_here(false)) || check_perms('us
     ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$userId?>">Tokens</a>:
-                    <?=\Gazelle\Text::float($FLTokens)?>
+                    <?=Gazelle\Text::float($FLTokens)?>
                     </li>
                     <?php
 }
@@ -331,55 +331,55 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <?php if (($Override = check_paranoia_here('uploaded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Format::get_size($Uploaded)?>">Data uploaded:
-          <?=$UploadedRank === false ? 'Server busy' : \Gazelle\Text::float($UploadedRank)?>
+          title="<?=Gazelle\Format::get_size($Uploaded)?>">Data uploaded:
+          <?=$UploadedRank === false ? 'Server busy' : Gazelle\Text::float($UploadedRank)?>
         </li>
         <?php
         }
 if (($Override = check_paranoia_here('downloaded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Format::get_size($Downloaded)?>">Data downloaded:
-          <?=$DownloadedRank === false ? 'Server busy' : \Gazelle\Text::float($DownloadedRank)?>
+          title="<?=Gazelle\Format::get_size($Downloaded)?>">Data downloaded:
+          <?=$DownloadedRank === false ? 'Server busy' : Gazelle\Text::float($DownloadedRank)?>
         </li>
         <?php
 }
 if (($Override = check_paranoia_here('uploads+'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Text::float($Uploads)?>">Torrents uploaded:
-          <?=$UploadsRank === false ? 'Server busy' : \Gazelle\Text::float($UploadsRank)?>
+          title="<?=Gazelle\Text::float($Uploads)?>">Torrents uploaded:
+          <?=$UploadsRank === false ? 'Server busy' : Gazelle\Text::float($UploadsRank)?>
         </li>
         <?php
 }
 if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Text::float($RequestsFilled)?>">Requests
-          filled: <?=$RequestRank === false ? 'Server busy' : \Gazelle\Text::float($RequestRank)?>
+          title="<?=Gazelle\Text::float($RequestsFilled)?>">Requests
+          filled: <?=$RequestRank === false ? 'Server busy' : Gazelle\Text::float($RequestRank)?>
         </li>
         <?php
 }
 if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Format::get_size($TotalSpent)?>">Bounty spent:
-          <?=$BountyRank === false ? 'Server busy' : \Gazelle\Text::float($BountyRank)?>
+          title="<?=Gazelle\Format::get_size($TotalSpent)?>">Bounty spent:
+          <?=$BountyRank === false ? 'Server busy' : Gazelle\Text::float($BountyRank)?>
         </li>
         <?php } ?>
-        <li class="tooltip" title="<?=\Gazelle\Text::float($ForumPosts)?>">
-          Posts made: <?=$PostRank === false ? 'Server busy' : \Gazelle\Text::float($PostRank)?>
+        <li class="tooltip" title="<?=Gazelle\Text::float($ForumPosts)?>">
+          Posts made: <?=$PostRank === false ? 'Server busy' : Gazelle\Text::float($PostRank)?>
         </li>
         <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=\Gazelle\Text::float($ArtistsAdded)?>">Artists added:
-          <?=$ArtistsRank === false ? 'Server busy' : \Gazelle\Text::float($ArtistsRank)?>
+          title="<?=Gazelle\Text::float($ArtistsAdded)?>">Artists added:
+          <?=$ArtistsRank === false ? 'Server busy' : Gazelle\Text::float($ArtistsRank)?>
         </li>
         <?php
         }
 if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
-        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : \Gazelle\Text::float($OverallRank)?></strong>
+        <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Gazelle\Text::float($OverallRank)?></strong>
         </li>
         <?php } ?>
       </ul>
@@ -401,7 +401,7 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
 if (check_perms('users_view_ips', $Class)) {
     ?>
         <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
-        <li>Tracker IPs: <?=\Gazelle\Text::float($TrackerIPs)?> <a
+        <li>Tracker IPs: <?=Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$userId?>"
             class="brackets">View</a></li>
         <?php
@@ -455,13 +455,13 @@ if ($ParanoiaLevel == 0) {
         <li>Paranoia level: <span class="tooltip"
             title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
         <?php if (check_perms('users_view_email', $Class) || $isOwnProfile) { ?>
-        <li>Email: <a href="mailto:<?=\Gazelle\Text::esc($Email)?>"><?=\Gazelle\Text::esc($Email)?></a>
+        <li>Email: <a href="mailto:<?=Gazelle\Text::esc($Email)?>"><?=Gazelle\Text::esc($Email)?></a>
         </li>
         <?php }
 
         if (check_perms('users_view_ips', $Class)) {
-            $IP = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
-        <li>IP: <?=\Gazelle\Text::esc($IP)?>
+            $IP = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
+        <li>IP: <?=Gazelle\Text::esc($IP)?>
         </li>
         <?php
         }
@@ -469,7 +469,7 @@ if ($ParanoiaLevel == 0) {
 if (check_perms('users_view_keys', $Class) || $isOwnProfile) {
     ?>
         <li>Passkey: <a href="#" id="passkey"
-            onclick="togglePassKey('<?=\Gazelle\Text::esc($torrent_pass)?>'); return false;"
+            onclick="togglePassKey('<?=Gazelle\Text::esc($torrent_pass)?>'); return false;"
             class="brackets">View</a></li>
         <?php
 }
@@ -491,7 +491,7 @@ if (check_perms('users_view_invites')) {
     if ($DisableInvites) {
         echo 'X';
     } else {
-        echo \Gazelle\Text::float($Invites);
+        echo Gazelle\Text::float($Invites);
     }
     echo " ($Pending)"
     ?>
@@ -532,9 +532,9 @@ if ($RatioWatchEnds && (time() < strtotime($RatioWatchEnds)) && ($Downloaded * $
     ?>
     <div class="box">
       <div class="head">Ratio watch</div>
-      <div class="pad">This user is currently on ratio watch and must upload <?=\Gazelle\Format::get_size(($Downloaded * $RequiredRatio) - $Uploaded)?> in
+      <div class="pad">This user is currently on ratio watch and must upload <?=Gazelle\Format::get_size(($Downloaded * $RequiredRatio) - $Uploaded)?> in
         the next <?=time_diff($RatioWatchEnds)?>, or their leeching
-        privileges will be revoked. Amount downloaded while on ratio watch: <?=\Gazelle\Format::get_size($Downloaded - $RatioWatchDownload)?>
+        privileges will be revoked. Amount downloaded while on ratio watch: <?=Gazelle\Format::get_size($Downloaded - $RatioWatchDownload)?>
       </div>
     </div>
     <?php
@@ -553,7 +553,7 @@ if (!$Info) {
         This profile is currently empty.
         <?php
 } else {
-    echo \Gazelle\Text::parse($Info);
+    echo Gazelle\Text::parse($Info);
 }
 ?>
       </div>
@@ -615,9 +615,9 @@ if (check_paranoia_here('snatched')) {
           <a
             href="torrents.php?id=<?=$RS['ID']?>">
             <img class="tooltip"
-              title="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
-              src="<?=\Gazelle\Images::process($RS['WikiImage'], 'thumb')?>"
-              alt="<?=\Gazelle\Text::esc($RS['Artist'])?><?=\Gazelle\Text::esc($RSName)?>"
+              title="<?=Gazelle\Text::esc($RS['Artist'])?><?=Gazelle\Text::esc($RSName)?>"
+              src="<?=Gazelle\Images::process($RS['WikiImage'], 'thumb')?>"
+              alt="<?=Gazelle\Text::esc($RS['Artist'])?><?=Gazelle\Text::esc($RSName)?>"
               width="100%" />
           </a>
         </div>
@@ -682,7 +682,7 @@ if (check_paranoia_here('uploads')) {
             href="torrents.php?id=<?=$RU['ID']?>">
             <img class="tooltip"
               title="<?=$RU['Artist']?><?=$RUName?>"
-              src="<?=\Gazelle\Images::process($RU['WikiImage'], 'thumb')?>"
+              src="<?=Gazelle\Images::process($RU['WikiImage'], 'thumb')?>"
               alt="<?=$RU['Artist']?><?=$RUName?>"
               width="100%" />
           </a>
@@ -728,7 +728,7 @@ foreach ($Collages as $CollageInfo) {
     $Collage = $app->dbOld->to_array(false, MYSQLI_ASSOC, false); ?>
     <div class="box" id="collage<?=$CollageID?>_box">
       <div class="head">
-        <?=\Gazelle\Text::esc($CName)?> - <a
+        <?=Gazelle\Text::esc($CName)?> - <a
           href="collages.php?id=<?=$CollageID?>" class="brackets">See
           full</a>
         <span class="u-pull-right">
@@ -751,7 +751,7 @@ foreach ($Collages as $CollageInfo) {
         <div class="collage_image">
           <a href="torrents.php?id=<?=$GroupID?>">
             <img class="tooltip" title="<?=$Name?>"
-              src="<?=\Gazelle\Images::process($C['WikiImage'], 'thumb')?>"
+              src="<?=Gazelle\Images::process($C['WikiImage'], 'thumb')?>"
               alt="<?=$Name?>" width="100%" />
           </a>
         </div>
@@ -840,7 +840,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
         } ?>
       <tr>
         <td><a
-            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=\Gazelle\Text::esc($Subject)?></a></td>
+            href="staffpm.php?action=viewconv&amp;id=<?=$ID?>"><?=Gazelle\Text::esc($Subject)?></a></td>
         <td><?=time_diff($Date, 2, true)?>
         </td>
         <td><?=$Assigned?>
@@ -875,11 +875,11 @@ if (check_perms('users_mod', $Class)) { ?>
       <div id="staffnotes" class="pad">
         <input type="hidden" name="comment_hash"
           value="<?=$CommentHash?>" />
-        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=\Gazelle\Text::parse($AdminComment)?>
+        <div id="admincommentlinks" class="AdminComment" style="width: 98%;"><?=Gazelle\Text::parse($AdminComment)?>
         </div>
         <textarea id="admincomment" onkeyup="resize('admincomment');" class="AdminComment hidden" name="AdminComment"
           cols="65" rows="26"
-          style="width: 98%;"><?=\Gazelle\Text::esc($AdminComment)?></textarea>
+          style="width: 98%;"><?=Gazelle\Text::esc($AdminComment)?></textarea>
         <a href="#" name="admincommentbutton" class="brackets">Toggle
           edit</a>
         <script>
@@ -898,7 +898,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
-            value="<?=\Gazelle\Text::esc($Username)?>" /></td>
+            value="<?=Gazelle\Text::esc($Username)?>" /></td>
       </tr>
       <?php
       }
@@ -907,7 +907,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <tr>
         <td class="label">Custom title:</td>
         <td><input type="text" class="wide_input_text" name="Title"
-            value="<?=\Gazelle\Text::esc($CustomTitle)?>" /></td>
+            value="<?=Gazelle\Text::esc($CustomTitle)?>" /></td>
       </tr>
       <?php
     }
@@ -1050,13 +1050,13 @@ if (!$DisablePoints) {
     if ($app->dbOld->has_results()) {
         list($NumTorr, $TSize, $TTime, $TSeeds) = $app->dbOld->next_record();
 
-        $ENV = \Gazelle\ENV::go();
+        $ENV = Gazelle\ENV::go();
         $PointsRate = ($ENV->bonusPointsCoefficient + (0.55 * ($NumTorr * (sqrt(($TSize / $NumTorr) / 1073741824) * pow(1.5, ($TTime / $NumTorr) / (24 * 365))))) / (max(1, sqrt(($TSeeds / $NumTorr) + 4) / 3))) ** 0.95;
     }
 
     $PointsRate = intval(max(min($PointsRate, ($PointsRate * 2) - ($BonusPoints / 1440)), 0));
-    $PointsPerHour = \Gazelle\Text::float($PointsRate) . " " . bonusPoints . "/hour";
-    $PointsPerDay = \Gazelle\Text::float($PointsRate * 24) . " " . bonusPoints . "/day";
+    $PointsPerHour = Gazelle\Text::float($PointsRate) . " " . bonusPoints . "/hour";
+    $PointsPerDay = Gazelle\Text::float($PointsRate * 24) . " " . bonusPoints . "/day";
 } else {
     $PointsPerHour = "0 " . bonusPoints . "/hour";
     $PointsPerDay = bonusPoints . " disabled";
@@ -1096,7 +1096,7 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
           remark:</td>
         <td><input type="text" class="wide_input_text" name="SupportFor"
-            value="<?=\Gazelle\Text::esc($SupportFor)?>" /></td>
+            value="<?=Gazelle\Text::esc($SupportFor)?>" /></td>
       </tr>
       <?php
     }
@@ -1354,14 +1354,14 @@ if (!$DisablePoints) {
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Restricted forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="RestrictedForums"
-            value="<?=\Gazelle\Text::esc($RestrictedForums)?>" />
+            value="<?=Gazelle\Text::esc($RestrictedForums)?>" />
         </td>
       </tr>
       <tr>
         <td class="label tooltip" title="Enter a comma-delimited list of forum IDs.">Extra forums:</td>
         <td>
           <input type="text" class="wide_input_text" name="PermittedForums"
-            value="<?=\Gazelle\Text::esc($PermittedForums)?>" />
+            value="<?=Gazelle\Text::esc($PermittedForums)?>" />
         </td>
       </tr>
 

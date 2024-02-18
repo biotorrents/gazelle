@@ -7,10 +7,10 @@ declare(strict_types=1);
  * collage details page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # http request
-$get = Http::get();
+$get = Gazelle\Http::get();
 $id = $get["id"];
 
 # collage details
@@ -75,7 +75,7 @@ if ($CollageData) {
 }
 
 if ($Deleted === '1') {
-    Http::redirect("log.php?search=Collage+$CollageID");
+    Gazelle\Http::redirect("log.php?search=Collage+$CollageID");
     error(404);
 }
 

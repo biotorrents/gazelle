@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -48,6 +48,6 @@ if (!$app->dbOld->has_results()) {
     header('Location: ' . Inbox::get_inbox_link());
 } else {
     error("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");
-    Http::redirect("inbox.php?action=viewconv&id=$ConvID");
+    Gazelle\Http::redirect("inbox.php?action=viewconv&id=$ConvID");
 }
 //View::footer();

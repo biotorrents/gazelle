@@ -7,11 +7,11 @@ declare(strict_types=1);
  * download torrent file
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # variables
-$get = Http::request("get");
-$server = Http::request("server");
+$get = Gazelle\Http::request("get");
+$server = Gazelle\Http::request("server");
 
 $authKey = $get["authkey"] ?? null;
 $passKey = $get["torrent_pass"] ?? null;
@@ -40,7 +40,7 @@ $query = "select 1 from locked_accounts where userId = ?";
 $locked = $app->dbNew->single($query, [$userId]);
 
 if ($locked) {
-    Http::response(403);
+    Gazelle\Http::response(403);
 }
 
 /*
@@ -67,7 +67,7 @@ if ($inArrayPartial) {
     $ref = $app->dbNew->multi($query, [$userId, $torrentId]);
 
     if (count($ref) > 4) {
-        Http::response(403);
+        Gazelle\Http::response(403);
 
         /*
         error("
@@ -170,7 +170,7 @@ if ($useToken && intval($leechStatus) === 0) {
         try {
             Tracker::update_tracker(
                 "add_token",
-                ["info_hash" => substr("%".chunk_split($infoHash, 2, "%"), 0, -1), "userid" => $userId]
+                ["info_hash" => substr("%" . chunk_split($infoHash, 2, "%"), 0, -1), "userid" => $userId]
             );
         } catch (Throwable $e) {
             error("
@@ -243,7 +243,7 @@ $contents = file_get_contents("{$app->env->torrentStore}/$torrentId.torrent");
 $fileName = TorrentsDL::construct_file_name($torrentId);
 
 # announce uri stuff
-$userAnnounceUri = ANNOUNCE_URLS[0][0]."/".$passKey."/announce";
+$userAnnounceUri = ANNOUNCE_URLS[0][0] . "/" . $passKey . "/announce";
 
 # todo: probably not working, but no need yet
 $userAnnounceList = array_map("add_passkey", ANNOUNCE_URLS);

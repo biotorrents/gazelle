@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 // todo: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches
@@ -29,7 +29,7 @@ if (!isset($_GET['threadid']) || !is_numeric($_GET['threadid'])) {
       WHERE ID = $_GET[postid]");
         list($ThreadID) = $app->dbOld->next_record();
         if ($ThreadID) {
-            Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
+            Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
             error();
         } else {
             error(404);
@@ -63,8 +63,8 @@ if (!Forums::check_forumperm($ForumID)) {
     #error(403);
 }
 //Escape strings for later display
-$ThreadTitle = \Gazelle\Text::esc($ThreadInfo['Title']);
-$ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
+$ThreadTitle = Gazelle\Text::esc($ThreadInfo['Title']);
+$ForumName = Gazelle\Text::esc($Forums[$ForumID]['Name']);
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page
 if ($ThreadInfo['Posts'] > $PerPage) {
@@ -87,11 +87,11 @@ if ($ThreadInfo['Posts'] > $PerPage) {
 } else {
     $PostNum = 1;
 }
-list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
+list($Page, $Limit) = Gazelle\Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
 if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
     $Page = ceil($ThreadInfo['Posts'] / $PerPage);
 }
-list($CatalogueID, $CatalogueLimit) = \Gazelle\Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
+list($CatalogueID, $CatalogueLimit) = Gazelle\Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID")) {
@@ -114,7 +114,7 @@ if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID"))
         $app->cache->set("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
-$Thread = \Gazelle\Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
+$Thread = Gazelle\Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
 $LastPost = end($Thread);
 $LastPost = $LastPost['ID'];
 $FirstPost = reset($Thread);
@@ -239,7 +239,7 @@ View::header(
   </div>
 </div>
 <?php
-$Pages = \Gazelle\Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
+$Pages = Gazelle\Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
 echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
@@ -300,7 +300,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
   <div class="pad<?php if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) {
       echo ' hidden';
   } ?>" id="threadpoll">
-    <p><strong><?=\Gazelle\Text::esc($Question)?></strong></p>
+    <p><strong><?=Gazelle\Text::esc($Question)?></strong></p>
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
@@ -314,7 +314,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                     $Ratio = 0;
                     $Percent = 0;
                 } ?>
-      <li<?=((!empty($UserResponse) && ($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=\Gazelle\Text::esc($Answer)?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse) && ($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=Gazelle\Text::esc($Answer)?> (<?=Gazelle\Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -326,7 +326,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <li>
           <?= ($UserResponse == '0' ? '&raquo;&nbsp;' : '') ?>
           (Blank)
-          (<?= \Gazelle\Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
+          (<?= Gazelle\Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
         </li>
 
         <li class="graph">
@@ -339,7 +339,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </ul>
     <br>
 
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br><br>
+    <strong>Votes:</strong> <?=Gazelle\Text::float($TotalVotes)?><br><br>
     <?php
         } else {
             //Staff forum, output voters, not percentages
@@ -376,8 +376,8 @@ if ($ThreadInfo['NoPoll'] == 0) {
           ?>
       <li>
         <a
-          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=\Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
-        - <?=$StaffVotes[$i]?>&nbsp;(<?=\Gazelle\Text::float(((float) $Votes[$i] / $TotalVotes) * 100, 2)?>%)
+          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
+        - <?=$StaffVotes[$i]?>&nbsp;(<?=Gazelle\Text::float(((float) $Votes[$i] / $TotalVotes) * 100, 2)?>%)
         <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
       </li>
@@ -386,14 +386,14 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=0"><?=($UserResponse == '0' ? '&raquo;&nbsp;' : '')?>Blank</a>
-        - <?=$StaffVotes[0]?>&nbsp;(<?=\Gazelle\Text::float(((float) $Votes[0] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[0]?>&nbsp;(<?=Gazelle\Text::float(((float) $Votes[0] / $TotalVotes) * 100, 2)?>%)
       </li>
     </ul>
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
     <br>
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=\Gazelle\Text::float($TotalVotes)?> total
+    <strong>Votes:</strong> <?=Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=Gazelle\Text::float($TotalVotes)?> total
     <br>
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>
@@ -420,7 +420,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
           <li>
             <input type="radio" name="vote" id="answer_<?=$i?>"
               value="<?=$i?>">
-            <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answer)?></label>
+            <label for="answer_<?=$i?>"><?=Gazelle\Text::esc($Answer)?></label>
           </li>
           <?php } ?>
           <li>
@@ -589,7 +589,7 @@ foreach ($Thread as $Key => $Post) {
         echo ' colspan="2"';
     } ?>>
       <div id="content<?=$PostID?>">
-        <?=\Gazelle\Text::parse($Body) ?>
+        <?=Gazelle\Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
         <br>
         <br>
@@ -658,7 +658,7 @@ if (check_perms('site_moderate_forums')) {
       <td><?=User::format_username($Note['AuthorID'])?>
         (<?=time_diff($Note['AddedTime'], 2, true, true)?>)
       </td>
-      <td><?=\Gazelle\Text::parse($Note['Body'])?>
+      <td><?=Gazelle\Text::parse($Note['Body'])?>
       </td>
     </tr>
     <?php
@@ -718,7 +718,7 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="thread_title_textbox">Title</label></td>
       <td>
         <input type="text" id="thread_title_textbox" name="title" style="width: 75%;"
-          value="<?=\Gazelle\Text::esc($ThreadInfo['Title'])?>"
+          value="<?=Gazelle\Text::esc($ThreadInfo['Title'])?>"
           tabindex="2">
       </td>
     </tr>
@@ -746,7 +746,7 @@ if (check_perms('site_moderate_forums')) {
         } ?>
             <option value="<?=$Forum['ID']?>" <?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
                 echo ' selected="selected"';
-            } ?>><?=\Gazelle\Text::esc($Forum['Name'])?>
+            } ?>><?=Gazelle\Text::esc($Forum['Name'])?>
             </option>
             <?php
     } ?>

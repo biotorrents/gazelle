@@ -23,7 +23,7 @@
  * We can add these features eventually.                        *
  ****************************************************************/
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -53,13 +53,13 @@ if ($OldName == $NewName) {
 $app->dbOld->query("
   SELECT ArtistID
   FROM artists_group
-  WHERE Name LIKE '".db_string($NewName, true)."'");
+  WHERE Name LIKE '" . db_string($NewName, true) . "'");
 list($TargetArtistID) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 if (!$TargetAliasID) {
     $app->dbOld->query("
     UPDATE artists_group
-    SET Name = '".db_string($NewName)."'
+    SET Name = '" . db_string($NewName) . "'
     WHERE ArtistID = '$ArtistID'");
 
     $app->dbOld->query("
@@ -95,7 +95,7 @@ if (!$TargetAliasID) {
     } else {
         $app->dbOld->query("
       UPDATE artists_group
-      SET Name = '".db_string($NewName)."'
+      SET Name = '" . db_string($NewName) . "'
       WHERE ArtistID = '$ArtistID'");
     }
 
@@ -149,4 +149,4 @@ $app->cache->delete("artist_$TargetArtistID");
 $app->cache->delete("artists_requests_$TargetArtistID");
 $app->cache->delete("artists_requests_$ArtistID");
 
-Http::redirect("artist.php?id=$TargetArtistID");
+Gazelle\Http::redirect("artist.php?id=$TargetArtistID");

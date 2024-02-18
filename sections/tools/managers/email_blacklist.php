@@ -7,15 +7,15 @@ declare(strict_types=1);
  * email blacklist manager
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms("users_view_email")) {
     error(403);
 }
 
 # request variables
-$get = Http::get();
-$post = Http::post();
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
 
 # get the emails
 $get["search"] ??= null;

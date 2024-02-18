@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -43,4 +43,4 @@ if (!check_perms('site_send_unlimited_invites')) {
         */
     }
 }
-Http::redirect("user.php?action=invite");
+Gazelle\Http::redirect("user.php?action=invite");

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -96,18 +96,18 @@ if (!empty($_POST['action'])) {
         }
         list($FirstID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
         if ($app->dbOld->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
-            Http::redirect("artist.php?id=$FirstID");
+            Gazelle\Http::redirect("artist.php?id=$FirstID");
             error();
         }
         while (list($ID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
             if (!strcasecmp($Name, $NameSearch)) {
-                Http::redirect("artist.php?id=$ID");
+                Gazelle\Http::redirect("artist.php?id=$ID");
                 error();
             }
         }
-        Http::redirect("artist.php?id=$FirstID");
+        Gazelle\Http::redirect("artist.php?id=$FirstID");
         error();
     } else {
-        Http::redirect("torrents.php");
+        Gazelle\Http::redirect("torrents.php");
     }
 }

@@ -7,17 +7,17 @@ declare(strict_types=1);
  * bonus points order confirmation
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-Http::csrf();
+Gazelle\Http::csrf();
 
-$bonusPoints = new \Gazelle\BonusPoints();
+$bonusPoints = new Gazelle\BonusPoints();
 #!d($bonusPoints);exit;
 
 # request variables
-$post = Http::post();
+$post = Gazelle\Http::post();
 if (empty($post)) {
-    Http::redirect("store");
+    Gazelle\Http::redirect("store");
 }
 
 # error message
@@ -63,7 +63,7 @@ try {
         "coinBadge" => $bonusPoints->coinBadge($post["amount"]),
         "randomBadge" => $bonusPoints->randomBadge(),
     };
-} catch (\Exception $e) {
+} catch (\Throwable $e) {
     $errorMessage = $e->getMessage();
     $result = null;
 }

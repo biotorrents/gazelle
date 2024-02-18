@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 $auth = new Auth();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # variables
-$get = Http::request("get");
-$post = Http::request("post");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
 
 
 try {

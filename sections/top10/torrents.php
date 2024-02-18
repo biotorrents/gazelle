@@ -7,53 +7,53 @@ declare(strict_types=1);
  * top10 torrents
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 enforce_login();
 if (!check_perms("site_top10")) {
     error(403);
 }
 
-$get = Http::request("get");
-$limit = intval($get["limit"] ?? \Gazelle\Top10::$defaultLimit);
+$get = Gazelle\Http::request("get");
+$limit = intval($get["limit"] ?? Gazelle\Top10::$defaultLimit);
 
 # data
-$dailyTorrents = \Gazelle\Top10::dailyTorrents($limit);
+$dailyTorrents = Gazelle\Top10::dailyTorrents($limit);
 if (!empty($dailyTorrents)) {
     $dailyTorrents = Torrents::get_groups(array_column($dailyTorrents, "id"));
 }
 
-$weeklyTorrents = \Gazelle\Top10::weeklyTorrents($limit);
+$weeklyTorrents = Gazelle\Top10::weeklyTorrents($limit);
 if (!empty($weeklyTorrents)) {
     $weeklyTorrents = Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
 }
 
-$monthlyTorrents = \Gazelle\Top10::monthlyTorrents($limit);
+$monthlyTorrents = Gazelle\Top10::monthlyTorrents($limit);
 if (!empty($monthlyTorrents)) {
     $monthlyTorrents = Torrents::get_groups(array_column($monthlyTorrents, "id"));
 }
 
-$yearlyTorrents = \Gazelle\Top10::yearlyTorrents($limit);
+$yearlyTorrents = Gazelle\Top10::yearlyTorrents($limit);
 if (!empty($yearlyTorrents)) {
     $yearlyTorrents = Torrents::get_groups(array_column($yearlyTorrents, "id"));
 }
 
-$overallTorrents = \Gazelle\Top10::overallTorrents($limit);
+$overallTorrents = Gazelle\Top10::overallTorrents($limit);
 if (!empty($overallTorrents)) {
     $overallTorrents = Torrents::get_groups(array_column($overallTorrents, "id"));
 }
 
-$torrentSeeders = \Gazelle\Top10::torrentSeeders($limit);
+$torrentSeeders = Gazelle\Top10::torrentSeeders($limit);
 if (!empty($torrentSeeders)) {
     $torrentSeeders = Torrents::get_groups(array_column($torrentSeeders, "id"));
 }
 
-$torrentSnatches = \Gazelle\Top10::torrentSnatches($limit);
+$torrentSnatches = Gazelle\Top10::torrentSnatches($limit);
 if (!empty($torrentSnatches)) {
     $torrentSnatches = Torrents::get_groups(array_column($torrentSnatches, "id"));
 }
 
-$torrentData = \Gazelle\Top10::torrentData($limit);
+$torrentData = Gazelle\Top10::torrentData($limit);
 if (!empty($torrentData)) {
     $torrentData = Torrents::get_groups(array_column($torrentData, "id"));
 }
@@ -136,7 +136,7 @@ View::header("Top $Limit Torrents", 'browse');
 <div>
     <div class="header">
         <h2>Top <?=$Limit?> Torrents</h2>
-        <?php \Gazelle\Top10::render_linkbox("torrents"); ?>
+        <?php Gazelle\Top10::render_linkbox("torrents"); ?>
     </div>
     <?php
 
@@ -150,7 +150,7 @@ if (check_perms('site_advanced_top10')) {
                     <td class="label">Tags (comma-separated)</td>
                     <td class="ft_taglist">
                         <input type="text" name="tags" id="tags" size="65" value="<?php if (!empty($_GET['tags'])) {
-                            echo \Gazelle\Text::esc($_GET['tags']);
+                            echo Gazelle\Text::esc($_GET['tags']);
                         } ?>" />&nbsp;
                         <input type="radio" id="rdoAll" name="anyall" value="all" <?=((!isset($_GET['anyall']) || $_GET['anyall'] !== 'any') ? ' checked="checked"' : '')?>><label for="rdoAll"> All</label>&nbsp;&nbsp;
                         <input type="radio" id="rdoAny" name="anyall" value="any" <?=((!isset($_GET['anyall']) || $_GET['anyall'] === 'any') ? ' checked="checked"' : '')?>><label for="rdoAny"> Any</label>
@@ -165,8 +165,8 @@ if (check_perms('site_advanced_top10')) {
                             $Categories = $app->env->CATEGORIES;
     foreach ($Categories as $CategoryName) { ?>
                             <option
-                                value="<?=\Gazelle\Text::esc($CategoryName)?>"
-                                <?=(($CategoryName === ($_GET['category'] ?? false)) ? 'selected="selected"' : '')?>><?=\Gazelle\Text::esc($CategoryName)?>
+                                value="<?=Gazelle\Text::esc($CategoryName)?>"
+                                <?=(($CategoryName === ($_GET['category'] ?? false)) ? 'selected="selected"' : '')?>><?=Gazelle\Text::esc($CategoryName)?>
                             </option>
                             <?php } ?>
                         </select>
@@ -193,7 +193,7 @@ if ($DisableFreeTorrentTop10) {
 
 // The link should say the opposite of the current setting
 $FreeleechToggleName = ($DisableFreeTorrentTop10 ? 'show' : 'hide');
-$FreeleechToggleQuery = \Gazelle\Format::get_url(array('freeleech', 'groups'));
+$FreeleechToggleQuery = Gazelle\Format::get_url(array('freeleech', 'groups'));
 
 if (!empty($FreeleechToggleQuery)) {
     $FreeleechToggleQuery .= '&amp;';
@@ -202,7 +202,7 @@ if (!empty($FreeleechToggleQuery)) {
 $FreeleechToggleQuery .= 'freeleech=' . $FreeleechToggleName;
 
 $GroupByToggleName = ((isset($_GET['groups']) && $_GET['groups'] === 'show') ? 'hide' : 'show');
-$GroupByToggleQuery = \Gazelle\Format::get_url(array('freeleech', 'groups'));
+$GroupByToggleQuery = Gazelle\Format::get_url(array('freeleech', 'groups'));
 
 if (!empty($GroupByToggleQuery)) {
     $GroupByToggleQuery .= '&amp;';
@@ -495,7 +495,7 @@ View::footer();
 // Generate a table based on data from most recent query to $db
 function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     $Categories = $app->env->CATEGORIES;
 
 
@@ -610,7 +610,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage, 'thumb') . '" ';
+            $DisplayName .= 'data-cover="' . Gazelle\Images::process($WikiImage, 'thumb') . '" ';
         }
 
 
@@ -662,7 +662,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             /*
             if ($IsSnatched) {
                 $ExtraInfo .= ' / ';
-                $ExtraInfo .= \Gazelle\Format::torrent_label('Snatched!', 'bold');
+                $ExtraInfo .= Gazelle\Format::torrent_label('Snatched!', 'bold');
             }
             */
 
@@ -687,8 +687,8 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     class="torrent row<?=($IsBookmarked ? ' bookmarked' : '') . ($IsSnatched ? ' snatched_torrent' : '')?>">
     <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
     <td class="center categoryColumn">
-        <div title="<?=\Gazelle\Format::pretty_category($GroupCategoryID)?>"
-            class="tooltip <?=\Gazelle\Format::css_category($GroupCategoryID)?>">
+        <div title="<?=Gazelle\Format::pretty_category($GroupCategoryID)?>"
+            class="tooltip <?=Gazelle\Format::css_category($GroupCategoryID)?>">
         </div>
     </td>
     <td class="big_info">
@@ -722,17 +722,17 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             </div>
         </div>
     </td>
-    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Size)?>
+    <td class="number_column nobr"><?=Gazelle\Format::get_size($Size)?>
     </td>
-    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Data)?>
+    <td class="number_column nobr"><?=Gazelle\Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float) $Snatched)?>
+    <td class="number_column"><?=Gazelle\Text::float((float) $Snatched)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float) $Seeders)?>
+    <td class="number_column"><?=Gazelle\Text::float((float) $Seeders)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float) $Leechers)?>
+    <td class="number_column"><?=Gazelle\Text::float((float) $Leechers)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float($Seeders + $Leechers)?>
+    <td class="number_column"><?=Gazelle\Text::float($Seeders + $Leechers)?>
     </td>
 </tr>
 <?php

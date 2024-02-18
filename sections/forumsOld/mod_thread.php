@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /*********************************************************************\
 //--------------Mod thread-------------------------------------------//
@@ -16,7 +16,7 @@ the front page.
 
 \*********************************************************************/
 
-$ENV = \Gazelle\ENV::go();
+$ENV = Gazelle\ENV::go();
 
 // Quick SQL injection check
 if (!is_numeric($_POST['threadid'])) {
@@ -34,10 +34,10 @@ authorize();
 
 // Variables for database input
 
-$TopicID = (int)$_POST['threadid'];
+$TopicID = (int) $_POST['threadid'];
 $Sticky = isset($_POST['sticky']) ? 1 : 0;
 $Locked = isset($_POST['locked']) ? 1 : 0;
-$Ranking = (int)$_POST['ranking'];
+$Ranking = (int) $_POST['ranking'];
 if (!$Sticky && $Ranking > 0) {
     $Ranking = 0;
 } elseif (0 > $Ranking) {
@@ -45,8 +45,8 @@ if (!$Sticky && $Ranking > 0) {
 }
 $Title = db_string($_POST['title']);
 $RawTitle = $_POST['title'];
-$ForumID = (int)$_POST['forumid'];
-$Page = (int)$_POST['page'];
+$ForumID = (int) $_POST['forumid'];
+$Page = (int) $_POST['page'];
 $Action = '';
 
 
@@ -160,7 +160,7 @@ if (isset($_POST['delete'])) {
     WHERE Page = 'forums'
       AND PageID = '$TopicID'");
 
-    Http::redirect("forums.php?action=viewforum&forumid=$ForumID");
+    Gazelle\Http::redirect("forums.php?action=viewforum&forumid=$ForumID");
 } else { // If we're just editing it
     $Action = 'editing';
 
@@ -175,7 +175,7 @@ if (isset($_POST['delete'])) {
     'IsSticky' => $Sticky,
     'Ranking' => $Ranking,
     'IsLocked' => $Locked,
-    'Title' => \Gazelle\Text::limit($RawTitle, 150),
+    'Title' => Gazelle\Text::limit($RawTitle, 150),
     'ForumID' => $ForumID
     );
     $app->cacheOld->update_row(false, $UpdateArray);
@@ -398,5 +398,5 @@ if (isset($_POST['delete'])) {
     if (count($TopicNotes) > 0) {
         Forums::add_topic_note($TopicID, implode("\n", $TopicNotes));
     }
-    Http::redirect("forums.php?action=viewthread&threadid=$TopicID&page=$Page");
+    Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$TopicID&page=$Page");
 }

@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 //******************************************************************************//
@@ -33,7 +33,7 @@ $CategoryName = $Categories[$CategoryID - 1];
 
 //Do we need to get artists?
 if ($CategoryName != 'Music') {
-    $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
+    $ArtistForm = Gazelle\Requests::get_artists($RequestID);
     $ArtistName = Artists::display_artists($ArtistForm, false, true);
     $FullName = $ArtistName . $Title;
 } else {
@@ -73,4 +73,4 @@ if ($GroupID) {
     $app->cache->delete("requests_group_$GroupID");
 }
 
-Http::redirect("requests.php");
+Gazelle\Http::redirect("requests.php");

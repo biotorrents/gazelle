@@ -15,10 +15,10 @@ function enforce_login()
     return true;
 
     /*
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     if (empty($app->user->core)) {
-        Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
+        Gazelle\Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
         #logout();
     }
     */
@@ -39,7 +39,7 @@ function authorize($Ajax = false)
     return true;
 
     /*
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     # Ugly workaround for API tokens
     if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
@@ -68,7 +68,7 @@ function authorize($Ajax = false)
  */
 function send_irc($Channels = null, $Message = '')
 {
-    $ENV = \Gazelle\ENV::go();
+    $ENV = Gazelle\ENV::go();
 
     // Check if IRC is enabled
     if (!$ENV->announceIrc || !$Channels) {
@@ -94,7 +94,7 @@ function send_irc($Channels = null, $Message = '')
     implode('-', $Dest)
     . '|%|'
     . html_entity_decode(
-        \Gazelle\Text::esc($Message),
+        Gazelle\Text::esc($Message),
         ENT_QUOTES
     );
 
@@ -113,7 +113,7 @@ function send_irc($Channels = null, $Message = '')
  */
 function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = false): void
 {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     $app->error($error);
 }
@@ -124,7 +124,7 @@ function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = fals
  */
 function check_perms(string $permission, $unused = 0)
 {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     return $app->user->can($permission);
 }
@@ -135,7 +135,7 @@ function check_perms(string $permission, $unused = 0)
  */
 function site_url()
 {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     return "https://{$app->env->siteDomain}";
 }
@@ -214,7 +214,7 @@ function time_minus($Offset, $Fuzzy = false)
  */
 function sqltime($timestamp = null)
 {
-    return \Gazelle\App::sqlTime($timestamp);
+    return Gazelle\App::sqlTime($timestamp);
 }
 
 

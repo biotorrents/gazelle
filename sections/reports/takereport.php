@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -8,7 +8,7 @@ if (empty($_POST['id']) || !is_numeric($_POST['id']) || empty($_POST['type']) ||
     error(404);
 }
 
-include(serverRoot.'/sections/reports/array.php');
+include(serverRoot . '/sections/reports/array.php');
 
 if (!array_key_exists($_POST['type'], $Types)) {
     error(403);
@@ -19,33 +19,33 @@ $ID = $_POST['id'];
 if ($Short === 'request_update') {
     if (empty($_POST['year']) || !is_numeric($_POST['year'])) {
         error('Year must be specified.');
-        Http::redirect("reports.php?action=report&type=request_update&id=$ID");
+        Gazelle\Http::redirect("reports.php?action=report&type=request_update&id=$ID");
         die();
     }
-    $Reason = '[b]Year[/b]: '.$_POST['year'].".\n\n";
+    $Reason = '[b]Year[/b]: ' . $_POST['year'] . ".\n\n";
     // If the release type is somehow invalid, return "Not given"; otherwise, return the release type.
-    $Reason .= '[b]Release type[/b]: '.((empty($_POST['releasetype']) || !is_numeric($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]).". \n\n";
-    $Reason .= '[b]Additional comments[/b]: '.$_POST['comment'];
+    $Reason .= '[b]Release type[/b]: ' . ((empty($_POST['releasetype']) || !is_numeric($_POST['releasetype']) || $_POST['releasetype'] === '0') ? 'Not given' : $ReleaseTypes[$_POST['releasetype']]) . ". \n\n";
+    $Reason .= '[b]Additional comments[/b]: ' . $_POST['comment'];
 } else {
     $Reason = $_POST['reason'];
 }
 
 switch ($Short) {
-  case 'request':
-  case 'request_update':
-    $Link = "requests.php?action=view&id=$ID";
-    break;
-  case 'user':
-    $Link = "user.php?id=$ID";
-    break;
-  case 'collage':
-    $Link = "collages.php?id=$ID";
-    break;
-  case 'thread':
-    $Link = "forums.php?action=viewthread&threadid=$ID";
-    break;
-  case 'post':
-    $app->dbOld->query("
+    case 'request':
+    case 'request_update':
+        $Link = "requests.php?action=view&id=$ID";
+        break;
+    case 'user':
+        $Link = "user.php?id=$ID";
+        break;
+    case 'collage':
+        $Link = "collages.php?id=$ID";
+        break;
+    case 'thread':
+        $Link = "forums.php?action=viewthread&threadid=$ID";
+        break;
+    case 'post':
+        $app->dbOld->query("
       SELECT
         p.ID,
         p.TopicID,
@@ -57,19 +57,19 @@ switch ($Short) {
         ) AS PostNum
       FROM forums_posts AS p
       WHERE p.ID = $ID");
-    list($PostID, $TopicID, $PostNum) = $app->dbOld->next_record();
-    $Link = "forums.php?action=viewthread&threadid=$TopicID&post=$PostNum#post$PostID";
-    break;
-  case 'comment':
-    $Link = "comments.php?action=jump&postid=$ID";
-    break;
+        list($PostID, $TopicID, $PostNum) = $app->dbOld->next_record();
+        $Link = "forums.php?action=viewthread&threadid=$TopicID&post=$PostNum#post$PostID";
+        break;
+    case 'comment':
+        $Link = "comments.php?action=jump&postid=$ID";
+        break;
 }
 
 $app->dbOld->query('
   INSERT INTO reports
     (UserID, ThingID, Type, ReportedTime, Reason)
   VALUES
-    ('.db_string($app->user->core['id']).", $ID, '$Short', NOW(), '".db_string($Reason)."')");
+    (' . db_string($app->user->core['id']) . ", $ID, '$Short', NOW(), '" . db_string($Reason) . "')");
 $ReportID = $app->dbOld->inserted_id();
 
 $Channels = [];
@@ -82,6 +82,6 @@ if (in_array($Short, array('comment', 'post', 'thread'))) {
     $Channels[] = '#forumreports';
 }
 
-send_irc($Channels, "$ReportID - ".$app->user->core['username']." just reported a $Short: ".site_url()."$Link : ".strtr($Reason, "\n", ' '));
+send_irc($Channels, "$ReportID - " . $app->user->core['username'] . " just reported a $Short: " . site_url() . "$Link : " . strtr($Reason, "\n", ' '));
 $app->cache->delete('num_other_reports');
-Http::redirect("$Link");
+Gazelle\Http::redirect("$Link");

@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('site_collages_recover')) {
     error(403);
@@ -23,8 +23,8 @@ if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
       SET Deleted = '0'
       WHERE ID = $CollageID");
         $app->cache->delete("collage_$CollageID");
-        Misc::write_log("Collage $CollageID was recovered by ".$app->user->core['username']);
-        Http::redirect("collages.php?id=$CollageID");
+        Misc::write_log("Collage $CollageID was recovered by " . $app->user->core['username']);
+        Gazelle\Http::redirect("collages.php?id=$CollageID");
     }
 }
 View::header('Collage recovery!');

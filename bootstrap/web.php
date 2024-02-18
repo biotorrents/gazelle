@@ -14,9 +14,9 @@ $app = Gazelle\App::go();
 $app->gotcha();
 
 # query vars
-$get = Http::request("get");
-$post = Http::request("post");
-$server = Http::request("server");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
+$server = Gazelle\Http::request("server");
 
 # start a session
 $activeSession = session_status() === PHP_SESSION_ACTIVE;

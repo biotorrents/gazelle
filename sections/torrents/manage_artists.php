@@ -2,7 +2,7 @@
 
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_numeric($_POST['importance']) || !is_numeric($_POST['groupid'])) {
     error(0);
@@ -32,7 +32,7 @@ if (count($CleanArtists) > 0) {
         $app->dbOld->query("
       SELECT Name
       FROM torrents_group
-      WHERE ID = '".$_POST['groupid']."'");
+      WHERE ID = '" . $_POST['groupid'] . "'");
         list($GroupName) = $app->dbOld->next_record();
         $app->dbOld->query("
       SELECT ArtistID, Name
@@ -41,8 +41,8 @@ if (count($CleanArtists) > 0) {
         $ArtistNames = $app->dbOld->to_array('ArtistID', MYSQLI_ASSOC, false);
         foreach ($CleanArtists as $Artist) {
             list($Importance, $ArtistID) = $Artist;
-            Misc::write_log("Artist $ArtistID (".$ArtistNames[$ArtistID]['Name'].") was removed from the group ".$_POST['groupid']." ($GroupName) by user ".$app->user->core['id'].' ('.$app->user->core['username'].')');
-            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist ".$ArtistNames[$ArtistID]['Name'], 0);
+            Misc::write_log("Artist $ArtistID (" . $ArtistNames[$ArtistID]['Name'] . ") was removed from the group " . $_POST['groupid'] . " ($GroupName) by user " . $app->user->core['id'] . ' (' . $app->user->core['username'] . ')');
+            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist " . $ArtistNames[$ArtistID]['Name'], 0);
             $app->dbOld->query("
         DELETE FROM torrents_artists
         WHERE GroupID = '$GroupID'
@@ -66,11 +66,11 @@ if (count($CleanArtists) > 0) {
     } else {
         $app->dbOld->query("
       UPDATE IGNORE torrents_artists
-      SET Importance = '".$_POST['importance']."'
+      SET Importance = '" . $_POST['importance'] . "'
       WHERE GroupID = '$GroupID'
         AND ArtistID IN ($ArtistsString)");
     }
     $app->cache->delete("groups_artists_$GroupID");
     Torrents::update_hash($GroupID);
-    Http::redirect("torrents.php?id=$GroupID");
+    Gazelle\Http::redirect("torrents.php?id=$GroupID");
 }

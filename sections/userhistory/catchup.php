@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 $UserSubscriptions = Subscriptions::get_subscriptions();
@@ -9,7 +9,7 @@ if (!empty($UserSubscriptions)) {
     INSERT INTO forums_last_read_topics (UserID, TopicID, PostID)
       SELECT '{$app->user->core['id']}', ID, LastPostID
       FROM forums_topics
-      WHERE ID IN (".implode(',', $UserSubscriptions).')
+      WHERE ID IN (" . implode(',', $UserSubscriptions) . ')
     ON DUPLICATE KEY UPDATE
       PostID = LastPostID');
 }
@@ -32,5 +32,5 @@ $app->dbOld->query("
   ) AS t
   ON DUPLICATE KEY UPDATE
     PostID = LastPostID");
-$app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
-Http::redirect("userhistory.php?action=subscriptions");
+$app->cache->delete('subscriptions_user_new_' . $app->user->core['id']);
+Gazelle\Http::redirect("userhistory.php?action=subscriptions");

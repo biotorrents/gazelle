@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('admin_reports')) {
     error(403);
@@ -10,7 +10,7 @@ if (empty($Return)) {
     $ToID = $_GET['to'];
     if ($ToID == $app->user->core['id']) {
         error("You cannot start a conversation with yourself!");
-        Http::redirect("inbox.php");
+        Gazelle\Http::redirect("inbox.php");
     }
 }
 
@@ -52,7 +52,7 @@ switch ($Type) {
         } else {
             list($Username) = $app->dbOld->next_record();
             $TypeLink = "the user [user]{$Username}[/user]";
-            $Subject = 'User Report: '.\Gazelle\Text::esc($Username);
+            $Subject = 'User Report: ' . Gazelle\Text::esc($Username);
         }
         break;
     case 'request':
@@ -65,8 +65,8 @@ switch ($Type) {
             $Error = 'No request with the reported ID found';
         } else {
             list($Name) = $app->dbOld->next_record();
-            $TypeLink = 'the request [url='.site_url()."requests.php?action=view&amp;id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
-            $Subject = 'Request Report: '.\Gazelle\Text::esc($Name);
+            $TypeLink = 'the request [url=' . site_url() . "requests.php?action=view&amp;id=$ThingID]" . Gazelle\Text::esc($Name) . '[/url]';
+            $Subject = 'Request Report: ' . Gazelle\Text::esc($Name);
         }
         break;
     case 'collage':
@@ -78,8 +78,8 @@ switch ($Type) {
             $Error = 'No collage with the reported ID found';
         } else {
             list($Name) = $app->dbOld->next_record();
-            $TypeLink = 'the collage [url='.site_url()."collage.php?id=$ThingID]".\Gazelle\Text::esc($Name).'[/url]';
-            $Subject = 'Collage Report: '.\Gazelle\Text::esc($Name);
+            $TypeLink = 'the collage [url=' . site_url() . "collage.php?id=$ThingID]" . Gazelle\Text::esc($Name) . '[/url]';
+            $Subject = 'Collage Report: ' . Gazelle\Text::esc($Name);
         }
         break;
     case 'thread':
@@ -91,8 +91,8 @@ switch ($Type) {
             $Error = 'No forum thread with the reported ID found';
         } else {
             list($Title) = $app->dbOld->next_record();
-            $TypeLink = 'the forum thread [url='.site_url()."forums.php?action=viewthread&amp;threadid=$ThingID]".\Gazelle\Text::esc($Title).'[/url]';
-            $Subject = 'Forum Thread Report: '.\Gazelle\Text::esc($Title);
+            $TypeLink = 'the forum thread [url=' . site_url() . "forums.php?action=viewthread&amp;threadid=$ThingID]" . Gazelle\Text::esc($Title) . '[/url]';
+            $Subject = 'Forum Thread Report: ' . Gazelle\Text::esc($Title);
         }
         break;
     case 'post':
@@ -118,8 +118,8 @@ switch ($Type) {
             $Error = 'No forum post with the reported ID found';
         } else {
             list($PostID, $Body, $TopicID, $PostNum) = $app->dbOld->next_record();
-            $TypeLink = 'this [url='.site_url()."forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
-            $Subject = 'Forum Post Report: Post ID #'.\Gazelle\Text::esc($PostID);
+            $TypeLink = 'this [url=' . site_url() . "forums.php?action=viewthread&amp;threadid=$TopicID&amp;post=$PostNum#post$PostID]forum post[/url]";
+            $Subject = 'Forum Post Report: Post ID #' . Gazelle\Text::esc($PostID);
         }
         break;
     case 'comment':
@@ -130,8 +130,8 @@ switch ($Type) {
         if (!$app->dbOld->has_results()) {
             $Error = 'No comment with the reported ID found';
         } else {
-            $TypeLink = '[url='.site_url()."comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
-            $Subject = 'Comment Report: ID #'.\Gazelle\Text::esc($ThingID);
+            $TypeLink = '[url=' . site_url() . "comments.php?action=jump&amp;postid=$ThingID]this comment[/url]";
+            $Subject = 'Comment Report: ID #' . Gazelle\Text::esc($ThingID);
         }
         break;
     default:

@@ -535,7 +535,7 @@ class Format
     public static function breadcrumbs()
     {
         $app = App::go();
-        $server = \Http::request("server");
+        $server = Http::request("server");
 
         $path = explode("/", $server["REQUEST_URI"]);
         $path = array_values(array_filter($path));

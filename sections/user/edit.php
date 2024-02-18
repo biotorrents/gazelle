@@ -7,14 +7,14 @@ declare(strict_types=1);
  * main user settings page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # request vars
-$get = Http::request("get");
-$post = Http::request("post");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
 
 # 2fa/webauthn libraries
 $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
@@ -94,7 +94,7 @@ if (!empty($post)) {
     try {
         $app->user->updateSettings($post);
         NotificationsManager::save_settings($app->user->core["id"]);
-        Http::redirect("user.php?id={$app->user->core["id"]}");
+        Gazelle\Http::redirect("user.php?id={$app->user->core["id"]}");
     } catch (Throwable $e) {
         $error = $e->getMessage();
     }
@@ -121,7 +121,7 @@ $app->twig->display("user/settings/settings.twig", [
 
     # random placeholders
     "twoFactorPlaceHolder" => random_int(100000, 999999),
-    "ircKeyPlaceholder" => \Gazelle\Text::random(32),
+    "ircKeyPlaceholder" => Gazelle\Text::random(32),
 
     # notifications manager (legacy)
     #"notificationsManagerSettings" => NotificationsManagerView::render_settings(NotificationsManager::get_settings($app->user->core["id"])),

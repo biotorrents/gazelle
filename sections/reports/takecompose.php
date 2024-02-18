@@ -1,6 +1,6 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 authorize();
 
@@ -53,10 +53,10 @@ if (!empty($Err)) {
     //header('Location: inbox.php?action=compose&to='.$_POST['toid']);
     $ToID = $_POST['toid'];
     $Return = true;
-    include(serverRoot.'/sections/inbox/compose.php');
+    include(serverRoot . '/sections/inbox/compose.php');
     die();
 }
 
 $ConvID = Misc::send_pm($ToID, $app->user->core['id'], $Subject, $Body, $ConvID);
 
-Http::redirect("reports.php");
+Gazelle\Http::redirect("reports.php");

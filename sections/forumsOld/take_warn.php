@@ -2,20 +2,20 @@
 
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!check_perms('users_warn')) {
     error(404);
 }
-Http::assertRequest($_POST, array('reason', 'privatemessage', 'body', 'length', 'postid', 'userid'));
+Gazelle\Http::assertRequest($_POST, array('reason', 'privatemessage', 'body', 'length', 'postid', 'userid'));
 
 $Reason = $_POST['reason'];
 $PrivateMessage = $_POST['privatemessage'];
 $Body = $_POST['body'];
 $WarningLength = $_POST['length'];
-$PostID = (int)$_POST['postid'];
-$UserID = (int)$_POST['userid'];
-$Key = (int)$_POST['key'];
+$PostID = (int) $_POST['postid'];
+$UserID = (int) $_POST['userid'];
+$Key = (int) $_POST['key'];
 $SQLTime = sqltime();
 
 $UserInfo = User::user_info($UserID);
@@ -25,7 +25,7 @@ if ($UserInfo['Class'] > $app->user->extra['Class']) {
 
 $URL = site_url() . "forums.php?action=viewthread&amp;postid=$PostID#post$PostID";
 if ($WarningLength !== 'verbal') {
-    $Time = (int)$WarningLength * (7 * 24 * 60 * 60);
+    $Time = (int) $WarningLength * (7 * 24 * 60 * 60);
     Tools::warn_user($UserID, $Time, "$URL - $Reason");
     $Subject = 'You have received a warning';
     $PrivateMessage = "You have received a $WarningLength week warning for [url=$URL]this post[/url].\n\n" . $PrivateMessage;
@@ -83,4 +83,4 @@ if ($ThreadInfo['StickyPostID'] == $PostID) {
 
 app->cache->delete("forums_edits_$PostID");
 
-Http::redirect("forums.php?action=viewthread&postid=$PostID#post$PostID");
+Gazelle\Http::redirect("forums.php?action=viewthread&postid=$PostID#post$PostID");

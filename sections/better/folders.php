@@ -7,14 +7,14 @@ declare(strict_types=1);
  * bad folders
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$get = Http::request("get");
+$get = Gazelle\Http::request("get");
 $snatchedOnly = (!empty($get["snatches"]))
     ? true
     : false;
 
-$torrentGroups = \Gazelle\Better::badFolders($snatchedOnly);
+$torrentGroups = Gazelle\Better::badFolders($snatchedOnly);
 #!d($torrentGroups);exit;
 
 # twig template
