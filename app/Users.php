@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class User extends ObjectCrud
+class Users extends ObjectCrud
 {
     # singleton
     private static ?self $instance = null;
@@ -291,7 +291,7 @@ class User extends ObjectCrud
      *
      * Handled in the Auth class.
      */
-    public function create(): void
+    public function create(array $data = []): void
     {
         throw new Exception("not implemented");
     }
@@ -302,7 +302,7 @@ class User extends ObjectCrud
      *
      * Gets a user profile (public info only).
      */
-    public static function read(int|string $identifier): ?array
+    public function read(int|string $identifier): void
     {
         $app = App::go();
 
@@ -425,6 +425,7 @@ class User extends ObjectCrud
      *
      * Returns true if the user exists.
      */
+    /*
     public static function exists(int $userId): bool
     {
         $app = App::go();
@@ -434,6 +435,7 @@ class User extends ObjectCrud
 
         return boolval($ref);
     }
+    */
 
 
     /**

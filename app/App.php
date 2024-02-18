@@ -31,7 +31,7 @@ class App
     public \DebugBar\StandardDebugBar $debug;
     public \Twig\Environment $twig;
 
-    public User $user;
+    public Users $user;
 
 
     /**
@@ -95,7 +95,7 @@ class App
         $this->debug = Debug::go();
 
         # user
-        $this->user = User::go();
+        $this->user = Users::go();
 
         # twig: LAST
         $this->twig = Twig::go();
