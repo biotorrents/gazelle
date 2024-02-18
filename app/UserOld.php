@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\User
+ * User
  *
  * $this->core contains necessary info from delight-im/auth.
  * $this->extra contains various profile, etc., info from Gazelle.
@@ -13,8 +13,6 @@ declare(strict_types=1);
  *
  * @see https://wiki.archlinux.org/title/Official_repositories
  */
-
-namespace Gazelle;
 
 class User
 {
@@ -91,21 +89,21 @@ class User
      */
     private function factory(array $options = []): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # start debug
         $app->debug["time"]->startMeasure("users", "user handling");
 
         # auth class
-        $this->auth = new \Auth();
+        $this->auth = new Auth();
 
         # session superglobal
         $this->session = $_SESSION;
 
         # untrusted input
-        $userId = \Http::readCookie("userId") ?? null;
-        $sessionId = \Http::readCookie("sessionId") ?? null;
-        $server = \Http::request("server") ?? null;
+        $userId = Http::readCookie("userId") ?? null;
+        $sessionId = Http::readCookie("sessionId") ?? null;
+        $server = Http::request("server") ?? null;
 
         # unauthenticated, no cookies
         if (!$userId || !$sessionId) {
@@ -113,7 +111,7 @@ class User
         }
 
         # get the real userId and sessionId
-        $now = \Carbon\Carbon::now()->toDateTimeString();
+        $now = Carbon\Carbon::now()->toDateTimeString();
 
         $query = "select userId, sessionId from users_sessions where sessionId = ? and expires > ?";
         $ref = $app->dbNew->row($query, [$sessionId, $now]);
@@ -154,7 +152,7 @@ class User
             $this->core = $row ?? [];
 
             # decrypt the email address
-            $this->core["email"] = Crypto::decrypt($this->core["email"]);
+            $this->core["email"] = \Gazelle\Crypto::decrypt($this->core["email"]);
             #!d($this->core);exit;
 
             # extra: gazelle, users_main and users_info
@@ -237,12 +235,12 @@ class User
             }
 
             # ip changed
-            $this->extra["IP"] = Crypto::decrypt($this->extra["IP"]);
+            $this->extra["IP"] = \Gazelle\Crypto::decrypt($this->extra["IP"]);
             if ($this->extra["IP"]) { # not false
                 $ipChanged = $this->extra["IP"] !== $server["REMOTE_ADDR"];
                 if ($ipChanged) {
                     $this->extra["IP"] = $server["REMOTE_ADDR"];
-                    $encryptedIp = Crypto::encrypt($this->extra["IP"]);
+                    $encryptedIp = \Gazelle\Crypto::encrypt($this->extra["IP"]);
 
                     $query = "update users_main set IP = ? where userId = ?";
                     $app->dbNew->do($query, [$encryptedIp, $userId]);
@@ -260,7 +258,7 @@ class User
                     ksort($this->$key);
                 }
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new Exception($e->getMessage());
         }
 
@@ -279,7 +277,7 @@ class User
      */
     public static function read(int|string $id): ?array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # allow usernames instead of slugs
         $column = $app->dbNew->determineIdentifier($id);
@@ -334,7 +332,7 @@ class User
      */
     private function enabledState(): int
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select status from users where id = ?";
         $enabled = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -377,7 +375,7 @@ class User
      */
     public static function exists(int $userId): bool
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select 1 from users where id = ?";
         $ref = $app->dbNew->single($query, [$userId]);
@@ -425,7 +423,7 @@ class User
      */
     public static function user_info($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         global $Classes;
         $UserInfo = $app->cache->get("user_info_" . $UserID);
@@ -571,7 +569,7 @@ class User
      */
     public static function user_heavy_info($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $HeavyInfo = $app->cache->get("user_info_heavy_$UserID");
         if (empty($HeavyInfo)) {
@@ -655,7 +653,7 @@ class User
      */
     public static function format_username(?int $userId = null, $showBadges = false, $isWarnedUNUSED = false, $IsEnabledUNUSED = true, $ClassUNUSED = false, $TitleUNUSED = false)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # current user
         if (!$userId) {
@@ -722,9 +720,9 @@ class User
      */
     public static function get_bookmarks($UserID)
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
-        $UserID = (int) $UserID;
+        $UserID = (int)$UserID;
 
         if (($Data = $app->cache->get("bookmarks_group_ids_$UserID"))) {
             list($GroupIDs, $BookmarkData) = $Data;
@@ -742,7 +740,7 @@ class User
             $app->cache->set("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
         }
 
-        $TorrentList = \Torrents::get_groups($GroupIDs);
+        $TorrentList = Torrents::get_groups($GroupIDs);
         return [$GroupIDs, $BookmarkData, $TorrentList];
     }
 
@@ -759,13 +757,13 @@ class User
      */
     public static function displayAvatar(?string $uri, string $username): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # workaround for null avatars
         $uri = strval($uri);
 
-        # Images::process
-        $uri = Images::process($uri, "avatar");
+        # \Gazelle\Images::process
+        $uri = \Gazelle\Images::process($uri, "avatar");
 
         # disabled or missing: show default
         if (empty($uri)) {
@@ -797,9 +795,9 @@ class User
      */
     public static function uploadSource(): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
-        return "{$app->env->siteName}-" . Text::random(16);
+        return "{$app->env->siteName}-" . \Gazelle\Text::random(16);
     }
 
 
@@ -811,10 +809,10 @@ class User
      */
     public function createPGP(string $publicKey): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # nested but much easier to read
-        $publicKey = Esc::string($publicKey);
+        $publicKey = \Gazelle\Esc::string($publicKey);
         if (!empty($publicKey)) {
             if (!str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
                 throw new Exception("invalid pgp key format");
@@ -835,7 +833,7 @@ class User
      */
     public function readPGP(): ?string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select publicKey from users_main where id = ?";
         $publicKey = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -858,7 +856,7 @@ class User
      */
     public function deletePGP(): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "update users_main set publicKey = null where id = ?";
         $app->dbNew->do($query, [ $this->core["id"] ]);
@@ -870,9 +868,9 @@ class User
      */
     public function create2FA(string $secret, string $code): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
-        $twoFactor = new \RobThree\Auth\TwoFactorAuth($app->env->siteName);
+        $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
         $good = $twoFactor->verifyCode($secret, $code);
 
         if (!$good) {
@@ -889,7 +887,7 @@ class User
      */
     public function read2FA(): ?string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $query = "select twoFactor from users_main where id = ?";
         $secret = $app->dbNew->single($query, [ $this->core["id"] ]);
@@ -912,9 +910,9 @@ class User
      */
     public function delete2FA(string $secret, string $code): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
-        $twoFactor = new \RobThree\Auth\TwoFactorAuth($app->env->siteName);
+        $twoFactor = new RobThree\Auth\TwoFactorAuth($app->env->siteName);
         $good = $twoFactor->verifyCode($secret, $code);
 
         if (!$good) {
@@ -937,7 +935,7 @@ class User
      */
     public function updateSettings(array $data): void
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # make sure the data exists
         if (empty($data)) {
@@ -972,7 +970,7 @@ class User
             # validate the passphrase
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $currentPassphrase = Esc::passphrase($data["currentPassphrase"]);
+                $currentPassphrase = \Gazelle\Esc::passphrase($data["currentPassphrase"]);
 
                 # Delight\Auth\NotLoggedInException workaround
                 #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
@@ -990,7 +988,7 @@ class User
             # validate the authKey
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $authKey = Esc::string($data["authKey"]);
+                $authKey = \Gazelle\Esc::string($data["authKey"]);
                 if ($authKey !== $this->extra["AuthKey"]) {
                     throw new Exception("authKey doesn't match");
                 }
@@ -999,8 +997,8 @@ class User
 
             # update the passphrase
             # todo: clarify if this is something only the current user can do
-            $newPassphrase1 = Esc::passphrase($data["newPassphrase1"]);
-            $newPassphrase2 = Esc::passphrase($data["newPassphrase2"]);
+            $newPassphrase1 = \Gazelle\Esc::passphrase($data["newPassphrase1"]);
+            $newPassphrase2 = \Gazelle\Esc::passphrase($data["newPassphrase2"]);
 
             if (!empty($newPassphrase1) && !empty($newPassphrase2)) {
                 # do they match?
@@ -1035,7 +1033,7 @@ class User
 
 
             # update the email, only allowed by the current user
-            $email = Esc::email($data["email"]);
+            $email = \Gazelle\Esc::email($data["email"]);
             if (empty($email)) {
                 throw new Exception("invalid email address");
             }
@@ -1051,7 +1049,7 @@ class User
 
 
             # avatar
-            $avatar = Esc::url($data["avatar"]);
+            $avatar = \Gazelle\Esc::url($data["avatar"]);
             $good = preg_match("/{$app->env->regexImage}/i", $avatar);
 
             if (!$good && !empty($avatar)) {
@@ -1075,7 +1073,7 @@ class User
 
 
             # ircKey
-            $ircKey = Esc::string($data["ircKey"]);
+            $ircKey = \Gazelle\Esc::string($data["ircKey"]);
 
             if (!empty($ircKey)) {
                 if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
@@ -1095,22 +1093,22 @@ class User
 
 
             # profileTitle
-            $profileTitle = Esc::string($data["profileTitle"]);
+            $profileTitle = \Gazelle\Esc::string($data["profileTitle"]);
             $query = "update users_info set infoTitle = ? where userId = ?";
             $app->dbNew->do($query, [$profileTitle, $userId]);
 
 
             # profileContent
-            $profileContent = Esc::string($data["profileContent"]);
+            $profileContent = \Gazelle\Esc::string($data["profileContent"]);
             $query = "update users_info set info = ? where userId = ?";
             $app->dbNew->do($query, [$profileContent, $userId]);
 
 
             # publicKey
             try {
-                $publicKey = Esc::string($data["publicKey"]);
+                $publicKey = \Gazelle\Esc::string($data["publicKey"]);
                 $this->updatePGP($publicKey);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw new Exception($e->getMessage());
             }
 
@@ -1118,11 +1116,11 @@ class User
             # resetPassKey: very important to only update if requested
             # or everyone will get locked out of the tracker all the time
             $data["resetPassKey"] ??= null;
-            $resetPassKey = Esc::bool($data["resetPassKey"]);
+            $resetPassKey = \Gazelle\Esc::bool($data["resetPassKey"]);
 
             if ($resetPassKey) {
                 $oldPassKey = $this->extra["torrent_pass"];
-                $newPassKey = Text::random(32);
+                $newPassKey = \Gazelle\Text::random(32);
 
                 # update the tracker
                 Tracker::update_tracker(
@@ -1138,7 +1136,7 @@ class User
 
             # stylesheet
             $data["stylesheet"] ??= null;
-            $stylesheet = Esc::int($data["stylesheet"]);
+            $stylesheet = \Gazelle\Esc::int($data["stylesheet"]);
 
             $query = "update users_info set styleId = ? where userId = ?";
             $app->dbNew->do($query, [$stylesheet, $userId]);
@@ -1146,7 +1144,7 @@ class User
 
             # styleSheetUri
             $data["styleSheetUri"] ??= null;
-            $styleSheetUri = Esc::url($data["styleSheetUri"]);
+            $styleSheetUri = \Gazelle\Esc::url($data["styleSheetUri"]);
             $good = preg_match("/{$app->env->regexCss}/i", $styleSheetUri);
 
             if (!$good && !empty($styleSheetUri)) {
@@ -1158,42 +1156,42 @@ class User
 
 
             # torrentGrouping
-            $torrentGrouping = Esc::int($data["torrentGrouping"]);
+            $torrentGrouping = \Gazelle\Esc::int($data["torrentGrouping"]);
             $query = "update users_info set torrentGrouping = ? where userId = ?";
             $app->dbNew->do($query, [$torrentGrouping, $userId]);
 
 
             # siteOptions
             $siteOptions = [
-                "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
-                "calmMode" => Esc::bool($data["calmMode"] ?? null),
-                "communityStats" => Esc::bool($data["communityStats"] ?? null),
-                "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
-                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
-                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
-                "darkMode" => Esc::bool($data["darkMode"] ?? null),
-                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
-                "font" => Esc::string($data["font"] ?? null),
-                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
-                "openaiContent" => Esc::bool($data["openaiContent"] ?? null),
-                "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
-                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
-                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
-                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
-                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
-                "requestStats" => Esc::bool($data["requestStats"] ?? null),
-                "searchPagination" => Esc::int($data["searchPagination"] ?? null),
-                "searchType" => Esc::string($data["searchType"] ?? null),
-                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
-                "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
-                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
-                "styleId" => Esc::int($data["styleId"] ?? null),
-                "styleUri" => Esc::url($data["styleUri"] ?? null),
-                "torrentGrouping" => Esc::bool($data["torrentGrouping"] ?? null),
-                "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
-                "torrentStats" => Esc::bool($data["torrentStats"] ?? null),
-                "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
-                "userAvatars" => Esc::bool($data["userAvatars"] ?? null),
+                "autoSubscribe" => \Gazelle\Esc::bool($data["autoSubscribe"] ?? null),
+                "calmMode" => \Gazelle\Esc::bool($data["calmMode"] ?? null),
+                "communityStats" => \Gazelle\Esc::bool($data["communityStats"] ?? null),
+                "coverArtCollections" => \Gazelle\Esc::int($data["coverArtCollections"] ?? null),
+                "coverArtTorrents" => \Gazelle\Esc::bool($data["coverArtTorrents"] ?? null),
+                "coverArtTorrentsExtra" => \Gazelle\Esc::bool($data["coverArtTorrentsExtra"] ?? null),
+                "darkMode" => \Gazelle\Esc::bool($data["darkMode"] ?? null),
+                "donorIcon" => \Gazelle\Esc::bool($data["donorIcon"] ?? null),
+                "font" => \Gazelle\Esc::string($data["font"] ?? null),
+                "listUnreadsFirst" => \Gazelle\Esc::bool($data["listUnreadsFirst"] ?? null),
+                "openaiContent" => \Gazelle\Esc::bool($data["openaiContent"] ?? null),
+                "percentileStats" => \Gazelle\Esc::bool($data["percentileStats"] ?? null),
+                "recentCollages" => \Gazelle\Esc::bool($data["recentCollages"] ?? null),
+                "recentRequests" => \Gazelle\Esc::bool($data["recentRequests"] ?? null),
+                "recentSnatches" => \Gazelle\Esc::bool($data["recentSnatches"] ?? null),
+                "recentUploads" => \Gazelle\Esc::bool($data["recentUploads"] ?? null),
+                "requestStats" => \Gazelle\Esc::bool($data["requestStats"] ?? null),
+                "searchPagination" => \Gazelle\Esc::int($data["searchPagination"] ?? null),
+                "searchType" => \Gazelle\Esc::string($data["searchType"] ?? null),
+                "showSnatched" => \Gazelle\Esc::bool($data["showSnatched"] ?? null),
+                "showTagFilter" => \Gazelle\Esc::bool($data["showTagFilter"] ?? null),
+                "showTorrentFilter" => \Gazelle\Esc::bool($data["showTorrentFilter"] ?? null),
+                "styleId" => \Gazelle\Esc::int($data["styleId"] ?? null),
+                "styleUri" => \Gazelle\Esc::url($data["styleUri"] ?? null),
+                "torrentGrouping" => \Gazelle\Esc::bool($data["torrentGrouping"] ?? null),
+                "torrentGrouping" => \Gazelle\Esc::string($data["torrentGrouping"] ?? null),
+                "torrentStats" => \Gazelle\Esc::bool($data["torrentStats"] ?? null),
+                "unseededAlerts" => \Gazelle\Esc::bool($data["unseededAlerts"] ?? null),
+                "userAvatars" => \Gazelle\Esc::bool($data["userAvatars"] ?? null),
             ];
 
             # this shouldn't be possible with normal ui usage
@@ -1207,7 +1205,7 @@ class User
 
             # commit the transaction
             $app->dbNew->commit();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $app->dbNew->rollBack();
             throw new Exception($e->getMessage());
         }
@@ -1222,7 +1220,7 @@ class User
      */
     public function defaultSiteOptions(): string
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         return $app->env->defaultSiteOptions;
     }
@@ -1238,7 +1236,7 @@ class User
      */
     public function readProfile(int $userId): ?array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         # quick sanity check
         $query = "select 1 from users where id = ?";
@@ -1296,7 +1294,7 @@ class User
      */
     public function recentSnatches(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1321,9 +1319,9 @@ class User
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = Artists::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1338,7 +1336,7 @@ class User
      */
     public function recentUploads(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1362,9 +1360,9 @@ class User
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = Artists::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1382,7 +1380,7 @@ class User
         # todo
         return [];
 
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1402,9 +1400,9 @@ class User
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = Artists::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1419,7 +1417,7 @@ class User
      */
     public function recentCollages(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1491,7 +1489,7 @@ class User
      */
     public function communityStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1589,7 +1587,7 @@ class User
         $data["requestsVotedBounty"] = $row["sum(bounty)"] ?? 0;
 
         # typing fix
-        $data["requestsVotedBounty"] = Esc::int($data["requestsVotedBounty"]);
+        $data["requestsVotedBounty"] = \Gazelle\Esc::int($data["requestsVotedBounty"]);
 
 
         # requests: created and the bounty
@@ -1638,7 +1636,7 @@ class User
      */
     public function torrentStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1705,7 +1703,7 @@ class User
         #$data["seedingPercent"] = 100 * min(1, round($data["seedingCount"] / $data["uniqueSnatches"], 2)) ?? 0;
 
         # typing fix
-        #$data["seedingPercent"] = Esc::float($data["seedingPercent"]);
+        #$data["seedingPercent"] = \Gazelle\Esc::float($data["seedingPercent"]);
 
 
         # downloads
@@ -1751,7 +1749,7 @@ class User
      */
     public function percentileStats(int $userId): array
     {
-        $app = App::go();
+        $app = \Gazelle\App::go();
 
         $cacheKey = $this->cachePrefix . $userId . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1769,28 +1767,28 @@ class User
         $data = [];
 
         # uploaded
-        $data["uploaded"] = \UserRank::get_rank("uploaded", $profile["extra"]["Uploaded"]);
+        $data["uploaded"] = UserRank::get_rank("uploaded", $profile["extra"]["Uploaded"]);
 
         # downloaded
-        $data["downloaded"] = \UserRank::get_rank("downloaded", $profile["extra"]["Downloaded"]);
+        $data["downloaded"] = UserRank::get_rank("downloaded", $profile["extra"]["Downloaded"]);
 
         # uploads
-        $data["uploads"] = \UserRank::get_rank("uploads", $torrentStats["uploadCount"]);
+        $data["uploads"] = UserRank::get_rank("uploads", $torrentStats["uploadCount"]);
 
         # requestsFilled
-        $data["requestsFilled"] = \UserRank::get_rank("requests", $communityStats["requestsFilledCount"]);
+        $data["requestsFilled"] = UserRank::get_rank("requests", $communityStats["requestsFilledCount"]);
 
         # posts
-        $data["posts"] = \UserRank::get_rank("posts", $communityStats["forumPosts"]);
+        $data["posts"] = UserRank::get_rank("posts", $communityStats["forumPosts"]);
 
         # requestsVoted
-        $data["requestsVoted"] = \UserRank::get_rank("bounty", $communityStats["requestsVotedBounty"]);
+        $data["requestsVoted"] = UserRank::get_rank("bounty", $communityStats["requestsVotedBounty"]);
 
         # creatorsAdded
-        $data["creatorsAdded"] = \UserRank::get_rank("artists", $communityStats["creatorsAdded"]);
+        $data["creatorsAdded"] = UserRank::get_rank("artists", $communityStats["creatorsAdded"]);
 
         # overall
-        $data["overall"] = \UserRank::overall_score(
+        $data["overall"] = UserRank::overall_score(
             $data["uploaded"],
             $data["downloaded"],
             $data["uploads"],

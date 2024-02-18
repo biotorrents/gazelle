@@ -88,6 +88,12 @@ All the Markdown Extra features supported by [Parsedown Extra](https://github.co
 The default recursive regex BBcode parser (yuck) is replaced by [Vanilla NBBC](https://github.com/vanilla/nbbc).
 Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 
+### Literate programming in the wiki
+
+BioGazelle uses [Starboard Notebook](https://starboard.gg) to support [Jupyter Notebooks](https://jupyter.org) in the browser!
+This lets users document technical topics such as data processing workflows complete with executable code examples and Latex expressions.
+Our secure implementation leverages sanboxed iframes on a dedicated subdomain to ensure no cookie or local storage leaks.
+
 ### Good typography
 
 BioGazelle supports an array of [unobtrusive fonts](resources/scss/assets/fonts.scss) with the appropriate glyphs for bold, italic, and monospace.
@@ -129,6 +135,11 @@ An ongoing project involves modernizing the app based on Laravel's tools, with h
 [The main site configuration](config/public.php) implements recursive [Laravel Collections](https://laravel.com/docs/master/collections) with the [ENV special class](app/ENV.php).
 Also, the whole app is always instantly available: the config, database, cache, current user, Twig engine, etc., are accessible with a simple call to `Gazelle\App::go()`.
 All such objects use the same quick and easy go → factory → thing API, just in case you need to extend some core object without headaches.
+
+### Expressive object-oriented API
+
+Core site data are also implemented as `RecursiveCollection` objects that adhere to the JSON:API specification.
+So not only are data accessed with a powerfully expressive API, their representation is standardized across clients.
 
 ### Decent debugging
 

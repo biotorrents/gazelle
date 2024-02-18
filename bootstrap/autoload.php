@@ -39,6 +39,10 @@ spl_autoload_register(function (string $class) {
                 $name = "bencodetorrent.class";
                 break;
 
+            case "User":
+                $name = "UserOld";
+                break;
+
             default:
                 $name = null;
                 break;

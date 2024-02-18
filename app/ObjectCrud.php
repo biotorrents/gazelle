@@ -41,6 +41,12 @@ abstract class ObjectCrud
         # map display => database
         $transform = $this->displayToDatabase($data);
 
+        # create an id if none exists
+        $transform["id"] ??= null;
+        if (!$transform["id"]) {
+            $transform["id"] = $app->dbNew->shortUuid();
+        }
+
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->type, $transform);
 
