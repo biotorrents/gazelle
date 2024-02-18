@@ -20,11 +20,11 @@ class Tools
     {
         $app = \Gazelle\App::go();
 
-        $debug = Debug::go();
+        $debug = \Gazelle\Debug::go();
 
         $A = substr($IP, 0, strcspn($IP, '.:'));
         $IPNum = Tools::ip_to_unsigned($IP);
-        $IPBans = $app->cache->get('ip_bans_'.$A);
+        $IPBans = $app->cache->get('ip_bans_' . $A);
 
         if (!is_array($IPBans)) {
             $SQL = sprintf("
@@ -36,7 +36,7 @@ class Tools
             $app->dbOld->query($SQL);
             $IPBans = $app->dbOld->to_array(0, MYSQLI_NUM);
             $app->dbOld->set_query_id($QueryID);
-            $app->cache->set('ip_bans_'.$A, $IPBans, 0);
+            $app->cache->set('ip_bans_' . $A, $IPBans, 0);
         }
 
         foreach ($IPBans as $Index => $IPBan) {
@@ -122,11 +122,11 @@ class Tools
           JOIN users_main AS m ON m.ID = i.UserID
         SET m.Enabled = '2',
           m.can_leech = '0',
-          i.AdminComment = CONCAT('".sqltime()." - ".($AdminComment ? $AdminComment : 'Disabled by system')."\n\n', i.AdminComment),
+          i.AdminComment = CONCAT('" . sqltime() . " - " . ($AdminComment ? $AdminComment : 'Disabled by system') . "\n\n', i.AdminComment),
           i.BanDate = NOW(),
           i.BanReason = '$BanReason',
-          i.RatioWatchDownload = ".($BanReason == 2 ? 'm.Downloaded' : "'0'")."
-        WHERE m.ID IN(".implode(',', $UserIDs).') ');
+          i.RatioWatchDownload = " . ($BanReason == 2 ? 'm.Downloaded' : "'0'") . "
+        WHERE m.ID IN(" . implode(',', $UserIDs) . ') ');
 
         $app->cache->decrement('stats_user_count', $app->dbOld->affected_rows());
         foreach ($UserIDs as $UserID) {
@@ -142,7 +142,7 @@ class Tools
             ");
 
             while (list($SessionID) = $app->dbOld->next_record()) {
-                $app->cache->delete("session_$UserID"."_$SessionID");
+                $app->cache->delete("session_$UserID" . "_$SessionID");
             }
             $app->cache->delete("users_sessions_$UserID");
 
@@ -155,7 +155,7 @@ class Tools
         $app->dbOld->query('
         SELECT torrent_pass
         FROM users_main
-          WHERE ID in ('.implode(', ', $UserIDs).')');
+          WHERE ID in (' . implode(', ', $UserIDs) . ')');
 
         $PassKeys = $app->dbOld->collect('torrent_pass');
         $Concat = '';
@@ -202,18 +202,18 @@ class Tools
                 $UserID,
                 0,
                 'You have received multiple warnings.',
-                "When you received your latest warning (set to expire on ".date('Y-m-d', (time() + $Duration)).'), you already had a different warning (set to expire on '.date('Y-m-d', strtotime($OldDate)).").\n\n Due to this collision, your warning status will now expire at $NewExpDate."
+                "When you received your latest warning (set to expire on " . date('Y-m-d', (time() + $Duration)) . '), you already had a different warning (set to expire on ' . date('Y-m-d', strtotime($OldDate)) . ").\n\n Due to this collision, your warning status will now expire at $NewExpDate."
             );
 
-            $AdminComment = date('Y-m-d')." - Warning (Clash) extended to expire at $NewExpDate by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d') . " - Warning (Clash) extended to expire at $NewExpDate by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
 
             $app->dbOld->query('
             UPDATE users_info
             SET
-              Warned = \''.db_string($NewExpDate).'\',
+              Warned = \'' . db_string($NewExpDate) . '\',
               WarnedTimes = WarnedTimes + 1,
-              AdminComment = CONCAT(\''.db_string($AdminComment).'\', AdminComment)
-              WHERE UserID = \''.db_string($UserID).'\'');
+              AdminComment = CONCAT(\'' . db_string($AdminComment) . '\', AdminComment)
+              WHERE UserID = \'' . db_string($UserID) . '\'');
         } else {
             //Not changing, user was not already warned
             $WarnTime = time_plus($Duration);
@@ -224,15 +224,15 @@ class Tools
             $app->cacheOld->commit_transaction(0);
             */
 
-            $AdminComment = date('Y-m-d')." - Warned until $WarnTime by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
+            $AdminComment = date('Y-m-d') . " - Warned until $WarnTime by " . $app->user->core["username"] . "\nReason: $Reason\n\n";
 
             $app->dbOld->query('
             UPDATE users_info
             SET
-              Warned = \''.db_string($WarnTime).'\',
+              Warned = \'' . db_string($WarnTime) . '\',
               WarnedTimes = WarnedTimes + 1,
-              AdminComment = CONCAT(\''.db_string($AdminComment).'\', AdminComment)
-              WHERE UserID = \''.db_string($UserID).'\'');
+              AdminComment = CONCAT(\'' . db_string($AdminComment) . '\', AdminComment)
+              WHERE UserID = \'' . db_string($UserID) . '\'');
         }
         $app->dbOld->set_query_id($QueryID);
     }
@@ -252,8 +252,8 @@ class Tools
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query('
         UPDATE users_info
-        SET AdminComment = CONCAT(\''.db_string($AdminComment).'\', AdminComment)
-          WHERE UserID = \''.db_string($UserID).'\'');
+        SET AdminComment = CONCAT(\'' . db_string($AdminComment) . '\', AdminComment)
+          WHERE UserID = \'' . db_string($UserID) . '\'');
         $app->dbOld->set_query_id($QueryID);
     }
 
@@ -271,6 +271,6 @@ class Tools
         $CIDR = split('/', $Subnet);
         $SubnetIP = ip2long($CIDR[0]);
         $SubnetMaskBits = 32 - $CIDR[1];
-        return (($IP>>$SubnetMaskBits) == ($SubnetIP>>$SubnetMaskBits));
+        return (($IP >> $SubnetMaskBits) == ($SubnetIP >> $SubnetMaskBits));
     }
 }

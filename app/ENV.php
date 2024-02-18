@@ -30,7 +30,7 @@ namespace Gazelle;
 class ENV
 {
     # disinstantiates itself
-    private static $instance = null;
+    private static ?self $instance = null;
 
     # config option receptacles
     public RecursiveCollection $public; # site meta, options, resources, etc.

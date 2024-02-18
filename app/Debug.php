@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Gazelle;
+
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 
@@ -17,7 +19,7 @@ use DebugBar\DataCollector\Renderable;
 class Debug # extends DebugBar\StandardDebugBar
 {
     # singleton
-    private static $instance = null;
+    private static ?\DebugBar\StandardDebugBar $instance = null;
 
 
     /**
@@ -48,7 +50,7 @@ class Debug # extends DebugBar\StandardDebugBar
     /**
      * go
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): \DebugBar\StandardDebugBar
     {
         return (!self::$instance)
             ? self::$instance = self::factory($options)
@@ -69,12 +71,12 @@ class Debug # extends DebugBar\StandardDebugBar
     /**
      * factory
      */
-    private static function factory(array $options = [])
+    private static function factory(array $options = []): \DebugBar\StandardDebugBar
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # load debugbar
-        $debugBar = new DebugBar\StandardDebugBar();
+        $debugBar = new \DebugBar\StandardDebugBar();
 
         # custom collectors
         $debugBar->addCollector(new DatabaseCollector());
@@ -149,7 +151,7 @@ class Debug # extends DebugBar\StandardDebugBar
     <td>
         <strong>
           <a data-toggle-target="#debug_ocelot" class="brackets">View</a>
-          <?=\Gazelle\Text::float(count($OcelotRequests))?>
+          <?=Text::float(count($OcelotRequests))?>
           Ocelot requests:
         </strong>
     </td>
@@ -160,16 +162,16 @@ class Debug # extends DebugBar\StandardDebugBar
   <?php foreach ($OcelotRequests as $i => $Request) { ?>
   <tr>
     <td class="debug_data debug_ocelot_data">
-        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=\Gazelle\Text::esc($Request["path"])?></a>
+        <a data-toggle-target="#debug_ocelot_<?=$i?>"><?=Text::esc($Request["path"])?></a>
         <pre id="debug_ocelot_<?=$i?>"
-          class="hidden"><?=\Gazelle\Text::esc($Request["response"])?></pre>
+          class="hidden"><?=Text::esc($Request["response"])?></pre>
     </td>
 
     <td class="debug_info" style="width: 100px;">
-        <?=\Gazelle\Text::esc($Request["status"])?>
+        <?=Text::esc($Request["status"])?>
     </td>
     <td class="debug_info debug_timing" style="width: 100px;">
-        <?=\Gazelle\Text::float($Request["time"], 5)?> ms
+        <?=Text::float($Request["time"], 5)?> ms
     </td>
   </tr>
   <?php } ?>
@@ -199,7 +201,7 @@ class Debug # extends DebugBar\StandardDebugBar
         <strong>
           <a href="#" onclick="$(this).parents(".layout").next("#debug_error").gtoggle(); return false;"
             class="brackets">View</a>
-          <?=\Gazelle\Text::float(count($Errors))?>
+          <?=Text::float(count($Errors))?>
           Errors:
         </strong>
     </td>
@@ -211,13 +213,13 @@ class Debug # extends DebugBar\StandardDebugBar
           list($Error, $Location, $Call, $Args) = $Error; ?>
   <tr class="valign_top">
     <td class="debug_info debug_error_call">
-        <?=\Gazelle\Text::esc($Call)?>(<?=\Gazelle\Text::esc($Args)?>)
+        <?=Text::esc($Call)?>(<?=Text::esc($Args)?>)
     </td>
     <td class="debug_data debug_error_data">
-        <?=\Gazelle\Text::esc($Error)?>
+        <?=Text::esc($Error)?>
     </td>
     <td>
-        <?=\Gazelle\Text::esc($Location)?>
+        <?=Text::esc($Location)?>
     </td>
   </tr>
   <?php
@@ -245,9 +247,9 @@ class FilesCollector extends DataCollector implements Renderable
     /**
      * collect
      */
-    public function collect()
+    public function collect(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $includes = [];
         $files = get_included_files();
@@ -272,7 +274,7 @@ class FilesCollector extends DataCollector implements Renderable
     /**
      * getWidgets
      */
-    public function getWidgets()
+    public function getWidgets(): array
     {
         $name = $this->getName();
 
@@ -295,7 +297,7 @@ class FilesCollector extends DataCollector implements Renderable
     /**
      * getName
      */
-    public function getName()
+    public function getName(): string
     {
         return "files";
     }
@@ -316,13 +318,13 @@ class FilesCollector extends DataCollector implements Renderable
 class DatabaseCollector extends DataCollector implements Renderable
 {
     # collectors
-    private $messages = [];
+    private array $messages = [];
 
 
     /**
      * collect
      */
-    public function collect()
+    public function collect(): array
     {
         $messages = $this->getMessages();
 
@@ -336,7 +338,7 @@ class DatabaseCollector extends DataCollector implements Renderable
     /**
      * getMessages
      */
-    public function getMessages()
+    public function getMessages(): array
     {
         $messages = $this->messages;
 
@@ -356,16 +358,16 @@ class DatabaseCollector extends DataCollector implements Renderable
     /**
      * log
      */
-    public function log($message)
+    public function log($message): void
     {
-        return $this->addMessage($message);
+        $this->addMessage($message);
     }
 
 
     /**
      * addMessage
      */
-    public function addMessage($message, $isString = true)
+    public function addMessage($message, $isString = true): void
     {
         $messageText = $message;
         $messageHtml = null;
@@ -393,7 +395,7 @@ class DatabaseCollector extends DataCollector implements Renderable
     /**
      * getWidgets
      */
-    public function getWidgets()
+    public function getWidgets(): array
     {
         $name = $this->getName();
 
@@ -416,7 +418,7 @@ class DatabaseCollector extends DataCollector implements Renderable
     /**
      * getName
      */
-    public function getName()
+    public function getName(): string
     {
         return "database";
     }
@@ -425,7 +427,7 @@ class DatabaseCollector extends DataCollector implements Renderable
     /**
      * isHtmlVarDumperUsed
      */
-    public function isHtmlVarDumperUsed()
+    public function isHtmlVarDumperUsed(): bool
     {
         return false;
     }

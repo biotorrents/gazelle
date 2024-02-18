@@ -17,5 +17,5 @@ if (!$app->env->dev) {
 
 # this is stupid but it doesn't work from twig
 chdir($app->env->serverRoot);
-$gitInfo = json_encode(Debug::gitInfo());
+$gitInfo = json_encode(Gazelle\Debug::gitInfo());
 file_put_contents("{$app->env->webRoot}/gitInfo.json", $gitInfo);

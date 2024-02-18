@@ -17,24 +17,24 @@ declare(strict_types=1);
 class User
 {
     # singleton
-    private static $instance = null;
+    private static ?self $instance = null;
 
     # delight-im/auth
     public $auth = null;
 
     # user info
-    public $core = [];
-    public $extra = [];
+    public array $core = [];
+    public array $extra = [];
 
-    public $permissions = [];
-    public $siteOptions = [];
+    public array $permissions = [];
+    public array $siteOptions = [];
 
     # make $_SESSION available
     public $session = null;
 
     # cache settings
-    private $cachePrefix = "user:";
-    private $cacheDuration = "5 minutes";
+    private string $cachePrefix = "user:";
+    private string $cacheDuration = "5 minutes";
 
     # https://github.com/delight-im/PHP-Auth/blob/master/src/Status.php
     public const NORMAL = 0;
@@ -73,7 +73,7 @@ class User
     /**
      * go
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -87,7 +87,7 @@ class User
     /**
      * factory
      */
-    private function factory(array $options = [])
+    private function factory(array $options = []): void
     {
         $app = \Gazelle\App::go();
 
@@ -107,7 +107,7 @@ class User
 
         # unauthenticated, no cookies
         if (!$userId || !$sessionId) {
-            return false;
+            return;
         }
 
         # get the real userId and sessionId
@@ -121,7 +121,7 @@ class User
 
         # not in the database
         if (!$userId && !$sessionId) {
-            return false;
+            return;
         }
 
         /*
@@ -140,7 +140,7 @@ class User
         $good = $app->dbNew->single($query, [$userId, self::NORMAL]);
 
         if (!$good) {
-            return false;
+            return;
         }
 
         /** end validation, start populating data */
@@ -259,7 +259,7 @@ class User
                 }
             }
         } catch (Throwable $e) {
-            return $e->getMessage();
+            throw new Exception($e->getMessage());
         }
 
         # end debug

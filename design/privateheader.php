@@ -14,7 +14,7 @@ $twig = \Gazelle\Twig::go();
 $View = new View();
 
 if ($ENV->dev) {
-    $debug = Debug::go();
+    $debug = \Gazelle\Debug::go();
     $Render = $debug->getJavascriptRenderer();
 }
 ?>

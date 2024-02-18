@@ -266,7 +266,7 @@ class Base
 
         $data = [
             "database" => $app->dbNew->meta(),
-            "git" => \Debug::gitInfo(),
+            "git" => \Gazelle\Debug::gitInfo(),
             "session" => $_SESSION["token"] ?? "no session",
         ];
 

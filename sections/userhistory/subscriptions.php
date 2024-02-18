@@ -7,7 +7,7 @@
 
 $app = \Gazelle\App::go();
 
-$debug = Debug::go();
+$debug = \Gazelle\Debug::go();
 
 if (isset($app->user->extra['PostsPerPage'])) {
     $PerPage = $app->user->extra['PostsPerPage'];

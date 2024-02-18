@@ -20,7 +20,7 @@ namespace Gazelle;
 class Cache # extends \Redis
 {
     # singleton
-    private static $instance = null;
+    private static ?self $instance = null;
 
     # redis
     private $redis = null;
@@ -36,7 +36,7 @@ class Cache # extends \Redis
     private bool $transactionMode = false;
 
     # are we running a cluster or a single server?
-    private $clusterMode = null;
+    private bool $clusterMode;
 
     # reserved characters
     # see https://github.com/symfony/cache-contracts/blob/main/ItemInterface.php
@@ -167,7 +167,7 @@ class Cache # extends \Redis
      */
     public function handleError(\Throwable $throwable): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # log the error
         error_log($throwable->getMessage());

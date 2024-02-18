@@ -19,7 +19,7 @@ namespace Gazelle;
 class Database extends \PDO
 {
     # instance
-    private static $instance;
+    private static ?self $instance = null;
 
     # database meta
     public \PDO $source;

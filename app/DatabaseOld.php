@@ -126,7 +126,7 @@ function db_array($Array, $DontEscape = [], $Quote = false)
     foreach ($Array as $Key => $Val) {
         if (!in_array($Key, $DontEscape)) {
             if ($Quote) {
-                $Array[$Key] = '\''.db_string(trim($Val)).'\'';
+                $Array[$Key] = '\'' . db_string(trim($Val)) . '\'';
             } else {
                 $Array[$Key] = db_string(trim($Val));
             }
@@ -188,18 +188,18 @@ class DatabaseOld
     public function halt($Msg)
     {
         $ENV = \Gazelle\ENV::go();
-        #$debug = Debug::go();
+        #$debug = \Gazelle\Debug::go();
 
         global $argv;
 
-        $dbError = 'MySQL: '.strval($Msg).' SQL error: '.strval($this->Errno).' ('.strval($this->Error).')';
+        $dbError = 'MySQL: ' . strval($Msg) . ' SQL error: ' . strval($this->Errno) . ' (' . strval($this->Error) . ')';
 
         if ($this->Errno === 1194) {
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
         if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
-            echo '<pre>'.\Gazelle\Text::esc($dbError).'</pre>';
+            echo '<pre>' . \Gazelle\Text::esc($dbError) . '</pre>';
             if ($ENV->dev || check_perms('site_debug')) {
                 print_r($this->Queries);
             }
@@ -231,7 +231,7 @@ class DatabaseOld
             if (!$this->LinkID) {
                 $this->Errno = mysqli_connect_errno();
                 $this->Error = mysqli_connect_error();
-                $this->halt('Connection failed (host:'.$this->Server.':'.$this->Port.')');
+                $this->halt('Connection failed (host:' . $this->Server . ':' . $this->Port . ')');
             }
         }
         mysqli_set_charset($this->LinkID, "utf8mb4");
@@ -316,7 +316,7 @@ class DatabaseOld
     public function query($Query, &...$BindVars)
     {
         $ENV = \Gazelle\ENV::go();
-        #$debug = Debug::go();
+        #$debug = \Gazelle\Debug::go();
 
         $this->connect();
         #$debug['time']->startMeasure('database', 'database queries');

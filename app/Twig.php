@@ -19,10 +19,10 @@ namespace Gazelle;
 class Twig extends \Twig\Environment
 {
     # singleton
-    private static $instance = null;
+    private static ?\Twig\Environment $instance = null;
 
     # twig instance
-    private $twig = null;
+    private \Twig\Environment $twig;
 
 
     /**
@@ -53,7 +53,7 @@ class Twig extends \Twig\Environment
     /**
      * go
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): \Twig\Environment
     {
         return (!self::$instance)
             ? self::$instance = self::factory($options)
@@ -236,7 +236,7 @@ class Twig extends \Twig\Environment
 
         # Format::pretty_category
         $twig->addFilter(new \Twig\TwigFilter("categoryIcon", function ($categoryId) {
-            $markup = "<div title='" . Format::pretty_category($categoryId) . "' class='" . \Gazelle\Format::css_category($categoryId) . "' />";
+            $markup = "<div title='" . Format::pretty_category($categoryId) . "' class='" . Format::css_category($categoryId) . "' />";
             return new \Twig\Markup(
                 $markup,
                 "UTF-8"
@@ -489,7 +489,7 @@ class Twig extends \Twig\Environment
         $twig->addFilter(new \Twig\TwigFilter(
             "image",
             function ($i) {
-                return new \Twig\Markup(\Gazelle\Images::process($i, true), "UTF-8");
+                return new \Twig\Markup(Images::process($i, true), "UTF-8");
             }
         ));
 

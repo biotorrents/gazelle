@@ -17,7 +17,7 @@ namespace Gazelle;
 class App
 {
     # singleton
-    private static $instance;
+    private static ?self $instance = null;
 
     # env is special
     public ENV $env;
@@ -62,7 +62,7 @@ class App
     /**
      * go
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -79,7 +79,7 @@ class App
      * These need to be in a specific order to load right,
      * i.e., user depends on debug and twig depends on user.
      */
-    private function factory(array $options = [])
+    private function factory(array $options = []): void
     {
         # env: FIRST
         $this->env = ENV::go();
@@ -92,7 +92,7 @@ class App
         $this->dbOld = new \DatabaseOld();
 
         # debug
-        $this->debug = \Debug::go();
+        $this->debug = Debug::go();
 
         # user
         $this->user = \User::go();
@@ -199,7 +199,7 @@ class App
      *
      * Beef the specs for a time.
      */
-    public function unlimit()
+    public function unlimit(): void
     {
         # clear output buffer
         if (ob_get_status()) {
@@ -244,7 +244,7 @@ class App
      *
      * Prints an app manifest.
      */
-    public function manifest()
+    public function manifest(): string
     {
         # https://developer.mozilla.org/en-US/docs/Web/Manifest
         $manifest = [
@@ -307,7 +307,7 @@ class App
      * Used for pagination of peer/snatch/download lists on torrent details.
      * THIS SHOULD EITHER GO AWAY OR GO SOMEWHERE ELSE.
      */
-    public static function ajaxPagination($action, $torrentId, $resultCount, $currentPage)
+    public static function ajaxPagination($action, $torrentId, $resultCount, $currentPage): string
     {
         $pageCount = ceil($resultCount / 100);
         $pageLinks = [];
