@@ -143,7 +143,7 @@ Flight::route("/feed/torrents/machineData/@authKey/@passKey", function (string $
 
 # news
 Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string $passKey) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     $feed = new Feed();
     $feed->open();
@@ -182,7 +182,7 @@ Flight::route("/feed/news/@authKey/@passKey", function (string $authKey, string 
 
 # blog
 Flight::route("/feed/blog/@authKey/@passKey", function (string $authKey, string $passKey) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     $feed = new Feed();
     $feed->open();
