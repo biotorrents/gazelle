@@ -25,7 +25,7 @@ class Better
      */
     public static function badFolders(bool $snatchedOnly = false): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # undefined variable $resultCount
         $resultCount = self::$resultCount;
@@ -65,7 +65,7 @@ class Better
      */
     public static function badTags(bool $snatchedOnly = false): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # undefined variable $resultCount
         $resultCount = self::$resultCount;
@@ -105,7 +105,7 @@ class Better
      */
     public static function missingCitations(bool $snatchedOnly = false): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # undefined variable $resultCount
         $resultCount = self::$resultCount;
@@ -147,7 +147,7 @@ class Better
      */
     public static function missingPictures(bool $snatchedOnly = false): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # undefined variable $resultCount
         $resultCount = self::$resultCount;
@@ -187,7 +187,7 @@ class Better
      */
     public static function singleSeeder(bool $snatchedOnly = false): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # undefined variable $resultCount
         $resultCount = self::$resultCount;

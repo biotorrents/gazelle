@@ -19,7 +19,6 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
 $_SESSION["token"] = \Gazelle\Api\Base::validateBearerToken();
 if (!$_SESSION["token"]) {
     \Gazelle\Api\Base::failure(401, "unauthorized");
-    #\Gazelle\Api\Base::failure(401, "invalid token");
 }
 
 # rate limit exceptions

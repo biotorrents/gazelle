@@ -38,13 +38,11 @@ class Base
         # no header present
         if (empty($server["HTTP_AUTHORIZATION"])) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "no authorization header present");
         }
 
         # https://tools.ietf.org/html/rfc6750
         if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "invalid authorization header format");
         }
 
         # we have a token!
@@ -53,7 +51,6 @@ class Base
         # empty token
         if (empty($token)) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "empty token provided");
         }
 
         /** */
@@ -106,7 +103,6 @@ class Base
         # https://tools.ietf.org/html/rfc6750
         if (!preg_match("/^Bearer\s+(.+)$/", $server["HTTP_AUTHORIZATION"], $matches)) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "invalid authorization header format");
         }
 
         # we have a token!
@@ -115,7 +111,6 @@ class Base
         # empty token
         if (empty($token)) {
             self::failure(401, "unauthorized");
-            #self::failure(401, "empty token provided");
         }
 
         /** */
@@ -156,7 +151,6 @@ class Base
         # check that all permissions are valid
         if (array_intersect($permissions, $allowedPermissions) !== $permissions) {
             self::failure(403, "forbidden");
-            #self::failure(401, "invalid permission");
         }
 
         # check the token's permissions
@@ -165,14 +159,12 @@ class Base
 
         if (empty($ref)) {
             self::failure(403, "forbidden");
-            #self::failure(401, "no permissions found");
         }
 
         # check that all required permissions are present
         $tokenPermissions = json_decode($ref, true);
         if (array_intersect($permissions, $tokenPermissions) !== $permissions) {
             self::failure(403, "forbidden");
-            #self::failure(401, "missing required permissions");
         }
     }
 
