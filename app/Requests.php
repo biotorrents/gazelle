@@ -4,39 +4,24 @@ declare(strict_types=1);
 
 
 /**
- * Requests
-*/
+ * Gazelle\Requests
+ */
 
-class Requests
+namespace Gazelle;
+
+class Requests extends ObjectCrud
 {
-    # object properties
-    public $uuid;
-    public $id;
-    public $userId;
-    #public $createdAt;
-    public $lastVote;
-    public $categoryId;
-    public $title;
-    public $subject;
-    public $object;
-    public $picture;
-    public $description;
-    public $identifier;
-    public $fillerId;
-    public $torrentId;
-    public $filledAt;
-    public $isVisible;
-    public $groupId;
-    public $createdAt;
-    public $updatedAt;
-    public $deletedAt;
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?int $id = null; # primary key
+    public string $type = "requests"; # database table
+    public ?RecursiveCollection $attributes = null;
 
     # ["database" => "display"]
-    private $maps = [
+    protected array $maps = [
         "uuid" => "uuid",
         "ID" => "id",
         "UserID" => "userId",
-        "TimeAdded" => "createdAt",
+        #"TimeAdded" => "createdAt",
         "LastVote" => "lastVote",
         "CategoryID" => "categoryId",
         "Title" => "title",
@@ -56,81 +41,9 @@ class Requests
         "deleted_at" => "deletedAt",
     ];
 
-
-    /**
-     * __construct
-     */
-    public function __construct(int|string $identifier = null)
-    {
-        if ($identifier) {
-            $this->read($identifier);
-        }
-    }
-
-
-    /** crud */
-
-
-    /**
-     * create
-     */
-    public function create(array $data = [])
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * read
-     */
-    public function read(int|string $identifier)
-    {
-        $app = \Gazelle\App::go();
-
-        $column = $app->dbNew->determineIdentifier($identifier);
-
-        $query = "select * from requests where {$column} = ?";
-        $row = $app->dbNew->row($query, [$identifier]);
-
-        if (empty($row)) {
-            return [];
-        }
-
-        $translatedRow = [];
-        foreach ($row as $column => $value) {
-            # does the column exist in the map?
-            if (isset($this->maps[$column])) {
-                $outputLabel = $this->maps[$column];
-                $translatedRow[$outputLabel] = $value;
-
-                # set $this here
-                $this->{$outputLabel} = $value;
-            }
-        }
-
-        return $translatedRow;
-    }
-
-
-    /**
-     * update
-     */
-    public function update(int|string $identifier, array $data = [])
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /**
-     * delete
-     */
-    public function delete(int|string $identifier)
-    {
-        throw new \Exception("not implemented");
-    }
-
-
-    /** legacy */
+    # cache settings
+    private string $cachePrefix = "requests:";
+    private string $cacheDuration = "1 hour";
 
 
     /**
@@ -205,7 +118,7 @@ class Requests
                     $app->dbOld->query("
                     SELECT Anonymous
                     FROM torrents
-                      WHERE ID = ".$Request['TorrentID']);
+                      WHERE ID = " . $Request['TorrentID']);
 
                     list($Anonymous) = $app->dbOld->next_record();
                     if ($Anonymous) {
@@ -216,7 +129,7 @@ class Requests
                 unset($NotFound[$Request['ID']]);
                 $Request['Tags'] = isset($Tags[$Request['ID']]) ? $Tags[$Request['ID']] : [];
                 $Found[$Request['ID']] = $Request;
-                $app->cache->set('request_'.$Request['ID'], $Request, 0);
+                $app->cache->set('request_' . $Request['ID'], $Request, 0);
             }
             $app->dbOld->set_query_id($QueryID);
 

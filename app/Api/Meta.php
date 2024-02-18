@@ -13,6 +13,10 @@ class Meta extends Base
 {
     /**
      * manifest
+     *
+     * Returns the application manifest.
+     *
+     * @return void
      */
     public static function manifest(): void
     {
@@ -32,6 +36,10 @@ class Meta extends Base
 
     /**
      * ontology
+     *
+     * Returns the application ontology.
+     *
+     * @return void
      */
     public static function ontology(): void
     {
@@ -51,6 +59,10 @@ class Meta extends Base
 
     /**
      * torrentStats
+     *
+     * Returns the application torrent statistics.
+     *
+     * @return void
      */
     public static function torrentStats(): void
     {
@@ -78,6 +90,10 @@ class Meta extends Base
 
     /**
      * userStats
+     *
+     * Returns the application user statistics.
+     *
+     * @return void
      */
     public static function userStats(): void
     {

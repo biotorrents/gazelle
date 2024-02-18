@@ -42,7 +42,7 @@ class Torrents
     public $deletedAt;
 
     # ["database" => "display"]
-    private $maps = [
+    protected array $maps = [
         "uuid" => "uuid",
         "ID" => "id",
         "GroupID" => "groupId",

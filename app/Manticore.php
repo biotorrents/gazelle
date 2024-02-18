@@ -22,11 +22,11 @@ class Manticore
     private $percolate = null;
 
     # cache settings
-    private $cachePrefix = "manticore:";
-    private $cacheDuration = "1 minute";
+    private string $cachePrefix = "manticore:";
+    private string $cacheDuration = "1 minute";
 
     # raw search terms
-    private $rawSearchTerms = [];
+    private array $rawSearchTerms = [];
 
     # the queryLanguage object
     private $query = null;
@@ -37,14 +37,14 @@ class Manticore
     /** */
 
     # indices to search
-    private $indices = [
+    private array $indices = [
         "torrents" => ["torrents_main", "torrents_delta"],
         "requests" => ["requests_main", "requests_delta"],
         "collections" => ["collections_main", "collections_delta"],
     ];
 
     # map of search form fields => index fields
-    private $searchFields = [
+    private array $searchFields = [
         # torrents search
         "simpleSearch" => "*",
         "complexSearch" => ["title", "subject", "object"],
@@ -88,7 +88,7 @@ class Manticore
     ];
 
     # map of sort mode => index field for sorting
-    private $sortOrders = [
+    private array $sortOrders = [
         #"identifier" => "cataloguenumber", # todo?
         "leechers" => "leechers",
         "random" => "rand()",
@@ -253,6 +253,9 @@ class Manticore
             throw new \Exception($e->getMessage());
         }
     }
+
+
+    /** */
 
 
     /**
