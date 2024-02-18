@@ -36,7 +36,7 @@ if (!empty($_GET['filterid']) && is_numeric($_GET['filterid'])) {
     $FilterID = false;
 }
 
-list($Page, $Limit) = Format::page_limit(NOTIFICATIONS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(NOTIFICATIONS_PER_PAGE);
 
 // The "order by x" links on columns headers
 function header_link($SortKey, $DefaultWay = 'desc')
@@ -51,7 +51,7 @@ function header_link($SortKey, $DefaultWay = 'desc')
     } else {
         $NewWay = $DefaultWay;
     }
-    return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;".Format::get_url(array('page', 'order_way', 'order_by'));
+    return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;" . \Gazelle\Format::get_url(array('page', 'order_way', 'order_by'));
 }
 //Perhaps this should be a feature at some point
 if (check_perms('users_mod') && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->user->core['id']) {
@@ -69,13 +69,13 @@ if ($OrderTbl === 'tg') {
     SELECT COUNT(*)
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID=unt.TorrentID
-    WHERE unt.UserID=$UserID".
+    WHERE unt.UserID=$UserID" .
     ($FilterID
       ? " AND FilterID=$FilterID"
       : ''));
     list($TorrentCount) = $app->dbOld->next_record();
     if ($TorrentCount > NOTIFICATIONS_MAX_SLOWSORT) {
-        error('Due to performance issues, torrent lists with more than '.\Gazelle\Text::float(NOTIFICATIONS_MAX_SLOWSORT).' items cannot be ordered by release year.');
+        error('Due to performance issues, torrent lists with more than ' . \Gazelle\Text::float(NOTIFICATIONS_MAX_SLOWSORT) . ' items cannot be ordered by release year.');
     }
 
     $app->dbOld->query("
@@ -87,7 +87,7 @@ if ($OrderTbl === 'tg') {
     SELECT t.ID, t.GroupID, unt.UnRead, unt.FilterID
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID=unt.TorrentID
-    WHERE unt.UserID=$UserID".
+    WHERE unt.UserID=$UserID" .
     ($FilterID
       ? " AND unt.FilterID=$FilterID"
       : ''));
@@ -112,10 +112,10 @@ if ($OrderTbl === 'tg') {
       t.GroupID
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
-    WHERE unt.UserID = $UserID".
+    WHERE unt.UserID = $UserID" .
     ($FilterID
       ? " AND unt.FilterID = $FilterID"
-      : '')."
+      : '') . "
     ORDER BY $OrderCol $OrderWay
     LIMIT $Limit");
     $Results = $app->dbOld->to_array(false, MYSQLI_ASSOC, false);
@@ -131,7 +131,7 @@ foreach ($Results as $Torrent) {
         $UnReadIDs[] = $Torrent['TorrentID'];
     }
 }
-$Pages = Format::get_pages($Page, $TorrentCount, NOTIFICATIONS_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, NOTIFICATIONS_PER_PAGE, 9);
 
 if (!empty($GroupIDs)) {
     $GroupIDs = array_keys($GroupIDs);
@@ -142,7 +142,7 @@ if (!empty($GroupIDs)) {
     $app->dbOld->query('
     SELECT ID, Label, Artists
     FROM users_notify_filters
-    WHERE ID IN ('.implode(',', $FilterIDs).')');
+    WHERE ID IN (' . implode(',', $FilterIDs) . ')');
     $Filters = $app->dbOld->to_array('ID', MYSQLI_ASSOC, array('Artists'));
     foreach ($Filters as &$Filter) {
         $Filter['Artists'] = explode('|', trim($Filter['Artists'], '|'));
@@ -158,14 +158,14 @@ if (!empty($GroupIDs)) {
         $app->dbOld->query("
       UPDATE users_notify_torrents
       SET UnRead = '0'
-      WHERE UserID = ".$app->user->core['id'].'
-        AND TorrentID IN ('.implode(',', $UnReadIDs).')');
-        $app->cache->delete('notifications_new_'.$app->user->core['id']);
+      WHERE UserID = " . $app->user->core['id'] . '
+        AND TorrentID IN (' . implode(',', $UnReadIDs) . ')');
+        $app->cache->delete('notifications_new_' . $app->user->core['id']);
     }
 }
 if ($Sneaky) {
     $UserInfo = User::user_info($UserID);
-    View::header($UserInfo['Username'].'\'s notifications', 'notifications');
+    View::header($UserInfo['Username'] . '\'s notifications', 'notifications');
 } else {
     View::header('My notifications', 'notifications');
 }
@@ -221,7 +221,7 @@ if (empty($Results)) {
     <h3>
       <?php if ($FilterResults['FilterLabel'] !== false) { ?>
       Matches for <a
-        href="torrents.php?action=notify&amp;filterid=<?=$FilterID.($Sneaky ? "&amp;userid=$UserID" : '')?>"><?=$FilterResults['FilterLabel']?></a>
+        href="torrents.php?action=notify&amp;filterid=<?=$FilterID . ($Sneaky ? "&amp;userid=$UserID" : '')?>"><?=$FilterResults['FilterLabel']?></a>
       <?php } else { ?>
       Matches for unknown filter[<?=$FilterID?>]
       <?php } ?>
@@ -246,7 +246,7 @@ if (empty($Results)) {
             onclick="toggleChecks('notificationform_<?=$FilterID?>', this, '.notify_box')" />
         </td>
         <td class="small categoryColumn"></td>
-        <td style="width: 100%;">Name<?=$TorrentCount <= NOTIFICATIONS_MAX_SLOWSORT ? ' / <a href="'.header_link('year').'">Year</a>' : ''?>
+        <td style="width: 100%;">Name<?=$TorrentCount <= NOTIFICATIONS_MAX_SLOWSORT ? ' / <a href="' . header_link('year') . '">Year</a>' : ''?>
         </td>
         <td>Files</td>
         <td><a
@@ -288,12 +288,12 @@ if (empty($Results)) {
                         }
                     }
                 }
-                $MatchingArtistsText = (!empty($MatchingArtists) ? 'Caught by filter for '.implode(', ', $MatchingArtists) : '');
+                $MatchingArtistsText = (!empty($MatchingArtists) ? 'Caught by filter for ' . implode(', ', $MatchingArtists) : '');
                 $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
             }
             $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                $DisplayName .= 'data-cover="'.\Gazelle\Images::process($GroupInfo['WikiImage'], 'thumb').'" ';
+                $DisplayName .= 'data-cover="' . \Gazelle\Images::process($GroupInfo['WikiImage'], 'thumb') . '" ';
             }
             $DisplayName .= "class=\"tooltip\" title=\"View torrent\" dir=\"ltr\">" . $GroupName . '</a>';
 
@@ -322,7 +322,7 @@ if (empty($Results)) {
 
             // echo row?>
       <tr
-        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="'.\Gazelle\Text::esc($MatchingArtistsText) : '')?>"
+        class="torrent torrent_row<?=($TorrentInfo['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '') . ($MatchingArtistsText ? ' tooltip" title="' . \Gazelle\Text::esc($MatchingArtistsText) : '')?>"
         id="torrent<?=$TorrentID?>">
         <td style="text-align: center;">
           <input type="checkbox"
@@ -380,7 +380,7 @@ if (empty($Results)) {
         </td>
         <td class="number_column nobr"><?=time_diff($TorrentInfo['Time'])?>
         </td>
-        <td class="number_column nobr"><?=Format::get_size($TorrentInfo['Size'])?>
+        <td class="number_column nobr"><?=\Gazelle\Format::get_size($TorrentInfo['Size'])?>
         </td>
         <td class="number_column"><?=\Gazelle\Text::float($TorrentInfo['Snatched'])?>
         </td>
@@ -397,7 +397,7 @@ if (empty($Results)) {
     }
 }
 
-  if ($Pages) { ?>
+if ($Pages) { ?>
   <div class="linkbox"><?=$Pages?>
   </div>
   <?php } ?>

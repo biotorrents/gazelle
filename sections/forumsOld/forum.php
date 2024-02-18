@@ -28,7 +28,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
     $PerPage = POSTS_PER_PAGE;
 }
 
-list($Page, $Limit) = Format::page_limit(TOPICS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(TOPICS_PER_PAGE);
 
 //---------- Get some data to start processing
 
@@ -85,7 +85,7 @@ if (!Forums::check_forumperm($ForumID)) {
 
 // Start printing
 $ENV = \Gazelle\ENV::go();
-View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
+View::header("Forums $ENV->crumb " . $Forums[$ForumID]['Name']);
 ?>
 
 <div class="header">
@@ -182,7 +182,7 @@ View::header("Forums $ENV->crumb ".$Forums[$ForumID]['Name']);
 
   <div class="linkbox pager">
     <?php
-    $Pages = Format::get_pages($Page, $Forums[$ForumID]['NumTopics'], TOPICS_PER_PAGE, 9);
+    $Pages = \Gazelle\Format::get_pages($Page, $Forums[$ForumID]['NumTopics'], TOPICS_PER_PAGE, 9);
 echo $Pages;
 ?>
   </div>
@@ -219,8 +219,8 @@ if (count($Forum) === 0) {
         ) / $PerPage
       ) AS Page
     FROM forums_last_read_topics AS l
-    WHERE l.TopicID IN (".implode(', ', array_keys($Forum)).')
-      AND l.UserID = \''.$app->user->core['id'].'\'');
+    WHERE l.TopicID IN (" . implode(', ', array_keys($Forum)) . ')
+      AND l.UserID = \'' . $app->user->core['id'] . '\'');
 
     // Turns the result set into a multi-dimensional array, with
     // forums_last_read_topics.TopicID as the key.

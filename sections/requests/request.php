@@ -217,7 +217,7 @@ for ($i = 0; $i < $VoteMax; $i++) {
               href="user.php?id=<?= $User['UserID'] ?>"><?= ($Boldify ? '<strong>' : '') . \Gazelle\Text::esc($User['Username']) . ($Boldify ? '</strong>' : '') ?></a>
           </td>
           <td class="number_column">
-            <?= ($Boldify ? '<strong>' : '') . Format::get_size($User['Bounty']) . ($Boldify ? "</strong>\n" : "\n") ?>
+            <?= ($Boldify ? '<strong>' : '') . \Gazelle\Format::get_size($User['Bounty']) . ($Boldify ? "</strong>\n" : "\n") ?>
           </td>
         </tr>
         <?php
@@ -232,7 +232,7 @@ if (!$ViewerVote) {
               href="user.php?id=<?= $User['UserID'] ?>"><strong><?= \Gazelle\Text::esc($User['Username']) ?></strong></a>
           </td>
           <td class="number_column">
-            <strong><?= Format::get_size($User['Bounty']) ?></strong>
+            <strong><?= \Gazelle\Format::get_size($User['Bounty']) ?></strong>
           </td>
         </tr>
         <?php }
@@ -281,7 +281,7 @@ if ($Request['GroupID']) {
               <span id="votecount"><?= \Gazelle\Text::float($VoteCount) ?></span>
               <?php if ($CanVote) { ?>
               &nbsp;&nbsp;<a href="javascript:Vote(0)" class="brackets"><strong>+</strong></a>
-              <strong>Costs <?= Format::get_size($MinimumVote, 0) ?></strong>
+              <strong>Costs <?= \Gazelle\Format::get_size($MinimumVote, 0) ?></strong>
               <?php } ?>
             </td>
           </tr>
@@ -336,9 +336,9 @@ if ($CanVote) {
                 <ul>
                   <!-- todo: Return this feature
               <li><strong>Bounty:</strong> <span id="bounty_after_tax">0.00 MiB</span></li> -->
-                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= Format::get_size($app->user->extra['Uploaded']) ?></span>
+                  <li><strong>Uploaded:</strong> <span id="new_uploaded"><?= \Gazelle\Format::get_size($app->user->extra['Uploaded']) ?></span>
                   </li>
-                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded']) ?></span>
+                  <li><strong>Ratio:</strong> <span id="new_ratio"><?= \Gazelle\Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded']) ?></span>
                   </li>
                 </ul>
                 <input type="button" id="button" value="Vote!" class="button-primary" disabled="disabled" onclick="Vote();">
@@ -349,7 +349,7 @@ if ($CanVote) {
 } ?>
           <tr id="bounty">
             <td class="label">Bounty</td>
-            <td id="formatted_bounty"><?=Format::get_size($RequestVotes['TotalBounty'])?>
+            <td id="formatted_bounty"><?=\Gazelle\Format::get_size($RequestVotes['TotalBounty'])?>
             </td>
           </tr>
           <?php
@@ -412,7 +412,7 @@ if ($IsFilled) {
       <div class="linkbox">
         <a name="comments"></a>
         <?php
-$Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
+$Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 echo $Pages;
 ?>
       </div>

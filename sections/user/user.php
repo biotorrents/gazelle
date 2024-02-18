@@ -202,8 +202,8 @@ if (($Override = check_paranoia_here('uploaded'))) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=Format::get_size($Uploaded, 5)?>">Uploaded:
-            <?=Format::get_size($Uploaded)?>
+            title="<?=\Gazelle\Format::get_size($Uploaded, 5)?>">Uploaded:
+            <?=\Gazelle\Format::get_size($Uploaded)?>
           </li>
           <?php
 }
@@ -211,15 +211,15 @@ if (($Override = check_paranoia_here('downloaded'))) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=Format::get_size($Downloaded, 5)?>">Downloaded:
-            <?=Format::get_size($Downloaded)?>
+            title="<?=\Gazelle\Format::get_size($Downloaded, 5)?>">Downloaded:
+            <?=\Gazelle\Format::get_size($Downloaded)?>
           </li>
           <?php
 }
 if (($Override = check_paranoia_here('ratio'))) {
     ?>
           <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Ratio:
-            <?=Format::get_ratio_html($Uploaded, $Downloaded)?>
+            <?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
             </li>
             <?php
 }
@@ -234,7 +234,7 @@ if (($Override = check_paranoia_here('downloaded'))) {
     ?>
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
-                  title="<?=Format::get_size($TotalSeeding)?>"><?=Format::get_size($TotalSeeding)?>
+                  title="<?=\Gazelle\Format::get_size($TotalSeeding)?>"><?=\Gazelle\Format::get_size($TotalSeeding)?>
                   </li>
                   <?php
 }
@@ -331,7 +331,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         <?php if (($Override = check_paranoia_here('uploaded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($Uploaded)?>">Data uploaded:
+          title="<?=\Gazelle\Format::get_size($Uploaded)?>">Data uploaded:
           <?=$UploadedRank === false ? 'Server busy' : \Gazelle\Text::float($UploadedRank)?>
         </li>
         <?php
@@ -339,7 +339,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
 if (($Override = check_paranoia_here('downloaded'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($Downloaded)?>">Data downloaded:
+          title="<?=\Gazelle\Format::get_size($Downloaded)?>">Data downloaded:
           <?=$DownloadedRank === false ? 'Server busy' : \Gazelle\Text::float($DownloadedRank)?>
         </li>
         <?php
@@ -363,7 +363,7 @@ if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
 if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-          title="<?=Format::get_size($TotalSpent)?>">Bounty spent:
+          title="<?=\Gazelle\Format::get_size($TotalSpent)?>">Bounty spent:
           <?=$BountyRank === false ? 'Server busy' : \Gazelle\Text::float($BountyRank)?>
         </li>
         <?php } ?>
@@ -532,9 +532,9 @@ if ($RatioWatchEnds && (time() < strtotime($RatioWatchEnds)) && ($Downloaded * $
     ?>
     <div class="box">
       <div class="head">Ratio watch</div>
-      <div class="pad">This user is currently on ratio watch and must upload <?=Format::get_size(($Downloaded * $RequiredRatio) - $Uploaded)?> in
+      <div class="pad">This user is currently on ratio watch and must upload <?=\Gazelle\Format::get_size(($Downloaded * $RequiredRatio) - $Uploaded)?> in
         the next <?=time_diff($RatioWatchEnds)?>, or their leeching
-        privileges will be revoked. Amount downloaded while on ratio watch: <?=Format::get_size($Downloaded - $RatioWatchDownload)?>
+        privileges will be revoked. Amount downloaded while on ratio watch: <?=\Gazelle\Format::get_size($Downloaded - $RatioWatchDownload)?>
       </div>
     </div>
     <?php

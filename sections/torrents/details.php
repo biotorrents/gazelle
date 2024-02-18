@@ -199,7 +199,7 @@ $DisplayName = $twig->render(
       'db' => $ENV->DB,
       'g' => $TorrentDetails,
       #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
-      'url' => Format::get_url($_GET),
+      'url' => \Gazelle\Format::get_url($_GET),
       'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
       'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
       'artists' => Artists::display_artists($Artists),
@@ -522,7 +522,7 @@ foreach ($TorrentList as $Torrent) {
             }
             $ReportInfo .= "
       <tr>
-        <td>$ReportLinks " . Format::relativeTime($Report['ReportedTime']) . ' for the reason "' . $ReportType['title'] . '":
+        <td>$ReportLinks " . \Gazelle\Format::relativeTime($Report['ReportedTime']) . ' for the reason "' . $ReportType['title'] . '":
           <blockquote>' . \Gazelle\Text::parse($Report['UserComment']) . '</blockquote>
         </td>
       </tr>';
@@ -553,13 +553,13 @@ foreach ($TorrentList as $Torrent) {
                 $Name = str_replace(' ', '&nbsp;', substr($Name, 0, $Spaces)) . substr($Name, $Spaces);
             }
             $FileSize = substr($File, $NameEnd + 3, -3);
-            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $Name, Format::get_size($FileSize));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $Name, \Gazelle\Format::get_size($FileSize));
         }
     } else {
         $FileListSplit = explode("\n", $FileList);
         foreach ($FileListSplit as $File) {
             $FileInfo = Torrents::filelist_get_file($File);
-            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], Format::get_size($FileInfo['size']));
+            $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], \Gazelle\Format::get_size($FileInfo['size']));
         }
     }
     $FileTable .= '
@@ -607,19 +607,19 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($IsLeeching) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Leeching', 'important_text_semi');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Leeching', 'important_text_semi');
     } elseif ($IsSeeding) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Seeding', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Seeding', 'important_text_alt');
     } elseif ($IsSnatched) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Snatched', 'bold');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Snatched', 'bold');
     }
 
     if ($FreeTorrent === '1') {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
     }
 
     if ($FreeTorrent === '2') {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Neutral Leech', 'bold');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Neutral Leech', 'bold');
     }
 
     // Freleechizer
@@ -636,25 +636,25 @@ foreach ($TorrentList as $Torrent) {
     }
 
     if ($PersonalFL) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Personal Freeleech', 'important_text_alt');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt');
     }
 
     if ($Reported) {
         $HtmlReportType = ucfirst($Reports[0]['Type']);
         $HtmlReportComment = htmlentities(htmlentities($Reports[0]['UserComment']));
-        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>" . Format::torrent_label('Reported', 'important_text') . "</strong>";
+        $ExtraInfo .= $AddExtra . "<strong class='torrent_label tl_reported tooltip' title='Type: $HtmlReportType<br>Comment: $HtmlReportComment'>" . \Gazelle\Format::torrent_label('Reported', 'important_text') . "</strong>";
     }
 
     if (!empty($BadTags)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Tags', 'important_text');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Tags', 'important_text');
     }
 
     if (!empty($BadFolders)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Folders', 'important_text');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Folders', 'important_text');
     }
 
     if (!empty($BadFiles)) {
-        $ExtraInfo .= $AddExtra . Format::torrent_label('Bad File Names', 'important_text');
+        $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad File Names', 'important_text');
     }
 
     $TorrentDL = "torrents.php?action=download&amp;id=" . $TorrentID . "&amp;authkey=" . $app->user->extra['AuthKey'] . "&amp;torrent_pass=" . $app->user->extra['torrent_pass'];
@@ -697,7 +697,7 @@ foreach ($TorrentList as $Torrent) {
             </span>
             <a data-toggle-target="#torrent_<?=$TorrentID?>"><?=$ExtraInfo; ?></a>
           </td>
-          <td class="number_column nobr"><?=Format::get_size($Size)?>
+          <td class="number_column nobr"><?=\Gazelle\Format::get_size($Size)?>
           </td>
           <td class="number_column"><?=\Gazelle\Text::float($Snatched)?>
           </td>
@@ -880,7 +880,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
               class="brackets">+</a>
             <?php } ?>
           </td>
-          <td><?=Format::get_size($RequestVotes['TotalBounty'])?>
+          <td><?=\Gazelle\Format::get_size($RequestVotes['TotalBounty'])?>
           </td>
         </tr>
         <?php
@@ -1112,7 +1112,7 @@ if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || check_pe
 
     <?php
 // --- Comments ---
-$Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
+$Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 ?>
     <div id="torrent_comments">
       <div class="linkbox"><a name="comments"></a>

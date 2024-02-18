@@ -18,8 +18,8 @@ if (isset($_POST['submit'])) {
         if (!is_numeric($_POST['id']) || $_POST['id'] === '') {
             error(0);
         }
-        $app->dbOld->query('DELETE FROM ip_bans WHERE ID='.$_POST['id']);
-        $app->cache->delete('ip_bans_'.$IPA);
+        $app->dbOld->query('DELETE FROM ip_bans WHERE ID=' . $_POST['id']);
+        $app->cache->delete('ip_bans_' . $IPA);
     } else { //Edit & Create, Shared Validation
         $Val->SetFields('start', '1', 'regex', 'You must include the starting IP address.', array('regex' => '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
         $Val->SetFields('end', '1', 'regex', 'You must include the ending IP address.', array('regex' => '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i'));
@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
           FromIP=$Start,
           ToIP='$End',
           Reason='$Notes'
-        WHERE ID='".$_POST['id']."'");
+        WHERE ID='" . $_POST['id'] . "'");
         } else { //Create
             $app->dbOld->query("
         INSERT INTO ip_bans
@@ -51,12 +51,12 @@ if (isset($_POST['submit'])) {
         VALUES
           ('$Start','$End', '$Notes')");
         }
-        $app->cache->delete('ip_bans_'.$IPA);
+        $app->cache->delete('ip_bans_' . $IPA);
     }
 }
 
 define('BANS_PER_PAGE', '20');
-list($Page, $Limit) = Format::page_limit(BANS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(BANS_PER_PAGE);
 
 $sql = "
   SELECT
@@ -68,25 +68,25 @@ $sql = "
   FROM ip_bans ";
 
 if (!empty($_REQUEST['notes'])) {
-    $sql .= "WHERE Reason LIKE '%".db_string($_REQUEST['notes'])."%' ";
+    $sql .= "WHERE Reason LIKE '%" . db_string($_REQUEST['notes']) . "%' ";
 }
 
 if (!empty($_REQUEST['ip']) && preg_match("/{$app->env->regexIp4}/", $_REQUEST['ip'])) {
     if (!empty($_REQUEST['notes'])) {
-        $sql .= "AND '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+        $sql .= "AND '" . Tools::ip_to_unsigned($_REQUEST['ip']) . "' BETWEEN FromIP AND ToIP ";
     } else {
-        $sql .= "WHERE '".Tools::ip_to_unsigned($_REQUEST['ip'])."' BETWEEN FromIP AND ToIP ";
+        $sql .= "WHERE '" . Tools::ip_to_unsigned($_REQUEST['ip']) . "' BETWEEN FromIP AND ToIP ";
     }
 }
 
 $sql .= "ORDER BY FromIP ASC";
-$sql .= " LIMIT ".$Limit;
+$sql .= " LIMIT " . $Limit;
 $Bans = $app->dbOld->query($sql);
 
 $app->dbOld->query('SELECT FOUND_ROWS()');
 list($Results) = $app->dbOld->next_record();
 
-$PageLinks = Format::get_pages($Page, $Results, BANS_PER_PAGE, 11);
+$PageLinks = \Gazelle\Format::get_pages($Page, $Results, BANS_PER_PAGE, 11);
 
 View::header('IP Address Bans');
 $app->dbOld->set_query_id($Bans);

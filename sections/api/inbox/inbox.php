@@ -22,7 +22,7 @@ if (!in_array($Section, array('inbox', 'sentbox'))) {
     error();
 }
 
-list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(MESSAGES_PER_PAGE);
 
 $Sort = empty($_GET['sort']) || $_GET['sort'] != "unread" ? "Date DESC" : "cu.Unread = '1' DESC, DATE DESC";
 
@@ -60,10 +60,10 @@ if (!empty($_GET['search'])) {
         $sql .= "um.Username LIKE '$Search' AND ";
     } elseif ($_GET['searchtype'] === 'subject') {
         $Words = explode(' ', $Search);
-        $sql .= "c.Subject LIKE '%".implode("%' AND c.Subject LIKE '%", $Words)."%' AND ";
+        $sql .= "c.Subject LIKE '%" . implode("%' AND c.Subject LIKE '%", $Words) . "%' AND ";
     } elseif ($_GET['searchtype'] === 'message') {
         $Words = explode(' ', $Search);
-        $sql .= "m.Body LIKE '%".implode("%' AND m.Body LIKE '%", $Words)."%' AND ";
+        $sql .= "m.Body LIKE '%" . implode("%' AND m.Body LIKE '%", $Words) . "%' AND ";
     }
 }
 $sql .= $Section === 'sentbox' ? ' cu.InSentbox' : ' cu.InInbox';
@@ -78,25 +78,25 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($Results);
 
-$CurURL = Format::get_url(array('sort'));
+$CurURL = \Gazelle\Format::get_url(array('sort'));
 if (empty($CurURL)) {
     $CurURL = "inbox.php?";
 } else {
-    $CurURL = "inbox.php?".$CurURL."&";
+    $CurURL = "inbox.php?" . $CurURL . "&";
 }
 
-$Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 
 $JsonMessages = [];
 while (list($ConvID, $Subject, $Unread, $Sticky, $ForwardedID, $ForwardedName, $SenderID, $Username, $Donor, $Warned, $Enabled, $Avatar, $Date) = $app->dbOld->next_record()) {
     $JsonMessage = array(
-    'convId' => (int)$ConvID,
+    'convId' => (int) $ConvID,
     'subject' => $Subject,
     'unread' => $Unread == 1,
     'sticky' => $Sticky == 1,
-    'forwardedId' => (int)$ForwardedID,
+    'forwardedId' => (int) $ForwardedID,
     'forwardedName' => $ForwardedName,
-    'senderId' => (int)$SenderID,
+    'senderId' => (int) $SenderID,
     'username' => $Username,
     'avatar' => $Avatar,
     'donor' => $Donor == 1,
@@ -112,7 +112,7 @@ print
       array(
       'status' => 'success',
       'response' => array(
-        'currentPage' => (int)$Page,
+        'currentPage' => (int) $Page,
         'pages' => ceil($NumResults / MESSAGES_PER_PAGE),
         'messages' => $JsonMessages
       )

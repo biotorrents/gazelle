@@ -428,12 +428,12 @@ View::textarea(
 
               <li>
                 <strong>Uploaded:</strong>
-                <span id="new_uploaded"><?= Format::get_size($app->user->extra['BytesUploaded']) ?></span>
+                <span id="new_uploaded"><?= \Gazelle\Format::get_size($app->user->extra['BytesUploaded']) ?></span>
               </li>
 
               <li>
                 <strong>Ratio:</strong>
-                <span id="new_ratio"><?= Format::get_ratio_html($app->user->extra['BytesUploaded'], $app->user->extra['BytesDownloaded']) ?></span>
+                <span id="new_ratio"><?= \Gazelle\Format::get_ratio_html($app->user->extra['BytesUploaded'], $app->user->extra['BytesDownloaded']) ?></span>
               </li>
             </ul>
           </td>

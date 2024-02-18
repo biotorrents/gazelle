@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # bootstrap the app
-require_once __DIR__."/bootstrap/cli.php";
+require_once __DIR__ . "/bootstrap/cli.php";
 
 # use the source database for this
 $databaseSource = $app->env->private("databaseSource");

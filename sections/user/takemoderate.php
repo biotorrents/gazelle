@@ -22,7 +22,7 @@ $UserID = $_POST['userid'];
 $DeleteKeys = false;
 
 // Variables for database input
-$Class = (int)$_POST['Class'];
+$Class = (int) $_POST['Class'];
 $Username = db_string($_POST['Username']);
 $Title = db_string($_POST['Title']);
 $AdminComment = db_string($_POST['AdminComment']);
@@ -37,7 +37,7 @@ foreach ($SecondaryClasses as $i => $Val) {
 }
 
 $Visible = isset($_POST['Visible']) ? 1 : 0;
-$Invites = (int)$_POST['Invites'];
+$Invites = (int) $_POST['Invites'];
 $SupportFor = db_string($_POST['SupportFor']);
 $Pass = $_POST['ChangePassword'];
 $Warned = isset($_POST['Warned']) ? 1 : 0;
@@ -45,12 +45,12 @@ $Warned = isset($_POST['Warned']) ? 1 : 0;
 if (isset($_POST['Uploaded']) && isset($_POST['Downloaded'])) {
     $Uploaded = ($_POST['Uploaded'] === '' ? 0 : $_POST['Uploaded']);
     if ($Arithmetic = strpbrk($Uploaded, '+-')) {
-        $Uploaded += max(-$Uploaded, Format::get_bytes($Arithmetic));
+        $Uploaded += max(-$Uploaded, \Gazelle\Format::get_bytes($Arithmetic));
     }
 
     $Downloaded = ($_POST['Downloaded'] === '' ? 0 : $_POST['Downloaded']);
     if ($Arithmetic = strpbrk($Downloaded, '+-')) {
-        $Downloaded += max(-$Downloaded, Format::get_bytes($Arithmetic));
+        $Downloaded += max(-$Downloaded, \Gazelle\Format::get_bytes($Arithmetic));
     }
 
     if (!is_numeric($Uploaded) || !is_numeric($Downloaded)) {
@@ -70,9 +70,9 @@ if (!is_numeric($FLTokens)) {
 
 $Badges = isset($_POST['badges']) ? $_POST['badges'] : [];
 
-$WarnLength = (int)$_POST['WarnLength'];
-$ExtendWarning = (int)$_POST['ExtendWarning'];
-$ReduceWarning = (int)$_POST['ReduceWarning'];
+$WarnLength = (int) $_POST['WarnLength'];
+$ExtendWarning = (int) $_POST['ExtendWarning'];
+$ReduceWarning = (int) $_POST['ReduceWarning'];
 $WarnReason = $_POST['WarnReason'];
 $UserReason = $_POST['UserReason'];
 
@@ -396,14 +396,14 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
 if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && (check_perms('users_edit_ratio')
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
-    $EditSummary[] = "uploaded changed from " . Format::get_size($Cur['Uploaded']) . ' to ' . Format::get_size($Uploaded);
+    $EditSummary[] = "uploaded changed from " . \Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . \Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
 if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && (check_perms('users_edit_ratio')
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
-    $EditSummary[] = "downloaded changed from " . Format::get_size($Cur['Downloaded']) . ' to ' . Format::get_size($Downloaded);
+    $EditSummary[] = "downloaded changed from " . \Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . \Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
@@ -684,7 +684,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
             $UpdateSet[] = "m.can_leech = '1'";
             $UpdateSet[] = "i.RatioWatchDownload = '0'";
         } else {
-            $EnableStr .= ' (Ratio: ' . Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false) . ', RR: ' . \Gazelle\Text::float($Cur['RequiredRatio'], 2) . ')';
+            $EnableStr .= ' (Ratio: ' . \Gazelle\Format::get_ratio_html($Cur['Uploaded'], $Cur['Downloaded'], false) . ', RR: ' . \Gazelle\Text::float($Cur['RequiredRatio'], 2) . ')';
             if ($Cur['RatioWatchEnds']) {
                 $UpdateSet[] = "i.RatioWatchEnds = NOW()";
                 $UpdateSet[] = "i.RatioWatchDownload = m.Downloaded";
@@ -738,12 +738,12 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
           SET
             um.Uploaded = 0,
             um.Downloaded = 0,
-            ui.AdminComment = CONCAT('" . sqltime() . ' - Stats (Uploaded: ' . Format::get_size($MergeUploaded) . ', Downloaded: ' . Format::get_size($MergeDownloaded) . ', Ratio: ' . Format::get_ratio($MergeUploaded, $MergeDownloaded) . ') merged into ' . site_url() . "user.php?id=$UserID (" . $Cur['Username'] . ') by ' . $app->user->core['username'] . "\n\n', ui.AdminComment)
+            ui.AdminComment = CONCAT('" . sqltime() . ' - Stats (Uploaded: ' . \Gazelle\Format::get_size($MergeUploaded) . ', Downloaded: ' . \Gazelle\Format::get_size($MergeDownloaded) . ', Ratio: ' . \Gazelle\Format::get_ratio($MergeUploaded, $MergeDownloaded) . ') merged into ' . site_url() . "user.php?id=$UserID (" . $Cur['Username'] . ') by ' . $app->user->core['username'] . "\n\n', ui.AdminComment)
           WHERE ID = $MergeID");
 
         $UpdateSet[] = "Uploaded = Uploaded + '$MergeUploaded'";
         $UpdateSet[] = "Downloaded = Downloaded + '$MergeDownloaded'";
-        $EditSummary[] = 'stats merged from ' . site_url() . "user.php?id=$MergeID ($MergeStatsFrom) (previous stats: Uploaded: " . Format::get_size($Cur['Uploaded']) . ', Downloaded: ' . Format::get_size($Cur['Downloaded']) . ', Ratio: ' . Format::get_ratio($Cur['Uploaded'], $Cur['Downloaded']) . ')';
+        $EditSummary[] = 'stats merged from ' . site_url() . "user.php?id=$MergeID ($MergeStatsFrom) (previous stats: Uploaded: " . \Gazelle\Format::get_size($Cur['Uploaded']) . ', Downloaded: ' . \Gazelle\Format::get_size($Cur['Downloaded']) . ', Ratio: ' . \Gazelle\Format::get_ratio($Cur['Uploaded'], $Cur['Downloaded']) . ')';
         $app->cache->delete("user_stats_$UserID");
         $app->cache->delete("user_stats_$MergeID");
     }

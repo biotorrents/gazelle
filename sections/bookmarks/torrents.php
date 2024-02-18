@@ -65,12 +65,12 @@ foreach ($GroupIDs as $GroupID) {
     #$DisplayName = Artists::display_artists($Artists);
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
 
-    $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
+    $DisplayName .= '<a href="torrents.php?id=' . $GroupID . '" ';
     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-        $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
+        $DisplayName .= 'data-cover="' . \Gazelle\Images::process($picture, 'thumb') . '" ';
     }
 
-    $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
+    $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">' . $GroupName . '</a>';
     if ($year > 0) {
         $DisplayName = "$DisplayName [$year]";
     }
@@ -93,7 +93,7 @@ foreach ($GroupIDs as $GroupID) {
   </td>
 
   <td class="center">
-    <div class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+    <div class="tooltip <?=\Gazelle\Format::css_category($GroupCategoryID)?>">
     </div>
   </td>
 
@@ -134,7 +134,7 @@ foreach ($GroupIDs as $GroupID) {
     <a
       href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
   </td>
-  <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+  <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
   </td>
   <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
@@ -155,24 +155,24 @@ foreach ($GroupIDs as $GroupID) {
 
         $DisplayName = '';
         #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
-        $DisplayName .= '<a href="torrents.php?id='.$GroupID.'" ';
+        $DisplayName .= '<a href="torrents.php?id=' . $GroupID . '" ';
 
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($picture, 'thumb').'" ';
+            $DisplayName .= 'data-cover="' . \Gazelle\Images::process($picture, 'thumb') . '" ';
         }
 
-        $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">'.$GroupName.'</a>';
+        $DisplayName .= ' class="tooltip" title="View torrent group" dir="ltr">' . $GroupName . '</a>';
 
         if ($Torrent['IsSnatched']) {
-            $DisplayName .= ' ' . Format::torrent_label('Snatched', 'bold');
+            $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Snatched', 'bold');
         }
 
         if ($Torrent['FreeTorrent'] === '1') {
-            $DisplayName .= ' ' . Format::torrent_label('Freeleech', 'important_text_alt');
+            $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
         } elseif ($Torrent['FreeTorrent'] === '2') {
-            $DisplayName .= ' ' . Format::torrent_label('Neutral Leech', 'bold');
+            $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Neutral Leech', 'bold');
         } elseif ($Torrent['PersonalFL']) {
-            $DisplayName .= ' ' . Format::torrent_label('Personal Freeleech', 'important_text_alt');
+            $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt');
         }
 
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
@@ -210,7 +210,7 @@ foreach ($GroupIDs as $GroupID) {
     </div>
 
   </td>
-  <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+  <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
   </td>
   <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
   </td>
@@ -245,7 +245,7 @@ foreach ($GroupIDs as $GroupID) {
     class="bookmark_<?=$GroupID?>">
 
     <?php if (!$picture) {
-        $picture = staticServer.'/images/noartwork.webp';
+        $picture = staticServer . '/images/noartwork.webp';
     } ?>
 
     <img class="tooltip"
@@ -260,7 +260,7 @@ foreach ($GroupIDs as $GroupID) {
   $Collage[] = ob_get_clean();
 }
 
-$CollageCovers = isset($app->user->extra['CollageCovers']) ? (int)$app->user->extra['CollageCovers'] : 10;
+$CollageCovers = isset($app->user->extra['CollageCovers']) ? (int) $app->user->extra['CollageCovers'] : 10;
 $CollagePages = [];
 
 if ($CollageCovers > 0) {
@@ -281,7 +281,7 @@ View::header($Title, 'browse,collage');
 <div>
   <div class="header">
     <h2><?php if (!$Sneaky) { ?><a
-        href="feeds.php?feed=torrents_bookmarks_t_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName.': Bookmarked Torrents')?>"><img
+        href="feeds.php?feed=torrents_bookmarks_t_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($ENV->siteName . ': Bookmarked Torrents')?>"><img
           src="<?=staticServer?>/images/icons/rss.webp"
           alt="RSS feed" /></a>&nbsp;<?php } ?><?=$Title?>
     </h2>

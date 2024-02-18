@@ -47,7 +47,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value']> 0.7) {
+        <td<?php if ($dbStats['Threads_connected']['Value'] / $dbStats['Threads_created']['Value'] > 0.7) {
             echo '
           class="invalid" ';
         } ?>>Database:</td>
@@ -103,13 +103,13 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['bytes'] / $MemStats['limit_maxbytes']> 0.85) {
+        <td<?php if ($MemStats['bytes'] / $MemStats['limit_maxbytes'] > 0.85) {
             echo ' class="tooltip invalid"
           title="Evictions begin when storage exceeds 85%" ';
         } ?>>Cache Storage:</td>
 
           <td>
-            <?=Format::get_size($MemStats['bytes'])?>
+            <?=\Gazelle\Format::get_size($MemStats['bytes'])?>
             <span class="u-pull-right">(<?=\Gazelle\Text::float(($MemStats['bytes'] / $MemStats['limit_maxbytes']) * 100, 3);?>%)</span>
           </td>
       </tr>
@@ -230,7 +230,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['incr_hits']/($MemStats['incr_hits'] + $MemStats['incr_misses']) < 0.7) {
+        <td<?php if ($MemStats['incr_hits'] / ($MemStats['incr_hits'] + $MemStats['incr_misses']) < 0.7) {
             echo ' class="invalid" ' ;
         } ?>>Cache Increment:</td>
 
@@ -256,11 +256,11 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['cas_hits']> 0 && $MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])
+        <td<?php if ($MemStats['cas_hits'] > 0 && $MemStats['cas_hits'] / ($MemStats['cas_hits'] + $MemStats['cas_misses'])
                   < 0.7) {
             echo ' class="tooltip invalid" title="More than 30% of the issued CAS commands were unnecessarily wasting time and resources." '
             ;
-        } elseif ($MemStats['cas_hits']==0) {
+        } elseif ($MemStats['cas_hits'] == 0) {
             echo ' class="tooltip notice" title="Disable CAS with the -C parameter and save resources since it is not used." '
             ;
         } ?>>Cache:</td>
@@ -290,7 +290,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['delete_hits'] / ($MemStats['delete_hits']+$MemStats['delete_misses']) < 0.7) {
+        <td<?php if ($MemStats['delete_hits'] / ($MemStats['delete_hits'] + $MemStats['delete_misses']) < 0.7) {
             echo ' class="tooltip invalid" title="More than 30% of the issued delete commands were unnecessary wasting time and resources." '
             ;
         } ?>>Cache:</td>
@@ -318,7 +318,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['cmd_flush']> $MemStats['uptime'] / 7 * 24 * 3600) {
+        <td<?php if ($MemStats['cmd_flush'] > $MemStats['uptime'] / 7 * 24 * 3600) {
             echo ' class="tooltip invalid"
           title="Flushing the cache on a regular basis defeats the benefits of it, look into using cache transactions,
           or deletes instead of global flushing where possible." ';
@@ -330,7 +330,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($MemStats['evictions']> 0) {
+        <td<?php if ($MemStats['evictions'] > 0) {
             echo ' class="invalid" ';
         } ?>>Cache Evicted:</td>
 
@@ -340,7 +340,7 @@ View::header("Service Stats"); ?>
       </tr>
 
       <tr>
-        <td<?php if ($dbStats['Slow_queries']['Value']> $dbStats['Questions']['Value'] / 7500) {
+        <td<?php if ($dbStats['Slow_queries']['Value'] > $dbStats['Questions']['Value'] / 7500) {
             echo ' class="tooltip
           invalid" title="1/7500 queries is allowed to be slow to minimize performance impact." ';
         } ?>>Database Slow:
@@ -362,14 +362,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=Format::get_size($MemStats['bytes_read'])?>
+          <?=\Gazelle\Format::get_size($MemStats['bytes_read'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($dbStats['Bytes_received']['Value'])?>
+          <?=\Gazelle\Format::get_size($dbStats['Bytes_received']['Value'])?>
         </td>
       </tr>
 
@@ -380,14 +380,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=Format::get_size($MemStats['bytes_written'])?>
+          <?=\Gazelle\Format::get_size($MemStats['bytes_written'])?>
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($dbStats['Bytes_sent']['Value'])?>
+          <?=\Gazelle\Format::get_size($dbStats['Bytes_sent']['Value'])?>
         </td>
       </tr>
     </table>
@@ -577,14 +577,14 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=Format::get_size($MemStats['bytes_read'] / $MemStats['uptime'])?>/s
+          <?=\Gazelle\Format::get_size($MemStats['bytes_read'] / $MemStats['uptime'])?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
         <td>
-          <?=Format::get_size($dbStats['Bytes_received']['Value'] / $dbStats['Uptime']['Value'])?>/s
+          <?=\Gazelle\Format::get_size($dbStats['Bytes_received']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
 
@@ -595,13 +595,13 @@ View::header("Service Stats"); ?>
       <tr>
         <td>Cache:</td>
         <td>
-          <?=Format::get_size($MemStats['bytes_written'] / $MemStats['uptime'])?>/s
+          <?=\Gazelle\Format::get_size($MemStats['bytes_written'] / $MemStats['uptime'])?>/s
         </td>
       </tr>
 
       <tr>
         <td>Database:</td>
-        <td><?=Format::get_size($dbStats['Bytes_sent']['Value'] / $dbStats['Uptime']['Value'])?>/s
+        <td><?=\Gazelle\Format::get_size($dbStats['Bytes_sent']['Value'] / $dbStats['Uptime']['Value'])?>/s
         </td>
       </tr>
     </table>

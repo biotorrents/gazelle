@@ -330,7 +330,7 @@ class TorrentFunctions
         /*
         function filelist($Str)
         {
-            return "</td>\n<td>" . Format::get_size($Str[1]) . "</td>\n</tr>";
+            return "</td>\n<td>" . \Gazelle\\Gazelle\Format::get_size($Str[1]) . "</td>\n</tr>";
         }
         */
 
@@ -411,13 +411,13 @@ class TorrentFunctions
                     }
 
                     $FileSize = substr($File, $NameEnd + 3, -3);
-                    $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column\">%s</td></tr>", $Name, Format::get_size($FileSize));
+                    $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column\">%s</td></tr>", $Name, \Gazelle\Format::get_size($FileSize));
                 }
             } else {
                 $FileListSplit = explode("\n", $FileList);
                 foreach ($FileListSplit as $File) {
                     $FileInfo = Torrents::filelist_get_file($File);
-                    $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column\">%s</td></tr>", $FileInfo['name'], Format::get_size($FileInfo['size']));
+                    $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column\">%s</td></tr>", $FileInfo['name'], \Gazelle\Format::get_size($FileInfo['size']));
                 }
             }
             $FileTable .= '</table>';
@@ -432,39 +432,39 @@ class TorrentFunctions
             }
 
             if ($IsLeeching) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Leeching', 'important_text_semi');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Leeching', 'important_text_semi');
             } elseif ($IsSeeding) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Seeding', 'important_text_alt');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Seeding', 'important_text_alt');
             } elseif ($IsSnatched) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Snatched', 'bold');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Snatched', 'bold');
             }
 
             if ($FreeTorrent === 1) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Freeleech', 'important_text_alt');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
             }
 
             if ($FreeTorrent === 2) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Neutral Leech', 'bold');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Neutral Leech', 'bold');
             }
 
             if ($PersonalFL) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Personal Freeleech', 'important_text_alt');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt');
             }
 
             if ($Reported) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Reported', 'tl_reported');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Reported', 'tl_reported');
             }
 
             if (!empty($BadTags)) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Tags', 'tl_reported');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Tags', 'tl_reported');
             }
 
             if (!empty($BadFolders)) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Bad Folders', 'tl_reported');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad Folders', 'tl_reported');
             }
 
             if (!empty($BadFiles)) {
-                $ExtraInfo .= $AddExtra . Format::torrent_label('Bad File Names', 'tl_reported');
+                $ExtraInfo .= $AddExtra . \Gazelle\Format::torrent_label('Bad File Names', 'tl_reported');
             } ?>
 
 <tr class="torrent_row<?=(isset($ReleaseType) ? ' releases_' . $ReleaseType : '')?> groupid_<?=($GroupID)?> edition_<?=($EditionID)?> group_torrent<?=($IsSnatched ? ' snatched_torrent' : '')?>"
@@ -495,7 +495,7 @@ class TorrentFunctions
         <a data-toggle-target="#torrent_<?=($TorrentID)?>"><?=($ExtraInfo)?></a>
     </td>
 
-    <td class="number_column nobr"><?=(Format::get_size($Size))?>
+    <td class="number_column nobr"><?=(\Gazelle\Format::get_size($Size))?>
     </td>
     <td class="number_column"><?=(\Gazelle\Text::float($Snatched))?>
     </td>

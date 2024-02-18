@@ -50,7 +50,7 @@ View::header('Tracker info');
         <form method="get" action="">
           <input type="hidden" name="action" value="ocelot_info">
           <span class="label">Get stats for user</span><br>
-          <input type="text" name="userid" placeholder="User ID" value="<?Format::form('userid')?>">
+          <input type="text" name="userid" placeholder="User ID" value="<?\Gazelle\Format::form('userid')?>">
           <input type="submit" value="Go">
         </form>
       </div>
@@ -75,7 +75,7 @@ if (!empty($UserPeerStats)) {
     foreach ($MainStats as $Key => $Value) {
         if (is_numeric($Value)) {
             if (substr($Key, 0, 6) === "bytes ") {
-                $Value = Format::get_size($Value);
+                $Value = \Gazelle\Format::get_size($Value);
                 $Key = substr($Key, 6);
             } else {
                 $Value = \Gazelle\Text::float($Value);

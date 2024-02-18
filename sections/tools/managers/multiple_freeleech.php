@@ -46,7 +46,7 @@ if (isset($_POST['torrents'])) {
             $app->dbOld->query("
                 SELECT ID
                 FROM torrents
-                WHERE GroupID IN (".implode(', ', $GroupIDs).")");
+                WHERE GroupID IN (" . implode(', ', $GroupIDs) . ")");
             $TorrentIDs = $app->dbOld->collect('ID');
 
             if (sizeof($TorrentIDs) == 0) {
@@ -60,12 +60,12 @@ if (isset($_POST['torrents'])) {
                     if (empty($Size) || !in_array($Units, array('k', 'm', 'g'))) {
                         $Err = 'Invalid size or units';
                     } else {
-                        $Bytes = Format::get_bytes($Size . $Units);
+                        $Bytes = \Gazelle\Format::get_bytes($Size . $Units);
 
                         $app->dbOld->query("
                             SELECT ID
                             FROM torrents
-                            WHERE ID IN (".implode(', ', $TorrentIDs).")
+                            WHERE ID IN (" . implode(', ', $TorrentIDs) . ")
                               AND Size > '$Bytes'");
                         $LargeTorrents = $app->dbOld->collect('ID');
                         $TorrentIDs = array_diff($TorrentIDs, $LargeTorrents);

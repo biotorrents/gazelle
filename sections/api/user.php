@@ -393,7 +393,7 @@ if (!check_paranoia_here('lastseen')) {
 }
 
 if (check_paranoia_here('ratio')) {
-    $Ratio = Format::get_ratio($Uploaded, $Downloaded, 5);
+    $Ratio = \Gazelle\Format::get_ratio($Uploaded, $Downloaded, 5);
 } else {
     $Ratio = null;
 }

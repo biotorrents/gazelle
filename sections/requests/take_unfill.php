@@ -133,7 +133,7 @@ if ($UserID != $app->user->core['id']) {
     Misc::send_pm($UserID, 0, 'A request you created has been unfilled', "The request \"[url=" . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . "[/url]\" was unfilled by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . "[/url] for the reason: [quote]" . $_POST['reason'] . '[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName), with a " . Format::get_size($RequestVotes['TotalBounty']) . ' bounty, was unfilled by user ' . $app->user->core['id'] . ' (' . $app->user->core['username'] . ') for the reason: ' . $_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName), with a " . \Gazelle\Format::get_size($RequestVotes['TotalBounty']) . ' bounty, was unfilled by user ' . $app->user->core['id'] . ' (' . $app->user->core['username'] . ') for the reason: ' . $_POST['reason']);
 
 $app->cache->delete("request_$RequestID");
 $app->cache->delete("request_artists_$RequestID");

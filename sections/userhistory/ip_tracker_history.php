@@ -47,7 +47,7 @@ View::header("Tracker IP address history for $Username");
   }
 </script>
 <?php
-list($Page, $Limit) = Format::page_limit(IPS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(IPS_PER_PAGE);
 
 $Perms = \Permissions::get_permissions_for_user($UserID);
 if ($Perms['site_disable_ip_history']) {
@@ -66,7 +66,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($TrackerIps);
 
-$Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 
 ?>
 <div>

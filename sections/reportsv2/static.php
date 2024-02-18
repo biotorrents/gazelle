@@ -18,7 +18,7 @@ if (!check_perms('admin_reports')) {
 }
 
 define('REPORTS_PER_PAGE', '10');
-list($Page, $Limit) = Format::page_limit(REPORTS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(REPORTS_PER_PAGE);
 
 
 if (isset($_GET['view'])) {
@@ -213,7 +213,7 @@ $Reports = $app->dbOld->to_array();
 
 $app->dbOld->prepared_query('SELECT FOUND_ROWS()');
 list($Results) = $app->dbOld->next_record();
-$PageLinks = Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
+$PageLinks = \Gazelle\Format::get_pages($Page, $Results, REPORTS_PER_PAGE, 11);
 
 View::header('Reports V2!', 'reportsv2');
 ?>
@@ -285,11 +285,11 @@ if (count($Reports) === 0) {
                     $ReportType = $Types['master']['other'];
                 }
             }
-            $RawName = "$ArtistName - $GroupName".($Year ? " ($Year)" : '')." [$Media] (".\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+            $RawName = "$ArtistName - $GroupName" . ($Year ? " ($Year)" : '') . " [$Media] (" . \Gazelle\Text::float($Size / (1024 * 1024), 2) . ' MB)';
 
-            $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName".($Year ? " ($Year)" : '')."</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Media]</a> (".\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+            $LinkName = "<a href=\"artist.php?id=$ArtistID\">$ArtistName</a> - <a href=\"torrents.php?id=$GroupID\">$GroupName" . ($Year ? " ($Year)" : '') . "</a> <a href=\"torrents.php?torrentid=$TorrentID\"> [$Media]</a> (" . \Gazelle\Text::float($Size / (1024 * 1024), 2) . ' MB)';
 
-            $BBName = "[url=artist.php?id=$ArtistID]".$ArtistName."[/url] - [url=torrents.php?id=$GroupID]$GroupName".($Year ? " ($Year)" : '')."[/url] [url=torrents.php?torrentid=$TorrentID][$Media][/url] ".' ('.\Gazelle\Text::float($Size / (1024 * 1024), 2).' MB)';
+            $BBName = "[url=artist.php?id=$ArtistID]" . $ArtistName . "[/url] - [url=torrents.php?id=$GroupID]$GroupName" . ($Year ? " ($Year)" : '') . "[/url] [url=torrents.php?torrentid=$TorrentID][$Media][/url] " . ' (' . \Gazelle\Text::float($Size / (1024 * 1024), 2) . ' MB)';
             //      }?>
   <div id="report<?=$ReportID?>"
     data-load-report="<?=$ReportID?>">
@@ -420,31 +420,31 @@ if (count($Reports) === 0) {
           <?php
           }
 
-                      if ($Links) { ?>
+            if ($Links) { ?>
           <tr>
             <td class="label">Relevant links:</td>
             <td colspan="3">
               <?php
             $Links = explode(' ', $Links);
-                          foreach ($Links as $Link) {
-                              ?>
+                foreach ($Links as $Link) {
+                    ?>
               <a href="<?=$Link?>"><?=$Link?></a>
               <?php
-                          } ?>
+                } ?>
             </td>
           </tr>
           <?php
-                      }
+            }
 
-                      if ($ExtraIDs) { ?>
+            if ($ExtraIDs) { ?>
           <tr>
             <td class="label">Relevant other torrents:</td>
             <td colspan="3">
               <?php
-                        $First = true;
-                          $Extras = explode(' ', $ExtraIDs);
-                          foreach ($Extras as $ExtraID) {
-                              $app->dbOld->prepared_query("
+              $First = true;
+                $Extras = explode(' ', $ExtraIDs);
+                foreach ($Extras as $ExtraID) {
+                    $app->dbOld->prepared_query("
             SELECT
               COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg.`subject`, ''), tg.`object`) AS Name,
               tg.`id`,
@@ -468,16 +468,16 @@ if (count($Reports) === 0) {
             WHERE t.`ID` = ?
             GROUP BY tg.`id`", $ExtraID);
 
-                              list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime,
-                                  $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
-                              if ($ExtraGroupName) {
-                                  if ($ArtistID == 0 && empty($ArtistName)) {
-                                      $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> ".' ('.\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                                  } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
-                                      $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> (".\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                                  } else {
-                                      $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName".($ExtraYear ? " ($ExtraYear)" : '')."</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [//$ExtraMedia]</a>  (".\Gazelle\Text::float($ExtraSize / (1024 * 1024), 2).' MB)';
-                                  } ?>
+                    list($ExtraGroupName, $ExtraGroupID, $ExtraArtistID, $ExtraArtistName, $ExtraYear, $ExtraTime,
+                        $ExtraMedia, $ExtraSize, $ExtraUploaderID, $ExtraUploaderName) = Misc::display_array($app->dbOld->next_record());
+                    if ($ExtraGroupName) {
+                        if ($ArtistID == 0 && empty($ArtistName)) {
+                            $ExtraLinkName = "<a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName" . ($ExtraYear ? " ($ExtraYear)" : '') . "</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> " . ' (' . \Gazelle\Text::float($ExtraSize / (1024 * 1024), 2) . ' MB)';
+                        } elseif ($ArtistID == 0 && $ArtistName == 'Various Artists') {
+                            $ExtraLinkName = "Various Artists - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName" . ($ExtraYear ? " ($ExtraYear)" : '') . "</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [$ExtraFormat/$ExtraEncoding/$ExtraMedia]</a> (" . \Gazelle\Text::float($ExtraSize / (1024 * 1024), 2) . ' MB)';
+                        } else {
+                            $ExtraLinkName = "<a href=\"artist.php?id=$ExtraArtistID\">$ExtraArtistName</a> - <a href=\"torrents.php?id=$ExtraGroupID\">$ExtraGroupName" . ($ExtraYear ? " ($ExtraYear)" : '') . "</a> <a href=\"torrents.php?torrentid=$ExtraID\"> [//$ExtraMedia]</a>  (" . \Gazelle\Text::float($ExtraSize / (1024 * 1024), 2) . ' MB)';
+                        } ?>
               <?=($First ? '' : '<br>')?>
               <?=$ExtraLinkName?>
               <a href="torrents.php?action=download&amp;id=<?=$ExtraID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
@@ -488,32 +488,32 @@ if (count($Reports) === 0) {
                 class="brackets">Switch</a>
               <?php
             $First = false;
-                              }
-                          }
-                          ?>
+                    }
+                }
+                ?>
             </td>
           </tr>
           <?php
-                      }
+            }
 
-                      if ($Images) {
-                          ?>
+            if ($Images) {
+                ?>
           <tr>
             <td class="label">Relevant images:</td>
             <td colspan="3">
               <?php
         $Images = explode(' ', $Images);
-                          foreach ($Images as $Image) {
-                              ?>
+                foreach ($Images as $Image) {
+                    ?>
               <img style="max-width: 200px;" class="lightbox-init"
                 src="<?=\Gazelle\Images::process($Image)?>"
                 alt="Relevant image" />
               <?php
-                          } ?>
+                } ?>
             </td>
           </tr>
           <?php
-                      } ?>
+            } ?>
           <tr>
             <td class="label">User comment:</td>
             <td colspan="3" class="wrap_overflow"><?=\Gazelle\Text::parse($UserComment)?>
@@ -622,9 +622,9 @@ if (count($Reports) === 0) {
                 $Extras = explode(' ', $ExtraIDs);
                 $Value = '';
                 foreach ($Extras as $ExtraID) {
-                    $Value .= site_url()."torrents.php?torrentid=$ExtraID ";
+                    $Value .= site_url() . "torrents.php?torrentid=$ExtraID ";
                 }
-                echo ' value="'.trim($Value).'"';
+                echo ' value="' . trim($Value) . '"';
             } ?>
               />
             </td>

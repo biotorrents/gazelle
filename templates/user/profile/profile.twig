@@ -179,7 +179,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
             <?php } ?>
           </td>
           <td>
-            <span id="bounty_<?=$RequestID?>"><?=Format::get_size($Bounty)?></span>
+            <span id="bounty_<?=$RequestID?>"><?=\Gazelle\Format::get_size($Bounty)?></span>
           </td>
           <td>
             <?=time_diff($Request['TimeAdded']) ?>
@@ -347,15 +347,15 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=Format::get_size($Uploaded, 5)?>">Uploaded:
-            <?=Format::get_size($Uploaded)?>
+            title="<?=\Gazelle\Format::get_size($Uploaded, 5)?>">Uploaded:
+            <?=\Gazelle\Format::get_size($Uploaded)?>
           </li>
 
 
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
-            title="<?=Format::get_size($Downloaded, 5)?>">Downloaded:
-            <?=Format::get_size($Downloaded)?>
+            title="<?=\Gazelle\Format::get_size($Downloaded, 5)?>">Downloaded:
+            <?=\Gazelle\Format::get_size($Downloaded)?>
           </li>
 
 
@@ -364,7 +364,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
-                  title="<?=Format::get_size($TotalSeeding)?>"><?=Format::get_size($TotalSeeding)?>
+                  title="<?=\Gazelle\Format::get_size($TotalSeeding)?>"><?=\Gazelle\Format::get_size($TotalSeeding)?>
                   </li>
 
 

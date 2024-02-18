@@ -47,7 +47,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 if (!isset($_REQUEST['action'])) {
     $Action = 'torrents';
@@ -187,7 +187,7 @@ $Count = $app->dbOld->record_count();
 
 $app->dbOld->query("SELECT FOUND_ROWS()");
 list($Results) = $app->dbOld->next_record();
-$Pages = Format::get_pages($Page, $Results, $PerPage, 11);
+$Pages = \Gazelle\Format::get_pages($Page, $Results, $PerPage, 11);
 $app->dbOld->set_query_id($Comments);
 
 # Remove the weird comment headings on torrent and request comments

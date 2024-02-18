@@ -21,7 +21,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
     $PerPage = POSTS_PER_PAGE;
 }
 
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 $UserInfo = User::user_info($UserID);
 extract(array_intersect_key($UserInfo, array_flip(array('Username', 'Enabled', 'Title', 'Avatar', 'Donor', 'Warned'))));
@@ -40,7 +40,7 @@ if ($ShowGrouped) {
       LEFT JOIN forums_topics AS t ON t.ID = p.TopicID';
     if ($ShowUnread) {
         $sql .= '
-      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = '.$app->user->core['id'];
+      LEFT JOIN forums_last_read_topics AS l ON l.TopicID = t.ID AND l.UserID = ' . $app->user->core['id'];
     }
     $sql .= "
       LEFT JOIN forums AS f ON f.ID = t.ForumID
@@ -84,7 +84,7 @@ if ($ShowGrouped) {
         JOIN forums AS f ON f.ID = t.ForumID
         LEFT JOIN forums_last_read_topics AS l ON l.UserID = $UserID
             AND l.TopicID = t.ID
-      WHERE p.ID IN (".implode(',', $PostIDs).')
+      WHERE p.ID IN (" . implode(',', $PostIDs) . ')
       ORDER BY p.ID DESC';
         $Posts = $app->dbOld->query($sql);
     }
@@ -156,7 +156,7 @@ if ($ShowGrouped) {
     <h2>
 <?php
   if ($ShowGrouped) {
-      echo 'Grouped '.($ShowUnread ? 'unread ' : '')."post history for <a href=\"user.php?id=$UserID\">$Username</a>";
+      echo 'Grouped ' . ($ShowUnread ? 'unread ' : '') . "post history for <a href=\"user.php?id=$UserID\">$Username</a>";
   } elseif ($ShowUnread) {
       echo "Unread post history for <a href=\"user.php?id=$UserID\">$Username</a>";
   } else {
@@ -207,7 +207,7 @@ if (empty($Results)) {
     ?>
   <div class="linkbox">
 <?php
-  $Pages = Format::get_pages($Page, $Results, $PerPage, 11);
+  $Pages = \Gazelle\Format::get_pages($Page, $Results, $PerPage, 11);
     echo $Pages; ?>
   </div>
 <?php

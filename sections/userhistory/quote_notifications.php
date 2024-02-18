@@ -23,7 +23,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 // Get $Limit last quote notifications
 // We deal with the information about torrents and requests later on...
@@ -89,7 +89,7 @@ View::header('Quote Notifications');
       <a href="userhistory.php?action=quote_notifications&amp;catchup=1" class="brackets">Catch up</a>&nbsp;&nbsp;&nbsp;
       <br><br>
 <?php
-      $Pages = Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
+      $Pages = \Gazelle\Format::get_pages($Page, $NumResults, TOPICS_PER_PAGE, 9);
 echo $Pages;
 ?>
     </div>

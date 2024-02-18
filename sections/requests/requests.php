@@ -479,11 +479,11 @@ if ($NumResults > 0) {
         if (($Page - 1) * REQUESTS_PER_PAGE > $NumResults) {
             $Page = 0;
         }
-        $PageLinks = Format::get_pages($Page, $NumResults, REQUESTS_PER_PAGE);
+        $PageLinks = \Gazelle\Format::get_pages($Page, $NumResults, REQUESTS_PER_PAGE);
     }
 }
 
-$CurrentURL = Format::get_url(array('order', 'sort', 'page'));
+$CurrentURL = \Gazelle\Format::get_url(array('order', 'sort', 'page'));
 View::header($Title, 'requests');
 ?>
 
@@ -550,9 +550,9 @@ View::header($Title, 'requests');
                         <input type="search" name="tags" id="tags" size="50" class="inputtext"
                             placeholder="Tags (comma-separated)"
                             value="<?=!empty($TagNames) ? \Gazelle\Text::esc($TagNames) : ''?>" />&nbsp;
-                        <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked')?>
+                        <input type="radio" name="tags_type" id="tags_type0" value="0" <?php \Gazelle\Format::selected('tags_type', 0, 'checked')?>
                         /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-                        <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked')?>
+                        <input type="radio" name="tags_type" id="tags_type1" value="1" <?php \Gazelle\Format::selected('tags_type', 1, 'checked')?>
                         /><label for="tags_type1"> All</label>
                     </td>
                 </tr>
@@ -722,8 +722,8 @@ View::header($Title, 'requests');
 
         <tr class="request">
             <td class="center categoryColumn">
-                <div title="<?=Format::pretty_category($Request['CategoryID'])?>"
-                    class="tooltip <?=Format::css_category($Request['CategoryID'])?>">
+                <div title="<?=\Gazelle\Format::pretty_category($Request['CategoryID'])?>"
+                    class="tooltip <?=\Gazelle\Format::css_category($Request['CategoryID'])?>">
                 </div>
             </td>
             <td>
@@ -750,7 +750,7 @@ View::header($Title, 'requests');
                 <?php } ?>
             </td>
             <td class="number_column nobr">
-                <?=Format::get_size($Bounty)?>
+                <?=\Gazelle\Format::get_size($Bounty)?>
             </td>
             <td class="nobr">
                 <?php if ($IsFilled) { ?>

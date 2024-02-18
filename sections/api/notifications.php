@@ -10,7 +10,7 @@ if (!check_perms('site_torrents_notify')) {
 }
 
 define('NOTIFICATIONS_PER_PAGE', 50);
-list($Page, $Limit) = Format::page_limit(NOTIFICATIONS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(NOTIFICATIONS_PER_PAGE);
 
 $Results = $app->dbOld->query("
     SELECT
@@ -76,28 +76,28 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
         }
 
         $JsonNotifications[] = array(
-      'torrentId' => (int)$TorrentID,
-      'groupId' => (int)$GroupID,
+      'torrentId' => (int) $TorrentID,
+      'groupId' => (int) $GroupID,
       'groupName' => $GroupName,
-      'groupCategoryId' => (int)$GroupCategoryID,
+      'groupCategoryId' => (int) $GroupCategoryID,
       'wikiImage' => $WikiImage,
       'torrentTags' => $TagList,
-      'size' => (float)$TorrentInfo['Size'],
-      'fileCount' => (int)$TorrentInfo['FileCount'],
+      'size' => (float) $TorrentInfo['Size'],
+      'fileCount' => (int) $TorrentInfo['FileCount'],
       'format' => $TorrentInfo['Format'],
       'encoding' => $TorrentInfo['Encoding'],
       'media' => $TorrentInfo['Media'],
       'scene' => $TorrentInfo['Scene'] == 1,
-      'groupYear' => (int)$GroupYear,
-      'remasterYear' => (int)$TorrentInfo['RemasterYear'],
+      'groupYear' => (int) $GroupYear,
+      'remasterYear' => (int) $TorrentInfo['RemasterYear'],
       'remasterTitle' => $TorrentInfo['RemasterTitle'],
-      'snatched' => (int)$TorrentInfo['Snatched'],
-      'seeders' => (int)$TorrentInfo['Seeders'],
-      'leechers' => (int)$TorrentInfo['Leechers'],
+      'snatched' => (int) $TorrentInfo['Snatched'],
+      'seeders' => (int) $TorrentInfo['Seeders'],
+      'leechers' => (int) $TorrentInfo['Leechers'],
       'notificationTime' => $TorrentInfo['Time'],
       'hasLog' => $TorrentInfo['HasLog'] == 1,
       'hasCue' => $TorrentInfo['HasCue'] == 1,
-      'logScore' => (float)$TorrentInfo['LogScore'],
+      'logScore' => (float) $TorrentInfo['LogScore'],
       'freeTorrent' => $TorrentInfo['FreeTorrent'] == 1,
       'logInDb' => $TorrentInfo['HasLog'] == 1,
       'unread' => $Result['UnRead'] == 1

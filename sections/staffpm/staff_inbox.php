@@ -12,7 +12,7 @@ $UserLevel = 0;
 $LevelCap = 1000;
 
 // Setup for current view mode
-$SortStr = 'IF(AssignedToUser = '.$app->user->core['id'].', 0, 1) ASC, ';
+$SortStr = 'IF(AssignedToUser = ' . $app->user->core['id'] . ', 0, 1) ASC, ';
 switch ($View) {
     case 'unanswered':
         $ViewString = 'Unanswered';
@@ -50,7 +50,7 @@ switch ($View) {
 $WhereCondition = "
   WHERE (
     LEAST($LevelCap, spc.Level) <= $UserLevel
-    OR spc.AssignedToUser = '".$app->user->core['id']."')
+    OR spc.AssignedToUser = '" . $app->user->core['id'] . "')
   AND spc.Status IN ('$Status')";
 
 if ($ViewString == 'Your Unanswered') {
@@ -61,7 +61,7 @@ if ($ViewString == 'Your Unanswered') {
     }
 }
 
-list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(MESSAGES_PER_PAGE);
 // Get messages
 $StaffPMs = $app->dbOld->query("
   SELECT
@@ -88,13 +88,13 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($StaffPMs);
 
-$CurURL = Format::get_url();
+$CurURL = \Gazelle\Format::get_url();
 if (empty($CurURL)) {
     $CurURL = 'staffpm.php?';
 } else {
     $CurURL = "staffpm.php?$CurURL&";
 }
-$Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 
 // Start page
 ?>

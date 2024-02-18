@@ -15,7 +15,7 @@ if (!in_array($Section, array('inbox', 'sentbox'))) {
     error(404);
 }
 
-list($Page, $Limit) = Format::page_limit(MESSAGES_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(MESSAGES_PER_PAGE);
 View::header('Inbox');
 ?>
 
@@ -61,10 +61,10 @@ if (!empty($_GET['search'])) {
         $sql .= "um.Username LIKE '$Search' AND ";
     } elseif ($_GET['searchtype'] === 'subject') {
         $Words = explode(' ', $Search);
-        $sql .= "c.Subject LIKE '%".implode("%' AND c.Subject LIKE '%", $Words)."%' AND ";
+        $sql .= "c.Subject LIKE '%" . implode("%' AND c.Subject LIKE '%", $Words) . "%' AND ";
     } elseif ($_GET['searchtype'] === 'message') {
         $Words = explode(' ', $Search);
-        $sql .= "m.Body LIKE '%".implode("%' AND m.Body LIKE '%", $Words)."%' AND ";
+        $sql .= "m.Body LIKE '%" . implode("%' AND m.Body LIKE '%", $Words) . "%' AND ";
     }
 }
 $sql .= $Section === 'sentbox' ? ' cu.InSentbox' : ' cu.InInbox';
@@ -80,7 +80,7 @@ list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($Results);
 $Count = $app->dbOld->record_count();
 
-$Pages = Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, MESSAGES_PER_PAGE, 9);
 echo $Pages;
 ?>
 </div>
@@ -114,7 +114,7 @@ echo $Pages;
       </span>
       <br>
       <input type="search" name="search"
-        placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search '.($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>">
+        placeholder="<?=(!empty($_GET['search']) ? \Gazelle\Text::esc($_GET['search']) : 'Search ' . ($Section === 'sentbox' ? 'sentbox' : 'inbox'))?>">
     </div>
   </form>
   <form class="manage_form" name="messages" action="inbox.php" method="post" id="messageform">

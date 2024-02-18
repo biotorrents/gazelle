@@ -117,13 +117,13 @@ if (!$NumResults) {
             $DisplayName = '';
 
             if (isset($Artists)) {
-                $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
+                $DisplayName .= '<div>' . Artists::display_artists($Artists) . '</div> ';
             }
             $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage).'" ';
+                $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage) . '" ';
             }
-            $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
+            $DisplayName .= "dir=\"ltr\">" . ($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP)) . "</a>";
             if ($GroupYear > 0) {
                 $DisplayName = "$DisplayName [$GroupYear]";
             }
@@ -146,8 +146,8 @@ if (!$NumResults) {
       </div>
     </td>
     <td class="center categoryColumn">
-      <div title="<?=Format::pretty_category($GroupCategoryID)?>"
-        class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+      <div title="<?=\Gazelle\Format::pretty_category($GroupCategoryID)?>"
+        class="tooltip <?=\Gazelle\Format::css_category($GroupCategoryID)?>">
       </div>
     </td>
     <td colspan="5" class="big_info">
@@ -171,7 +171,7 @@ if (!$NumResults) {
       &nbsp;&nbsp;&raquo;&nbsp;<a
         href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
     </td>
     <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
     </td>
@@ -193,21 +193,21 @@ if (!$NumResults) {
                 $DisplayName = '';
 
                 if (isset($Artists)) {
-                    $DisplayName .= '<div>'.Artists::display_artists($Artists).'</div> ';
+                    $DisplayName .= '<div>' . Artists::display_artists($Artists) . '</div> ';
                 }
 
                 $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
                 if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-                    $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage).'" ';
+                    $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage) . '" ';
                 }
 
-                $DisplayName .= "dir=\"ltr\">".($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP))."</a>";
+                $DisplayName .= "dir=\"ltr\">" . ($GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP)) . "</a>";
                 if ($Torrent['IsSnatched']) {
-                    $DisplayName .= ' ' . Format::torrent_label('Snatched', 'bold');
+                    $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Snatched', 'bold');
                 }
 
                 if (!empty($Torrent['FreeTorrent'])) {
-                    $DisplayName .= ' ' . Format::torrent_label('Freeleech', 'important_text_alt');
+                    $DisplayName .= ' ' . \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt');
                 }
                 $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : ''; ?>
 
@@ -215,8 +215,8 @@ if (!$NumResults) {
     id="group_<?=$CollageID?>_<?=$GroupID?>">
     <td></td>
     <td class="center">
-      <div title="<?=Format::pretty_category($GroupCategoryID)?>"
-        class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+      <div title="<?=\Gazelle\Format::pretty_category($GroupCategoryID)?>"
+        class="tooltip <?=\Gazelle\Format::css_category($GroupCategoryID)?>">
       </div>
     </td>
     <td class="big_info">
@@ -234,7 +234,7 @@ if (!$NumResults) {
         </div>
       </div>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
     </td>
     <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
     </td>

@@ -321,18 +321,18 @@ if (check_perms('site_send_unlimited_invites')) {
           <a
             href="torrents.php?type=seeding&amp;userid=<?=null#$app->user->core["id"]?>">Up</a>:
           <span class="stat tooltip"
-            title="<?=null#Format::get_size($app->user->extra['Uploaded'], 5)?>"><?=null#Format::get_size($app->user->extra['Uploaded'])?></span>
+            title="<?=null#\Gazelle\Format::get_size($app->user->extra['Uploaded'], 5)?>"><?=null#\Gazelle\Format::get_size($app->user->extra['Uploaded'])?></span>
         </li>
 
         <li id="stats_leeching">
           <a
             href="torrents.php?type=leeching&amp;userid=<?=null#$app->user->core["id"]?>">Down</a>:
           <span class="stat tooltip"
-            title="<?=null#Format::get_size($app->user->extra['Downloaded'], 5)?>"><?=null#Format::get_size($app->user->extra['Downloaded'])?></span>
+            title="<?=null#\Gazelle\Format::get_size($app->user->extra['Downloaded'], 5)?>"><?=null#\Gazelle\Format::get_size($app->user->extra['Downloaded'])?></span>
         </li>
 
         <li id="stats_ratio">
-          Ratio: <span class="stat"><?=null#Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded'])?></span>
+          Ratio: <span class="stat"><?=null#\Gazelle\Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded'])?></span>
         </li>
 -->
         <?php #if (!empty($app->user->extra['RequiredRatio']) && $app->user->extra['RequiredRatio'] > 0) {?>
@@ -546,21 +546,21 @@ if (!empty($Alerts) || !empty($ModBar)) { ?>
     <?php
     }
 
-  if (!empty($ModBar)) { ?>
+    if (!empty($ModBar)) { ?>
     <div class="alertbar modbar">
       <?=implode(' ', $ModBar);
-      echo "\n"?>
+        echo "\n"?>
     </div>
     <?php }
 
-  if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
+    if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
     <div class="alertbar error">
       Warning: <a href="tools.php?action=database_key">no DB key</a>
     </div>
     <?php } ?>
   </div>
   <?php
-      // Done handling alertbars
+        // Done handling alertbars
 }
 
 # #content is Gazelle, .container is Skeleton

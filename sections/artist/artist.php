@@ -201,7 +201,7 @@ foreach ($TorrentList as $Group) {
             'torrents/display_name.html',
             [
               'g' => $Group,
-              'url' => Format::get_url($_GET),
+              'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
@@ -325,7 +325,7 @@ foreach ($TorrentList as $Group) {
         &nbsp;&nbsp;&raquo;&nbsp; <a
           href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
       </td>
-      <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+      <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
       </td>
       <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
@@ -353,7 +353,7 @@ foreach ($TorrentList as $Group) {
             'torrents/display_name.html',
             [
               'g' => $Group,
-              'url' => Format::get_url($_GET),
+              'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process(($CoverArt ?? ""), 'thumb'),
               'artists' => Artists::display_artists($Artists),
@@ -467,7 +467,7 @@ foreach ($TorrentList as $Group) {
           <div style="display: inline;" class="torrent_info">
             <?=$ExtraInfo?>
             <?php if ($Reported) { ?>
-            / <?= Format::torrent_label('Reported', 'important_text') ?>
+            / <?= \Gazelle\Format::torrent_label('Reported', 'important_text') ?>
             <?php } ?>
           </div>
           <div class="tags">
@@ -475,7 +475,7 @@ foreach ($TorrentList as $Group) {
           </div>
         </div>
       </td>
-      <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+      <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
       </td>
       <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
@@ -838,7 +838,7 @@ if ($NumRequests > 0) {
           <?php } ?>
         </td>
         <td class="nobr">
-          <span id="bounty_<?=$RequestID?>"><?=Format::get_size($Request['Bounty'])?></span>
+          <span id="bounty_<?=$RequestID?>"><?=\Gazelle\Format::get_size($Request['Bounty'])?></span>
         </td>
         <td>
           <?=time_diff($Request['TimeAdded'])?>
@@ -851,7 +851,7 @@ if ($NumRequests > 0) {
 }
 
 // --- Comments ---
-$Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
+$Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 
 ?>
     <div id="artistcomments">

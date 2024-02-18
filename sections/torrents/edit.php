@@ -12,7 +12,7 @@ $app = \Gazelle\App::go();
  * which are off limits to most members.
  */
 
-require_once serverRoot.'/classes/torrent_form.class.php';
+require_once serverRoot . '/classes/torrent_form.class.php';
 if (!is_numeric($_GET['id']) || !$_GET['id']) {
     error(400);
 }
@@ -280,7 +280,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
           <select id="newcategoryid" name="newcategoryid">
             <?php foreach ($Categories as $CatID => $CatName) { ?>
             <option value="<?=($CatID + 1)?>"
-              <?Format::selected('CategoryID', $CatID + 1, 'selected', $Properties)?>><?=($CatName)?>
+              <?\Gazelle\Format::selected('CategoryID', $CatID + 1, 'selected', $Properties)?>><?=($CatName)?>
             </option>
             <?php } ?>
           </select>

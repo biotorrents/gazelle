@@ -1,11 +1,13 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
- * Format
+ * Gazelle\Format
  */
+
+namespace Gazelle;
 
 class Format
 {
@@ -230,7 +232,7 @@ class Format
     public static function catalogue_limit($Page, $PerPage, $CatalogueSize = 500)
     {
         $CatalogueID = floor(($PerPage * $Page - $PerPage) / $CatalogueSize);
-        $CatalogueLimit = ($CatalogueID * $CatalogueSize).", $CatalogueSize";
+        $CatalogueLimit = ($CatalogueID * $CatalogueSize) . ", $CatalogueSize";
         return array($CatalogueID, $CatalogueLimit);
     }
 
@@ -302,7 +304,7 @@ class Format
 
             if ($StartPage > 1) {
                 $Pages .= "<a href='$Location?page=1$QueryString$Anchor'><strong>&laquo; First</strong></a> ";
-                $Pages .= "<a href='$Location?page=".($StartPage - 1).$QueryString.$Anchor."' class='pager_prev'><strong>&lsaquo; Prev</strong></a> | ";
+                $Pages .= "<a href='$Location?page=" . ($StartPage - 1) . $QueryString . $Anchor . "' class='pager_prev'><strong>&lsaquo; Prev</strong></a> | ";
             }
             // End change
 
@@ -314,9 +316,9 @@ class Format
 
                     $Pages .= '<strong>';
                     if ($i * $ItemsPerPage > $TotalRecords) {
-                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1)."-$TotalRecords";
+                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1) . "-$TotalRecords";
                     } else {
-                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1).'-'.($i * $ItemsPerPage);
+                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1) . '-' . ($i * $ItemsPerPage);
                     }
 
                     $Pages .= '</strong>';
@@ -333,7 +335,7 @@ class Format
             }
 
             if ($StartPage && $StartPage < $TotalPages) {
-                $Pages .= " | <a href='$Location?page=".($StartPage + 1).$QueryString.$Anchor."' class='pager_next'><strong>Next &rsaquo;</strong></a> ";
+                $Pages .= " | <a href='$Location?page=" . ($StartPage + 1) . $QueryString . $Anchor . "' class='pager_next'><strong>Next &rsaquo;</strong></a> ";
                 $Pages .= "<a href='$Location?page=$TotalPages$QueryString$Anchor'><strong> Last&nbsp;&raquo;</strong></a>";
             }
         }

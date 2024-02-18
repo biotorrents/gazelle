@@ -39,7 +39,7 @@ class Comments
             `comments`
           WHERE
             `Page` = '$Page' AND `PageID` = $PageID
-          ) / ".TORRENT_COMMENTS_PER_PAGE."
+          ) / " . TORRENT_COMMENTS_PER_PAGE . "
         ) AS Pages
         ");
         list($Pages) = $app->dbOld->next_record();
@@ -55,14 +55,14 @@ class Comments
         VALUES(
           '$Page',
           $PageID,
-          ".$app->user->core["id"].",
-          NOW(), '".db_string($Body)."')
+          " . $app->user->core["id"] . ",
+          NOW(), '" . db_string($Body) . "')
         ");
         $PostID = $app->dbOld->inserted_id();
 
         $CatalogueID = floor((TORRENT_COMMENTS_PER_PAGE * $Pages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
-        $app->cache->delete($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
-        $app->cache->delete($Page.'_comments_'.$PageID);
+        $app->cache->delete($Page . '_comments_' . $PageID . '_catalogue_' . $CatalogueID);
+        $app->cache->delete($Page . '_comments_' . $PageID);
 
         Subscriptions::flush_subscriptions($Page, $PageID);
         Subscriptions::quote_notify($Body, $PostID, $Page, $PageID);
@@ -109,7 +109,7 @@ class Comments
         $app->dbOld->query("
         SELECT
         CEIL(
-          COUNT(`ID`) / ".TORRENT_COMMENTS_PER_PAGE."
+          COUNT(`ID`) / " . TORRENT_COMMENTS_PER_PAGE . "
         ) AS Page
         FROM
           `comments`
@@ -123,8 +123,8 @@ class Comments
         UPDATE
           `comments`
         SET
-          `Body` = '".db_string($NewBody)."',
-          `EditedUserID` = ".$app->user->core["id"].",
+          `Body` = '" . db_string($NewBody) . "',
+          `EditedUserID` = " . $app->user->core["id"] . ",
           `EditedTime` = NOW()
         WHERE
           `ID` = $PostID
@@ -142,8 +142,8 @@ class Comments
         if ($SendPM && $app->user->core["id"] !== $AuthorID) {
             // Send a PM to the user to notify them of the edit
             $PMSubject = "Your comment #$PostID has been edited";
-            $PMurl = site_url()."comments.php?action=jump&postid=$PostID";
-            $ProfLink = '[url='.site_url().'user.php?id='.$app->user->core["id"].']'.$app->user->core["username"].'[/url]';
+            $PMurl = site_url() . "comments.php?action=jump&postid=$PostID";
+            $ProfLink = '[url=' . site_url() . 'user.php?id=' . $app->user->core["id"] . ']' . $app->user->core["username"] . '[/url]';
             $PMBody = "One of your comments has been edited by $ProfLink: [url]{$PMurl}[/url]";
             Misc::send_pm($AuthorID, 0, $PMSubject, $PMBody);
         }
@@ -182,10 +182,10 @@ class Comments
         $app->dbOld->query("
         SELECT
         CEIL(
-          COUNT(`ID`) / ".TORRENT_COMMENTS_PER_PAGE."
+          COUNT(`ID`) / " . TORRENT_COMMENTS_PER_PAGE . "
         ) AS Pages,
         CEIL(
-          SUM(IF(`ID` <= $PostID, 1, 0)) / ".TORRENT_COMMENTS_PER_PAGE."
+          SUM(IF(`ID` <= $PostID, 1, 0)) / " . TORRENT_COMMENTS_PER_PAGE . "
         ) AS Page
         FROM
           `comments`
@@ -331,11 +331,11 @@ class Comments
               `Page` = '$Page' AND `PageID` = $PageID
             ");
             list($NumComments) = $app->dbOld->next_record();
-            $app->cache->set($Page."_comments_$PageID", $NumComments, 0);
+            $app->cache->set($Page . "_comments_$PageID", $NumComments, 0);
         }
 
         // If a postid was passed, we need to determine which page that comment is on.
-        // Format::page_limit handles a potential $_GET['page']
+        // \Gazelle\Format::page_limit handles a potential $_GET['page']
         if (isset($_GET['postid']) && is_numeric($_GET['postid']) && $NumComments > TORRENT_COMMENTS_PER_PAGE) {
             $app->dbOld->query("
             SELECT
@@ -347,16 +347,16 @@ class Comments
             ");
 
             list($PostNum) = $app->dbOld->next_record();
-            list($CommPage, $Limit) = Format::page_limit(TORRENT_COMMENTS_PER_PAGE, $PostNum);
+            list($CommPage, $Limit) = \Gazelle\Format::page_limit(TORRENT_COMMENTS_PER_PAGE, $PostNum);
         } else {
-            list($CommPage, $Limit) = Format::page_limit(TORRENT_COMMENTS_PER_PAGE, $NumComments);
+            list($CommPage, $Limit) = \Gazelle\Format::page_limit(TORRENT_COMMENTS_PER_PAGE, $NumComments);
         }
 
         // Get the cache catalogue
         $CatalogueID = floor((TORRENT_COMMENTS_PER_PAGE * $CommPage - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
 
         // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
-        $Catalogue = $app->cache->get($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID);
+        $Catalogue = $app->cache->get($Page . '_comments_' . $PageID . '_catalogue_' . $CatalogueID);
         if ($Catalogue === false) {
             $CatalogueLimit = $CatalogueID * THREAD_CATALOGUE . ', ' . THREAD_CATALOGUE;
             $app->dbOld->query("
@@ -380,7 +380,7 @@ class Comments
             ");
 
             $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
-            $app->cache->set($Page.'_comments_'.$PageID.'_catalogue_'.$CatalogueID, $Catalogue, 0);
+            $app->cache->set($Page . '_comments_' . $PageID . '_catalogue_' . $CatalogueID, $Catalogue, 0);
         }
 
         // This is a hybrid to reduce the catalogue down to the page elements: We use the page limit % catalogue
@@ -399,7 +399,7 @@ class Comments
             SET
               `UnRead` = FALSE
             WHERE
-              `UserID` = ".$app->user->core["id"]."
+              `UserID` = " . $app->user->core["id"] . "
               AND `Page` = '$Page'
               AND `PageID` = $PageID
               AND `PostID` >= $FirstPost
@@ -417,7 +417,7 @@ class Comments
             FROM
               `users_comments_last_read`
             WHERE
-              `UserID` = ".$app->user->core["id"]."
+              `UserID` = " . $app->user->core["id"] . "
               AND `Page` = '$Page'
               AND `PageID` = $PageID
             ");
@@ -427,7 +427,7 @@ class Comments
                 $app->dbOld->query("
                 INSERT INTO `users_comments_last_read`(`UserID`, `Page`, `PageID`, `PostID`)
                 VALUES(
-                  ".$app->user->core["id"].",
+                  " . $app->user->core["id"] . ",
                   '$Page',
                   $PageID,
                   $LastPost
@@ -484,7 +484,7 @@ class Comments
         $app->dbOld->query("
         SELECT
           CEIL(
-            COUNT(`ID`) / ".TORRENT_COMMENTS_PER_PAGE."
+            COUNT(`ID`) / " . TORRENT_COMMENTS_PER_PAGE . "
           ) AS Pages
         FROM
           `comments`
@@ -521,7 +521,7 @@ class Comments
         $app->dbOld->query("
         SELECT
           CEIL(
-            COUNT(`ID`) / ".TORRENT_COMMENTS_PER_PAGE."
+            COUNT(`ID`) / " . TORRENT_COMMENTS_PER_PAGE . "
           ) AS Pages
         FROM
           `comments`
@@ -561,10 +561,10 @@ class Comments
         // Clear cache
         $LastCatalogue = floor((TORRENT_COMMENTS_PER_PAGE * $CommPages - TORRENT_COMMENTS_PER_PAGE) / THREAD_CATALOGUE);
         for ($i = 0; $i <= $LastCatalogue; ++$i) {
-            $app->cache->delete($Page."_comments_$PageID"."_catalogue_$i");
+            $app->cache->delete($Page . "_comments_$PageID" . "_catalogue_$i");
         }
 
-        $app->cache->delete($Page."_comments_$PageID");
+        $app->cache->delete($Page . "_comments_$PageID");
         $app->dbOld->set_query_id($QueryID);
 
         return true;

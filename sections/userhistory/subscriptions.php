@@ -14,7 +14,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 View::header('Subscriptions', 'subscriptions');
 
@@ -155,7 +155,7 @@ if (!$NumResults) {
     ?>
   <div class="linkbox">
     <?php
-  $Pages = Format::get_pages($Page, $NumResults, $PerPage, 11);
+  $Pages = \Gazelle\Format::get_pages($Page, $NumResults, $PerPage, 11);
     echo $Pages; ?>
   </div>
   <?php

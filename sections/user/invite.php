@@ -139,7 +139,7 @@ switch ($CurrentOrder) {
         break;
 }
 
-$CurrentURL = Format::get_url(array('action', 'order', 'sort'));
+$CurrentURL = \Gazelle\Format::get_url(array('action', 'order', 'sort'));
 
 $app->dbOld->query("
   SELECT
@@ -183,7 +183,7 @@ View::header('Invites');
       - Cannot 'invite always' and the user limit is reached
   */
 
-      $app->dbOld->query("
+$app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
@@ -324,11 +324,11 @@ if (!empty($Pending)) {
         </td>
         <td><?=time_diff($LastAccess, 1); ?>
         </td>
-        <td><?=Format::get_size($Uploaded)?>
+        <td><?=\Gazelle\Format::get_size($Uploaded)?>
         </td>
-        <td><?=Format::get_size($Downloaded)?>
+        <td><?=\Gazelle\Format::get_size($Downloaded)?>
         </td>
-        <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
+        <td><?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
         </td>
       </tr>
       <?php

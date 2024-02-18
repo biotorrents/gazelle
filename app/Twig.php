@@ -236,7 +236,7 @@ class Twig extends \Twig\Environment
 
         # Format::pretty_category
         $twig->addFilter(new \Twig\TwigFilter("categoryIcon", function ($categoryId) {
-            $markup = "<div title='" . \Format::pretty_category($categoryId) . "' class='" . \Format::css_category($categoryId) . "' />";
+            $markup = "<div title='" . Format::pretty_category($categoryId) . "' class='" . \Gazelle\Format::css_category($categoryId) . "' />";
             return new \Twig\Markup(
                 $markup,
                 "UTF-8"
@@ -265,7 +265,7 @@ class Twig extends \Twig\Environment
         # Format::relativeTime
         $twig->addFilter(new \Twig\TwigFilter("relativeTime", function ($time = null) {
             $time ??= time();
-            return \Format::relativeTime($time);
+            return Format::relativeTime($time);
         }));
 
         # curlyBraces (for biblatex)
@@ -335,7 +335,7 @@ class Twig extends \Twig\Environment
         # this is extremely stupid
         $twig->addFunction(new \Twig\TwigFunction("displayTagsFromArray", function ($tagList) {
             $tagList = implode(" ", $tagList);
-            $tags = new Tags($tagList);
+            $tags = new \Tags($tagList);
 
             return new \Twig\Markup(
                 $tags->format(""),
@@ -353,12 +353,12 @@ class Twig extends \Twig\Environment
 
         # Format::breadcrumbs
         $twig->addFunction(new \Twig\TwigFunction("breadcrumbs", function () {
-            return \Format::breadcrumbs();
+            return Format::breadcrumbs();
         }));
 
         # Format::get_size
         $twig->addFilter(new \Twig\TwigFilter("get_size", function ($size, $levels = 2) {
-            return \Format::get_size($size, $levels);
+            return Format::get_size($size, $levels);
         }));
 
         # Gazelle\Text::float
@@ -496,7 +496,7 @@ class Twig extends \Twig\Environment
         $twig->addFilter(new \Twig\TwigFilter(
             "octet_size",
             function ($size, array $option = []) {
-                return \Format::get_size($size, empty($option)
+                return Format::get_size($size, empty($option)
                     ? 2
                     : $option[0]);
             },
@@ -520,7 +520,7 @@ class Twig extends \Twig\Environment
         # Format::get_ratio_html
         $twig->addFunction(new \Twig\TwigFunction("ratio", function ($up, $down) {
             return new \Twig\Markup(
-                \Format::get_ratio_html($up, $down),
+                Format::get_ratio_html($up, $down),
                 "UTF-8"
             );
         }));

@@ -45,13 +45,13 @@ class TorrentsDL
         $this->QueryResult = $QueryResult;
         $this->Title = $Title;
         $this->User = $app->user;
-        $this->AnnounceURL = ANNOUNCE_URLS[0][0]."/".$app->user->extra['torrent_pass']."/announce";
+        $this->AnnounceURL = ANNOUNCE_URLS[0][0] . "/" . $app->user->extra['torrent_pass'] . "/announce";
 
         function add_passkey($Ann)
         {
             $app = \Gazelle\App::go();
 
-            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann."/".$app->user->extra['torrent_pass']."/announce";
+            return (is_array($Ann)) ? array_map('add_passkey', $Ann) : $Ann . "/" . $app->user->extra['torrent_pass'] . "/announce";
         }
 
         # todo: Probably not working, but no need yet
@@ -195,7 +195,7 @@ class TorrentsDL
     {
         $ENV = \Gazelle\ENV::go;
 
-        $Used = Format::get_size(memory_get_usage(true));
+        $Used = \Gazelle\Format::get_size(memory_get_usage(true));
         $Date = date("M d Y, H:i");
         $NumSkipped = count($this->SkippedFiles);
 
@@ -216,7 +216,7 @@ class TorrentsDL
 
       . "Torrents downloaded:   $this->NumAdded\r\n"
       . "\r\n"
-      . "Total size of torrents (ratio hit): ".Format::get_size($this->Size)."\r\n"
+      . "Total size of torrents (ratio hit): " . \Gazelle\Format::get_size($this->Size) . "\r\n"
 
       . ($NumSkipped
         ? "\r\n"

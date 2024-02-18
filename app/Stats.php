@@ -545,7 +545,7 @@ class Stats
         ];
 
         # secondary stats: averages
-        $users["averageRatio"] = \Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
+        $users["averageRatio"] = Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
         $users["totalBuffer"] = $torrents["totalUpload"] - $torrents["totalDownload"];
         $users["averageBuffer"] = ($torrents["totalUpload"] - $torrents["totalDownload"]) / $users["count"];
 
@@ -1009,7 +1009,7 @@ class Stats
         $data["seederCount"] = $peerStats["seeding"][1] ?? 0;
         $data["leecherCount"] = $peerStats["leeching"][1] ?? 0;
         $data["peerCount"] = $data["seederCount"] + $data["leecherCount"];
-        $data["seederLeecherRatio"] = \Format::get_ratio($data["seederCount"], $data["leecherCount"]);
+        $data["seederLeecherRatio"] = Format::get_ratio($data["seederCount"], $data["leecherCount"]);
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);
         return $data;

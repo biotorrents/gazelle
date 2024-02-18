@@ -90,8 +90,8 @@ class INVITE_TREE
         ON
           ui.`UserID` = it.`UserID`
         WHERE
-          `TreeID` = $TreeID AND `TreePosition` > $TreePosition ".
-          ($MaxPosition ? " AND `TreePosition` < $MaxPosition " : '')."
+          `TreeID` = $TreeID AND `TreePosition` > $TreePosition " .
+          ($MaxPosition ? " AND `TreePosition` < $MaxPosition " : '') . "
           AND `TreeLevel` > $TreeLevel
         ORDER BY
           `TreePosition`
@@ -168,9 +168,9 @@ class INVITE_TREE
           $TotalUpload += $Uploaded;
           $TotalDownload += $Downloaded; ?>
 
-    &nbsp;Uploaded: <strong><?=Format::get_size($Uploaded)?></strong>
-    &nbsp;Downloaded: <strong><?=Format::get_size($Downloaded)?></strong>
-    &nbsp;Ratio: <strong><?=Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
+    &nbsp;Uploaded: <strong><?=\Gazelle\Format::get_size($Uploaded)?></strong>
+    &nbsp;Downloaded: <strong><?=\Gazelle\Format::get_size($Downloaded)?></strong>
+    &nbsp;Ratio: <strong><?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?></strong>
     <?php
       } else {
           $ParanoidCount++; ?>
@@ -209,7 +209,7 @@ class INVITE_TREE
                     } else {
                         // Prevent duplicate letterss
                         if (substr($LastClass, -1) !== 's') {
-                            $LastClass.='s';
+                            $LastClass .= 's';
                         }
                     }
                 }
@@ -221,7 +221,7 @@ class INVITE_TREE
             if (count($ClassStrings) > 1) {
                 array_pop($ClassStrings);
                 echo implode(', ', $ClassStrings);
-                echo ' and '.$LastClass;
+                echo ' and ' . $LastClass;
             } else {
                 echo $LastClass;
             }
@@ -250,15 +250,15 @@ class INVITE_TREE
             echo '. </p>';
 
             echo '<p style="font-weight: bold;">';
-            echo 'The total amount uploaded by the entire tree was '.Format::get_size($TotalUpload);
-            echo '; the total amount downloaded was '.Format::get_size($TotalDownload);
-            echo '; and the total ratio is '.Format::get_ratio_html($TotalUpload, $TotalDownload).'. ';
+            echo 'The total amount uploaded by the entire tree was ' . \Gazelle\Format::get_size($TotalUpload);
+            echo '; the total amount downloaded was ' . \Gazelle\Format::get_size($TotalDownload);
+            echo '; and the total ratio is ' . \Gazelle\Format::get_ratio_html($TotalUpload, $TotalDownload) . '. ';
             echo '</p>';
 
             echo '<p style="font-weight: bold;">';
-            echo 'The total amount uploaded by direct invitees (the top level) was '.Format::get_size($TopLevelUpload);
-            echo '; the total amount downloaded was '.Format::get_size($TopLevelDownload);
-            echo '; and the total ratio is '.Format::get_ratio_html($TopLevelUpload, $TopLevelDownload).'. ';
+            echo 'The total amount uploaded by direct invitees (the top level) was ' . \Gazelle\Format::get_size($TopLevelUpload);
+            echo '; the total amount downloaded was ' . \Gazelle\Format::get_size($TopLevelDownload);
+            echo '; and the total ratio is ' . \Gazelle\Format::get_ratio_html($TopLevelUpload, $TopLevelDownload) . '. ';
 
             echo "These numbers include the stats of paranoid users and will be factored into the invitation giving script.\n\t\t</p>\n";
 

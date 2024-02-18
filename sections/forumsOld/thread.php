@@ -87,11 +87,11 @@ if ($ThreadInfo['Posts'] > $PerPage) {
 } else {
     $PostNum = 1;
 }
-list($Page, $Limit) = Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
 if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
     $Page = ceil($ThreadInfo['Posts'] / $PerPage);
 }
-list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
+list($CatalogueID, $CatalogueLimit) = \Gazelle\Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID")) {
@@ -107,19 +107,19 @@ if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID"))
     FROM forums_posts AS p
       LEFT JOIN users_main AS ed ON ed.ID = p.EditedUserID
     WHERE p.TopicID = '$ThreadID'
-      AND p.ID != '".$ThreadInfo['StickyPostID']."'
+      AND p.ID != '" . $ThreadInfo['StickyPostID'] . "'
     LIMIT $CatalogueLimit");
     $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
         $app->cache->set("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
-$Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
+$Thread = \Gazelle\Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
 $LastPost = end($Thread);
 $LastPost = $LastPost['ID'];
 $FirstPost = reset($Thread);
 $FirstPost = $FirstPost['ID'];
-if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $LastPost) {
+if ($ThreadInfo['Posts'] <= $PerPage * $Page && $ThreadInfo['StickyPostID'] > $LastPost) {
     $LastPost = $ThreadInfo['StickyPostID'];
 }
 
@@ -139,7 +139,7 @@ if ($LastRead < $LastPost) {
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
-        ('{$app->user->core['id']}', '$ThreadID', '".db_string($LastPost)."')
+        ('{$app->user->core['id']}', '$ThreadID', '" . db_string($LastPost) . "')
       ON DUPLICATE KEY UPDATE
         PostID = '$LastPost'");
 }
@@ -153,7 +153,7 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
+    $app->cache->delete('subscriptions_user_new_' . $app->user->core['id']);
 }
 
 
@@ -172,9 +172,9 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 
 // Start printing
 View::header(
-    $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
+    $ThreadInfo['Title'] . ' &rsaquo; ' . $Forums[$ForumID]['Name'] . ' &rsaquo; Forums',
     'subscriptions,vendor/easymde.min',
-    ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
+    ($IsDonorForum ?? 'donor,') . 'vendor/easymde.min'
 );
 ?>
 <div class="header">
@@ -239,7 +239,7 @@ View::header(
   </div>
 </div>
 <?php
-$Pages = Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
 echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
@@ -285,7 +285,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     $app->dbOld->prepared_query("
     SELECT Vote
     FROM forums_polls_votes
-    WHERE UserID = '".$app->user->core['id']."'
+    WHERE UserID = '" . $app->user->core['id'] . "'
       AND TopicID = '$ThreadID'");
     list($UserResponse) = $app->dbOld->next_record(); ?>
 <div class="box thin clear">
@@ -314,7 +314,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                     $Ratio = 0;
                     $Percent = 0;
                 } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=\Gazelle\Text::esc($Answer)?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse) && ($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=\Gazelle\Text::esc($Answer)?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -343,7 +343,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     <?php
         } else {
             //Staff forum, output voters, not percentages
-            include(serverRoot.'/sections/staff/functions.php');
+            include(serverRoot . '/sections/staff/functions.php');
             $Staff = get_staff();
 
             $StaffNames = [];
@@ -376,9 +376,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
           ?>
       <li>
         <a
-          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=\Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
-        - <?=$StaffVotes[$i]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
-        <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"
+          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=\Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
+        - <?=$StaffVotes[$i]?>&nbsp;(<?=\Gazelle\Text::float(((float) $Votes[$i] / $TotalVotes) * 100, 2)?>%)
+        <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
       </li>
       <?php
@@ -386,7 +386,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=0"><?=($UserResponse == '0' ? '&raquo;&nbsp;' : '')?>Blank</a>
-        - <?=$StaffVotes[0]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[0]?>&nbsp;(<?=\Gazelle\Text::float(((float) $Votes[0] / $TotalVotes) * 100, 2)?>%)
       </li>
     </ul>
     <?php
@@ -443,10 +443,10 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </div>
     <?php
     }
-  if (check_perms('forums_polls_moderate')) {
-      #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
-      if (!$Featured) {
-          ?>
+    if (check_perms('forums_polls_moderate')) {
+        #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
+        if (!$Featured) {
+            ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
@@ -456,7 +456,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <input type="submit" onclick="return confirm('Are you sure you want to feature this poll?');" value="Feature">
     </form>
     <?php
-      } ?>
+        } ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
@@ -467,7 +467,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         value="<?=(!$Closed ? 'Close' : 'Open')?>">
     </form>
     <?php
-  } ?>
+    } ?>
   </div>
 </div>
 <?php

@@ -37,7 +37,7 @@ View::header("Site log");
                 <tr>
                     <td class="label"><strong>Search for:</strong></td>
                     <td>
-                        <input type="search" name="search" size="60" <?=(!empty($_GET['search']) ? ' value="'.\Gazelle\Text::esc($_GET['search']).'"' : '')?>>
+                        <input type="search" name="search" size="60" <?=(!empty($_GET['search']) ? ' value="' . \Gazelle\Text::esc($_GET['search']) . '"' : '')?>>
                         &nbsp;
                         <input type="submit" class="button-primary" value="Search log">
                     </td>
@@ -50,7 +50,7 @@ View::header("Site log");
   if ($TotalMatches > LOG_ENTRIES_PER_PAGE) { ?>
     <div class="linkbox">
         <?php
-  $Pages = Format::get_pages($Page, $TotalMatches, LOG_ENTRIES_PER_PAGE, 9);
+  $Pages = \Gazelle\Format::get_pages($Page, $TotalMatches, LOG_ENTRIES_PER_PAGE, 9);
       echo $Pages;
       ?>
     </div>
@@ -89,9 +89,9 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
     $Color = $Colon = false;
 
     for ($i = 0, $PartCount = sizeof($MessageParts); $i < $PartCount; $i++) {
-        if (strpos($MessageParts[$i], 'https://'.siteDomain) === 0) {
-            $Offset = strlen('https://'.siteDomain.'/');
-            $MessageParts[$i] = '<a href="'.substr($MessageParts[$i], $Offset).'">'.substr($MessageParts[$i], $Offset).'</a>';
+        if (strpos($MessageParts[$i], 'https://' . siteDomain) === 0) {
+            $Offset = strlen('https://' . siteDomain . '/');
+            $MessageParts[$i] = '<a href="' . substr($MessageParts[$i], $Offset) . '">' . substr($MessageParts[$i], $Offset) . '</a>';
         }
 
         switch ($MessageParts[$i]) {
@@ -99,10 +99,10 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
             case 'torrent':
                 $TorrentID = $MessageParts[$i + 1];
                 if (is_numeric($TorrentID)) {
-                    $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?torrentid=$TorrentID'>$TorrentID</a>";
+                    $Message = $Message . ' ' . $MessageParts[$i] . " <a href='torrents.php?torrentid=$TorrentID'>$TorrentID</a>";
                     $i++;
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 break;
 
@@ -110,10 +110,10 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
             case 'request':
                 $RequestID = $MessageParts[$i + 1];
                 if (is_numeric($RequestID)) {
-                    $Message = $Message.' '.$MessageParts[$i]." <a href='requests.php?action=view&amp;id=$RequestID'>$RequestID</a>";
+                    $Message = $Message . ' ' . $MessageParts[$i] . " <a href='requests.php?action=view&amp;id=$RequestID'>$RequestID</a>";
                     $i++;
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 break;
 
@@ -121,10 +121,10 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
             case 'artist':
                 $ArtistID = $MessageParts[$i + 1];
                 if (is_numeric($ArtistID)) {
-                    $Message = $Message.' '.$MessageParts[$i]." <a href='artist.php?id=$ArtistID'>$ArtistID</a>";
+                    $Message = $Message . ' ' . $MessageParts[$i] . " <a href='artist.php?id=$ArtistID'>$ArtistID</a>";
                     $i++;
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 break;
 
@@ -132,9 +132,9 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
             case 'Group':
                 $GroupID = $MessageParts[$i + 1];
                 if (is_numeric($GroupID)) {
-                    $Message = $Message.' '.$MessageParts[$i]." <a href='torrents.php?id=$GroupID'>$GroupID</a>";
+                    $Message = $Message . ' ' . $MessageParts[$i] . " <a href='torrents.php?id=$GroupID'>$GroupID</a>";
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 $i++;
                 break;
@@ -149,7 +149,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                     if (is_numeric($MessageParts[$i + 1])) {
                         $UserID = $MessageParts[++$i];
                     }
-                    $URL = "user $UserID (<a href='user.php?id=$UserID'>".substr($MessageParts[++$i], 1, -1).'</a>)';
+                    $URL = "user $UserID (<a href='user.php?id=$UserID'>" . substr($MessageParts[++$i], 1, -1) . '</a>)';
                 } elseif (in_array($MessageParts[$i - 1], ['deleted', 'uploaded', 'edited', 'created', 'recovered'])) {
                     $User = $MessageParts[++$i];
                     if (substr($User, -1) === ':') {
@@ -176,7 +176,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                         $UserID = $Usernames[$User];
                     }
 
-                    $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>".($Colon ? ':' : '') : $User;
+                    $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>" . ($Colon ? ':' : '') : $User;
                     if (in_array($MessageParts[$i - 2], ['uploaded', 'edited'])) {
                         $app->dbOld->query(
                             "
@@ -208,7 +208,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                 if ($Color === false) {
                     $Color = 'green';
                 }
-                $Message = $Message.' '.$MessageParts[$i];
+                $Message = $Message . ' ' . $MessageParts[$i];
                 break;
 
             case 'Deleted':
@@ -216,7 +216,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                 if ($Color === false || $Color === 'green') {
                     $Color = 'red';
                 }
-                $Message = $Message.' '.$MessageParts[$i];
+                $Message = $Message . ' ' . $MessageParts[$i];
                 break;
 
             case 'Edited':
@@ -224,7 +224,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                 if ($Color === false) {
                     $Color = 'blue';
                 }
-                $Message = $Message.' '.$MessageParts[$i];
+                $Message = $Message . ' ' . $MessageParts[$i];
                 break;
 
             case 'Un-filled':
@@ -232,7 +232,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                 if ($Color === false) {
                     $Color = '';
                 }
-                $Message = $Message.' '.$MessageParts[$i];
+                $Message = $Message . ' ' . $MessageParts[$i];
                 break;
 
             case 'Marked':
@@ -246,7 +246,7 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                   FROM
                     `users_main`
                   WHERE
-                    `Username` = _utf8 '".db_string($User)."' COLLATE utf8_bin
+                    `Username` = _utf8 '" . db_string($User) . "' COLLATE utf8_bin
                   ");
 
                         list($UserID) = $app->dbOld->next_record();
@@ -257,9 +257,9 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
                     }
 
                     $URL = $Usernames[$User] ? "<a href='user.php?id=$UserID'>$User</a>" : $User;
-                    $Message = $URL.' '.$MessageParts[$i];
+                    $Message = $URL . ' ' . $MessageParts[$i];
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 break;
 
@@ -267,15 +267,15 @@ while (list($ID, $Message, $LogTime) = $app->dbOld->next_record()) {
             case 'collage':
                 $CollageID = $MessageParts[$i + 1];
                 if (is_numeric($CollageID)) {
-                    $Message = $Message.' '.$MessageParts[$i]." <a href='collages.php?id=$CollageID'>$CollageID</a>";
+                    $Message = $Message . ' ' . $MessageParts[$i] . " <a href='collages.php?id=$CollageID'>$CollageID</a>";
                     $i++;
                 } else {
-                    $Message = $Message.' '.$MessageParts[$i];
+                    $Message = $Message . ' ' . $MessageParts[$i];
                 }
                 break;
 
             default:
-                $Message = $Message.' '.$MessageParts[$i];
+                $Message = $Message . ' ' . $MessageParts[$i];
         }
     } ?>
 

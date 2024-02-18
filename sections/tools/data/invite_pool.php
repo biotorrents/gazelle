@@ -10,7 +10,7 @@ if (!check_perms('users_view_invites')) {
 $Title = 'Invite Pool';
 View::header($Title);
 define('INVITES_PER_PAGE', 50);
-list($Page, $Limit) = Format::page_limit(INVITES_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(INVITES_PER_PAGE);
 
 if (!empty($_POST['invitekey']) && check_perms('users_edit_invites')) {
     authorize();
@@ -87,7 +87,7 @@ $app->dbOld->set_query_id($RS);
 
 <div class="linkbox">
   <?php
-  $Pages = Format::get_pages($Page, $Results, INVITES_PER_PAGE, 11) ;
+  $Pages = \Gazelle\Format::get_pages($Page, $Results, INVITES_PER_PAGE, 11) ;
 echo $Pages;
 ?>
 </div>

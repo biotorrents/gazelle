@@ -430,7 +430,7 @@ if (count($_GET)) {
             $RunQuery = true;
         }
 
-        list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
+        list($Page, $Limit) = \Gazelle\Format::page_limit(USERS_PER_PAGE);
         $SQL .= " LIMIT $Limit";
     } else {
         error("Your search returned no results. For privacy and security reasons, user searches must result in an exact hit. Fuzzy matches aren't allowed.");
@@ -889,7 +889,7 @@ foreach ($Secondaries as $Class) {
             <option value="">Any</option>
             <?php foreach ($Stylesheets as $Style) { ?>
             <option value="<?=$Style['ID']?>"
-              <?Format::selected('stylesheet', $Style['ID'])?>><?=$Style['ProperName']?>
+              <?\Gazelle\Format::selected('stylesheet', $Style['ID'])?>><?=$Style['ProperName']?>
             </option>
             <?php } ?>
           </select>
@@ -1028,7 +1028,7 @@ if ($RunQuery) {
 ?>
 <div class="linkbox">
   <?php
-$Pages = Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 11);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 11);
 echo $Pages;
 ?>
 </div>
@@ -1058,7 +1058,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
     <tr>
       <td><?=User::format_username($UserID, true, true, true, true)?>
       </td>
-      <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
+      <td><?=\Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>
       <td style="word-break: break-all;"><?=\Gazelle\Text::esc($IP)?>
       </td>
@@ -1068,9 +1068,9 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
       </td>
       <td><?=time_diff($LastAccess)?>
       </td>
-      <td><?=Format::get_size($Uploaded)?>
+      <td><?=\Gazelle\Format::get_size($Uploaded)?>
       </td>
-      <td><?=Format::get_size($Downloaded)?>
+      <td><?=\Gazelle\Format::get_size($Downloaded)?>
       </td>
       <?php $app->dbOld->query("
         SELECT COUNT(ud.UserID)
@@ -1079,7 +1079,7 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
         WHERE ud.UserID = $UserID");
     list($Downloads) = $app->dbOld->next_record();
     $app->dbOld->set_query_id($Results); ?>
-      <td><?=\Gazelle\Text::float((int)$Downloads)?>
+      <td><?=\Gazelle\Text::float((int) $Downloads)?>
       </td>
       <td><?=(is_numeric($Snatched) ? \Gazelle\Text::float($Snatched) : \Gazelle\Text::esc($Snatched))?>
       </td>

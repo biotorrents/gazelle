@@ -20,7 +20,7 @@ if (isset($_GET['username'])) {
 
     if (!$Err) {
         // Passed validation. Let's rock.
-        list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
+        list($Page, $Limit) = \Gazelle\Format::page_limit(USERS_PER_PAGE);
         if ($Page > 10) {
             $Page = 10;
             $Limit = sprintf("%d, %d", ($Page - 1) * USERS_PER_PAGE, USERS_PER_PAGE);
@@ -36,7 +36,7 @@ if (isset($_GET['username'])) {
         Warned
       FROM users_main AS um
         JOIN users_info AS ui ON ui.UserID = um.ID
-      WHERE Username LIKE '%".db_string($_GET['username'], true)."%'
+      WHERE Username LIKE '%" . db_string($_GET['username'], true) . "%'
       ORDER BY Username
       LIMIT $Limit");
         $Results = $app->dbOld->to_array();
@@ -54,7 +54,7 @@ View::header('User search');
   <div class="header">
     <h3>Search results</h3>
   </div>
-<?php $Pages = Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 9);
+<?php $Pages = \Gazelle\Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 9);
 if ($Pages) { ?>
   <div class="linkbox pager"><?=($Pages)?></div>
 <?php } ?>

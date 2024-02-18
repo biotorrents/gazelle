@@ -9,7 +9,7 @@ $TorrentID = $_GET['torrentid'];
 
 if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
     $Page = $_GET['page'];
-    $Limit = (string)(($Page - 1) * 100) .', 100';
+    $Limit = (string) (($Page - 1) * 100) . ', 100';
 } else {
     $Page = 1;
     $Limit = 100;
@@ -67,7 +67,7 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
   } ?>
     <td><?=($Active) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
     <td><?= ($Connectable) ? '<span style="color: green;">Yes</span>' : '<span style="color: red;">No</span>' ?></td>
-    <td class="number_column"><?=Format::get_size($Uploaded) ?></td>
+    <td class="number_column"><?=\Gazelle\Format::get_size($Uploaded) ?></td>
     <td class="number_column"><?=\Gazelle\Text::float(($Size - $Remaining) / $Size * 100, 2)?></td>
     <td><?=\Gazelle\Text::esc($UserAgent)?></td>
   </tr>

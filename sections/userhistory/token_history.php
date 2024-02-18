@@ -66,7 +66,7 @@ if (isset($_GET['expire'])) {
         $app->cache->delete("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
-            ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
+            ['info_hash' => substr('%' . chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
         );
     }
     Http::redirect("userhistory.php?action=token_history&userid=$UserID");
@@ -74,7 +74,7 @@ if (isset($_GET['expire'])) {
 
 # Render HTML
 View::header('Freeleech token history');
-list($Page, $Limit) = Format::page_limit(25);
+list($Page, $Limit) = \Gazelle\Format::page_limit(25);
 
 $app->dbOld->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
@@ -105,7 +105,7 @@ LIMIT $Limit
 $Tokens = $app->dbOld->to_array();
 $app->dbOld->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
-$Pages = Format::get_pages($Page, $NumResults, 25);
+$Pages = \Gazelle\Format::get_pages($Page, $NumResults, 25);
 ?>
 
 <div class="header">
@@ -171,7 +171,7 @@ foreach ($Tokens as $Token) {
 
     <?php if (check_perms('users_mod')) { ?>
     <td>
-      <?= Format::get_size($Downloaded) ?>
+      <?= \Gazelle\Format::get_size($Downloaded) ?>
     </td>
 
     <td>

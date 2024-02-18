@@ -94,14 +94,14 @@ if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
         foreach ($Tags as $Tag) {
             $Tag = preg_replace('/[^a-z0-9_]/', '', $Tag);
             if ($Tag !== '') {
-                $TagWhere[] = "g.TagList REGEXP '[[:<:]]".db_string($Tag)."[[:>:]]'";
+                $TagWhere[] = "g.TagList REGEXP '[[:<:]]" . db_string($Tag) . "[[:>:]]'";
             }
         }
         if (!empty($TagWhere)) {
             if ($_GET['anyall'] === 'any') {
-                $Where[] = '('.implode(' OR ', $TagWhere).')';
+                $Where[] = '(' . implode(' OR ', $TagWhere) . ')';
             } else {
-                $Where[] = '('.implode(' AND ', $TagWhere).')';
+                $Where[] = '(' . implode(' AND ', $TagWhere) . ')';
             }
         }
     }
@@ -193,7 +193,7 @@ if ($DisableFreeTorrentTop10) {
 
 // The link should say the opposite of the current setting
 $FreeleechToggleName = ($DisableFreeTorrentTop10 ? 'show' : 'hide');
-$FreeleechToggleQuery = Format::get_url(array('freeleech', 'groups'));
+$FreeleechToggleQuery = \Gazelle\Format::get_url(array('freeleech', 'groups'));
 
 if (!empty($FreeleechToggleQuery)) {
     $FreeleechToggleQuery .= '&amp;';
@@ -202,7 +202,7 @@ if (!empty($FreeleechToggleQuery)) {
 $FreeleechToggleQuery .= 'freeleech=' . $FreeleechToggleName;
 
 $GroupByToggleName = ((isset($_GET['groups']) && $_GET['groups'] === 'show') ? 'hide' : 'show');
-$GroupByToggleQuery = Format::get_url(array('freeleech', 'groups'));
+$GroupByToggleQuery = \Gazelle\Format::get_url(array('freeleech', 'groups'));
 
 if (!empty($GroupByToggleQuery)) {
     $GroupByToggleQuery .= '&amp;';
@@ -229,7 +229,7 @@ if (isset($_GET['groups']) && $_GET['groups'] === 'show') {
     <?php
 
 if (!empty($Where)) {
-    $Where = '('.implode(' AND ', $Where).')';
+    $Where = '(' . implode(' AND ', $Where) . ')';
     $WhereSum = md5($Where);
 } else {
     $WhereSum = '';
@@ -263,14 +263,14 @@ ON
 ";
 
 if ($Details === 'all' || $Details === 'day') {
-    $TopTorrentsActiveLastDay = $app->cache->get('top10tor_day_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastDay = $app->cache->get('top10tor_day_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsActiveLastDay === false) {
         if ($app->cache->setQueryLock('top10')) {
             $DayAgo = time_minus(86400);
-            $Query = $BaseQuery.' WHERE t.Seeders>0 AND ';
+            $Query = $BaseQuery . ' WHERE t.Seeders>0 AND ';
 
             if (!empty($Where)) {
-                $Query .= $Where.' AND ';
+                $Query .= $Where . ' AND ';
             }
 
             $Query .= "
@@ -281,7 +281,7 @@ if ($Details === 'all' || $Details === 'day') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastDay = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_day_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastDay, 3600 * 2);
+            $app->cache->set('top10tor_day_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsActiveLastDay, 3600 * 2);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastDay = false;
@@ -290,14 +290,14 @@ if ($Details === 'all' || $Details === 'day') {
     generate_torrent_table('Most Active Torrents Uploaded in the Past Day', 'day', $TopTorrentsActiveLastDay, $Limit);
 }
 if ($Details === 'all' || $Details === 'week') {
-    $TopTorrentsActiveLastWeek = $app->cache->get('top10tor_week_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastWeek = $app->cache->get('top10tor_week_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsActiveLastWeek === false) {
         if ($app->cache->setQueryLock('top10')) {
             $WeekAgo = time_minus(604800);
-            $Query = $BaseQuery.' WHERE ';
+            $Query = $BaseQuery . ' WHERE ';
 
             if (!empty($Where)) {
-                $Query .= $Where.' AND ';
+                $Query .= $Where . ' AND ';
             }
 
             $Query .= "
@@ -308,7 +308,7 @@ if ($Details === 'all' || $Details === 'week') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastWeek = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_week_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastWeek, 3600 * 6);
+            $app->cache->set('top10tor_week_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsActiveLastWeek, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastWeek = false;
@@ -318,13 +318,13 @@ if ($Details === 'all' || $Details === 'week') {
 }
 
 if ($Details === 'all' || $Details === 'month') {
-    $TopTorrentsActiveLastMonth = $app->cache->get('top10tor_month_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastMonth = $app->cache->get('top10tor_month_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsActiveLastMonth === false) {
         if ($app->cache->setQueryLock('top10')) {
-            $Query = $BaseQuery.' WHERE ';
+            $Query = $BaseQuery . ' WHERE ';
 
             if (!empty($Where)) {
-                $Query .= $Where.' AND ';
+                $Query .= $Where . ' AND ';
             }
 
             $Query .= "
@@ -335,7 +335,7 @@ if ($Details === 'all' || $Details === 'month') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastMonth = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_month_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastMonth, 3600 * 6);
+            $app->cache->set('top10tor_month_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsActiveLastMonth, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastMonth = false;
@@ -345,18 +345,18 @@ if ($Details === 'all' || $Details === 'month') {
 }
 
 if ($Details === 'all' || $Details === 'year') {
-    $TopTorrentsActiveLastYear = $app->cache->get('top10tor_year_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveLastYear = $app->cache->get('top10tor_year_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsActiveLastYear === false) {
         if ($app->cache->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>200 in order to speed up this query. You should remove it!
-            $Query = $BaseQuery.' WHERE ';
+            $Query = $BaseQuery . ' WHERE ';
             if ($Details === 'all' && !$Filtered) {
                 // $Query .= 't.Seeders>=200 AND ';
                 if (!empty($Where)) {
-                    $Query .= $Where.' AND ';
+                    $Query .= $Where . ' AND ';
                 }
             } elseif (!empty($Where)) {
-                $Query .= $Where.' AND ';
+                $Query .= $Where . ' AND ';
             }
 
             $Query .= "
@@ -367,7 +367,7 @@ if ($Details === 'all' || $Details === 'year') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveLastYear = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_year_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveLastYear, 3600 * 6);
+            $app->cache->set('top10tor_year_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsActiveLastYear, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveLastYear = false;
@@ -377,7 +377,7 @@ if ($Details === 'all' || $Details === 'year') {
 }
 
 if ($Details === 'all' || $Details === 'overall') {
-    $TopTorrentsActiveAllTime = $app->cache->get('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsActiveAllTime = $app->cache->get('top10tor_overall_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsActiveAllTime === false) {
         if ($app->cache->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Seeders>500 in order to speed up this query. You should remove it!
@@ -385,10 +385,10 @@ if ($Details === 'all' || $Details === 'overall') {
             if ($Details === 'all' && !$Filtered) {
                 //$Query .= "t.Seeders>=500 ";
                 if (!empty($Where)) {
-                    $Query .= ' WHERE '.$Where;
+                    $Query .= ' WHERE ' . $Where;
                 }
             } elseif (!empty($Where)) {
-                $Query .= ' WHERE '.$Where;
+                $Query .= ' WHERE ' . $Where;
             }
 
             $Query .= "
@@ -398,7 +398,7 @@ if ($Details === 'all' || $Details === 'overall') {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsActiveAllTime = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_overall_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsActiveAllTime, 3600 * 6);
+            $app->cache->set('top10tor_overall_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsActiveAllTime, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsActiveAllTime = false;
@@ -408,13 +408,13 @@ if ($Details === 'all' || $Details === 'overall') {
 }
 
 if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
-    $TopTorrentsSnatched = $app->cache->get('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsSnatched = $app->cache->get('top10tor_snatched_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsSnatched === false) {
         if ($app->cache->setQueryLock('top10')) {
             $Query = $BaseQuery;
 
             if (!empty($Where)) {
-                $Query .= ' WHERE '.$Where;
+                $Query .= ' WHERE ' . $Where;
             }
 
             $Query .= "
@@ -424,7 +424,7 @@ if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsSnatched = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_snatched_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSnatched, 3600 * 6);
+            $app->cache->set('top10tor_snatched_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsSnatched, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsSnatched = false;
@@ -434,7 +434,7 @@ if (($Details === 'all' || $Details === 'snatched') && !$Filtered) {
 }
 
 if (($Details === 'all' || $Details === 'data') && !$Filtered) {
-    $TopTorrentsTransferred = $app->cache->get('top10tor_data_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsTransferred = $app->cache->get('top10tor_data_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsTransferred === false) {
         if ($app->cache->setQueryLock('top10')) {
             // IMPORTANT NOTE - we use WHERE t.Snatched>100 in order to speed up this query. You should remove it!
@@ -442,7 +442,7 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
             if ($Details === 'all') {
                 //$Query .= " WHERE t.Snatched>=100 ";
                 if (!empty($Where)) {
-                    $Query .= ' WHERE '.$Where;
+                    $Query .= ' WHERE ' . $Where;
                 }
             }
 
@@ -453,7 +453,7 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsTransferred = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_data_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsTransferred, 3600 * 6);
+            $app->cache->set('top10tor_data_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsTransferred, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsTransferred = false;
@@ -463,12 +463,12 @@ if (($Details === 'all' || $Details === 'data') && !$Filtered) {
 }
 
 if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
-    $TopTorrentsSeeded = $app->cache->get('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum);
+    $TopTorrentsSeeded = $app->cache->get('top10tor_seeded_' . $Limit . $WhereSum . $GroupBySum);
     if ($TopTorrentsSeeded === false) {
         if ($app->cache->setQueryLock('top10')) {
             $Query = $BaseQuery;
             if (!empty($Where)) {
-                $Query .= ' WHERE '.$Where;
+                $Query .= ' WHERE ' . $Where;
             }
 
             $Query .= "
@@ -478,7 +478,7 @@ if (($Details === 'all' || $Details === 'seeded') && !$Filtered) {
 
             $app->dbOld->prepared_query($Query);
             $TopTorrentsSeeded = $app->dbOld->to_array(false, MYSQLI_NUM);
-            $app->cache->set('top10tor_seeded_'.$Limit.$WhereSum.$GroupBySum, $TopTorrentsSeeded, 3600 * 6);
+            $app->cache->set('top10tor_seeded_' . $Limit . $WhereSum . $GroupBySum, $TopTorrentsSeeded, 3600 * 6);
             $app->cache->clearQueryLock('top10');
         } else {
             $TopTorrentsSeeded = false;
@@ -610,7 +610,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
         $DisplayName .= "<a class='torrentTitle' href='torrents.php?id=$GroupID&amp;torrentid=$TorrentID' ";
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-            $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage, 'thumb').'" ';
+            $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage, 'thumb') . '" ';
         }
 
 
@@ -625,7 +625,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             # Year
             if ($Year) {
                 $Label = '<br>📅&nbsp;';
-                $DisplayName .= $Label."<a href='torrents.php?action=search&year=$Year'>$Year</a>";
+                $DisplayName .= $Label . "<a href='torrents.php?action=search&year=$Year'>$Year</a>";
             }
 
             # Studio
@@ -637,14 +637,14 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             if ($Artists) {
                 # Emoji in classes/astists.class.php
                 $Label = '&ensp;'; # breaking
-                $DisplayName .= $Label.Artists::display_artists($Artists[$GroupID], true, true);
+                $DisplayName .= $Label . Artists::display_artists($Artists[$GroupID], true, true);
             }
 
             # Catalogue Number
             $CatalogueNumber ??= null;
             if ($CatalogueNumber) {
                 $Label = '&ensp;🔑&nbsp;';
-                $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$CatalogueNumber'>$CatalogueNumber</a>";
+                $DisplayName .= $Label . "<a href='torrents.php?action=search&numbers=$CatalogueNumber'>$CatalogueNumber</a>";
             }
 
             /*
@@ -662,7 +662,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             /*
             if ($IsSnatched) {
                 $ExtraInfo .= ' / ';
-                $ExtraInfo .= Format::torrent_label('Snatched!', 'bold');
+                $ExtraInfo .= \Gazelle\Format::torrent_label('Snatched!', 'bold');
             }
             */
 
@@ -687,8 +687,8 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
     class="torrent row<?=($IsBookmarked ? ' bookmarked' : '') . ($IsSnatched ? ' snatched_torrent' : '')?>">
     <td style="padding: 8px; text-align: center;"><strong><?=$Rank?></strong></td>
     <td class="center categoryColumn">
-        <div title="<?=Format::pretty_category($GroupCategoryID)?>"
-            class="tooltip <?=Format::css_category($GroupCategoryID)?>">
+        <div title="<?=\Gazelle\Format::pretty_category($GroupCategoryID)?>"
+            class="tooltip <?=\Gazelle\Format::css_category($GroupCategoryID)?>">
         </div>
     </td>
     <td class="big_info">
@@ -722,15 +722,15 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             </div>
         </div>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($Size)?>
+    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Size)?>
     </td>
-    <td class="number_column nobr"><?=Format::get_size($Data)?>
+    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Data)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float)$Snatched)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float) $Snatched)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float)$Seeders)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float) $Seeders)?>
     </td>
-    <td class="number_column"><?=\Gazelle\Text::float((float)$Leechers)?>
+    <td class="number_column"><?=\Gazelle\Text::float((float) $Leechers)?>
     </td>
     <td class="number_column"><?=\Gazelle\Text::float($Seeders + $Leechers)?>
     </td>

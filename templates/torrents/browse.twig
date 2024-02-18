@@ -206,7 +206,7 @@ continue;
 		              'torrents/display_name.html',
 		              [
 		                'g' => $GroupInfo,
-		                'url' => Format::get_url($_GET),
+		                'url' => \Gazelle\Format::get_url($_GET),
 		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
 		                'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
 		                'artists' => Artists::display_artists($Artists),
@@ -228,8 +228,8 @@ continue;
 		
 		    <!-- Category icon -->
 		    <td class="center categoryColumn">
-		      <div title="<?=Format::pretty_category($CategoryID)?>"
-		        class="tooltip <?=Format::css_category($CategoryID)?>">
+		      <div title="<?=\Gazelle\Format::pretty_category($CategoryID)?>"
+		        class="tooltip <?=\Gazelle\Format::css_category($CategoryID)?>">
 		      </div>
 		    </td>
 		
@@ -261,7 +261,7 @@ continue;
 		    </td>
 		
 		    <!-- Size -->
-		    <td class="number_column nobr"><?=Format::get_size($MaxSize)?>(Max)</td>
+		    <td class="number_column nobr"><?=\Gazelle\Format::get_size($MaxSize)?>(Max)</td>
 		
 		    <!-- Snatches, seeders, and leechers -->
 		    <td class="number_column"><?=\Gazelle\Text::float($TotalSnatched)?>
@@ -324,7 +324,7 @@ continue;
 		    </td>
 		    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
 		    </td>
-		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
+		    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Data['Size'])?>
 		    </td>
 		    <td class="number_column"><?=\Gazelle\Text::float($Data['Snatched'])?>
 		    </td>
@@ -357,7 +357,7 @@ continue;
 		          if (isset($GroupedCategories[$CategoryID - 1])) {
 		              $ExtraInfo = Torrents::torrent_info($Data, true, true);
 		          } elseif ($Data['IsSnatched']) {
-		              $ExtraInfo = Format::torrent_label('Snatched!');
+		              $ExtraInfo = \Gazelle\Format::torrent_label('Snatched!');
 		          } else {
 		              $ExtraInfo = '';
 		          }
@@ -367,7 +367,7 @@ continue;
 		              'torrents/display_name.html',
 		              [
 		                'g' => $GroupInfo,
-		                'url' => Format::get_url($_GET),
+		                'url' => \Gazelle\Format::get_url($_GET),
 		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
 		                'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
 		                'artists' => Artists::display_artists($Artists),
@@ -394,8 +394,8 @@ continue;
 		    <td></td>
 		    <?php } ?>
 		    <td class="center categoryColumn">
-		      <div title="<?=Format::pretty_category($CategoryID)?>"
-		        class="tooltip <?=Format::css_category($CategoryID)?>"></div>
+		      <div title="<?=\Gazelle\Format::pretty_category($CategoryID)?>"
+		        class="tooltip <?=\Gazelle\Format::css_category($CategoryID)?>"></div>
 		    </td>
 		    <td class="big_info">
 		      <div class="group_info clear">
@@ -449,7 +449,7 @@ continue;
 		    </td>
 		    <td class="nobr"><?=time_diff($Data['Time'], 1)?>
 		    </td>
-		    <td class="number_column nobr"><?=Format::get_size($Data['Size'])?>
+		    <td class="number_column nobr"><?=\Gazelle\Format::get_size($Data['Size'])?>
 		    </td>
 		    <td class="number_column"><?=\Gazelle\Text::float($Data['Snatched'])?>
 		    </td>

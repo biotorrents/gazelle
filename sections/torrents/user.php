@@ -21,7 +21,7 @@ function header_link($SortKey, $DefaultWay = 'DESC')
     } else {
         $NewWay = $DefaultWay;
     }
-    return "torrents.php?way=$NewWay&amp;order=$SortKey&amp;" . Format::get_url(array('way','order'));
+    return "torrents.php?way=$NewWay&amp;order=$SortKey&amp;" . \Gazelle\Format::get_url(array('way','order'));
 }
 
 $UserID = $_GET['userid'];
@@ -31,7 +31,7 @@ if (!is_numeric($UserID)) {
 
 if (!empty($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0) {
     $Page = $_GET['page'];
-    $Limit = ($Page - 1) * TORRENTS_PER_PAGE.', '.TORRENTS_PER_PAGE;
+    $Limit = ($Page - 1) * TORRENTS_PER_PAGE . ', ' . TORRENTS_PER_PAGE;
 } else {
     $Page = 1;
     $Limit = TORRENTS_PER_PAGE;
@@ -52,43 +52,43 @@ if (!empty($_GET['way']) && array_key_exists($_GET['way'], $Ways)) {
 $SearchWhere = [];
 if (!empty($_GET['format'])) {
     if (in_array($_GET['format'], $Formats)) {
-        $SearchWhere[] = "t.`Format` = '".db_string($_GET['format'])."'";
+        $SearchWhere[] = "t.`Format` = '" . db_string($_GET['format']) . "'";
     }
 }
 
 # Get release specifics
 if (isset($_GET['container'])
  && in_array($_GET['container'], $ENV - flatten($ENV->META->Formats))) {
-    $SearchWhere[] = "t.`Container` = '".db_string($_GET['container'])."'";
+    $SearchWhere[] = "t.`Container` = '" . db_string($_GET['container']) . "'";
 }
 
 if (isset($_GET['bitrate'])
  && in_array($_GET['bitrate'], $Bitrates)) {
-    $SearchWhere[] = "t.`Encoding` = '".db_string($_GET['bitrate'])."'";
+    $SearchWhere[] = "t.`Encoding` = '" . db_string($_GET['bitrate']) . "'";
 }
 
 if (isset($_GET['media'])
  && in_array($_GET['media'], $ENV - flatten($ENV->META->Platforms))) {
-    $SearchWhere[] = "t.`Media` = '".db_string($_GET['media'])."'";
+    $SearchWhere[] = "t.`Media` = '" . db_string($_GET['media']) . "'";
 }
 
 if (isset($_GET['codec'])
  && in_array($_GET['codec'], $ENV->META->Licenses)) {
-    $SearchWhere[] = "t.`Codec` = '".db_string($_GET['codec'])."'";
+    $SearchWhere[] = "t.`Codec` = '" . db_string($_GET['codec']) . "'";
 }
 
 if (isset($_GET['version'])) {
-    $SearchWhere[] = "t.`Version` = '".db_string($_GET['version'])."'";
+    $SearchWhere[] = "t.`Version` = '" . db_string($_GET['version']) . "'";
 }
 
 if (isset($_GET['resolution'])
  && in_array($_GET['resolution'], $ENV->flatten($ENV->META->Scopes))) {
-    $SearchWhere[] = "t.`Resolution` = '".db_string($_GET['resolution'])."'";
+    $SearchWhere[] = "t.`Resolution` = '" . db_string($_GET['resolution']) . "'";
 }
 
 if (isset($_GET['censored'])
  && in_array($_GET['censored'], array(1, 0))) {
-    $SearchWhere[] = "t.`Censored` = '".db_string($_GET['censored'])."'";
+    $SearchWhere[] = "t.`Censored` = '" . db_string($_GET['censored']) . "'";
 }
 
 if (!empty($_GET['categories'])) {
@@ -97,9 +97,9 @@ if (!empty($_GET['categories'])) {
         if (!is_numeric($Cat)) {
             error(0);
         }
-        $Cats[] = "tg.`category_id` = '".db_string($Cat)."'";
+        $Cats[] = "tg.`category_id` = '" . db_string($Cat) . "'";
     }
-    $SearchWhere[] = '('.implode(' OR ', $Cats).')';
+    $SearchWhere[] = '(' . implode(' OR ', $Cats) . ')';
 }
 
 if (!isset($_GET['tags_type'])) {
@@ -122,19 +122,19 @@ if (!empty($_GET['tags'])) {
             if (empty($Tag)) {
                 continue;
             }
-            $TagList[] = "tg.`tag_list` NOT RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tag_list` NOT RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
         } else {
-            $TagList[] = "tg.`tag_list` RLIKE '[[:<:]]".db_string($Tag)."(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tag_list` RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
         }
     }
 
     if (!empty($TagList)) {
         if (isset($_GET['tags_type']) && $_GET['tags_type'] !== '1') {
             $_GET['tags_type'] = '0';
-            $SearchWhere[] = '('.implode(' OR ', $TagList).')';
+            $SearchWhere[] = '(' . implode(' OR ', $TagList) . ')';
         } else {
             $_GET['tags_type'] = '1';
-            $SearchWhere[] = '('.implode(' AND ', $TagList).')';
+            $SearchWhere[] = '(' . implode(' AND ', $TagList) . ')';
         }
     }
 }
@@ -287,7 +287,7 @@ if ((empty($_GET['search'])
 
     if (!empty($Words)) {
         $SQL .= "
-          WHERE `Name` LIKE '%".implode("%' AND `Name` LIKE '%", $Words)."%'";
+          WHERE `Name` LIKE '%" . implode("%' AND `Name` LIKE '%", $Words) . "%'";
     }
 
     $SQL .= "
@@ -306,8 +306,8 @@ $Results = Torrents::get_groups($GroupIDs);
 $Action = \Gazelle\Text::esc($_GET['type']);
 $User = User::user_info($UserID);
 
-View::header($User['Username']."'s $Action torrents", 'browse');
-$Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
+View::header($User['Username'] . "'s $Action torrents", 'browse');
+$Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 ?>
 
 <div>
@@ -331,7 +331,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <input type="hidden" name="userid"
               value="<?= $UserID ?>" />
             <input type="search" name="search" size="60"
-              value="<?php Format::form('search') ?>" />
+              value="<?php \Gazelle\Format::form('search') ?>" />
           </td>
         </tr>
 
@@ -345,7 +345,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="container" name="container" class="ft_container">
               <option value="">Format</option>
               <?php foreach ($Containers as $Key => $ContainerName) { ?>
-              <option value="<?= \Gazelle\Text::esc($Key); ?>" <?php Format::selected('container', $Key) ?>><?= \Gazelle\Text::esc($Key); ?>
+              <option value="<?= \Gazelle\Text::esc($Key); ?>" <?php \Gazelle\Format::selected('container', $Key) ?>><?= \Gazelle\Text::esc($Key); ?>
               </option>
               <?php } ?>
             </select>
@@ -353,7 +353,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
               <?php foreach ($ENV->META->Licenses as $License) { ?>
-              <option value="<?= \Gazelle\Text::esc($License); ?>" <?php Format::selected('codec', $License) ?>><?= \Gazelle\Text::esc($License); ?>
+              <option value="<?= \Gazelle\Text::esc($License); ?>" <?php \Gazelle\Format::selected('codec', $License) ?>><?= \Gazelle\Text::esc($License); ?>
               </option>
               <?php } ?>
             </select>
@@ -362,7 +362,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
               <option value="">Scope</option>
               <?php foreach ($Resolutions as $ResolutionName) { ?>
               <option value="<?= \Gazelle\Text::esc($ResolutionName); ?>"
-                <?php Format::selected('resolution', $ResolutionName) ?>><?= \Gazelle\Text::esc($ResolutionName); ?>
+                <?php \Gazelle\Format::selected('resolution', $ResolutionName) ?>><?= \Gazelle\Text::esc($ResolutionName); ?>
               </option>
               <?php } ?>
             </select>
@@ -370,7 +370,7 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select name="media" class="ft_media">
               <option value="">Platform</option>
               <?php foreach ($Media as $MediaName) { ?>
-              <option value="<?= \Gazelle\Text::esc($MediaName); ?>" <?php Format::selected('media', $MediaName) ?>><?= \Gazelle\Text::esc($MediaName); ?>
+              <option value="<?= \Gazelle\Text::esc($MediaName); ?>" <?php \Gazelle\Format::selected('media', $MediaName) ?>><?= \Gazelle\Text::esc($MediaName); ?>
               </option>
               <?php } ?>
             </select>
@@ -383,10 +383,10 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="nobr" colspan="3">
             <select name="censored" class="ft_censored">
               <option value="3">Alignment</option>
-              <option value="1" <?Format::selected('censored', 1)?>>
+              <option value="1" <?\Gazelle\Format::selected('censored', 1)?>>
                 Aligned
               </option>
-              <option value="0" <?Format::selected('censored', 0)?>>
+              <option value="0" <?\Gazelle\Format::selected('censored', 0)?>>
                 Not Aligned
               </option>
             </select>
@@ -398,10 +398,10 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="label"><strong>Tags</strong></td>
           <td>
             <input type="search" name="tags" size="60"
-              value="<?php Format::form('tags') ?>" />&nbsp;
-            <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Format::selected('tags_type', 0, 'checked') ?>
+              value="<?php \Gazelle\Format::form('tags') ?>" />&nbsp;
+            <input type="radio" name="tags_type" id="tags_type0" value="0" <?php \Gazelle\Format::selected('tags_type', 0, 'checked') ?>
             /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-            <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Format::selected('tags_type', 1, 'checked') ?>
+            <input type="radio" name="tags_type" id="tags_type1" value="1" <?php \Gazelle\Format::selected('tags_type', 1, 'checked') ?>
             /><label for="tags_type1"> All</label><br>
             Use !tag to exclude tags
           </td>
@@ -413,14 +413,14 @@ $Pages = Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td>
             <select name="order" class="ft_order_by">
               <?php foreach ($Orders as $OrderText) { ?>
-              <option value="<?= $OrderText ?>" <?php Format::selected('order', $OrderText) ?>><?= $OrderText ?>
+              <option value="<?= $OrderText ?>" <?php \Gazelle\Format::selected('order', $OrderText) ?>><?= $OrderText ?>
               </option>
               <?php } ?>
             </select>
 
             <select name="way" class="ft_order_way">
               <?php foreach ($Ways as $WayKey => $WayText) { ?>
-              <option value="<?= $WayKey ?>" <?php Format::selected('way', $WayKey) ?>><?= $WayText ?>
+              <option value="<?= $WayKey ?>" <?php \Gazelle\Format::selected('way', $WayKey) ?>><?= $WayText ?>
               </option>
               <?php } ?>
             </select>
@@ -522,60 +522,60 @@ foreach ($Categories as $CatKey => $CatName) {
 
           # This is the torrent list formatting!
           $DisplayName = '';
-          $DisplayName .= '<a class="torrentTitle" href="torrents.php?id='.$GroupID.'&amp;torrentid='.$TorrentID.'" ';
+          $DisplayName .= '<a class="torrentTitle" href="torrents.php?id=' . $GroupID . '&amp;torrentid=' . $TorrentID . '" ';
 
           # No cover art
           if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-              $DisplayName .= 'data-cover="'.\Gazelle\Images::process($WikiImage ?? "", 'thumb').'" ';
+              $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage ?? "", 'thumb') . '" ';
           }
 
           # Old concatenated title: EN, JP, RJ
           $GroupName = empty($GroupName) ? (empty($GroupTitle2) ? $GroupNameJP : $GroupTitle2) : $GroupName;
-          $DisplayName .= 'dir="ltr">'.$GroupName.'</a>';
+          $DisplayName .= 'dir="ltr">' . $GroupName . '</a>';
 
           # Year
           if ($GroupYear) {
               $Label = '<br>📅&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
+              $DisplayName .= $Label . "<a href='torrents.php?action=search&year=$GroupYear'>$GroupYear</a>";
           }
 
           # Studio
           if ($GroupStudio) {
               $Label = '&ensp;📍&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
+              $DisplayName .= $Label . "<a href='torrents.php?action=search&location=$GroupStudio'>$GroupStudio</a>";
           }
 
           # Catalogue Number
           if ($GroupCatalogueNumber) {
               $Label = '&ensp;🔑&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
+              $DisplayName .= $Label . "<a href='torrents.php?action=search&numbers=$GroupCatalogueNumber'>$GroupCatalogueNumber</a>";
           }
 
           # Organism
           if ($GroupTitle2) {
               $Label = '&ensp;🦠&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
+              $DisplayName .= $Label . "<a href='torrents.php?action=search&advgroupname=$GroupTitle2'><em>$GroupTitle2</em></a>";
           }
 
           # Strain/Variety
           if ($GroupNameJP) {
               $Label = '&nbsp;';
-              $DisplayName .= $Label."<a href='torrents.php?action=search&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
+              $DisplayName .= $Label . "<a href='torrents.php?action=search&advgroupname=$GroupNameJP'>$GroupNameJP</a>";
           }
 
           # Authors
           if (isset($Artists)) {
               # Emoji in classes/astists.class.php
               $Label = '&ensp;';
-              $DisplayName .= $Label.'<div>'.Artists::display_artists($Artists).'</div>';
+              $DisplayName .= $Label . '<div>' . Artists::display_artists($Artists) . '</div>';
           } ?>
 
       <tr
         class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">
         <td class="center categoryColumn">
           <div
-            title="<?= Format::pretty_category($GroupCategoryID) ?>"
-            class="tooltip <?= Format::css_category($GroupCategoryID) ?>">
+            title="<?= \Gazelle\Format::pretty_category($GroupCategoryID) ?>"
+            class="tooltip <?= \Gazelle\Format::css_category($GroupCategoryID) ?>">
           </div>
         </td>
 
@@ -596,13 +596,13 @@ foreach ($Categories as $CatKey => $CatName) {
           if ($ExtraInfo) {
               echo "<br>$ExtraInfo";
           } ?>
-            <div class="tags"><?= $TorrentTags->format('torrents.php?type='.$Action.'&amp;userid='.$UserID.'&amp;tags=') ?>
+            <div class="tags"><?= $TorrentTags->format('torrents.php?type=' . $Action . '&amp;userid=' . $UserID . '&amp;tags=') ?>
             </div>
           </div>
         </td>
         <td class="nobr"><?= time_diff($Time, 1) ?>
         </td>
-        <td class="number_column nobr"><?= Format::get_size($Torrent['Size']) ?>
+        <td class="number_column nobr"><?= \Gazelle\Format::get_size($Torrent['Size']) ?>
         </td>
         <td class="number_column"><?= \Gazelle\Text::float($Torrent['Snatched']) ?>
         </td>
