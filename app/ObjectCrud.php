@@ -59,6 +59,7 @@ abstract class ObjectCrud
         }
 
         # use a RecursiveCollection not an array
+        $this->id = $upsert["id"];
         $this->attributes = new RecursiveCollection($attributes);
     }
 

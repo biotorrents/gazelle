@@ -7,19 +7,19 @@ declare(strict_types=1);
  * read wiki article
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # is there an identifier?
-$identifier ??= \Gazelle\Wiki::$indexArticleId; # default to articleId 1
+$identifier ??= Gazelle\Wiki::$indexArticleId; # default to articleId 1
 
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
     # no, it's not an integer, so it must be an alias
-    $identifier = \Gazelle\Wiki::getIdByAlias($identifier);
+    $identifier = Gazelle\Wiki::getIdByAlias($identifier);
 }
 
 # load the article
-$article = new \Gazelle\Wiki($identifier);
+$article = new Gazelle\Wiki($identifier);
 if (!$article->id) {
     $app->error(404);
 }
@@ -32,6 +32,25 @@ if (!$good) {
     $article->save();
 }
 
+# create a conversation if it doesn't exist
+$conversationId = Gazelle\Conversations::getIdByContent($article->id, "wiki");
+if (!$conversationId) {
+    $data = [
+        "id" => $app->dbNew->shortUuid(),
+        "contentId" => $article->id,
+        "contentType" => "wiki",
+        "userId" => 0, # created by the system
+        "subject" => "Conversation for " . $article->attributes->title,
+    ];
+
+    $conversation = new Gazelle\Conversations();
+    $conversation->create($data);
+    $conversationId = $conversation->id;
+}
+
+# get the conversation, which should always exist now
+$conversation = new Gazelle\Conversations($conversationId);
+
 # twig template
 $app->twig->display("wiki/article.twig", [
     "title" => $article->attributes->title,
@@ -41,4 +60,5 @@ $app->twig->display("wiki/article.twig", [
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),
     "isEditorAvailable" => true,
+    "conversation" => $conversation,
 ]);

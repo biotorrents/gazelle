@@ -1,0 +1,116 @@
+{##
+ # {% set variables = { "conversation": conversation } %}
+ # {% include "_base/conversation.twig" with variables %}
+ #
+ # https://twig.symfony.com/doc/3.x/tags/include.html
+ #}
+
+{% if isSubscribed is defined %}
+	{% set isSubscribed = true %}
+{% else %}
+	{% set isSubscribed = false %}
+{% endif %}
+
+<section>
+
+    <span class="flexHeader">
+        <h3>{{ conversation.attributes.subject }}</h3>
+        {# toggle subscription #}
+        {% if isSubscribed %}
+            <a class="button button-red" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">remove subscription</a>
+        {% else %}
+            <a class="button button-orange" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">add subscription</a>
+        {% endif %}
+    </span>
+
+    {# thread display #}
+    <table>
+        {% for message in conversation.relationships.messages %}
+            <tr>
+                <td width="120" style="vertical-align: top;">
+                    {{ displayAvatar("", "ohm") }}
+                    <p class="center">{{ message.attributes.userId|formatUsername }}</p>
+                </td>
+
+                <td>
+                    {# message body #}
+                    {{ message.attributes.body|parse }}
+
+                    {# post metadata #}
+                    <p class="flexRow">
+                        <span class="faded small">
+                            Posted <span class="tooltip" title="{{ message.attributes.createdAt }}">{{ message.attributes.createdAt|relativeTime }}</span>
+                        </span>
+                        {% if message.attributes.updatedAt is not null %}
+                            <span class="faded small">
+                                Edited <span class="tooltip" title="{{ message.attributes.updatedAt }}">{{ message.attributes.updatedAt|relativeTime }}</span>
+                            </span>
+                        {% endif %}
+
+                        {% if message.attributes.replyToId is not null %}
+                            <span class="faded small">
+                                Replying to <a href="#{{ message.attributes.replyToId }}">{{ message.attributes.replyToId }}</a>
+                            </span>
+                        {% endif %}
+                    </p>
+
+                    {# reactions #}
+                    <p class="flexRow">
+                        {% for key, value in conversation.allowedReactions %}
+                            <a class="reactToMessage" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
+                                {{ value }}
+                                {% if message.attributes.reactions[key] is defined %}
+                                    {{ message.attributes.reactions[key] }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                    </p>
+
+                    {# post actions #}
+                    <p class="flexRow">
+                        <a class="button button-primary" href="/conversations/editMessage/{{ message.id }}">reply</a>
+
+                        {# author or moderator #}
+                        {% if message.attributes.userId == user.core.id %}
+                            <a class="button button-orange" href="/conversations/editMessage/{{ message.id }}">edit</a>
+                            <a class="button button-red" href="/conversations/deleteMessage/{{ message.id }}">delete</a>
+                        {% endif %}
+
+                        {# report #}
+                        <a class="button button-red" href="/conversations/reportMessage/{{ message.id }}">report</a>
+
+                        {# reactions #}
+                        {#
+                        {% for key, value in conversation.allowedReactions %}
+                            <a class="button reactToMessage" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
+                                {{ value }}
+                                {% if message.attributes.reactions[key] is defined %}
+                                    {{ message.attributes.reactions[key] }}
+                                {% else %}
+                                    0
+                                {% endif %}
+                            </a>
+                        {% endfor %}
+                        #}
+                    </p>
+
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {# add your reply #}
+    <form method="post" action="/conversations/createMessage">
+        {{ form_token("/conversations/createMessage") }}
+        <input type="hidden" name="conversationId" value="{{ conversation.id }}">
+        <input type="hidden" name="userId" value="{{ user.core.id }}">
+    
+        {% set variables = { "id": conversation.id, "name": "body", "placeholder": "What would you like to say in response?", "value": null } %}
+        {% include "_base/textarea.twig" with variables %}
+    
+        <input type="submit" class="button-primary" value="add your reply">
+    </form>
+
+</section>

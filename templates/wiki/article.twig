@@ -16,6 +16,9 @@
     {% include "_base/starboardNotebook.twig" with vars %}
 </section>
 
+{% set variables = { "conversation": conversation } %}
+{% include "_base/conversation.twig" with variables %}
+
 {% endblock %}
 
 
