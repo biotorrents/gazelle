@@ -53,8 +53,8 @@ class Conversations extends ObjectCrud
     # reactions in the form of ["text" => "emoji"]
     # https://docs.github.com/en/rest/reactions/reactions?apiVersion=2022-11-28
     public array $allowedReactions = [
-        "+1" => "👍",
-        "-1" => "👎",
+        "thumbsUp" => "👍",
+        "thumbsDown" => "👎",
         "laugh" => "😆",
         "confused" => "😕",
         "heart" => "❤️",
@@ -144,17 +144,12 @@ class Conversations extends ObjectCrud
      *
      * Adds a reaction to a message.
      *
-     * @param int $identifier
-     * @param string $reaction
-     * @return void
+     * @param int $identifier messageId
+     * @param string $reaction $this->allowedReactions
+     * @return int the new reaction count
      */
-    public function reactToMessage(int $identifier, string $reaction): void
+    public function reactToMessage(int $identifier, string $reaction): int
     {
-        # this is currently unused
-        throw new Exception("not implemented");
-
-        /** */
-
         $app = App::go();
 
         # validate the reaction
@@ -162,29 +157,27 @@ class Conversations extends ObjectCrud
             throw new Exception("invalid reaction {$reaction}");
         }
 
-        # get the message
-        $message = $this->read($identifier);
+        # did the user already react?
+        $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
+        $ref = $app->dbNew->single($query, [$app->user->core["id"], $identifier]);
 
-        # decode the reactions
-        $reactions = json_decode($message->attributes->reactions, true);
+        if ($ref) {
+            throw new Exception("user already reacted to this message");
+        }
 
-        # increment the reaction
-        $reactions[$reaction]++;
+        # get the current reaction count
+        $query = "select {$reaction} from conversations_reactions where messageId = ?";
+        $reactionCount = $app->dbNew->single($query, [$identifier]);
 
         # update the message
-        $query = "update conversations set reactions = ? where id = ?";
-        $app->dbNew->do($query, [json_encode($reactions), $identifier]);
-    }
+        $query = "insert into conversations_reactions (id, messageId, userId, {$reaction}) values (?, ?, ?, ?)";
+        $app->dbNew->do($query, [$app->dbNew->shortUuid(), $identifier, $app->user->core["id"], $reactionCount + 1]);
 
+        # return the new reaction count
+        $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
+        $reactionCount = $app->dbNew->single($query, [$identifier]);
 
-    /**
-     * listReactions
-     *
-     * Lists all the reactions to a message.
-     */
-    public function listReactions(int $identifier): array
-    {
-        return json_decode($this->attributes->reactions, true);
+        return intval($reactionCount);
     }
 
 
@@ -196,12 +189,21 @@ class Conversations extends ObjectCrud
      * @param int $identifier
      * @return int the new likeCount
      */
+    /*
     public function likeMessage(int $identifier): int
     {
         $app = App::go();
 
+        # did the user already like this message?
+        $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and likeCount > 0";
+        $ref = $app->dbNew->single($query, [$app->user->id, $identifier]);
+
+        if ($ref) {
+            throw new Exception("user already liked this message");
+        }
+
         # increment the like count
-        $query = "update conversations_messages set likeCount = likeCount + 1 where id = ?";
+        $query = "insert into conversations_reactions (id, conversationId, userId) values likeCount = likeCount + 1 where id = ?";
         $app->dbNew->do($query, [$identifier]);
 
         # return the new like count
@@ -210,6 +212,7 @@ class Conversations extends ObjectCrud
 
         return $likeCount;
     }
+    */
 
 
     /**
@@ -220,6 +223,7 @@ class Conversations extends ObjectCrud
      * @param int $identifier
      * @return int the new dislikeCount
      */
+    /*
     public function dislikeMessage(int $identifier): int
     {
         $app = App::go();
@@ -234,6 +238,7 @@ class Conversations extends ObjectCrud
 
         return $dislikeCount;
     }
+    */
 
 
     /**

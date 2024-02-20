@@ -832,14 +832,11 @@ class Internal extends Base
 
         $request = \Gazelle\Http::json();
         $request["messageId"] ??= null;
-
-        if (empty($request["messageId"])) {
-            self::failure(400, "messageId required");
-        }
+        $request["userId"] ??= null;
 
         try {
             $conversation = new \Gazelle\Conversations($request["messageId"]);
-            $data = $conversation->likeMessage($request["messageId"]);
+            $data = $conversation->reactToMessage($request["messageId"], "thumbsUp");
 
             self::success(200, $data);
         } catch (\Throwable $e) {
@@ -863,14 +860,11 @@ class Internal extends Base
 
         $request = \Gazelle\Http::json();
         $request["messageId"] ??= null;
-
-        if (empty($request["messageId"])) {
-            self::failure(400, "messageId required");
-        }
+        $request["userId"] ??= null;
 
         try {
             $conversation = new \Gazelle\Conversations($request["messageId"]);
-            $data = $conversation->dislikeMessage($request["messageId"]);
+            $data = $conversation->reactToMessage($request["messageId"], "thumbsDown");
 
             self::success(200, $data);
         } catch (\Throwable $e) {
