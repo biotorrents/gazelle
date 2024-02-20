@@ -29,6 +29,7 @@
                 codeSyntaxHighlighting: true,
             },
 
+            /*
             toolbar: [
                 // https://github.com/Ionaru/easy-markdown-editor#toolbar-icons
                 "bold", "italic", "strikethrough", "heading",
@@ -45,6 +46,7 @@
                     title: "Plain Text Editor",
                 },
             ],
+            */
 
             shortcuts: {
                 // https://github.com/Ionaru/easy-markdown-editor#keyboard-shortcuts
@@ -59,5 +61,15 @@
                 $(event.target).val()
             );
         });
+
+        // update textarea on easymde change
+        easyMDE.codemirror.on("change", () => {
+            $("#{{ id }}").val(
+                easyMDE.value()
+            );
+        });
+
+        // put the easymde in the global scope
+        window.{{ id }} = easyMDE;
     })();
 </script>

@@ -33,29 +33,13 @@ if (!$good) {
 }
 
 # create a conversation if it doesn't exist
-$conversationId = Gazelle\Conversations::getIdByContent($article->id, "wiki");
-if (!$conversationId) {
-    $data = [
-        "id" => $app->dbNew->shortUuid(),
-        "contentId" => $article->id,
-        "contentType" => "wiki",
-        "userId" => 0, # created by the system
-        "subject" => "Conversation for " . $article->attributes->title,
-    ];
-
-    $conversation = new Gazelle\Conversations();
-    $conversation->create($data);
-    $conversationId = $conversation->id;
-}
-
-# get the conversation, which should always exist now
-$conversation = new Gazelle\Conversations($conversationId);
+$conversation = Gazelle\Conversations::createIfNotExists($article->id, "wiki");
 
 # twig template
 $app->twig->display("wiki/article.twig", [
     "title" => $article->attributes->title,
     "sidebar" => true,
-    "js" => ["wiki"],
+    "js" => ["wiki", "conversations"],
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),

@@ -812,4 +812,69 @@ class Internal extends Base
             self::failure(400, $e->getMessage());
         }
     }
+
+
+    /** conversations */
+
+
+    /**
+     * likeMessage
+     *
+     * Likes a conversation message.
+     *
+     * @return void
+     */
+    public static function likeMessage(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Gazelle\Http::json();
+        $request["messageId"] ??= null;
+
+        if (empty($request["messageId"])) {
+            self::failure(400, "messageId required");
+        }
+
+        try {
+            $conversation = new \Gazelle\Conversations($request["messageId"]);
+            $data = $conversation->likeMessage($request["messageId"]);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
+    /**
+     * dislikeMessage
+     *
+     * Dislikes a conversation message.
+     *
+     * @return void
+     */
+    public static function dislikeMessage(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Gazelle\Http::json();
+        $request["messageId"] ??= null;
+
+        if (empty($request["messageId"])) {
+            self::failure(400, "messageId required");
+        }
+
+        try {
+            $conversation = new \Gazelle\Conversations($request["messageId"]);
+            $data = $conversation->dislikeMessage($request["messageId"]);
+
+            self::success(200, $data);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
 } # class

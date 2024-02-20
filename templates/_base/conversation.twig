@@ -26,7 +26,7 @@
     {# thread display #}
     <table>
         {% for message in conversation.relationships.messages %}
-            <tr>
+            <tr id="conversation-{{ message.id }}">
                 <td width="120" style="vertical-align: top;">
                     {{ displayAvatar("", "ohm") }}
                     <p class="center">{{ message.attributes.userId|formatUsername }}</p>
@@ -49,15 +49,16 @@
 
                         {% if message.attributes.replyToId is not null %}
                             <span class="faded small">
-                                Replying to <a href="#{{ message.attributes.replyToId }}">{{ message.attributes.replyToId }}</a>
+                                Replying to <a href="#conversation-{{ message.attributes.replyToId }}">{{ message.attributes.replyToId }}</a>
                             </span>
                         {% endif %}
                     </p>
 
-                    {# reactions #}
+                    {#
+                    {# reactions # }
                     <p class="flexRow">
                         {% for key, value in conversation.allowedReactions %}
-                            <a class="reactToMessage" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
+                            <a class="conversationButton" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
                                 {{ value }}
                                 {% if message.attributes.reactions[key] is defined %}
                                     {{ message.attributes.reactions[key] }}
@@ -67,24 +68,70 @@
                             </a>
                         {% endfor %}
                     </p>
+                    #}
 
                     {# post actions #}
                     <p class="flexRow">
-                        <a class="button button-primary" href="/conversations/editMessage/{{ message.id }}">reply</a>
+                        {# reply #}
+                        <a class="conversationButton tooltip replyToMessage" title="reply" href="#replyToMessage" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-reply" data-messageid="{{ message.id }}"></i>
+                        </a>
 
-                        {# author or moderator #}
+                        {# quote #}
+                        <a class="conversationButton tooltip replyToMessage quoteMessage" title="quote" href="#replyToMessage" data-messageid="{{ message.id }}" data-conversationid="{{ conversation.id }}">
+                            <i class="fa-thin fa-quote-left" data-messageid="{{ message.id }}" data-conversationid="{{ conversation.id }}"></i>
+                        </a>
+
+                        {# edit #}
+                        <a class="conversationButton tooltip" title="edit" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-pen-to-square" data-messageid="{{ message.id }}"></i>
+                        </a>
+    
+                        {# delete #}
+                        <a class="conversationButton tooltip" title="delete" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-trash" data-messageid="{{ message.id }}"></i>
+                        </a>
+
+                        {# report #}
+                        <a class="conversationButton tooltip" title="report" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-flag" data-messageid="{{ message.id }}"></i>
+                        </a>
+
+                        {# thumbs up #}
+                        <a class="conversationButton tooltip likeMessage" title="like" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                            <i class="fa-thin fa-thumbs-up" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}"></i>
+                            <span id="likeCount-{{ message.id }}" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                                {{ message.attributes.likeCount|default(0) }}
+                            </span>
+                        </a>
+
+                        {# thumbs down #}
+                        <a class="conversationButton tooltip dislikeMessage" title="dislike" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                            <i class="fa-thin fa-thumbs-down" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}"></i>
+                            <span id="dislikeCount-{{ message.id }}" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                                {{ message.attributes.dislikeCount|default(0) }}
+                            </span>
+                        </a>
+                    </p>
+
+
+                    {#
+                    {# post actions # }
+                    <p class="flexRow">
+                        <a class="button button-primary replyToMessage" data-messageid="{{ message.id }}">reply</a>
+
+                        {# author or moderator # }
                         {% if message.attributes.userId == user.core.id %}
                             <a class="button button-orange" href="/conversations/editMessage/{{ message.id }}">edit</a>
                             <a class="button button-red" href="/conversations/deleteMessage/{{ message.id }}">delete</a>
                         {% endif %}
 
-                        {# report #}
+                        {# report # }
                         <a class="button button-red" href="/conversations/reportMessage/{{ message.id }}">report</a>
 
-                        {# reactions #}
-                        {#
+                        {# reactions # }
                         {% for key, value in conversation.allowedReactions %}
-                            <a class="button reactToMessage" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
+                            <a class="button conversationButton" data-reaction="{{ key }}" data-messageid="{{ message.id }}">
                                 {{ value }}
                                 {% if message.attributes.reactions[key] is defined %}
                                     {{ message.attributes.reactions[key] }}
@@ -93,8 +140,8 @@
                                 {% endif %}
                             </a>
                         {% endfor %}
-                        #}
                     </p>
+                    #}
 
                 </td>
             </tr>
@@ -102,12 +149,16 @@
     </table>
 
     {# add your reply #}
-    <form method="post" action="/conversations/createMessage">
+    <form id="replyToMessage" method="post" action="/conversations/createMessage">
         {{ form_token("/conversations/createMessage") }}
+
         <input type="hidden" name="conversationId" value="{{ conversation.id }}">
         <input type="hidden" name="userId" value="{{ user.core.id }}">
+        <input type="hidden" id="replyToId" name="replyToId" value=""> {# no value yet #}
     
-        {% set variables = { "id": conversation.id, "name": "body", "placeholder": "What would you like to say in response?", "value": null } %}
+        {# for some reason, only an underscore not a hyphen works in this context #}
+        {# https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id #}
+        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "What would you like to say in response?", "value": null } %}
         {% include "_base/textarea.twig" with variables %}
     
         <input type="submit" class="button-primary" value="add your reply">

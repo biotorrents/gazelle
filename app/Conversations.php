@@ -108,7 +108,6 @@ class Conversations extends ObjectCrud
         $ref = $app->dbNew->multi($query, [$this->id, $this->perPage, $offset]);
 
         # loop through and convert to a threaded structure
-        # organize first by createdAt ascending, and then by replyToId
         $messages = [];
         foreach ($ref as $row) {
             # make a json:api compliant message object
@@ -120,7 +119,9 @@ class Conversations extends ObjectCrud
                     "userId" => $row["userId"],
                     "replyToId" => $row["replyToId"],
                     "body" => $row["body"],
-                    "reactions" => json_decode($row["reactions"] ?? "{}", true),
+                    "likeCount" => $row["likeCount"],
+                    "dislikeCount" => $row["dislikeCount"],
+                    "otherReactions" => json_decode($row["otherReactions"] ?? "{}", true),
                     "isReported" => boolval($row["isReported"]),
                     "createdAt" => $row["created_at"],
                     "updatedAt" => $row["updated_at"],
@@ -128,14 +129,8 @@ class Conversations extends ObjectCrud
                 ],
             ];
 
-            # if replyToId is null, maintain its position in the array
-            #if (is_null($row["replyToId"])) {
+            # add it to the messages array
             $messages[] = $messageObject;
-            #continue;
-            #}
-
-            # if replyToId is not null, add it to the parent
-            #$messages[$row["replyToId"]][] = $messageObject;
         }
 
         # return the conversation
@@ -155,6 +150,11 @@ class Conversations extends ObjectCrud
      */
     public function reactToMessage(int $identifier, string $reaction): void
     {
+        # this is currently unused
+        throw new Exception("not implemented");
+
+        /** */
+
         $app = App::go();
 
         # validate the reaction
@@ -189,6 +189,54 @@ class Conversations extends ObjectCrud
 
 
     /**
+     * likeMessage
+     *
+     * Adds a like to a message.
+     *
+     * @param int $identifier
+     * @return int the new likeCount
+     */
+    public function likeMessage(int $identifier): int
+    {
+        $app = App::go();
+
+        # increment the like count
+        $query = "update conversations_messages set likeCount = likeCount + 1 where id = ?";
+        $app->dbNew->do($query, [$identifier]);
+
+        # return the new like count
+        $query = "select likeCount from conversations_messages where id = ?";
+        $likeCount = $app->dbNew->single($query, [$identifier]);
+
+        return $likeCount;
+    }
+
+
+    /**
+     * dislikeMessage
+     *
+     * Adds a dislike to a message.
+     *
+     * @param int $identifier
+     * @return int the new dislikeCount
+     */
+    public function dislikeMessage(int $identifier): int
+    {
+        $app = App::go();
+
+        # increment the dislike count
+        $query = "update conversations_messages set dislikeCount = dislikeCount + 1 where id = ?";
+        $app->dbNew->do($query, [$identifier]);
+
+        # return the new dislike count
+        $query = "select dislikeCount from conversations_messages where id = ?";
+        $dislikeCount = $app->dbNew->single($query, [$identifier]);
+
+        return $dislikeCount;
+    }
+
+
+    /**
      * getIdByContent
      *
      * Get the conversationId by contentId and contentType.
@@ -212,6 +260,41 @@ class Conversations extends ObjectCrud
         $ref = $app->dbNew->single($query, [$contentId, $contentType]);
 
         return $ref;
+    }
+
+
+    /**
+     * createIfNotExists
+     *
+     * Creates a conversation if it doesn't exist.
+     *
+     * @param int $contentId
+     * @param string $contentType
+     * @return self
+     */
+    public static function createIfNotExists(int $contentId, string $contentType): self
+    {
+        $app = App::go();
+
+        # get the conversationId
+        $conversationId = self::getIdByContent($contentId, $contentType);
+        if ($conversationId) {
+            return new self($conversationId);
+        }
+
+        # if it doesn't exist, create it
+        $data = [
+            "id" => $app->dbNew->shortUuid(),
+            "contentId" => $contentId,
+            "contentType" => $contentType,
+            "userId" => 0, # created by the system
+            "subject" => "Conversation",
+        ];
+
+        $conversation = new self();
+        $conversation->create($data);
+
+        return $conversation;
     }
 
 

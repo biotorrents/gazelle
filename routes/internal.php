@@ -56,6 +56,11 @@ Flight::route("POST /api/internal/createWikiAlias", ["Gazelle\Api\Internal", "cr
 Flight::route("POST /api/internal/deleteWikiAlias", ["Gazelle\Api\Internal", "deleteWikiAlias"]);
 
 
+# conversation reactions
+Flight::route("POST /api/internal/likeMessage", ["Gazelle\Api\Internal", "likeMessage"]);
+Flight::route("POST /api/internal/dislikeMessage", ["Gazelle\Api\Internal", "dislikeMessage"]);
+
+
 # not found
 Flight::route("*", function () {
     \Gazelle\Api\Base::failure(404, "not found");
