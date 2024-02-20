@@ -16,14 +16,14 @@ namespace Gazelle;
 class Top10
 {
     # cache settings
-    private static $cachePrefix = "top10:";
-    private static $cacheDuration = "1 day";
+    private static string $cachePrefix = "top10:";
+    private static string $cacheDuration = "1 day";
 
     # default result limit
-    public static $defaultLimit = 10;
+    public static int $defaultLimit = 10;
 
     # shared torrent query
-    private static $torrentQuery = "
+    private static string $torrentQuery = "
         select torrents_group.id, (torrents.size * torrents.snatched) + (torrents.size * 0.5 * torrents.leechers) as dataTransfer
         from torrents left join torrents_group on torrents_group.id = torrents.groupId
     ";
@@ -50,7 +50,7 @@ class Top10
     */
 
     # shared user query
-    private static $userQuery = "
+    private static string $userQuery = "
         select users.id, users.username, users.registered, users_main.uploaded, users_main.downloaded,
         abs(users_main.uploaded - :uploadIgnore) / (:uploadNow - unix_timestamp(users.registered)) as uploadSpeed,
         users_main.downloaded / (:downloadNow - unix_timestamp(users.registered)) as downloadSpeed,
@@ -66,7 +66,7 @@ class Top10
     ";
 
     # named parameters for user queries
-    private static $userVariables = [
+    private static array $userVariables = [
         "downloadCutoff" => 0,
         "downloadNow" => null, # self::hydrateUserVariables
         "limit" => null, # self::hydrateUserVariables
@@ -91,7 +91,7 @@ class Top10
      */
     public static function dailyTorrents(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -121,7 +121,7 @@ class Top10
      */
     public static function weeklyTorrents(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -151,7 +151,7 @@ class Top10
      */
     public static function monthlyTorrents(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -181,7 +181,7 @@ class Top10
      */
     public static function yearlyTorrents(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -210,7 +210,7 @@ class Top10
      */
     public static function overallTorrents(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -240,7 +240,7 @@ class Top10
      */
     public static function torrentSeeders(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -270,7 +270,7 @@ class Top10
      */
     public static function torrentSnatches(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -300,7 +300,7 @@ class Top10
      */
     public static function torrentData(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -347,7 +347,7 @@ class Top10
      */
     public static function torrentTags(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -384,7 +384,7 @@ class Top10
      */
     public static function requestTags(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -424,7 +424,7 @@ class Top10
      */
     private static function hydrateUserVariables(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $variables = self::$userVariables;
 
@@ -474,7 +474,7 @@ class Top10
      */
     public static function dataUploaded(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -506,7 +506,7 @@ class Top10
      */
     public static function dataDownloaded(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -538,7 +538,7 @@ class Top10
      */
     public static function uploadCount(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -570,7 +570,7 @@ class Top10
      */
     public static function uploadSpeed(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -602,7 +602,7 @@ class Top10
      */
     public static function downloadSpeed(int $limit = null): ?array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = self::$cachePrefix . __FUNCTION__ . ":{$limit}";
@@ -648,7 +648,7 @@ class Top10
      */
     public static function render_linkbox($selected)
     {
-        $ENV = \Gazelle\ENV::go(); ?>
+        $ENV = ENV::go(); ?>
 <div class="linkbox">
   <a href="/top10" class="brackets"><?=self::get_selected_link("Torrents", $selected === "torrents")?></a>
   <a href="/top10/users" class="brackets"><?=self::get_selected_link("Users", $selected === "users")?></a>

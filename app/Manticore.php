@@ -105,7 +105,7 @@ class Manticore
      */
     public function __construct()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         try {
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
@@ -124,7 +124,7 @@ class Manticore
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -148,7 +148,7 @@ class Manticore
      */
     public function search(string $what, array $data = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # start debug
         $app->debug["time"]->startMeasure("manticore", "manticore search");
@@ -164,7 +164,7 @@ class Manticore
         # sanity check
         $allowedIndices = array_keys($this->indices);
         if (!in_array($what, $allowedIndices)) {
-            throw new \Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
+            throw new Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
         }
 
         # raw search terms
@@ -250,7 +250,7 @@ class Manticore
             return $results;
         } catch (\Throwable $e) {
             $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -374,7 +374,7 @@ class Manticore
             if ($this->rawSearchTerms["tagsType"] === "excludeTags") {
                 foreach ($value as $k => $v) {
                     # raw expression passed below
-                    $value[$k] = \Gazelle\Text::esc("-{$v}");
+                    $value[$k] = Text::esc("-{$v}");
                 }
 
                 $value = implode(" or ", $value);

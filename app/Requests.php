@@ -59,7 +59,7 @@ class Requests extends ObjectCrud
      */
     public static function get_requests($RequestIDs, $Return = true)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $Found = $NotFound = array_fill_keys($RequestIDs, false);
         // Try to fetch the requests from the cache first.
@@ -170,7 +170,7 @@ class Requests extends ObjectCrud
      */
     public static function get_artists($RequestID)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $Artists = $app->cache->get("request_artists_$RequestID");
         if (is_array($Artists)) {
@@ -205,7 +205,7 @@ class Requests extends ObjectCrud
      */
     public static function get_tags($RequestIDs)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (empty($RequestIDs)) {
             return [];
@@ -243,7 +243,7 @@ class Requests extends ObjectCrud
      */
     public static function get_votes_array($RequestID)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $RequestVotes = $app->cache->get("request_votes_$RequestID");
         if (!is_array($RequestVotes)) {

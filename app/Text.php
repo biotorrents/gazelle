@@ -18,8 +18,8 @@ namespace Gazelle;
 class Text
 {
     # cache settings
-    private static $cachePrefix = "text:";
-    private static $cacheDuration = "1 week";
+    private static string $cachePrefix = "text:";
+    private static string $cacheDuration = "1 week";
 
 
     /**
@@ -35,7 +35,7 @@ class Text
      */
     public static function parse(string $string, bool $safe = true): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
@@ -89,7 +89,7 @@ class Text
      */
     private static function fixLinks(string $parsed): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("process", "post-process text");
 
@@ -308,7 +308,7 @@ class Text
      */
     public static function userGeneratedContent(string $string): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # escape the input
         $string = self::esc($string);
