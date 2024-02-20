@@ -54,12 +54,12 @@ class OpenAI
 {
     # client and params
     public $client = null;
-    private $maxTokens = 2500; # $0.05
-    private $model = "text-davinci-003";
+    private int $maxTokens = 2500; # $0.05
+    private string $model = "text-davinci-003";
 
     # cache settings
-    private $cachePrefix = "openai:";
-    private $cacheDuration = "1 day";
+    private string $cachePrefix = "openai:";
+    private string $cacheDuration = "1 day";
 
 
     /**
@@ -72,10 +72,10 @@ class OpenAI
      */
     public function __construct(array $options = [])
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (!$app->env->enableOpenAi) {
-            throw new \Exception("OpenAI support is disabled in the app config");
+            throw new Exception("OpenAI support is disabled in the app config");
         }
 
         $openAiApi = $app->env->private("openAiApi");
@@ -116,7 +116,7 @@ class OpenAI
      */
     public function summarize(int $groupId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("summarize", "openai: summarize groupId {$groupId}");
 
@@ -133,7 +133,7 @@ class OpenAI
         $description = $app->dbNew->single($query, [$groupId]);
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or description empty");
+            throw new Exception("groupId {$groupId} not found or description empty");
         }
 
         # process the description
@@ -152,7 +152,7 @@ class OpenAI
             $response = $response->toArray();
             $this->insertResponse($groupId, "summary", $response);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         $app->cache->set($cacheKey, $response, $this->cacheDuration);
@@ -173,7 +173,7 @@ class OpenAI
      */
     public function keywords(int $groupId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("keywords", "openai: keywords for groupId {$groupId}");
 
@@ -196,7 +196,7 @@ class OpenAI
         }
 
         if (!$description || empty($description)) {
-            throw new \Exception("groupId {$groupId} not found or description empty");
+            throw new Exception("groupId {$groupId} not found or description empty");
         }
 
         # process the description
@@ -215,13 +215,13 @@ class OpenAI
             $response = $response->toArray();
             $this->insertResponse($groupId, "keywords", $response);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
 
         # process response into an array
-        $keywords = json_decode(\Gazelle\Text::oneLine($response["choices"][0]["text"]), true);
+        $keywords = json_decode(Text::oneLine($response["choices"][0]["text"]), true);
         if (!$keywords || !is_array($keywords)) {
-            throw new \Exception("openai fucked up jobId {$response["id"]}");
+            throw new Exception("openai fucked up jobId {$response["id"]}");
         }
 
         # convert to gazelle tags
@@ -269,9 +269,9 @@ class OpenAI
      */
     private function processDescription(string $description): string
     {
-        $description = \Gazelle\Text::parse($description);
+        $description = Text::parse($description);
         $description = strip_tags($description);
-        $description = \Gazelle\Text::oneLine($description);
+        $description = Text::oneLine($description);
 
         return $description;
     }
@@ -289,11 +289,11 @@ class OpenAI
      */
     private function insertResponse(int $groupId, string $type, array $response): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $allowedTypes = ["summary", "keywords"];
         if (!in_array($type, $allowedTypes)) {
-            throw new \Exception("type must be one of " . implode(", ", $allowedTypes) . ", {$type} given");
+            throw new Exception("type must be one of " . implode(", ", $allowedTypes) . ", {$type} given");
         }
 
         # format the data
@@ -303,7 +303,7 @@ class OpenAI
             "object" => $response["object"],
             "created" => \Carbon\Carbon::createFromTimestamp($response["created"])->toDateTimeString(),
             "model" => $response["model"],
-            "text" => \Gazelle\Text::oneLine($response["choices"][0]["text"]),
+            "text" => Text::oneLine($response["choices"][0]["text"]),
             "index" => $response["choices"][0]["index"],
             "logprobs" => $response["choices"][0]["logprobs"],
             "finishReason" => $response["choices"][0]["finish_reason"],
