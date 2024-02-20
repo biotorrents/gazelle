@@ -39,7 +39,7 @@ foreach ($ref as $row) {
         Gazelle\Text::figlet("scraping paper", "green");
         !d($row["URI"]);
 
-        $semanticScholar = new SemanticScholar(["paperId" => $row["URI"]]);
+        $semanticScholar = new Gazelle\SemanticScholar(["paperId" => $row["URI"]]);
         $options = ["groupId" => $row["TorrentID"]];
         $semanticScholar->scrape(true, $options);
     } catch (Throwable $e) {

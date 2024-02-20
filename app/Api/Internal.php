@@ -538,7 +538,7 @@ class Internal extends Base
         }
 
         try {
-            $semanticScholar = new \SemanticScholar([
+            $semanticScholar = new \Gazelle\SemanticScholar([
                 "paperId" => $paperId,
             ]);
 

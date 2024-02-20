@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * SemanticScholar
+ * Gazelle\SemanticScholar
  *
  * Helper class for the Academic Graph API and others.
  * The scrape function is pretty much what you want.
@@ -13,6 +13,8 @@ declare(strict_types=1);
  * @see https://api.semanticscholar.org/api-docs/recommendations
  * @see https://api.semanticscholar.org/api-docs/datasets
  */
+
+namespace Gazelle;
 
 class SemanticScholar
 {
@@ -41,7 +43,7 @@ class SemanticScholar
      * __construct
      *
      * e.g.,
-     * $semanticScholar = new SemanticScholar([
+     * $semanticScholar = new Gazelle\SemanticScholar([
      *   "paperId" => null,
      *   "authorId" => null,
      *   "releaseId" => null,
@@ -55,7 +57,7 @@ class SemanticScholar
         # e.g., accidentally unescaped form
         foreach ($params as $key => $value) {
             if (in_array($key, $allowedKeys)) {
-                $this->params[$key] = \Gazelle\Text::esc($value);
+                $this->params[$key] = Text::esc($value);
             }
         }
 
@@ -68,7 +70,7 @@ class SemanticScholar
      */
     private function curl(string $uri, array $fields, string $search = "")
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # return cached if available
         $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode([
@@ -198,7 +200,7 @@ class SemanticScholar
      */
     private function upsert(array $data, array $options = [])
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (empty($options["torrentGroupId"])) {
             throw new Exception("you need to pass at least \$options[\"torrentGroupId\"]");
@@ -244,7 +246,7 @@ class SemanticScholar
      */
     public function fetch(string $id)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         try {
             $query = "select * from semanticScholar where id = ?";

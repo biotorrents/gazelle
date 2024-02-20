@@ -701,24 +701,6 @@ class Users extends ObjectCrud
 
 
     /**
-     * exists
-     *
-     * Returns true if the user exists.
-     */
-    /*
-    public static function exists(int $userId): bool
-    {
-        $app = App::go();
-
-        $query = "select 1 from users where id = ?";
-        $ref = $app->dbNew->single($query, [$userId]);
-
-        return boolval($ref);
-    }
-    */
-
-
-    /**
      * username
      *
      * Returns the username.
@@ -738,14 +720,10 @@ class Users extends ObjectCrud
      * Returns a username string for display.
      *
      * @param ?int $userId defaults to the current user
-     * @param boolean $showBadges whether or not badges (donor, warned, enabled) should be shown
-     * @param boolean $isWarned
-     * @param boolean $IsEnabled
-     * @param boolean $Class whether or not to show the class
-     * @param boolean $Title whether or not to show the title
+     * @param boolean $showBadges whether or not badges should be shown
      * @return HTML formatted username
      */
-    public static function format_username(?int $userId = null, $showBadges = false, $isWarnedUNUSED = false, $IsEnabledUNUSED = true, $ClassUNUSED = false, $TitleUNUSED = false)
+    public static function format_username(?int $userId = null, $showBadges = false)
     {
         $app = App::go();
 
@@ -773,7 +751,7 @@ class Users extends ObjectCrud
 
         # badges
         if ($showBadges) {
-            $badgeHtml = Gazelle\Badges::displayBadges(Gazelle\Badges::getDisplayedBadges($userId));
+            $badgeHtml = Badges::displayBadges(Badges::getDisplayedBadges($userId));
         } else {
             $badgeHtml = "";
         }

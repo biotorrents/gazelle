@@ -21,7 +21,7 @@ class Badges
      */
     public static function getBadges(int $userId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select badgeId, displayed from users_badges where userId = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
@@ -37,7 +37,6 @@ class Badges
             $data[$key] = $row["displayed"];
         }
 
-        #!d($data);exit;
         return $data;
     }
 
@@ -53,7 +52,7 @@ class Badges
      */
     public static function awardBadge(int $userId, int $badgeId): bool
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (self::hasBadge($userId, $badgeId)) {
             return false;
@@ -85,7 +84,6 @@ class Badges
             }
         }
 
-        #!d($data);exit;
         return $data;
     }
 
@@ -118,7 +116,7 @@ class Badges
      */
     public static function displayBadge(int $badgeId, bool $tooltip = true): ?string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select * from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
@@ -145,7 +143,7 @@ class Badges
      */
     public static function badgeDescription(int $badgeId): ?string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select name, description from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
@@ -160,6 +158,11 @@ class Badges
 
     /**
      * displayBadges
+     *
+     * Given an array of badgeId's, returns HTML for displaying them.
+     *
+     * @param array $badgeIds
+     * @return string html
      */
     public static function displayBadges(array $badgeIds): string
     {
@@ -178,10 +181,14 @@ class Badges
 
     /**
      * getAllBadges
+     *
+     * Returns all badges.
+     *
+     * @return array of badge data
      */
     public static function getAllBadges(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select * from badges";
         $ref = $app->dbNew->multi($query, []);
