@@ -23,8 +23,11 @@ $app->twig->display("wiki/article.twig", [
     "title" => $article->attributes->title,
     "sidebar" => true,
     "js" => ["wiki"],
+
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),
+
     "isEditorAvailable" => true,
+    "enableConversation" => false,
 ]);

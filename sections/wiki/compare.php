@@ -69,4 +69,5 @@ $app->twig->display("wiki/compare.twig", [
     "diff" => $diff,
 
     "isEditorAvailable" => false,
+    "enableConversation" => false,
 ]);

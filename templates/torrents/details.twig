@@ -376,24 +376,10 @@
 
     </section>
 
-
-    {# conversation #}
-    <section>
-
-    <span class="flexHeader">
-    <h3>Conversation</h3>
-		{# toggle subscription #}
-		{% if isSubscribed %}
-			<a class="button button-red" id="toggleGroupSubscription" data-groupid="{{ groupId }}">remove subscription</a>
-		{% else %}
-			<a class="button button-orange" id="toggleGroupSubscription" data-groupid="{{ groupId }}">add subscription</a>
-		{% endif %}
-    </span>
-
-    todo
-    
-    </section>
-
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
 
 {% endblock %}
 

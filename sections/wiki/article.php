@@ -34,15 +34,19 @@ if (!$good) {
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($article->id, "wiki");
+#!d($conversation->relationships->messages);exit;
 
 # twig template
 $app->twig->display("wiki/article.twig", [
     "title" => $article->attributes->title,
     "sidebar" => true,
     "js" => ["wiki", "conversations"],
+
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Permissions::listRoles(),
+
     "isEditorAvailable" => true,
+    "enableConversation" => true,
     "conversation" => $conversation,
 ]);

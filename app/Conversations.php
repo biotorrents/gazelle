@@ -181,7 +181,7 @@ class Conversations extends ObjectCrud
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # determine the page offset
@@ -357,7 +357,7 @@ class Conversations extends ObjectCrud
         $conversation = new self();
         $conversation->create($data);
 
-        return $conversation;
+        return new self($conversation->id);
     }
 
 

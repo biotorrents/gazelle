@@ -77,6 +77,9 @@ foreach ($tagNames as $key => $value) {
 }
 */
 
+# create a conversation if it doesn't exist
+$conversation = Gazelle\Conversations::createIfNotExists($groupId, "torrents");
+#!d($conversation->relationships->messages);exit;
 
 /** twig template */
 
@@ -104,6 +107,9 @@ $app->twig->display("torrents/details.twig", [
 
     "isBookmarked" => Bookmarks::isBookmarked("torrent", $groupId),
     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
+
+    "enableConversation" => true,
+    "conversation" => $conversation,
 ]);
 
 

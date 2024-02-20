@@ -32,4 +32,5 @@ $app->twig->display("wiki/browse.twig", [
     "resultCount" => $resultCount,
 
     "isEditorAvailable" => false,
+    "enableConversation" => false,
 ]);

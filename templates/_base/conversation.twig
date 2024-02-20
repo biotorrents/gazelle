@@ -77,7 +77,7 @@
                         </a>
 
                         {# report #}
-                        <a class="conversationButton tooltip {{ message.attributes.isReported ? "isReported" : "" }}" title="report" data-messageid="{{ message.id }}">
+                        <a class="conversationButton tooltip {{ (message.attributes.isReported) ? "isReported" : "" }}" title="report" data-messageid="{{ message.id }}">
                             <i class="fa-thin fa-flag" data-messageid="{{ message.id }}"></i>
                         </a>
 

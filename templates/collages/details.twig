@@ -174,25 +174,10 @@ if ($CollageCovers != 0) { ?>
 		</table>
 	</section>
 
-
-
-    {# conversation #}
-    <section>
-
-    <span class="flexHeader">
-    <h3>Conversation</h3>
-		{# toggle subscription #}
-		{% if isSubscribed %}
-			<a class="button button-red" id="toggleGroupSubscription" data-collageid="{{ collage.id }}">remove subscription</a>
-		{% else %}
-			<a class="button button-orange" id="toggleGroupSubscription" data-collageid="{{ collage.id }}">add subscription</a>
-		{% endif %}
-    </span>
-
-    todo
-    
-    </section>
-
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
 
 {% endblock %}
 

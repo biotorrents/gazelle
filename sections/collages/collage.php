@@ -24,15 +24,23 @@ $torrentGroups = $collage->torrentGroups();
 $isSubscribed = $collage->isSubscribed();
 $stats = $collage->readStats();
 
+# create a conversation if it doesn't exist
+$conversation = Gazelle\Conversations::createIfNotExists($collage->id, "collages");
+#!d($conversation->relationships->messages);exit;
+
 # twig template
 $app->twig->display("collages/details.twig", [
-  "title" => $collage->attributes->title,
-  "sidebar" => true,
-  "collage" => $collage,
-  "torrentGroups" => $torrentGroups,
-  "isSubscribed" => $isSubscribed,
-  "isBookmarked" => false, # todo
-  "stats" => $stats,
+    "title" => $collage->attributes->title,
+    "sidebar" => true,
+
+    "collage" => $collage,
+    "torrentGroups" => $torrentGroups,
+    "isSubscribed" => $isSubscribed,
+    "isBookmarked" => false, # todo
+    "stats" => $stats,
+
+    "enableConversation" => true,
+    "conversation" => $conversation,
 ]);
 
 exit;
