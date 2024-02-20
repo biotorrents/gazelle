@@ -11,7 +11,15 @@ declare(strict_types=1);
 Flight::route("/rules", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/golden.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Golden rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(10, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Golden rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -19,7 +27,15 @@ Flight::route("/rules", function () {
 Flight::route("/rules/chat", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/chat.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Chat rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(20, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Chat rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -27,7 +43,15 @@ Flight::route("/rules/chat", function () {
 Flight::route("/rules/clients", function () {
     $app = Gazelle\App::go();
     $allowedClients = Tracker::allowedClients();
-    $app->twig->display("siteText/rules/clients.twig", ["title" => "Client rules", "sidebar" => true, "allowedClients" => $allowedClients]);
+    $conversation = Gazelle\Conversations::createIfNotExists(30, "rules");
+
+    $app->twig->display("siteText/rules/clients.twig", [
+        "title" => "Client rules",
+        "sidebar" => true,
+        "allowedClients" => $allowedClients,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -35,7 +59,15 @@ Flight::route("/rules/clients", function () {
 Flight::route("/rules/collages", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/collages.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Collection rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(40, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Collection rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -44,7 +76,16 @@ Flight::route("/rules/ratio", function () {
     $app = Gazelle\App::go();
     $downloaded = $app->user->extra["Downloaded"];
     $gigabit = 1024 * 1024 * 1024;
-    $app->twig->display("siteText/rules/ratio.twig", ["title" => "Ratio rules", "sidebar" => true, "downloaded" => $downloaded, "gigabit" => $gigabit]);
+    $conversation = Gazelle\Conversations::createIfNotExists(50, "rules");
+
+    $app->twig->display("siteText/rules/ratio.twig", [
+        "title" => "Ratio rules",
+        "sidebar" => true,
+        "downloaded" => $downloaded,
+        "gigabit" => $gigabit,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -52,7 +93,15 @@ Flight::route("/rules/ratio", function () {
 Flight::route("/rules/requests", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/requests.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Request rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(60, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Request rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -60,7 +109,15 @@ Flight::route("/rules/requests", function () {
 Flight::route("/rules/tags", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/tags.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Tagging rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(70, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Tagging rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });
 
 
@@ -68,5 +125,13 @@ Flight::route("/rules/tags", function () {
 Flight::route("/rules/upload", function () {
     $app = Gazelle\App::go();
     $content = Gazelle\Text::parse(file_get_contents("{$app->env->serverRoot}/templates/siteText/rules/upload.md"));
-    $app->twig->display("siteText/rules.twig", ["title" => "Collection rules", "sidebar" => true, "content" => $content]);
+    $conversation = Gazelle\Conversations::createIfNotExists(80, "rules");
+
+    $app->twig->display("siteText/rules.twig", [
+        "title" => "Collection rules",
+        "sidebar" => true,
+        "content" => $content,
+        "enableConversation" => true,
+        "conversation" => $conversation,
+    ]);
 });

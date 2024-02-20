@@ -43,6 +43,7 @@ class Conversations extends ObjectCrud
         "creators",
         "forums",
         "news",
+        "rules",
         "private",
         "requests",
         "torrents",

@@ -3,7 +3,14 @@
 
 {% block content %}
 
-{{ content|raw }}
+<section>
+	{{ content|raw }}
+</section>
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
 
 {% endblock %}
 

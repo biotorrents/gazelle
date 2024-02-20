@@ -3,6 +3,7 @@
 
 {% block content %}
 
+<section>
 <h2>Client rules</h2>
 
 <p>
@@ -37,6 +38,12 @@
         {% endfor %}
     </tbody>
 </table>
+</section>
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
 
 {% endblock %}
 

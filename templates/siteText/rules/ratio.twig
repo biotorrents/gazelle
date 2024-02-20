@@ -3,6 +3,7 @@
 
 {% block content %}
 
+<section>
 <h2>Ratio rules</h2>
 
 <ul>
@@ -27,7 +28,7 @@
         Your account will remain enabled.
     </li>
 </ul>
-
+</section>
 
 {# required ratio overview #}
 <section>
@@ -55,7 +56,6 @@
     </li>
 </ul>
 </section>
-
 
 {# required ratio table #}
 <section>
@@ -139,7 +139,6 @@
 </table>
 </section>
 
-
 {# required ratio calculation #}
 <section>
 <h3>Required ratio calculation</h3>
@@ -194,7 +193,6 @@
 </ul>
 </section>
 
-
 {# required ratio details #}
 <section>
 <h3>Required ratio details</h3>
@@ -221,7 +219,6 @@
     </li>
 </ul>
 </section>
-
 
 {# required ratio example #}
 <section>
@@ -254,7 +251,6 @@
 </ul>
 </section>
 
-
 {# ratio watch overview #}
 <section>
 <h3>Ratio watch overview</h3>
@@ -283,7 +279,6 @@
 </ul>
 </section>
 
-
 {# leaving ratio watch #}
 <section>
 <h3>Leaving ratio watch</h3>
@@ -308,6 +303,11 @@
     </li>
 </ul>
 </section>
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
 
 {% endblock %}
 
