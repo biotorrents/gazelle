@@ -42,21 +42,26 @@
 
 
   /**
-   * likeMessage
+   * reactToMessage 
    */
 
-  $(".likeMessage").on("click", (event) => {
-    // get the span element
-    var likeElement = "likeCount-" + $(event.target).data("messageid");
+  $(".reactToMessage").on("click", (event) => {
+    // get the reaction
+    var reaction = $(event.target).data("reaction");
+
+    // get the elements needed to update
+    var containerSelector = "#" + reaction + "Container-" + $(event.target).data("messageid");
+    var countSelector = "#" + reaction + "Count-" + $(event.target).data("messageid");
 
     // the data to send
     var request = {
+      reaction: reaction,
       messageId: $(event.target).data("messageid"),
       userId: $(event.target).data("userid"),
     };
 
     // ajax request
-    $.ajax("/api/internal/likeMessage", {
+    $.ajax("/api/internal/reactToMessage", {
       method: "POST",
       headers: { "Authorization": "Bearer " + frontendHash },
 
@@ -66,7 +71,16 @@
       data: JSON.stringify(request),
 
       success: (response) => {
-        $("#" + likeElement).html(response.data);
+        // add or remove the hasReacted class
+        if (response.data.hasUserReacted) {
+          $(containerSelector).addClass("hasReacted");
+        } else {
+          $(containerSelector).removeClass("hasReacted");
+
+        }
+
+        // update the count, remembering the response is the *total* count
+        $(countSelector).html(response.data.totalCount);
       },
 
       error: (response) => {
@@ -74,42 +88,5 @@
       },
     });
   });
-
-
-  /**
-   * dislikeMessage
-   */
-
-  $(".dislikeMessage").on("click", (event) => {
-    // get the span element
-    var dislikeElement = "dislikeCount-" + $(event.target).data("messageid");
-
-    // the data to send
-    var request = {
-      messageId: $(event.target).data("messageid"),
-      userId: $(event.target).data("userid"),
-    };
-
-    // ajax request
-    $.ajax("/api/internal/dislikeMessage", {
-      method: "POST",
-      headers: { "Authorization": "Bearer " + frontendHash },
-
-      contentType: "application/vnd.api+json",
-      dataType: "json",
-
-      data: JSON.stringify(request),
-
-      success: (response) => {
-        console.log(response, dislikeElement);
-        $("#" + dislikeElement).html(response.data);
-      },
-
-      error: (response) => {
-        console.log(response);
-      },
-    });
-  });
-
 
 })();

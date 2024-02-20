@@ -34,7 +34,7 @@ class Conversations extends ObjectCrud
 
     # cache settings
     private string $cachePrefix = "conversations:";
-    private string $cacheDuration = "1 hour";
+    private string $cacheDuration = "1 minute";
 
     # content types from the database enum
     private array $allowedContentTypes = [
@@ -80,6 +80,90 @@ class Conversations extends ObjectCrud
     }
 
 
+    /** single message crud */
+
+
+    /**
+     * createMessage
+     *
+     * Creates a message in a conversation.
+     *
+     * @param array $data
+     * @return self
+     */
+    public function createMessage(array $data): self
+    {
+        $app = App::go();
+
+        # validate the conversation
+        if (!$this->id) {
+            throw new Exception("conversation not found");
+        }
+
+        # validate the user
+        if (!$app->user->core["id"]) {
+            throw new Exception("user not found");
+        }
+
+        # validate the message
+        if (!array_key_exists("body", $data)) {
+            throw new Exception("message body not found");
+        }
+
+        # create the message
+        $variables = [
+            "id" => $app->dbNew->shortUuid(),
+            "conversationId" => $this->id,
+            "userId" => $app->user->core["id"],
+            "replyToId" => $data["replyToId"] ?? null,
+            "body" => $data["body"],
+        ];
+
+        $query = "
+            insert into conversations_messages (id, conversationId, userId, replyToId, body)
+            values (:id, :conversationId, :userId, :replyToId, :body)
+        ";
+        $app->dbNew->do($query, $variables);
+
+        # return the whole conversation
+        return new self($this->id);
+    }
+
+
+    /**
+     * readMessage
+     *
+     * Gets a message in a conversation.
+     *
+     * @param int $identifier
+     * @return array
+     */
+    public function readMessage(int $identifier): array
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        $app = App::go();
+
+        # return cached if available
+        $cacheKey = $this->cachePrefix . __FUNCTION__ . json_encode(func_get_args());
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # get the message
+        $query = "select * from conversations_messages where id = ? and deleted_at is null";
+        $ref = $app->dbNew->row($query, [$identifier]);
+
+        # return the message
+        $app->cache->set($cacheKey, $ref, $this->cacheDuration);
+        return $ref;
+    }
+
+
     /**
      * readMessages
      *
@@ -97,7 +181,7 @@ class Conversations extends ObjectCrud
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            #return $cacheHit;
+            return $cacheHit;
         }
 
         # determine the page offset
@@ -119,15 +203,22 @@ class Conversations extends ObjectCrud
                     "userId" => $row["userId"],
                     "replyToId" => $row["replyToId"],
                     "body" => $row["body"],
-                    "likeCount" => $row["likeCount"],
-                    "dislikeCount" => $row["dislikeCount"],
-                    "otherReactions" => json_decode($row["otherReactions"] ?? "{}", true),
                     "isReported" => boolval($row["isReported"]),
                     "createdAt" => $row["created_at"],
                     "updatedAt" => $row["updated_at"],
                     "deletedAt" => $row["deleted_at"],
                 ],
             ];
+
+            # i'm not gonna recursively create a set of reaction objects
+            # it's easier to list the total counts as message attributes
+            foreach ($this->allowedReactions as $reaction => $emoji) {
+                $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
+                $reactionCount = $app->dbNew->single($query, [$row["id"]]);
+
+                $reactionKey = "{$reaction}Count";
+                $messageObject["attributes"][$reactionKey] = intval($reactionCount);
+            }
 
             # add it to the messages array
             $messages[] = $messageObject;
@@ -140,105 +231,79 @@ class Conversations extends ObjectCrud
 
 
     /**
-     * reactToMessage
+     * updateMessage
      *
-     * Adds a reaction to a message.
+     * Updates a message in a conversation.
      *
-     * @param int $identifier messageId
-     * @param string $reaction $this->allowedReactions
-     * @return int the new reaction count
+     * @param int $identifier
+     * @param array $data
+     * @return self
      */
-    public function reactToMessage(int $identifier, string $reaction): int
+    public function updateMessage(int $identifier, array $data): self
     {
         $app = App::go();
 
-        # validate the reaction
-        if (!array_key_exists($reaction, $this->allowedReactions)) {
-            throw new Exception("invalid reaction {$reaction}");
+        # validate the conversation
+        if (!$this->id) {
+            throw new Exception("conversation not found");
         }
 
-        # did the user already react?
-        $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
-        $ref = $app->dbNew->single($query, [$app->user->core["id"], $identifier]);
-
-        if ($ref) {
-            throw new Exception("user already reacted to this message");
+        # validate the user
+        if (!$app->user->core["id"]) {
+            throw new Exception("user not found");
         }
 
-        # get the current reaction count
-        $query = "select {$reaction} from conversations_reactions where messageId = ?";
-        $reactionCount = $app->dbNew->single($query, [$identifier]);
+        # validate the message
+        if (!array_key_exists("body", $data)) {
+            throw new Exception("message body not found");
+        }
 
         # update the message
-        $query = "insert into conversations_reactions (id, messageId, userId, {$reaction}) values (?, ?, ?, ?)";
-        $app->dbNew->do($query, [$app->dbNew->shortUuid(), $identifier, $app->user->core["id"], $reactionCount + 1]);
+        $variables = [
+            "id" => $identifier,
+            "body" => $data["body"],
+        ];
 
-        # return the new reaction count
-        $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
-        $reactionCount = $app->dbNew->single($query, [$identifier]);
+        $query = "update conversations_messages set body = :body where id = :id";
+        $app->dbNew->do($query, $variables);
 
-        return intval($reactionCount);
+        # return the whole conversation
+        return new self($this->id);
     }
 
 
     /**
-     * likeMessage
+     * deleteMessage
      *
-     * Adds a like to a message.
+     * Deletes a message in a conversation.
      *
      * @param int $identifier
-     * @return int the new likeCount
+     * @return self
      */
-    /*
-    public function likeMessage(int $identifier): int
+    public function deleteMessage(int $identifier): self
     {
         $app = App::go();
 
-        # did the user already like this message?
-        $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and likeCount > 0";
-        $ref = $app->dbNew->single($query, [$app->user->id, $identifier]);
-
-        if ($ref) {
-            throw new Exception("user already liked this message");
+        # validate the conversation
+        if (!$this->id) {
+            throw new Exception("conversation not found");
         }
 
-        # increment the like count
-        $query = "insert into conversations_reactions (id, conversationId, userId) values likeCount = likeCount + 1 where id = ?";
+        # validate the user
+        if (!$app->user->core["id"]) {
+            throw new Exception("user not found");
+        }
+
+        # delete the message
+        $query = "update conversations_messages set deleted_at = now() where id = ?";
         $app->dbNew->do($query, [$identifier]);
 
-        # return the new like count
-        $query = "select likeCount from conversations_messages where id = ?";
-        $likeCount = $app->dbNew->single($query, [$identifier]);
-
-        return $likeCount;
+        # return the whole conversation
+        return new self($this->id);
     }
-    */
 
 
-    /**
-     * dislikeMessage
-     *
-     * Adds a dislike to a message.
-     *
-     * @param int $identifier
-     * @return int the new dislikeCount
-     */
-    /*
-    public function dislikeMessage(int $identifier): int
-    {
-        $app = App::go();
-
-        # increment the dislike count
-        $query = "update conversations_messages set dislikeCount = dislikeCount + 1 where id = ?";
-        $app->dbNew->do($query, [$identifier]);
-
-        # return the new dislike count
-        $query = "select dislikeCount from conversations_messages where id = ?";
-        $dislikeCount = $app->dbNew->single($query, [$identifier]);
-
-        return $dislikeCount;
-    }
-    */
+    /** automatic thread creation */
 
 
     /**
@@ -253,13 +318,6 @@ class Conversations extends ObjectCrud
     public static function getIdByContent(int $contentId, string $contentType): ?int
     {
         $app = App::go();
-
-        /*
-        # validate contentType
-        if (!in_array($contentType, $this->allowedContentTypes)) {
-            throw new Exception("invalid contentType {$contentType}");
-        }
-        */
 
         $query = "select id from conversations_threads where contentId = ? and contentType = ?";
         $ref = $app->dbNew->single($query, [$contentId, $contentType]);
@@ -300,6 +358,101 @@ class Conversations extends ObjectCrud
         $conversation->create($data);
 
         return $conversation;
+    }
+
+
+    /** message reactions */
+
+
+    /**
+     * reactToMessage
+     *
+     * Adds a user's reaction to a conversation message.
+     * If the user has already reacted as such, remove the reaction.
+     * This should hopefully prevent "dislike spamming" comments.
+     *
+     * @param int $identifier messageId
+     * @param string $reaction $this->allowedReactions
+     * @return array of data about the event
+     */
+    public function reactToMessage(int $identifier, string $reaction): array
+    {
+        $app = App::go();
+
+        # validate the reaction
+        if (!array_key_exists($reaction, $this->allowedReactions)) {
+            throw new Exception("invalid reaction {$reaction}");
+        }
+
+        # did the user already react?
+        $hasUserReacted = $this->hasUserReacted($identifier, $reaction);
+
+        /** */
+
+        $return = [
+            "reaction" => $reaction,
+            "userId" => $app->user->core["id"],
+            "totalCount" => null,
+            "hasUserReacted" => $hasUserReacted,
+        ];
+
+        # delete the reaction if they've already used it, and return the new count
+        if ($hasUserReacted) {
+            $query = "delete from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
+            $app->dbNew->do($query, [$app->user->core["id"], $identifier]);
+
+            # return the new reaction count
+            $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
+            $reactionCount = $app->dbNew->single($query, [$identifier]);
+
+            $return["totalCount"] = intval($reactionCount);
+            $return["hasUserReacted"] = false;
+
+            return $return;
+        }
+
+        # get the current reaction count
+        $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
+        $reactionCount = $app->dbNew->single($query, [$identifier]);
+
+        # update the message
+        $query = "insert into conversations_reactions (id, messageId, userId, {$reaction}) values (?, ?, ?, ?)";
+        $app->dbNew->do($query, [$app->dbNew->shortUuid(), $identifier, $app->user->core["id"], $reactionCount + 1]);
+
+        # return the new reaction count
+        $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
+        $reactionCount = $app->dbNew->single($query, [$identifier]);
+
+        $return["totalCount"] = intval($reactionCount);
+        $return["hasUserReacted"] = true;
+
+        return $return;
+    }
+
+
+    /**
+     * hasUserReacted
+     *
+     * Checks if the user has reacted to a message.
+     *
+     * @param int $identifier messageId
+     * @param string $reaction $this->allowedReactions
+     * @return bool
+     */
+    public function hasUserReacted(int $identifier, string $reaction): bool
+    {
+        $app = App::go();
+
+        # validate the reaction
+        if (!array_key_exists($reaction, $this->allowedReactions)) {
+            throw new Exception("invalid reaction {$reaction}");
+        }
+
+        # check if the user has reacted
+        $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
+        $ref = $app->dbNew->single($query, [$app->user->core["id"], $identifier]);
+
+        return boolval($ref);
     }
 
 

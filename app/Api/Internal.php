@@ -818,13 +818,13 @@ class Internal extends Base
 
 
     /**
-     * likeMessage
+     * reactToMessage
      *
-     * Likes a conversation message.
+     * Reacts to a conversation message.
      *
      * @return void
      */
-    public static function likeMessage(): void
+    public static function reactToMessage(): void
     {
         $app = \Gazelle\App::go();
 
@@ -832,39 +832,11 @@ class Internal extends Base
 
         $request = \Gazelle\Http::json();
         $request["messageId"] ??= null;
-        $request["userId"] ??= null;
+        $request["reaction"] ??= null;
 
         try {
-            $conversation = new \Gazelle\Conversations($request["messageId"]);
-            $data = $conversation->reactToMessage($request["messageId"], "thumbsUp");
-
-            self::success(200, $data);
-        } catch (\Throwable $e) {
-            self::failure(400, $e->getMessage());
-        }
-    }
-
-
-    /**
-     * dislikeMessage
-     *
-     * Dislikes a conversation message.
-     *
-     * @return void
-     */
-    public static function dislikeMessage(): void
-    {
-        $app = \Gazelle\App::go();
-
-        self::validateFrontendHash();
-
-        $request = \Gazelle\Http::json();
-        $request["messageId"] ??= null;
-        $request["userId"] ??= null;
-
-        try {
-            $conversation = new \Gazelle\Conversations($request["messageId"]);
-            $data = $conversation->reactToMessage($request["messageId"], "thumbsDown");
+            $conversation = new \Gazelle\Conversations();
+            $data = $conversation->reactToMessage($request["messageId"], $request["reaction"]);
 
             self::success(200, $data);
         } catch (\Throwable $e) {

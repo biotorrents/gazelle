@@ -57,8 +57,7 @@ Flight::route("POST /api/internal/deleteWikiAlias", ["Gazelle\Api\Internal", "de
 
 
 # conversation reactions
-Flight::route("POST /api/internal/likeMessage", ["Gazelle\Api\Internal", "likeMessage"]);
-Flight::route("POST /api/internal/dislikeMessage", ["Gazelle\Api\Internal", "dislikeMessage"]);
+Flight::route("POST /api/internal/reactToMessage", ["Gazelle\Api\Internal", "reactToMessage"]);
 
 
 # not found

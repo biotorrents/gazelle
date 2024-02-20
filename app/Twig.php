@@ -467,6 +467,14 @@ class Twig extends \Twig\Environment
             );
         }));
 
+        # Gazelle\Conversations->hasUserReacted
+        $twig->addFunction(new \Twig\TwigFunction("hasUserReacted", function ($identifier, $reaction) {
+            $conversations = new Conversations();
+            $hasUserReacted = $conversations->hasUserReacted($identifier, $reaction);
+
+            return $hasUserReacted;
+        }));
+
 
         /**
          * OPS

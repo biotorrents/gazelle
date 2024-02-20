@@ -233,4 +233,24 @@ $shadow: 2px 2px 10px -2px slategray;
     color: #222;
     transition: ease-in-out 0.1s;
   }
+
+  &.hasReacted {
+    background: rgba(orange, 0.5);
+    color: #222;
+
+    &:hover {
+      background: rgba(orange, 0.75);
+      transition: ease-in-out 0.1s;
+    }
+  }
+
+  &.isReported {
+    background: rgba(red, 0.5);
+    color: #222;
+
+    &:hover {
+      background: rgba(red, 0.75);
+      transition: ease-in-out 0.1s;
+    }
+  }
 }
