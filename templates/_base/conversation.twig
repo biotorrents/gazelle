@@ -28,7 +28,7 @@
         {% for message in conversation.relationships.messages %}
             <tr id="conversation-{{ message.id }}">
                 <td width="120" style="vertical-align: top;">
-                    {{ displayAvatar("", "ohm") }} {# todo #}
+                    {{ getAvatarByUserId(message.attributes.userId) }}
                     <p class="center">{{ message.attributes.userId|formatUsername }}</p>
                 </td>
 
@@ -67,14 +67,25 @@
                         </a>
 
                         {# edit #}
-                        <a class="conversationButton tooltip" title="edit" data-messageid="{{ message.id }}">
-                            <i class="fa-thin fa-pen-to-square" data-messageid="{{ message.id }}"></i>
-                        </a>
+                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                            <a class="conversationButton tooltip" title="edit" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-pen-to-square" data-messageid="{{ message.id }}"></i>
+                            </a>
+                        {% endif %}
     
                         {# delete #}
-                        <a class="conversationButton tooltip" title="delete" data-messageid="{{ message.id }}">
-                            <i class="fa-thin fa-trash" data-messageid="{{ message.id }}"></i>
-                        </a>
+                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                            <a class="conversationButton tooltip" title="delete" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-trash" data-messageid="{{ message.id }}"></i>
+                            </a>
+                        {% endif %}
+
+                        {# add a poll #}
+                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                            <a class="conversationButton tooltip" title="add a poll" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-poll-people"></i>
+                            </a>
+                        {% endif %}
 
                         {# report #}
                         <a class="conversationButton tooltip {{ (message.attributes.isReported) ? "isReported" : "" }}" title="report" data-messageid="{{ message.id }}">
@@ -97,6 +108,25 @@
                             </span>
                         </a>
                     </p>
+
+                    {# poll #}
+                    {#
+                    {% if message.relationships.poll is not empty %}
+                        <div class="poll">
+                            <h4>{{ message.relationships.poll.attributes.question }}</h4>
+                            <ul>
+                                {% for option in message.relationships.poll.relationships.options %}
+                                    <li>
+                                        <input type="radio" name="poll-{{ message.id }}" value="{{ option.id }}" id="poll-{{ message.id }}-{{ option.id }}">
+                                        <label for="poll-{{ message.id }}-{{ option.id }}">{{ option.attributes.option }}</label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <button class="button-primary" data-pollid="{{ message.relationships.poll.id }}" data-messageid="{{ message.id }}">vote</button>
+                        </div>
+                    {% endif %}
+                    #}
+
                 </td>
             </tr>
         {% endfor %}
@@ -112,7 +142,7 @@
     
         {# for some reason, only an underscore not a hyphen works in this context #}
         {# https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id #}
-        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "What would you like to say in response?", "value": null } %}
+        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "What are your thoughts about what you've just read? Let's all contribute to a productive and engaging conversation on the topic.", "value": null } %}
         {% include "_base/textarea.twig" with variables %}
     
         <input type="submit" class="button-primary" value="add your reply">

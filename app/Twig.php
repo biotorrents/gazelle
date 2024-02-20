@@ -374,7 +374,7 @@ class Twig extends \Twig\Environment
             return $string;
         }));
 
-        # User::displayAvatar
+        # Users::displayAvatar
         $twig->addFunction(new \Twig\TwigFunction("displayAvatar", function ($uri, $username) {
             return new \Twig\Markup(
                 \User::displayAvatar($uri, $username),
@@ -382,7 +382,15 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        # User::format_username
+        # Users::getAvatarByUserId
+        $twig->addFunction(new \Twig\TwigFunction("getAvatarByUserId", function ($userId) {
+            return new \Twig\Markup(
+                Users::getAvatarByUserId($userId),
+                "UTF-8"
+            );
+        }));
+
+        # Users::format_username
         $twig->addFilter(new \Twig\TwigFilter("formatUsername", function ($userId) {
             return new \Twig\Markup(
                 \User::format_username($userId),

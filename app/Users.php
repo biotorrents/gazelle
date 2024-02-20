@@ -873,12 +873,47 @@ class Users extends ObjectCrud
 
 
     /**
+     * getAvatarByUserId
+     * 
+     * Because the above function kinda sucks.
+     * 
+     * @param int $userId
+     * @return string|null
+     */
+    public static function getAvatarByUserId(int $userId): ?string
+    {
+        $app = App::go();
+
+        $query = "select avatar from users_info where userId = ?";
+        $avatarUri = $app->dbNew->single($query, [$userId]);
+
+        # workaround for null avatars
+        $avatarUri = strval($avatarUri);
+
+        # Gazelle\Images::process
+        $avatarUri = Images::process($avatarUri, "avatar");
+
+        # disabled or missing: show default
+        if (empty($avatarUri) || !self::hasAvatarsEnabled()) {
+            $avatarUri = "/images/avatars/default.webp";
+
+            return "<img src='{$avatarUri}' alt='avatar' width='120'>";
+        }
+
+        # return the user's avatar
+        return "<img src='{$avatarUri}' alt='avatar' width='120'>";
+    }
+
+
+    /**
      * hasAvatarsEnabled
      */
     public static function hasAvatarsEnabled(): bool
     {
+        $app = App::go();
+
         # negating the return is a shim: this is used everywhere
-        return !$this->extra["siteOptions"]["userAvatars"];
+        return !$app->user->extra["siteOptions"]["userAvatars"];
     }
 
 
