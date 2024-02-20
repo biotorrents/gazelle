@@ -187,7 +187,7 @@ class Torrents
 
         # escape just in case, because `in()` can't into prepared queries
         foreach ($groupIds as $key => $value) {
-            $groupIds[$key] = \Gazelle\Esc::int($value);
+            $groupIds[$key] = \Gazelle\Escape::int($value);
         }
 
         $groupIds = array_filter($groupIds);

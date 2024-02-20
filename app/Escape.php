@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Esc
+ * Gazelle\Escape
  *
  * Simple static class for UGC validation.
  * Mostly a filter_var wrapper class.
@@ -15,10 +15,13 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Esc
+class Escape
 {
     /**
      * string
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function string(mixed $unsafe): string
     {
@@ -29,6 +32,9 @@ class Esc
 
     /**
      * email
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function email(mixed $unsafe): string
     {
@@ -55,6 +61,9 @@ class Esc
 
     /**
      * float
+     *
+     * @param mixed $unsafe
+     * @return float
      */
     public static function float(mixed $unsafe): float
     {
@@ -72,6 +81,9 @@ class Esc
 
     /**
      * int
+     *
+     * @param mixed $unsafe
+     * @return int
      */
     public static function int(mixed $unsafe): int
     {
@@ -89,6 +101,9 @@ class Esc
 
     /**
      * url
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function url(mixed $unsafe): string
     {
@@ -108,6 +123,9 @@ class Esc
 
     /**
      * bool
+     *
+     * @param mixed $unsafe
+     * @return bool
      */
     public static function bool(mixed $unsafe): bool
     {
@@ -120,6 +138,9 @@ class Esc
 
     /**
      * domain
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function domain(mixed $unsafe): string
     {
@@ -138,6 +159,9 @@ class Esc
 
     /**
      * ip
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function ip(mixed $unsafe): string
     {
@@ -156,6 +180,9 @@ class Esc
 
     /**
      * mac
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function mac(mixed $unsafe): string
     {
@@ -174,6 +201,9 @@ class Esc
 
     /**
      * regex
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function regex(mixed $unsafe): string
     {
@@ -195,6 +225,9 @@ class Esc
 
     /**
      * username
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function username(mixed $unsafe): string
     {
@@ -213,6 +246,9 @@ class Esc
 
     /**
      * passphrase
+     *
+     * @param mixed $unsafe
+     * @return string
      */
     public static function passphrase(mixed $unsafe): string
     {

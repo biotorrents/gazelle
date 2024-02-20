@@ -25,7 +25,7 @@ class Friends extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["create"]);
 
         $request = \Gazelle\Http::json();
-        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
+        $request["userId"] = \Gazelle\Escape::int($_SESSION["token"]["userId"]);
 
         try {
             $id = \Gazelle\Friends::create($request);
@@ -51,8 +51,8 @@ class Friends extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["read"]);
 
         $request = \Gazelle\Http::json();
-        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($identifier);
+        $request["userId"] = \Gazelle\Escape::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Escape::int($identifier);
 
         try {
             $data = \Gazelle\Friends::read($request);
@@ -77,8 +77,8 @@ class Friends extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["update"]);
 
         $request = \Gazelle\Http::json();
-        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($identifier);
+        $request["userId"] = \Gazelle\Escape::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Escape::int($identifier);
 
         try {
             $id = \Gazelle\Friends::create($request);
@@ -106,8 +106,8 @@ class Friends extends Base
         self::validatePermissions($_SESSION["token"]["id"], ["delete"]);
 
         $request = \Gazelle\Http::json();
-        $request["userId"] = \Gazelle\Esc::int($_SESSION["token"]["userId"]);
-        $request["friendId"] = \Gazelle\Esc::int($identifier);
+        $request["userId"] = \Gazelle\Escape::int($_SESSION["token"]["userId"]);
+        $request["friendId"] = \Gazelle\Escape::int($identifier);
 
         try {
             $id = \Gazelle\Friends::delete($request);

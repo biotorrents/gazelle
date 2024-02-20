@@ -17,10 +17,10 @@ $get = Gazelle\Http::request("get");
 $post = Gazelle\Http::request("post");
 
 $get["id"] ??= null;
-$userId = Gazelle\Esc::int($get["id"]);
+$userId = Gazelle\Escape::int($get["id"]);
 
 $get["previewMode"] ??= null;
-$previewMode = Gazelle\Esc::bool($get["previewMode"]);
+$previewMode = Gazelle\Escape::bool($get["previewMode"]);
 
 # user data
 $data = $app->user->readProfile($userId);

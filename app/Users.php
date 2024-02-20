@@ -906,7 +906,7 @@ class Users extends ObjectCrud
         $app = App::go();
 
         # nested but much easier to read
-        $publicKey = Esc::string($publicKey);
+        $publicKey = Escape::string($publicKey);
         if (!empty($publicKey)) {
             if (!str_starts_with($publicKey, "-----BEGIN PGP PUBLIC KEY BLOCK-----")) {
                 throw new Exception("invalid pgp key format");
@@ -1064,7 +1064,7 @@ class Users extends ObjectCrud
             # validate the passphrase
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $currentPassphrase = Esc::passphrase($data["currentPassphrase"]);
+                $currentPassphrase = Escape::passphrase($data["currentPassphrase"]);
 
                 # Delight\Auth\NotLoggedInException workaround
                 #$good = $this->auth->library->reconfirmPassword($currentPassphrase);
@@ -1082,7 +1082,7 @@ class Users extends ObjectCrud
             # validate the authKey
             # only if it's the current user
             if (!$moderatorUpdate) {
-                $authKey = Esc::string($data["authKey"]);
+                $authKey = Escape::string($data["authKey"]);
                 if ($authKey !== $this->extra["AuthKey"]) {
                     throw new Exception("authKey doesn't match");
                 }
@@ -1091,8 +1091,8 @@ class Users extends ObjectCrud
 
             # update the passphrase
             # todo: clarify if this is something only the current user can do
-            $newPassphrase1 = Esc::passphrase($data["newPassphrase1"]);
-            $newPassphrase2 = Esc::passphrase($data["newPassphrase2"]);
+            $newPassphrase1 = Escape::passphrase($data["newPassphrase1"]);
+            $newPassphrase2 = Escape::passphrase($data["newPassphrase2"]);
 
             if (!empty($newPassphrase1) && !empty($newPassphrase2)) {
                 # do they match?
@@ -1127,7 +1127,7 @@ class Users extends ObjectCrud
 
 
             # update the email, only allowed by the current user
-            $email = Esc::email($data["email"]);
+            $email = Escape::email($data["email"]);
             if (empty($email)) {
                 throw new Exception("invalid email address");
             }
@@ -1143,7 +1143,7 @@ class Users extends ObjectCrud
 
 
             # avatar
-            $avatar = Esc::url($data["avatar"]);
+            $avatar = Escape::url($data["avatar"]);
             $good = preg_match("/{$app->env->regexImage}/i", $avatar);
 
             if (!$good && !empty($avatar)) {
@@ -1167,7 +1167,7 @@ class Users extends ObjectCrud
 
 
             # ircKey
-            $ircKey = Esc::string($data["ircKey"]);
+            $ircKey = Escape::string($data["ircKey"]);
 
             if (!empty($ircKey)) {
                 if (strlen($ircKey) < 8 || strlen($ircKey) > 32) {
@@ -1187,20 +1187,20 @@ class Users extends ObjectCrud
 
 
             # profileTitle
-            $profileTitle = Esc::string($data["profileTitle"]);
+            $profileTitle = Escape::string($data["profileTitle"]);
             $query = "update users_info set infoTitle = ? where userId = ?";
             $app->dbNew->do($query, [$profileTitle, $userId]);
 
 
             # profileContent
-            $profileContent = Esc::string($data["profileContent"]);
+            $profileContent = Escape::string($data["profileContent"]);
             $query = "update users_info set info = ? where userId = ?";
             $app->dbNew->do($query, [$profileContent, $userId]);
 
 
             # publicKey
             try {
-                $publicKey = Esc::string($data["publicKey"]);
+                $publicKey = Escape::string($data["publicKey"]);
                 $this->updatePGP($publicKey);
             } catch (\Throwable $e) {
                 throw new Exception($e->getMessage());
@@ -1210,7 +1210,7 @@ class Users extends ObjectCrud
             # resetPassKey: very important to only update if requested
             # or everyone will get locked out of the tracker all the time
             $data["resetPassKey"] ??= null;
-            $resetPassKey = Esc::bool($data["resetPassKey"]);
+            $resetPassKey = Escape::bool($data["resetPassKey"]);
 
             if ($resetPassKey) {
                 $oldPassKey = $this->extra["torrent_pass"];
@@ -1230,7 +1230,7 @@ class Users extends ObjectCrud
 
             # stylesheet
             $data["stylesheet"] ??= null;
-            $stylesheet = Esc::int($data["stylesheet"]);
+            $stylesheet = Escape::int($data["stylesheet"]);
 
             $query = "update users_info set styleId = ? where userId = ?";
             $app->dbNew->do($query, [$stylesheet, $userId]);
@@ -1238,7 +1238,7 @@ class Users extends ObjectCrud
 
             # styleSheetUri
             $data["styleSheetUri"] ??= null;
-            $styleSheetUri = Esc::url($data["styleSheetUri"]);
+            $styleSheetUri = Escape::url($data["styleSheetUri"]);
             $good = preg_match("/{$app->env->regexCss}/i", $styleSheetUri);
 
             if (!$good && !empty($styleSheetUri)) {
@@ -1250,43 +1250,43 @@ class Users extends ObjectCrud
 
 
             # torrentGrouping
-            $torrentGrouping = Esc::int($data["torrentGrouping"]);
+            $torrentGrouping = Escape::int($data["torrentGrouping"]);
             $query = "update users_info set torrentGrouping = ? where userId = ?";
             $app->dbNew->do($query, [$torrentGrouping, $userId]);
 
 
             # siteOptions
             $siteOptions = [
-                "autoSubscribe" => Esc::bool($data["autoSubscribe"] ?? null),
-                "calmMode" => Esc::bool($data["calmMode"] ?? null),
-                "communityStats" => Esc::bool($data["communityStats"] ?? null),
-                "coverArtCollections" => Esc::int($data["coverArtCollections"] ?? null),
-                "coverArtTorrents" => Esc::bool($data["coverArtTorrents"] ?? null),
-                "coverArtTorrentsExtra" => Esc::bool($data["coverArtTorrentsExtra"] ?? null),
-                "darkMode" => Esc::bool($data["darkMode"] ?? null),
-                "donorIcon" => Esc::bool($data["donorIcon"] ?? null),
-                "font" => Esc::string($data["font"] ?? null),
-                "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
-                "openaiContent" => Esc::bool($data["openaiContent"] ?? null),
-                "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
-                "profileConversations" => Esc::bool($data["profileConversations"] ?? null),
-                "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
-                "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
-                "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
-                "recentUploads" => Esc::bool($data["recentUploads"] ?? null),
-                "requestStats" => Esc::bool($data["requestStats"] ?? null),
-                "searchPagination" => Esc::int($data["searchPagination"] ?? null),
-                "searchType" => Esc::string($data["searchType"] ?? null),
-                "showSnatched" => Esc::bool($data["showSnatched"] ?? null),
-                "showTagFilter" => Esc::bool($data["showTagFilter"] ?? null),
-                "showTorrentFilter" => Esc::bool($data["showTorrentFilter"] ?? null),
-                "styleId" => Esc::int($data["styleId"] ?? null),
-                "styleUri" => Esc::url($data["styleUri"] ?? null),
-                "torrentGrouping" => Esc::bool($data["torrentGrouping"] ?? null),
-                "torrentGrouping" => Esc::string($data["torrentGrouping"] ?? null),
-                "torrentStats" => Esc::bool($data["torrentStats"] ?? null),
-                "unseededAlerts" => Esc::bool($data["unseededAlerts"] ?? null),
-                "userAvatars" => Esc::bool($data["userAvatars"] ?? null),
+                "autoSubscribe" => Escape::bool($data["autoSubscribe"] ?? null),
+                "calmMode" => Escape::bool($data["calmMode"] ?? null),
+                "communityStats" => Escape::bool($data["communityStats"] ?? null),
+                "coverArtCollections" => Escape::int($data["coverArtCollections"] ?? null),
+                "coverArtTorrents" => Escape::bool($data["coverArtTorrents"] ?? null),
+                "coverArtTorrentsExtra" => Escape::bool($data["coverArtTorrentsExtra"] ?? null),
+                "darkMode" => Escape::bool($data["darkMode"] ?? null),
+                "donorIcon" => Escape::bool($data["donorIcon"] ?? null),
+                "font" => Escape::string($data["font"] ?? null),
+                "listUnreadsFirst" => Escape::bool($data["listUnreadsFirst"] ?? null),
+                "openaiContent" => Escape::bool($data["openaiContent"] ?? null),
+                "percentileStats" => Escape::bool($data["percentileStats"] ?? null),
+                "profileConversations" => Escape::bool($data["profileConversations"] ?? null),
+                "recentCollages" => Escape::bool($data["recentCollages"] ?? null),
+                "recentRequests" => Escape::bool($data["recentRequests"] ?? null),
+                "recentSnatches" => Escape::bool($data["recentSnatches"] ?? null),
+                "recentUploads" => Escape::bool($data["recentUploads"] ?? null),
+                "requestStats" => Escape::bool($data["requestStats"] ?? null),
+                "searchPagination" => Escape::int($data["searchPagination"] ?? null),
+                "searchType" => Escape::string($data["searchType"] ?? null),
+                "showSnatched" => Escape::bool($data["showSnatched"] ?? null),
+                "showTagFilter" => Escape::bool($data["showTagFilter"] ?? null),
+                "showTorrentFilter" => Escape::bool($data["showTorrentFilter"] ?? null),
+                "styleId" => Escape::int($data["styleId"] ?? null),
+                "styleUri" => Escape::url($data["styleUri"] ?? null),
+                "torrentGrouping" => Escape::bool($data["torrentGrouping"] ?? null),
+                "torrentGrouping" => Escape::string($data["torrentGrouping"] ?? null),
+                "torrentStats" => Escape::bool($data["torrentStats"] ?? null),
+                "unseededAlerts" => Escape::bool($data["unseededAlerts"] ?? null),
+                "userAvatars" => Escape::bool($data["userAvatars"] ?? null),
             ];
 
             # this shouldn't be possible with normal ui usage
@@ -1682,7 +1682,7 @@ class Users extends ObjectCrud
         $data["requestsVotedBounty"] = $row["sum(bounty)"] ?? 0;
 
         # typing fix
-        $data["requestsVotedBounty"] = Esc::int($data["requestsVotedBounty"]);
+        $data["requestsVotedBounty"] = Escape::int($data["requestsVotedBounty"]);
 
 
         # requests: created and the bounty
@@ -1798,7 +1798,7 @@ class Users extends ObjectCrud
         #$data["seedingPercent"] = 100 * min(1, round($data["seedingCount"] / $data["uniqueSnatches"], 2)) ?? 0;
 
         # typing fix
-        #$data["seedingPercent"] = Esc::float($data["seedingPercent"]);
+        #$data["seedingPercent"] = Escape::float($data["seedingPercent"]);
 
 
         # downloads

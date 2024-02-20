@@ -46,7 +46,7 @@ $validate = new Validate();
 $data = [];
 
 # basic info
-$data["categoryId"] = Gazelle\Esc::int($post["categoryId"] ?? null);
+$data["categoryId"] = Gazelle\Escape::int($post["categoryId"] ?? null);
 $data["torrentFile"] = $_FILES["torrentFile"] ?? null; # todo: make Gazelle\Http::request() recursive
 #$data["torrentFile"] = $files["torrentFile"] ?? null;
 
@@ -63,11 +63,11 @@ $data["tagList"] = $post["tagList"] ?? null;
 $data["title"] = $post["title"] ?? null;
 $data["version"] = $post["version"] ?? null;
 $data["workgroup"] = $post["workgroup"] ?? null;
-$data["year"] = Gazelle\Esc::int($post["year"] ?? null);
+$data["year"] = Gazelle\Escape::int($post["year"] ?? null);
 
 # single torrent
-$data["annotated"] = Gazelle\Esc::bool($post["annotated"] ?? null);
-$data["anonymous"] = Gazelle\Esc::bool($post["anonymous"] ?? null);
+$data["annotated"] = Gazelle\Escape::bool($post["annotated"] ?? null);
+$data["anonymous"] = Gazelle\Escape::bool($post["anonymous"] ?? null);
 $data["archive"] = $post["archive"] ?? null;
 $data["format"] = $post["format"] ?? null;
 $data["license"] = $post["license"] ?? null;
@@ -83,13 +83,13 @@ $data["seqhashSequence"] = $post["seqhashSequence"] ?? null;
 $data["seqhashShape"] = $post["seqhashShape"] ?? null;
 
 # freeleech
-$data["freeleechReason"] = Gazelle\Esc::int($post["freeleechReason"] ?? null);
-$data["freeleechType"] = Gazelle\Esc::int($post["freeleechType"] ?? null);
+$data["freeleechReason"] = Gazelle\Escape::int($post["freeleechReason"] ?? null);
+$data["freeleechType"] = Gazelle\Escape::int($post["freeleechType"] ?? null);
 
 # hidden fields
-$data["groupId"] = Gazelle\Esc::int($post["groupId"] ?? null);
-$data["requestId"] = Gazelle\Esc::int($post["requestId"] ?? null);
-$data["torrentId"] = Gazelle\Esc::int($post["torrentId"] ?? null);
+$data["groupId"] = Gazelle\Escape::int($post["groupId"] ?? null);
+$data["requestId"] = Gazelle\Escape::int($post["requestId"] ?? null);
+$data["torrentId"] = Gazelle\Escape::int($post["torrentId"] ?? null);
 
 # get creators (unsure if needed)
 if ($data["groupId"]) {
@@ -375,7 +375,7 @@ $data["creatorList"] = explode("\n", $data["creatorList"]);
 if (empty($data["groupId"])) {
     foreach ($data["creatorList"] as $key => $value) {
         # escape and normalize
-        $data["creatorList"][$key] = Gazelle\Esc::string($value);
+        $data["creatorList"][$key] = Gazelle\Escape::string($value);
         $data["creatorList"][$key] = Artists::normalise_artist_name($value);
     }
 }

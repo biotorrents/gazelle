@@ -14,7 +14,4 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Exception extends \Exception
-{
-    # todo
-} # class
+class Exception extends \Exception {} # class

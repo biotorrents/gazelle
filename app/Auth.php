@@ -79,13 +79,13 @@ class Auth # extends Delight\Auth\Auth
         $app = \Gazelle\App::go();
 
         # escape the inputs
-        $username = \Gazelle\Esc::username($data["username"] ?? null);
-        $email = \Gazelle\Esc::email($data["email"] ?? null);
+        $username = \Gazelle\Escape::username($data["username"] ?? null);
+        $email = \Gazelle\Escape::email($data["email"] ?? null);
 
-        $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
-        $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
+        $passphrase = \Gazelle\Escape::passphrase($data["passphrase"] ?? null);
+        $confirmPassphrase = \Gazelle\Escape::passphrase($data["confirmPassphrase"] ?? null);
 
-        $invite = \Gazelle\Esc::string($data["invite"] ?? null);
+        $invite = \Gazelle\Escape::string($data["invite"] ?? null);
 
         try {
             # disallow registration if the database is encrypted
@@ -207,14 +207,14 @@ class Auth # extends Delight\Auth\Auth
         $server = \Gazelle\Http::request("server");
 
         # escape the inputs
-        $email = \Gazelle\Esc::email($data["email"] ?? null);
+        $email = \Gazelle\Escape::email($data["email"] ?? null);
         $encryptedEmail = \Gazelle\Crypto::encrypt($email);
 
-        $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
-        $confirmPassphrase = \Gazelle\Esc::passphrase($data["confirmPassphrase"] ?? null);
+        $passphrase = \Gazelle\Escape::passphrase($data["passphrase"] ?? null);
+        $confirmPassphrase = \Gazelle\Escape::passphrase($data["confirmPassphrase"] ?? null);
 
-        $username = \Gazelle\Esc::username($data["username"] ?? null);
-        $invite = \Gazelle\Esc::string($data["invite"] ?? null);
+        $username = \Gazelle\Escape::username($data["username"] ?? null);
+        $invite = \Gazelle\Escape::string($data["invite"] ?? null);
 
         # generate keys
         $torrent_pass = \Gazelle\Text::random(32);
@@ -382,12 +382,12 @@ class Auth # extends Delight\Auth\Auth
         # https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#login
         $message = $this->message;
 
-        $username = \Gazelle\Esc::username($data["username"] ?? null);
-        $passphrase = \Gazelle\Esc::passphrase($data["passphrase"] ?? null);
-        $rememberMe = \Gazelle\Esc::bool($data["rememberMe"] ?? null);
+        $username = \Gazelle\Escape::username($data["username"] ?? null);
+        $passphrase = \Gazelle\Escape::passphrase($data["passphrase"] ?? null);
+        $rememberMe = \Gazelle\Escape::bool($data["rememberMe"] ?? null);
 
         # 2fa code needs to be a string (RobThree)
-        $twoFactor = \Gazelle\Esc::string($data["twoFactor"] ?? null);
+        $twoFactor = \Gazelle\Escape::string($data["twoFactor"] ?? null);
 
         try {
             # validate userId and 2fa
@@ -467,13 +467,13 @@ class Auth # extends Delight\Auth\Auth
 
             /*
             # try email validation
-            $usingEmail = \Gazelle\Esc::email($username);
+            $usingEmail = \Gazelle\Escape::email($username);
             if (!empty($usingEmail)) {
                 $response = $this->library->login($username, $passphrase, $this->remember($rememberMe));
             } else {
                 # simply call the method loginWithUsername instead of method login
                 # make sure to catch both UnknownUsernameException and AmbiguousUsernameException
-                $username = \Gazelle\Esc::username($username);
+                $username = \Gazelle\Escape::username($username);
                 $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
             */
@@ -544,8 +544,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Invalid selector or token";
 
-        $selector = \Gazelle\Esc::string($selector);
-        $token = \Gazelle\Esc::string($token);
+        $selector = \Gazelle\Escape::string($selector);
+        $token = \Gazelle\Escape::string($token);
 
         try {
             # if you want the user to be automatically signed in after successful confirmation,
@@ -575,7 +575,7 @@ class Auth # extends Delight\Auth\Auth
     {
         $app = \Gazelle\App::go();
 
-        $enabled = \Gazelle\Esc::bool($enabled);
+        $enabled = \Gazelle\Escape::bool($enabled);
 
         if ($enabled === true) {
             return $this->longRemember;
@@ -600,8 +600,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to start account recovery";
 
-        $email = \Gazelle\Esc::email($email);
-        $ip = \Gazelle\Esc::ip($ip);
+        $email = \Gazelle\Escape::email($email);
+        $ip = \Gazelle\Escape::ip($ip);
 
         try {
             $this->library->forgotPassword($email, function ($selector, $token) use ($email, $ip) {
@@ -637,8 +637,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to continue account recovery";
 
-        $selector = \Gazelle\Esc::string($selector);
-        $token = \Gazelle\Esc::string($token);
+        $selector = \Gazelle\Escape::string($selector);
+        $token = \Gazelle\Escape::string($token);
 
         try {
             # put the selector and token in hidden fields
@@ -663,11 +663,11 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to finish account recovery";
 
-        $selector = \Gazelle\Esc::string($selector);
-        $token = \Gazelle\Esc::string($token);
+        $selector = \Gazelle\Escape::string($selector);
+        $token = \Gazelle\Escape::string($token);
 
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
-        $confirmPassphrase = \Gazelle\Esc::passphrase($confirmPassphrase);
+        $passphrase = \Gazelle\Escape::passphrase($passphrase);
+        $confirmPassphrase = \Gazelle\Escape::passphrase($confirmPassphrase);
 
         try {
             if ($passphrase !== $confirmPassphrase) {
@@ -719,8 +719,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to update passphrase";
 
-        $oldPassphrase = \Gazelle\Esc::passphrase($oldPassphrase);
-        $newPassphrase = \Gazelle\Esc::passphrase($newPassphrase);
+        $oldPassphrase = \Gazelle\Escape::passphrase($oldPassphrase);
+        $newPassphrase = \Gazelle\Escape::passphrase($newPassphrase);
 
         try {
             $this->library->changePassword($oldPassphrase, $newPassphrase);
@@ -746,7 +746,7 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to update email";
 
-        $newEmail = \Gazelle\Esc::email($newEmail);
+        $newEmail = \Gazelle\Escape::email($newEmail);
         $newEmail = \Gazelle\Crypto::encrypt($newEmail);
 
         try {
@@ -762,7 +762,7 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to update email";
 
         # sanitize the input
-        $newEmail = \Gazelle\Esc::email($newEmail);
+        $newEmail = \Gazelle\Escape::email($newEmail);
 
         try {
             $this->library->changeEmail($newEmail, function ($selector, $token) use ($newEmail) {
@@ -797,7 +797,7 @@ class Auth # extends Delight\Auth\Auth
         $message = "Unable to resend confirmation email";
 
         # try to resolve the email address
-        $identifier = \Gazelle\Esc::string($identifier);
+        $identifier = \Gazelle\Escape::string($identifier);
         $column = $app->dbNew->determineIdentifier($identifier);
 
         # todo: maybe change unresolved id or uuid to null
@@ -919,7 +919,7 @@ class Auth # extends Delight\Auth\Auth
 
         $message = $this->message;
 
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
+        $passphrase = \Gazelle\Escape::passphrase($passphrase);
 
         try {
             $this->library->reconfirmPassword($passphrase);
@@ -940,8 +940,8 @@ class Auth # extends Delight\Auth\Auth
 
         $message = "Unable to update reset preference";
 
-        $enabled = \Gazelle\Esc::bool($enabled);
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
+        $enabled = \Gazelle\Escape::bool($enabled);
+        $passphrase = \Gazelle\Escape::passphrase($passphrase);
 
         try {
             $reconfirmed = $this->library->reconfirmPassword($passphrase);
@@ -964,7 +964,7 @@ class Auth # extends Delight\Auth\Auth
      */
     public function isPassphraseAllowed(string $passphrase): bool
     {
-        $passphrase = \Gazelle\Esc::passphrase($passphrase);
+        $passphrase = \Gazelle\Escape::passphrase($passphrase);
 
         if (empty($passphrase) || strlen($passphrase) < 15) {
             return false;

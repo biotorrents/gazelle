@@ -214,7 +214,7 @@ class Friends
             }
 
             # escape the comment
-            $data["comment"] = \Gazelle\Esc::string($data["comment"]);
+            $data["comment"] = \Gazelle\Escape::string($data["comment"]);
         }
 
         # return valid data

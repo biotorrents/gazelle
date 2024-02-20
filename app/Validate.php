@@ -149,12 +149,12 @@ class Validate
 
             /** */
 
-            # the $field["type"] tests use assertions from \Gazelle\Esc::class
+            # the $field["type"] tests use assertions from \Gazelle\Escape::class
             # this is used to enforce type checking where appropriate
 
             # email
             if ($field["type"] === "email") {
-                $good = (\Gazelle\Esc::email($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::email($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid email";
                 }
@@ -162,7 +162,7 @@ class Validate
 
             # float
             if ($field["type"] === "float" || $field["type"] === "decimal") {
-                $good = (\Gazelle\Esc::float($valueToValidate) === floatval($valueToValidate));
+                $good = (\Gazelle\Escape::float($valueToValidate) === floatval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid float";
                 }
@@ -170,7 +170,7 @@ class Validate
 
             # int
             if ($field["type"] === "int" || $field["type"] === "integer" || $field["type"] === "number") {
-                $good = (\Gazelle\Esc::int($valueToValidate) === intval($valueToValidate));
+                $good = (\Gazelle\Escape::int($valueToValidate) === intval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid int";
                 }
@@ -178,7 +178,7 @@ class Validate
 
             # string
             if ($field["type"] === "string") {
-                $good = (\Gazelle\Esc::string($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::string($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid string";
                 }
@@ -186,7 +186,7 @@ class Validate
 
             # url
             if ($field["type"] === "url" || $field["type"] === "uri") {
-                $good = (\Gazelle\Esc::url($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::url($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid url";
                 }
@@ -194,7 +194,7 @@ class Validate
 
             # bool
             if ($field["type"] === "bool" || $field["type"] === "boolean") {
-                $good = (\Gazelle\Esc::bool($valueToValidate) === boolval($valueToValidate));
+                $good = (\Gazelle\Escape::bool($valueToValidate) === boolval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid bool";
                 }
@@ -202,7 +202,7 @@ class Validate
 
             # domain
             if ($field["type"] === "domain") {
-                $good = (\Gazelle\Esc::domain($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::domain($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid domain";
                 }
@@ -210,7 +210,7 @@ class Validate
 
             # ip
             if ($field["type"] === "ip" || $field["type"] === "ipAddress") {
-                $good = (\Gazelle\Esc::ip($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::ip($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid ip";
                 }
@@ -219,7 +219,7 @@ class Validate
 
             # mac
             if ($field["type"] === "mac" || $field["type"] === "macAddress") {
-                $good = (\Gazelle\Esc::mac($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::mac($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid mac";
                 }
@@ -227,7 +227,7 @@ class Validate
 
             # regex
             if ($field["type"] === "regex") {
-                $good = (\Gazelle\Esc::regex($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::regex($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid regex";
                 }
@@ -236,7 +236,7 @@ class Validate
 
             # username
             if ($field["type"] === "username") {
-                $good = (\Gazelle\Esc::username($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::username($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid username";
                 }
@@ -244,7 +244,7 @@ class Validate
 
             # passphrase
             if ($field["type"] === "passphrase" || $field["type"] === "password") {
-                $good = (\Gazelle\Esc::passphrase($valueToValidate) === strval($valueToValidate));
+                $good = (\Gazelle\Escape::passphrase($valueToValidate) === strval($valueToValidate));
                 if (!$good) {
                     $this->errors[$key][] = "this field requires a valid passphrase";
                 }
@@ -885,12 +885,12 @@ class Validate
                         $Match .= ',';
                     }
 
-                    if (preg_match('/[^'.$Match.']/', $ValidateVar) || strlen($ValidateVar) < 1) {
+                    if (preg_match('/[^' . $Match . ']/', $ValidateVar) || strlen($ValidateVar) < 1) {
                         return $field['ErrorMessage'];
                     } elseif ($MaxLength !== '' && $ValidateVar > $MaxLength) {
-                        return $field['ErrorMessage'].'!!';
+                        return $field['ErrorMessage'] . '!!';
                     } elseif ($ValidateVar < $MinLength) {
-                        return $field['ErrorMessage']."$MinLength";
+                        return $field['ErrorMessage'] . "$MinLength";
                     }
                 } elseif ($field['Type'] === 'email') {
                     if (isset($field['MaxLength'])) {

@@ -28,8 +28,8 @@ $emailSent ??= false;
 
 $stepOne ??= null;
 
-$email = Gazelle\Esc::email($post["email"] ?? null);
-$ip = Gazelle\Esc::ip($server["REMOTE_ADDR"] ?? null);
+$email = Gazelle\Escape::email($post["email"] ?? null);
+$ip = Gazelle\Escape::ip($server["REMOTE_ADDR"] ?? null);
 
 if (!empty($email) && !empty($ip)) {
     try {
@@ -71,13 +71,13 @@ if (!empty($selector) && !empty($token)) {
 
 $stepThree ??= null;
 
-$passphrase = Gazelle\Esc::string($post["passphrase"] ?? null);
-$confirmPassphrase = Gazelle\Esc::string($post["confirmPassphrase"] ?? null);
+$passphrase = Gazelle\Escape::string($post["passphrase"] ?? null);
+$confirmPassphrase = Gazelle\Escape::string($post["confirmPassphrase"] ?? null);
 
 if (!empty($passphrase) && !empty($confirmPassphrase)) {
     # putting these here to not mess up recoverMiddle
-    $selector = Gazelle\Esc::string($post["selector"] ?? null);
-    $token = Gazelle\Esc::string($post["token"] ?? null);
+    $selector = Gazelle\Escape::string($post["selector"] ?? null);
+    $token = Gazelle\Escape::string($post["token"] ?? null);
 
     if (!empty($selector) && !empty($token)) {
         try {

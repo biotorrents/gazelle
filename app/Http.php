@@ -116,37 +116,37 @@ class Http
         # cookie
         $safe["cookie"] = $_COOKIE;
         array_walk_recursive($safe["cookie"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # files
         $safe["files"] = $_FILES;
         array_walk_recursive($safe["files"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # get
         $safe["get"] = $_GET;
         array_walk_recursive($safe["get"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # post
         $safe["post"] = $_POST;
         array_walk_recursive($safe["post"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # request
         $safe["request"] = $_REQUEST;
         array_walk_recursive($safe["request"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # server
         $safe["server"] = $_SERVER;
         array_walk_recursive($safe["server"], function ($value) {
-            return Esc::string($value);
+            return Escape::string($value);
         });
 
         # should be okay
@@ -452,7 +452,7 @@ class Http
 
             setcookie(
                 self::$cookiePrefix . $key,
-                Esc::string($value),
+                Escape::string($value),
                 [
                     "expires" => $time,
                     "path" => "/",
