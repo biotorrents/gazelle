@@ -375,6 +375,7 @@ $env->defaultSiteOptions = json_encode([
     "listUnreadsFirst" => true,
     "openaiContent" => true,
     "percentileStats" => true,
+    "profileConversations" => true,
     "recentCollages" => true,
     "recentRequests" => true,
     "recentSnatches" => true,

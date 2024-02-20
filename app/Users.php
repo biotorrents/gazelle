@@ -48,9 +48,100 @@ class Users extends ObjectCrud
     public ?RecursiveCollection $attributes = null;
     public ?RecursiveCollection $relationships = null;
 
-    # ["database" => "display"]
+    # [ "table" => ["database" => "display"] ]
+    # there are a few big tables in this case
     protected array $maps = [
-        "id" => "id",
+        "users" => [
+            "uuid" => "uuid",
+            "id" => "id",
+            "email" => "email",
+            "password" => "passphrase",
+            "username" => "username",
+            "status" => "status",
+            "verified" => "verified",
+            "resettable" => "resettable",
+            "roles_mask" => "rolesMask",
+            "registered" => "createdAt",
+            "last_login" => "lastLogin",
+            "force_logout" => "forceLogout",
+            "created_at" => "createdAt",
+            "updated_at" => "updatedAt",
+            "deleted_at" => "deletedAt",
+        ],
+
+        "users_main" => [
+            "uuid" => "uuid",
+            "ID" => "id",
+            "username" => "username",
+            "Email" => "email",
+            "PassHash" => "passphrase",
+            "TwoFactor" => "twoFactor",
+            "PublicKey" => "publicKey",
+            "IRCKey" => "ircKey",
+            "LastLogin" => "lastLogin",
+            "LastAccess" => "lastAccess",
+            "IP" => "ipAddress",
+            "Class" => "classId",
+            "Uploaded" => "bytesUploaded",
+            "Downloaded" => "bytesDownloaded",
+            "Title" => "customTitle",
+            "Enabled" => "isEnabled",
+            "Paranoia" => "paranoia",
+            "Visible" => "isVisible",
+            "Invites" => "inviteCount",
+            "PermissionID" => "permissionId",
+            "CustomPermissions" => "customPermissions",
+            "can_leech" => "canLeech",
+            "torrent_pass" => "torrentPass",
+            "RequiredRatio" => "requiredRatio",
+            "RequiredRatioWork" => "requiredRatioWork",
+            "FLTokens" => "freeleechTokens",
+            "BonusPoints" => "bonusPoints",
+            "IRCLines" => "ircLines",
+            "HnR" => "hnrCount",
+            "userId" => "userId",
+            "created_at" => "createdAt",
+            "updated_at" => "updatedAt",
+            "deleted_at" => "deletedAt",
+        ],
+
+        "users_info" => [
+            "uuid" => "uuid",
+            "UserID" => "userId",
+            "StyleID" => "styleId",
+            "StyleURL" => "styleUri",
+            "Info" => "profileBody",
+            "Avatar" => "avatarUri",
+            "AdminComment" => "adminComment",
+            "SiteOptions" => "siteOptions",
+            "Donor" => "isDonor",
+            "Artist" => "isCreator",
+            "Warned" => "isWarned",
+            "SupportFor" => "supportForum",
+            "TorrentGrouping" => "torrentGrouping",
+            "ShowTags" => "showTags",
+            "NotifyOnQuote" => "notifyOnQuote",
+            "AuthKey" => "authKey",
+            "ResetKey" => "resetKey",
+            "ResetExpires" => "resetExpires",
+            "JoinDate" => "joinDate",
+            "Inviter" => "inviterId",
+            "WarnedTimes" => "warnCount",
+            "RatioWatchEnds" => "ratioWatchEnds",
+            "RatioWatchDownload" => "ratioWatchDownload",
+            "RatioWatchTimes" => "ratioWatchCount",
+            "BanDate" => "banDate",
+            "BanReason" => "banReason",
+            "CatchupTime" => "catchupTime",
+            "LastReadNews" => "lastReadNews",
+            "HideCountryChanges" => "hideCountryChanges",
+            "LastReadBlog" => "lastReadBlog",
+            "InfoTitle" => "profileSubject",
+            "isPassphraseMigrated" => "isPassphraseMigrated",
+            "created_at" => "createdAt",
+            "updated_at" => "updatedAt",
+            "deleted_at" => "deletedAt",
+        ],
     ];
 
     # cache settings
@@ -66,7 +157,7 @@ class Users extends ObjectCrud
      */
     public function __construct()
     {
-        return;
+        #return;
     }
 
     public function __clone()
@@ -290,6 +381,9 @@ class Users extends ObjectCrud
      * create
      *
      * Handled in the Auth class.
+     *
+     * @param array $data
+     * @return void
      */
     public function create(array $data = []): void
     {
@@ -300,9 +394,13 @@ class Users extends ObjectCrud
     /**
      * read
      *
-     * Gets a user profile (public info only).
+     * Gets a user profile as a JSON:API compliant object.
+     * There's a lot of data to manually work through...
+     *
+     * @param int|string $identifier
+     * @return void
      */
-    public function read(int|string $identifier): void
+    public function readTest(int|string $identifier)
     {
         $app = App::go();
 
@@ -310,12 +408,187 @@ class Users extends ObjectCrud
         $column = $app->dbNew->determineIdentifier($identifier);
         if ($column === "slug") {
             $column = "username";
+        } else {
+            $column = "id";
         }
 
-        # database query
-        $query = "
-            todo
-        ";
+        # try to resolve an id from a username
+        if ($column === "username") {
+            $query = "select id from users where username = ?";
+            $identifier = $app->dbNew->single($query, [$identifier]);
+
+            if (!$identifier) {
+                throw new Exception("user not found");
+            }
+        }
+
+        # are they viewing their own profile?
+        # todo: this relies on "core" and "extra"
+        $isOwnProfile = $identifier === $app->user->core["id"];
+
+        /** database queries */
+
+        # draft a user object
+        $userData = [
+            "id" => $identifier,
+            "type" => $this->type,
+            "attributes" => [
+                "isOwnProfile" => $isOwnProfile,
+            ],
+        ];
+
+        # query the users table
+        $query = "select * from users where id = ?";
+        $ref = $app->dbNew->row($query, [$identifier]);
+
+        if (!$ref) {
+            throw new Exception("user not found");
+        }
+
+        # convert database to display
+        foreach ($ref as $key => $value) {
+            $userData["attributes"][ $this->maps["users"][$key] ] = $value;
+        }
+
+        # query the users_main table
+        $query = "select * from users_main where userId = ?";
+        $ref = $app->dbNew->row($query, [$identifier]);
+
+        if (!$ref) {
+            throw new Exception("user not found");
+        }
+
+        # set the junk data to remove
+        $junkData = [
+            "uuid",
+            "id",
+            "username",
+            "email",
+            "passphrase",
+            "lastLogin",
+            "lastAccess",
+            "customTitle",
+            "isEnabled",
+            "paranoia",
+            "isVisible",
+            "ircLines",
+            "userId",
+            "createdAt",
+            "updatedAt",
+            "deletedAt",
+        ];
+
+        # convert database to display
+        foreach ($ref as $key => $value) {
+            $displayKey = $this->maps["users_main"][$key];
+            if (in_array($displayKey, $junkData)) {
+                continue;
+            }
+
+            # set the useful data
+            $userData["attributes"][ $this->maps["users_main"][$key] ] = $value;
+        }
+
+        # query the users_info table
+        $query = "select * from users_info where userId = ?";
+        $ref = $app->dbNew->row($query, [$identifier]);
+
+        if (!$ref) {
+            throw new Exception("user not found");
+        }
+
+        # set the junk data to remove
+        $junkData = [
+            "uuid",
+            "userId",
+            "styleId",
+            "styleUri",
+            "supportForum",
+            "torrentGrouping",
+            "showTags",
+            "resetKey",
+            "resetExpires",
+            "joinDate",
+            "catchupTime",
+            "lastReadNews",
+            "hideCountryChanges",
+            "lastReadBlog",
+            "createdAt",
+            "updatedAt",
+            "deletedAt",
+        ];
+
+        # convert database to display
+        foreach ($ref as $key => $value) {
+            $displayKey = $this->maps["users_info"][$key];
+            if (in_array($displayKey, $junkData)) {
+                continue;
+            }
+
+            # set the useful data
+            $userData["attributes"][ $this->maps["users_info"][$key] ] = $value;
+        }
+        
+        /** post-processing */
+
+        # unset the id attribute if it exists
+        if (isset($userData["attributes"]["id"])) {
+            unset($userData["attributes"]["id"]);
+        }
+
+        # decrypt the necessary data
+        $encryptedAttributes = ["email", "ipAddress"];
+        foreach ($encryptedAttributes as $key) {
+            $userData["attributes"][$key] = Crypto::decrypt($userData["attributes"][$key]);
+        }
+
+        # convert the siteOptions to an array
+        $userData["attributes"]["siteOptions"] = json_decode($userData["attributes"]["siteOptions"] ?? "{}", true);
+
+        # convert unix timestamps to datetime strings
+        $unixTimestamps = ["lastLogin"];
+        foreach ($unixTimestamps as $key) {
+            $userData["attributes"][$key] = date("Y-m-d H:i:s", $userData["attributes"][$key]);
+        }
+
+        # fix tinyint vs. boolean type errors
+        $booleanFields = ["verified", "resettable", "canLeech", "isDonor", "isCreator", "isWarned", "notifyOnQuote", "isPassphraseMigrated"];
+        foreach ($booleanFields as $key) {
+            $userData["attributes"][$key] = boolval($userData["attributes"][$key]);
+        }
+
+        # match the status comstants to strings
+        match ($userData["attributes"]["status"]) {
+            self::NORMAL => $userData["attributes"]["status"] = "normal",
+            self::ARCHIVED => $userData["attributes"]["status"] = "archived",
+            self::BANNED => $userData["attributes"]["status"] = "banned",
+            self::LOCKED => $userData["attributes"]["status"] = "locked",
+            self::PENDING_REVIEW => $userData["attributes"]["status"] = "pendingReview",
+            self::SUSPENDED => $userData["attributes"]["status"] = "suspended",
+        };
+
+        # set empty data to null
+        $nullableFields = ["rolesMask", "publicKey", "ircKey", "profileBody", "avatarUri", "adminComment", "inviterId", "banReason", "profileSubject"];
+        foreach ($nullableFields as $key) {
+            if (empty($userData["attributes"][$key])) {
+                $userData["attributes"][$key] = null;
+            }
+        }
+
+        # remove sensitive data if it's someone else's profile
+        $privateFields = ["email", "passphrase", "forceLogout", "twoFactor", "publicKey", "ircKey", "ipAddress", "torrentPass", "authKey", "isPassphraseMigrated"];
+        if (!$isOwnProfile) {
+            foreach ($privateFields as $key) {
+                unset($userData["attributes"][$key]);
+            }
+        }
+
+        # remove adminComment if it's not an admin
+        if ($app->user->cant("users_mod")) {
+            unset($userData["attributes"]["adminComment"]);
+        }
+
+        return $userData;
     }
 
 
@@ -323,6 +596,10 @@ class Users extends ObjectCrud
      * update
      *
      * Handled elsewhere in this class.
+     *
+     * @param int|string $identifier
+     * @param array $data
+     * @return void
      */
     public function update(int|string $identifier, array $data = []): void
     {
@@ -334,6 +611,9 @@ class Users extends ObjectCrud
      * delete
      *
      * We don't delete users yet.
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public function delete(int|string $identifier): void
     {
@@ -989,6 +1269,7 @@ class Users extends ObjectCrud
                 "listUnreadsFirst" => Esc::bool($data["listUnreadsFirst"] ?? null),
                 "openaiContent" => Esc::bool($data["openaiContent"] ?? null),
                 "percentileStats" => Esc::bool($data["percentileStats"] ?? null),
+                "profileConversations" => Esc::bool($data["profileConversations"] ?? null),
                 "recentCollages" => Esc::bool($data["recentCollages"] ?? null),
                 "recentRequests" => Esc::bool($data["recentRequests"] ?? null),
                 "recentSnatches" => Esc::bool($data["recentSnatches"] ?? null),
