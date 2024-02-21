@@ -139,6 +139,10 @@ switch ($_REQUEST['action']) {
         include serverRoot . '/sections/tools/managers/take_global_notification.php';
         break;
 
+    case 'newRoles':
+        include serverRoot . '/sections/tools/rolesList.php';
+        break;
+
     case 'permissions':
         if (!check_perms('admin_manage_permissions')) {
             error(403);

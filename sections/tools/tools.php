@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 if (!check_perms("users_mod")) {
-    $app->error(403);
+    #$app->error(403);
 }
 
 $app->twig->display("admin/tools.twig", [

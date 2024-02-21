@@ -68,7 +68,7 @@ class Roles extends ObjectCrud
 
     # in progress: simple crud natural language permissions
     # e.g., if $app->user->can("update any torrents") { ... }
-    public array $newPermissions = [
+    public array $permissions = [
         # torrents
         "create torrents" => "Can create torrents",
         "read torrents" => "Can read torrents",
@@ -84,6 +84,16 @@ class Roles extends ObjectCrud
         "update any torrent groups" => "Can update any torrent groups",
         "delete own torrent groups" => "Can delete own torrent groups",
         "delete any torrent groups" => "Can delete any torrent groups",
+
+        # tags
+        "create tags" => "Can create tags",
+        "read tags" => "Can read tags",
+        "update own tags" => "Can update own tags",
+        "update any tags" => "Can update any tags",
+        "delete own tags" => "Can delete own tags",
+        "delete any tags" => "Can delete any tags",
+
+        /** */
 
         # collages
         "create collages" => "Can create collages",
@@ -109,6 +119,8 @@ class Roles extends ObjectCrud
         "delete own requests" => "Can delete own requests",
         "delete any requests" => "Can delete any requests",
 
+        /** */
+
         # conversations
         "create conversations" => "Can create conversations",
         "read conversations" => "Can read conversations",
@@ -133,13 +145,25 @@ class Roles extends ObjectCrud
         "delete own polls" => "Can delete own polls",
         "delete any polls" => "Can delete any polls",
 
-        # tags
-        "create tags" => "Can create tags",
-        "read tags" => "Can read tags",
-        "update own tags" => "Can update own tags",
-        "update any tags" => "Can update any tags",
-        "delete own tags" => "Can delete own tags",
-        "delete any tags" => "Can delete any tags",
+        # user profiles
+        "create user profiles" => "Can create user profiles",
+        "read user profiles" => "Can read user profiles",
+        "update own user profiles" => "Can update own user profiles",
+        "update any user profiles" => "Can update any user profiles",
+        "delete own user profiles" => "Can delete own user profiles",
+        "delete any user profiles" => "Can delete any user profiles",
+
+        /** */
+
+        /*
+        # rules
+        "create rules" => "Can create rules",
+        "read rules" => "Can read rules",
+        "update own rules" => "Can update own rules",
+        "update any rules" => "Can update any rules",
+        "delete own rules" => "Can delete own rules",
+        "delete any rules" => "Can delete any rules",
+        */
 
         # wiki articles
         "create wiki articles" => "Can create wiki articles",
@@ -178,6 +202,278 @@ class Roles extends ObjectCrud
         "access upscale pool" => "Can access the upscale pool page",
     ];
 
+
+    # in progress: simple crud natural language permissions
+    # e.g., if $app->user->can("update any torrents") { ... }
+    public array $altPermissions = [
+        # torrents
+        "torrents" => [
+            "create" => "Can create torrents",
+            "read" => "Can read torrents",
+            "updateOwn" => "Can update own torrents",
+            "updateAny" => "Can update any torrents",
+            "deleteOwn" => "Can delete own torrents",
+            "deleteAny" => "Can delete any torrents",
+        ],
+
+        # torrent groups
+        "torrentGroups" => [
+            "create" => "Can create torrent groups",
+            "read" => "Can read torrent groups",
+            "updateOwn" => "Can update own torrent groups",
+            "updateAny" => "Can update any torrent groups",
+            "deleteOwn" => "Can delete own torrent groups",
+            "deleteAny" => "Can delete any torrent groups",
+        ],
+
+        # tags
+        "tags" => [
+            "create" => "Can create tags",
+            "read" => "Can read tags",
+            "updateOwn" => "Can update own tags",
+            "updateAny" => "Can update any tags",
+            "deleteOwn" => "Can delete own tags",
+            "deleteAny" => "Can delete any tags",
+        ],
+
+        # collages
+        "collages" => [
+            "create" => "Can create collages",
+            "read" => "Can read collages",
+            "updateOwn" => "Can update own collages",
+            "updateAny" => "Can update any collages",
+            "deleteOwn" => "Can delete own collages",
+            "deleteAny" => "Can delete any collages",
+        ],
+
+        # creators
+        "creators" => [
+            "create" => "Can create creators",
+            "read" => "Can read creators",
+            "updateOwn" => "Can update own creators",
+            "updateAny" => "Can update any creators",
+            "deleteOwn" => "Can delete own creators",
+            "deleteAny" => "Can delete any creators",
+        ],
+
+        # requests
+        "requests" => [
+            "create" => "Can create requests",
+            "read" => "Can read requests",
+            "updateOwn" => "Can update own requests",
+            "updateAny" => "Can update any requests",
+            "deleteOwn" => "Can delete own requests",
+            "deleteAny" => "Can delete any requests",
+        ],
+
+        # conversations
+        "conversations" => [
+            "create" => "Can create conversations",
+            "read" => "Can read conversations",
+            "updateOwn" => "Can update own conversations",
+            "updateAny" => "Can update any conversations",
+            "deleteOwn" => "Can delete own conversations",
+            "deleteAny" => "Can delete any conversations",
+        ],
+
+        # messages
+        "messages" => [
+            "create" => "Can create messages",
+            "read" => "Can read messages",
+            "updateOwn" => "Can update own messages",
+            "updateAny" => "Can update any messages",
+            "deleteOwn" => "Can delete own messages",
+            "deleteAny" => "Can delete any messages",
+        ],
+
+        # polls
+        "polls" => [
+            "create" => "Can create polls",
+            "read" => "Can read polls",
+            "updateOwn" => "Can update own polls",
+            "updateAny" => "Can update any polls",
+            "deleteOwn" => "Can delete own polls",
+            "deleteAny" => "Can delete any polls",
+        ],
+
+        # user profiles
+        "userProfiles" => [
+            "create" => "Can create user profiles",
+            "read" => "Can read user profiles",
+            "updateOwn" => "Can update own user profiles",
+            "updateAny" => "Can update any user profiles",
+            "deleteOwn" => "Can delete own user profiles",
+            "deleteAny" => "Can delete any user profiles",
+        ],
+
+        # wiki
+        "wiki" => [
+            "create" => "Can create wiki articles",
+            "read" => "Can read wiki articles",
+            "updateOwn" => "Can update own wiki articles",
+            "updateAny" => "Can update any wiki articles",
+            "deleteOwn" => "Can delete own wiki articles",
+            "deleteAny" => "Can delete any wiki articles",
+        ],
+
+        # toolbox
+        "toolbox" => [
+            "access" => "Can access the admin tools page",
+            "clientWhitelist" => "Can access the client whitelist page",
+            "permissionsManager" => "Can access the permissions manager page",
+            "databaseKey" => "Can access the database key page",
+            "autoEnableRequests" => "Can access the auto-enable requests page",
+            "loginWatch" => "Can access the login watch page",
+            "serviceStats" => "Can access the service stats page",
+            "miscellaneousValues" => "Can access the miscellaneous values page",
+            "trackerInformation" => "Can access the tracker information page",
+            "collageRecovery" => "Can access the collage recovery page",
+            "freeleechTokenManager" => "Can access the freeleech token manager page",
+            "multipleFreeleech" => "Can access the multiple freeleech page",
+            "tagAliases" => "Can access the tag aliases page",
+            "batchTagEditor" => "Can access the batch tag editor page",
+            "officialTagsManager" => "Can access the official tags manager page",
+            "sitewideFreeleechManager" => "Can access the sitewide freeleech manager page",
+            "globalNotifications" => "Can access the global notifications page",
+            "massPm" => "Can access the mass PM page",
+            "newsPosts" => "Can access the news posts page",
+            "emailBlacklist" => "Can access the email blacklist page",
+            "ipAddressBans" => "Can access the IP address bans page",
+            "manipulateInviteTree" => "Can access the manipulate invite tree page",
+            "invitePool" => "Can access the invite pool page",
+            "registrationLog" => "Can access the registration log page",
+            "upscalePool" => "Can access the upscale pool page",
+        ],
+    ];
+
+
+    /**
+     * read
+     *
+     * Decodes the permissions JSON and adds extra attributes.
+     *
+     * @param int|string $identifier
+     * @return void
+     */
+    public function read(int|string $identifier): void
+    {
+        $app = App::go();
+
+        # normal read
+        parent::read($identifier);
+
+        # decode the permissions
+        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList, true);
+
+        # get the user count
+        $query = "select count(userId) from users_main where permissionId = ?";
+        $this->attributes->userCount = $app->dbNew->single($query, [$this->id]);
+    }
+
+
+    /**
+     * getAllRoles
+     *
+     * Returns an array of Roles objects.
+     *
+     * @return array
+     */
+    public function getAllRoles(): array
+    {
+        $app = App::go();
+
+        $query = "select id from roles_permissions";
+        $ref = $app->dbNew->column($query, []);
+
+        $roles = [];
+        foreach ($ref as $id) {
+            $roles[] = new self($id);
+        }
+
+        return $roles;
+    }
+
+
+    /**
+     * getAllPermissions
+     *
+     * Returns an array of permissions.
+     *
+     * @return array
+     */
+    public function getAllPermissions(): array
+    {
+        return $this->altPermissions;
+    }
+
+
+    /**
+     * parsePermissionSections
+     *
+     * Parses the permissions into sections.
+     * Array keys are used as section headers.
+     *
+     * @return array
+     */
+    public function parsePermissionSections(): array
+    {
+        return $this->altPermissions;
+
+        /** */
+
+        $app = App::go();
+
+        # return cached if available
+        $cacheKey = $this->cachePrefix . __FUNCTION__;
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # the section strings to look for
+        $torrentsGroupsTags = ["torrents", "torrent groups", "tags"];
+        $collagesCreatorsRequests = ["collages", "creators", "requests"];
+        $socialUserGeneratedContent = ["conversations", "messages", "polls", "user profiles"];
+        $wikiArticles = ["wiki articles"];
+
+        $sections = [];
+        foreach ($this->permissions as $key => $value) {
+            # torrents, groups, and tags
+            foreach ($torrentsGroupsTags as $section) {
+                if (str_contains($key, $section)) {
+                    $sections["Torrents, groups, and tags"][$key] = $value;
+                }
+            }
+
+            # collages, creators, and requests
+            foreach ($collagesCreatorsRequests as $section) {
+                if (str_contains($key, $section)) {
+                    $sections["Collages, creators, and requests"][$key] = $value;
+                }
+            }
+
+            # social user-generated content
+            foreach ($socialUserGeneratedContent as $section) {
+                if (str_contains($key, $section)) {
+                    $sections["Social user-generated content"][$key] = $value;
+                }
+            }
+
+            # wiki articles and site documentation
+            if (str_contains($key, "wiki articles")) {
+                $sections["Wiki articles and site documentation"][$key] = $value;
+            }
+
+            # admin tools
+            if (str_contains($key, "access")) {
+                $sections["Admin tools"][$key] = $value;
+            }
+        } # foreach
+
+        $app->cache->set($cacheKey, $sections, $this->cacheDuration);
+        return $sections;
+    }
 
 
     /**

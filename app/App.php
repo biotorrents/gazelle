@@ -118,6 +118,23 @@ class App
 
 
     /**
+     * middleware
+     *
+     * Performs a permissions check on a route.
+     * Shows an error page if the user lacks the required permissions.
+     *
+     * @param string $permission
+     * @return void
+     */
+    public function middleware(string $permission): void
+    {
+        if ($this->user->cant($permission)) {
+            $this->error(403);
+        }
+    }
+
+
+    /**
      * email
      *
      * @param string $to
@@ -365,7 +382,7 @@ class App
         $this->twig->display("error.twig", [
             "title" => $subject,
             "subject" => $subject,
-            "body" => $body
+            "body" => $body,
         ]);
 
         # end all execution

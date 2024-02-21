@@ -1,0 +1,104 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+
+<h2>{{ pageTitle }}</h2>
+
+<form action="post">
+    <input type="hidden" name="id" value="{{ role.id }}">
+
+    <p>
+        <label for="friendlyName">Friendly name</label>
+        <br>
+        <input type="text" name="friendlyName" value="{{ role.attributes.friendlyName }}">
+    </p>
+
+    {#
+    <p>
+        <label for="description">Description</label>
+        <br>
+        <input type="text" name="description" value="{{ role.attributes.description }}">
+    </p>
+    #}
+
+    <p>
+        <input type="radio" name="primaryOrSecondaryRole" value="isPrimaryRole" {{ role.attributes.isPrimaryRole ? 'checked' : '' }}>
+        <label for="primaryOrSecondaryRole">Primary role?</label>
+    </p>
+
+    <p>
+        <input type="radio" name="primaryOrSecondaryRole" value="isSecondaryRole" {{ role.attributes.isSecondaryRole ? 'checked' : '' }}>
+        <label for="primaryOrSecondaryRole">Secondary role?</label>
+    </p>
+
+    <p>
+        <input type="checkbox" name="isStaffRole" value="1" {{ role.attributes.isStaffRole ? 'checked' : '' }}>
+        <label for="isStaffRole">Staff role?</label>
+    </p>
+
+    {#
+    <p>
+        <label for="maxPersonalCollages">Max personal collages</label>
+        <br>
+        <input type="number" name="maxPersonalCollages" value="{{ role.attributes.maxPersonalCollages|default(0) }}">
+    </p>
+    #}
+</form>
+
+</section>
+
+
+<section>
+
+<h3>Permissions manager</h3>
+
+<p>
+    Inherit permissions from:
+    <select id="inheritFrom" class="select" name="inheritFrom" placeholder="Select a role to inherit permissions from" multiple>
+        {% for role in allRoles %}
+            <option value="{{ role.id }}">{{ role.attributes.friendlyName }}</option>
+        {% endfor %}
+    </select>
+</p>
+
+<table>
+    {% for category, data in allPermissions %}
+        <tr>
+            <th width="10%">{{ category|unCamelCase }}</th>
+
+            <td>
+                <select id="{{ category }}" class="select" name="{{ category }}[]" placeholder="Please select permissions" multiple>
+                    {% for key, value in data %}
+                        <option value="{{ key }}">{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    {% endfor %} {# for heading, data in parsedPermissions #}
+</table>
+
+</section>
+
+
+<section>
+
+<h3>Developer information</h3>
+
+<pre>{{ dump(role.attributes.permissionsList) }}</pre>
+
+</section>
+
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+	{% include "admin/sidebar.twig" %}
+
+{% endblock %}
+#}

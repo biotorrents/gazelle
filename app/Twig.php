@@ -264,7 +264,6 @@ class Twig extends \Twig\Environment
 
         # Format::relativeTime
         $twig->addFilter(new \Twig\TwigFilter("relativeTime", function ($time = null) {
-            $time ??= time();
             return Format::relativeTime($time);
         }));
 
@@ -272,6 +271,14 @@ class Twig extends \Twig\Environment
         $twig->addFilter(new \Twig\TwigFilter("curlyBraces", function ($string) {
             return new \Twig\Markup(
                 "{{$string}}",
+                "UTF-8"
+            );
+        }));
+
+        # Gazelle\Text::unCamelCase
+        $twig->addFilter(new \Twig\TwigFilter("unCamelCase", function ($string) {
+            return new \Twig\Markup(
+                Text::unCamelCase($string),
                 "UTF-8"
             );
         }));
@@ -396,6 +403,24 @@ class Twig extends \Twig\Environment
                 \User::format_username($userId),
                 "UTF-8"
             );
+        }));
+
+        # boolval
+        $twig->addFilter(new \Twig\TwigFilter("boolval", function ($value) {
+            $boolval = boolval($value);
+            if ($boolval) {
+                # true
+                return new \Twig\Markup(
+                    "<i class='fa-thin fa-check'></i>",
+                    "UTF-8"
+                );
+            } else {
+                # false
+                return new \Twig\Markup(
+                    "<i class='fa-thin fa-xmark'></i>",
+                    "UTF-8"
+                );
+            }
         }));
 
         # random creator

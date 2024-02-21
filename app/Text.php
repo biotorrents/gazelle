@@ -398,4 +398,20 @@ class Text
 
         return false; # no binary characters found
     }
+
+
+    /**
+     * unCamelCase
+     *
+     * Turns, e.g., "camelCaseString" into "Camel case string."
+     */
+    public static function unCamelCase(string $string): string
+    {
+        $string = preg_split("/(?=[A-Z])/", $string);
+        $string = implode(" ", $string);
+        $string = strtolower($string);
+        $string = ucfirst($string);
+
+        return $string;
+    }
 } # class

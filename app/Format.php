@@ -516,13 +516,17 @@ class Format
     /**
      * relativeTime
      *
-     * @param string strtotime-compatible
-     * @return string e.g., 4 minutes, 20 seconds ago
+     * @param string|int strtotime-compatible
+     * @return ?string e.g., 4 minutes, 20 seconds ago
      *
      * @see https://stackoverflow.com/a/7487809
      */
-    public static function relativeTime(string|int $time): string
+    public static function relativeTime(string|int $time = null): ?string
     {
+        if (!$time) {
+            return null;
+        }
+
         return \Carbon\Carbon::parse($time)->diffForHumans();
     }
 

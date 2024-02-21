@@ -1,0 +1,63 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+
+<h2>List of all site roles</h2>
+
+<p>
+    Below is a list of all the roles on the site.
+    You can click on a role to update its permissions.
+</p>
+
+<table data-sortable>
+    <thead>
+        <tr>
+            <th>Friendly name</th>
+            <th class="center">User count</th>
+
+            <th class="center">Primary role</th>
+            <th class="center">Secondary role</th>
+            <th class="center">Staff role</th>
+
+            <th class="center">Created at</th>
+            <th class="center">Updated at</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for role in roles %}
+            <tr>
+                <td><a href="/tools/roles/{{ role.id }}">{{ role.attributes.friendlyName }}</a></td>
+                <td class="center">{{ role.attributes.userCount|number_format }}</td>
+
+                <td class="center" data-value="{{ role.attributes.isPrimaryRole }}">{{ role.attributes.isPrimaryRole|boolval }}</td>
+                <td class="center" data-value="{{ role.attributes.isSecondaryRole }}">{{ role.attributes.isSecondaryRole|boolval }}</td>
+                <td class="center" data-value="{{ role.attributes.isStaffRole }}">{{ role.attributes.isStaffRole|boolval }}</td>
+
+                <td class="center" data-value="{{ role.attributes.createdAt }}">
+                    <span class="tooltip" title="{{ role.attributes.createdAt }}">{{ role.attributes.createdAt|relativeTime }}</span>
+                </td>
+
+                <td class="center" data-value="{{ role.attributes.createdAt }}">
+                    <span class="tooltip" title="{{ role.attributes.updatedAt }}">{{ role.attributes.updatedAt|relativeTime }}</span>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</section>
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+	{% include "admin/sidebar.twig" %}
+
+{% endblock %}
+#}
