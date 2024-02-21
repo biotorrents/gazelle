@@ -355,7 +355,7 @@ class Roles extends ObjectCrud
      * @param int|string $identifier
      * @return void
      */
-    public function read(int|string $identifier): void
+    public function read(int|string $identifier = null): void
     {
         $app = App::go();
 
@@ -363,7 +363,7 @@ class Roles extends ObjectCrud
         parent::read($identifier);
 
         # decode the permissions
-        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList, true);
+        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList ?? "{}", true);
 
         # get the user count
         $query = "select count(userId) from users_main where permissionId = ?";

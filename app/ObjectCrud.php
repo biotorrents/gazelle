@@ -22,9 +22,7 @@ abstract class ObjectCrud
      */
     public function __construct(int|string $identifier = null)
     {
-        if ($identifier) {
-            $this->read($identifier);
-        }
+        $this->read($identifier);
     }
 
 
@@ -76,18 +74,27 @@ abstract class ObjectCrud
     /**
      * read
      */
-    public function read(int|string $identifier): void
+    public function read(int|string $identifier = null): void
     {
         $app = App::go();
+
+        # set $this->attributes to null if the object doesn't exist
+        if (!$this->exists($identifier)) {
+            $nullAttributes = [];
+            foreach ($this->maps as $key => $value) {
+                $nullAttributes[$key] = null;
+            }
+
+            $this->id = null;
+            $this->attributes = new RecursiveCollection($nullAttributes);
+
+            return;
+        }
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
         $query = "select * from {$this->type} where {$column} = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$identifier]);
-
-        if (!$row) {
-            return;
-        }
 
         # set the id
         $this->id = $row["id"];
@@ -98,7 +105,7 @@ abstract class ObjectCrud
         $transform = $this->databaseToDisplay($row);
 
         foreach ($transform as $key => $value) {
-            $attributes[$key] = $value;
+            $attributes[$key] = $value ?? null;
         }
 
         # use a RecursiveCollection not an array
@@ -114,7 +121,7 @@ abstract class ObjectCrud
     /**
      * update
      */
-    public function update(int|string $identifier, array $data = []): void
+    public function update(int|string $identifier = null, array $data = []): void
     {
         $app = App::go();
 
@@ -138,7 +145,7 @@ abstract class ObjectCrud
     /**
      * delete
      */
-    public function delete(int|string $identifier): void
+    public function delete(int|string $identifier = null): void
     {
         $app = App::go();
 
@@ -165,9 +172,13 @@ abstract class ObjectCrud
      * @param int|string $identifier
      * @return bool
      */
-    public function exists(int|string $identifier): bool
+    public function exists(int|string $identifier = null): bool
     {
         $app = App::go();
+
+        if (!$identifier) {
+            return false;
+        }
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
@@ -209,7 +220,7 @@ abstract class ObjectCrud
      * @param array $data, e.g., ["created_at" => $value]
      * @return array ["createdAt" => $value]
      */
-    public function databaseToDisplay(array $data): array
+    public function databaseToDisplay(array $data = []): array
     {
         $output = [];
 
@@ -231,7 +242,7 @@ abstract class ObjectCrud
      * @param array $data, e.g., ["createdAt" => $value]
      * @return array ["created_at" => $value]
      */
-    public function displayToDatabase(array $data): array
+    public function displayToDatabase(array $data = []): array
     {
         $output = [];
         $reversed = array_flip($this->maps);
