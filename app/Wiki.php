@@ -51,7 +51,7 @@ class Wiki extends ObjectCrud
      * @param array $data
      * @return void
      */
-    public function update(int|string $identifier, array $data = []): void
+    public function update(int|string $identifier = null, array $data = []): void
     {
         $app = App::go();
 
@@ -95,7 +95,7 @@ class Wiki extends ObjectCrud
      * @param int|string $identifier
      * @return void
      */
-    public function delete(int|string $identifier): void
+    public function delete(int|string $identifier = null): void
     {
         $app = App::go();
 

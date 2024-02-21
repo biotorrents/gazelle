@@ -29,7 +29,7 @@ class Creators extends ObjectCrud
     /**
      * create
      */
-    public function create()
+    public function create(int|string $identifier = null)
     {
         throw new Exception("not implemented");
     }

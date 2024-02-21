@@ -601,7 +601,7 @@ class Users extends ObjectCrud
      * @param array $data
      * @return void
      */
-    public function update(int|string $identifier, array $data = []): void
+    public function update(int|string $identifier = null, array $data = []): void
     {
         throw new Exception("not implemented");
     }
@@ -615,7 +615,7 @@ class Users extends ObjectCrud
      * @param int|string $identifier
      * @return void
      */
-    public function delete(int|string $identifier): void
+    public function delete(int|string $identifier = null): void
     {
         throw new Exception("not implemented");
     }
