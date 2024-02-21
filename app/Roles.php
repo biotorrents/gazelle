@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Permissions
+ * Gazelle\Roles
  *
  * This should be two classes, Roles and Permissions.
  * Maybe even call them Dates and Persimmons.
@@ -12,10 +12,30 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Permissions
+class Roles extends ObjectCrud
 {
-    # delight-im/auth
-    public $library = null;
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?int $id = null; # primary key
+    public string $type = "roles_permissions"; # database table
+    public ?RecursiveCollection $attributes = null;
+
+    # ["database" => "display"]
+    protected array $maps = [
+        "id" => "id",
+        "machineName" => "machineName",
+        "friendlyName" => "friendlyName",
+        "permissionsList" => "permissionsList",
+        "isPrimaryRole" => "isPrimaryRole",
+        "isSecondaryRole" => "isSecondaryRole",
+        "isStaffRole" => "isStaffRole",
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+
+    # cache settings
+    private string $cachePrefix = "roles:";
+    private string $cacheDuration = "1 hour";
 
     # role map
     public array $roles = [
@@ -32,12 +52,12 @@ class Permissions
         80 => "eliteMaster",
         90 => "legend",
 
-        # special user roles
+        # special user roles (isSecondaryRole)
         100 => "creator",
         110 => "donor",
         120 => "vip",
 
-        # staff roles, increasing power
+        # staff roles, increasing power (isStaffRole)
         130 => "techSupport",
         140 => "lesserModerator",
         150 => "greaterModerator",

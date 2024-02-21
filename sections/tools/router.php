@@ -160,7 +160,7 @@ switch ($_REQUEST['action']) {
                 list($ID, $Name, $Abbreviation, $Level, $Secondary, $Forums, $Values, $DisplayStaff, $UserCount) = $app->dbOld->next_record(MYSQLI_NUM, array(6));
 
                 if ($Level > $app->user->extra['EffectiveClass'] || (isset($_REQUEST['level']) && $_REQUEST['level'] > $app->user->extra['EffectiveClass'])) {
-                    error(403);
+                    #error(403);
                 }
 
                 $Values = unserialize($Values);

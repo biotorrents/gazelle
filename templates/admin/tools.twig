@@ -36,7 +36,7 @@
 
     <ul>
         {% if can("users_mod") %}
-            <li><a href="/tools.php?action=global_notification">Global notification</a></li>
+            <li><a href="/tools.php?action=global_notification">Global notifications</a></li>
         {% endif %}
 
         {% if can("users_mod") %}
@@ -44,7 +44,7 @@
         {% endif %}
 
         {% if can("admin_manage_news") %} 
-            <li><a href="/tools.php?action=news">News post</a></li>
+            <li><a href="/tools.php?action=news">News posts</a></li>
         {% endif %}
     </ul>
 </section>
@@ -110,7 +110,7 @@
         {% endif %}
 
         {% if can("users_mod") %} 
-            <li><a href="/tools.php?action=ocelot_info">Tracker info</a></li>
+            <li><a href="/tools.php?action=ocelot_info">Tracker information</a></li>
         {% endif %}
     </ul>
 </section>
@@ -144,7 +144,7 @@
         {% endif %}
 
         {% if can("users_mod") %}
-            <li><a href="/tools.php?action=tokens">Manage freeleech tokens</a></li>
+            <li><a href="/tools.php?action=tokens">Freeleech token manager</a></li>
         {% endif %}
 
         {% if can("users_mod") %} 
