@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
@@ -47,9 +47,9 @@ View::header("Tracker IP address history for $Username");
   }
 </script>
 <?php
-list($Page, $Limit) = \Gazelle\Format::page_limit(IPS_PER_PAGE);
+list($Page, $Limit) = Gazelle\Format::page_limit(IPS_PER_PAGE);
 
-$Perms = \Permissions::get_permissions_for_user($UserID);
+$Perms = Gazelle\Permissions::get_permissions_for_user($UserID);
 if ($Perms['site_disable_ip_history']) {
     $Limit = 0;
 }
@@ -66,7 +66,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($TrackerIps);
 
-$Pages = \Gazelle\Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 
 ?>
 <div>
@@ -89,7 +89,7 @@ foreach ($Results as $Index => $Result) {
     <tr class="row">
       <td>
         <?=$IP?>
-        <a href="http://whatismyipaddress.com/ip/<?=\Gazelle\Text::esc($IP)?>"
+        <a href="http://whatismyipaddress.com/ip/<?=Gazelle\Text::esc($IP)?>"
           class="brackets tooltip" title="Search WIMIA.com">WI</a>
       </td>
       <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>

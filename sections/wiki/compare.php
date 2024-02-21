@@ -61,7 +61,7 @@ $app->twig->display("wiki/compare.twig", [
 
     "article" => $article,
     "aliases" => $article->getAliases(),
-    "roles" => Permissions::listRoles(),
+    "roles" => Gazelle\Permissions::listRoles(),
 
     "revisions" => $revisions,
     "secondRevision" => $secondRevision ??= null,

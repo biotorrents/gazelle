@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 // todo: Redo HTML
 if (!check_perms('admin_manage_permissions')) {
@@ -21,13 +21,13 @@ $app->dbOld->query("
 list($Customs) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 
-$Defaults = Permissions::get_permissions_for_user($UserID, []);
+$Defaults = Gazelle\Permissions::get_permissions_for_user($UserID, []);
 
 $Delta = [];
 if (isset($_POST['action'])) {
     authorize();
 
-    $PermissionsArray = Permissions::listPermissions();
+    $PermissionsArray = Gazelle\Permissions::listPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {
         $Setting = isset($_POST["perm_$Perm"]) ? 1 : 0;
         $Default = isset($Defaults[$Perm]) ? 1 : 0;
@@ -48,7 +48,7 @@ if (isset($_POST['action'])) {
 
     $app->dbOld->query("
     UPDATE users_main
-    SET CustomPermissions = '".db_string(serialize($Delta))."'
+    SET CustomPermissions = '" . db_string(serialize($Delta)) . "'
     WHERE ID = '$UserID'");
 } elseif (!empty($Customs)) {
     $Delta = unserialize($Customs);

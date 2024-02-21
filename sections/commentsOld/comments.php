@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * $_REQUEST['action'] is artist, collages, requests or torrents (default torrents)
@@ -29,7 +29,7 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $Self = false;
     }
 
-    $Perms = Permissions::get_permissions($UserInfo['PermissionID']);
+    $Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
     $UserClass = $Perms['Class'];
 
     if (!check_paranoia('torrentcomments', $UserInfo['Paranoia'], $UserClass, $UserID)) {
@@ -47,7 +47,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
+list($Page, $Limit) = Gazelle\Format::page_limit($PerPage);
 
 if (!isset($_REQUEST['action'])) {
     $Action = 'torrents';
@@ -187,7 +187,7 @@ $Count = $app->dbOld->record_count();
 
 $app->dbOld->query("SELECT FOUND_ROWS()");
 list($Results) = $app->dbOld->next_record();
-$Pages = \Gazelle\Format::get_pages($Page, $Results, $PerPage, 11);
+$Pages = Gazelle\Format::get_pages($Page, $Results, $PerPage, 11);
 $app->dbOld->set_query_id($Comments);
 
 # Remove the weird comment headings on torrent and request comments
@@ -197,7 +197,7 @@ if ($Action === 'requests') {
   $Artists = [];
 
   foreach ($RequestIDs as $RequestID) {
-    $Artists[$RequestID] = \Gazelle\Requests::get_artists($RequestID);
+    $Artists[$RequestID] = Gazelle\Requests::get_artists($RequestID);
   }
   $app->dbOld->set_query_id($Comments);
 } elseif ($Action === 'torrents') {

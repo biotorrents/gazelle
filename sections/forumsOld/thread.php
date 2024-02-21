@@ -504,7 +504,7 @@ foreach ($Thread as $Key => $Post) {
     if ($PostID == $ThreadInfo['StickyPostID']) {
         echo ' sticky_post';
     }
-    if (Permissions::is_mod($AuthorID)) {
+    if (Gazelle\Permissions::is_mod($AuthorID)) {
         echo ' staff_post';
     } ?>" id="post<?=$PostID?>">
   <colgroup>

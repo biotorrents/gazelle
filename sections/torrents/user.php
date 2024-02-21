@@ -1,9 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-$ENV = \Gazelle\ENV::go();
+$ENV = Gazelle\ENV::go();
 
 $Orders = ['Time', 'Name', 'Seeders', 'Leechers', 'Snatched', 'Size'];
 $Ways = ['DESC' => 'Descending', 'ASC' => 'Ascending'];
@@ -21,7 +21,7 @@ function header_link($SortKey, $DefaultWay = 'DESC')
     } else {
         $NewWay = $DefaultWay;
     }
-    return "torrents.php?way=$NewWay&amp;order=$SortKey&amp;" . \Gazelle\Format::get_url(array('way','order'));
+    return "torrents.php?way=$NewWay&amp;order=$SortKey&amp;" . Gazelle\Format::get_url(array('way','order'));
 }
 
 $UserID = $_GET['userid'];
@@ -145,7 +145,7 @@ if (!empty($SearchWhere)) {
 }
 
 $User = User::user_info($UserID);
-$Perms = Permissions::get_permissions($User['PermissionID']);
+$Perms = Gazelle\Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 
 switch ($_GET['type']) {
@@ -303,11 +303,11 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($TorrentCount) = $app->dbOld->next_record();
 
 $Results = Torrents::get_groups($GroupIDs);
-$Action = \Gazelle\Text::esc($_GET['type']);
+$Action = Gazelle\Text::esc($_GET['type']);
 $User = User::user_info($UserID);
 
 View::header($User['Username'] . "'s $Action torrents", 'browse');
-$Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
+$Pages = Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
 ?>
 
 <div>
@@ -331,7 +331,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <input type="hidden" name="userid"
               value="<?= $UserID ?>" />
             <input type="search" name="search" size="60"
-              value="<?php \Gazelle\Format::form('search') ?>" />
+              value="<?php Gazelle\Format::form('search') ?>" />
           </td>
         </tr>
 
@@ -345,7 +345,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="container" name="container" class="ft_container">
               <option value="">Format</option>
               <?php foreach ($Containers as $Key => $ContainerName) { ?>
-              <option value="<?= \Gazelle\Text::esc($Key); ?>" <?php \Gazelle\Format::selected('container', $Key) ?>><?= \Gazelle\Text::esc($Key); ?>
+              <option value="<?= Gazelle\Text::esc($Key); ?>" <?php Gazelle\Format::selected('container', $Key) ?>><?= Gazelle\Text::esc($Key); ?>
               </option>
               <?php } ?>
             </select>
@@ -353,7 +353,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="codec" name="codec" class="ft_codec">
               <option value="">License</option>
               <?php foreach ($ENV->META->Licenses as $License) { ?>
-              <option value="<?= \Gazelle\Text::esc($License); ?>" <?php \Gazelle\Format::selected('codec', $License) ?>><?= \Gazelle\Text::esc($License); ?>
+              <option value="<?= Gazelle\Text::esc($License); ?>" <?php Gazelle\Format::selected('codec', $License) ?>><?= Gazelle\Text::esc($License); ?>
               </option>
               <?php } ?>
             </select>
@@ -361,8 +361,8 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select id="resolution" name="resolution" class="ft_resolution">
               <option value="">Scope</option>
               <?php foreach ($Resolutions as $ResolutionName) { ?>
-              <option value="<?= \Gazelle\Text::esc($ResolutionName); ?>"
-                <?php \Gazelle\Format::selected('resolution', $ResolutionName) ?>><?= \Gazelle\Text::esc($ResolutionName); ?>
+              <option value="<?= Gazelle\Text::esc($ResolutionName); ?>"
+                <?php Gazelle\Format::selected('resolution', $ResolutionName) ?>><?= Gazelle\Text::esc($ResolutionName); ?>
               </option>
               <?php } ?>
             </select>
@@ -370,7 +370,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
             <select name="media" class="ft_media">
               <option value="">Platform</option>
               <?php foreach ($Media as $MediaName) { ?>
-              <option value="<?= \Gazelle\Text::esc($MediaName); ?>" <?php \Gazelle\Format::selected('media', $MediaName) ?>><?= \Gazelle\Text::esc($MediaName); ?>
+              <option value="<?= Gazelle\Text::esc($MediaName); ?>" <?php Gazelle\Format::selected('media', $MediaName) ?>><?= Gazelle\Text::esc($MediaName); ?>
               </option>
               <?php } ?>
             </select>
@@ -383,10 +383,10 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="nobr" colspan="3">
             <select name="censored" class="ft_censored">
               <option value="3">Alignment</option>
-              <option value="1" <?\Gazelle\Format::selected('censored', 1)?>>
+              <option value="1" <?Gazelle\Format::selected('censored', 1)?>>
                 Aligned
               </option>
-              <option value="0" <?\Gazelle\Format::selected('censored', 0)?>>
+              <option value="0" <?Gazelle\Format::selected('censored', 0)?>>
                 Not Aligned
               </option>
             </select>
@@ -398,10 +398,10 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td class="label"><strong>Tags</strong></td>
           <td>
             <input type="search" name="tags" size="60"
-              value="<?php \Gazelle\Format::form('tags') ?>" />&nbsp;
-            <input type="radio" name="tags_type" id="tags_type0" value="0" <?php \Gazelle\Format::selected('tags_type', 0, 'checked') ?>
+              value="<?php Gazelle\Format::form('tags') ?>" />&nbsp;
+            <input type="radio" name="tags_type" id="tags_type0" value="0" <?php Gazelle\Format::selected('tags_type', 0, 'checked') ?>
             /><label for="tags_type0"> Any</label>&nbsp;&nbsp;
-            <input type="radio" name="tags_type" id="tags_type1" value="1" <?php \Gazelle\Format::selected('tags_type', 1, 'checked') ?>
+            <input type="radio" name="tags_type" id="tags_type1" value="1" <?php Gazelle\Format::selected('tags_type', 1, 'checked') ?>
             /><label for="tags_type1"> All</label><br>
             Use !tag to exclude tags
           </td>
@@ -413,14 +413,14 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, TORRENTS_PER_PAGE);
           <td>
             <select name="order" class="ft_order_by">
               <?php foreach ($Orders as $OrderText) { ?>
-              <option value="<?= $OrderText ?>" <?php \Gazelle\Format::selected('order', $OrderText) ?>><?= $OrderText ?>
+              <option value="<?= $OrderText ?>" <?php Gazelle\Format::selected('order', $OrderText) ?>><?= $OrderText ?>
               </option>
               <?php } ?>
             </select>
 
             <select name="way" class="ft_order_way">
               <?php foreach ($Ways as $WayKey => $WayText) { ?>
-              <option value="<?= $WayKey ?>" <?php \Gazelle\Format::selected('way', $WayKey) ?>><?= $WayText ?>
+              <option value="<?= $WayKey ?>" <?php Gazelle\Format::selected('way', $WayKey) ?>><?= $WayText ?>
               </option>
               <?php } ?>
             </select>
@@ -457,7 +457,7 @@ foreach ($Categories as $CatKey => $CatName) {
       <!-- Submit -->
       <div class="submit">
         <span class="u-pull-left">
-          <?= \Gazelle\Text::float($TorrentCount) ?>
+          <?= Gazelle\Text::float($TorrentCount) ?>
           Results
         </span>
         <input type="submit" class="button-primary" value="Search">
@@ -526,7 +526,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
           # No cover art
           if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
-              $DisplayName .= 'data-cover="' . \Gazelle\Images::process($WikiImage ?? "", 'thumb') . '" ';
+              $DisplayName .= 'data-cover="' . Gazelle\Images::process($WikiImage ?? "", 'thumb') . '" ';
           }
 
           # Old concatenated title: EN, JP, RJ
@@ -574,8 +574,8 @@ foreach ($Categories as $CatKey => $CatName) {
         class="torrent torrent_row<?= ($Torrent['IsSnatched'] ? ' snatched_torrent' : '') . ($GroupFlags['IsSnatched'] ? ' snatched_group' : '') ?>">
         <td class="center categoryColumn">
           <div
-            title="<?= \Gazelle\Format::pretty_category($GroupCategoryID) ?>"
-            class="tooltip <?= \Gazelle\Format::css_category($GroupCategoryID) ?>">
+            title="<?= Gazelle\Format::pretty_category($GroupCategoryID) ?>"
+            class="tooltip <?= Gazelle\Format::css_category($GroupCategoryID) ?>">
           </div>
         </td>
 
@@ -602,15 +602,15 @@ foreach ($Categories as $CatKey => $CatName) {
         </td>
         <td class="nobr"><?= time_diff($Time, 1) ?>
         </td>
-        <td class="number_column nobr"><?= \Gazelle\Format::get_size($Torrent['Size']) ?>
+        <td class="number_column nobr"><?= Gazelle\Format::get_size($Torrent['Size']) ?>
         </td>
-        <td class="number_column"><?= \Gazelle\Text::float($Torrent['Snatched']) ?>
+        <td class="number_column"><?= Gazelle\Text::float($Torrent['Snatched']) ?>
         </td>
         <td
           class="number_column<?= (($Torrent['Seeders'] === 0) ? ' r00' : '') ?>">
-          <?= \Gazelle\Text::float($Torrent['Seeders']) ?>
+          <?= Gazelle\Text::float($Torrent['Seeders']) ?>
         </td>
-        <td class="number_column"><?= \Gazelle\Text::float($Torrent['Leechers']) ?>
+        <td class="number_column"><?= Gazelle\Text::float($Torrent['Leechers']) ?>
         </td>
       </tr>
       <?php

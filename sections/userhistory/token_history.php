@@ -23,7 +23,7 @@ Security::int($UserID);
 
 # Get user info
 $UserInfo = User::user_info($UserID);
-$Perms = Permissions::get_permissions($UserInfo['PermissionID']);
+$Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
 $UserClass = $Perms['Class'];
 
 # Validate mod permissions

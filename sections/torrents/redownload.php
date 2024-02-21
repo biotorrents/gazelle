@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) {
     $UserID = $_GET['userid'];
@@ -15,7 +15,7 @@ if (!check_perms('zip_downloader')) {
 }
 
 $User = User::user_info($UserID);
-$Perms = Permissions::get_permissions($User['PermissionID']);
+$Perms = Gazelle\Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
 list($UserID, $Username) = array_values($User);
 
@@ -72,14 +72,14 @@ $DownloadsQ = $app->dbOld->query("
   $SQL
   GROUP BY TorrentID");
 
-$Collector = new TorrentsDL($DownloadsQ, "$Username's ".ucfirst($_GET['type']));
+$Collector = new TorrentsDL($DownloadsQ, "$Username's " . ucfirst($_GET['type']));
 
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
-        $Download =& $Downloads[$TorrentID];
+        $TorrentFile = file_get_contents($app->env->torrentStore . '/' . $TorrentID . '.torrent');
+        $Download = & $Downloads[$TorrentID];
         // unzip(1) corrupts files if an emdash is present. Replace them.
         $Download['Artist'] = str_replace('&ndash;', '-', Artists::display_artists($Artists[$Download['GroupID']], false, true, false));
         $Collector->add_file($TorrentFile, $Download, $Download['Month']);

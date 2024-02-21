@@ -1,11 +1,13 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
- * Permissions
+ * Gazelle\Permissions
  */
+
+namespace Gazelle;
 
 class Permissions
 {
@@ -49,7 +51,7 @@ class Permissions
      */
     public static function listRoles()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # this table should be called "roles" tbh
         $query = "select id, name from permissions";
@@ -65,7 +67,7 @@ class Permissions
         /** */
 
         # todo: migrate over to delight-im/auth
-        return Delight\Auth\Role::getMap();
+        return \Delight\Auth\Role::getMap();
 
         /*
         $roles = [
@@ -103,7 +105,7 @@ class Permissions
      */
     public static function getUserRole()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select id, name, values from permissions where id = ?";
         $row = $app->dbNew->row($query, [  $app->user->extra["PermissionID"] ]);
@@ -352,7 +354,7 @@ class Permissions
      */
     public static function createRole(string $roleName, array $permissions, bool $staffRole = false)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "replace into permissions (name, values, displayStaff) values (?, ?, ?)";
         $app->dbNew->do($query, [$roleName, json_encode($permissions), $staffRole]);
@@ -366,7 +368,7 @@ class Permissions
      */
     public static function readRole(string $roleName)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select name, values, displayStaff from permissions where name = ?";
         $row = $app->dbNew->row($query, [$roleName]);
@@ -393,7 +395,7 @@ class Permissions
      */
     public static function deleteRole(string $roleName)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "delete from permissions where name = ?";
         $app->dbNew->do($query, [$roleName]);
@@ -415,7 +417,7 @@ class Permissions
         return check_perms($PermissionName, $MinClass);
 
         /*
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->userOld['EffectiveClass'] ??= 1000;
         if ($app->userOld['EffectiveClass'] >= 1000) {
@@ -439,7 +441,7 @@ class Permissions
      */
     public static function get_permissions($PermissionID)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $Permission = $app->cache->get("perm_$PermissionID");
         if (empty($Permission)) {
@@ -470,7 +472,7 @@ class Permissions
      */
     public static function get_permissions_for_user($UserID, $CustomPermissions = false)
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $UserInfo = User::user_info($UserID);
 
@@ -480,7 +482,7 @@ class Permissions
             $app->dbOld->query('
             SELECT CustomPermissions
             FROM users_main
-              WHERE ID = ' . (int)$UserID);
+              WHERE ID = ' . (int) $UserID);
 
             list($CustomPermissions) = $app->dbOld->next_record(MYSQLI_NUM, false);
             $app->dbOld->set_query_id($QueryID);

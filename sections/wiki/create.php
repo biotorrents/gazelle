@@ -26,7 +26,7 @@ $app->twig->display("wiki/article.twig", [
 
     "article" => $article,
     "aliases" => $article->getAliases(),
-    "roles" => Permissions::listRoles(),
+    "roles" => Gazelle\Permissions::listRoles(),
 
     "isEditorAvailable" => true,
     "enableConversation" => false,
