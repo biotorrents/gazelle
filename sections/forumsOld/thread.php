@@ -504,9 +504,7 @@ foreach ($Thread as $Key => $Post) {
     if ($PostID == $ThreadInfo['StickyPostID']) {
         echo ' sticky_post';
     }
-    if (Gazelle\Permissions::is_mod($AuthorID)) {
-        echo ' staff_post';
-    } ?>" id="post<?=$PostID?>">
+    ?>" id="post<?=$PostID?>">
   <colgroup>
     <?php if (User::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />

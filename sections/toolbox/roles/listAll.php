@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 $role = new Gazelle\Roles();
-$allRoles = $role->getAllRoles();
+$allRoles = $role->getAll();
 
 $app->twig->display("admin/roles/listAll.twig", [
     "title" => "User roles",

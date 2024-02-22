@@ -28,13 +28,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     } else {
         $Self = false;
     }
-
-    $Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
-    $UserClass = $Perms['Class'];
-
-    if (!check_paranoia('torrentcomments', $UserInfo['Paranoia'], $UserClass, $UserID)) {
-        error(403);
-    }
 } else {
     $UserID = $app->user->core['id'];
     $Username = $app->user->core['username'];

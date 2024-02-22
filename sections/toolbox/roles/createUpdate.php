@@ -24,8 +24,8 @@ if (!$role) {
 }
 
 # get all roles and permissions
-$allRoles = $role->getAllRoles();
-$allPermissions = $role->getAllPermissions();
+$allRoles = $role->getAll();
+$allPermissions = Gazelle\Permissions::getAll();
 
 # handle the form
 #Gazelle\Http::csrf();
