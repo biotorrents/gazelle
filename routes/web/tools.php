@@ -19,8 +19,8 @@ Flight::route("/tools/roles(/@id)", function ($id) {
     $app = Gazelle\App::go();
 
     if ($id) {
-        require_once "{$app->env->serverRoot}/sections/tools/rolesUpdate.php";
+        require_once "{$app->env->serverRoot}/sections/tools/roles/createUpdate.php";
     } else {
-        require_once "{$app->env->serverRoot}/sections/tools/rolesList.php";
+        require_once "{$app->env->serverRoot}/sections/tools/roles/listAll.php";
     }
 });

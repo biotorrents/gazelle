@@ -176,6 +176,7 @@ abstract class ObjectCrud
     {
         $app = App::go();
 
+        $identifier ??= null;
         if (!$identifier) {
             return false;
         }

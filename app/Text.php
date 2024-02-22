@@ -401,11 +401,25 @@ class Text
 
 
     /**
-     * unCamelCase
+     * camel
+     *
+     * @param string $string
+     * @return string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_camel
+     */
+    public static function camel(string $string): string
+    {
+        return \Illuminate\Support\Str::camel($string);
+    }
+
+
+    /**
+     * unCamel
      *
      * Turns, e.g., "camelCaseString" into "Camel case string."
      */
-    public static function unCamelCase(string $string): string
+    public static function unCamel(string $string): string
     {
         $string = preg_split("/(?=[A-Z])/", $string);
         $string = implode(" ", $string);

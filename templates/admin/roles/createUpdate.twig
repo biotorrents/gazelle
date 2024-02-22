@@ -5,24 +5,37 @@
 
 <section>
 
+{# error message #}
+{% if errorMessage %}
+    <div class="alertbar error">{{ errorMessage }}</div>
+{% endif %}
+
+{# page title #}
 <h2>{{ pageTitle }}</h2>
 
-<form action="post">
+{# form #}
+<form method="post">
+    {{ form_token("") }}
+
     <input type="hidden" name="id" value="{{ role.id }}">
 
     <p>
-        <label for="friendlyName">Friendly name</label>
+        <label for="friendlyName" class="required">Friendly name</label>
         <br>
-        <input type="text" name="friendlyName" value="{{ role.attributes.friendlyName }}">
+        <input type="text" name="friendlyName" value="{{ role.attributes.friendlyName }}" required>
     </p>
 
-    {#
     <p>
         <label for="description">Description</label>
         <br>
-        <input type="text" name="description" value="{{ role.attributes.description }}">
+        <input type="text" name="description" value="{{ role.attributes.description }}" placeholder="Please enter an optional description">
     </p>
-    #}
+
+    <p>
+        <label for="maxPersonalCollages">Max personal collages</label>
+        <br>
+        <input type="number" name="maxPersonalCollages" value="{{ role.attributes.maxPersonalCollages|default(0) }}">
+    </p>
 
     <p>
         <input type="radio" name="primaryOrSecondaryRole" value="isPrimaryRole" {{ role.attributes.isPrimaryRole ? 'checked' : '' }}>
@@ -39,15 +52,6 @@
         <label for="isStaffRole">Staff role?</label>
     </p>
 
-    {#
-    <p>
-        <label for="maxPersonalCollages">Max personal collages</label>
-        <br>
-        <input type="number" name="maxPersonalCollages" value="{{ role.attributes.maxPersonalCollages|default(0) }}">
-    </p>
-    #}
-</form>
-
 </section>
 
 
@@ -55,24 +59,26 @@
 
 <h3>Permissions manager</h3>
 
+{#
 <p>
-    Inherit permissions from:
+    Inherit permissions from
     <select id="inheritFrom" class="select" name="inheritFrom" placeholder="Select a role to inherit permissions from" multiple>
         {% for role in allRoles %}
             <option value="{{ role.id }}">{{ role.attributes.friendlyName }}</option>
         {% endfor %}
     </select>
 </p>
+#}
 
 <table>
     {% for category, data in allPermissions %}
         <tr>
-            <th width="10%">{{ category|unCamelCase }}</th>
+            <th width="10%">{{ category|unCamel }}</th>
 
             <td>
-                <select id="{{ category }}" class="select" name="{{ category }}[]" placeholder="Please select permissions" multiple>
+                <select id="{{ category }}" class="select" name="permissionsList[{{ category }}][]" placeholder="Please select permissions" multiple>
                     {% for key, value in data %}
-                        <option value="{{ key }}">{{ value }}</option>
+                        <option value="{{ key }}" {{ (key in data|keys) ? "selected" : "" }}>{{ value }}</option>
                     {% endfor %}
                 </select>
             </td>
@@ -81,20 +87,13 @@
 </table>
 
 {# form submit #}
-<p>
+<p class="flexRow">
     <input type="submit" class="button-primary" value="save changes">
-    <input type="submit" class="button" value="back to tools">
-    <input type="submit" class="button-red" value="delete role">
+    <a href="/tools/roles/{{ role.id }}/delete" class="button button-red">delete role</a>
+    <a href="/tools" class="button">back to tools</a>
 </p>
 
-</section>
-
-
-<section>
-
-<h3>Developer information</h3>
-
-<pre>{{ dump(role.attributes.permissionsList) }}</pre>
+</form>
 
 </section>
 

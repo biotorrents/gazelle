@@ -12,7 +12,7 @@ $app = Gazelle\App::go();
 $role = new Gazelle\Roles();
 $allRoles = $role->getAllRoles();
 
-$app->twig->display("admin/rolesList.twig", [
+$app->twig->display("admin/roles/listAll.twig", [
     "title" => "User roles",
     "roles" => $allRoles,
 ]);

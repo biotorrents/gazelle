@@ -275,10 +275,18 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        # Gazelle\Text::unCamelCase
-        $twig->addFilter(new \Twig\TwigFilter("unCamelCase", function ($string) {
+        # Gazelle\Text::camel
+        $twig->addFilter(new \Twig\TwigFilter("camel", function ($string) {
             return new \Twig\Markup(
-                Text::unCamelCase($string),
+                Text::camel($string),
+                "UTF-8"
+            );
+        }));
+
+        # Gazelle\Text::unCamel
+        $twig->addFilter(new \Twig\TwigFilter("unCamel", function ($string) {
+            return new \Twig\Markup(
+                Text::unCamel($string),
                 "UTF-8"
             );
         }));
