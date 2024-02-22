@@ -5,10 +5,6 @@ $app = \Gazelle\App::go();
 
 authorize();
 
-if ($app->user->cant(["toolbox" => "clientWhitelist"])) {
-    error(403);
-}
-
 if ($_POST['submit'] == 'Delete') {
     if (!is_numeric($_POST['id']) || $_POST['id'] == '') {
         error('1');

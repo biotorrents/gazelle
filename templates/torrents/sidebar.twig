@@ -29,7 +29,7 @@
 
 
     {# add new picture #}
-    {% if can("site_edit_wiki") %}
+    {% if can({"torrentGroups": "updateAny"}) %}
     <form>
         <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -136,7 +136,7 @@
 
 {#
 		{# add new request # }
-		{% if can("site_submit_requests") %}
+		{% if can({"requests": "create"}) %}
 			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
 		{% endif %}
 #}
@@ -151,12 +151,12 @@
 		<hr />
 
 		{# edit group #}
-		{% if can("site_edit_wiki") %}
+		{% if can({"torrentGroups": "updateAny"}) %}
 			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
 		{% endif %}
 
 		{# use this revision #}
-		{% if revisionId != 0 and can("site_edit_wiki") %}
+		{% if revisionId != 0 and can({"torrentGroups": "updateAny"}) %}
 			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
 		{% endif %}
 
@@ -185,10 +185,8 @@
 <th>{{ displayCreator(item) }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
-
-<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
-
+{% if can({"torrentGroups": "updateAny", "creators": "deleteAny"}) %}
+	<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
 {% endif %}
 </td>
 </tr>
@@ -197,7 +195,7 @@
 </table>
 
 {# add new #}
-{% if can("torrents_add_artist") %}
+{% if can({"torrentGroups": "updateAny", "creators": "create"}) %}
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -223,7 +221,7 @@
 <th>{{ item.name }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
+{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
 <a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 
@@ -241,7 +239,7 @@
 <th class="openaiTorrentTag">{{ item.name }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
+{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
 <a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 

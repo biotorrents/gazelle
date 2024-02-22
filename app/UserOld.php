@@ -951,7 +951,7 @@ class User
         # check permissions to update another user
         $moderatorUpdate = false;
         if ($userId !== $this->core["id"]) {
-            $good = $this->can("users_edit_profiles");
+            $good = $this->can(["userProfiles" => "updateAny"]);
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
             }

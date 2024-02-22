@@ -24,7 +24,7 @@
 		<h3>Actions</h3>
 
 		<form>
-			{% if can("site_upload") %}
+			{% if can({"torrents": "create", "torrentGroups": "create"}) %}
 				<a href="upload.php" class="button button-primary">upload</a>
 			{% endif %}
 

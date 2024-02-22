@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 # check permissions
-if ($app->user->cant("users_view_invites")) {
+if ($app->user->cant(["admin" => "readUserInvites"])) {
     $app->error(403);
 }
 

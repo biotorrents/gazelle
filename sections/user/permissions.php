@@ -4,7 +4,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 // todo: Redo HTML
-if (!check_perms('admin_manage_permissions')) {
+if ($app->user->cant(["toolbox" => "permissionsManager"])) {
     error(403);
 }
 if (!isset($_REQUEST['userid']) || !is_numeric($_REQUEST['userid'])) {

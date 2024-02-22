@@ -4,9 +4,9 @@
 
 	<form>
 
-        {% if can("site_collages_create") %}
+        {% if can({"collages": "create"}) %}
             {# add new collage #}
-		    <a class="button button-primary" href="/collages.php?action=new">create a collage</a>
+		        <a class="button button-primary" href="/collages.php?action=new">create a collage</a>
         {% endif %}
 
         {# back to search #}
@@ -14,7 +14,7 @@
  
 
         {# edit buttons #}
-        {% if can("site_collages_manage") and not collage.attributes.isLocked %}
+        {% if can({"collages": "updateAny"}) and not collage.attributes.isLocked %}
             {# edit this collage #}
             <a class="button button-orange" href="/collages.php?action=edit&collageId={{ collage.id }}">edit this collage</a>
 
@@ -26,7 +26,7 @@
       <a class="button button-red" href="/reports.php?action=report&type=collage&id={{ collage.id }}">report</a>
 
       {# delete #}
-      {% if can("site_collages_delete") or collage.attributes.creatorId == user.core.id %}
+      {% if can({"collages": "deleteAny"}) or collage.attributes.creatorId == user.core.id %}
       <a class="button button-red" href="/collages.php?action=delete&collageId={{ collage.id }}&auth={{ user.extra.AuthKey }}"
         onclick="return confirm('Are you sure you want to delete this collage?');">delete</a>
         {% endif %}

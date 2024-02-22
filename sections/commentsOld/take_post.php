@@ -21,7 +21,7 @@ if (!isset($_REQUEST['page'])
 }
 
 /*
-if ($app->user->cant("post comments")) {
+if ($app->user->cant(["messages" => "create"])) {
     error("Your posting privileges have been removed.");
 }
 */

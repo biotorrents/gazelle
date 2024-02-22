@@ -590,7 +590,7 @@ class Users extends ObjectCrud
         }
 
         # remove adminComment if it's not an admin
-        if ($app->user->cant("users_mod")) {
+        if ($app->user->cant(["admin" => "moderateUsers"])) {
             unset($userData["attributes"]["adminComment"]);
         }
 
@@ -1070,7 +1070,7 @@ class Users extends ObjectCrud
         # check permissions to update another user
         $moderatorUpdate = false;
         if ($userId !== $this->core["id"]) {
-            $good = $this->can("users_edit_profiles");
+            $good = $this->can(["userProfiles" => "updateAny"]);
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
             }
