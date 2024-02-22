@@ -19,6 +19,9 @@ class App
     # singleton
     private static ?self $instance = null;
 
+    # in what context are we working?
+    public ?string $executionContext = null;
+
     # env is special
     public ENV $env;
 
@@ -128,8 +131,14 @@ class App
      */
     public function middleware(array $permissions): void
     {
-        if ($this->user->cant($permissions)) {
-            $this->error(403);
+        $bad = $this->user->cant($permissions);
+        if ($bad) {
+            match ($this->executionContext) {
+                "api" => Api\Base::failure(403, "forbidden"),
+                "cli" => exit,
+                "web" => $this->error(403),
+                default => throw new Exception("1337 h4x0r"),
+            };
         }
     }
 

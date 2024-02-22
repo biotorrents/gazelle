@@ -9,6 +9,7 @@ declare(strict_types=1);
  */
 
 $app = \Gazelle\App::go();
+$app->executionContext = "api";
 
 # skip this stuff for internal api calls
 if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {

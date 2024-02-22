@@ -18,6 +18,7 @@ require_once __DIR__ . "/utilities.php";
 
 # load the app
 $app = Gazelle\App::go();
+$app->executionContext = "cli";
 
 # start time
 $startTime = microtime(true);

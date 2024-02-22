@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 # load the app
 $app = Gazelle\App::go();
+$app->executionContext = "web";
 
 # quick sanity checks
 $app->gotcha();
