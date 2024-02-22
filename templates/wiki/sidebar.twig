@@ -14,18 +14,18 @@
 <br>
 
 <form>
-    {% if can("site_edit_wiki") %}
+    {% if can({"wiki": "create"}) %}
         <a href="/wiki/create" class="button button-primary">create a new article</a>
     {% endif %}
 
     <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
-    {% if can("site_edit_wiki") and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+    {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
         <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" data-authorid="{{ user.core.id }}" class="button button-orange">save your edits</a>
     {% endif %}
 
     {# todo: the index article id is hardcoded here #}
-    {% if can("admin_manage_wiki") and article.id != 1 %}
+    {% if can({"wiki": "deleteAny"}) and article.id != 1 %}
         <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
     {% endif %}
 </form>
@@ -67,7 +67,7 @@
 <table class="compact">
     <tr>
         <th>Minimum read class</th>
-        {% if can("admin_manage_wiki") and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
             <td>
                 <select id="minClassRead">
                     {% for key, value in roles %}
@@ -82,7 +82,7 @@
 
     <tr>
         <th>Minimum edit class</th>
-        {% if can("admin_manage_wiki") and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
             <td>
                 <select id="minClassEdit">
                     {% for key, value in roles %}
@@ -107,7 +107,7 @@
         <tr>
             <th>{{ item }}</th>
             <td class="right">
-                {% if can("admin_manage_wiki") %}
+                {% if can({"wiki": "updateAny"}) %}
                     <a class="button deleteWikiAlias" data-articleid="{{ article.id }}" data-alias="{{ item }}">delete</a>
                 {% endif %}
             </td>

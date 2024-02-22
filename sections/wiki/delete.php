@@ -33,10 +33,6 @@ if (!$article) {
 }
 
 # check permissions
-if ($app->user->cant("admin_manage_wiki")) {
-    $app->error(403);
-}
-
 if ($article->attributes->minClassEdit > $app->user->extra["Class"]) {
     $app->error(403);
 }

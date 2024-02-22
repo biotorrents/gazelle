@@ -9,11 +9,6 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-# check permissions
-if ($app->user->cant("site_edit_wiki")) {
-    $app->error(403);
-}
-
 # instantiate a new Gazelle\Wiki object
 $article = new Gazelle\Wiki();
 $article->hydrateNewArticle();

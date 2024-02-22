@@ -4,7 +4,7 @@
 {% block content %}
 
 <section>
-    {% if can("site_edit_wiki") and user.extra.Class >= article.attributes.minClassEdit %}
+    {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit %}
         <h2>
             <input type="text" id="articleTitle" maxlength="255" style="width: 100%;" value="{{ article.attributes.title }}">
         </h2>

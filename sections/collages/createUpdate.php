@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 # check permissions
-if ($app->user->cant("site_collages_create") || $app->user->cant("site_collages_manage") || $app->user->cant("site_edit_wiki")) {
+if ($app->user->cant(["collages" => "create", "collages" => "updateAny"])) {
     $app->error(403);
 }
 

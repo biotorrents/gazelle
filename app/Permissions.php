@@ -204,11 +204,11 @@ class Permissions
 
 
     /**
-     * listPermissions
+     * getOldPermissions
      *
      * Lists all the site permissions.
      */
-    public static function listPermissions()
+    public static function getOldPermissions()
     {
         # from bootstrap/utilities.php
         $oldPermissions = [
@@ -358,7 +358,9 @@ class Permissions
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
-    public static function givePermissionTo(string $permission) {}
+    public static function givePermissionTo(string $permission)
+    {
+    }
 
 
     /**
@@ -368,7 +370,9 @@ class Permissions
      *
      * @see https://spatie.be/docs/laravel-permission/v5/basic-usage/basic-usage
      */
-    public static function revokePermissionTo(string $permission) {}
+    public static function revokePermissionTo(string $permission)
+    {
+    }
 
 
     /**
@@ -378,7 +382,9 @@ class Permissions
      *
      * @see https://github.com/delight-im/PHP-Auth#assigning-roles-to-users
      */
-    public static function assignRole(string $role) {}
+    public static function assignRole(string $role)
+    {
+    }
 
 
     /**
@@ -388,7 +394,9 @@ class Permissions
      *
      * @see https://github.com/delight-im/PHP-Auth#taking-roles-away-from-users
      */
-    public static function removeRole(string $role) {}
+    public static function removeRole(string $role)
+    {
+    }
 
 
     /**

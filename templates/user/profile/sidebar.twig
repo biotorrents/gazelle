@@ -223,7 +223,7 @@
 
 
 {# moderator actions #}
-{% if can("users_mod") %}
+{% if can({"admin": "moderateUsers"}) %}
 	<section>
 
 		<h3>Moderate</h3>
@@ -233,7 +233,7 @@
 		<form>
 
 			{# go to staff tools #}
-			{% if can("users_mod") %}
+			{% if can({"admin": "moderateUsers"}) %}
 				<a href="#staffTools" class="button">staff tools</a>
 			{% endif %}
 
@@ -269,11 +269,11 @@
 
 			{# read freeleech token history #}
 			{# /user/history/{{ userId }} #}
-			{% if can("users_mod") %}
+			{% if can({"admin": "moderateUsers"}) %}
 				<a href="/userhistory.php?action=token_history&userid={{ userId }}" class="button">freeleech tokens</a>
 			{% endif %}
 
 		</form>
 	{% endif %}
-	{# if can("users_mod") #}
+	{# if can({"admin": "moderateUsers"}) #}
 </section>

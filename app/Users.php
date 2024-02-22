@@ -31,6 +31,9 @@ class Users extends ObjectCrud
     public array $permissions = [];
     public array $siteOptions = [];
 
+    # Gazelle\Roles
+    public $role = null;
+
     # make $_SESSION available
     public $session = null;
 
@@ -276,6 +279,9 @@ class Users extends ObjectCrud
             if ($this->permissions["values"]) {
                 $this->permissions["values"] = json_decode($this->permissions["values"] ?? "{}", true);
             }
+
+            # Gazelle\Role
+            $this->role = new Roles($this->extra["PermissionID"]);
 
             # siteOptions
             $this->siteOptions = json_decode($this->extra["SiteOptions"] ?? "{}", true);
@@ -628,21 +634,27 @@ class Users extends ObjectCrud
      * can
      *
      * Checks if a user can do something.
+     *
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @return bool
      */
-    public function can(string $permission): bool
+    public function can(array $permissions): bool
     {
-        return in_array($permission, $this->permissions["values"] ?? []);
+        return $this->role->can($permissions);
     }
 
 
     /**
      * cant
      *
-     * Checks if a user can't do something.
+     * The opposite of can.
+     *
+     * @param array $permission e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @return bool
      */
-    public function cant(string $permission): bool
+        public function cant(array $permissions): bool
     {
-        return !in_array($permission, $this->permissions["values"] ?? []);
+        return $this->role->cant($permissions);
     }
 
 

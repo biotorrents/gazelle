@@ -1,14 +1,14 @@
 <div class="alertbar modbar">
 
-    {% if authenticated and can("users_mod") %}
-        <a href="/tools">Toolbox</a>
+    {% if authenticated and can({"toolbox": "access"}) %}
+        <a href="/toolbox">Toolbox</a>
     {% endif %}
 
-    {% if authenticated and can("users_mod") %}
+    {% if authenticated and can({"admin": "staffInbox"}) %}
         <a href="/staffpm.php">Staff PMs</a>
     {% endif %}
 
-    {% if authenticated and can("admin_reports") %}
+    {% if authenticated and can({"admin": "reports"}) %}
         <a href="/reportsv2.php">Reports</a>
     {% endif %}
 

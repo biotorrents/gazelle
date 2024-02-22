@@ -100,7 +100,7 @@ class Wiki extends ObjectCrud
         $app = App::go();
 
         # check permissions
-        if ($app->user->cant("admin_manage_wiki")) {
+        if ($app->user->cant(["wiki" => "deleteAny"])) {
             throw new Exception("invalid permissions");
         }
 

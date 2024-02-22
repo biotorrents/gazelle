@@ -27,7 +27,7 @@ $Delta = [];
 if (isset($_POST['action'])) {
     authorize();
 
-    $PermissionsArray = Gazelle\Permissions::listPermissions();
+    $PermissionsArray = Gazelle\Permissions::getOldPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {
         $Setting = isset($_POST["perm_$Perm"]) ? 1 : 0;
         $Default = isset($Defaults[$Perm]) ? 1 : 0;

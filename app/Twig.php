@@ -117,7 +117,8 @@ class Twig extends \Twig\Environment
 
         # todo: put these elsewhere later
         $twig->addGlobal("inbox", \Inbox::get_inbox_link());
-        $twig->addGlobal("notify", check_perms("site_torrents_notify"));
+        $twig->addGlobal("notify", true);
+        #$twig->addGlobal("notify", check_perms("site_torrents_notify"));
 
         /** */
 
@@ -204,18 +205,16 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        # can
-        $twig->addFunction(new \Twig\TwigFunction("can", function ($permission) {
+        # can: {{ can({"torrents": "read", "tags": "updateAny"}) }}
+        $twig->addFunction(new \Twig\TwigFunction("can", function ($permissions) {
             $app = App::go();
-
-            return $app->user->can($permission);
+            return $app->user->can($permissions);
         }));
 
-        # cant
-        $twig->addFunction(new \Twig\TwigFunction("cant", function ($permission) {
+        # cant: {{ cant({"torrents": "read", "tags": "updateAny"}) }}
+        $twig->addFunction(new \Twig\TwigFunction("cant", function ($permissions) {
             $app = App::go();
-
-            return $app->user->cant($permission);
+            return $app->user->cant($permissions);
         }));
 
         # Gazelle\Images::process
@@ -379,14 +378,6 @@ class Twig extends \Twig\Environment
         # Gazelle\Text::float
         $twig->addFilter(new \Twig\TwigFilter("float", function ($number, $decimals = 2) {
             return Text::float($number, $decimals);
-        }));
-
-        # Illuminate\Support\Str::camel
-        $twig->addFilter(new \Twig\TwigFilter("camel", function ($string) {
-            $string = \Illuminate\Support\Str::camel($string);
-            $string = preg_replace("/[\W]/", '', $string);
-
-            return $string;
         }));
 
         # Users::displayAvatar

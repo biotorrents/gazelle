@@ -121,14 +121,14 @@ class App
      * middleware
      *
      * Performs a permissions check on a route.
-     * Shows an error page if the user lacks the required permissions.
+     * Shows an error page if permissions check fails.
      *
-     * @param string $permission
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
      * @return void
      */
-    public function middleware(string $permission): void
+    public function middleware(array $permissions): void
     {
-        if ($this->user->cant($permission)) {
+        if ($this->user->cant($permissions)) {
             $this->error(403);
         }
     }

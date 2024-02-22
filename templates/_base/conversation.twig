@@ -67,21 +67,21 @@
                         </a>
 
                         {# edit #}
-                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                        {% if message.attributes.userId == user.core.id or can({"messages": "updateAny"}) %}
                             <a class="conversationButton tooltip" title="edit" data-messageid="{{ message.id }}">
                                 <i class="fa-thin fa-pen-to-square" data-messageid="{{ message.id }}"></i>
                             </a>
                         {% endif %}
     
                         {# delete #}
-                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                        {% if message.attributes.userId == user.core.id or can({"messages": "deleteAny"}) %}
                             <a class="conversationButton tooltip" title="delete" data-messageid="{{ message.id }}">
                                 <i class="fa-thin fa-trash" data-messageid="{{ message.id }}"></i>
                             </a>
                         {% endif %}
 
                         {# add a poll #}
-                        {% if message.attributes.userId == user.core.id or can("site_moderate_forums") %}
+                        {% if message.attributes.userId == user.core.id or can({"polls": "updateAny"}) %}
                             <a class="conversationButton tooltip" title="add a poll" data-messageid="{{ message.id }}">
                                 <i class="fa-thin fa-poll-people"></i>
                             </a>

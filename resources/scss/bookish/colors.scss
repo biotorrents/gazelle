@@ -39,7 +39,8 @@ $shadow: 2px 2px 10px -2px slategray;
     @include alertbar(silver);
   }
 
-  &.info {
+  &.info,
+  &.success {
     @include alertbar(green);
   }
 
@@ -47,7 +48,8 @@ $shadow: 2px 2px 10px -2px slategray;
     @include alertbar(orange);
   }
 
-  &.error {
+  &.error,
+  &.failure {
     @include alertbar(red);
   }
 }

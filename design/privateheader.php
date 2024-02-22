@@ -127,6 +127,7 @@ HTML;
 }
 
 # New uploads in each categoty
+$ENV->CATS ??= [];
 foreach ($ENV->CATS as $Cat) {
     $name = urlencode(strtolower($Cat->Name));
 
