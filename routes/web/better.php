@@ -11,6 +11,7 @@ declare(strict_types=1);
 Flight::route("/better", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
+
     $app->twig->display("better/index.twig", [
         "title" => "Better",
         "sidebar" => true,

@@ -19,7 +19,7 @@ $app->recursiveGlob(__DIR__ . "/api");
 
 # not found
 Flight::route("*", function () {
-    \Gazelle\Api\Base::failure(404, "not found");
+    Gazelle\Api\Base::failure(404, "not found");
 });
 
 # start the router

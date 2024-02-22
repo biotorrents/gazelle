@@ -55,7 +55,8 @@ Flight::route("/universalSearch", function () {
 
 # not found
 Flight::route("*", function () {
-    Gazelle\Http::response(404);
+    $app = Gazelle\App::go();
+    $app->error(404);
 });
 
 # start the router

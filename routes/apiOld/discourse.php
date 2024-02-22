@@ -8,9 +8,6 @@ declare(strict_types=1);
  * @see app/Discourse.php
  */
 
-# todo
-exit;
-
 # $discourse->getSite()
 Flight::route("/api/social/site", function () {
     $discourse = new Discourse();

@@ -62,7 +62,7 @@ Flight::route("POST /api/internal/reactToMessage", ["Gazelle\Api\Internal", "rea
 
 # not found
 Flight::route("*", function () {
-    \Gazelle\Api\Base::failure(404, "not found");
+    Gazelle\Api\Base::failure(404, "not found");
 });
 
 
