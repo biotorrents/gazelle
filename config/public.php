@@ -242,13 +242,13 @@ $env->ircBotNick = "ebooks";
 define("BOT_SERVER", "irc.$env->siteDomain");
 define("SOCKET_LISTEN_ADDRESS", "10.10.10.60");
 define("SOCKET_LISTEN_PORT", 51010);
-define("BOT_NICK", "ebooks");
+#define("BOT_NICK", "ebooks");
 # REMOVE ME
 
 
 # REMOVE ME
 # irc channels for official business
-define("ANNOUNCE_CHAN", "#announce");
+#define("ANNOUNCE_CHAN", "#announce");
 define("DEBUG_CHAN", "#debug");
 define("REQUEST_CHAN", "#requests");
 define("STAFF_CHAN", "#staff");
@@ -343,22 +343,6 @@ $env->ratioRequirements = [
      [20  * 1024 ** 3, 0.10,         0.00],
      [10  * 1024 ** 3, 0.05,         0.00],
 ];
-
-
-# REMOVE ME
-define("RATIO_REQUIREMENTS", [
-    # downloaded       req (0% seed) req (100% seed)
-     [200 * 1024 ** 3, 0.60,         0.60],
-     [160 * 1024 ** 3, 0.60,         0.50],
-     [120 * 1024 ** 3, 0.50,         0.40],
-     [100 * 1024 ** 3, 0.40,         0.30],
-     [80  * 1024 ** 3, 0.30,         0.20],
-     [60  * 1024 ** 3, 0.20,         0.10],
-     [40  * 1024 ** 3, 0.15,         0.00],
-     [20  * 1024 ** 3, 0.10,         0.00],
-     [10  * 1024 ** 3, 0.05,         0.00],
-]);
-# REMOVE ME
 
 
 # default site options
@@ -533,20 +517,20 @@ $env->classPromotions = [
 
 # REMOVE ME
 # name of class => class id (not level)
-define("ADMIN", 1);
+#define("ADMIN", 1);
 define("USER", 2);
 define("MEMBER", 3);
 define("POWER", 4);
 define("ELITE", 5);
-define("LEGEND", 8);
+#define("LEGEND", 8);
 define("MOD", 11);
 define("SYSOP", 15);
 define("ARTIST", 19);
 define("DONOR", 20);
-define("VIP", 21);
+#define("VIP", 21);
 define("TORRENT_MASTER", 23);
 define("POWER_TM", 24);
-define("ELITE_TM", 25);
+#define("ELITE_TM", 25);
 define("FLS_TEAM", 33);
 define("FORUM_MOD", 9001);
 # REMOVE ME
