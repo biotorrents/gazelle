@@ -1,6 +1,6 @@
 <?php
 
-authorize();
+
 
 // Quick SQL injection check
 if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {

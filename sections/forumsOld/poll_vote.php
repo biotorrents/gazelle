@@ -108,7 +108,7 @@ if (!isset($_POST['vote']) || !is_numeric($_POST['vote'])) {
 </form>
 <?php
 } else {
-    authorize();
+
     $Vote = $_POST['vote'];
     if (!isset($Answers[$Vote]) && $Vote != 0) {
         error(0, true);

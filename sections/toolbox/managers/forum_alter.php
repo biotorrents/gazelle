@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 $P = db_array($_POST);
 if (isset($_POST['submit']) && $_POST['submit'] == 'Delete') { //Delete

@@ -25,7 +25,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $ArtistID = $_POST['artistid'];
 $NewName = Artists::normalise_artist_name($_POST['name']);

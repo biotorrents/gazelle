@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 if ($_POST['submit'] == 'Delete') {
     if (!is_numeric($_POST['id']) || $_POST['id'] == '') {

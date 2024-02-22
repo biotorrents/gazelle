@@ -4,7 +4,7 @@ $app = Gazelle\App::go();
 
 $_POST['collage_id'] ??= null;
 if ($_POST['collage_id'] && is_numeric($_POST['collage_id'])) {
-    authorize();
+
     $CollageID = $_POST['collage_id'];
 
     $app->dbOld->query("

@@ -75,7 +75,7 @@ error();
 
 
 if (isset($_POST['submit'])) {
-    authorize();
+
 
     if ($_POST['submit'] === 'Delete') {
         $Name = db_string($_POST['name']);

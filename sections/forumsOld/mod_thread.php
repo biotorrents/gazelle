@@ -30,7 +30,7 @@ if ($_POST['title'] === '') {
 if (!check_perms('site_moderate_forums')) {
     error(403);
 }
-authorize();
+
 
 // Variables for database input
 

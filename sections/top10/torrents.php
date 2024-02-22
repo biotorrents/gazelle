@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-enforce_login();
+
 if (!check_perms("site_top10")) {
     error(403);
 }

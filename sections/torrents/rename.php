@@ -8,7 +8,7 @@ $app = Gazelle\App::go();
  * Input validation
  */
 
-authorize();
+
 
 $group_id = (int) $_POST['groupid'];
 Security::int($group_id);

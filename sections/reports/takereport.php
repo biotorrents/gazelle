@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 if (empty($_POST['id']) || !is_numeric($_POST['id']) || empty($_POST['type']) || ($_POST['type'] !== 'request_update' && empty($_POST['reason']))) {
     error(404);

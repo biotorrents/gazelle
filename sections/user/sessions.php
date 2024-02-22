@@ -14,7 +14,7 @@ if (isset($_GET['userid']) && check_perms('users_view_ips') && check_perms('user
 }
 
 if (isset($_POST['all'])) {
-    authorize();
+
 
     $app->dbOld->query("
     DELETE FROM users_sessions
@@ -24,7 +24,7 @@ if (isset($_POST['all'])) {
 }
 
 if (isset($_POST['session'])) {
-    authorize();
+
 
     $app->dbOld->query("
     DELETE FROM users_sessions

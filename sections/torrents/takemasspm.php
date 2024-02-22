@@ -11,8 +11,8 @@ $app = Gazelle\App::go();
 // the torrent.                                                                 //
 //******************************************************************************//
 
-authorize();
-enforce_login();
+
+
 
 $Validate = new Validate();
 

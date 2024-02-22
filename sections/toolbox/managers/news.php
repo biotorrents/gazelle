@@ -60,7 +60,7 @@ if ($post["newsId"] && $post["formAction"] === "update") {
 
 # delete
 if ($get["newsId"] && $get["delete"]) {
-    authorize();
+
 
     $query = "delete from news where id = ?";
     $app->dbNew->do($query, [ $get["newsId"] ]);

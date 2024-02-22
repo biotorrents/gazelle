@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 $RequestTax = 0.15;
 
 // Minimum and default amount of upload to remove from the user when they vote.

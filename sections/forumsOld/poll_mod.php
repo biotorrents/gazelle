@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 if (!check_perms('forums_polls_moderate')) {
     error(403, true);

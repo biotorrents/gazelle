@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $group_id = (int) $_REQUEST['groupid'];
 Security::int($group_id);

@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 /*
 if (!empty($app->user->extra['DisableForums'])) {

@@ -23,8 +23,8 @@ $app = Gazelle\App::go();
 # https://github.com/paragonie/anti-csrf
 #Gazelle\Http::csrf();
 
-authorize();
-enforce_login();
+
+
 
 # request vars
 $post = Gazelle\Http::request("post");

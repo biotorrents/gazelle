@@ -17,7 +17,7 @@ $app = \Gazelle\App::go();
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 if (!defined('LOG_ENTRIES_PER_PAGE')) {
     define('LOG_ENTRIES_PER_PAGE', 100);
 }

@@ -7,7 +7,7 @@ $app = Gazelle\App::go();
 if (!check_perms('site_torrents_notify')) {
     error(403);
 }
-authorize();
+
 
 $FormID = '';
 $ArtistList = '';

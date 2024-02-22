@@ -23,7 +23,7 @@ if (!apcu_exists('DBKEY')) {
 }
 
 // This is where we handle things passed to us
-authorize();
+
 
 $app->dbOld->query("
   SELECT can_leech

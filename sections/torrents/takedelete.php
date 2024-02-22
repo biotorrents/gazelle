@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 $TorrentID = $_POST['torrentid'];
 if (!$TorrentID || !is_numeric($TorrentID)) {

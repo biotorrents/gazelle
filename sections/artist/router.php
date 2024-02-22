@@ -32,7 +32,7 @@ non members.
 define('WIDTH', 585);
 define('HEIGHT', 400);
 
-enforce_login();
+
 if (!empty($_POST['action'])) {
     switch ($_POST['action']) {
         case 'edit':

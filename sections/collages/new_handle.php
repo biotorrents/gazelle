@@ -4,7 +4,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $Val = new Validate();
 

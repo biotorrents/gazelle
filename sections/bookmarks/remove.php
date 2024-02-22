@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 if (!Bookmarks::validateType($_GET['type'])) {
     error(404);
 }

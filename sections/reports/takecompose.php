@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 
 if (empty($_POST['toid'])) {

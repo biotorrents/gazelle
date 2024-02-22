@@ -3,7 +3,7 @@
 $app = \Gazelle\App::go();
 
 if (isset($_POST['doit'])) {
-    authorize();
+
 
     if (isset($_POST['oldtags'])) {
         $OldTagIDs = $_POST['oldtags'];

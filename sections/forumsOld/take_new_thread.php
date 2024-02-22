@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-authorize();
+
 $ENV = Gazelle\ENV::go();
 
 /*

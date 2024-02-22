@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 if ($_REQUEST['collageId'] && is_numeric($_REQUEST['collageId'])) {
     $Where = ' AND CollageID = ' . $_REQUEST['collageId'];
 } else {

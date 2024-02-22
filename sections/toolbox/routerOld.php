@@ -32,7 +32,7 @@ if (isset($argv[1])) {
     if (empty($_REQUEST['action']) || $_REQUEST['action'] !== 'ocelot') {
         // If set, do not enforce login so we can set the encryption key w/o an account
         if (!$ENV->enablePublicEncryptionKey) {
-            enforce_login();
+
         }
     }
 }

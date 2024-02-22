@@ -3,7 +3,7 @@
  * This is the AJAX backend for the SendNow() function.
  */
 
-authorize();
+
 
 if (!check_perms('admin_reports')) {
     error();

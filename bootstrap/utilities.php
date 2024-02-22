@@ -3,58 +3,6 @@
 declare(strict_types=1);
 
 
-/*********************
- * bootstrap/app.php *
- *********************/
-
-/**
- * enforce_login
- */
-function enforce_login()
-{
-    return true;
-
-    /*
-    $app = Gazelle\App::go();
-
-    if (empty($app->user->core)) {
-        Gazelle\Http::createCookie(['redirect' => $_SERVER['REQUEST_URI']]);
-        #logout();
-    }
-    */
-}
-
-
-/**
- * authorize
- *
- * Make sure $_GET['auth'] is the same as the user's authorization key.
- * Should be used for any user action that relies solely on GET.
- *
- * @param Are we using ajax?
- * @return authorisation status. Prints an error message to DEBUG_CHAN on IRC on failure.
- */
-function authorize($Ajax = false)
-{
-    return true;
-
-    /*
-    $app = Gazelle\App::go();
-
-    # Ugly workaround for API tokens
-    if (!empty($_SERVER['HTTP_AUTHORIZATION']) && $Document === 'api') {
-        return true;
-    } else {
-        if (empty($_REQUEST['auth']) || $_REQUEST['auth'] !== $app->user->extra['AuthKey']) {
-            send_irc(DEBUG_CHAN, $app->user->core['username']." just failed authorize on ".$_SERVER['REQUEST_URI'].(!empty($_SERVER['HTTP_REFERER']) ? " coming from ".$_SERVER['HTTP_REFERER'] : ""));
-            error('Invalid authorization key. Go back, refresh, and try again.', $NoHTML = true);
-            return false;
-        }
-    }
-    */
-}
-
-
 /************
  * util.php *
  ************/
@@ -146,12 +94,10 @@ function site_url()
 /**
  * check_paranoia
  */
-/*
 function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserID = false)
 {
     return true;
 }
-*/
 
 
 /**************************

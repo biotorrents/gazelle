@@ -9,7 +9,7 @@ define('INVITES_PER_PAGE', 50);
 list($Page, $Limit) = \Gazelle\Format::page_limit(INVITES_PER_PAGE);
 
 if (!empty($_POST['invitekey'])) {
-    authorize();
+
 
     $app->dbOld->query("
       DELETE FROM invites

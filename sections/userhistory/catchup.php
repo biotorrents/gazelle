@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 $UserSubscriptions = Subscriptions::get_subscriptions();
 if (!empty($UserSubscriptions)) {
     $app->dbOld->query("

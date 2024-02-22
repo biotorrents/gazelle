@@ -18,7 +18,7 @@ $app = Gazelle\App::go();
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 // Number of users per page
 define('BOOKMARKS_PER_PAGE', '20');
@@ -37,7 +37,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'remove_snatched':
-        authorize();
+
         $app->dbOld->query("
       CREATE TEMPORARY TABLE snatched_groups_temp
         (GroupID int PRIMARY KEY)");

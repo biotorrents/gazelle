@@ -20,7 +20,7 @@ declare(strict_types=1);
  * User history switch center
  */
 
-enforce_login();
+
 
 if ($_GET['action']) {
     switch ($_GET['action']) {

@@ -2,8 +2,8 @@
 
 $app = \Gazelle\App::go();
 
-enforce_login();
-authorize();
+
+
 if (!check_perms('site_moderate_forums')) {
     error(403);
 }

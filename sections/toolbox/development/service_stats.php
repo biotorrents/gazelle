@@ -13,7 +13,7 @@
 $app = Gazelle\App::go();
 
 if (isset($_POST['global_flush'])) {
-    authorize();
+
     $app->cache->flush();
 }
 

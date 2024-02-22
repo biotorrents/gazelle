@@ -25,7 +25,7 @@ Should the advanced search really only show if they match 3 perms?
 Make sure all constants are defined in config.php and not in random files
 *****************************************************************/
 
-enforce_login();
+
 
 #require_once serverRoot."/classes/validate.class.php" ;
 $Val = new Validate();
@@ -44,7 +44,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'notify_delete':
-        authorize();
+
         if ($_GET['id'] && is_numeric($_GET['id'])) {
             $app->dbOld->query("DELETE FROM users_notify_filters WHERE ID='" . db_string($_GET['id']) . "' AND UserID='{$app->user->core['id']}'");
             $ArtistNotifications = $app->cache->get('notify_artists_' . $app->user->core['id']);

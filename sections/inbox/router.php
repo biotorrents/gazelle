@@ -19,7 +19,7 @@ $app = \Gazelle\App::go();
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 # staff id's
 $app->dbOld->query("

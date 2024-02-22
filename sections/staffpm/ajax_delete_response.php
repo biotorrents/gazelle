@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-enforce_login();
+
 
 // Get user level
 $app->dbOld->query(

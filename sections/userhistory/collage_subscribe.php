@@ -3,7 +3,7 @@
 $app = \Gazelle\App::go();
 
 // perform the back end of subscribing to collages
-authorize();
+
 
 if (!is_numeric($_GET['collageId'])) {
     error(0);

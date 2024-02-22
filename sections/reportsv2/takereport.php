@@ -17,7 +17,7 @@ $app = Gazelle\App::go();
  * Then it just inserts the report to the DB and increments the counter.
  */
 
-authorize();
+
 
 $TorrentID = (int) $_POST['torrentid'];
 $CategoryID = (int) $_POST['categoryid'];

@@ -7,7 +7,7 @@ $app = \Gazelle\App::go();
 $ENV = \Gazelle\ENV::go();
 
 if (isset($_POST['submit'])) {
-    authorize();
+
 
     $IPA = substr($_POST['start'], 0, strcspn($_POST['start'], '.'));
     if ($_POST['submit'] === 'Delete') { //Delete

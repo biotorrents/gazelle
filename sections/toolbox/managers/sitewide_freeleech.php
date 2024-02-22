@@ -5,7 +5,7 @@ $app = \Gazelle\App::go();
 
 if (isset($_POST['type'])) {
     if ($_POST['type'] === 'tag') {
-        authorize();
+
 
         if (!isset($_POST['tag'])) {
             error("You didn't enter a tag, dipshit.");
@@ -61,7 +61,7 @@ if (isset($_POST['type'])) {
             error("That tag doesn't exist.");
         }
     } elseif ($_POST['type'] === 'global') {
-        authorize();
+
 
         $app->dbOld->query("
         SELECT t.`ID`

@@ -17,7 +17,7 @@ $app = Gazelle\App::go();
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 $ENV = Gazelle\ENV::go();
 
 View::header('Blog');
@@ -38,7 +38,7 @@ if (check_perms('admin_manage_blog')) {
                 break;
 
             case 'takeeditblog':
-                authorize();
+
                 if (is_numeric($_POST['blogid']) && is_numeric($_POST['thread'])) {
                     $app->dbOld->prepared_query("
             UPDATE blog
@@ -66,7 +66,7 @@ if (check_perms('admin_manage_blog')) {
 
             case 'deleteblog':
                 if (is_numeric($_GET['id'])) {
-                    authorize();
+
                     $app->dbOld->prepared_query("
             DELETE FROM blog
             WHERE ID = '" . db_string($_GET['id']) . "'");
@@ -77,7 +77,7 @@ if (check_perms('admin_manage_blog')) {
                 break;
 
             case 'takenewblog':
-                authorize();
+
                 $Title = db_string($_POST['title']);
                 $Body = db_string($_POST['body']);
                 $ThreadID = $_POST['thread'];

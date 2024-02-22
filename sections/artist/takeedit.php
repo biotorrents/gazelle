@@ -9,7 +9,7 @@ $app = Gazelle\App::go();
 The page that handles the backend of the 'edit artist' function.
 \*********************************************************************/
 
-authorize();
+
 
 if (!$_REQUEST['artistid'] || !is_numeric($_REQUEST['artistid'])) {
     error(404);
@@ -25,7 +25,7 @@ $ArtistID = $_REQUEST['artistid'];
 
 
 if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
-    authorize();
+
     $RevisionID = $_GET['revisionid'];
     if (!is_numeric($RevisionID)) {
         error(0);

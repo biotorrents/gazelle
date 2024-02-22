@@ -21,7 +21,7 @@ $useToken = $get["usetoken"] ?? null;
 # no keys in query string
 if (!$authKey || !$passKey) {
     # this still works?
-    enforce_login();
+
 
     $userId = $app->user->core["id"];
     $authKey = $app->user->extra["AuthKey"];

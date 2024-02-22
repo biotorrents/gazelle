@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 if (empty($_REQUEST['action'])) {
     $_REQUEST['action'] = '';
@@ -68,7 +68,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'delete':
-        authorize();
+
         require(serverRoot . '/sections/collages/delete.php');
         break;
 

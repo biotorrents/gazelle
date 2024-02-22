@@ -25,7 +25,7 @@ $Defaults = Gazelle\Permissions::get_permissions_for_user($UserID, []);
 
 $Delta = [];
 if (isset($_POST['action'])) {
-    authorize();
+
 
     $PermissionsArray = Gazelle\Permissions::getOldPermissions();
     foreach ($PermissionsArray as $Perm => $Explaination) {

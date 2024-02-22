@@ -15,7 +15,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 $ENV = \Gazelle\ENV::go();
 
 include serverRoot.'/sections/staff/functions.php';
@@ -98,7 +98,7 @@ list($FrontLineSupport, $ForumStaff, $Staff) = $SupportStaff;
         <?php
         }
 
-  $CurClass = 0;
+$CurClass = 0;
 $CloseTable = false;
 foreach ($Staff as $StaffMember) {
     list($ID, $Class, $ClassName, $Username, $Paranoia, $LastAccess, $Remark) = $StaffMember;

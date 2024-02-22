@@ -71,7 +71,7 @@ if (empty($_POST['confirm'])) {
 <?php
   View::footer();
 } else {
-    authorize();
+
 
     $app->dbOld->query("
     UPDATE torrents

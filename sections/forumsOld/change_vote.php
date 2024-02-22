@@ -4,7 +4,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $ThreadID = $_GET['threadid'];
 $NewVote = $_GET['vote'];

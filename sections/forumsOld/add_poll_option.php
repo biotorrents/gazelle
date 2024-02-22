@@ -4,7 +4,7 @@
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $ThreadID = $_POST['threadid'];
 $NewOption = $_POST['new_option'];

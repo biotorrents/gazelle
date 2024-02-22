@@ -11,7 +11,7 @@ $app = Gazelle\App::go();
 
 $RequestID = (int) $_REQUEST['requestid'];
 Security::int($RequestID);
-authorize();
+
 
 # Validation
 if (!empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {

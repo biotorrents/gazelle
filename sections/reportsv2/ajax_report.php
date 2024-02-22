@@ -6,7 +6,7 @@
  * It prints out the relevant report_messages from the array, then
  * prints the relevant report_fields and whether they're required.
  */
-authorize();
+
 
 ?>
 <ul>

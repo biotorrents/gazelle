@@ -3,7 +3,7 @@
 $app = \Gazelle\App::go();
 
 if (isset($_REQUEST['addtokens'])) {
-    authorize();
+
     $Tokens = $_REQUEST['numtokens'];
 
     if (!is_numeric($Tokens) || ($Tokens < 0)) {
@@ -32,7 +32,7 @@ if (isset($_REQUEST['addtokens'])) {
     }
     $message = '<strong>' . \Gazelle\Text::float($Tokens) . 'freeleech tokens added to all enabled users' . (!isset($_REQUEST['leechdisabled']) ? ' with enabled leeching privs' : '') . '.</strong><br><br>';
 } elseif (isset($_REQUEST['cleartokens'])) {
-    authorize();
+
     $Tokens = $_REQUEST['numtokens'];
 
     if (!is_numeric($Tokens) || ($Tokens < 0)) {

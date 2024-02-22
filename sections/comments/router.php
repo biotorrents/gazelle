@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 // fix old links
 $_REQUEST['action'] ??= null;

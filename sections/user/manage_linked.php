@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-authorize();
+
 include(serverRoot . '/sections/user/linkedfunctions.php');
 
 if (!check_perms('users_mod')) {

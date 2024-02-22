@@ -10,7 +10,7 @@ if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['gro
 if (!check_perms('torrents_edit')) {
     error(403);
 }
-authorize();
+
 
 $GroupID = $_POST['groupid'];
 $Artists = explode(',', $_POST['artists']);

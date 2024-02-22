@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 View::header('Manipulate Invite Tree');
 
 if ($_POST['id']) {
-    authorize();
+
 
     if (!is_numeric($_POST['id'])) {
         error(403);

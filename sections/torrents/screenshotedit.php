@@ -5,7 +5,7 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-authorize();
+
 
 $GroupID = $_POST['groupid'];
 if (!$GroupID || !is_numeric($GroupID)) {

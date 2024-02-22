@@ -6,7 +6,7 @@ $app = Gazelle\App::go();
 
 set_time_limit(0);
 
-authorize();
+
 
 if (!is_numeric($_POST['class_id']) || empty($_POST['subject']) || empty($_POST['body'])) {
     error("Error in message form");

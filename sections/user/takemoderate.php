@@ -10,7 +10,7 @@ if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
 } elseif (!check_perms('users_mod')) {
     error(403);
 }
-authorize();
+
 // End checking for moronity
 
 if (!apcu_exists('DBKEY')) {

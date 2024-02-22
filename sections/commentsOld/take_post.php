@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 if (!isset($_REQUEST['page'])
     || !in_array($_REQUEST['page'], array('artist', 'collages', 'requests', 'torrents'))

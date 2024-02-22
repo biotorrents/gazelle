@@ -9,7 +9,7 @@ $app = Gazelle\App::go();
  */
 
 # User permissions
-authorize();
+
 
 if (!check_perms('site_edit_wiki')) {
     error(403);

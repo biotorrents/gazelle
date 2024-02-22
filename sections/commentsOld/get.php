@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-enforce_login();
+
 
 if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {
     error(0);

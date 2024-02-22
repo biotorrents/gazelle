@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 // Quick SQL injection check
 if (!isset($_GET['postid']) || !is_numeric($_GET['postid'])) {
     error(0);

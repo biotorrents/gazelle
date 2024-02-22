@@ -3,7 +3,7 @@
 $app = \Gazelle\App::go();
 
 if (isset($_POST['submit']) && isset($_POST['ip']) && $_POST['submit'] == 'Unban') {
-    authorize();
+
     $app->cache->delete('login_attempts_'.$_POST['ip']);
 }
 

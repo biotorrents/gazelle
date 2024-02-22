@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 if (!check_perms('site_edit_wiki')) {
     error(403);
 }

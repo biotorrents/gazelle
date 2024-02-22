@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 $UserID = $app->user->core['id'];
 $ConvID = $_POST['convid'];
