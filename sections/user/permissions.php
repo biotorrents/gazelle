@@ -20,7 +20,7 @@ $app->dbOld->query("
 
 list($Customs) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-
+# this will fail for now
 $Defaults = Gazelle\Permissions::get_permissions_for_user($UserID, []);
 
 $Delta = [];

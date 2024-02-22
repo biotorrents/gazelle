@@ -23,8 +23,14 @@ Security::int($UserID);
 
 # Get user info
 $UserInfo = User::user_info($UserID);
+
+/*
 $Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
 $UserClass = $Perms['Class'];
+*/
+
+# new shim
+$UserClass = $app->user->extra["PermissionID"];
 
 # Validate mod permissions
 if (!check_perms('users_mod')) {

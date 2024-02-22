@@ -15,8 +15,15 @@ if (!check_perms('zip_downloader')) {
 }
 
 $User = User::user_info($UserID);
+
+/*
 $Perms = Gazelle\Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
+*/
+
+# new shim
+$UserClass = $app->user->extra["PermissionID"];
+
 list($UserID, $Username) = array_values($User);
 
 if (empty($_GET['type'])) {

@@ -609,6 +609,7 @@ class User
                 $HeavyInfo['CustomPermissions'] = json_decode($HeavyInfo['CustomPermissions'] ?? "{}", true);
             }
 
+            /*
             $app->dbOld->query("
             SELECT `PermissionID`
             FROM `users_levels`
@@ -623,6 +624,7 @@ class User
             $HeavyInfo['PermissionID'] ??= null;
             $Perms = Gazelle\Permissions::get_permissions($HeavyInfo['PermissionID']);
             unset($HeavyInfo['PermissionID']);
+            */
 
             $HeavyInfo['SiteOptions'] = json_decode($HeavyInfo['SiteOptions'] ?? "{}", true);
             if (!empty($HeavyInfo['SiteOptions'])) {

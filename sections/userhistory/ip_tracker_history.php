@@ -49,10 +49,12 @@ View::header("Tracker IP address history for $Username");
 <?php
 list($Page, $Limit) = Gazelle\Format::page_limit(IPS_PER_PAGE);
 
+/*
 $Perms = Gazelle\Permissions::get_permissions_for_user($UserID);
 if ($Perms['site_disable_ip_history']) {
     $Limit = 0;
 }
+*/
 
 $TrackerIps = $app->dbOld->query("
   SELECT IP, fid, tstamp

@@ -145,8 +145,14 @@ if (!empty($SearchWhere)) {
 }
 
 $User = User::user_info($UserID);
+
+/*
 $Perms = Gazelle\Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
+*/
+
+# new shim
+$UserClass = $app->user->extra["PermissionID"];
 
 switch ($_GET['type']) {
     case 'snatched':

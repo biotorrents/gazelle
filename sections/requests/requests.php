@@ -216,8 +216,14 @@ if (!empty($_GET['userid'])) {
     if (empty($UserInfo)) {
         error('That user does not exist');
     }
+
+    /*
     $Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
     $UserClass = $Perms['Class'];
+    */
+
+    # new shim
+    $UserClass = $app->user->extra["PermissionID"];
 }
 $BookmarkView = false;
 
