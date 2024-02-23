@@ -356,7 +356,7 @@ class TorrentFunctions
               </tr>";
 
                 foreach ($Reports as $Report) {
-                    if (check_perms('admin_reports')) {
+                    if ($app->user->can(["admin" => "reports"])) {
                         $ReporterID = $Report['ReporterID'];
                         $Reporter = User::user_info($ReporterID);
                         $ReporterName = $Reporter['Username'];

@@ -3,7 +3,7 @@
 $app = Gazelle\App::go();
 
 
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["polls" => "deleteAny"])) {
     error(404);
 }
 

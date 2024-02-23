@@ -1614,7 +1614,7 @@ class Torrents
             $app->dbOld->set_query_id($QueryID);
             $app->cache->set("reports_torrent_$TorrentID", $Reports, 0);
         }
-        if (!check_perms('admin_reports')) {
+        if ($app->user->cant(["admin" => "reports"])) {
             $Return = [];
             foreach ($Reports as $Report) {
                 if ($Report['Type'] !== 'edited') {

@@ -4,7 +4,7 @@ $app = Gazelle\App::go();
 
 
 
-if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"]) && !check_perms('project_team') && $app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 
@@ -15,8 +15,8 @@ $app->dbOld->query("
   FROM reports
   WHERE ID = $ReportID");
 list($Type) = $app->dbOld->next_record();
-if (!check_perms('admin_reports')) {
-    if (check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"])) {
+    if ($app->user->can(["admin" => "moderateForums"])) {
         if (!in_array($Type, array('comment', 'post', 'thread'))) {
             error($Type);
         }

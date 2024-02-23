@@ -9,7 +9,7 @@ $app = \Gazelle\App::go();
  * replicated on static.php.
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 
@@ -443,7 +443,7 @@ foreach ($TypeList as $Type => $Data) {
         <td>
           <input type="text" name="log_message"
             id="log_message<?=$ReportID?>" size="40" <?php if ($ExtraIDs) {
-                $Extras=explode(' ', $ExtraIDs);
+                $Extras = explode(' ', $ExtraIDs);
                 $Value = '';
                 foreach ($Extras as $ExtraID) {
                     $Value .= site_url()."torrents.php?torrentid=$ExtraID ";

@@ -461,7 +461,7 @@ if (check_perms('users_mod')) {
 }
 */
 
-if (check_perms('admin_reports')) {
+if ($app->user->can(["admin" => "reports"])) {
     // Torrent reports code
     $NumTorrentReports = $app->cache->get('num_torrent_reportsv2');
     if ($NumTorrentReports === false) {
@@ -507,7 +507,7 @@ if (check_perms('admin_reports')) {
     if ($NumUpdateReports > 0) {
         $ModBar[] = '<a href="reports.php">Request update reports</a>';
     }
-} elseif (check_perms('site_moderate_forums')) {
+} elseif ($app->user->can(["admin" => "moderateForums"])) {
     $NumForumReports = $app->cache->get('num_forum_reports');
     if ($NumForumReports === false) {
         $app->dbOld->query("

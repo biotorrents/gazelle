@@ -13,7 +13,7 @@ if (!is_numeric($ThreadID)) {
     error(404);
 }
 
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["polls" => "updateAny"])) {
     $app->dbOld->query("
     SELECT
       `ForumID`

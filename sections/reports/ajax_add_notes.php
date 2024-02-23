@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!check_perms('admin_reports') || empty($_POST['id'])) {
+if ($app->user->cant(["admin" => "reports"]) || empty($_POST['id'])) {
     print
     json_encode(
         array(

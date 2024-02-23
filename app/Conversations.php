@@ -546,7 +546,7 @@ class Conversations extends ObjectCrud
         }
         list($OldBody, $AuthorID, $Page, $PageID, $AddedTime) = $app->dbOld->next_record();
 
-        if ($app->user->core["id"] != $AuthorID && !check_perms('site_moderate_forums')) {
+        if ($app->user->core["id"] != $AuthorID && $app->user->cant(["messages" => "updateAny"])) {
             return false;
         }
 
@@ -1076,12 +1076,12 @@ class Conversations extends ObjectCrud
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == $app->user->core["id"] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == $app->user->core["id"] || $app->user->can(["messages" => "updateAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
         <?php }
-        if (check_perms('site_moderate_forums')) { ?>
+        if ($app->user->can(["messages" => "deleteAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>

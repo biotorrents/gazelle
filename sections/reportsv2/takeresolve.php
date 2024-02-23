@@ -9,7 +9,7 @@ $app = \Gazelle\App::go();
  * a collision occurs or a POST attack is detected.
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

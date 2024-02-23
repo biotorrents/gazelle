@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 /************************************************************************
  ************************************************************************/
-if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"]) && !check_perms('project_team') && $app->user->cant(["admin" => "moderateForums"])) {
     error(404);
 }
 
@@ -36,11 +36,11 @@ if (isset($_GET['id']) && $_GET['id'] && is_numeric($_GET['id'])) {
     }
 }
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     if (check_perms('project_team')) {
         $Where .= " AND Type = 'request_update'";
     }
-    if (check_perms('site_moderate_forums')) {
+    if ($app->user->can(["admin" => "moderateForums"])) {
         $Where .= " AND Type IN('comment', 'post', 'thread')";
     }
 }

@@ -72,7 +72,7 @@ if (!isset($Forums[$ForumID])) {
 }
 
 // Make sure they're allowed to look at the page
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "moderateForums"])) {
     if (isset($app->user->extra['CustomForums'][$ForumID]) && $app->user->extra['CustomForums'][$ForumID] === 0) {
         error(403);
     }
@@ -156,7 +156,7 @@ View::header("Forums $ENV->crumb " . $Forums[$ForumID]['Name']);
     </div>
   </div>
 
-  <?php if (check_perms('site_moderate_forums')) { ?>
+  <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
   <div class="linkbox">
     <a href="forums.php?action=edit_rules&amp;forumid=<?=$ForumID?>"
       class="brackets">Change specific rules</a>

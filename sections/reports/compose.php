@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

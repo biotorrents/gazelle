@@ -80,7 +80,7 @@ View::header('Delete torrent', 'reportsv2');
   </div>
 </div>
 <?php
-if (check_perms('admin_reports')) {
+if ($app->user->can(["admin" => "reports"])) {
     ?>
 <div id="all_reports" style="width: 80%; margin-left: auto; margin-right: auto;">
 <?php

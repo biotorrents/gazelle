@@ -52,7 +52,7 @@ if (!Forums::check_forumperm($ForumID)) {
     error(403);
 }
 
-if (!Forums::check_forumperm($ForumID, 'Write') || $app->user->extra['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && !check_perms('site_moderate_forums')) {
+if (!Forums::check_forumperm($ForumID, 'Write') || $app->user->extra['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && $app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 

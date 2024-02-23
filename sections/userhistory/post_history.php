@@ -267,7 +267,7 @@ if (!$ShowGrouped) {
 <?php if ($EditedUserID) { ?>
           <br>
           <br>
-<?php if (check_perms('site_moderate_forums')) { ?>
+<?php if ($app->user->can(["messages" => "updateAny"])) { ?>
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
 <?php } ?>
           Last edited by

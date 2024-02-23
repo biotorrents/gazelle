@@ -2,7 +2,7 @@
 
 
 
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 

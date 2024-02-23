@@ -168,7 +168,7 @@ View::header('Invites');
       } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
-  <?php if ($UserCount >= userLimit && !check_perms('site_can_invite_always')) { ?>
+  <?php if ($UserCount >= userLimit && $app->user->cant(["admin" => "alwaysInvite"])) { ?>
   <div class="box pad notice">
     <p>Because the user limit has been reached you are unable to send invites at this time.</p>
   </div>
@@ -195,7 +195,7 @@ if (!$Sneaky
   && $CanLeech
   && empty($app->user->extra['DisableInvites'])
   && ($app->user->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
-  && ($UserCount <= userLimit || userLimit === 0 || check_perms('site_can_invite_always'))
+  && ($UserCount <= userLimit || userLimit === 0 || $app->user->can(["admin" => "alwaysInvite"]))
 ) { ?>
   <div class="box pad">
     <p>

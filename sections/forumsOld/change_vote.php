@@ -10,7 +10,7 @@ $ThreadID = $_GET['threadid'];
 $NewVote = $_GET['vote'];
 
 if (is_numeric($ThreadID) && is_numeric($NewVote)) {
-    if (!check_perms('site_moderate_forums')) {
+    if ($app->user->cant(["polls" => "updateAny"])) {
         $app->dbOld->query("
         SELECT
           `ForumID`

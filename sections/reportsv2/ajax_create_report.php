@@ -13,7 +13,7 @@ $app = \Gazelle\App::go();
  * It should not be used on site as is, except in its current use (Switch) as it is lacking for any purpose but this.
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

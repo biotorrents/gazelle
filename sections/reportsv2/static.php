@@ -13,7 +13,7 @@ $app = \Gazelle\App::go();
  * replicated on the auto page (reports.php).
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

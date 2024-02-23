@@ -102,7 +102,7 @@ class Comments
         }
         list($OldBody, $AuthorID, $Page, $PageID, $AddedTime) = $app->dbOld->next_record();
 
-        if ($app->user->core["id"] != $AuthorID && !check_perms('site_moderate_forums')) {
+        if ($app->user->core["id"] != $AuthorID && $app->user->cant(["messages" => "updateAny"])) {
             return false;
         }
 

@@ -8,7 +8,7 @@ $app = \Gazelle\App::go();
  * and the current in-progress reports by staff member.
  * All the different views are self explanatory by their names.
  */
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 
@@ -241,7 +241,7 @@ foreach ($Results as $Result) {
     WHERE r.Status = 'InProgress'
     GROUP BY r.ResolverID");
 
-  $Staff = $app->dbOld->to_array();
+$Staff = $app->dbOld->to_array();
 ?>
     <h3>Currently assigned reports by staff member</h3>
     <table class="box border">
@@ -274,9 +274,9 @@ foreach ($Results as $Result) {
     FROM reportsv2
     WHERE Status = 'New'
     GROUP BY Type");
-  $Current = $app->dbOld->to_array();
-  if (!empty($Current)) {
-      ?>
+$Current = $app->dbOld->to_array();
+if (!empty($Current)) {
+    ?>
     <table class="box border">
       <tr class="colhead">
         <td class="colhead_dark">Type</td>
@@ -301,7 +301,7 @@ foreach ($Results as $Result) {
       </tr>
 <?php
     }
-  }
+}
 ?>
     </table>
   </div>

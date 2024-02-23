@@ -39,7 +39,7 @@ if ($app->user->extra['RatioWatch']
   || (
       $UserCount >= userLimit
     && userLimit != 0
-    && !check_perms('site_can_invite_always')
+    && $app->user->cant(["admin" => "alwaysInvite"])
   )
 ) {
     error(403);

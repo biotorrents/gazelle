@@ -522,7 +522,7 @@ foreach ($Thread as $Key => $Post) {
         - <a href="#quickpost" id="quote_<?=$PostID?>"
           onclick="Quote('<?=$PostID?>', '<?=$Username?>', true);"
           class="brackets">Quote</a>
-        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || check_perms('site_moderate_forums')) { ?>
+        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || $app->user->can(["messages" => "updateAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>', '<?=$Key?>');"
           class="brackets">Edit</a>
@@ -536,14 +536,14 @@ foreach ($Thread as $Key => $Post) {
     }
     if ($PostID == $ThreadInfo['StickyPostID']) { ?>
         <strong><span class="sticky_post_label brackets">Sticky</span></strong>
-        <?php if (check_perms('site_moderate_forums')) { ?>
+        <?php if ($app->user->can(["conversations" => "updateAny"])) { ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;remove=true&amp;auth=<?=$app->user->extra['AuthKey']?>"
           title="Unsticky this post" class="brackets tooltip">X</a>
         <?php
         }
     } else {
-        if (check_perms('site_moderate_forums')) {
+        if ($app->user->can(["conversations" => "updateAny"])) {
             ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
@@ -622,7 +622,7 @@ foreach ($Thread as $Key => $Post) {
 </div>
 
 <?php
-if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
+if (!$ThreadInfo['IsLocked'] || $app->user->can(["messages" => "updateAny"])) {
     if (Forums::check_forumperm($ForumID, 'Write') && !$app->user->extra['DisablePosting']) {
         View::parse('generic/reply/quickreply.php', array(
       'InputTitle' => 'Reply',
@@ -634,7 +634,7 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
     }
 }
 
-if (check_perms('site_moderate_forums')) {
+if ($app->user->can(["admin" => "moderateForums"])) {
     $app->dbOld->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body
       FROM forums_topic_notes
