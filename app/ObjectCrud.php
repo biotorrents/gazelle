@@ -31,6 +31,9 @@ abstract class ObjectCrud
 
     /**
      * create
+     *
+     * @param array $data
+     * @return void
      */
     public function create(array $data = []): void
     {
@@ -64,6 +67,9 @@ abstract class ObjectCrud
 
     /**
      * updateOrCreate
+     *
+     * @param array $data
+     * @return void
      */
     public function updateOrCreate(array $data = []): void
     {
@@ -73,6 +79,9 @@ abstract class ObjectCrud
 
     /**
      * read
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public function read(int|string $identifier = null): void
     {
@@ -108,6 +117,12 @@ abstract class ObjectCrud
             $attributes[$key] = $value ?? null;
         }
 
+        # is it the user's own resource?
+        $hasOwner = isset($attributes["userId"]);
+        if ($hasOwner) {
+            $attributes["isOwner"] = $attributes["userId"] === $app->user->core["id"];
+        }
+
         # use a RecursiveCollection not an array
         $this->attributes = new RecursiveCollection($attributes);
 
@@ -120,6 +135,10 @@ abstract class ObjectCrud
 
     /**
      * update
+     *
+     * @param int|string $identifier
+     * @param array $data
+     * @return void
      */
     public function update(int|string $identifier = null, array $data = []): void
     {
@@ -144,6 +163,9 @@ abstract class ObjectCrud
 
     /**
      * delete
+     *
+     * @param int|string $identifier
+     * @return void
      */
     public function delete(int|string $identifier = null): void
     {
@@ -197,7 +219,7 @@ abstract class ObjectCrud
      *
      * @return bool true on success, false on failure
      */
-    public function save()
+    public function save(): bool
     {
         $app = App::go();
 
