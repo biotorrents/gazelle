@@ -14,7 +14,7 @@ namespace Gazelle;
 class Permissions
 {
     # in progress: simple crud natural language permissions
-    # e.g., if $app->user->can(["torrents" => "read", "tags" => "updateAny"])
+    # e.g., $app->user->can(["torrents" => "read", "tags" => "updateAny"])
     public static array $permissions = [
         # torrents
         "torrents" => [

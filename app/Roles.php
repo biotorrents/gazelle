@@ -296,6 +296,9 @@ class Roles extends ObjectCrud
     }
 
 
+    /** legacy code */
+
+
     /**
      * is_mod
      */
