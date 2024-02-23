@@ -4,7 +4,7 @@
 $app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
-    if (!check_perms('users_override_paranoia')) {
+    if ($app->user->cant(["admin" => "sensitiveUserData"])) {
         error(403);
     }
 
@@ -64,8 +64,8 @@ View::header($Title, 'browse');
 <!--content-->
 <?php
   View::footer();
-  error();
-} ?>
+        error();
+    } ?>
 
 <table width="100%" class="artist_table">
   <tr class="colhead">

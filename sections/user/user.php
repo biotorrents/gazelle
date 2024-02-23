@@ -118,47 +118,39 @@ $percentileStats = $app->user->percentileStats($userId);
 
 
 $app->twig->display("user/profile/profile.twig", [
-  "sidebar" => true,
+    "sidebar" => true,
 
-  #"css" => [""],
-  "js" => ["user", "requests", "vendor/chart.min"],
+    #"css" => [""],
+    "js" => ["user", "requests", "vendor/chart.min"],
 
-  "data" => $data,
-  "siteOptions" => $data["extra"]["siteOptions"],
+    "data" => $data,
+    "siteOptions" => $data["extra"]["siteOptions"],
 
-  #"error" => $error ?? null,
+    #"error" => $error ?? null,
 
-  "isOwnProfile" => $isOwnProfile,
-  "previewMode" => $previewMode,
-  "isFriend" => $isFriend,
-  "avatar" => $avatar,
-  "badges" => $badges,
-  "badgesDisplay" => $badgesDisplay,
+    "isOwnProfile" => $isOwnProfile,
+    "previewMode" => $previewMode,
+    "isFriend" => $isFriend,
+    "avatar" => $avatar,
+    "badges" => $badges,
+    "badgesDisplay" => $badgesDisplay,
 
-  # recent torrent activity
-  "recentSnatches" => $recentSnatches,
-  "recentUploads" => $recentUploads,
-  "recentRequests" => $recentRequests,
-  "recentCollages" => $recentCollages,
+    # recent torrent activity
+    "recentSnatches" => $recentSnatches,
+    "recentUploads" => $recentUploads,
+    "recentRequests" => $recentRequests,
+    "recentCollages" => $recentCollages,
 
-  # user stats
-  "communityStats" => $communityStats,
-  "requestStats" => $requestStats,
-  "torrentStats" => $torrentStats,
-  "ratio" => $ratio,
-  "percentileStats" => $percentileStats,
+    # user stats
+    "communityStats" => $communityStats,
+    "requestStats" => $requestStats,
+    "torrentStats" => $torrentStats,
+    "ratio" => $ratio,
+    "percentileStats" => $percentileStats,
+]);
 
-
-
- ]);
 
 exit;
-
-
-
-
-
-
 
 
 $app->dbOld->query("
@@ -385,7 +377,7 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
       </ul>
     </div>
     <?php
-         if (check_perms('users_view_ips', $Class)) {
+         if ($app->user->can(["admin" => "sensitiveUserData"])) {
              $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
@@ -398,9 +390,9 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
       <div class="head colhead_dark">History</div>
       <ul class="stats nobullet">
         <?php
-if (check_perms('users_view_ips', $Class)) {
+if ($app->user->can(["admin" => "sensitiveUserData"])) {
     ?>
-        <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
+        <?php if ($app->user->can(["admin" => "sensitiveUserData"]) && check_perms('users_mod', $Class)) { ?>
         <li>Tracker IPs: <?=Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$userId?>"
             class="brackets">View</a></li>
@@ -454,19 +446,19 @@ if ($ParanoiaLevel == 0) {
 ?>
         <li>Paranoia level: <span class="tooltip"
             title="<?=$ParanoiaLevel?>"><?=$ParanoiaLevelText?></span></li>
-        <?php if (check_perms('users_view_email', $Class) || $isOwnProfile) { ?>
+        <?php if ($app->user->can(["admin" => "sensitiveUserData"], $Class) || $isOwnProfile) { ?>
         <li>Email: <a href="mailto:<?=Gazelle\Text::esc($Email)?>"><?=Gazelle\Text::esc($Email)?></a>
         </li>
         <?php }
 
-        if (check_perms('users_view_ips', $Class)) {
+        if ($app->user->can(["admin" => "sensitiveUserData"], $Class)) {
             $IP = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($IP) : '[Encrypted]'; ?>
         <li>IP: <?=Gazelle\Text::esc($IP)?>
         </li>
         <?php
         }
 
-if (check_perms('users_view_keys', $Class) || $isOwnProfile) {
+if ($app->user->can(["admin" => "sensitiveUserData"], $Class) || $isOwnProfile) {
     ?>
         <li>Passkey: <a href="#" id="passkey"
             onclick="togglePassKey('<?=Gazelle\Text::esc($torrent_pass)?>'); return false;"

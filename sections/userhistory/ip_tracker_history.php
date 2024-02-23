@@ -33,7 +33,7 @@ $app->dbOld->query("
   WHERE um.ID = $UserID");
 list($Username, $Class) = $app->dbOld->next_record();
 
-if (!check_perms('users_view_ips', $Class)) {
+if ($app->user->cant(["admin" => "sensitiveUserData"])) {
     error(403);
 }
 

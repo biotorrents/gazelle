@@ -5,7 +5,7 @@
 $app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
-    if (!check_perms('users_override_paranoia')) {
+    if ($app->user->cant(["admin" => "sensitiveUserData"])) {
         \Gazelle\Api\Base::failure(400);
     }
 

@@ -386,7 +386,7 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
 
 
     <?php
-     if (check_perms('users_view_ips', $Class)) {
+     if ($app->user->can(["admin" => "sensitiveUserData"])) {
          $app->dbOld->query("
         SELECT COUNT(DISTINCT IP)
         FROM xbt_snatched
@@ -399,9 +399,9 @@ if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')
       <div class="head colhead_dark">History</div>
       <ul class="stats nobullet">
         <?php
-      if (check_perms('users_view_ips', $Class)) {
+      if ($app->user->can(["admin" => "sensitiveUserData"])) {
           ?>
-        <?php if (check_perms('users_view_ips', $Class) && check_perms('users_mod', $Class)) { ?>
+        <?php if ($app->user->can(["admin" => "sensitiveUserData"]) && check_perms('users_mod', $Class)) { ?>
         <li>Tracker IPs: <?=\Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$UserID?>"
             class="brackets">View</a></li>
@@ -434,7 +434,7 @@ if (!empty($UserInfo['ExtraClasses'])) {
 }
 
 
-if (check_perms('users_view_keys', $Class) || $OwnProfile) {
+if ($app->user->can(["admin" => "sensitiveUserData"], $Class) || $OwnProfile) {
     ?>
         <?php
 }

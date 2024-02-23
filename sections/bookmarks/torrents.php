@@ -9,7 +9,7 @@ $ENV = \Gazelle\ENV::go();
 //~~~~~~~~~~~ Main bookmarks page ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
 
 if (!empty($_GET['userid'])) {
-    if (!check_perms('users_override_paranoia')) {
+    if ($app->user->cant(["admin" => "sensitiveUserData"])) {
         error(403);
     }
 
