@@ -23,7 +23,7 @@ if (!$NewRequest) {
 $Disabled = '';
 
 /* todo: Fix this or configure the limit with good error message
-if ($NewRequest && ($app->user->extra['BytesUploaded'] < 250 * 1024 * 1024 || !check_perms('site_submit_requests'))) {
+if ($NewRequest && ($app->user->extra['BytesUploaded'] < 250 * 1024 * 1024 || $app->user->cant(["requests" => "create"]))) {
     error('You do not have enough uploaded to make a request');
 }
 */

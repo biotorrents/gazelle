@@ -11,7 +11,7 @@ $app = Gazelle\App::go();
 # User permissions
 
 
-if (!check_perms('site_edit_wiki')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     error(403);
 }
 

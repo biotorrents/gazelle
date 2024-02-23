@@ -5,7 +5,7 @@ $app = Gazelle\App::go();
 
 
 
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["creators" => "updateAny"])) {
     error(403);
 }
 if (!empty($_POST['newartistid']) && !empty($_POST['newartistname'])) {

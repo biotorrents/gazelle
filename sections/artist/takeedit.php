@@ -15,7 +15,7 @@ if (!$_REQUEST['artistid'] || !is_numeric($_REQUEST['artistid'])) {
     error(404);
 }
 
-if (!check_perms('site_edit_wiki')) {
+if ($app->user->cant(["creators" => "updateAny"])) {
     error(403);
 }
 

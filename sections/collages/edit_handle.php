@@ -19,7 +19,7 @@ list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld
 
 if ($CategoryID === 0
 && $UserID !== $app->user->core['id']
-&& !check_perms('site_collages_delete')) {
+&& $app->user->cant(["collages" => "updateAny"])) {
     error(403);
 }
 
@@ -53,7 +53,7 @@ $TagList = implode(' ', $TagList);
 
 $Updates = array("Description='".db_string($_POST['description'])."', TagList='".db_string($TagList)."'");
 
-if (!check_perms('site_collages_delete')
+if ($app->user->cant(["collages" => "updateAny"])
 && ($CategoryID === 0
 && $UserID === $app->user->core['id']
 && $app->user->can(["collages" => "updateOwn"]))) {
@@ -66,7 +66,7 @@ if (isset($_POST['featured'])
 && $CategoryID === 0
 && (($app->user->core['id'] === $UserID
 && check_perms('site_collages_personal'))
-|| check_perms('site_collages_delete'))) {
+|| $app->user->can(["collages" => "updateAny"]))) {
     $app->dbOld->query("
     UPDATE collages
     SET Featured = 0
@@ -75,7 +75,7 @@ if (isset($_POST['featured'])
     $Updates[] = 'Featured = 1';
 }
 
-if (check_perms('site_collages_delete')
+if ($app->user->can(["collages" => "updateAny"])
 || ($CategoryID === 0
 && $UserID === $app->user->core['id']
 && $app->user->can(["collages" => "updateOwn"]))) {
@@ -86,11 +86,11 @@ if (isset($_POST['category'])
 && !empty($app->env->collageCategories[$_POST['category']])
 && $_POST['category'] !== $CategoryID
 && ($_POST['category'] !== 0
-|| check_perms('site_collages_delete'))) {
+|| $app->user->can(["collages" => "updateAny"]))) {
     $Updates[] = 'CategoryID = '.$_POST['category'];
 }
 
-if (check_perms('site_collages_delete')) {
+if ($app->user->can(["collages" => "updateAny"])) {
     if (isset($_POST['locked']) !== $Locked) {
         $Updates[] = 'Locked = ' . ($Locked ? "'0'" : "'1'");
     }

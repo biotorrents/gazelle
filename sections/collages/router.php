@@ -36,21 +36,21 @@ switch ($_REQUEST['action']) {
 
     case 'add_torrent':
     case 'add_torrent_batch':
-        if (!check_perms('site_collages_manage')) {
+        if ($app->user->cant(["collages" => "updateAny"])) {
             error(403);
         }
         require(serverRoot . '/sections/collages/add_torrent.php');
         break;
 
     case 'manage':
-        if (!check_perms('site_collages_manage')) {
+        if ($app->user->cant(["collages" => "updateAny"])) {
             error(403);
         }
         require(serverRoot . '/sections/collages/manage.php');
         break;
 
     case 'manage_handle':
-        if (!check_perms('site_collages_manage')) {
+        if ($app->user->cant(["collages" => "updateAny"])) {
             error(403);
         }
         require(serverRoot . '/sections/collages/manage_handle.php');
@@ -61,7 +61,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'edit_handle':
-        if (!check_perms('site_edit_wiki')) {
+        if ($app->user->cant(["wiki" => "updateAny"])) {
             error(403);
         }
         require(serverRoot . '/sections/collages/edit_handle.php');

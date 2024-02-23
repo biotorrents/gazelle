@@ -500,7 +500,7 @@ View::header($Title, 'requests');
     </div>
     <div class="linkbox">
         <?php if (!$BookmarkView) {
-            if (check_perms('site_submit_requests')) { ?>
+            if ($app->user->can(["requests" => "create"])) { ?>
         <a href="requests.php?action=new" class="brackets">New request</a>
         <a href="requests.php?type=created" class="brackets">My requests</a>
         <?php }

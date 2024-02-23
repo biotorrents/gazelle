@@ -194,7 +194,7 @@ if (!$Sneaky
   && !$app->user->extra['RatioWatch']
   && $CanLeech
   && empty($app->user->extra['DisableInvites'])
-  && ($app->user->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
+  && ($app->user->extra['Invites'] > 0 || $app->user->can(["admin" => "unlimitedInvites"]))
   && ($UserCount <= userLimit || userLimit === 0 || $app->user->can(["admin" => "alwaysInvite"]))
 ) { ?>
   <div class="box pad">

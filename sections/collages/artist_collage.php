@@ -69,7 +69,7 @@ foreach ($Artists as $Artist) {
   $Collage[] = ob_get_clean();
 }
 
-if (!check_perms('site_collages_delete') && ($Locked || ($MaxGroups > 0 && $NumGroups >= $MaxGroups) || ($MaxGroupsPerUser > 0 && $NumGroupsByUser >= $MaxGroupsPerUser))) {
+if ($app->user->cant(["collages" => "updateAny"]) && ($Locked || ($MaxGroups > 0 && $NumGroups >= $MaxGroups) || ($MaxGroupsPerUser > 0 && $NumGroupsByUser >= $MaxGroupsPerUser))) {
     $PreventAdditions = true;
 }
 
@@ -111,7 +111,7 @@ View::header($Name, 'browse,collage,recommend');
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php
       }
-  if (check_perms('site_collages_delete') || (check_perms('site_edit_wiki') && !$Locked)) {
+  if ($app->user->can(["collages" => "updateAny"]) || ($app->user->can(["wiki" => "updateAny"]) && !$Locked)) {
       ?>
       <a href="collages.php?action=edit&amp;collageId=<?=$CollageID?>"
         class="brackets">Edit description</a>
@@ -133,7 +133,7 @@ View::header($Name, 'browse,collage,recommend');
         onclick="Bookmark('collage', <?=$CollageID?>, 'Remove bookmark'); return false;">Bookmark</a>
       <?php
   }
-  if (check_perms('site_collages_manage') && !$Locked) {
+  if ($app->user->can(["collages" => "updateAny"]) && !$Locked) {
       ?>
       <a href="collages.php?action=manage_artists&amp;collageId=<?=$CollageID?>"
         class="brackets">Manage artists</a>
@@ -141,7 +141,7 @@ View::header($Name, 'browse,collage,recommend');
   } ?>
       <a href="reports.php?action=report&amp;type=collage&amp;id=<?=$CollageID?>"
         class="brackets">Report collage</a>
-      <?php if (check_perms('site_collages_delete') || $CreatorID === $app->user->core['id']) { ?>
+      <?php if ($app->user->can(["collages" => "deleteAny"]) || $CreatorID === $app->user->core['id']) { ?>
       <a href="collages.php?action=delete&amp;collageId=<?=$CollageID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets" onclick="return confirm('Are you sure you want to delete this collage?');">Delete</a>
       <?php } ?>
@@ -197,7 +197,7 @@ foreach ($UserAdditions as $UserID => $Additions) {
       </div>
     </div>
 
-    <?php if (check_perms('site_collages_manage') && !isset($PreventAdditions)) { ?>
+    <?php if ($app->user->can(["collages" => "updateAny"]) && !isset($PreventAdditions)) { ?>
     <div class="box box_addartist">
       <div class="head"><strong>Add Artists</strong><span class="u-pull-right"><a href="#"
             onclick="$('.add_artist_container').toggleClass('hidden'); this.innerHTML = (this.innerHTML === 'Batch add' ? 'Individual add' : 'Batch add'); return false;"

@@ -31,19 +31,19 @@ if ($app->cache->get('torrent_'.$TorrentID.'_lock')) {
 list($UserID, $Time, $Snatches) = $app->dbOld->next_record();
 
 
-if ($app->user->core['id'] != $UserID && !check_perms('torrents_delete')) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "deleteAny"])) {
     error(403);
 }
 
-if (isset($_SESSION['logged_user']['multi_delete']) && $_SESSION['logged_user']['multi_delete'] >= 3 && !check_perms('torrents_delete_fast')) {
+if (isset($_SESSION['logged_user']['multi_delete']) && $_SESSION['logged_user']['multi_delete'] >= 3 && $app->user->cant(["torrents" => "deleteAny"])) {
     error('You have recently deleted 3 torrents. Please contact a staff member if you need to delete more.');
 }
 
-if (time_ago($Time) > 3600 * 24 * 7 && !check_perms('torrents_delete')) { // Should this be torrents_delete or torrents_delete_fast?
+if (time_ago($Time) > 3600 * 24 * 7 && $app->user->cant(["torrents" => "deleteAny"])) { // Should this be torrents_delete or torrents_delete_fast?
     error('You can no longer delete this torrent as it has been uploaded for over a week. If you now think there is a problem, please report the torrent instead.');
 }
 
-if ($Snatches > 4 && !check_perms('torrents_delete')) { // Should this be torrents_delete or torrents_delete_fast?
+if ($Snatches > 4 && $app->user->cant(["torrents" => "deleteAny"])) { // Should this be torrents_delete or torrents_delete_fast?
     error('You can no longer delete this torrent as it has been snatched by 5 or more users. If you believe there is a problem with this torrent, please report it instead.');
 }
 

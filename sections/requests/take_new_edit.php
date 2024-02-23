@@ -20,7 +20,7 @@ if (!$NewRequest) {
 }
 
 if ($NewRequest) {
-    if (!check_perms('site_submit_requests') || $app->user->extra['BytesUploaded'] < 250 * 1024 * 1024) {
+    if ($app->user->cant(["requests" => "create"]) || $app->user->extra['BytesUploaded'] < 250 * 1024 * 1024) {
         error(403);
     }
 } else {

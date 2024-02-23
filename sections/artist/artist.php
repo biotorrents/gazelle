@@ -508,7 +508,7 @@ View::header($Name, 'browse,requests,recommend,subscriptions');
     <h2><?=\Gazelle\Text::esc($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
     </h2>
     <div class="linkbox">
-      <?php if (check_perms('site_submit_requests')) { ?>
+      <?php if ($app->user->can(["requests" => "create"])) { ?>
       <a href="requests.php?action=new&amp;artistid=<?=$ArtistID?>"
         class="brackets">Add request</a>
       <?php
@@ -554,7 +554,7 @@ if (Bookmarks::isBookmarked('artist', $ArtistID)) {
         onclick="SubscribeComments('artist', <?=$ArtistID?>);return false;"><?=Subscriptions::has_subscribed_comments('artist', $ArtistID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
       <!--  <a href="#" id="recommend" class="brackets">Recommend</a> -->
       <?php
-if (check_perms('site_edit_wiki')) {
+if ($app->user->can(["creators" => "updateAny"])) {
     ?>
       <a href="artist.php?action=edit&amp;artistid=<?=$ArtistID?>"
         class="brackets">Edit</a>
@@ -562,7 +562,7 @@ if (check_perms('site_edit_wiki')) {
 } ?>
       <a href="artist.php?action=history&amp;artistid=<?=$ArtistID?>"
         class="brackets">View history</a>
-      <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
+      <?php if ($RevisionID && $app->user->can(["creators" => "updateAny"])) { ?>
       <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Revert to this revision</a>
       <?php } ?>
@@ -570,7 +570,7 @@ if (check_perms('site_edit_wiki')) {
         class="brackets">Info</a>
       <a href="artist.php?id=<?=$ArtistID?>#artistcomments"
         class="brackets">Comments</a>
-      <?php if (check_perms('site_delete_artist') && check_perms('torrents_delete')) { ?>
+      <?php if ($app->user->can(["creators" => "deleteAny"]) && $app->user->can(["torrents" => "deleteAny"])) { ?>
       <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Delete</a>
       <?php } ?>

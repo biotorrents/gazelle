@@ -28,7 +28,7 @@ WHERE
 
 
 $Contributed = $app->dbOld->has_results();
-if (!($Contributed || check_perms('torrents_edit'))) {
+if (!($Contributed || $app->user->can(["torrentGroups" => "updateAny"]))) {
     error(403);
 }
 

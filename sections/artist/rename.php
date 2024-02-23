@@ -34,7 +34,7 @@ if (!$ArtistID || !is_numeric($ArtistID)) {
     error(404);
 }
 
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["creators" => "updateAny"])) {
     error(403);
 }
 

@@ -289,7 +289,7 @@ if (isset($app->user->extra['SearchType']) && $app->user->extra['SearchType']) {
 
         <?php
         /* OLD USER INFO
-if (check_perms('site_send_unlimited_invites')) {
+if ($app->user->can(["admin" => "unlimitedInvites"])) {
     $Invites = ' (∞)';
 } elseif ($app->user->extra['Invites'] > 0) {
     $Invites = ' ('.$app->user->extra['Invites'].')';
@@ -554,7 +554,7 @@ if (!empty($Alerts) || !empty($ModBar)) { ?>
     </div>
     <?php }
 
-    if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
+    if ($app->user->can(["toolbox" => "databaseKey"]) && !apcu_exists('DBKEY')) { ?>
     <div class="alertbar error">
       Warning: <a href="tools.php?action=database_key">no DB key</a>
     </div>

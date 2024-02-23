@@ -8,7 +8,7 @@ $GroupID = db_string($_GET['groupid']);
 if (!is_numeric($ArtistID) || !is_numeric($GroupID)) {
     error(404);
 }
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["creators" => "deleteAny"])) {
     error(403);
 }
 

@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 
 
-if (!check_perms('site_edit_wiki')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     error(403);
 }
 

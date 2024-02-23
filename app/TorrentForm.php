@@ -308,7 +308,7 @@ HTML;
          * Freeleech type
          */
         if (!$this->NewTorrent) {
-            if (check_perms('torrents_freeleech')) {
+            if ($app->user->can(["admin" => "freeleechTorrents"])) {
                 echo <<<HTML
                 <tr id="freetorrent">
                   <td>

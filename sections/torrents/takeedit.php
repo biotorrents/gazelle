@@ -51,7 +51,7 @@ if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
 }
 
-if (check_perms('torrents_freeleech')) {
+if ($app->user->can(["admin" => "freeleechTorrents"])) {
     $Free = (int) $_POST['freeleech'];
     if (!in_array($Free, array(0, 1, 2))) {
         error(404);
@@ -85,7 +85,7 @@ if (!$app->dbOld->has_results()) {
 // list($UserID, $Remastered, $RemasterYear, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 list($UserID, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
-if ($app->user->core['id'] != $UserID && !check_perms('torrents_edit')) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "updateAny"])) {
     error(403);
 }
 
@@ -117,7 +117,7 @@ if (preg_match($RegX, $Properties['Image'], $Matches)) {
 }
 
 if ($Err) { // Show the upload form, with the data the user entered
-    if (check_perms('site_debug')) {
+    if (true) {
         error($Err);
     }
     error($Err);
@@ -188,7 +188,7 @@ $SQL = "
     Censored = $T[Censored],
     Anonymous = $T[Anonymous],";
 
-if (check_perms('torrents_freeleech')) {
+if ($app->user->can(["admin" => "freeleechTorrents"])) {
     $SQL .= "FreeTorrent = $T[FreeLeech],";
     $SQL .= "FreeLeechType = $T[FreeLeechType],";
 }
@@ -254,7 +254,7 @@ $SQL .= "
   WHERE ID = $TorrentID";
 $app->dbOld->query($SQL);
 
-if (check_perms('torrents_freeleech') && $Properties['FreeLeech'] != $CurFreeLeech) {
+if ($app->user->can(["admin" => "freeleechTorrents"]) && $Properties['FreeLeech'] != $CurFreeLeech) {
     Torrents::freeleech_torrents($TorrentID, $Properties['FreeLeech'], $Properties['FreeLeechType']);
 }
 

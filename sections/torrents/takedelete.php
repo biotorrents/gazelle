@@ -32,15 +32,15 @@ $app->dbOld->query("
   WHERE t.ID = '$TorrentID'");
 list($UploaderID, $GroupID, $Size, $InfoHash, $Name, $ArtistName, $Time, $Snatches) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-if ($app->user->core['id'] != $UploaderID && !check_perms('torrents_delete')) {
+if ($app->user->core['id'] != $UploaderID && $app->user->cant(["torrents" => "deleteAny"])) {
     error(403);
 }
 
-if (time_ago($Time) > 3600 * 24 * 7 && !check_perms('torrents_delete')) {
+if (time_ago($Time) > 3600 * 24 * 7 && $app->user->cant(["torrents" => "deleteAny"])) {
     error('Torrent cannot be deleted because it is over one week old. If you think there is a problem, contact staff.');
 }
 
-if ($Snatches > 4 && !check_perms('torrents_delete')) {
+if ($Snatches > 4 && $app->user->cant(["torrents" => "deleteAny"])) {
     error('Torrent cannot be deleted because it has been snatched by more than 4 people. If you think there is a problem, contact staff.');
 }
 
@@ -49,7 +49,7 @@ if ($ArtistName) {
 }
 
 if (isset($_SESSION['logged_user']['multi_delete'])) {
-    if ($_SESSION['logged_user']['multi_delete'] >= 3 && !check_perms('torrents_delete_fast')) {
+    if ($_SESSION['logged_user']['multi_delete'] >= 3 && $app->user->cant(["torrents" => "deleteAny"])) {
         error('You have recently deleted 3 torrents. Please contact a staff member if you need to delete more.');
     }
     $_SESSION['logged_user']['multi_delete']++;

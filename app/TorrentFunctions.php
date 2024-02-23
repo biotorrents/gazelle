@@ -384,7 +384,7 @@ class TorrentFunctions
                 $ReportInfo .= "</table>";
             }
 
-            $CanEdit = (check_perms('torrents_edit') || (($UserID == $user['ID'] && !$user['DisableWiki'])));
+            $CanEdit = ($app->user->can(["torrents" => "updateAny"]) || (($UserID == $user['ID'] && !$user['DisableWiki'])));
             $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
 
             $FileTable = '
@@ -484,7 +484,7 @@ class TorrentFunctions
             | <a href="torrents.php?action=edit&amp;id=<?=($TorrentID)?>"
                 class="tooltip" title="Edit">ED</a>
             <?php }
-            if (check_perms('torrents_delete') || $UserID == $user['ID']) { ?>
+            if ($app->user->can(["torrents" => "deleteAny"]) || $UserID == $user['ID']) { ?>
             | <a href="torrents.php?action=delete&amp;torrentid=<?=($TorrentID)?>"
                 class="tooltip" title="Remove">RM</a>
             <?php } ?>

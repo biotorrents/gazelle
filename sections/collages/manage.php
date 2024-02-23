@@ -18,7 +18,7 @@ WHERE
 ");
 list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 
-if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && $app->user->cant(["collages" => "updateAny"])) {
     error(403);
 }
 

@@ -10,7 +10,7 @@ $group_id = (int) $_REQUEST['groupid'];
 Security::int($group_id);
 
 // Usual perm checks
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["torrents" => "updateAny"])) {
     $app->dbOld->prepared_query("
     SELECT
       `UserID`
@@ -27,7 +27,7 @@ if (!check_perms('torrents_edit')) {
 }
 
 # ?
-if (check_perms('torrents_freeleech')
+if ($app->user->can(["admin" => "freeleechTorrents"])
     && (isset($_POST['freeleech'])
         xor isset($_POST['neutralleech'])
         xor isset($_POST['unfreeleech']))) {

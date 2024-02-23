@@ -11,7 +11,7 @@ $app = Gazelle\App::go();
 # Validate permissions
 
 
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["torrentGroups" => "create"])) {
     error(403);
 }
 

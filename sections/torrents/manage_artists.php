@@ -7,7 +7,7 @@ $app = Gazelle\App::go();
 if (empty($_POST['importance']) || empty($_POST['artists']) || empty($_POST['groupid']) || !is_numeric($_POST['importance']) || !is_numeric($_POST['groupid'])) {
     error(0);
 }
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["creators" => "updateAny"])) {
     error(403);
 }
 

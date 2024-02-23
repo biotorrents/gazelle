@@ -562,7 +562,7 @@ if (count($Reports) === 0) {
                 <?php } ?>
               </select>
               <span id="options<?=$ReportID?>">
-                <?php if (check_perms('torrents_delete')) { ?>
+                <?php if ($app->user->can(["torrents" => "deleteAny"])) { ?>
                 <span class="tooltip" title="Delete torrent?">
                   <label
                     for="delete<?=$ReportID?>"><strong>Delete</strong></label>

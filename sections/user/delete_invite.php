@@ -23,7 +23,7 @@ $app->dbOld->query("
   DELETE FROM invites
   WHERE InviteKey = ?", $InviteKey);
 
-if (!check_perms('site_send_unlimited_invites')) {
+if ($app->user->cant(["admin" => "unlimitedInvites"])) {
     $app->dbOld->query("
     SELECT Invites
     FROM users_main

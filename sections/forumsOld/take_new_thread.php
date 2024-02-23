@@ -60,7 +60,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
     error(403);
 }
 
-if (empty($_POST['question']) || empty($_POST['answers']) || !check_perms('forums_polls_create')) {
+if (empty($_POST['question']) || empty($_POST['answers']) || $app->user->cant(["polls" => "create"])) {
     $NoPoll = 1;
 } else {
     $NoPoll = 0;

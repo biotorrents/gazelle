@@ -35,7 +35,7 @@ if ($app->user->extra['RatioWatch']
   || !$CanLeech
   || $app->user->extra['DisableInvites'] == '1'
   || $app->user->extra['Invites'] == 0
-  && !check_perms('site_send_unlimited_invites')
+  && $app->user->cant(["admin" => "unlimitedInvites"])
   || (
       $UserCount >= userLimit
     && userLimit != 0
@@ -53,7 +53,7 @@ $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
 $InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
 
 //MultiInvite
-if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites')) {
+if (strpos($Email, '|') !== false && $app->user->can(["admin" => "unlimitedInvites"])) {
     $Emails = explode('|', $Email);
 } else {
     $Emails = array($Email);
@@ -110,7 +110,7 @@ EOT;
     VALUES
       ('{$app->user->core['id']}', '$InviteKey', '" . Gazelle\Crypto::encrypt($CurEmail) . "', '$InviteExpires', '$InviteReason')");
 
-    if (!check_perms('site_send_unlimited_invites')) {
+    if ($app->user->cant(["admin" => "unlimitedInvites"])) {
         $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1

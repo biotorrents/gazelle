@@ -133,7 +133,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
 <?php
   if ($Contributed
-    || check_perms('torrents_edit')
+    || $app->user->can(["torrentGroups" => "updateAny"])
     || check_perms('screenshots_delete')
     || check_perms('screenshots_add')) { ?>
 <h2 id="screenshots_section">
@@ -157,7 +157,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td id="screenshots">
           <?php
-  if ($Contributed || check_perms('screenshots_add') || check_perms('torrents_edit')) { ?>
+  if ($Contributed || check_perms('screenshots_add') || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
           <a class="u-pull-right brackets" onclick="AddScreenshotField()">+</a>
           <?php } ?>
         </td>
@@ -172,8 +172,8 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 <?php
   }
 
-  // Users can edit the group info if they've uploaded a torrent to the group or have torrents_edit
-  if ($Contributed || check_perms('torrents_edit')) { ?>
+// Users can edit the group info if they've uploaded a torrent to the group or have torrents_edit
+if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
 <h2>
   Non-wiki torrent group editing
 </h2>
@@ -198,9 +198,9 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
             value="<?=$Artists[0]['name']?>">
           <a class="add_artist_button brackets">+</a> <a class="remove_artist_button brackets">&minus;</a>
           <?php
-  for ($i = 1; $i < count($Artists); $i++) {
-      echo '<br><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'">';
-  } ?>
+for ($i = 1; $i < count($Artists); $i++) {
+    echo '<br><input type="text" id="idol_'.$i.'" name="idols[]" size="45" value="'.$Artists[$i]['name'].'">';
+} ?>
         </td>
       </tr>
 
@@ -248,7 +248,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
         </td>
       </tr>
 
-      <?php if (check_perms('torrents_freeleech')) { ?>
+      <?php if ($app->user->can(["admin" => "freeleechTorrents"])) { ?>
       <tr>
         <td class="label">
           Torrent <strong>group</strong> leech status
@@ -287,9 +287,9 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
   </form>
 </div>
 <?php
-  }
+}
 
-  if ($Contributed || check_perms('torrents_edit')) { ?>
+if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
 <h2>
   Rename (will not merge)
 </h2>
@@ -344,9 +344,9 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
   </form>
 </div>
 <?php
-  }
+}
 
-  if (check_perms('torrents_edit')) { ?>
+if ($app->user->can(["torrentGroups" => "updateAny"])) { ?>
 <h2>
   Merge with another group
 </h2>
@@ -371,6 +371,6 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
   </form>
 </div>
 <?php
-  }
+}
 
 View::footer();

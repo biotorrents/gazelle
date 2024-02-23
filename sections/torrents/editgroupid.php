@@ -9,7 +9,7 @@ $app = Gazelle\App::go();
 * torrent.
 ****************************************************************/
 
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     error(403);
 }
 

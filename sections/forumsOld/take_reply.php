@@ -65,7 +65,7 @@ if (isset($_POST['subscribe']) && Subscriptions::has_subscribed($TopicID) === fa
 }
 
 // Now lets handle the special case of merging posts, we can skip bumping the thread and all that fun
-if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms('site_forums_double_post') || isset($_POST['merge'])))) {
+if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && (($app->user->cant(["admin" => "doublePost"]) || isset($_POST['merge'])))) {
     // Get the id for this post in the database to append
     $app->dbOld->query("
     SELECT ID, Body

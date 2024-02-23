@@ -52,7 +52,7 @@ View::header(
         <a href="#" onclick="return false;" class="brackets"><?=!empty($HeavyInfo['AutoSubscribe']) ? 'Unsubscribe' : 'Subscribe'?></a>
       </div>
     </div>
-    <?php if (check_perms('forums_polls_create')) { ?>
+    <?php if ($app->user->can(["polls" => "create"])) { ?>
     <div class="box thin clear hidden" id="pollpreview">
       <div class="head colhead_dark"><strong>Poll</strong> <a data-toggle-target="#threadpoll" class="brackets">View</a>
       </div>
@@ -127,7 +127,7 @@ View::textarea(
           </td>
         </tr>
         <?php
-if (check_perms('forums_polls_create')) {
+if ($app->user->can(["polls" => "create"])) {
     ?>
         <script>
           //<![CDATA[

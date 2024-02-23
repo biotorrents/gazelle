@@ -198,9 +198,9 @@ class DatabaseOld
             send_irc(ADMIN_CHAN, $this->Error);
         }
 
-        if ($ENV->dev || check_perms('site_debug') || isset($argv[1])) {
+        if ($ENV->dev || isset($argv[1])) {
             echo '<pre>' . \Gazelle\Text::esc($dbError) . '</pre>';
-            if ($ENV->dev || check_perms('site_debug')) {
+            if ($ENV->dev) {
                 print_r($this->Queries);
             }
             error(400, $NoHTML = true);

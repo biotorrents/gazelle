@@ -81,7 +81,7 @@ if (!$Properties) {
 # Error on bad permissions
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
 if (($app->user->core['id'] !== $Properties['UserID']
-  && !check_perms('torrents_edit'))
+  && $app->user->cant(["torrents" => "updateAny"]))
   || $app->user->extra['DisableWiki']) {
     error(403);
 }
@@ -108,7 +108,7 @@ $TorrentForm->upload_form();
  *
  * Various inlined tools to manage torrent grouping, etc.
  */
-if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
+if ($app->user->can(["torrents" => "updateAny"]) || check_perms('users_mod')) { ?>
 <!-- Start HTML -->
 
 
@@ -325,5 +325,5 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
 <?php
     } ?>
 <?php
-} // if check_perms('torrents_edit')
+} // if $app->user->can(["torrents" => "updateAny"])
 View::footer();
