@@ -11,7 +11,7 @@ $Val = new Validate();
 $P = [];
 $P = db_array($_POST);
 
-if ($P['category'] > 0 || check_perms('site_collages_renamepersonal')) {
+if ($P['category'] > 0 || $app->user->can(["collages" => "updateAny"])) {
     $Val->SetFields('name', '1', 'string', 'The name must be between 5 and 255 characters.', array('maxlength' => 255, 'minlength' => 5));
 } else {
     // Get a collage name and make sure it's unique
@@ -45,7 +45,7 @@ if (!$Err && $P['category'] === '0') {
     list($CollageCount) = $app->dbOld->next_record();
     if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
         $Err = 'You may not create a personal collage.';
-    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $app->user->core['username'])) {
+    } elseif ($app->user->can(["collages" => "updateOwn"]) && !stristr($P['name'], $app->user->core['username'])) {
         $Err = "Your personal collage's title must include your username.";
     }
 }

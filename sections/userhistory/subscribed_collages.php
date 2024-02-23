@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 /*
 User collage subscription page
 */
-if (!check_perms('site_collages_subscribe')) {
+if ($app->user->cant(["subscriptions" => "create"])) {
     error(403);
 }
 

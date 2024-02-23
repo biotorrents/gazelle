@@ -1090,7 +1090,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if (check_perms('admin_manage_fls') || (check_perms('users_mod') && $isOwnProfile)) {
+    if ($app->user->can(["admin" => "manageTechSupport"]) || (check_perms('users_mod') && $isOwnProfile)) {
         ?>
       <tr>
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
@@ -1159,7 +1159,7 @@ if (!$DisablePoints) {
     } ?>
     </table>
 
-    <?php if (check_perms('users_warn')) { ?>
+    <?php if ($app->user->can(["admin" => "warnUsers"])) { ?>
     <table class="box skeletonFix" id="warn_user_box">
       <tr class="colhead">
         <td colspan="2">

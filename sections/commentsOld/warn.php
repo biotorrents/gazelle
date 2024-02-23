@@ -2,7 +2,7 @@
 
 $app = Gazelle\App::go();
 
-if (!check_perms('users_warn')) {
+if ($app->user->cant(["admin" => "warnUsers"])) {
     error(404);
 }
 Gazelle\Http::assertRequest($_POST, array('postid'));

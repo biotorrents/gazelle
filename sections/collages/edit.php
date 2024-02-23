@@ -47,7 +47,7 @@ if (!empty($Err)) {
       <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <table id="edit_collage" class="layout collage_edit">
-        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
+        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && $app->user->can(["collages" => "updateOwn"]))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"

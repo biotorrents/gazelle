@@ -443,7 +443,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        if (check_perms('site_collages_subscribe')) {
+        if ($app->user->can(["subscriptions" => "create"])) {
             $NewCollages = $app->cache->get('collage_subs_user_new_' . $app->user->core["id"]);
             if ($NewCollages === false) {
                 $QueryID = $app->dbOld->get_query_id();

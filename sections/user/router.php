@@ -59,7 +59,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'search':// User search
-        if (check_perms('admin_advanced_user_search') && check_perms('users_view_ips') && check_perms('users_view_email')) {
+        if ($app->user->can(["admin" => "advancedUserSearch"]) && check_perms('users_view_ips') && check_perms('users_view_email')) {
             require_once 'advancedsearch.php';
         } else {
             require_once 'search.php';

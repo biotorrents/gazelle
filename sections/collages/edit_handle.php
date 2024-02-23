@@ -56,7 +56,7 @@ $Updates = array("Description='".db_string($_POST['description'])."', TagList='"
 if (!check_perms('site_collages_delete')
 && ($CategoryID === 0
 && $UserID === $app->user->core['id']
-&& check_perms('site_collages_renamepersonal'))) {
+&& $app->user->can(["collages" => "updateOwn"]))) {
     if (!stristr($_POST['name'], $app->user->core['username'])) {
         error("Your personal collage's title must include your username.");
     }
@@ -78,7 +78,7 @@ if (isset($_POST['featured'])
 if (check_perms('site_collages_delete')
 || ($CategoryID === 0
 && $UserID === $app->user->core['id']
-&& check_perms('site_collages_renamepersonal'))) {
+&& $app->user->can(["collages" => "updateOwn"]))) {
     $Updates[] = "Name = '".db_string($_POST['name'])."'";
 }
 

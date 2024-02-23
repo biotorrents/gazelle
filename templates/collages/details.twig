@@ -410,7 +410,7 @@ if (!empty($DeletedTag)) { ?>
           <a href="torrents.php?taglist=<?=$Tag['name']?>"
             class="<?=\Gazelle\Text::esc($Tag['class'])?>"><?=\Gazelle\Text::esc($Tag['display'])?></a>
           <div class="edit_tags_votes u-pull-right">
-            <?php if (check_perms('users_warn')) { ?>
+            <?php if ($app->user->can(["admin" => "warnUsers"])) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
               title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
             <?php } ?>

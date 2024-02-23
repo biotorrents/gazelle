@@ -75,7 +75,7 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-        if (check_perms('users_warn') && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
+        if ($app->user->can(["admin" => "warnUsers"]) && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
             ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">

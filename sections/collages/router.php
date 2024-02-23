@@ -28,7 +28,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'new_handle':
-        if (!check_perms('site_collages_create')) {
+        if ($app->user->cant(["collages" => "create"])) {
             error(403);
         }
         require(serverRoot . '/sections/collages/new_handle.php');

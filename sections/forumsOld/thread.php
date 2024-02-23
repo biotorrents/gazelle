@@ -556,7 +556,7 @@ foreach ($Thread as $Key => $Post) {
         <a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-    if (check_perms('users_warn') && $AuthorID != $app->user->core['id']) {
+    if ($app->user->can(["admin" => "warnUsers"]) && $AuthorID != $app->user->core['id']) {
         $AuthorInfo = User::user_info($AuthorID);
         if ($app->user->extra['Class'] >= $AuthorInfo['Class']) {
             ?>

@@ -97,11 +97,11 @@ View::header(
     'vendor/easymde.min'
 );
 
-if (!check_perms('site_collages_renamepersonal')) {
+if ($app->user->cant(["collages" => "updateOwn"])) {
     $ChangeJS = " onchange=\"if ( this.options[this.selectedIndex].value == '0') { $('#namebox').ghide(); $('#personal').gshow(); } else { $('#namebox').gshow(); $('#personal').ghide(); }\"";
 }
 
-if (!check_perms('site_collages_renamepersonal') && $Category === '0') {
+if ($app->user->cant(["collages" => "updateOwn"]) && $Category === '0') {
     $NoName = true;
 }
 ?>

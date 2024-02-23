@@ -35,7 +35,7 @@
 
 {# suscribe #}
 {#
-      <?php if (check_perms('site_collages_subscribe')) { ?>
+      <?php if ($app->user->can(["subscriptions" => "create"])) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php

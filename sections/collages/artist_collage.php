@@ -102,11 +102,11 @@ View::header($Name, 'browse,collage,recommend');
     </h2>
     <div class="linkbox">
       <a href="collages.php" class="brackets">List of collections</a>
-      <?php if (check_perms('site_collages_create')) { ?>
+      <?php if ($app->user->can(["collages" => "create"])) { ?>
       <a href="collages.php?action=new" class="brackets">New collage</a>
       <?php } ?>
       <br><br>
-      <?php if (check_perms('site_collages_subscribe')) { ?>
+      <?php if ($app->user->can(["subscriptions" => "create"])) { ?>
       <a href="#" id="subscribelink<?=$CollageID?>" class="brackets"
         onclick="CollageSubscribe(<?=$CollageID?>); return false;"><?=(in_array($CollageID, $CollageSubscriptions) ? 'Unsubscribe' : 'Subscribe')?></a>
       <?php

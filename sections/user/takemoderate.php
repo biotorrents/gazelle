@@ -447,7 +447,7 @@ if (check_perms('users_edit_badges')) {
     $app->cache->delete("user_badges_" . $UserID);
 }
 
-if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
+if ($Warned == 1 && !$Cur['Warned'] && $app->user->can(["admin" => "warnUsers"])) {
     $Weeks = 'week' . ($WarnLength === 1 ? '' : 's');
     Misc::send_pm($UserID, 0, 'You have received a warning', "You have been [url=" . site_url() . "wiki.php?action=article&amp;name=warnings]warned for $WarnLength {$Weeks}[/url] by [user]" . $app->user->core['username'] . "[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
@@ -460,11 +460,11 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
 
     $EditSummary[] = db_string($Msg);
     $LightUpdates['Warned'] = time_plus(3600 * 24 * 7 * $WarnLength);
-} elseif ($Warned == 0 && $Cur['Warned'] && check_perms('users_warn')) {
+} elseif ($Warned == 0 && $Cur['Warned'] && $app->user->can(["admin" => "warnUsers"])) {
     $UpdateSet[] = "Warned = NULL";
     $EditSummary[] = 'warning removed';
     $LightUpdates['Warned'] = null;
-} elseif ($Warned == 1 && $ExtendWarning != '---' && check_perms('users_warn')) {
+} elseif ($Warned == 1 && $ExtendWarning != '---' && $app->user->can(["admin" => "warnUsers"])) {
     $Weeks = 'week' . ($ExtendWarning === 1 ? '' : 's');
     Misc::send_pm($UserID, 0, 'Your warning has been extended', "Your warning has been extended by $ExtendWarning $Weeks by [user]" . $app->user->core['username'] . "[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
@@ -484,7 +484,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
 
     $EditSummary[] = db_string($Msg);
     $LightUpdates['Warned'] = $WarnedUntil;
-} elseif ($Warned == 1 && $ExtendWarning == '---' && $ReduceWarning != '---' && check_perms('users_warn')) {
+} elseif ($Warned == 1 && $ExtendWarning == '---' && $ReduceWarning != '---' && $app->user->can(["admin" => "warnUsers"])) {
     $Weeks = 'week' . ($ReduceWarning === 1 ? '' : 's');
     Misc::send_pm($UserID, 0, 'Your warning has been reduced', "Your warning has been reduced by $ReduceWarning $Weeks by [user]" . $app->user->core['username'] . "[/user]. The reason given was:
 [quote]{$WarnReason}[/quote]");
@@ -505,7 +505,7 @@ if ($Warned == 1 && !$Cur['Warned'] && check_perms('users_warn')) {
     $LightUpdates['Warned'] = $WarnedUntil;
 }
 
-if ($SupportFor != db_string($Cur['SupportFor']) && (check_perms('admin_manage_fls') || (check_perms('users_mod') && $UserID == $app->user->core['id']))) {
+if ($SupportFor != db_string($Cur['SupportFor']) && ($app->user->can(["admin" => "manageTechSupport"]) || (check_perms('users_mod') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "SupportFor = '$SupportFor'";
     $EditSummary[] = "First-Line Support status changed to \"$SupportFor\"";
 }

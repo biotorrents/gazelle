@@ -22,7 +22,7 @@ $ENV = Gazelle\ENV::go();
 
 View::header('Blog');
 
-if (check_perms('admin_manage_blog')) {
+if ($app->user->can(["admin" => "manageBlog"])) {
     if (!empty($_REQUEST['action'])) {
         switch ($_REQUEST['action']) {
             case 'deadthread':
@@ -205,7 +205,7 @@ foreach ($Blog as $BlogItem) {
         <div class="head">
             <strong><?=$Title?></strong> - posted <?=time_diff($BlogTime); ?> by <a
                 href="user.php?id=<?=$AuthorID?>"><?=$Author?></a>
-            <?php if (check_perms('admin_manage_blog')) { ?>
+            <?php if ($app->user->can(["admin" => "manageBlog"])) { ?>
             - <a href="blog.php?action=editblog&amp;id=<?=$BlogID?>"
                 class="brackets">Edit</a>
             <a href="blog.php?action=deleteblog&amp;id=<?=$BlogID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
@@ -219,7 +219,7 @@ foreach ($Blog as $BlogItem) {
             <em><a
                     href="forums.php?action=viewthread&amp;threadid=<?=$ThreadID?>">Discuss
                     this post here</a></em>
-            <?php if (check_perms('admin_manage_blog')) { ?>
+            <?php if ($app->user->can(["admin" => "manageBlog"])) { ?>
             <a href="blog.php?action=deadthread&amp;id=<?=$BlogID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
                 class="brackets">Remove link</a>
             <?php
