@@ -134,8 +134,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 <?php
   if ($Contributed
     || $app->user->can(["torrentGroups" => "updateAny"])
-    || check_perms('screenshots_delete')
-    || check_perms('screenshots_add')) { ?>
+  ) { ?>
 <h2 id="screenshots_section">
   Publications
 </h2>
@@ -157,7 +156,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td id="screenshots">
           <?php
-  if ($Contributed || check_perms('screenshots_add') || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
+   if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
           <a class="u-pull-right brackets" onclick="AddScreenshotField()">+</a>
           <?php } ?>
         </td>

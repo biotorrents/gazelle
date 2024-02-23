@@ -12,7 +12,7 @@ if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
 
-if ($app->user->cant(["torrentGroups" => "updateAny"]) && !check_perms('screenshots_add') && !check_perms('screenshots_delete')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     $app->dbOld->query("
     SELECT
       `UserID`
@@ -65,7 +65,7 @@ if (!empty($Old)) {
 
 // Deletion
 if (!empty($Deleted)) {
-    if (check_perms('screenshots_delete') || $app->user->can(["torrentGroups" => "updateAny"])) {
+    if ($app->user->can(["torrentGroups" => "updateAny"])) {
         $DeleteList = $Deleted;
     } else {
         $DeleteList = [];

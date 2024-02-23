@@ -50,7 +50,7 @@ if (!$NewRequest) {
         $IsFilled = !empty($Request['TorrentID']);
         $CategoryName = $Categories[$CategoryID - 1];
 
-        $ProjectCanEdit = (check_perms('project_team') && !$IsFilled && $CategoryID === '0');
+        $ProjectCanEdit = (!$IsFilled && $CategoryID === '0');
         $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
 
         if (!$CanEdit) {

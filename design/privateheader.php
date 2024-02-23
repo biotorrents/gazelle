@@ -491,7 +491,7 @@ if ($app->user->can(["admin" => "reports"])) {
     if ($NumOtherReports > 0) {
         $ModBar[] = '<a href="reports.php">' . $NumOtherReports . (($NumTorrentReports === 1) ? ' Other report' : ' Other reports') . '</a>';
     }
-} elseif (check_perms('project_team')) {
+} elseif (true) {
     $NumUpdateReports = $app->cache->get('num_update_reports');
     if ($NumUpdateReports === false) {
         $app->dbOld->query("

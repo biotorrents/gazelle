@@ -1035,7 +1035,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"]) || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#mirrors_section">Add/Remove</a>
@@ -1075,7 +1075,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"]) || check_perms('screenshots_add') || check_perms('screenshots_delete')) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>

@@ -5,11 +5,6 @@
 // Already done in /sections/ajax/index.php
 //
 
-if (!check_perms('site_top10')) {
-    echo json_encode(array('status' => 'failure'));
-    error();
-}
-
 if (empty($_GET['type']) || $_GET['type'] === 'torrents') {
     include serverRoot.'/sections/ajax/top10/torrents.php';
 } else {

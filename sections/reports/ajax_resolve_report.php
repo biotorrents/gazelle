@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 
 
-if ($app->user->cant(["admin" => "reports"]) && !check_perms('project_team') && $app->user->cant(["admin" => "moderateForums"])) {
+if ($app->user->cant(["admin" => "reports"]) && $app->user->cant(["admin" => "moderateForums"])) {
     ajax_error();
 }
 
@@ -20,7 +20,7 @@ if ($app->user->cant(["admin" => "reports"])) {
         if (!in_array($Type, array('comment', 'post', 'thread'))) {
             ajax_error();
         }
-    } elseif (check_perms('project_team')) {
+    } elseif (true) {
         if ($Type != 'request_update') {
             ajax_error();
         }
