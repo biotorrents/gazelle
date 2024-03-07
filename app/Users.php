@@ -1806,7 +1806,6 @@ class Users extends ObjectCrud
         # snatches
         # torrents.php?type=snatched&userid={{ userId }}
         # torrents.php?action=redownload&type=snatches&userid={{ userId }}
-        # check_perms("site_view_torrent_snatchlist")
         $query = "
             select count(uid), count(distinct fid) from xbt_snatched
             inner join torrents on torrents.id = xbt_snatched.fid

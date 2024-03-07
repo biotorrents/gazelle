@@ -16,7 +16,7 @@ View::header('Top 10 Donors');
 $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
 
-$IsMod = check_perms("users_mod");
+$IsMod = $app->user->can(["admin" => "moderateUsers"]);
 $app->dbOld->prepared_query("
 SELECT
   `UserID`,

@@ -172,7 +172,7 @@ if ($_POST['comment_hash'] != $Cur['CommentHash']) {
 }
 
 // NOW that we know the class of the current user, we can see if one staff member is trying to hax0r us
-if (!check_perms('users_mod', $Cur['Class'])) {
+if (!$app->user->can(["admin" => "moderateUsers"])) {
     // Son of a fucking bitch
     error(403);
     error();
@@ -275,8 +275,8 @@ if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["userAccoun
 // Start building SQL query and edit summary
 if ($Classes[$Class]['Level'] != $Cur['Class']
   && (
-      ($Classes[$Class]['Level'] < $app->user->extra['Class'] && check_perms('users_promote_below', $Cur['Class']))
-    || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && check_perms('users_promote_to', $Cur['Class'] - 1))
+      ($Classes[$Class]['Level'] < $app->user->extra['Class'] && $app->user->can(["userAccounts" => "updateAny"]))
+    || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && $app->user->can(["userAccounts" => "updateAny"]))
   )
 ) {
     $UpdateSet[] = "PermissionID = '$Class'";
@@ -299,7 +299,7 @@ if ($Classes[$Class]['Level'] != $Cur['Class']
     $app->cache->delete("donor_info_$UserID");
 }
 
-if ($Username != $Cur['Username'] && check_perms('users_edit_usernames', $Cur['Class'] - 1)) {
+if ($Username != $Cur['Username'] && $app->user->can(["userAccounts" => "updateAny"])) {
     $app->dbOld->query("
       SELECT ID
       FROM users_main
@@ -425,7 +425,7 @@ if ($Invites != $Cur['Invites'] && $app->user->can(["userAccounts" => "updateAny
     $HeavyUpdates['Invites'] = $Invites;
 }
 
-if (check_perms('users_edit_badges')) {
+if ($app->user->can(["userProfiles" => "updateAny"])) {
     $query = "DELETE FROM users_badges WHERE UserID = $UserID";
     if (!empty($Badges)) {
         $query .= " AND BadgeID NOT IN (" . implode(',', $Badges) . ")";

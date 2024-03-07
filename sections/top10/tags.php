@@ -9,11 +9,6 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-
-if (!check_perms("site_top10")) {
-    error(403);
-}
-
 $get = Gazelle\Http::request("get");
 $limit = intval($get["limit"] ?? Gazelle\Top10::$defaultLimit);
 

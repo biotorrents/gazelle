@@ -117,8 +117,7 @@ class Twig extends \Twig\Environment
 
         # todo: put these elsewhere later
         $twig->addGlobal("inbox", \Inbox::get_inbox_link());
-        $twig->addGlobal("notify", true);
-        #$twig->addGlobal("notify", check_perms("site_torrents_notify"));
+        $twig->addGlobal("notify", $app->user->can(["notifications" => "create"]));
 
         /** */
 

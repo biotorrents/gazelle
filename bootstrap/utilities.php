@@ -68,15 +68,6 @@ function error(int|string $error = 400, $noHtmlUnused = false, $logUnused = fals
 
 
 /**
- * check_perms
- */
-function check_perms(string $permission, $unused = 0)
-{
-    return true;
-}
-
-
-/**
  * site_url
  */
 function site_url()

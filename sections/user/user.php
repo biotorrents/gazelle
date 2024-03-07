@@ -392,14 +392,14 @@ if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfil
         <?php
 if ($app->user->can(["admin" => "sensitiveUserData"])) {
     ?>
-        <?php if ($app->user->can(["admin" => "sensitiveUserData"]) && check_perms('users_mod', $Class)) { ?>
+        <?php if ($app->user->can(["admin" => "sensitiveUserData"]) && $app->user->can(["admin" => "moderateUsers"])) { ?>
         <li>Tracker IPs: <?=Gazelle\Text::float($TrackerIPs)?> <a
             href="userhistory.php?action=tracker_ips&amp;userid=<?=$userId?>"
             class="brackets">View</a></li>
         <?php
         }
 }
-if (check_perms('users_mod', $Class)) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     ?>
         <li>Stats: N/A <a
             href="userhistory.php?action=stats&amp;userid=<?=$userId?>"
@@ -780,7 +780,7 @@ if (($app->user->can(["admin" => "sensitiveUserData"])) && $Invited > 0) {
 }
 
 $IsFLS = isset($user['ExtraClasses'][FLS_TEAM]);
-if (check_perms('users_mod', $Class) || $IsFLS) {
+if ($app->user->can(["admin" => "moderateUsers"]) || $IsFLS) {
     $UserLevel = $user['EffectiveClass'];
     $app->dbOld->query("
     SELECT
@@ -849,7 +849,7 @@ if (check_perms('users_mod', $Class) || $IsFLS) {
 }
 
 // Displays a table of forum warnings viewable only to Forum Moderators
-if (check_perms('users_mod', $Class)) { ?>
+if ($app->user->can(["admin" => "moderateUsers"])) { ?>
   <form class="manage_form" name="user" id="form" action="user.php" method="post">
     <input type="hidden" name="action" value="moderate">
     <input type="hidden" name="userid" value="<?=$userId?>">
@@ -886,7 +886,7 @@ if (check_perms('users_mod', $Class)) { ?>
           User Information
         </td>
       </tr>
-      <?php if (check_perms('users_edit_usernames', $Class)) { ?>
+      <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
@@ -904,7 +904,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <?php
     }
 
-    if (check_perms('users_promote_below', $Class) || check_perms('users_promote_to', $Class - 1)) {
+    if ($app->user->can(["userAccounts" => "updateAny"]) || $app->user->can(["userAccounts" => "updateAny"])) {
         ?>
       <tr>
         <td class="label">Primary class:</td>
@@ -912,7 +912,7 @@ if (check_perms('users_mod', $Class)) { ?>
           <select name="Class">
             <?php
     foreach ($ClassLevels as $CurClass) {
-        if (check_perms('users_promote_below', $Class) && $CurClass['ID'] >= $user['EffectiveClass']) {
+        if ($app->user->can(["userAccounts" => "updateAny"]) && $CurClass['ID'] >= $user['EffectiveClass']) {
             break;
         }
 
@@ -992,7 +992,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <?php
     }
 
-    if (check_perms('users_edit_ratio', $Class) || ($app->user->can(["admin" => "updateRatios"]) && $userId == $user['ID'])) {
+    if (($app->user->can(["admin" => "updateRatios"]) && $userId == $user['ID'])) {
         ?>
       <tr>
         <td class="label tooltip" title="Upload amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
@@ -1125,7 +1125,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if (check_perms('users_edit_badges')) {
+    if ($app->user->can(["userProfiles" => "updateAny"])) {
         ?>
       <tr id="user_badge_edit_tr">
         <td class="label">Badges Owned:</td>
