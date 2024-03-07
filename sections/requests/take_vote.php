@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
 //--------------- Vote on a request --------------------------------------------//
 //This page is ajax!
 
-if (!check_perms('site_vote')) {
+if ($app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 

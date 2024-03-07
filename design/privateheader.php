@@ -265,7 +265,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     '_base/userInfo.twig',
     [
           'inbox' => Inbox::get_inbox_link(),
-          'notify' => check_perms('site_torrents_notify'),
+          'notify' => $app->user->can(["notifications" => "read"]),
         ]
 );
 ?>

@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 
 
-if (!check_perms('site_upload')) {
+if ($app->user->cant(["torrents" => "create"])) {
     error('Please read the site wiki for information on how to become a Member and gain upload privileges.');
 }
 

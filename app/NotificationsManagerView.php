@@ -89,7 +89,7 @@ class NotificationsManagerView
   </td>
 </tr>
 
-<?php if (check_perms('site_torrents_notify')) { ?>
+<?php if ($app->user->can(["notifications" => "read"])) { ?>
 <tr>
   <td class="label tooltip" title="Notify when your torrent notification filters are triggered">
     <strong>Torrent Notifications</strong>

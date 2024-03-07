@@ -415,7 +415,7 @@ class NotificationsManager
     {
         $app = \Gazelle\App::go();
 
-        if (check_perms('site_torrents_notify')) {
+        if ($app->user->can(["notifications" => "read"])) {
             $NewNotifications = $app->cache->get('notifications_new_' . $app->user->core["id"]);
             if ($NewNotifications === false) {
                 $QueryID = $app->dbOld->get_query_id();

@@ -22,7 +22,7 @@ if ($Request === false) {
 
 // Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
-$CanVote = !$IsFilled && check_perms('site_vote');
+$CanVote = !$IsFilled && $app->user->can(["requests" => "updateAny"]);
 
 if ($Request['CategoryID'] === '0') {
     $CategoryName = 'Unknown';

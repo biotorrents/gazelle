@@ -504,7 +504,7 @@ View::header($Title, 'requests');
         <a href="requests.php?action=new" class="brackets">New request</a>
         <a href="requests.php?type=created" class="brackets">My requests</a>
         <?php }
-            if (check_perms('site_vote')) { ?>
+            if ($app->user->can(["requests" => "updateAny"])) { ?>
         <a href="requests.php?type=voted" class="brackets">Requests I've voted on</a>
         <?php } ?>
         <a href="bookmarks.php?type=requests" class="brackets">Bookmarked requests</a>
@@ -749,7 +749,7 @@ View::header($Title, 'requests');
             </td>
             <td class="nobr">
                 <span id="vote_count_<?=$RequestID?>"><?=Gazelle\Text::float($VoteCount)?></span>
-                <?php if (!$IsFilled && check_perms('site_vote')) { ?>
+                <?php if (!$IsFilled && $app->user->can(["requests" => "updateAny"])) { ?>
                 &nbsp;&nbsp; <a
                     href="javascript:Vote(0, <?=$RequestID?>)"
                     class="brackets"><strong>+</strong></a>

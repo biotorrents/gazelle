@@ -4,7 +4,7 @@
 
 $app = Gazelle\App::go();
 
-if (!check_perms('site_torrents_notify')) {
+if ($app->user->cant(["notifications" => "read"])) {
     error(403);
 }
 

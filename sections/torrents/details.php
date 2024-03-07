@@ -880,7 +880,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
           <td>
             <span
               id="vote_count_<?=$Request['ID']?>"><?=count($RequestVotes['Voters'])?></span>
-            <?php if (check_perms('site_vote')) { ?>
+            <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
             &nbsp;&nbsp; <a
               href="javascript:Vote(0, <?=$Request['ID']?>)"
               class="brackets">+</a>

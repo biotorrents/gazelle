@@ -30,7 +30,7 @@ $Requestor = User::user_info($Request['UserID']);
 $Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
-$CanVote = !$IsFilled && check_perms('site_vote');
+$CanVote = !$IsFilled && $app->user->can(["requests" => "updateAny"]);
 
 if ($CategoryID == 0) {
     $CategoryName = 'Unknown';

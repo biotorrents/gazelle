@@ -514,7 +514,7 @@ View::header($Name, 'browse,requests,recommend,subscriptions');
       <?php
       }
 
-if (check_perms('site_torrents_notify')) {
+if ($app->user->can(["notifications" => "read"])) {
     if (($Notify = $app->cache->get('notify_artists_' . $app->user->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
@@ -830,7 +830,7 @@ if ($NumRequests > 0) {
         </td>
         <td class="nobr">
           <span id="vote_count_<?=$RequestID?>"><?=$Request['Votes']?></span>
-          <?php if (check_perms('site_vote')) { ?>
+          <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
           <input type="hidden" id="auth" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)"

@@ -41,7 +41,7 @@ if ($NewMessages === false) {
     $app->cache->set('inbox_new_' . $app->user->core['id'], $NewMessages, 0);
 }
 
-if (check_perms('site_torrents_notify')) {
+if ($app->user->can(["notifications" => "read"])) {
     $NewNotifications = $app->cache->get('notifications_new_' . $app->user->core['id']);
     if ($NewNotifications === false) {
         $app->dbOld->query("
@@ -50,7 +50,7 @@ if (check_perms('site_torrents_notify')) {
       WHERE UserID = '{$app->user->core['id']}'
         AND UnRead = '1'");
         list($NewNotifications) = $app->dbOld->next_record();
-        /* if ($NewNotifications && !check_perms('site_torrents_notify')) {
+        /* if ($NewNotifications && $app->user->cant(["notifications" => "read"])) {
             $app->dbOld->query("DELETE FROM users_notify_torrents WHERE UserID='{$app->user->core['id']}'");
             $app->dbOld->query("DELETE FROM users_notify_filters WHERE UserID='{$app->user->core['id']}'");
         } */

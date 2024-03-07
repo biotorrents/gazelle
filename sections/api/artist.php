@@ -276,7 +276,7 @@ foreach ($Requests as $RequestID => $Request) {
 
 //notifications disabled by default
 $notificationsEnabled = false;
-if (check_perms('site_torrents_notify')) {
+if ($app->user->can(["notifications" => "read"])) {
     if (($Notify = $app->cache->get('notify_artists_' . $app->user->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists

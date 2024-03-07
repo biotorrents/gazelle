@@ -81,7 +81,7 @@ foreach ($ArtistList as $Artist) {
       <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a>
       <span class="u-pull-right">
         <?php
-  if (check_perms('site_torrents_notify')) {
+  if ($app->user->can(["notifications" => "read"])) {
       if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
           $app->dbOld->prepared_query("
             SELECT ID, Artists

@@ -5,7 +5,7 @@
 $app = \Gazelle\App::go();
 
 # todo: Go through line by line
-if (!check_perms('site_torrents_notify')) {
+if ($app->user->cant(["notifications" => "read"])) {
     \Gazelle\Api\Base::failure(400);
 }
 
