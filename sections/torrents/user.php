@@ -206,7 +206,7 @@ switch ($_GET['type']) {
         break;
 
     case 'downloaded':
-        if (!check_perms('site_view_torrent_snatchlist')) {
+        if ($app->user->cant(["admin" => "readSnatchLists"])) {
             error(403);
         }
         $Time = 'unix_timestamp(ud.`Time`)';

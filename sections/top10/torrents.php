@@ -84,7 +84,7 @@ exit;
 
 $Where = [];
 
-if (!empty($_GET['advanced']) && check_perms('site_advanced_top10')) {
+if (!empty($_GET['advanced'])) {
     $Details = 'all';
     $Limit = 10;
 
@@ -140,7 +140,7 @@ View::header("Top $Limit Torrents", 'browse');
     </div>
     <?php
 
-if (check_perms('site_advanced_top10')) {
+if (true) {
     ?>
     <div class="box pad">
         <form class="search_form" name="torrents" action="" method="get">

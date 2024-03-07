@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid']) || !check_perms('site_view_torrent_snatchlist')) {
+if (!isset($_GET['torrentid']) || !is_numeric($_GET['torrentid']) || $app->user->cant(["admin" => "readSnatchLists"])) {
     error(404);
 }
 $TorrentID = $_GET['torrentid'];
@@ -48,7 +48,7 @@ list($NumResults) = $app->dbOld->next_record();
 <?php
 $i = 0;
 
-foreach ($Results as $ID=>$Data) {
+foreach ($Results as $ID => $Data) {
     list($SnatcherID, $Timestamp) = array_values($Data);
 
     if ($i % 2 == 0 && $i > 0) {

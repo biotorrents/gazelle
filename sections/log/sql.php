@@ -29,7 +29,7 @@ if ($Search) {
     $SQL .= "%' ";
 }
 
-if (!check_perms('site_view_full_log')) {
+if ($app->user->cant(["admin" => "readSiteLog"])) {
     if ($Search) {
         $SQL .= ' AND ';
     } else {
