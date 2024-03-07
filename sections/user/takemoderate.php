@@ -334,7 +334,7 @@ if ($Title != db_string($Cur['Title']) && $app->user->can(["userProfiles" => "up
     }
 }
 
-if ($Donor != $Cur['Donor'] && check_perms('users_give_donor')) {
+if ($Donor != $Cur['Donor'] && $app->user->can(["userAccounts" => "updateAny"])) {
     $UpdateSet[] = "Donor = '$Donor'";
     $EditSummary[] = 'donor status changed';
     $LightUpdates['Donor'] = $Donor;
@@ -386,7 +386,7 @@ if (count($AddedClasses) > 0) {
     $DeleteKeys = true;
 }
 
-if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
+if ($Visible != $Cur['Visible'] && $app->user->can(["userAccounts" => "updateAny"])) {
     $UpdateSet[] = "Visible = '$Visible'";
     $EditSummary[] = 'visibility changed';
     $LightUpdates['Visible'] = $Visible;
@@ -394,32 +394,32 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
 }
 
 if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["userAccounts" => "updateAny"])
-  || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+  || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from " . Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
 if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["userAccounts" => "updateAny"])
-  || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+  || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from " . Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["userAccounts" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["userAccounts" => "updateAny"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from " . $Cur['BonusPoints'] . " to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["userAccounts" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["userAccounts" => "updateAny"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from " . $Cur['FLTokens'] . " to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
 }
 
-if ($Invites != $Cur['Invites'] && check_perms('users_edit_invites')) {
+if ($Invites != $Cur['Invites'] && $app->user->can(["userAccounts" => "updateAny"])) {
     $UpdateSet[] = "invites = '$Invites'";
     $EditSummary[] = "number of invites changed to $Invites";
     $HeavyUpdates['Invites'] = $Invites;

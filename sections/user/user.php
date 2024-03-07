@@ -465,7 +465,7 @@ if ($app->user->can(["admin" => "sensitiveUserData"], $Class) || $isOwnProfile) 
             class="brackets">View</a></li>
         <?php
 }
-if (check_perms('users_view_invites')) {
+if ($app->user->can(["admin" => "sensitiveUserData"])) {
     if (!$InviterID) {
         $Invited = '<span style="font-style: italic;">Nobody</span>';
     } else {
@@ -764,7 +764,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) {
     user_dupes_table($userId);
 }
 
-if ((check_perms('users_view_invites')) && $Invited > 0) {
+if (($app->user->can(["admin" => "sensitiveUserData"])) && $Invited > 0) {
     include(serverRoot . '/classes/invite_tree.class.php');
     $Tree = new INVITE_TREE($userId, array('visible' => false)); ?>
     <div class="box" id="invitetree_box">
@@ -945,7 +945,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <?php
     }
 
-    if (check_perms('users_give_donor')) {
+    if ($app->user->can(["userAccounts" => "updateAny"])) {
         ?>
       <tr>
         <td class="label">Donor:</td>
@@ -981,7 +981,7 @@ if (check_perms('users_mod', $Class)) { ?>
         </td>
       </tr>
       <?php }
-    if (check_perms('users_make_invisible')) {
+    if ($app->user->can(["userAccounts" => "updateAny"])) {
         ?>
       <tr>
         <td class="label">Visible in peer lists:</td>
@@ -992,7 +992,7 @@ if (check_perms('users_mod', $Class)) { ?>
       <?php
     }
 
-    if (check_perms('users_edit_ratio', $Class) || (check_perms('users_edit_own_ratio') && $userId == $user['ID'])) {
+    if (check_perms('users_edit_ratio', $Class) || ($app->user->can(["admin" => "updateRatios"]) && $userId == $user['ID'])) {
         ?>
       <tr>
         <td class="label tooltip" title="Upload amount in bytes. Also accepts e.g. +20GB or -35.6364MB on the end.">
@@ -1072,7 +1072,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if (check_perms('users_edit_invites')) {
+    if ($app->user->can(["userAccounts" => "updateAny"])) {
         ?>
       <tr>
         <td class="label tooltip" title="Number of invites">Invites:</td>

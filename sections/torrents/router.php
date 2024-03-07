@@ -203,7 +203,7 @@ if (!empty($_REQUEST['action'])) {
             break;
 
         case 'fix_group':
-            if (($app->user->can(["admin" => "moderateUsers"]) || check_perms('torrents_fix_ghosts'))
+            if (($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "updateAny"]))
               && !empty($_GET['groupid'])
               && is_numeric($_GET['groupid'])
             ) {

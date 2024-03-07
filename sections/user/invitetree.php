@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-if (isset($_GET['userid']) && check_perms('users_view_invites')) {
+if (isset($_GET['userid']) && $app->user->can(["admin" => "sensitiveUserData"])) {
     if (!is_numeric($_GET['userid'])) {
         error(403);
     }

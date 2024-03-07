@@ -62,7 +62,7 @@ exit;
 
 
 
-if (isset($_GET['userid']) && check_perms('users_view_invites')) {
+if (isset($_GET['userid']) && $app->user->can(["admin" => "sensitiveUserData"])) {
     if (!is_numeric($_GET['userid'])) {
         error(403);
     }
@@ -226,7 +226,7 @@ if (!$Sneaky
           <input type="submit" value="Invite">
         </div>
       </div>
-      <?php if (check_perms('users_invite_notes')) { ?>
+      <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
       <div>
         <div class="label"><strong>Staff Note</strong></div>
         <div class="input">

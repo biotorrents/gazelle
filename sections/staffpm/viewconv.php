@@ -264,12 +264,12 @@ if ($ConvID = (int) $_GET['id']) {
             onclick="location.href='staffpm.php?action=unresolve&amp;id=<?=$ConvID?>';">
           <?php
           }
-    if (check_perms('users_give_donor')) { ?>
+    if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
           <br>
           <input type="button" value="Make Donor" data-toggle-target="#make_donor_form">
           <?php } ?>
         </form>
-        <?php if (check_perms('users_give_donor')) { ?>
+        <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
         <div id="make_donor_form" class="hidden">
           <form action="staffpm.php" method="post">
             <input type="hidden" name="action" value="make_donor">

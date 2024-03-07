@@ -50,7 +50,7 @@ $Username = $app->user->core['username'];
 $SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
-$InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
+$InviteReason = $app->user->can(["userAccounts" => "updateAny"]) ? db_string($_POST['reason']) : '';
 
 //MultiInvite
 if (strpos($Email, '|') !== false && $app->user->can(["admin" => "unlimitedInvites"])) {
