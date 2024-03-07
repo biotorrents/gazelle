@@ -179,7 +179,7 @@ if (!check_perms('users_mod', $Cur['Class'])) {
 }
 
 // If we're deleting the user, we can ignore all the other crap
-if ($_POST['UserStatus'] === 'delete' && $app->user->can(["users" => "deleteAny"])) {
+if ($_POST['UserStatus'] === 'delete' && $app->user->can(["userAccounts" => "deleteAny"])) {
     Misc::write_log("User account $UserID (" . $Cur['Username'] . ") was deleted by " . $app->user->core['username']);
 
     $app->dbOld->query("
@@ -249,7 +249,7 @@ if ($_POST['ResetDownloadList'] && $app->user->can(["admin" => "sensitiveUserDat
     $EditSummary[] = 'Download list cleared';
 }
 
-if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["users" => "updateAny"])) {
+if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["userAccounts" => "updateAny"])) {
     $app->cache->delete("user_info_$UserID");
     $app->cache->delete("user_info_heavy_$UserID");
     $app->cache->delete("user_stats_$UserID");
@@ -393,27 +393,27 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
     $TrackerUserUpdates['visible'] = $Visible;
 }
 
-if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["users" => "updateAny"])
+if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["userAccounts" => "updateAny"])
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from " . Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["users" => "updateAny"])
+if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["userAccounts" => "updateAny"])
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from " . Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["users" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["userAccounts" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from " . $Cur['BonusPoints'] . " to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["users" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["userAccounts" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from " . $Cur['FLTokens'] . " to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
@@ -724,7 +724,7 @@ if ($SendHackedMail && $app->user->can(["admin" => "banUsers"])) {
     $app->email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
-if ($MergeStatsFrom && $app->user->can(["users" => "updateAny"])) {
+if ($MergeStatsFrom && $app->user->can(["userAccounts" => "updateAny"])) {
     $app->dbOld->query("
       SELECT ID, Uploaded, Downloaded
       FROM users_main

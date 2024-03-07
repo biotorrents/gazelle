@@ -4,7 +4,7 @@
 $app = \Gazelle\App::go();
 
 //todo: restrict to viewing below class, username in h2
-if (isset($_GET['userid']) && $app->user->can(["admin" => "sensitiveUserData"]) && $app->user->can(["users" => "updateAny"])) {
+if (isset($_GET['userid']) && $app->user->can(["admin" => "sensitiveUserData"]) && $app->user->can(["userAccounts" => "updateAny"])) {
     if (!is_numeric($_GET['userid'])) {
         error(404);
     }

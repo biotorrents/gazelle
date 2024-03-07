@@ -955,7 +955,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
     }
-    if ($app->user->can(["users" => "updateAny"]) || $app->user->can(["users" => "updateAny"])) { ?>
+    if ($app->user->can(["userAccounts" => "updateAny"]) || $app->user->can(["userAccounts" => "updateAny"])) { ?>
       <tr>
         <td class="label">Secondary classes:</td>
         <td>
@@ -1328,7 +1328,7 @@ if (!$DisablePoints) {
               selected="selected"
               <?php } ?>>Disabled
             </option>
-            <?php if ($app->user->can(["users" => "deleteAny"])) { ?>
+            <?php if ($app->user->can(["userAccounts" => "deleteAny"])) { ?>
             <optgroup label="-- WARNING --">
               <option value="delete">Delete account</option>
             </optgroup>
@@ -1360,7 +1360,7 @@ if (!$DisablePoints) {
       <?php
     } ?>
     </table>
-    <?php if ($app->user->can(["users" => "updateAny"])) { ?>
+    <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
     <table class="box skeletonFix" id="session_box">
       <tr class="colhead">
         <td colspan="2">
