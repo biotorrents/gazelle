@@ -443,8 +443,8 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </div>
     <?php
     }
-    if (check_perms('forums_polls_moderate')) {
-        #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
+    if ($app->user->can(["polls" => "updateAny"])) {
+        #if ($app->user->can(["polls" => "updateAny"]) && !$RevealVoters) {
         if (!$Featured) {
             ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
@@ -528,7 +528,7 @@ foreach ($Thread as $Key => $Post) {
           class="brackets">Edit</a>
         <?php
         }
-    if (check_perms('site_admin_forums') && $ThreadInfo['Posts'] > 1) { ?>
+    if ($app->user->can(["admin" => "moderateForums"]) && $ThreadInfo['Posts'] > 1) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>
@@ -592,7 +592,7 @@ foreach ($Thread as $Key => $Post) {
         <br>
         <br>
         <div class="last_edited">
-          <?php if (check_perms('site_admin_forums')) { ?>
+          <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
           <a href="#content<?=$PostID?>"
             onclick="LoadEdit('forums', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
@@ -752,7 +752,7 @@ if ($app->user->can(["admin" => "moderateForums"])) {
         </select>
       </td>
     </tr>
-    <?php if (check_perms('site_admin_forums')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
     <tr>
       <td class="label"><label for="delete_thread_checkbox">Delete</label></td>
       <td>

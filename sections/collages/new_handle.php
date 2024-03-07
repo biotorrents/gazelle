@@ -43,7 +43,7 @@ if (!$Err && $P['category'] === '0') {
       AND CategoryID = '0'
       AND Deleted = '0'");
     list($CollageCount) = $app->dbOld->next_record();
-    if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
+    if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || $app->user->cant(["collages" => "create"])) {
         $Err = 'You may not create a personal collage.';
     } elseif ($app->user->can(["collages" => "updateOwn"]) && !stristr($P['name'], $app->user->core['username'])) {
         $Err = "Your personal collage's title must include your username.";

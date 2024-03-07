@@ -106,7 +106,7 @@ class CommentsView
         <br>
         <br>
         <div class="last_edited">
-          <?php if (check_perms('site_admin_forums')) { ?>
+          <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
           <a href="#content<?=$PostID?>"
             onclick="LoadEdit('<?=substr($Link, 0, strcspn($Link, '.'))?>', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>

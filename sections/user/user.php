@@ -168,7 +168,7 @@ if ($app->dbOld->has_results()) {
 
 // Image proxy CTs
 $DisplayCustomTitle = $CustomTitle;
-if (check_perms('site_proxy_images') && !empty($CustomTitle)) {
+if ($app->user->can(["admin" => "proxyImages"]) && !empty($CustomTitle)) {
     $DisplayCustomTitle = preg_replace_callback(
         '~src=("?)(http.+?)(["\s>])~',
         function ($Matches) {
@@ -894,7 +894,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
       }
-    if (check_perms('users_edit_titles')) {
+    if ($app->user->can(["userProfiles" => "updateAny"])) {
         ?>
       <tr>
         <td class="label">Custom title:</td>
@@ -955,7 +955,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
     }
-    if (check_perms('users_promote_below') || check_perms('users_promote_to')) { ?>
+    if ($app->user->can(["users" => "updateAny"]) || $app->user->can(["users" => "updateAny"])) { ?>
       <tr>
         <td class="label">Secondary classes:</td>
         <td>
@@ -1093,7 +1093,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if (check_perms('users_edit_reset_keys')) {
+    if ($app->user->can(["admin" => "sensitiveUserData"])) {
         ?>
       <tr>
         <td class="label">Reset:</td>
@@ -1112,7 +1112,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if (check_perms('users_edit_password')) {
+    if ($app->user->can(["admin" => "sensitiveUserData"])) {
         ?>
       <tr>
         <td class="label">New password:</td>
@@ -1213,7 +1213,7 @@ if (!$DisablePoints) {
       </tr>
       <?php } ?>
     </table>
-    <?php if (check_perms('users_disable_any')) { ?>
+    <?php if ($app->user->can(["admin" => "banUsers"])) { ?>
     <table class="box skeletonFix" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
@@ -1246,7 +1246,7 @@ if (!$DisablePoints) {
           User Privileges
         </td>
       </tr>
-      <?php if (check_perms('users_disable_posts') || check_perms('users_disable_any')) {
+      <?php if ($app->user->can(["admin" => "banUsers"]) || $app->user->can(["admin" => "banUsers"])) {
           ?>
       <tr>
         <td class="label">Disable:</td>
@@ -1254,7 +1254,7 @@ if (!$DisablePoints) {
           <input type="checkbox" name="DisablePosting" id="DisablePosting" <?php if ($DisablePosting == 1) { ?>
           checked="checked"
           <?php } ?> /> <label for="DisablePosting">Posting</label>
-          <?php if (check_perms('users_disable_any')) { ?>
+          <?php if ($app->user->can(["admin" => "banUsers"])) { ?>
           |
           <input type="checkbox" name="DisableAvatar" id="DisableAvatar" <?php if ($DisableAvatar == 1) { ?>
           checked="checked"
@@ -1310,7 +1310,7 @@ if (!$DisablePoints) {
           }
       }
 
-    if (check_perms('users_disable_any')) {
+    if ($app->user->can(["admin" => "banUsers"])) {
         ?>
       <tr>
         <td class="label">Account:</td>
@@ -1328,7 +1328,7 @@ if (!$DisablePoints) {
               selected="selected"
               <?php } ?>>Disabled
             </option>
-            <?php if (check_perms('users_delete_users')) { ?>
+            <?php if ($app->user->can(["users" => "deleteAny"])) { ?>
             <optgroup label="-- WARNING --">
               <option value="delete">Delete account</option>
             </optgroup>
@@ -1360,7 +1360,7 @@ if (!$DisablePoints) {
       <?php
     } ?>
     </table>
-    <?php if (check_perms('users_logout')) { ?>
+    <?php if ($app->user->can(["users" => "updateAny"])) { ?>
     <table class="box skeletonFix" id="session_box">
       <tr class="colhead">
         <td colspan="2">

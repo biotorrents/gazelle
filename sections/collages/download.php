@@ -38,10 +38,6 @@ if (
     error(0);
 }
 
-if (!check_perms('zip_downloader')) {
-    error(403);
-}
-
 $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 
 $CollageID = $_REQUEST['collageId'];

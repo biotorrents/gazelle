@@ -80,7 +80,7 @@ if ($MinClassWrite > $app->user->extra['Class']) {
 
 // If we're deleting a thread
 if (isset($_POST['delete'])) {
-    if (!check_perms('site_admin_forums')) {
+    if ($app->user->cant(["admin" => "moderateForums"])) {
         error(403);
     }
 

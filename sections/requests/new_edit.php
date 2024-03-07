@@ -51,7 +51,7 @@ if (!$NewRequest) {
         $CategoryName = $Categories[$CategoryID - 1];
 
         $ProjectCanEdit = (!$IsFilled && $CategoryID === '0');
-        $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || check_perms('site_moderate_requests'));
+        $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
 
         if (!$CanEdit) {
             error(403);
@@ -328,7 +328,7 @@ View::textarea(
         </tr>
 
         <!-- Existing torrent groups -->
-        <?php if (check_perms('site_moderate_requests')) { ?>
+        <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
         <tr>
           <td class="label">
             Torrent Group

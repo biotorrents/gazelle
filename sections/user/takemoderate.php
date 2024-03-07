@@ -179,7 +179,7 @@ if (!check_perms('users_mod', $Cur['Class'])) {
 }
 
 // If we're deleting the user, we can ignore all the other crap
-if ($_POST['UserStatus'] === 'delete' && check_perms('users_delete_users')) {
+if ($_POST['UserStatus'] === 'delete' && $app->user->can(["users" => "deleteAny"])) {
     Misc::write_log("User account $UserID (" . $Cur['Username'] . ") was deleted by " . $app->user->core['username']);
 
     $app->dbOld->query("
@@ -226,7 +226,7 @@ if ($LockType == '---' || $LockedAccount == 0) {
 $app->cache->delete("user_info_" . $UserID);
 $app->dbOld->set_query_id($QueryID);
 
-if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
+if ($_POST['ResetRatioWatch'] && $app->user->can(["admin" => "sensitiveUserData"])) {
     $app->dbOld->query("
       UPDATE users_info
       SET RatioWatchEnds = NULL, RatioWatchDownload = '0', RatioWatchTimes = '0'
@@ -234,7 +234,7 @@ if ($_POST['ResetRatioWatch'] && check_perms('users_edit_reset_keys')) {
     $EditSummary[] = 'RatioWatch history reset';
 }
 
-if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
+if ($_POST['ResetSnatchList'] && $app->user->can(["admin" => "sensitiveUserData"])) {
     $app->dbOld->query("
       DELETE FROM xbt_snatched
       WHERE uid = '$UserID'");
@@ -242,14 +242,14 @@ if ($_POST['ResetSnatchList'] && check_perms('users_edit_reset_keys')) {
     $app->cache->delete("recent_snatches_$UserID");
 }
 
-if ($_POST['ResetDownloadList'] && check_perms('users_edit_reset_keys')) {
+if ($_POST['ResetDownloadList'] && $app->user->can(["admin" => "sensitiveUserData"])) {
     $app->dbOld->query("
       DELETE FROM users_downloads
       WHERE UserID = '$UserID'");
     $EditSummary[] = 'Download list cleared';
 }
 
-if (($_POST['ResetSession'] || $_POST['LogOut']) && check_perms('users_logout')) {
+if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["users" => "updateAny"])) {
     $app->cache->delete("user_info_$UserID");
     $app->cache->delete("user_info_heavy_$UserID");
     $app->cache->delete("user_stats_$UserID");
@@ -321,7 +321,7 @@ if ($Username != $Cur['Username'] && check_perms('users_edit_usernames', $Cur['C
     }
 }
 
-if ($Title != db_string($Cur['Title']) && check_perms('users_edit_titles')) {
+if ($Title != db_string($Cur['Title']) && $app->user->can(["userProfiles" => "updateAny"])) {
     // Using the unescaped value for the test to avoid confusion
     if (strlen($_POST['Title']) > 1024) {
         error("Custom titles have a maximum length of 1,024 characters.");
@@ -393,27 +393,27 @@ if ($Visible != $Cur['Visible'] && check_perms('users_make_invisible')) {
     $TrackerUserUpdates['visible'] = $Visible;
 }
 
-if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && (check_perms('users_edit_ratio')
+if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["users" => "updateAny"])
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from " . Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && (check_perms('users_edit_ratio')
+if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["users" => "updateAny"])
   || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from " . Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["users" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from " . $Cur['BonusPoints'] . " to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && (check_perms('users_edit_ratio') || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
+if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["users" => "updateAny"]) || (check_perms('users_edit_own_ratio') && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from " . $Cur['FLTokens'] . " to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
@@ -532,7 +532,7 @@ if ($PermittedForums != db_string($Cur['PermittedForums']) && $app->user->can(["
     $DeleteKeys = true;
 }
 
-if ($DisableAvatar != $Cur['DisableAvatar'] && check_perms('users_disable_any')) {
+if ($DisableAvatar != $Cur['DisableAvatar'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableAvatar = '$DisableAvatar'";
     $EditSummary[] = 'avatar privileges ' . ($DisableAvatar ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableAvatar'] = $DisableAvatar;
@@ -542,7 +542,7 @@ if ($DisableAvatar != $Cur['DisableAvatar'] && check_perms('users_disable_any'))
     }
 }
 
-if ($DisableLeech != $Cur['can_leech'] && check_perms('users_disable_any')) {
+if ($DisableLeech != $Cur['can_leech'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "can_leech = '$DisableLeech'";
     $EditSummary[] = "leeching status changed (" . translateLeechStatus($Cur['can_leech']) . " -> " . translateLeechStatus($DisableLeech) . ")";
     $HeavyUpdates['DisableLeech'] = $DisableLeech;
@@ -554,7 +554,7 @@ if ($DisableLeech != $Cur['can_leech'] && check_perms('users_disable_any')) {
     $TrackerUserUpdates['can_leech'] = $DisableLeech;
 }
 
-if ($DisableInvites != $Cur['DisableInvites'] && check_perms('users_disable_any')) {
+if ($DisableInvites != $Cur['DisableInvites'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableInvites = '$DisableInvites'";
     if ($DisableInvites == 1) {
         //$UpdateSet[] = "Invites = '0'";
@@ -567,7 +567,7 @@ if ($DisableInvites != $Cur['DisableInvites'] && check_perms('users_disable_any'
     $HeavyUpdates['DisableInvites'] = $DisableInvites;
 }
 
-if ($DisablePosting != $Cur['DisablePosting'] && check_perms('users_disable_posts')) {
+if ($DisablePosting != $Cur['DisablePosting'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisablePosting = '$DisablePosting'";
     $EditSummary[] = 'posting privileges ' . ($DisablePosting ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePosting'] = $DisablePosting;
@@ -577,7 +577,7 @@ if ($DisablePosting != $Cur['DisablePosting'] && check_perms('users_disable_post
     }
 }
 
-if ($DisableForums != $Cur['DisableForums'] && check_perms('users_disable_posts')) {
+if ($DisableForums != $Cur['DisableForums'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableForums = '$DisableForums'";
     $EditSummary[] = 'forums privileges ' . ($DisableForums ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableForums'] = $DisableForums;
@@ -587,7 +587,7 @@ if ($DisableForums != $Cur['DisableForums'] && check_perms('users_disable_posts'
     }
 }
 
-if ($DisableTagging != $Cur['DisableTagging'] && check_perms('users_disable_any')) {
+if ($DisableTagging != $Cur['DisableTagging'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableTagging = '$DisableTagging'";
     $EditSummary[] = 'tagging privileges ' . ($DisableTagging ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableTagging'] = $DisableTagging;
@@ -597,7 +597,7 @@ if ($DisableTagging != $Cur['DisableTagging'] && check_perms('users_disable_any'
     }
 }
 
-if ($DisableUpload != $Cur['DisableUpload'] && check_perms('users_disable_any')) {
+if ($DisableUpload != $Cur['DisableUpload'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableUpload = '$DisableUpload'";
     $EditSummary[] = 'upload privileges ' . ($DisableUpload ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableUpload'] = $DisableUpload;
@@ -607,7 +607,7 @@ if ($DisableUpload != $Cur['DisableUpload'] && check_perms('users_disable_any'))
     }
 }
 
-if ($DisableWiki != $Cur['DisableWiki'] && check_perms('users_disable_any')) {
+if ($DisableWiki != $Cur['DisableWiki'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableWiki = '$DisableWiki'";
     $EditSummary[] = 'wiki privileges ' . ($DisableWiki ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableWiki'] = $DisableWiki;
@@ -618,7 +618,7 @@ if ($DisableWiki != $Cur['DisableWiki'] && check_perms('users_disable_any')) {
     }
 }
 
-if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
+if ($DisablePM != $Cur['DisablePM'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisablePM = '$DisablePM'";
     $EditSummary[] = 'PM privileges ' . ($DisablePM ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePM'] = $DisablePM;
@@ -628,7 +628,7 @@ if ($DisablePM != $Cur['DisablePM'] && check_perms('users_disable_any')) {
     }
 }
 
-if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any')) {
+if ($DisablePoints != $Cur['DisablePoints'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisablePoints = '$DisablePoints'";
     $EditSummary[] = bonusPoints . ' earning ' . ($DisablePoints ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePoints'] = $DisablePoints;
@@ -638,7 +638,7 @@ if ($DisablePoints != $Cur['DisablePoints'] && check_perms('users_disable_any'))
     }
 }
 
-if ($DisablePromotion != $Cur['DisablePromotion'] && check_perms('users_disable_any')) {
+if ($DisablePromotion != $Cur['DisablePromotion'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisablePromotion = '$DisablePromotion'";
     $EditSummary[] = 'Class purchasing ' . ($DisablePromotion ? 'disabled' : 'enabled');
     $HeavyUpdates['DisablePromotion'] = $DisablePromotion;
@@ -648,7 +648,7 @@ if ($DisablePromotion != $Cur['DisablePromotion'] && check_perms('users_disable_
     }
 }
 
-if ($DisableIRC != $Cur['DisableIRC'] && check_perms('users_disable_any')) {
+if ($DisableIRC != $Cur['DisableIRC'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableIRC = '$DisableIRC'";
     $EditSummary[] = 'IRC privileges ' . ($DisableIRC ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableIRC'] = $DisableIRC;
@@ -658,7 +658,7 @@ if ($DisableIRC != $Cur['DisableIRC'] && check_perms('users_disable_any')) {
     }
 }
 
-if ($DisableRequests != $Cur['DisableRequests'] && check_perms('users_disable_any')) {
+if ($DisableRequests != $Cur['DisableRequests'] && $app->user->can(["admin" => "banUsers"])) {
     $UpdateSet[] = "DisableRequests = '$DisableRequests'";
     $EditSummary[] = 'request privileges ' . ($DisableRequests ? 'disabled' : 'enabled');
     $HeavyUpdates['DisableRequests'] = $DisableRequests;
@@ -668,7 +668,7 @@ if ($DisableRequests != $Cur['DisableRequests'] && check_perms('users_disable_an
     }
 }
 
-if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
+if ($EnableUser != $Cur['Enabled'] && $app->user->can(["admin" => "banUsers"])) {
     $EnableStr = 'account ' . translateUserStatus($Cur['Enabled']) . '->' . translateUserStatus($EnableUser);
     if ($EnableUser == '2') {
         Tools::disable_users($UserID, '', 1);
@@ -701,7 +701,7 @@ if ($EnableUser != $Cur['Enabled'] && check_perms('users_disable_users')) {
     $app->cache->set("enabled_$UserID", $EnableUser, 0);
 }
 
-if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
+if ($ResetPasskey == 1 && $app->user->can(["admin" => "sensitiveUserData"])) {
     $Passkey = db_string(Gazelle\Text::random());
     $UpdateSet[] = "torrent_pass = '$Passkey'";
     $EditSummary[] = 'passkey reset';
@@ -712,19 +712,19 @@ if ($ResetPasskey == 1 && check_perms('users_edit_reset_keys')) {
     Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 
-if ($ResetAuthkey == 1 && check_perms('users_edit_reset_keys')) {
+if ($ResetAuthkey == 1 && $app->user->can(["admin" => "sensitiveUserData"])) {
     $Authkey = db_string(Gazelle\Text::random());
     $UpdateSet[] = "AuthKey = '$Authkey'";
     $EditSummary[] = 'authkey reset';
     $HeavyUpdates['AuthKey'] = $Authkey;
 }
 
-if ($SendHackedMail && check_perms('users_disable_any')) {
+if ($SendHackedMail && $app->user->can(["admin" => "banUsers"])) {
     $EditSummary[] = "hacked account email sent to $HackedEmail";
     $app->email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
-if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
+if ($MergeStatsFrom && $app->user->can(["users" => "updateAny"])) {
     $app->dbOld->query("
       SELECT ID, Uploaded, Downloaded
       FROM users_main
@@ -749,7 +749,7 @@ if ($MergeStatsFrom && check_perms('users_edit_ratio')) {
     }
 }
 
-if ($Pass && check_perms('users_edit_password')) {
+if ($Pass && $app->user->can(["admin" => "sensitiveUserData"])) {
     $UpdateSet[] = "PassHash = '" . db_string(Auth::makeHash($Pass)) . "'";
     $EditSummary[] = 'password reset';
 
@@ -776,7 +776,7 @@ if ($Pass && check_perms('users_edit_password')) {
 
 if (empty($UpdateSet) && empty($EditSummary)) {
     if (!$Reason) {
-        if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && check_perms('users_disable_any')) {
+        if (str_replace("\r", '', $Cur['AdminComment']) != str_replace("\r", '', $AdminComment) && $app->user->can(["admin" => "banUsers"])) {
             $UpdateSet[] = "AdminComment = '$AdminComment'";
         } else {
             Gazelle\Http::redirect("user.php?id=$UserID");

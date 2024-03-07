@@ -159,7 +159,7 @@ $app->dbOld->query("
     AND CategoryID = '0'
     AND Deleted = '0'");
 list($CollageCount) = $app->dbOld->next_record();
-if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && $app->user->can(["collages" => "create"])) { ?>
               <option value="0" <?=(($Category === '0') ? ' selected="selected"' : '')?>>Personal
               </option>
               <?php
@@ -180,7 +180,7 @@ if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_p
               </li>
 
               <?php
-  if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && check_perms('site_collages_personal')) { ?>
+  if (($CollageCount < $app->user->extra['Permissions']['MaxCollages']) && $app->user->can(["collages" => "create"])) { ?>
               <li>
                 <strong>Personal</strong>
                 &ndash;

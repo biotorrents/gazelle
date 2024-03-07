@@ -609,7 +609,6 @@ if ($app->user->can(["creators" => "updateAny"])) {
  * keywords: Focus 2020, Download All This Page
  * https://dev.biotorrents.de/forums.php?action=viewthread&threadid=9
  *
-if (check_perms('zip_downloader')) {
   if (isset($app->user->extra['Collector'])) {
       list($ZIPList, $ZIPPrefs) = $app->user->extra['Collector'];
       $ZIPList = explode(':', $ZIPList);
@@ -684,7 +683,6 @@ $OpenGroup = false;
     </div>
   </div>
   <?php
-} // If (check_perms('zip_downloader'))
 
 END THE COLLECTOR
 */

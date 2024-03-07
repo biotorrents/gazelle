@@ -623,7 +623,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
   }
-  if (check_perms('users_edit_titles')) {
+  if ($app->user->can(["userProfiles" => "updateAny"])) {
       ?>
       <tr>
         <td class="label">Custom title:</td>
@@ -684,7 +684,7 @@ if (check_perms('users_mod', $Class)) { ?>
       </tr>
       <?php
   }
-  if (check_perms('users_promote_below') || check_perms('users_promote_to')) { ?>
+  if ($app->user->can(["users" => "updateAny"]) || $app->user->can(["users" => "updateAny"])) { ?>
       <tr>
         <td class="label">Secondary classes:</td>
         <td>
@@ -822,7 +822,7 @@ if (!$DisablePoints) {
       <?php
   }
 
-  if (check_perms('users_edit_reset_keys')) {
+  if ($app->user->can(["admin" => "sensitiveUserData"])) {
       ?>
       <tr>
         <td class="label">Reset:</td>
@@ -905,7 +905,7 @@ if (!$DisablePoints) {
       </tr>
       <?php } ?>
     </table>
-    <?php if (check_perms('users_disable_any')) { ?>
+    <?php if ($app->user->can(["admin" => "banUsers"])) { ?>
     <table class="box skeletonFix" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
@@ -933,7 +933,7 @@ if (!$DisablePoints) {
     </table>
     <?php }  ?>
 
-  if (check_perms('users_disable_any')) {
+  if ($app->user->can(["admin" => "banUsers"])) {
       ?>
       <tr>
         <td class="label">Account:</td>
@@ -951,7 +951,7 @@ if (!$DisablePoints) {
               selected="selected"
               <?php } ?>>Disabled
             </option>
-            <?php if (check_perms('users_delete_users')) { ?>
+            <?php if ($app->user->can(["users" => "deleteAny"])) { ?>
             <optgroup label="-- WARNING --">
               <option value="delete">Delete account</option>
             </optgroup>

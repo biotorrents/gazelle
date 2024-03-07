@@ -25,7 +25,7 @@ $Message = $_POST['message'];
 //--------------- Validate data in edit form -----------------------------------//
 
 // FIXME: Still need a better perm name
-if (!check_perms('site_moderate_requests')) {
+if ($app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 

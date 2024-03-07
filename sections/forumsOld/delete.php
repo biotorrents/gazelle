@@ -10,7 +10,7 @@ if (!isset($_GET['postid']) || !is_numeric($_GET['postid'])) {
 $PostID = $_GET['postid'];
 
 // Make sure they are moderators
-if (!check_perms('site_admin_forums')) {
+if ($app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 

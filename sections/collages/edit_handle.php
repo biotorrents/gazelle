@@ -65,7 +65,7 @@ if ($app->user->cant(["collages" => "updateAny"])
 if (isset($_POST['featured'])
 && $CategoryID === 0
 && (($app->user->core['id'] === $UserID
-&& check_perms('site_collages_personal'))
+&& $app->user->can(["collages" => "create"]))
 || $app->user->can(["collages" => "updateAny"]))) {
     $app->dbOld->query("
     UPDATE collages

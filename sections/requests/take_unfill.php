@@ -34,7 +34,7 @@ if (!$UploaderID) {
     $UploaderID = $FillerID;
 }
 
-if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $FillerID) && !check_perms('site_moderate_requests')) || $FillerID === '0') {
+if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $FillerID) && $app->user->cant(["requests" => "updateAny"])) || $FillerID === '0') {
     error(403);
 }
 

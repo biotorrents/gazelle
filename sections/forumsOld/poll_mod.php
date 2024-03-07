@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 
 
-if (!check_perms('forums_polls_moderate')) {
+if ($app->user->cant(["polls" => "updateAny"])) {
     error(403, true);
 }
 if (!isset($_POST['topicid']) || !is_numeric($_POST['topicid'])) {

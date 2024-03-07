@@ -533,7 +533,7 @@ class TorrentFunctions
             <?php }
             } ?>
         </blockquote>
-        <?php if (check_perms('site_moderate_requests')) { ?>
+        <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
         <div class="linkbox">
             <a href="torrents.php?action=masspm&amp;id=<?=($GroupID)?>&amp;torrentid=<?=($TorrentID)?>"
                 class="brackets">Mass PM snatchers</a>

@@ -89,7 +89,7 @@ if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "update
     error(403);
 }
 
-if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && !check_perms('edit_unknowns')) {
+if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && $app->user->cant(["torrents" => "updateAny"])) {
     // It's Unknown now, and it wasn't before
     if ($app->user->core['id'] != $UserID) {
         // Hax
@@ -102,7 +102,7 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
     //Unknown Edit!
-    if ($app->user->core['id'] == $UserID || check_perms('edit_unknowns')) {
+    if ($app->user->core['id'] == $UserID || $app->user->can(["torrents" => "updateAny"])) {
         //Fine!
     } else {
         $Err = "You may not edit someone else's upload to unknown release.";

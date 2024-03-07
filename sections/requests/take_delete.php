@@ -25,7 +25,7 @@ $app->dbOld->query("
   WHERE ID = $RequestID");
 list($UserID, $Title, $CategoryID, $GroupID) = $app->dbOld->next_record();
 
-if ($app->user->core['id'] != $UserID && !check_perms('site_moderate_requests')) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 

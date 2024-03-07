@@ -45,7 +45,7 @@ $RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (!$IsFilled && (($CategoryID == 0) || ($CategoryName == 'Music' && $Request['Year'] == 0)));
 $UserCanEdit = (!$IsFilled && $app->user->core['id'] == $Request['UserID'] && $VoteCount < 2);
-$CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
+$CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
 
 $JsonTopContributors = [];
 $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);

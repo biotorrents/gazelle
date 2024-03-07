@@ -39,7 +39,7 @@ if (!$Properties) {
 
 View::header('Edit torrent', 'upload');
 
-if (!check_perms('site_moderate_requests')) {
+if ($app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 ?>

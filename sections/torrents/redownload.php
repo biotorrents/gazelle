@@ -10,10 +10,6 @@ if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) {
     error(0);
 }
 
-if (!check_perms('zip_downloader')) {
-    error(403);
-}
-
 $User = User::user_info($UserID);
 
 /*

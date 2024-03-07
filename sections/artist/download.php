@@ -41,10 +41,6 @@ if (
     error(0);
 }
 
-if (!check_perms('zip_downloader')) {
-    error(403);
-}
-
 $Preferences = array('RemasterTitle DESC', 'Seeders ASC', 'Size ASC');
 
 $ArtistID = $_REQUEST['artistid'];
@@ -90,7 +86,7 @@ while (list($Downloads, $GroupIDs) = $Collector->get_downloads('GroupID')) {
     foreach ($TorrentIDs as $TorrentID) {
         $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
         $GroupID = $GroupIDs[$TorrentID];
-        $Download =& $Downloads[$GroupID];
+        $Download = & $Downloads[$GroupID];
         $Download['Artist'] = Artists::display_artists($Artists[$Download['GroupID']], false, true, false);
         if ($Download['Rank'] == 100) {
             $Collector->skip_file($Download);

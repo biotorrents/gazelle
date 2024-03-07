@@ -18,11 +18,11 @@ $app->dbOld->query("
 list($RequestorID, $FillerID) = $app->dbOld->next_record();
 
 if ($Action === 'unfill') {
-    if ($app->user->core['id'] !== $RequestorID && $app->user->core['id'] !== $FillerID && !check_perms('site_moderate_requests')) {
+    if ($app->user->core['id'] !== $RequestorID && $app->user->core['id'] !== $FillerID && $app->user->cant(["requests" => "updateAny"])) {
         error(403);
     }
 } elseif ($Action === 'delete') {
-    if ($app->user->core['id'] !== $RequestorID && !check_perms('site_moderate_requests')) {
+    if ($app->user->core['id'] !== $RequestorID && $app->user->cant(["requests" => "updateAny"])) {
         error(403);
     }
 }

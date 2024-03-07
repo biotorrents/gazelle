@@ -66,7 +66,7 @@ $RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Request['Year'] === '0')));
 $UserCanEdit = (!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2);
-$CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
+$CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
 
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
 list($NumComments, $Page, $Thread, $LastRead) = Comments::load('requests', $RequestID);
@@ -88,7 +88,7 @@ View::header(
       <a href="requests.php?action=edit&amp;id=<?=$RequestID?>"
         class="brackets">Edit</a>
       <?php }
-      if ($UserCanEdit || $app->user->can(["admin" => "moderateUsers"])) { //check_perms('site_moderate_requests')) {?>
+      if ($UserCanEdit || $app->user->can(["admin" => "moderateUsers"])) { //$app->user->can(["requests" => "updateAny"])) {?>
       <a href="requests.php?action=delete&amp;id=<?=$RequestID?>"
         class="brackets">Delete</a>
       <?php }
@@ -361,7 +361,7 @@ if ($IsFilled) {
               <strong><a
                   href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>">Yes</a></strong>,
               by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : User::format_username($Request['FillerID'], false, false, false))?>
-              <?php if ($app->user->core['id'] == $Request['UserID'] || $app->user->core['id'] == $Request['FillerID'] || check_perms('site_moderate_requests')) { ?>
+              <?php if ($app->user->core['id'] == $Request['UserID'] || $app->user->core['id'] == $Request['FillerID'] || $app->user->can(["requests" => "updateAny"])) { ?>
               <strong><a
                   href="requests.php?action=unfill&amp;id=<?=$RequestID?>"
                   class="brackets">Unfill</a></strong> Unfilling a request without a valid, nontrivial reason will
@@ -386,7 +386,7 @@ if ($IsFilled) {
                   <br>
                   <strong>Should be the permalink [PL] of the torrent</strong>
                 </div>
-                <?php if (check_perms('site_moderate_requests')) { ?>
+                <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
                 <div>
                   <strong>For User</strong> <input type="text" size="25" name="user" <?= (!empty($FillerUsername) ? " value='$FillerUsername'" : '') ?>
                   />

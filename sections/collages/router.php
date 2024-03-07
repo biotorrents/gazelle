@@ -85,7 +85,7 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'create_personal':
-        if (!check_perms('site_collages_personal')) {
+        if ($app->user->cant(["collages" => "create"])) {
             error(403);
         } else {
             Gazelle\Collages::createPersonal();

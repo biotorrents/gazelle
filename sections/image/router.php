@@ -18,7 +18,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 
-if (!check_perms('site_proxy_images')) {
+if ($app->user->cant(["admin" => "proxyImages"])) {
     img_error('forbidden');
 }
 
