@@ -30,7 +30,7 @@ function make_staff_row($ID, $Paranoia, $Class, $LastAccess, $Remark = '', $Hidd
           . \Gazelle\Text::parse($Remark) .
         "</td>
       </tr>\n"; // the "\n" is needed for pretty HTML
-  // the foreach loop that calls this function needs to know the new value of $Row
+    // the foreach loop that calls this function needs to know the new value of $Row
 }
 
 function get_fls()
@@ -96,7 +96,7 @@ function generate_staff_query($StaffLevel)
       JOIN permissions AS p ON p.ID = m.PermissionID
     WHERE p.DisplayStaff = '1'
     ORDER BY p.Level";
-    if (check_perms('users_mod')) {
+    if ($app->user->can(["admin" => "moderateUsers"])) {
         $SQL .= ', m.LastAccess ASC';
     } else {
         $SQL .= ', m.Username';
@@ -114,7 +114,7 @@ function get_forum_staff()
     }
 
     // sort the lists differently if the viewer is a staff member
-    if (!check_perms('users_mod')) {
+    if ($app->user->cant(["admin" => "moderateUsers"])) {
         if (($ForumStaff = $app->cache->get('forum_staff')) === false) {
             $app->dbOld->query(generate_staff_query('forum_staff'));
             $ForumStaff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(3, 'Paranoia'));
@@ -140,7 +140,7 @@ function get_staff()
     }
 
     // sort the lists differently if the viewer is a staff member
-    if (!check_perms('users_mod')) {
+    if ($app->user->cant(["admin" => "moderateUsers"])) {
         if (($Staff = $app->cache->get('staff')) === false) {
             $app->dbOld->query(generate_staff_query('staff'));
             $Staff = $app->dbOld->to_array(false, MYSQLI_BOTH, array(4, 'Paranoia'));

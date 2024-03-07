@@ -385,7 +385,7 @@ class TorrentFunctions
             }
 
             $CanEdit = ($app->user->can(["torrents" => "updateAny"]) || (($UserID == $user['ID'] && !$user['DisableWiki'])));
-            $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
+            $RegenLink = $app->user->can(["admin" => "moderateUsers"]) ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
 
             $FileTable = '
         <table class="filelist_table">
@@ -511,7 +511,7 @@ class TorrentFunctions
         <blockquote>
             Uploaded by <?php
   if ($Anonymous) {
-      if (check_perms('users_mod')) { ?>
+      if ($app->user->can(["admin" => "moderateUsers"])) { ?>
             <em class="tooltip"
                 title="<?=User::user_info($UserID)['Username']?>">Anonymous</em>
             <?php } else {

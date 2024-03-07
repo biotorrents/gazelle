@@ -657,7 +657,7 @@ foreach ($Secondaries as $Class) {
         </td>
       </tr>
       <tr>
-        <?php if (check_perms('users_mod')) { ?>
+        <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         <td class="label nobr">Staff notes:</td>
         <td>
           <input type="text" name="comment" size="20"

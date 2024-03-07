@@ -10,7 +10,7 @@ $ReceiverID = $_POST['receiverid'];
 if (!is_numeric($ConvID) || !is_numeric($ReceiverID)) {
     error(404);
 }
-if (!check_perms('users_mod') && !isset($StaffIDs[$ReceiverID])) {
+if ($app->user->cant(["admin" => "moderateUsers"]) && !isset($StaffIDs[$ReceiverID])) {
     error(403);
 }
 $app->dbOld->query("

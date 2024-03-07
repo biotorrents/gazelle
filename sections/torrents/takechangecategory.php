@@ -9,7 +9,7 @@ $app = Gazelle\App::go();
 ****************************************************************/
 
 
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     error(403);
 }
 

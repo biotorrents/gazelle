@@ -230,7 +230,7 @@ if (($Override = check_paranoia_here('downloaded'))) {
                   </li>
                   <?php
 }
-if ($isOwnProfile || ($Override = check_paranoia_here(false)) || check_perms('users_mod')) {
+if ($isOwnProfile || ($Override = check_paranoia_here(false)) || $app->user->can(["admin" => "moderateUsers"])) {
     ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$userId?>">Tokens</a>:
@@ -238,7 +238,7 @@ if ($isOwnProfile || ($Override = check_paranoia_here(false)) || check_perms('us
                     </li>
                     <?php
 }
-if (($isOwnProfile || check_perms('users_mod')) && $Warned) {
+if (($isOwnProfile || $app->user->can(["admin" => "moderateUsers"])) && $Warned) {
     ?>
                     <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Warning
                       expires in: <?=time_diff((date('Y-m-d H:i', strtotime($Warned))))?>
@@ -498,7 +498,7 @@ if (!isset($SupportFor)) {
     WHERE UserID = ' . $user['ID']);
     list($SupportFor) = $app->dbOld->next_record();
 }
-if ($Override = check_perms('users_mod') || $isOwnProfile || !empty($SupportFor)) {
+if ($Override = $app->user->can(["admin" => "moderateUsers"]) || $isOwnProfile || !empty($SupportFor)) {
     ?>
         <li<?=(($Override === 2 || $SupportFor) ? ' class="paranoia_override"' : '')?>>Clients:
           <?php
@@ -759,7 +759,7 @@ foreach ($Collages as $CollageInfo) {
     <?php
 
 // Linked accounts
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     include(serverRoot . '/sections/user/linkedfunctions.php');
     user_dupes_table($userId);
 }
@@ -1082,7 +1082,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if ($app->user->can(["admin" => "manageTechSupport"]) || (check_perms('users_mod') && $isOwnProfile)) {
+    if ($app->user->can(["admin" => "manageTechSupport"]) || ($app->user->can(["admin" => "moderateUsers"]) && $isOwnProfile)) {
         ?>
       <tr>
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff

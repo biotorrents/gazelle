@@ -526,7 +526,7 @@ $Index++;
           <ul class="stats nobullet">
             <li>
               <?=$Summary?>
-              <?=(check_perms('users_mod') ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
+              <?=($app->user->can(["admin" => "moderateUsers"]) ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
               <span class="remove remove_cover_art"><a href="#"
                   onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
                   class="brackets tooltip" title="Remove image">X</a></span>
@@ -711,7 +711,7 @@ foreach ($TorrentList as $Torrent) {
 
     $CanEdit = ($app->user->can(["torrentGroups" => "updateAny"]) || (($UserID == $user['ID'] && !$user['DisableWiki']) && !($Remastered && !$RemasterYear)));
 
-    $RegenLink = check_perms('users_mod') ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid='.$TorrentID.'" class="brackets">Regenerate</a>' : '';
+    $RegenLink = $app->user->can(["admin" => "moderateUsers"]) ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid='.$TorrentID.'" class="brackets">Regenerate</a>' : '';
     $FileTable = '
   <table class="filelist_table">
     <tr class="colhead_dark">
@@ -850,7 +850,7 @@ foreach ($TorrentList as $Torrent) {
               <blockquote>
                 Uploaded by <?php
   if ($Anonymous) {
-      if (check_perms('users_mod')) { ?>
+      if ($app->user->can(["admin" => "moderateUsers"])) { ?>
                 <em class="tooltip"
                   title="<?=User::user_info($UserID)['Username']?>">Anonymous</em>
                 <?php } else {
@@ -867,7 +867,7 @@ foreach ($TorrentList as $Torrent) {
                 <?php }
                 }
 
-    if (($Seeders === 0 && $LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) || check_perms('users_mod')) { ?>
+    if (($Seeders === 0 && $LastActive && time() - strtotime($LastActive) >= 345678 && time() - strtotime($LastReseedRequest) >= 864000) || $app->user->can(["admin" => "moderateUsers"])) { ?>
                 <br><a
                   href="torrents.php?action=reseed&amp;torrentid=<?=$TorrentID?>&amp;groupid=<?=$GroupID?>"
                   class="brackets">Request re-seed</a>
@@ -1177,7 +1177,7 @@ if (in_array($user['ID'], $app->dbOld->collect('UserID')) || $app->user->can(["t
                 */
 
                 /* todo: Bring this back
-                if (check_perms('users_mod')) {
+                if ($app->user->can(["admin" => "moderateUsers"])) {
                   ?><img class='tooltip lightbox-init' title='<?=User::format_username($Screenshot['UserID'], false, false, false)?> - <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>"><?php
                 } else {
                   ?><img class='tooltip lightbox-init' title='Added <?=time_diff($Screenshot['Time'])?>' lightbox-img="<?=$SSURL?>" src="<?=$ThumbURL?>"><?php

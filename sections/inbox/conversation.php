@@ -176,7 +176,7 @@ if (!empty($ReceiverIDs) && (empty($app->user->extra['DisablePM']) || array_inte
   FROM users_info
   WHERE UserID = " . $app->user->core['id']);
 list($FLS) = $app->dbOld->next_record();
-if ((check_perms('users_mod') || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->user->core['id'])) {
+if (($app->user->can(["admin" => "moderateUsers"]) || $FLS != '') && (!$ForwardedID || $ForwardedID == $app->user->core['id'])) {
     ?>
   <h3>Forward conversation</h3>
   <form class="send_form" name="forward" action="inbox.php" method="post">

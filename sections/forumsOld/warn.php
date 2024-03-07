@@ -56,7 +56,7 @@ View::header('Warn');
               <option value="1">1 week</option>
               <option value="2">2 weeks</option>
               <option value="4">4 weeks</option>
-              <?php if (check_perms('users_mod')) { ?>
+              <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
               <option value="8">8 weeks</option>
               <?php } ?>
             </select>

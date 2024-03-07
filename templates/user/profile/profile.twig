@@ -486,7 +486,7 @@ if (!isset($SupportFor)) {
     <?php
 
 // Linked accounts
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     include(serverRoot.'/sections/user/linkedfunctions.php');
     user_dupes_table($UserID);
 }
@@ -811,7 +811,7 @@ if (!$DisablePoints) {
       <?php
   }
 
-  if ($app->user->can(["admin" => "manageTechSupport"]) || (check_perms('users_mod') && $OwnProfile)) {
+  if ($app->user->can(["admin" => "manageTechSupport"]) || ($app->user->can(["admin" => "moderateUsers"]) && $OwnProfile)) {
       ?>
       <tr>
         <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff

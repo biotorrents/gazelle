@@ -193,7 +193,7 @@ if ($app->user->can(["admin" => "freeleechTorrents"])) {
     $SQL .= "FreeLeechType = $T[FreeLeechType],";
 }
 
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $app->dbOld->query("
       SELECT TorrentID
       FROM torrents_bad_tags

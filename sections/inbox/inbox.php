@@ -132,7 +132,7 @@ echo $Pages;
         <td><?=($Section === 'sentbox' ? 'Receiver' : 'Sender')?>
         </td>
         <td>Date</td>
-        <?php if (check_perms('users_mod')) { ?>
+        <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         <td>Forwarded to</td>
         <?php } ?>
       </tr>
@@ -170,7 +170,7 @@ echo $Pages;
         </td>
         <td><?=time_diff($Date)?>
         </td>
-        <?php if (check_perms('users_mod')) { ?>
+        <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         <td><?=(($ForwardedID && $ForwardedID != $app->user->core['id']) ? User::format_username($ForwardedID, false, false, false) : '')?>
         </td>
         <?php } ?>

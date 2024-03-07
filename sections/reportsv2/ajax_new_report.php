@@ -389,7 +389,7 @@ foreach ($TypeList as $Type => $Data) {
 } ?>
           </select>
           <span id="options<?=$ReportID?>">
-            <?php if (check_perms('users_mod')) { ?>
+            <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
             <span class="tooltip" title="Delete torrent?">
               <label
                 for="delete<?=$ReportID?>"><strong>Delete</strong></label>

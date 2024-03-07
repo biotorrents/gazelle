@@ -220,7 +220,7 @@ if (isset($_GET['groups']) && $_GET['groups'] === 'show') {
         <a href="/top10?<?=$FreeleechToggleQuery?>"
             class="brackets"><?=ucfirst($FreeleechToggleName)?>
             freeleech in Top 10</a>
-        <?php if (check_perms('users_mod')) { ?>
+        <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         <a href="/top10?<?=$GroupByToggleQuery?>"
             class="brackets"><?=ucfirst($GroupByToggleName)?>
             top groups</a>

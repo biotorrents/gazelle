@@ -54,7 +54,7 @@ function header_link($SortKey, $DefaultWay = 'desc')
     return "?action=notify&amp;order_way=$NewWay&amp;order_by=$SortKey&amp;" . \Gazelle\Format::get_url(array('page', 'order_way', 'order_by'));
 }
 //Perhaps this should be a feature at some point
-if (check_perms('users_mod') && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->user->core['id']) {
+if ($app->user->can(["admin" => "moderateUsers"]) && !empty($_GET['userid']) && is_numeric($_GET['userid']) && $_GET['userid'] != $app->user->core['id']) {
     $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {

@@ -423,15 +423,15 @@ if ($NotificationsManager->is_traditional(NotificationsManager::TORRENTS)) {
     $NotificationsManager->clear_notifications_array();
 }
 
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $ModBar[] = '<a href="tools.php">Toolbox</a>';
 }
 
 /** Buggy af rn 2022-01-12
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $NumStaffPMs = $app->cache->get('num_staff_pms_'.$app->user->core["id"]);
     if ($NumStaffPMs === false) {
-        if (check_perms('users_mod')) {
+        if ($app->user->can(["admin" => "moderateUsers"])) {
             $LevelCap = 1000;
             $app->dbOld->query("
               SELECT COUNT(ID)
@@ -525,7 +525,7 @@ if ($app->user->can(["admin" => "reports"])) {
     }
 }
 
-if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
+if ($app->user->can(["admin" => "moderateUsers"]) && FEATURE_EMAIL_REENABLE) {
     $NumEnableRequests = $app->cache->get(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
         $app->dbOld->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");

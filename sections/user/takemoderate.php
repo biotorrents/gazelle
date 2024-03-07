@@ -7,7 +7,7 @@ $app = Gazelle\App::go();
 // Are they being tricky blighters?
 if (!$_POST['userid'] || !is_numeric($_POST['userid'])) {
     error(404);
-} elseif (!check_perms('users_mod')) {
+} elseif ($app->user->cant(["admin" => "moderateUsers"])) {
     error(403);
 }
 
@@ -505,18 +505,18 @@ if ($Warned == 1 && !$Cur['Warned'] && $app->user->can(["admin" => "warnUsers"])
     $LightUpdates['Warned'] = $WarnedUntil;
 }
 
-if ($SupportFor != db_string($Cur['SupportFor']) && ($app->user->can(["admin" => "manageTechSupport"]) || (check_perms('users_mod') && $UserID == $app->user->core['id']))) {
+if ($SupportFor != db_string($Cur['SupportFor']) && ($app->user->can(["admin" => "manageTechSupport"]) || ($app->user->can(["admin" => "moderateUsers"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "SupportFor = '$SupportFor'";
     $EditSummary[] = "First-Line Support status changed to \"$SupportFor\"";
 }
 
-if ($RestrictedForums != db_string($Cur['RestrictedForums']) && check_perms('users_mod')) {
+if ($RestrictedForums != db_string($Cur['RestrictedForums']) && $app->user->can(["admin" => "moderateUsers"])) {
     $UpdateSet[] = "RestrictedForums = '$RestrictedForums'";
     $EditSummary[] = "restricted forum(s): $RestrictedForums";
     $DeleteKeys = true;
 }
 
-if ($PermittedForums != db_string($Cur['PermittedForums']) && check_perms('users_mod')) {
+if ($PermittedForums != db_string($Cur['PermittedForums']) && $app->user->can(["admin" => "moderateUsers"])) {
     $ForumSet = explode(',', $PermittedForums);
     $ForumList = [];
 

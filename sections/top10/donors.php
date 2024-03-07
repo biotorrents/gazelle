@@ -88,7 +88,7 @@ function generate_user_table($Caption, $Results, $Limit)
     </table><br>';
   }
 
-      $Position = 0;
+    $Position = 0;
     foreach ($Results as $Result) {
         $Position++; ?>
     <tr class="row">
@@ -101,7 +101,7 @@ function generate_user_table($Caption, $Results, $Limit)
       </td>
 
       <td style="text-align: left;">
-        <?=check_perms('users_mod') || $Position < 51 ? $Result['TotalRank'] : 'Hidden'; ?>
+        <?=$app->user->can(["admin" => "moderateUsers"]) || $Position < 51 ? $Result['TotalRank'] : 'Hidden'; ?>
       </td>
 
       <td style="text-align: left;">

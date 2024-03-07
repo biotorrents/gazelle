@@ -106,7 +106,7 @@
 					          <ul class="stats nobullet">
 					            <li>
 					              <?=$Summary?>
-					              <?=(check_perms('users_mod') ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
+					              <?=($app->user->can(["admin" => "moderateUsers"]) ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
 					              <span class="remove remove_cover_art"><a href="#"
 					                  onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
 					                  class="brackets tooltip" title="Remove image">X</a></span>

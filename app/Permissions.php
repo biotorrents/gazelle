@@ -296,7 +296,7 @@ class Permissions
         "users_invite_notes" => "Can add a staff note when inviting someone",
         "users_logout" => "Can log users out (old?)",
         "users_make_invisible" => "Can make users invisible",
-        "users_mod" => "Basic moderator tools",
+        #"users_mod" => "Basic moderator tools",
         #"users_override_paranoia" => "Can override paranoia",
         "users_promote_below" => "Can promote users to below current level",
         "users_promote_to" => "Can promote users up to current level",

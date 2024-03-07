@@ -108,7 +108,7 @@ $TorrentForm->upload_form();
  *
  * Various inlined tools to manage torrent grouping, etc.
  */
-if ($app->user->can(["torrents" => "updateAny"]) || check_perms('users_mod')) { ?>
+if ($app->user->can(["torrents" => "updateAny"]) || $app->user->can(["admin" => "moderateUsers"])) { ?>
 <!-- Start HTML -->
 
 
@@ -256,7 +256,7 @@ if ($app->user->can(["torrents" => "updateAny"]) || check_perms('users_mod')) { 
 </div> <!-- box pad -->
 
 <?php
-    if (check_perms('users_mod')) { ?>
+    if ($app->user->can(["admin" => "moderateUsers"])) { ?>
 
 <!-- Change Category -->
 <h2>Change Category</h2>

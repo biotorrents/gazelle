@@ -7,7 +7,7 @@ $app = Gazelle\App::go();
 
 include(serverRoot . '/sections/user/linkedfunctions.php');
 
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     error(403);
 }
 

@@ -33,14 +33,14 @@ $UserClass = $Perms['Class'];
 $UserClass = $app->user->extra["PermissionID"];
 
 # Validate mod permissions
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     if ($app->user->core['id'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
         error(403);
     }
 }
 
 if (isset($_GET['expire'])) {
-    if (!check_perms('users_mod')) {
+    if ($app->user->cant(["admin" => "moderateUsers"])) {
         error(403);
     }
 
@@ -131,7 +131,7 @@ $Pages = Gazelle\Format::get_pages($Page, $NumResults, 25);
     <th>Time</th>
     <th>Expired</th>
 
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <th>Downloaded</th>
     <th>Tokens used</th>
     <?php } ?>
@@ -170,12 +170,12 @@ foreach ($Tokens as $Token) {
 
     <td>
       <?= ($Expired ? 'Yes' : 'No') ?>
-      <?= (check_perms('users_mod') && !$Expired)
+      <?= ($app->user->can(["admin" => "moderateUsers"]) && !$Expired)
         ? " <a href='userhistory.php?action=token_history&amp;expire=1&amp;userid=$UserID&amp;torrentid=$TorrentID'>(expire)</a>"
         : ''; ?>
     </td>
 
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <td>
       <?= Gazelle\Format::get_size($Downloaded) ?>
     </td>

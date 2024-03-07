@@ -76,7 +76,7 @@ if (!isset($InputTitle)) {
     <form class="send_form" name="reply" id="quickpostform" <?=isset($Action) ? 'action="'.$Action.'"' : ''?>
       method="post"
 
-      <?php if (!check_perms('users_mod')) { ?>
+      <?php if ($app->user->cant(["admin" => "moderateUsers"])) { ?>
       onsubmit="quickpostform.submit_button.disabled = true;"
       <?php } ?>
 

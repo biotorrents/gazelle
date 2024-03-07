@@ -193,7 +193,7 @@ if (!empty($_REQUEST['action'])) {
             break;
 
         case 'regen_filelist':
-            if (check_perms('users_mod') && !empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
+            if ($app->user->can(["admin" => "moderateUsers"]) && !empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
                 Torrents::regenerate_filelist($_GET['torrentid']);
                 header('Location: torrents.php?torrentid='.$_GET['torrentid']);
                 error();
@@ -203,7 +203,7 @@ if (!empty($_REQUEST['action'])) {
             break;
 
         case 'fix_group':
-            if ((check_perms('users_mod') || check_perms('torrents_fix_ghosts'))
+            if (($app->user->can(["admin" => "moderateUsers"]) || check_perms('torrents_fix_ghosts'))
               && !empty($_GET['groupid'])
               && is_numeric($_GET['groupid'])
             ) {

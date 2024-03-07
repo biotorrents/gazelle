@@ -16,7 +16,7 @@ user.
 
 define('IPS_PER_PAGE', 25);
 
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     error(403);
 }
 

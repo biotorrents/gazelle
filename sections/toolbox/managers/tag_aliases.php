@@ -79,7 +79,7 @@ while (list($ID, $BadTag, $AliasTag) = $app->dbOld->next_record()) {
       <td>
         <input type="text" name="badtag" value="<?=$BadTag?>">
       </td>
-<?php if (check_perms('users_mod')) { ?>
+<?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       <td>
         <input type="submit" name="save" class="button-primary" value="Save alias">
         <input type="submit" name="delete" value="Delete alias">

@@ -253,7 +253,7 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
+        if ($app->user->can(["admin" => "moderateUsers"]) || check_perms('torrents_fix_ghosts')) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
@@ -415,7 +415,7 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
+        if ($app->user->can(["admin" => "moderateUsers"]) || check_perms('torrents_fix_ghosts')) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 

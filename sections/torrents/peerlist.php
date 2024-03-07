@@ -56,7 +56,7 @@ while (list($PeerUserID, $Size, $Active, $Connectable, $Uploaded, $Remaining, $U
     ?>
   <tr class="row">
 <?php
-  if (check_perms('users_mod')) {
+  if ($app->user->can(["admin" => "moderateUsers"])) {
       ?>
     <td><?=User::format_username($PeerUserID, false, false, false)?></td>
 <?php

@@ -88,7 +88,7 @@ View::header(
       <a href="requests.php?action=edit&amp;id=<?=$RequestID?>"
         class="brackets">Edit</a>
       <?php }
-      if ($UserCanEdit || check_perms('users_mod')) { //check_perms('site_moderate_requests')) {?>
+      if ($UserCanEdit || $app->user->can(["admin" => "moderateUsers"])) { //check_perms('site_moderate_requests')) {?>
       <a href="requests.php?action=delete&amp;id=<?=$RequestID?>"
         class="brackets">Delete</a>
       <?php }
