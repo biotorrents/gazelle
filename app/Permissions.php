@@ -7,13 +7,14 @@ declare(strict_types=1);
  * Gazelle\Permissions
  *
  * Mostly used to store lists of permissions.
+ * It's easier than storing them in the database.
  */
 
 namespace Gazelle;
 
 class Permissions
 {
-    # in progress: simple crud natural language permissions
+    # simple crud natural language permissions
     # e.g., $app->user->can(["torrents" => "read", "tags" => "updateAny"])
     public static array $permissions = [
         # torrents
@@ -156,7 +157,32 @@ class Permissions
             "deleteAny" => "Can delete any wiki articles",
         ],
 
-        # toolbox
+        # various admin permissions
+        "admin" => [
+            "advancedUserSearch" => "Can access advanced user search",
+            "alwaysInvite" => "Can invite past user limit",
+            "banUsers" => "Can ban users",
+            "clearCache" => "Can clear the cache",
+            "doublePost" => "Can double post in the forums",
+            "freeleechTorrents" => "Can make torrents freeleech",
+            "loginWatch" => "Can manage login watch",
+            "manageBlog" => "Can manage the site blog",
+            "manageForums" => "Can manage the forums (add/edit/delete)",
+            "manageTechSupport" => "Can manage tech support",
+            "manipulateRatio" => "Can manipulate user ratio",
+            "moderateForums" => "Can moderate the forums",
+            "moderateUsers" => "Can moderate users",
+            "proxyImages" => "Can proxy images",
+            "readUserInvites" => "Can view who user has invited",
+            "reports" => "Can access the reports system",
+            "sensitiveUserData" => "Can access user IPs and emails",
+            "staffInbox" => "Can access the staff inbox",
+            "unlimitedInvites" => "Can send unlimited invites",
+            "updateRatios" => "Can update user ratios",
+            "warnUsers" => "Can warn users",
+        ],
+
+        # admin toolbox
         "toolbox" => [
             "access" => "Can access the admin tools page",
             "autoEnableRequests" => "Can access the auto-enable requests page",
@@ -185,32 +211,38 @@ class Permissions
             "trackerInformation" => "Can access the tracker information page",
             "upscalePool" => "Can access the upscale pool page",
         ],
-
-        # various admin permissions
-        "admin" => [
-            "advancedUserSearch" => "Can access advanced user search",
-            "alwaysInvite" => "Can invite past user limit",
-            "banUsers" => "Can ban users",
-            "clearCache" => "Can clear the cache",
-            "doublePost" => "Can double post in the forums",
-            "freeleechTorrents" => "Can make torrents freeleech",
-            "loginWatch" => "Can manage login watch",
-            "manageBlog" => "Can manage the site blog",
-            "manageForums" => "Can manage the forums (add/edit/delete)",
-            "manageTechSupport" => "Can manage tech support",
-            "manipulateRatio" => "Can manipulate user ratio",
-            "moderateForums" => "Can moderate the forums",
-            "moderateUsers" => "Can moderate users",
-            "proxyImages" => "Can proxy images",
-            "readUserInvites" => "Can view who user has invited",
-            "reports" => "Can access the reports system",
-            "sensitiveUserData" => "Can access user IPs and emails",
-            "staffInbox" => "Can access the staff inbox",
-            "unlimitedInvites" => "Can send unlimited invites",
-            "updateRatios" => "Can update user ratios",
-            "warnUsers" => "Can warn users",
-        ],
     ];
+
+
+    /**
+     * getOne
+     *
+     * Returns a single object permission set.
+     *
+     * @param string $key
+     * @return ?array
+     */
+    public static function getOne(string $key): ?array
+    {
+        return self::$permissions[$key] ?? null;
+    }
+
+
+    /**
+     * getAll
+     *
+     * Returns an array of all permissions.
+     *
+     * @return array
+     */
+    public static function getAll(): array
+    {
+        return self::$permissions;
+    }
+
+
+    /** */
+
 
     # putting the old permissions here as i work through the mess
     # i've commented all array keys that don't appear in the codebase
@@ -316,24 +348,13 @@ class Permissions
 
 
     /**
-     * getAll
-     *
-     * Returns an array of new permissions.
-     *
-     * @return array
-     */
-    public static function getAll(): array
-    {
-        return self::$permissions;
-    }
-
-
-    /**
      * getOld
      *
      * Returns an array of old permissions.
+     *
+     * @return array
      */
-    public static function getOld()
+    public static function getOld(): array
     {
         return self::$oldPermissions;
     }
