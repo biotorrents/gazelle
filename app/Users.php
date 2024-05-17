@@ -210,6 +210,9 @@ class Users extends ObjectCrud
         # session superglobal
         $this->session = $_SESSION;
 
+        # Gazelle\Roles
+        $this->role = new Roles(10);
+
         # untrusted input
         $userId = Http::readCookie("userId") ?? null;
         $sessionId = Http::readCookie("sessionId") ?? null;
@@ -280,7 +283,7 @@ class Users extends ObjectCrud
                 $this->permissions["values"] = json_decode($this->permissions["values"] ?? "{}", true);
             }
 
-            # Gazelle\Role
+            # Gazelle\Roles
             $this->role = new Roles($this->extra["PermissionID"]);
 
             # siteOptions

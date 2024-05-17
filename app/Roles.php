@@ -218,18 +218,34 @@ class Roles extends ObjectCrud
         $app = App::go();
 
         # default to the logged in user
-        $userId ??= $app->user->core["id"];
+        if (!$userId && !empty($app->user->core["id"])) {
+            $userId = $app->user->core["id"];
+        }
 
         # get the user's permissionId
         $query = "select permissionId from users_main where userId = ?";
         $permissionId = $app->dbNew->single($query, [$userId]);
 
-        # no permissions found
+        # no permissions found, default to guest
         if (!$permissionId) {
-            throw new Exception("no role found for user {$userId}");
+            $permissionId = self::getGuestRoleId();
         }
 
         return new self($permissionId);
+    }
+
+
+    /**
+     * getGuestRoleId
+     *
+     * Gets the guest role id.
+     *
+     * @return int
+     */
+    public static function getGuestRoleId(): int
+    {
+        # todo: hardcoded
+        return 10;
     }
 
 

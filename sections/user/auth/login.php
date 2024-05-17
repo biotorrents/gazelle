@@ -18,22 +18,22 @@ $auth = new Auth();
 # variables
 $post = Gazelle\Http::request("post");
 $server = Gazelle\Http::request("server");
-#!d($server["REQUEST_URI"]);exit;
 
 # kinda lazy but it works
 if (str_starts_with($server["REQUEST_URI"], "/resend")) {
-    $_SESSION["requestedPage"] = "/";
+    Gazelle\Http::createCookie(["requestedPage" => "/"]);
     $resendConfirmationMessage = "We've sent you a new confirmation email";
 }
 
 # where are they trying to go?
-if (empty($post)) {
-    $_SESSION["requestedPage"] = $server["REQUEST_URI"] ?? "/";
+$requestedPage = Gazelle\Http::readCookie("requestedPage") ?? null;
+if (empty($post) && !$requestedPage) {
+    Gazelle\Http::createCookie(["requestedPage" => $server["REQUEST_URI"] ?? "/"]);
 }
 
 # redirect if logged in
 if ($auth->library->isLoggedIn()) {
-    Gazelle\Http::redirect($_SESSION["requestedPage"] ?? "/");
+    Gazelle\Http::redirect($requestedPage);
 }
 
 # delight-im/auth
@@ -55,7 +55,8 @@ if (!empty($post)) {
 
     # silence is golden
     if (!$response) {
-        Gazelle\Http::redirect($_SESSION["requestedPage"] ?? "/");
+        Gazelle\Http::deleteCookie("requestedPage");
+        Gazelle\Http::redirect($requestedPage);
     }
 }
 
