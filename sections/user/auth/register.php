@@ -13,8 +13,12 @@ Gazelle\Http::csrf();
 $get = Gazelle\Http::request("get");
 $post = Gazelle\Http::request("post");
 
-
 try {
+    # is registration disabled?
+    if (!$app->env->openRegistration) {
+        throw new Exception("Registration is currently disabled");
+    }
+
     # delight-im/auth
     if (!empty(["post"]) && isset($post["submit"])) {
         $response = $auth->register($post);
@@ -32,7 +36,6 @@ try {
 } catch (Throwable $e) {
     $response = $e->getMessage();
 }
-
 
 $app->twig->display("user/auth/register.twig", [
     "title" => "Register",

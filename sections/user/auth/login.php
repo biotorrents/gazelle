@@ -8,12 +8,10 @@ declare(strict_types=1);
  */
 
 $app = Gazelle\App::go();
+$auth = new Auth();
 
 # https://github.com/paragonie/anti-csrf
 Gazelle\Http::csrf();
-
-# libraries
-$auth = new Auth();
 
 # variables
 $post = Gazelle\Http::request("post");
@@ -49,7 +47,7 @@ if (!empty($post)) {
     } catch (\Delight\Auth\EmailNotVerifiedException $e) {
         $resendConfirmation = true;
         $response = "Your email address hasn't been verified";
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         $response = $e->getMessage();
     }
 
