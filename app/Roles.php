@@ -184,21 +184,37 @@ class Roles extends ObjectCrud
     /**
      * getAll
      *
-     * Returns an array of Roles objects.
+     * Returns an array of role data in the format [ "id" => ["data"] ].
+     * Trying to instantiate a whole object for each role is inefficient.
      *
      * @return array
      */
-    public function getAll(): array
+    public static function getAll(): array
     {
         $app = App::go();
 
         # there may be custom roles in the database
-        $query = "select id from roles_permissions";
-        $ref = $app->dbNew->column($query, []);
+        $query = "select * from roles_permissions";
+        $ref = $app->dbNew->multi($query, []);
 
         $roles = [];
-        foreach ($ref as $id) {
-            $roles[] = new self($id);
+        foreach ($ref as $row) {
+            $roles[ $row["id"] ] = [
+                "id" => $row["id"],
+                "machineName" => $row["machineName"],
+                "friendlyName" => $row["friendlyName"],
+                "description" => $row["description"],
+                "isPrimaryRole" => boolval($row["isPrimaryRole"]),
+                "isSecondaryRole" => boolval($row["isSecondaryRole"]),
+                "isDefaultRole" => boolval($row["isDefaultRole"]),
+                "isStaffRole" => boolval($row["isStaffRole"]),
+                "maxPersonalCollages" => $row["maxPersonalCollages"],
+                "permissionsLevel" => $row["permissionsLevel"],
+                "permissionsList" => json_decode($row["permissionsList"]),
+                "createdAt" => $row["created_at"],
+                "updatedAt" => $row["updated_at"],
+                "deletedAt" => $row["deleted_at"],
+            ];
         }
 
         return $roles;

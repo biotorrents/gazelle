@@ -5,6 +5,7 @@
 (() => {
   "use strict";
 
+
   /**
    * replyToMessage
    * 
@@ -23,6 +24,7 @@
    * Grabs the selected text and sets the value of the quote in the post form.
    * This is very similar to 4chan's quick reply box functionality.
    */
+
   $(".quoteMessage").on("click", () => {
     // get the editor id to use as a literal
     let editorId = "replyEditor_" + $(event.target).data("conversationid");

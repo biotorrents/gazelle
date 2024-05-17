@@ -136,10 +136,10 @@ class Conversations extends ObjectCrud
      *
      * Gets a message in a conversation.
      *
-     * @param int $identifier
+     * @param int|string $identifier
      * @return array
      */
-    public function readMessage(int $identifier): array
+    public function readMessage(int|string $identifier): array
     {
         throw new Exception("not implemented");
 
@@ -236,11 +236,11 @@ class Conversations extends ObjectCrud
      *
      * Updates a message in a conversation.
      *
-     * @param int $identifier
+     * @param int|string $identifier
      * @param array $data
      * @return self
      */
-    public function updateMessage(int $identifier, array $data): self
+    public function updateMessage(int|string $identifier, array $data): self
     {
         $app = App::go();
 
@@ -278,10 +278,10 @@ class Conversations extends ObjectCrud
      *
      * Deletes a message in a conversation.
      *
-     * @param int $identifier
+     * @param int|string $identifier
      * @return self
      */
-    public function deleteMessage(int $identifier): self
+    public function deleteMessage(int|string $identifier): self
     {
         $app = App::go();
 
@@ -312,11 +312,11 @@ class Conversations extends ObjectCrud
      *
      * Get the conversationId by contentId and contentType.
      *
-     * @param int $contentId
+     * @param int|string $contentId
      * @param string $contentType
      * @return ?int
      */
-    public static function getIdByContent(int $contentId, string $contentType): ?int
+    public static function getIdByContent(int|string $contentId, string $contentType): ?int
     {
         $app = App::go();
 
@@ -332,11 +332,11 @@ class Conversations extends ObjectCrud
      *
      * Creates a conversation if it doesn't exist.
      *
-     * @param int $contentId
+     * @param int|string $contentId
      * @param string $contentType
      * @return self
      */
-    public static function createIfNotExists(int $contentId, string $contentType): self
+    public static function createIfNotExists(int|string $contentId, string $contentType): self
     {
         $app = App::go();
 
@@ -372,11 +372,11 @@ class Conversations extends ObjectCrud
      * If the user has already reacted as such, remove the reaction.
      * This should hopefully prevent "dislike spamming" comments.
      *
-     * @param int $identifier messageId
+     * @param int|string $identifier messageId
      * @param string $reaction $this->allowedReactions
      * @return array of data about the event
      */
-    public function reactToMessage(int $identifier, string $reaction): array
+    public function reactToMessage(int|string $identifier, string $reaction): array
     {
         $app = App::go();
 
@@ -436,11 +436,11 @@ class Conversations extends ObjectCrud
      *
      * Checks if the user has reacted to a message.
      *
-     * @param int $identifier messageId
+     * @param int|string $identifier messageId
      * @param string $reaction $this->allowedReactions
      * @return bool
      */
-    public function hasUserReacted(int $identifier, string $reaction): bool
+    public function hasUserReacted(int|string $identifier, string $reaction): bool
     {
         $app = App::go();
 

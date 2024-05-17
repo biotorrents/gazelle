@@ -88,7 +88,7 @@ $app->twig->display("torrents/details.twig", [
     "sidebar" => true,
     "errorMessage" => $errorMessage ?? null,
 
-    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "comments", "torrent", "recommend", "cover_art", "subscriptions"],
+    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "conversations", "torrent", "recommend", "cover_art", "subscriptions"],
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
 
     "groupId" => $groupId,
@@ -116,20 +116,7 @@ $app->twig->display("torrents/details.twig", [
 exit;
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/** old stuff to migrate */
 
 
 $ENV = Gazelle\ENV::go();

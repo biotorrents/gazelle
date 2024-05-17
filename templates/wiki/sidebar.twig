@@ -71,7 +71,7 @@
             <td>
                 <select id="minClassRead">
                     {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minClassRead == key) ? "selected" : "" }}>{{ value }}</option>
+                        <option value="{{ key }}" {{ (article.attributes.minClassRead == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
                     {% endfor %}
                 </select>
             </td>
@@ -86,7 +86,7 @@
             <td>
                 <select id="minClassEdit">
                     {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minClassEdit == key) ? "selected" : "" }}>{{ value }}</option>
+                        <option value="{{ key }}" {{ (article.attributes.minClassEdit == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
                     {% endfor %}
                 </select>
             </td>

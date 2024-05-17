@@ -24,7 +24,7 @@ if (!$role) {
 }
 
 # get all roles and permissions
-$allRoles = $role->getAll();
+$allRoles = Gazelle\Roles::getAll();
 $allPermissions = Gazelle\Permissions::getAll();
 
 # handle the form
