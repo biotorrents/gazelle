@@ -2,6 +2,11 @@
 
 declare(strict_types=1);
 
+
+/**
+ * user stats page
+ */
+
 $app = \Gazelle\App::go();
 $stats = new \Gazelle\Stats();
 
@@ -11,25 +16,12 @@ $stats = new \Gazelle\Stats();
  */
 
 $realtime = $stats->realtime();
-#!d($realtime);
-
 $overview = $stats->overview();
-#!d($overview);
-
 $overTime = $stats->overTime();
-#!d($overTime);
-
 $topPages = $stats->topPages();
-#!d($topPages);
-
 $sources = $stats->sources();
-#!d($sources);
-
 $devices = $stats->devices();
-#!d($devices);
-
 $locations = $stats->locations();
-#!d($locations);
 
 
 /**
@@ -37,10 +29,7 @@ $locations = $stats->locations();
  */
 
 $usersTimeline = $stats->usersTimeline();
-#!d($usersTimeline);
-
 $classDistribution = $stats->classDistribution();
-#!d($classDistribution);
 
 
 /**
