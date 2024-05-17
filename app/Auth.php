@@ -81,13 +81,14 @@ class Auth # extends Delight\Auth\Auth
         # escape the inputs
         $username = \Gazelle\Escape::username($data["username"] ?? null);
         $email = \Gazelle\Escape::email($data["email"] ?? null);
-
         $passphrase = \Gazelle\Escape::passphrase($data["passphrase"] ?? null);
         $confirmPassphrase = \Gazelle\Escape::passphrase($data["confirmPassphrase"] ?? null);
-
         $invite = \Gazelle\Escape::string($data["invite"] ?? null);
 
         try {
+            # throttle registration attempts: 1 request per IP address per 60 minutes
+            $this->library->throttle(["createNewAccount", $this->library->getIpAddress()], 1, 3600);
+
             # disallow registration if the database is encrypted
             if (!apcu_exists("DBKEY")) {
                 throw new Exception("Registration temporarily disabled due to degraded database access");
