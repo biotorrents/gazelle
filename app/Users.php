@@ -1394,6 +1394,7 @@ class Users extends ObjectCrud
         $row = $app->dbNew->row($query, [ $data["extra"]["PermissionID"] ]);
         $data["permissions"] = $row ?? [];
 
+        $data["permissions"]["values"] ??= null;
         if ($data["permissions"]["values"]) {
             $data["permissions"]["values"] = json_decode($data["permissions"]["values"] ?? "{}", true);
         }

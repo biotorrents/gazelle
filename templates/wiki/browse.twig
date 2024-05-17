@@ -50,24 +50,24 @@
             {% for item in searchResults %}
                 <tr>
                     <td>
-                        <a href="/wiki/{{ item.id}}">{{ item.title }}</a>
+                        <a href="/wiki/{{ item.id}}">{{ item.attributes.title }}</a>
                     </td>
 
                     <td>
-                        {{ item.authorId|formatUsername }}
+                        {{ item.attributes.authorId|formatUsername }}
                     </td>
 
-                    <td data-value="{{ item.createdAt }}">
-                        <span class="tooltip" title="{{ item.createdAt }}">{{ item.createdAt|relativeTime }}</span>
+                    <td data-value="{{ item.attributes.createdAt }}">
+                        <span class="tooltip" title="{{ item.attributes.createdAt }}">{{ item.attributes.createdAt|relativeTime }}</span>
                     </td>
 
-                    <td data-value="{{ item.updatedAt }}">
-                        <span class="tooltip" title="{{ item.updatedAt }}">{{ item.updatedAt|relativeTime }}</span>
+                    <td data-value="{{ item.attributes.updatedAt }}">
+                        <span class="tooltip" title="{{ item.attributes.updatedAt }}">{{ item.attributes.updatedAt|relativeTime }}</span>
                     </td>
 
                     {#
                     <td class="center">
-                        {{ item.revision }}
+                        {{ item.attributes.revision }}
                     </td>
                     #}
                 </tr>

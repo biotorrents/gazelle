@@ -67,7 +67,7 @@
 <table class="compact">
     <tr>
         <th>Minimum read class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minClassEdit and isEditorAvailable %}
             <td>
                 <select id="minClassRead">
                     {% for key, value in roles %}
@@ -76,13 +76,13 @@
                 </select>
             </td>
         {% else %}
-            <td>{{ roles[article.attributes.minClassRead] }}</td>
+            <td>{{ roles[article.attributes.minClassRead].friendlyName }}</td>
         {% endif %}
     </tr>
 
     <tr>
         <th>Minimum edit class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minClassEdit and isEditorAvailable %}
             <td>
                 <select id="minClassEdit">
                     {% for key, value in roles %}
@@ -91,7 +91,7 @@
                 </select>
             </td>
         {% else %}
-            <td>{{ roles[article.attributes.minClassEdit] }}</td>
+            <td>{{ roles[article.attributes.minClassEdit].friendlyName }}</td>
         {% endif %}
     </tr>
 </table>
