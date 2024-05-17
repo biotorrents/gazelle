@@ -38,21 +38,21 @@
     <tbody>
         {% for role in roles %}
             <tr>
-                <td><a href="/toolbox/permissionsManager/{{ role.id }}">{{ role.attributes.friendlyName }}</a></td>
-                <td class="center">{{ role.attributes.permissionsLevel|number_format }}</td>
-                <td class="center">{{ role.attributes.userCount|number_format }}</td>
+                <td><a href="/toolbox/permissionsManager/{{ role.id }}">{{ role.friendlyName }}</a></td>
+                <td class="center">{{ role.permissionsLevel|number_format }}</td>
+                <td class="center">{{ role.userCount|number_format }}</td>
 
-                <td class="center" data-value="{{ role.attributes.isPrimaryRole }}">{{ role.attributes.isPrimaryRole|boolval }}</td>
-                <td class="center" data-value="{{ role.attributes.isSecondaryRole }}">{{ role.attributes.isSecondaryRole|boolval }}</td>
-                <td class="center" data-value="{{ role.attributes.isDefaultRole }}">{{ role.attributes.isDefaultRole|boolval }}</td>
-                <td class="center" data-value="{{ role.attributes.isStaffRole }}">{{ role.attributes.isStaffRole|boolval }}</td>
+                <td class="center" data-value="{{ role.isPrimaryRole }}">{{ role.isPrimaryRole|boolval }}</td>
+                <td class="center" data-value="{{ role.isSecondaryRole }}">{{ role.isSecondaryRole|boolval }}</td>
+                <td class="center" data-value="{{ role.isDefaultRole }}">{{ role.isDefaultRole|boolval }}</td>
+                <td class="center" data-value="{{ role.isStaffRole }}">{{ role.isStaffRole|boolval }}</td>
 
-                <td class="center" data-value="{{ role.attributes.createdAt }}">
-                    <span class="tooltip" title="{{ role.attributes.createdAt }}">{{ role.attributes.createdAt|relativeTime }}</span>
+                <td class="center" data-value="{{ role.createdAt }}">
+                    <span class="tooltip" title="{{ role.createdAt }}">{{ role.createdAt|relativeTime }}</span>
                 </td>
 
-                <td class="center" data-value="{{ role.attributes.createdAt }}">
-                    <span class="tooltip" title="{{ role.attributes.updatedAt }}">{{ role.attributes.updatedAt|relativeTime }}</span>
+                <td class="center" data-value="{{ role.createdAt }}">
+                    <span class="tooltip" title="{{ role.updatedAt }}">{{ role.updatedAt|relativeTime }}</span>
                 </td>
             </tr>
         {% endfor %}

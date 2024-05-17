@@ -215,6 +215,10 @@ class Roles extends ObjectCrud
                 "updatedAt" => $row["updated_at"],
                 "deletedAt" => $row["deleted_at"],
             ];
+
+            # get the user count
+            $query = "select count(userId) from users_main where permissionId = ?";
+            $roles[ $row["id"] ]["userCount"] = $app->dbNew->single($query, [ $row["id"] ]);
         }
 
         return $roles;
