@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Loads the app for API requests.
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 $app->executionContext = "api";
 
 # skip this stuff for internal api calls
@@ -17,9 +17,9 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
 }
 
 # check for a token
-$_SESSION["token"] = \Gazelle\Api\Base::validateBearerToken();
+$_SESSION["token"] = Gazelle\Api\Base::validateBearerToken();
 if (!$_SESSION["token"]) {
-    \Gazelle\Api\Base::failure(401, "unauthorized");
+    Gazelle\Api\Base::failure(401, "unauthorized");
 }
 
 # rate limit exceptions
@@ -29,7 +29,7 @@ $rateLimitExceptions = [];
 array_push($rateLimitExceptions, 0, 1);
 
 # donors
-$query = "select id from users_main where permissionId = 20"; # donors
+$query = "select userId from users_main where permissionId = 110"; # donors
 $ref = $app->dbNew->column($query, []);
 array_push($rateLimitExceptions, ...$ref);
 
@@ -44,11 +44,11 @@ if (!in_array($userId, $rateLimitExceptions)) {
     }
 
     if ($userRequests > $rateLimit[0]) {
-        \Gazelle\Api\Base::failure(429, "too many requests");
+        Gazelle\Api\Base::failure(429, "too many requests");
     } else {
         $app->cache->increment("requestCount:{$_SESSION["token"]["userId"]}");
     }
 }
 
-# include routes
+# include the routes
 require_once "{$app->env->serverRoot}/routes/api.php";

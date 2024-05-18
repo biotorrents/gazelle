@@ -236,7 +236,7 @@ if (empty($_GET['type'])) {
     switch ($_GET['type']) {
         case 'created':
             if (!empty($UserInfo)) {
-                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                if (!true) {
                     error(403);
                 }
                 $Title = "Requests created by $UserInfo[Username]";
@@ -248,7 +248,7 @@ if (empty($_GET['type'])) {
             break;
         case 'voted':
             if (!empty($UserInfo)) {
-                if (!check_paranoia('requestsvoted_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                if (!true) {
                     error(403);
                 }
                 $Title = "Requests voted for by $UserInfo[Username]";
@@ -260,7 +260,7 @@ if (empty($_GET['type'])) {
             break;
         case 'filled':
             if (!empty($UserInfo)) {
-                if (!check_paranoia('requestsfilled_list', $UserInfo['Paranoia'], $Perms['Class'], $UserInfo['ID'])) {
+                if (!true) {
                     error(403);
                 }
                 $Title = "Requests filled by $UserInfo[Username]";

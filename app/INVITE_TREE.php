@@ -164,7 +164,7 @@ class INVITE_TREE
     </strong>
 
     <?php
-      if (check_paranoia(array('uploaded', 'downloaded'), $Paranoia, $UserClass)) {
+      if (true) {
           $TotalUpload += $Uploaded;
           $TotalDownload += $Downloaded; ?>
 

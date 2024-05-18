@@ -34,7 +34,7 @@ $UserClass = $app->user->extra["PermissionID"];
 
 # Validate mod permissions
 if ($app->user->cant(["admin" => "moderateUsers"])) {
-    if ($app->user->core['id'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
+    if ($app->user->core['id'] !== $UserID) {
         error(403);
     }
 }

@@ -68,28 +68,9 @@ if (!$app->dbOld->has_results()) {
 
 list($Username, $Email, $LastAccess, $IP, $Class, $Uploaded, $Downloaded, $RequiredRatio, $Enabled, $Paranoia, $Invites, $CustomTitle, $torrent_pass, $DisableLeech, $JoinDate, $Info, $Avatar, $Donor, $Warned, $ForumPosts, $InviterID, $DisableInvites, $InviterName) = $app->dbOld->next_record(MYSQLI_NUM, array(9, 11));
 
-$Paranoia = unserialize($Paranoia);
-if (!is_array($Paranoia)) {
-    $Paranoia = [];
-}
-
-$ParanoiaLevel = 0;
-foreach ($Paranoia as $P) {
-    $ParanoiaLevel++;
-    if (strpos($P, '+') !== false) {
-        $ParanoiaLevel++;
-    }
-}
-
 // Raw time is better for JSON
 //$JoinedDate = time_diff($JoinDate);
 //$LastAccess = time_diff($LastAccess);
-
-function check_paranoia_here($Setting)
-{
-    global $Paranoia, $Class, $UserID;
-    return check_paranoia($Setting, $Paranoia, $Class, $UserID);
-}
 
 $Friend = false;
 $app->dbOld->query("
@@ -106,7 +87,7 @@ if ($app->dbOld->has_results()) {
     $Friend = true;
 }
 
-if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(DISTINCT r.`ID`),
@@ -148,7 +129,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     $TotalSpent = 0;
 }
 
-if (check_paranoia_here('uploads+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -162,7 +143,7 @@ if (check_paranoia_here('uploads+')) {
     $Uploads = null;
 }
 
-if (check_paranoia_here('artistsadded')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ArtistID`)
@@ -177,25 +158,25 @@ if (check_paranoia_here('artistsadded')) {
 }
 
 // Do the ranks
-if (check_paranoia_here('uploaded')) {
+if (true) {
     $UploadedRank = UserRank::get_rank('uploaded', $Uploaded);
 } else {
     $UploadedRank = null;
 }
 
-if (check_paranoia_here('downloaded')) {
+if (true) {
     $DownloadedRank = UserRank::get_rank('downloaded', $Downloaded);
 } else {
     $DownloadedRank = null;
 }
 
-if (check_paranoia_here('uploads+')) {
+if (true) {
     $UploadsRank = UserRank::get_rank('uploads', $Uploads);
 } else {
     $UploadsRank = null;
 }
 
-if (check_paranoia_here('requestsfilled_count')) {
+if (true) {
     $RequestRank = UserRank::get_rank('requests', $RequestsFilled);
 } else {
     $RequestRank = null;
@@ -203,13 +184,13 @@ if (check_paranoia_here('requestsfilled_count')) {
 
 $PostRank = UserRank::get_rank('posts', $ForumPosts);
 
-if (check_paranoia_here('requestsvoted_bounty')) {
+if (true) {
     $BountyRank = UserRank::get_rank('bounty', $TotalSpent);
 } else {
     $BountyRank = null;
 }
 
-if (check_paranoia_here('artistsadded')) {
+if (true) {
     $ArtistsRank = UserRank::get_rank('artists', $ArtistsAdded);
 } else {
     $ArtistsRank = null;
@@ -223,14 +204,14 @@ if ($Downloaded === 0) {
     $Ratio = round($Uploaded / $Downloaded, 2);
 }
 
-if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) {
+if (true) {
     $OverallRank = floor(UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsRank, $RequestRank, $PostRank, $BountyRank, $ArtistsRank, $Ratio));
 } else {
     $OverallRank = null;
 }
 
 // Community section
-if (check_paranoia_here('snatched+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(x.`uid`),
@@ -246,7 +227,7 @@ if (check_paranoia_here('snatched+')) {
     list($Snatched, $UniqueSnatched) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('torrentcomments+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -259,7 +240,7 @@ if (check_paranoia_here('torrentcomments+')) {
     list($NumComments) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('torrentcomments+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -272,7 +253,7 @@ if (check_paranoia_here('torrentcomments+')) {
     list($NumArtistComments) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('torrentcomments+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -285,7 +266,7 @@ if (check_paranoia_here('torrentcomments+')) {
     list($NumCollageComments) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('torrentcomments+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -298,7 +279,7 @@ if (check_paranoia_here('torrentcomments+')) {
     list($NumRequestComments) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('collages+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`ID`)
@@ -311,7 +292,7 @@ if (check_paranoia_here('collages+')) {
     list($NumCollages) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('collagecontribs+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(DISTINCT ct.`CollageID`)
@@ -327,7 +308,7 @@ if (check_paranoia_here('collagecontribs+')) {
     list($NumCollageContribs) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('uniquegroups+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(DISTINCT `GroupID`)
@@ -339,7 +320,7 @@ if (check_paranoia_here('uniquegroups+')) {
     list($UniqueGroups) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('seeding+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
@@ -355,7 +336,7 @@ if (check_paranoia_here('seeding+')) {
     list($Seeding) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('leeching+')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(x.`uid`)
@@ -371,7 +352,7 @@ if (check_paranoia_here('leeching+')) {
     list($Leeching) = $app->dbOld->next_record();
 }
 
-if (check_paranoia_here('invitedcount')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(`UserID`)
@@ -388,38 +369,26 @@ if (!$OwnProfile) {
 }
 
 // Run through some paranoia stuff to decide what we can send out
-if (!check_paranoia_here('lastseen')) {
+if (!true) {
     $LastAccess = '';
 }
 
-if (check_paranoia_here('ratio')) {
+if (true) {
     $Ratio = \Gazelle\Format::get_ratio($Uploaded, $Downloaded, 5);
 } else {
     $Ratio = null;
 }
 
-if (!check_paranoia_here('uploaded')) {
+if (!true) {
     $Uploaded = null;
 }
 
-if (!check_paranoia_here('downloaded')) {
+if (!true) {
     $Downloaded = null;
 }
 
-if (isset($RequiredRatio) && !check_paranoia_here('requiredratio')) {
+if (isset($RequiredRatio)) {
     $RequiredRatio = null;
-}
-
-if ($ParanoiaLevel === 0) {
-    $ParanoiaLevelText = 'Off';
-} elseif ($ParanoiaLevel === 1) {
-    $ParanoiaLevelText = 'Very Low';
-} elseif ($ParanoiaLevel <= 5) {
-    $ParanoiaLevelText = 'Low';
-} elseif ($ParanoiaLevel <= 20) {
-    $ParanoiaLevelText = 'High';
-} else {
-    $ParanoiaLevelText = 'Very high';
 }
 
 // Bugfix for no access time available
@@ -457,8 +426,6 @@ header('Content-Type: text/plain; charset=utf-8');
 
   'personal' => [
     'class'        => $ClassLevels[$Class]['Name'],
-    'paranoia'     => (int) $ParanoiaLevel,
-    'paranoiaText' => $ParanoiaLevelText,
     'donor'        => ($Donor === 1),
     'warned'       => (bool) $Warned,
     'enabled'      => ((int) $Enabled === 1 || (int) $Enabled === 0 || !$Enabled),

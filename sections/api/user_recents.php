@@ -17,7 +17,7 @@ if (empty($Limit)) {
 }
 
 $Results = [];
-if (check_paranoia_here('snatched')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       g.`id`,
@@ -53,7 +53,7 @@ if (check_paranoia_here('snatched')) {
     $Results['snatches'] = 'hidden';
 }
 
-if (check_paranoia_here('uploads')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       g.`id`,
@@ -87,13 +87,3 @@ if (check_paranoia_here('uploads')) {
 }
 
 \Gazelle\Api\Base::success(200, $Results);
-
-function check_paranoia_here($Setting)
-{
-    global $Paranoia, $Class, $UserID, $Preview;
-    if ($Preview == 1) {
-        return check_paranoia($Setting, $Paranoia, $Class);
-    } else {
-        return check_paranoia($Setting, $Paranoia, $Class, $UserID);
-    }
-}

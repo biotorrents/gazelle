@@ -27,14 +27,14 @@ if (empty($_GET['type'])) {
 } else {
     switch ($_GET['type']) {
         case 'uploads':
-            if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "WHERE t.UserID = '$UserID'";
             $Month = "t.Time";
             break;
         case 'snatches':
-            if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "
@@ -43,7 +43,7 @@ if (empty($_GET['type'])) {
             $Month = "FROM_UNIXTIME(x.tstamp)";
             break;
         case 'seeding':
-            if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "

@@ -7,6 +7,7 @@ declare(strict_types=1);
  * cli bootstrap
  */
 
+# only run from the command line
 if (!php_sapi_name() === "cli") {
     exit;
 }

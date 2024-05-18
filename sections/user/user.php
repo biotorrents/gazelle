@@ -184,13 +184,13 @@ if ($app->user->can(["admin" => "proxyImages"]) && !empty($CustomTitle)) {
       <ul class="stats nobullet">
         <li>Joined: <?=$JoinedDate?>
         </li>
-        <?php if (($Override = check_paranoia_here('lastseen'))) { ?>
+        <?php if (true) { ?>
         <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Last
           seen: <?=$LastAccess?>
           </li>
           <?php
         }
-if (($Override = check_paranoia_here('uploaded'))) {
+if (true) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
@@ -199,7 +199,7 @@ if (($Override = check_paranoia_here('uploaded'))) {
           </li>
           <?php
 }
-if (($Override = check_paranoia_here('downloaded'))) {
+if (true) {
     ?>
           <li
             class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
@@ -208,21 +208,21 @@ if (($Override = check_paranoia_here('downloaded'))) {
           </li>
           <?php
 }
-if (($Override = check_paranoia_here('ratio'))) {
+if (true) {
     ?>
           <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Ratio:
             <?=Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
             </li>
             <?php
 }
-if (($Override = check_paranoia_here('requiredratio')) && isset($RequiredRatio)) {
+if (isset($RequiredRatio)) {
     ?>
             <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Required
               Ratio: <span class="tooltip"
                 title="<?=Gazelle\Text::float((float) $RequiredRatio, 5)?>"><?=Gazelle\Text::float((float) $RequiredRatio, 2)?></span></li>
               <?php
 }
-if (($Override = check_paranoia_here('downloaded'))) {
+if (true) {
     ?>
               <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>>Total
                 Seeding: <span class="tooltip"
@@ -230,7 +230,7 @@ if (($Override = check_paranoia_here('downloaded'))) {
                   </li>
                   <?php
 }
-if ($isOwnProfile || ($Override = check_paranoia_here(false)) || $app->user->can(["admin" => "moderateUsers"])) {
+if ($isOwnProfile || $app->user->can(["admin" => "moderateUsers"])) {
     ?>
                   <li<?=($Override === 2 ? ' class="paranoia_override"' : '')?>><a
                       href="userhistory.php?action=token_history&amp;userid=<?=$userId?>">Tokens</a>:
@@ -249,7 +249,7 @@ if (($isOwnProfile || $app->user->can(["admin" => "moderateUsers"])) && $Warned)
     </div>
     <?php
 
-if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requestsfilled_bounty')) {
+if (true) {
     $app->dbOld->query("
     SELECT
       COUNT(DISTINCT r.ID),
@@ -262,7 +262,7 @@ if (check_paranoia_here('requestsfilled_count') || check_paranoia_here('requests
     $RequestsFilled = $TotalBounty = 0;
 }
 
-if (check_paranoia_here('requestsvoted_count') || check_paranoia_here('requestsvoted_bounty')) {
+if (true) {
     $app->dbOld->query("
     SELECT COUNT(RequestID), SUM(Bounty)
     FROM requests_votes
@@ -278,7 +278,7 @@ if (check_paranoia_here('requestsvoted_count') || check_paranoia_here('requestsv
     $RequestsVoted = $TotalSpent = $RequestsCreated = $RequestsCreatedSpent = 0;
 }
 
-if (check_paranoia_here('uploads+')) {
+if (true) {
     $app->dbOld->query("
     SELECT COUNT(ID)
     FROM torrents
@@ -288,7 +288,7 @@ if (check_paranoia_here('uploads+')) {
     $Uploads = 0;
 }
 
-if (check_paranoia_here('artistsadded')) {
+if (true) {
     $app->dbOld->query("
     SELECT COUNT(DISTINCT ArtistID)
     FROM torrents_artists
@@ -320,7 +320,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
     <div class="box box_info box_userinfo_percentile">
       <div class="head colhead_dark">Percentile Rankings (hover for values)</div>
       <ul class="stats nobullet">
-        <?php if (($Override = check_paranoia_here('uploaded'))) { ?>
+        <?php if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Format::get_size($Uploaded)?>">Data uploaded:
@@ -328,7 +328,7 @@ $OverallRank = UserRank::overall_score($UploadedRank, $DownloadedRank, $UploadsR
         </li>
         <?php
         }
-if (($Override = check_paranoia_here('downloaded'))) { ?>
+if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Format::get_size($Downloaded)?>">Data downloaded:
@@ -336,7 +336,7 @@ if (($Override = check_paranoia_here('downloaded'))) { ?>
         </li>
         <?php
 }
-if (($Override = check_paranoia_here('uploads+'))) { ?>
+if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Text::float($Uploads)?>">Torrents uploaded:
@@ -344,7 +344,7 @@ if (($Override = check_paranoia_here('uploads+'))) { ?>
         </li>
         <?php
 }
-if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
+if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Text::float($RequestsFilled)?>">Requests
@@ -352,7 +352,7 @@ if (($Override = check_paranoia_here('requestsfilled_count'))) { ?>
         </li>
         <?php
 }
-if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
+if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Format::get_size($TotalSpent)?>">Bounty spent:
@@ -362,7 +362,7 @@ if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
         <li class="tooltip" title="<?=Gazelle\Text::float($ForumPosts)?>">
           Posts made: <?=$PostRank === false ? 'Server busy' : Gazelle\Text::float($PostRank)?>
         </li>
-        <?php if (($Override = check_paranoia_here('artistsadded'))) { ?>
+        <?php if (true) { ?>
         <li
           class="tooltip<?=($Override === 2 ? ' paranoia_override' : '')?>"
           title="<?=Gazelle\Text::float($ArtistsAdded)?>">Artists added:
@@ -370,7 +370,7 @@ if (($Override = check_paranoia_here('requestsvoted_bounty'))) { ?>
         </li>
         <?php
         }
-if (check_paranoia_here(array('uploaded', 'downloaded', 'uploads+', 'requestsfilled_count', 'requestsvoted_bounty', 'artistsadded'))) { ?>
+if (true) { ?>
         <li><strong>Overall rank: <?=$OverallRank === false ? 'Server busy' : Gazelle\Text::float($OverallRank)?></strong>
         </li>
         <?php } ?>
@@ -552,7 +552,7 @@ if (!$Info) {
     </div>
     <?php
 
-if (check_paranoia_here('snatched')) {
+if (true) {
     $RecentSnatches = $app->cache->get("recent_snatches_$userId");
     if ($RecentSnatches === false) {
         $app->dbOld->prepared_query("
@@ -621,7 +621,7 @@ if (check_paranoia_here('snatched')) {
     }
 }
 
-if (check_paranoia_here('uploads')) {
+if (true) {
     $RecentUploads = $app->cache->get("recent_uploads_$userId");
     if ($RecentUploads === false) {
         $app->dbOld->prepared_query("

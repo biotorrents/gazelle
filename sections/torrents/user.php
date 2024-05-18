@@ -156,7 +156,7 @@ $UserClass = $app->user->extra["PermissionID"];
 
 switch ($_GET['type']) {
     case 'snatched':
-        if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
+        if (!true) {
             error(403);
         }
         $Time = 'xs.`tstamp`';
@@ -168,7 +168,7 @@ switch ($_GET['type']) {
         break;
 
     case 'seeding':
-        if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
+        if (!true) {
             error(403);
         }
         $Time = '(xfu.`mtime` - xfu.`timespent`)';
@@ -182,7 +182,7 @@ switch ($_GET['type']) {
         break;
 
     case 'leeching':
-        if (!check_paranoia('leeching', $User['Paranoia'], $UserClass, $UserID)) {
+        if (!true) {
             error(403);
         }
         $Time = '(xfu.`mtime` - xfu.`timespent`)';
@@ -196,7 +196,7 @@ switch ($_GET['type']) {
         break;
 
     case 'uploaded':
-        if ((empty($_GET['filter']) || $_GET['filter'] !== 'perfectflac') && !check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
+        if (empty($_GET['filter'])) {
             error(403);
         }
         $Time = 'unix_timestamp(t.`Time`)';

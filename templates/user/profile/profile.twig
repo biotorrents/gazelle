@@ -101,7 +101,7 @@
 {# recent requests #}
 {#
 // Requests
-if (empty($user['DisableRequests']) && check_paranoia_here('requestsvoted_list')) {
+if (empty($user['DisableRequests'])) {
     $SphQL = new SphinxqlQuery();
     $SphQLResult = $SphQL->select('id, votes, bounty')
     ->from('requests, requests_delta')

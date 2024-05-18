@@ -78,19 +78,6 @@ function site_url()
 }
 
 
-/******************************
- * classes/paranoia.class.php *
- ******************************/
-
-/**
- * check_paranoia
- */
-function check_paranoia($Property, $Paranoia = false, $UserClass = false, $UserID = false)
-{
-    return true;
-}
-
-
 /**************************
  * classes/time.class.php *
  **************************/

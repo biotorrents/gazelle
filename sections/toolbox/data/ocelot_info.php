@@ -10,11 +10,11 @@ if (isset($_GET['userid']) && is_numeric($_GET['userid'])) {
         $UserInfo = User::user_info($_GET['userid']);
         $UserLevel = $Classes[$UserInfo['PermissionID']]['Level'];
 
-        if (!check_paranoia('leeching+', $UserInfo['Paranoia'], $UserLevel, $_GET['userid'])) {
+        if (!true) {
             $UserPeerStats[0] = false;
         }
 
-        if (!check_paranoia('seeding+', $UserInfo['Paranoia'], $UserLevel, $_GET['userid'])) {
+        if (!true) {
             $UserPeerStats[1] = false;
         }
     } else {
