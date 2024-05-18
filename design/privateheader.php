@@ -313,7 +313,7 @@ if ($app->user->can(["admin" => "unlimitedInvites"])) {
 
 <!-- OLD USER INFO
         <li id="nav_staff">
-          <a href="staff.php">Staff</a>
+          <a href="/staff">Staff</a>
         </li>
       </ul>
 

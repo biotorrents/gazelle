@@ -1085,7 +1085,7 @@ if (!$DisablePoints) {
     if ($app->user->can(["admin" => "manageTechSupport"]) || ($app->user->can(["admin" => "moderateUsers"]) && $isOwnProfile)) {
         ?>
       <tr>
-        <td class="label tooltip" title="This is the message shown in the right-hand column on /staff.php">FLS/Staff
+        <td class="label tooltip" title="This is the message shown in the right-hand column on /staff">FLS/Staff
           remark:</td>
         <td><input type="text" class="wide_input_text" name="SupportFor"
             value="<?=Gazelle\Text::esc($SupportFor)?>" /></td>

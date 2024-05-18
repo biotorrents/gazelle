@@ -332,6 +332,35 @@ class Roles extends ObjectCrud
     }
 
 
+    /**
+     * getAllStaff
+     *
+     * Gets all staff members.
+     *
+     * @return array
+     */
+    public static function getAllStaff(): array
+    {
+        $app = App::go();
+
+        $query = "
+            select users.id, roles_permissions.isStaffRole from users
+            left join users_main on users.id = users_main.userId
+            left join roles_permissions on users_main.permissionId = roles_permissions.id
+            where roles_permissions.isStaffRole = 1
+            order by roles_permissions.id asc
+        ";
+        $ref = $app->dbNew->multi($query, []);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = $app->user->readProfile($row["id"]);
+        }
+
+        return $data;
+    }
+
+
     /** legacy code */
 
 

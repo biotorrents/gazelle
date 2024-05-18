@@ -1389,6 +1389,9 @@ class Users extends ObjectCrud
             . $data["extra"]["torrent_pass"]
         );
 
+        # role
+        $data["role"] = new Roles($data["extra"]["PermissionID"]);
+
         # permissions
         $query = "select id, name, `values` from permissions where id = ?";
         $row = $app->dbNew->row($query, [ $data["extra"]["PermissionID"] ]);

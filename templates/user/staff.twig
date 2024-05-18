@@ -1,0 +1,37 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>{{ env.siteName }} Staff</h2>
+
+	<p>
+        If you're looking for help with a general question,
+        we appreciate it if you'd only message through the staff inbox,
+        where we can all help you.
+    </p>
+
+	<p>
+		<a href="/staffpm.php" class="button button-primary">send a staff pm</a>
+	</p>
+
+	<table>
+		<thead>
+			<th>Username</th>
+			<th>Class</th>
+			<th>Last login</th>
+			<th>Actions</th>
+		</thead>
+
+		<tbody>
+			{% for item in staff %}
+				<tr>
+					<td>{{ item.core.username }}</td>
+					<td>{{ item.role.attributes.friendlyName }}</td>
+					<td>{{ item.core.last_login|relativeTime }}</td>
+					<td><a href="/user.php?id={{ item.core.id }}" class="button">view profile</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+{% endblock %}

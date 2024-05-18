@@ -12,3 +12,10 @@ Flight::route("/friends", function () {
     $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/friends.php";
 });
+
+
+# staff
+Flight::route("/staff", function () {
+    $app = Gazelle\App::go();
+    require_once "{$app->env->serverRoot}/sections/user/staff.php";
+});
