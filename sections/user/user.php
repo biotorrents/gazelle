@@ -16,15 +16,29 @@ Gazelle\Http::csrf();
 $get = Gazelle\Http::request("get");
 $post = Gazelle\Http::request("post");
 
-$get["id"] ??= null;
-$userId = Gazelle\Escape::int($get["id"]);
+# are they searching? only direct hits are allowed
+$get["search"] ??= null;
+if ($get["search"]) {
+    $query = "select id from users where username = ?";
+    $userId = $app->dbNew->single($query, [ $get["search"] ]);
 
+    if (!$userId) {
+        $app->error(404);
+    }
+} else {
+    $get["id"] ??= null;
+    $userId = Gazelle\Escape::int($get["id"]);
+}
+
+# are they previewing their own profile?
 $get["previewMode"] ??= null;
 $previewMode = Gazelle\Escape::bool($get["previewMode"]);
 
 # user data
 $data = $app->user->readProfile($userId);
-#!d($data);exit;
+if (empty($data)) {
+    $app->error(404);
+}
 
 # own profile?
 $isOwnProfile = false;
@@ -63,23 +77,18 @@ if ($isOwnProfile) {
 
 
 $recentSnatches = $app->user->recentSnatches($userId);
-#!d($recentSnatches);exit;
-
 $recentUploads = $app->user->recentUploads($userId);
-#!d($recentUploads);exit;
-
 $recentRequests = $app->user->recentRequests($userId);
-#!d($recentRequests);exit;
-
 $recentCollages = $app->user->recentCollages($userId);
-#!d($recentCollages);exit;
 
 
 /** user stats */
 
 
 $communityStats = $app->user->communityStats($userId);
-#!d($communityStats);exit;
+$torrentStats = $app->user->torrentStats($userId);
+$torrentClients = $torrentStats["torrentClients"];
+$percentileStats = $app->user->percentileStats($userId);
 
 # build request stats
 $requestStats = [];
@@ -90,6 +99,9 @@ foreach ($communityStats as $key => $value) {
     }
 }
 
+# user ratio
+$ratio = $torrentStats["ratio"];
+
 # unset comments
 unset($communityStats["collageComments"]);
 unset($communityStats["creatorComments"]);
@@ -98,20 +110,8 @@ unset($communityStats["torrentComments"]);
 
 # unset misc
 unset($communityStats["ircLines"]);
-
-
-$torrentStats = $app->user->torrentStats($userId);
-#!d($torrentStats);exit;
-
-# unset misc
-$ratio = $torrentStats["ratio"];
 unset($torrentStats["ratio"]);
-
-$torrentClients = $torrentStats["torrentClients"];
 unset($torrentStats["torrentClients"]);
-
-$percentileStats = $app->user->percentileStats($userId);
-#!d($percentileStats);exit;
 
 
 /** twig template */

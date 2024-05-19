@@ -2,11 +2,8 @@
 <section>
 <h3>Actions</h3>
 
-<form method="post" action="/wiki/browse">
-    {{ form_token("/wiki/browse") }}
-
+<form method="get" action="/wiki/browse">
     <input type="text" name="search" placeholder="Find wiki articles" required>
-
     <input type="submit" class="button-primary" value="search the wiki">
 </form>
 

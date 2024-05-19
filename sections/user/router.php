@@ -58,14 +58,6 @@ switch ($_REQUEST['action']) {
         Gazelle\Http::redirect("user.php?action=notify");
         break;
 
-    case 'search':// User search
-        if ($app->user->can(["admin" => "advancedUserSearch"]) && $app->user->can(["admin" => "sensitiveUserData"]) && $app->user->can(["admin" => "sensitiveUserData"])) {
-            require_once 'advancedsearch.php';
-        } else {
-            require_once 'search.php';
-        }
-        break;
-
     case 'edit':
         require_once 'edit.php';
         break;
@@ -125,9 +117,6 @@ switch ($_REQUEST['action']) {
         break;
 
     default:
-        if (isset($_REQUEST['id'])) {
-            require_once serverRoot . '/sections/user/user.php';
-        } else {
-            #Gazelle\Http::redirect("index.php");
-        }
+        require_once serverRoot . '/sections/user/user.php';
+        break;
 }

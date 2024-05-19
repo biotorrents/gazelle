@@ -14,8 +14,8 @@ Gazelle\Http::csrf();
 $get = Gazelle\Http::get();
 $post = Gazelle\Http::post();
 
-$searchWhat = $post["search"] ?? null;
-$titlesOnly = boolval($post["titlesOnly"] ?? false);
+$searchWhat = $get["search"] ?? null;
+$titlesOnly = boolval($get["titlesOnly"] ?? null);
 
 $searchResults = Gazelle\Wiki::search($searchWhat, $titlesOnly);
 $resultCount = count($searchResults);

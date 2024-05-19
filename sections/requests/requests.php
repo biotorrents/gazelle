@@ -13,7 +13,7 @@ $get = Gazelle\Http::request("get");
 # workaround for main navigation search
 $get["search"] ??= null;
 if ($get["search"]) {
-    $get["complexSearch"] = $get["search"];
+    $get["simpleSearch"] = $get["search"];
 }
 
 $searchTerms = [

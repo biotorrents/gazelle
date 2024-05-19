@@ -7,9 +7,7 @@
 <section>
     <h2>Search the wiki</h2>
 
-    <form method="post">
-        {{ form_token("") }}
-
+    <form method="get">
         <input type="text" name="search" value="{{ (searchWhat) ? searchWhat : "" }}" placeholder="Leave empty to show all articles" style="width: 100%;">
 
         <br><br>

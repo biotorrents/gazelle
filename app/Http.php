@@ -32,8 +32,8 @@ class Http
             exit;
         }
 
-        $parsed = parse_url($uri);
-        $uri = htmlentities($uri);
+        $parsed = parse_url($uri); # can we parse the uri?
+        #$uri = htmlentities($uri); # messes up universal search
 
         $parsed["scheme"] ??= null;
         $parsed["host"] ??= null;

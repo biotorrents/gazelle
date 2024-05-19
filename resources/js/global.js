@@ -137,13 +137,6 @@
         $("#toggleIcon").html("<i class='fal fa-bars'></i>");
       }
     });
-
-    // change the search bar target
-    // https://stackoverflow.com/a/16750165
-    $("#searchWhat").on("change", function () {
-      let action = $(this).val();
-      $("#universalSearch").attr("action", action + ".php");
-    });
   }); // end main menu
 })(); // end iife
 
