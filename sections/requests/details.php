@@ -1,11 +1,90 @@
 <?php
-#declare(strict_types = 1);
 
-/*
- * This is the page that displays the request to the end user after being created.
+declare(strict_types=1);
+
+
+/**
+ * request page
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
+
+Gazelle\Http::csrf();
+
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
+
+# resolve the id
+$identifier ??= null;
+if (!$identifier) {
+    $app->error(404);
+}
+
+try {
+    # load the request
+    $request = new Gazelle\Requests($identifier);
+    #!d($request);exit;
+} catch (Throwable $e) {
+    $app->error(404);
+}
+
+# handle a vote
+$post["submitVote"] ??= null;
+if ($post["submitVote"]) {
+    try {
+        # validate the amount
+        $voteAmount = $post["voteAmount"] ?? null;
+        if (empty($voteAmount)) {
+            throw new Exception("invalid vote amount");
+        }
+
+        # validate the units
+        $voteUnits = $post["voteUnits"] ?? null;
+        if (!in_array($voteUnits, ["MiB", "BiG"])) {
+            throw new Exception("invalid vote units");
+        }
+
+        # convert the vote into bytes
+        $voteBytes = match ($voteUnits) {
+            "MiB" => $voteAmount * 1024 * 1024,
+            "GiB" => $voteAmount * 1024 * 1024 * 1024,
+            default => throw new Exception("invalid vote units"),
+        };
+
+        # create the vote
+        $request->createVote($app->user->core["id"], $voteBytes);
+        $successMessage = "Thanks for voting on this request!";
+    } catch (Throwable $e) {
+        $errorMessage = $e->getMessage();
+    }
+}
+
+# create a conversation if it doesn't exist
+$conversation = Gazelle\Conversations::createIfNotExists($request->id, "requests");
+#!d($conversation->relationships->messages);exit;
+
+# twig template
+$app->twig->display("requests/details.twig", [
+  "title" => $request->attributes->title,
+  "sidebar" => true,
+
+  "successMessage" => $successMessage ?? null,
+  "errorMessage" => $errorMessage ?? null,
+
+  "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "conversations", "torrent", "recommend", "cover_art", "subscriptions"],
+  "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+
+  "request" => $request,
+  "isBookmarked" => false, # todo
+  "isSubscribed" => false, # todo
+
+  "enableConversation" => true,
+  "conversation" => $conversation,
+]);
+
+
+exit;
+
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     error(0);

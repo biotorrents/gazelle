@@ -105,9 +105,10 @@ abstract class ObjectCrud
         $query = "select * from {$this->type} where {$column} = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$identifier]);
 
-        # set the id
-        $this->id = $row["id"];
+        # set the id, with workaround for legacy ID columns
+        $this->id = $row["id"] ?? $row["ID"] ?? null;
         unset($row["id"]);
+        unset($row["ID"]);
 
         # map database => display
         $attributes = [];

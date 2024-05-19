@@ -1,0 +1,72 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h2>{{ request.attributes.title }}</h2>
+
+{# success and error messages #}
+{% if successMessage %}
+    <div class="alertbar success">{{ successMessage }}</div>
+{% endif %}
+
+{% if errorMessage %}
+    <div class="alertbar failure">{{ errorMessage }}</div>
+{% endif %}
+
+
+{# essential details table #}
+<section>
+
+	<table>
+		{# created #}
+		<tr>
+			<th><span class="nobr">Created</span></th>
+            <td>
+          	    {{ request.attributes.createdAt|relativeTime }}
+                by
+                {{ request.attributes.userId|formatUsername }}
+			</td>
+		</tr>
+
+        {# bounty #}
+		<tr>
+			<th><span class="nobr">Bounty</span></th>
+            <td>{{ request.attributes.bounty|get_size }}</td>
+		</tr>
+
+		{# votes #}
+		<tr>
+			<th><span class="nobr">Votes</span></th>
+            <td>{{ request.attributes.voteCount|number_format }}</td>
+		</tr>
+
+		{# last voted #}
+		<tr>
+			<th><span class="nobr">Last vote</span></th>
+            <td>{{ request.attributes.lastVote|relativeTime }}</td>
+		</tr>
+	</table>
+
+</section>
+
+
+{# description #}
+<section>
+	<h3>Description</h3>
+    {{ request.attributes.description|parse }}
+</section>
+
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "requests/sidebar.twig" %}
+
+{% endblock %}

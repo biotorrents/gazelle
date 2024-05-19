@@ -15,6 +15,7 @@ class Requests extends ObjectCrud
     public ?int $id = null; # primary key
     public string $type = "requests"; # database table
     public ?RecursiveCollection $attributes = null;
+    public ?RecursiveCollection $relationships = null;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -44,6 +45,165 @@ class Requests extends ObjectCrud
     # cache settings
     private string $cachePrefix = "requests:";
     private string $cacheDuration = "1 hour";
+
+
+    /**
+     * read
+     *
+     * @param int|string $identifier
+     * @return void
+     */
+    public function read(string|int $identifier = null): void
+    {
+        $app = App::go();
+
+        parent::read($identifier);
+
+        # get the voteCount
+        $query = "select count(*) from requests_votes where requestId = ?";
+        $this->attributes->voteCount = $app->dbNew->single($query, [$this->id]);
+
+        # get the bounty
+        $query = "select sum(bounty) from requests_votes where requestId = ?";
+        $this->attributes->bounty = $app->dbNew->single($query, [$this->id]);
+    }
+
+
+    /**
+     * relationships
+     */
+    public function relationships(): void
+    {
+        $app = App::go();
+
+        $this->relationships = new RecursiveCollection([
+            #"user" => $app->user->readProfile($this->attributes->userId),
+            "creators" => $this->getCreators(),
+            "tags" => $this->getTags(),
+            "votes" => $this->getVotes(),
+        ]);
+    }
+
+
+    /**
+     * getCreators
+     *
+     * Gets the creators associated with a request.
+     *
+     * @return array
+     */
+    public function getCreators(): array
+    {
+        $app = App::go();
+
+        $query = "
+            select requests_artists.artistId, artists_group.name from requests_artists
+            join artists_group on requests_artists.artistId = artists_group.artistId
+            where requests_artists.requestId = ?
+        ";
+        $ref = $app->dbNew->multi($query, [$this->id]);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = [
+                "id" => $row["artistId"],
+                "name" => $row["name"],
+            ];
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * getTags
+     *
+     * Gets the tags associated with a request.
+     *
+     * @return array
+     */
+    public function getTags(): array
+    {
+        $app = App::go();
+
+        $query = "
+            select requests_tags.tagId, tags.name from requests_tags
+            join tags on requests_tags.tagId = tags.id
+            where requests_tags.requestId = ?
+        ";
+        $ref = $app->dbNew->multi($query, [$this->id]);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = [
+                "id" => $row["tagId"],
+                "name" => $row["name"],
+            ];
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * getVotes
+     */
+    public function getVotes()
+    {
+        $app = App::go();
+
+        $query = "
+            select requests_votes.userId, requests_votes.bounty, users.username from requests_votes
+            join users on requests_votes.userId = users.id
+            where requests_votes.requestId = ?
+            order by requests_votes.bounty desc
+        ";
+        $ref = $app->dbNew->multi($query, [$this->id]);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = [
+                "userId" => $row["userId"],
+                "username" => $row["username"],
+                "bounty" => $row["bounty"],
+            ];
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * createVote
+     *
+     * Adds a vote to a request.
+     *
+     * @param int $userId
+     * @param int $bounty
+     * @return void
+     */
+    public function createVote(int $userId, int $bounty): void
+    {
+        $app = App::go();
+
+        # is it filled?
+        if ($this->attributes->isFilled) {
+            throw new Exception("request is already filled");
+        }
+
+        # can they afford it?
+        $userData = $app->user->readProfile($userId);
+        if ($userData["extra"]["Uploaded"] < $bounty) {
+            throw new Exception("user does not have enough upload credit");
+        }
+
+        # insert the vote record
+        $query = "insert ignore into requests_votes (requestId, userId, bounty) values (?, ?, ?)";
+        $app->dbNew->do($query, [$this->id, $userId, $bounty]);
+    }
+
+
+    /** legacy */
 
 
     /**

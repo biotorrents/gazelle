@@ -186,7 +186,9 @@
 
 <td class="right">
 {% if can({"torrentGroups": "updateAny", "creators": "deleteAny"}) %}
-	<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
+	<a id="deleteCreatorFromTorrent" class="conversationButton tooltip" title="delete" data-creatorid={{ item.id }}>
+		<i class="fa-thin fa-trash" data-creatorid={{ item.id }}></i>
+	</a>
 {% endif %}
 </td>
 </tr>
@@ -222,7 +224,9 @@
 
 <td class="right">
 {% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
-<a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
+	<a id="deleteGroupTag" class="conversationButton tooltip deleteGroupTag" title="delete" data-tagid={{ item.id }} data-groupid={{ groupId }}>
+		<i class="fa-thin fa-trash" data-tagid={{ item.id }} data-groupid={{ groupId }}></i>
+	</a>
 {% endif %}
 
 </td>
@@ -240,7 +244,9 @@
 
 <td class="right">
 {% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
-<a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
+	<a id="deleteGroupTag" class="conversationButton tooltip deleteGroupTag" title="delete" data-tagid={{ item.id }} data-groupid={{ groupId }}>
+		<i class="fa-thin fa-trash" data-tagid={{ item.id }} data-groupid={{ groupId }}></i>
+	</a>
 {% endif %}
 
 </td>
