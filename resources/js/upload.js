@@ -36,12 +36,11 @@
         });
 
         // hide all but selected
-        let categoryId = $(event.target).val();
+        const categoryId = parseInt($(event.target).val());
 
         // formats
         formats.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -52,8 +51,7 @@
 
         // platforms
         platforms.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -64,8 +62,7 @@
 
         // scopes
         scopes.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -75,15 +72,18 @@
         });
 
         // hardcoded seqhash handling
-        if (categoryId === "1") {
+        if (categoryId === 1) {
             $("#seqhashRow").show();
         } else {
             $("#seqhashRow").hide();
         }
 
         // display the correct category description
-        // todo: this is broken with the new metadata
-        $("#categoryDescription").html(env.categories[categoryId].description);
+        Object.values(env.categories).forEach((element) => {
+            if (element.id === categoryId) {
+                $("#categoryDescription").html(element.description);
+            }
+        });
     });
 
 
@@ -102,11 +102,12 @@
 
         // sanity check
         if (!request.paperId || request.paperId.length === 0) {
+            $("#autofillLoader").hide();
             return false;
         }
 
         // ajax request
-        $.ajax("/api/internal/deleteBookmark", {
+        $.ajax("/api/internal/doiNumberAutofill", {
             method: "POST",
             headers: { "Authorization": "Bearer " + frontendHash },
 
@@ -116,12 +117,6 @@
             data: JSON.stringify(request),
 
             success: (response) => {
-                // hide ajax spinner
-                $("#autofillLoader").hide();
-            },
-
-            error: (response) => {
-                // hide ajax spinner
                 $("#autofillLoader").hide();
 
                 $("#title").val(response.data.title);
@@ -131,6 +126,10 @@
                 $("#literature").val(response.data.literature.join("\n"));
                 $("#creatorList").val(response.data.creatorList.join("\n"));
                 $("#workgroup").val(response.data.workgroup);
+            },
+
+            error: (response) => {
+                $("#autofillLoader").hide();
             },
         });
     });

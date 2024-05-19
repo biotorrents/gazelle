@@ -276,7 +276,8 @@ class Twig extends \Twig\Environment
         # Gazelle\Text::camel
         $twig->addFilter(new \Twig\TwigFilter("camel", function ($string) {
             return new \Twig\Markup(
-                Text::camel($string),
+                # remove slashes, e.g., "Scalars/Vectors" -> "scalarsVectors"
+                str_replace("/", "", Text::camel($string)),
                 "UTF-8"
             );
         }));
