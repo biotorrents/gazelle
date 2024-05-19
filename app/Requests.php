@@ -46,6 +46,9 @@ class Requests extends ObjectCrud
     private string $cachePrefix = "requests:";
     private string $cacheDuration = "1 hour";
 
+    # request tax
+    private float $requestTax = 0.2;
+
 
     /**
      * read
@@ -197,9 +200,20 @@ class Requests extends ObjectCrud
             throw new Exception("user does not have enough upload credit");
         }
 
+        # calculate the bounty after tax
+        $bountyAfterTax = $bounty * (1 - $this->requestTax);
+
         # insert the vote record
         $query = "insert ignore into requests_votes (requestId, userId, bounty) values (?, ?, ?)";
-        $app->dbNew->do($query, [$this->id, $userId, $bounty]);
+        $app->dbNew->do($query, [$this->id, $userId, $bountyAfterTax]);
+
+        # update the request's last vote time
+        $query = "update requests set lastVote = now() where id = ?";
+        $app->dbNew->do($query, [$this->id]);
+
+        # subtract the original bounty from the user
+        $query = "update users_main set uploaded = uploaded - ? where id = ?";
+        $app->dbNew->do($query, [$bounty, $userId]);
     }
 
 
