@@ -554,9 +554,10 @@ class Internal extends Base
             ];
 
             # doi numbers: the paper itself is first
-            $data["literature"] = [ $response["externalIds"]["DOI"] ?? null ];
+            $data["literature"] = [ $response["externalIds"]["DOI"] ] ?? null;
 
             # sort citations by citationCount, descending
+            $response["citations"] ??= [];
             usort($response["citations"], function ($a, $b) {
                 if ($a["citationCount"] === $b["citationCount"]) {
                     return 0;
@@ -587,6 +588,7 @@ class Internal extends Base
             } # foreach ($response["citations"] as $citation)
 
             # creatorList
+            $response["authors"] ??= [];
             foreach ($response["authors"] as $creator) {
                 if (!$creator["name"] || empty($creator["name"])) {
                     continue;
