@@ -34,6 +34,15 @@ class SiteLog extends ObjectCrud
     private string $cachePrefix = "siteLog:";
     private string $cacheDuration = "1 hour";
 
+    # allowed contentType values
+    private array $allowedTypes = [
+        "torrent",
+        "group",
+        "creator",
+        "collage",
+        "request",
+    ];
+
 
     /**
      * relationships
@@ -45,6 +54,43 @@ class SiteLog extends ObjectCrud
         $this->relationships = new RecursiveCollection([
             "user" => $app->user->readProfile($this->attributes->userId),
         ]);
+    }
+
+
+    /**
+     * search
+     *
+     * Search the site log.
+     *
+     * @param string $search
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
+    public function search(string $search, int $offset = 0, int $limit = 20): array
+    {
+        $app = App::go();
+
+        $words = explode(" ", $search);
+        $query = "select * from site_log where description like ? order by created_at desc limit $offset, $limit";
+        $ref = $app->dbNew->multi($query, ["%" . implode("%", $words) . "%"]);
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = [
+                "id" => $row["id"],
+                "userId" => $row["userId"],
+                "contentId" => $row["contentId"],
+                "contentType" => $row["contentType"],
+                "action" => $row["action"],
+                "description" => $row["description"],
+                "createdAt" => $row["created_at"],
+                "updatedAt" => $row["updated_at"],
+                "deletedAt" => $row["deleted_at"],
+            ];
+        }
+
+        return $data;
     }
 
 
