@@ -82,16 +82,12 @@ class TorrentGroups extends ObjectCrud
     {
         $app = App::go();
 
-        $query = "select artistId from torrents_artists where groupId = ?";
+        $query = "select creatorId from creators_groups where groupId = ?";
         $ref = $app->dbNew->multi($query, [$this->id]);
 
         $data = [];
         foreach ($ref as $row) {
-            $query = "select * from artists_group where artistId = ?";
-            $data[] = $app->dbNew->row($query, [ $row["artistId"] ]);
-
-            # this needs to happen after creator objects
-            #$data[] = new Creators($row["creatorId"]);
+            $data[] = new Creators($row["creatorId"]);
         }
 
         return $data;

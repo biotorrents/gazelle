@@ -222,10 +222,10 @@ class Collages extends ObjectCrud
             # load the torrent group
             $torrentGroup = new TorrentGroups($row["groupId"]);
 
-            # get the topCreators: needs refactor after creatorObjects
+            # get the top creators
             foreach ($torrentGroup->relationships->creators as $creator) {
-                $return["topCreators"][$creator->ArtistID] ??= 0;
-                $return["topCreators"][$creator->ArtistID] += 1;
+                $return["topCreators"][$creator->id] ??= 0;
+                $return["topCreators"][$creator->id] += 1;
             }
 
             # get the topContributors

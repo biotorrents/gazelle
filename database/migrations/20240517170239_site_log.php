@@ -29,12 +29,12 @@ final class SiteLog extends AbstractMigration
                 `contentType` varchar(255) NOT NULL,
                 `action` ENUM('create', 'read', 'update', 'delete') NOT NULL,
                 `description` varchar(255) NOT NULL,
-                `created_at` datetime DEFAULT current_timestamp(),
-                `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
-                `deleted_at` datetime DEFAULT NULL,
+                `createdAt` datetime DEFAULT current_timestamp(),
+                `updatedAt` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+                `deletedAt` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                INDEX `user_content_id` (`userId`, `contentId`),
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+                INDEX `user_content_id` (`userId`, `contentId`)
+            )
         ";
 
         $app->dbNew->do($query);
