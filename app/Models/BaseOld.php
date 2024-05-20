@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Models\Base
+ * Gazelle\Models\BaseOld
  *
  * Eloquent model wrapper class.
  *
@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace Gazelle\Models;
 
-class Base extends \Illuminate\Database\Eloquent\Model
+class BaseOld extends \Illuminate\Database\Eloquent\Model
 {
     # https://laravel.com/docs/master/eloquent#soft-deleting
     use \Illuminate\Database\Eloquent\SoftDeletes;

@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Gazelle\Models;
 
-class Group extends Base
+class Group extends BaseOld
 {
     # the table associated with the model
     protected $table = "torrents_group";
