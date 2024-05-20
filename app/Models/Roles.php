@@ -18,6 +18,7 @@ class Roles extends ObjectCrud
     public ?int $id = null; # primary key
     public string $type = "roles_permissions"; # database table
     public ?RecursiveCollection $attributes = null;
+    public ?RecursiveCollection $relationships = null;
 
     # ["database" => "display"]
     protected array $maps = [

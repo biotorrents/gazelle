@@ -12,7 +12,7 @@ $app = Gazelle\App::go();
 $app->recursiveGlob(__DIR__ . "/web");
 
 
-# todo: universal search in main menu
+# universal search in main menu
 Flight::route("/universalSearch", function () {
     $app = Gazelle\App::go();
 
@@ -30,6 +30,15 @@ Flight::route("/universalSearch", function () {
         default => $app->error(404),
     };
 });
+
+
+# test script for development
+if ($app->env->dev) {
+    Flight::route("/scratchpad", function () {
+        $app = Gazelle\App::go();
+        require_once __DIR__ . "/../utilities/scratchpad.php";
+    });
+}
 
 
 # not found

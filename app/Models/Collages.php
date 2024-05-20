@@ -52,7 +52,7 @@ class Collages extends ObjectCrud
         $app = App::go();
 
         $this->relationships = new RecursiveCollection([
-            "creator" => $app->user->readProfile($this->attributes->userId),
+            "users" => $app->user->readProfile($this->attributes->userId),
             #"subscribers" => $this->subscribers(),
             #"torrentGroups" => $this->torrentGroups(),
         ]);
@@ -220,10 +220,10 @@ class Collages extends ObjectCrud
         # loop through it
         foreach ($ref as $row) {
             # load the torrent group
-            $torrentGroup = Models\Group::find($row["groupId"]);
+            $torrentGroup = new TorrentGroups($row["groupId"]);
 
             # get the topCreators: needs refactor after creatorObjects
-            foreach ($torrentGroup->creators as $creator) {
+            foreach ($torrentGroup->relationships->creators as $creator) {
                 $return["topCreators"][$creator->ArtistID] ??= 0;
                 $return["topCreators"][$creator->ArtistID] += 1;
             }
