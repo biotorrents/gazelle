@@ -1,5 +1,5 @@
 {# freeleech #}
-{% if not newTorrent and can("torrents_freeleech") %}
+{% if not newTorrent and can({"admin": "freeleechTorrents"}) %}
 	<tr>
 		<th>
 			<label for="freeleechType">Freeleech</label>

@@ -6,7 +6,7 @@ $app = \Gazelle\App::go();
  * This page simply assings a report to the person clicking on
  * the Claim / Claim all button.
  */
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     //error(403);
     echo '403';
     error();

@@ -150,9 +150,9 @@ foreach ($TorrentList as $GroupID => $Group) {
     foreach ($Group['Torrents'] as $TorrentID => $Torrent) {
         $NumTorrents++;
 
-        $Torrent['Seeders'] = (int)$Torrent['Seeders'];
-        $Torrent['Leechers'] = (int)$Torrent['Leechers'];
-        $Torrent['Snatched'] = (int)$Torrent['Snatched'];
+        $Torrent['Seeders'] = (int) $Torrent['Seeders'];
+        $Torrent['Leechers'] = (int) $Torrent['Leechers'];
+        $Torrent['Snatched'] = (int) $Torrent['Snatched'];
 
         $NumSeeders += $Torrent['Seeders'];
         $NumLeechers += $Torrent['Leechers'];
@@ -201,11 +201,11 @@ foreach ($TorrentList as $Group) {
             'torrents/display_name.html',
             [
               'g' => $Group,
-              'url' => Format::get_url($_GET),
+              'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
               'artists' => Artists::display_artists($Artists),
-              'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+              'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Data, true, true),
             ]
         );
@@ -253,8 +253,8 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
-            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$app->user->extra['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
+        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "updateAny"])) {
+            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : ''); ?>
@@ -304,7 +304,7 @@ foreach ($TorrentList as $Group) {
         }
 
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->user->extra['AuthKey']."&amp;torrent_pass=".$app->user->extra['torrent_pass']; ?>
+        $TorrentDL = "torrents.php?action=download&amp;id=" . $TorrentID . "&amp;authkey=" . $app->user->extra['AuthKey'] . "&amp;torrent_pass=" . $app->user->extra['torrent_pass']; ?>
     <tr
       class="torrent_row groupid_<?=$GroupID?> group_torrent discog<?=$SnatchedTorrentClass . $SnatchedGroupClass . $HideTorrents?>">
       <td colspan="2">
@@ -325,7 +325,7 @@ foreach ($TorrentList as $Group) {
         &nbsp;&nbsp;&raquo;&nbsp; <a
           href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
       </td>
-      <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+      <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
       </td>
       <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
@@ -353,11 +353,11 @@ foreach ($TorrentList as $Group) {
             'torrents/display_name.html',
             [
               'g' => $Group,
-              'url' => Format::get_url($_GET),
+              'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process(($CoverArt ?? ""), 'thumb'),
               'artists' => Artists::display_artists($Artists),
-              'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
+              'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Torrent, true, true),
             ]
         );
@@ -415,8 +415,8 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if (check_perms('users_mod') || check_perms('torrents_fix_ghosts')) {
-            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid='.$GroupID.'&amp;artistid='.$ArtistID.'&amp;auth='.$app->user->extra['AuthKey'].'" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
+        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "updateAny"])) {
+            $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
         #$ExtraInfo = Torrents::torrent_info($Torrent, true, true);
@@ -424,7 +424,7 @@ foreach ($TorrentList as $Group) {
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
 
-        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->user->extra['AuthKey']."&amp;torrent_pass=".$app->user->extra['torrent_pass']; ?>
+        $TorrentDL = "torrents.php?action=download&amp;id=" . $TorrentID . "&amp;authkey=" . $app->user->extra['AuthKey'] . "&amp;torrent_pass=" . $app->user->extra['torrent_pass']; ?>
     <tr
       class="torrent<?=$SnatchedTorrentClass . $SnatchedGroupClass?>">
       <td class="center">
@@ -467,7 +467,7 @@ foreach ($TorrentList as $Group) {
           <div style="display: inline;" class="torrent_info">
             <?=$ExtraInfo?>
             <?php if ($Reported) { ?>
-            / <?= Format::torrent_label('Reported', 'important_text') ?>
+            / <?= \Gazelle\Format::torrent_label('Reported', 'important_text') ?>
             <?php } ?>
           </div>
           <div class="tags">
@@ -475,7 +475,7 @@ foreach ($TorrentList as $Group) {
           </div>
         </div>
       </td>
-      <td class="number_column nobr"><?=Format::get_size($Torrent['Size'])?>
+      <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
       </td>
       <td class="number_column"><?=\Gazelle\Text::float($Torrent['Snatched'])?>
       </td>
@@ -508,14 +508,14 @@ View::header($Name, 'browse,requests,recommend,subscriptions');
     <h2><?=\Gazelle\Text::esc($Name)?><?php if ($RevisionID) { ?> (Revision #<?=$RevisionID?>)<?php } ?>
     </h2>
     <div class="linkbox">
-      <?php if (check_perms('site_submit_requests')) { ?>
+      <?php if ($app->user->can(["requests" => "create"])) { ?>
       <a href="requests.php?action=new&amp;artistid=<?=$ArtistID?>"
         class="brackets">Add request</a>
       <?php
       }
 
-if (check_perms('site_torrents_notify')) {
-    if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
+if ($app->user->can(["notifications" => "read"])) {
+    if (($Notify = $app->cache->get('notify_artists_' . $app->user->core['id'])) === false) {
         $app->dbOld->query("
       SELECT ID, Artists
       FROM users_notify_filters
@@ -523,7 +523,7 @@ if (check_perms('site_torrents_notify')) {
         AND Label = 'Artist notifications'
       LIMIT 1");
         $Notify = $app->dbOld->next_record(MYSQLI_ASSOC, false);
-        $app->cache->set('notify_artists_'.$app->user->core['id'], $Notify, 0);
+        $app->cache->set('notify_artists_' . $app->user->core['id'], $Notify, 0);
     }
     $Notify['Artists'] ??= "";
     if (stripos($Notify['Artists'], "|$Name|") === false) {
@@ -538,13 +538,13 @@ if (check_perms('site_torrents_notify')) {
     }
 }
 
-  if (Bookmarks::isBookmarked('artist', $ArtistID)) {
-      ?>
+if (Bookmarks::isBookmarked('artist', $ArtistID)) {
+    ?>
       <a href="#" id="bookmarklink_artist_<?=$ArtistID?>"
         onclick="Unbookmark('artist', <?=$ArtistID?>, 'Bookmark'); return false;"
         class="brackets">Remove bookmark</a>
       <?php
-  } else { ?>
+} else { ?>
       <a href="#" id="bookmarklink_artist_<?=$ArtistID?>"
         onclick="Bookmark('artist', <?=$ArtistID?>, 'Remove bookmark'); return false;"
         class="brackets">Bookmark</a>
@@ -554,15 +554,15 @@ if (check_perms('site_torrents_notify')) {
         onclick="SubscribeComments('artist', <?=$ArtistID?>);return false;"><?=Subscriptions::has_subscribed_comments('artist', $ArtistID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
       <!--  <a href="#" id="recommend" class="brackets">Recommend</a> -->
       <?php
-  if (check_perms('site_edit_wiki')) {
-      ?>
+if ($app->user->can(["creators" => "updateAny"])) {
+    ?>
       <a href="artist.php?action=edit&amp;artistid=<?=$ArtistID?>"
         class="brackets">Edit</a>
       <?php
-  } ?>
+} ?>
       <a href="artist.php?action=history&amp;artistid=<?=$ArtistID?>"
         class="brackets">View history</a>
-      <?php if ($RevisionID && check_perms('site_edit_wiki')) { ?>
+      <?php if ($RevisionID && $app->user->can(["creators" => "updateAny"])) { ?>
       <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Revert to this revision</a>
       <?php } ?>
@@ -570,7 +570,7 @@ if (check_perms('site_torrents_notify')) {
         class="brackets">Info</a>
       <a href="artist.php?id=<?=$ArtistID?>#artistcomments"
         class="brackets">Comments</a>
-      <?php if (check_perms('site_delete_artist') && check_perms('torrents_delete')) { ?>
+      <?php if ($app->user->can(["creators" => "deleteAny"]) && $app->user->can(["torrents" => "deleteAny"])) { ?>
       <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Delete</a>
       <?php } ?>
@@ -609,82 +609,80 @@ if (check_perms('site_torrents_notify')) {
  * keywords: Focus 2020, Download All This Page
  * https://dev.biotorrents.de/forums.php?action=viewthread&threadid=9
  *
-if (check_perms('zip_downloader')) {
-    if (isset($app->user->extra['Collector'])) {
-        list($ZIPList, $ZIPPrefs) = $app->user->extra['Collector'];
-        $ZIPList = explode(':', $ZIPList);
-    } else {
-        $ZIPList = array('00', '11');
-        $ZIPPrefs = 1;
-    } ?>
-    <div class="box box_zipdownload">
-      <div class="head colhead_dark"><strong>Collector</strong></div>
-      <div class="pad">
-        <form class="download_form" name="zip" action="artist.php" method="post">
-          <input type="hidden" name="action" value="download">
-          <input type="hidden" name="auth"
-            value="<?=$app->user->extra['AuthKey']?>" />
-          <input type="hidden" name="artistid"
-            value="<?=$ArtistID?>" />
-          <ul id="list" class="nobullet">
-            <?php foreach ($ZIPList as $ListItem) { ?>
-            <li id="list<?=$ListItem?>">
-              <input type="hidden" name="list[]"
-                value="<?=$ListItem?>" />
-              <span class="u-pull-left"><?=$ZIPOptions[$ListItem]['2']?></span>
-              <span class="remove remove_collector"><a href="#"
-                  onclick="remove_selection('<?=$ListItem?>'); return false;"
-                  class="u-pull-right brackets tooltip" title="Remove format from the Collector">X</a></span>
-              <br style="clear: all;" />
-            </li>
-            <?php } ?>
-          </ul>
-          <select id="formats" style="width: 180px;">
-            <?php
+  if (isset($app->user->extra['Collector'])) {
+      list($ZIPList, $ZIPPrefs) = $app->user->extra['Collector'];
+      $ZIPList = explode(':', $ZIPList);
+  } else {
+      $ZIPList = array('00', '11');
+      $ZIPPrefs = 1;
+  } ?>
+  <div class="box box_zipdownload">
+    <div class="head colhead_dark"><strong>Collector</strong></div>
+    <div class="pad">
+      <form class="download_form" name="zip" action="artist.php" method="post">
+        <input type="hidden" name="action" value="download">
+        <input type="hidden" name="auth"
+          value="<?=$app->user->extra['AuthKey']?>" />
+        <input type="hidden" name="artistid"
+          value="<?=$ArtistID?>" />
+        <ul id="list" class="nobullet">
+          <?php foreach ($ZIPList as $ListItem) { ?>
+          <li id="list<?=$ListItem?>">
+            <input type="hidden" name="list[]"
+              value="<?=$ListItem?>" />
+            <span class="u-pull-left"><?=$ZIPOptions[$ListItem]['2']?></span>
+            <span class="remove remove_collector"><a href="#"
+                onclick="remove_selection('<?=$ListItem?>'); return false;"
+                class="u-pull-right brackets tooltip" title="Remove format from the Collector">X</a></span>
+            <br style="clear: all;" />
+          </li>
+          <?php } ?>
+        </ul>
+        <select id="formats" style="width: 180px;">
+          <?php
 $OpenGroup = false;
-    $LastGroupID = -1;
+  $LastGroupID = -1;
 
-    foreach ($ZIPOptions as $Option) {
-        list($GroupID, $OptionID, $OptName) = $Option;
+  foreach ($ZIPOptions as $Option) {
+      list($GroupID, $OptionID, $OptName) = $Option;
 
-        if ($GroupID != $LastGroupID) {
-            $LastGroupID = $GroupID;
-            if ($OpenGroup) { ?>
-            </optgroup>
-            <?php } ?>
-            <optgroup label="<?=$ZIPGroups[$GroupID]?>">
-              <?php $OpenGroup = true;
-        } ?>
-              <option id="opt<?=$GroupID.$OptionID?>"
-                value="<?=$GroupID.$OptionID?>" <?php if (in_array($GroupID.$OptionID, $ZIPList)) {
-            echo ' disabled="disabled"';
-        } ?>><?=$OptName?>
-              </option>
-              <?php
-    } ?>
-            </optgroup>
-          </select>
-          <button type="button" onclick="add_selection()">+</button>
-          <select name="preference" style="width: 210px;">
-            <option value="0" <?php if ($ZIPPrefs == 0) {
-        echo ' selected="selected"';
-    } ?>>Prefer
-              Original</option>
-            <option value="1" <?php if ($ZIPPrefs == 1) {
-        echo ' selected="selected"';
-    } ?>>Prefer
-              Best Seeded</option>
-            <option value="2" <?php if ($ZIPPrefs == 2) {
-        echo ' selected="selected"';
-    } ?>>Prefer
-              Bonus Tracks</option>
-          </select>
-          <input type="submit" style="width: 210px;" value="Download">
-        </form>
-      </div>
+      if ($GroupID != $LastGroupID) {
+          $LastGroupID = $GroupID;
+          if ($OpenGroup) { ?>
+          </optgroup>
+          <?php } ?>
+          <optgroup label="<?=$ZIPGroups[$GroupID]?>">
+            <?php $OpenGroup = true;
+      } ?>
+            <option id="opt<?=$GroupID.$OptionID?>"
+              value="<?=$GroupID.$OptionID?>" <?php if (in_array($GroupID.$OptionID, $ZIPList)) {
+          echo ' disabled="disabled"';
+      } ?>><?=$OptName?>
+            </option>
+            <?php
+  } ?>
+          </optgroup>
+        </select>
+        <button type="button" onclick="add_selection()">+</button>
+        <select name="preference" style="width: 210px;">
+          <option value="0" <?php if ($ZIPPrefs == 0) {
+      echo ' selected="selected"';
+  } ?>>Prefer
+            Original</option>
+          <option value="1" <?php if ($ZIPPrefs == 1) {
+      echo ' selected="selected"';
+  } ?>>Prefer
+            Best Seeded</option>
+          <option value="2" <?php if ($ZIPPrefs == 2) {
+      echo ' selected="selected"';
+  } ?>>Prefer
+            Bonus Tracks</option>
+        </select>
+        <input type="submit" style="width: 210px;" value="Download">
+      </form>
     </div>
-    <?php
-} // If (check_perms('zip_downloader'))
+  </div>
+  <?php
 
 END THE COLLECTOR
 */
@@ -749,7 +747,7 @@ if (count($Collages) > 0) {
         $Indices = array_slice($Range, 0, MAX_COLLAGES);
         $SeeAll = ' <a data-toggle-target=".collage_rows">(See all)</a>';
     } else {
-        $Indices = range(0, count($Collages)-1);
+        $Indices = range(0, count($Collages) - 1);
         $SeeAll = '';
     } ?>
     <table class="collage_table" id="collages">
@@ -801,13 +799,13 @@ if ($NumRequests > 0) {
         </td>
       </tr>
       <?php
-  $Tags = Requests::get_tags(array_keys($Requests));
+  $Tags = \Gazelle\Requests::get_tags(array_keys($Requests));
     foreach ($Requests as $RequestID => $Request) {
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
         $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? \Gazelle\Text::esc($Request['TitleJP']) : \Gazelle\Text::esc($Request['Title2'])) : \Gazelle\Text::esc($Request['Title']);
-        $ArtistForm = Requests::get_artists($RequestID);
+        $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
         $ArtistLink = Artists::display_artists($ArtistForm, true, true);
-        $FullName = $ArtistLink."<a href='requests.php?action=view&amp;id=$RequestID'><span dir='ltr'>$Title</span></a>";
+        $FullName = $ArtistLink . "<a href='requests.php?action=view&amp;id=$RequestID'><span dir='ltr'>$Title</span></a>";
 
         if ($Request['CatalogueNumber']) {
             $FullName .= " [$Request[CatalogueNumber]]";
@@ -816,7 +814,7 @@ if ($NumRequests > 0) {
         if (!empty($Tags[$RequestID])) {
             $ReqTagList = [];
             foreach ($Tags[$RequestID] as $TagID => $TagName) {
-                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>".\Gazelle\Text::esc($TagName).'</a>';
+                $ReqTagList[] = "<a href='requests.php?tags=$TagName'>" . \Gazelle\Text::esc($TagName) . '</a>';
             }
             $ReqTagList = implode(', ', $ReqTagList);
         } else {
@@ -830,7 +828,7 @@ if ($NumRequests > 0) {
         </td>
         <td class="nobr">
           <span id="vote_count_<?=$RequestID?>"><?=$Request['Votes']?></span>
-          <?php if (check_perms('site_vote')) { ?>
+          <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
           <input type="hidden" id="auth" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)"
@@ -838,7 +836,7 @@ if ($NumRequests > 0) {
           <?php } ?>
         </td>
         <td class="nobr">
-          <span id="bounty_<?=$RequestID?>"><?=Format::get_size($Request['Bounty'])?></span>
+          <span id="bounty_<?=$RequestID?>"><?=\Gazelle\Format::get_size($Request['Bounty'])?></span>
         </td>
         <td>
           <?=time_diff($Request['TimeAdded'])?>
@@ -851,7 +849,7 @@ if ($NumRequests > 0) {
 }
 
 // --- Comments ---
-$Pages = Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
+$Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAGE, 9, '#comments');
 
 ?>
     <div id="artistcomments">

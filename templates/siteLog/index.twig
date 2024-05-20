@@ -1,0 +1,43 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+<h2>Site log</h2>
+
+<section>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Event</th>
+                <th>Content type</th>
+                <th>Details</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in results %}
+                <tr>
+                    <td>{{ item.userId|formatUsername }}</td>
+                    <td>{{ item.action }}</td>
+                    <td>{{ item.contentType }}</td>
+                    <td>{{ item.description }}</td>
+                    <td>{{ item.createdAt|relativeTime }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+</table>
+
+    </section>
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+	{% include "torrents/sidebar.twig" %}
+
+{% endblock %}
+#}

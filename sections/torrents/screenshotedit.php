@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $GroupID = $_POST['groupid'];
 if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
 
-if (!check_perms('torrents_edit') && !check_perms('screenshots_add') && !check_perms('screenshots_delete')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     $app->dbOld->query("
     SELECT
       `UserID`
@@ -65,7 +65,7 @@ if (!empty($Old)) {
 
 // Deletion
 if (!empty($Deleted)) {
-    if (check_perms('screenshots_delete') || check_perms('torrents_edit')) {
+    if ($app->user->can(["torrentGroups" => "updateAny"])) {
         $DeleteList = $Deleted;
     } else {
         $DeleteList = [];
@@ -92,8 +92,8 @@ if (!empty($Deleted)) {
         foreach ($DeleteList as $ScreenDel) {
         }
 
-        Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) ".implode(' , ', $DeleteList), 0);
-        Misc::write_log("Screenshots ( ".implode(' , ', $DeleteList)." ) deleted from Torrent Group ".$GroupID." by ".$app->user->core['username']);
+        Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) " . implode(' , ', $DeleteList), 0);
+        Misc::write_log("Screenshots ( " . implode(' , ', $DeleteList) . " ) deleted from Torrent Group " . $GroupID . " by " . $app->user->core['username']);
     }
 }
 
@@ -114,9 +114,9 @@ if (!empty($New)) {
     foreach ($New as $Screenshot) {
     }
 
-    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) ".implode(' , ', $New), 0);
-    Misc::write_log("Screenshots ( ".implode(' , ', $New)." ) added to Torrent Group ".$GroupID." by ".$app->user->core['username']);
+    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) " . implode(' , ', $New), 0);
+    Misc::write_log("Screenshots ( " . implode(' , ', $New) . " ) added to Torrent Group " . $GroupID . " by " . $app->user->core['username']);
 }
 
-$app->cache->delete("torrents_details_".$GroupID);
-Http::redirect("torrents.php?id=$GroupID");
+$app->cache->delete("torrents_details_" . $GroupID);
+Gazelle\Http::redirect("torrents.php?id=$GroupID");

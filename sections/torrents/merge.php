@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     error(403);
 }
 
@@ -71,7 +71,7 @@ if (empty($_POST['confirm'])) {
 <?php
   View::footer();
 } else {
-    authorize();
+
 
     $app->dbOld->query("
     UPDATE torrents

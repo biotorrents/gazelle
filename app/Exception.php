@@ -16,5 +16,4 @@ namespace Gazelle;
 
 class Exception extends \Exception
 {
-    # todo
 } # class

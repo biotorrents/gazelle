@@ -4,13 +4,12 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
-if (!check_perms('site_torrents_notify')) {
+
+if ($app->user->cant(["notifications" => "read"])) {
     error(403);
 }
 
 $ArtistID = (int) $_GET['artistid'];
-Security::int($ArtistID);
 
 if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
     $app->dbOld->prepared_query("

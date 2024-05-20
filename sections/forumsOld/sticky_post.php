@@ -2,9 +2,9 @@
 
 $app = \Gazelle\App::go();
 
-enforce_login();
-authorize();
-if (!check_perms('site_moderate_forums')) {
+
+
+if ($app->user->cant(["conversations" => "updateAny"])) {
     error(403);
 }
 

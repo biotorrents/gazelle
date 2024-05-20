@@ -3,9 +3,11 @@
 
 $app = \Gazelle\App::go();
 
-if (!check_perms('site_torrents_notify')) {
+/*
+if ($app->user->cant(["notifications" => "read"])) {
     error(403);
 }
+*/
 
 View::header('Manage notifications'); ?>
 
@@ -97,7 +99,7 @@ foreach ($Notifications as $N) { // $N stands for Notifications
   <h3>
     <a
       href="feeds.php?feed=torrents_notify_<?=$N['ID']?>_<?=$app->user->extra['torrent_pass']?>&amp;user=<?=$app->user->core['id']?>&amp;auth=<?=$app->user->extra['RSS_Auth']?>&amp;passkey=<?=$app->user->extra['torrent_pass']?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;name=<?=urlencode($N['Label'])?>"><img
-        src="<?=staticServer?>/images/symbols/rss.png"
+        src="<?=staticServer?>/images/icons/rss.webp"
         alt="RSS feed"></a>
     <?=\Gazelle\Text::esc($N['Label'])?>
     <a href="user.php?action=notify_delete&amp;id=<?=$N['ID']?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
@@ -186,8 +188,8 @@ foreach ($Notifications as $N) { // $N stands for Notifications
           <input type="checkbox" name="categories<?=$i?>[]"
             id="<?=$Category?>_<?=$N['ID']?>"
             value="<?=$Category?>" <?php if (in_array($Category, $N['Categories'])) {
-        echo ' checked="checked"';
-    } ?>>
+                echo ' checked="checked"';
+            } ?>>
           <label
             for="<?=$Category?>_<?=$N['ID']?>"><?=$Category?></label><br>
           <?php } ?>
@@ -200,8 +202,8 @@ foreach ($Notifications as $N) { // $N stands for Notifications
           <input type="checkbox" name="newgroupsonly<?=$i?>"
             id="newgroupsonly_<?=$N['ID']?>"
             <?php if ($N['NewGroupsOnly'] == '1') { # todo: Fix strict equality checking
-        echo ' checked="checked"';
-    } ?>>
+                echo ' checked="checked"';
+            } ?>>
           <label
             for="newgroupsonly_<?=$N['ID']?>">Only
             notify for new releases, not new formats</label>

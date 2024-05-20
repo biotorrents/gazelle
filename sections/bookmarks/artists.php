@@ -4,7 +4,7 @@
 $app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
-    if (!check_perms('users_override_paranoia')) {
+    if ($app->user->cant(["admin" => "sensitiveUserData"])) {
         error(403);
     }
 
@@ -64,8 +64,8 @@ View::header($Title, 'browse');
 <!--content-->
 <?php
   View::footer();
-  error();
-} ?>
+        error();
+    } ?>
 
 <table width="100%" class="artist_table">
   <tr class="colhead">
@@ -81,7 +81,7 @@ foreach ($ArtistList as $Artist) {
       <a href="artist.php?id=<?=$ArtistID?>"><?=$Name?></a>
       <span class="u-pull-right">
         <?php
-  if (check_perms('site_torrents_notify')) {
+  if ($app->user->can(["notifications" => "read"])) {
       if (($Notify = $app->cache->get('notify_artists_'.$app->user->core['id'])) === false) {
           $app->dbOld->prepared_query("
             SELECT ID, Artists

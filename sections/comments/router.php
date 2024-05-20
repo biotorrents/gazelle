@@ -16,7 +16,7 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 
 // fix old links
 $_REQUEST['action'] ??= null;
@@ -55,10 +55,6 @@ switch ($Action) {
 
     case 'get':
         require serverRoot . '/sections/commentsOld/get.php';
-        break;
-
-    case 'jump':
-        require serverRoot . '/sections/commentsOld/jump.php';
         break;
 
     case 'artist':

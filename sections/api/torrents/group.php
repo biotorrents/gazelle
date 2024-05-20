@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$ENV = ENV::go();
+$ENV = \Gazelle\ENV::go();
 
 # Either id or hash
 $GroupID = (int) $_GET['id'];
@@ -10,29 +10,29 @@ $TorrentHash = (string) $_GET['hash'];
 
 # Error if both supplied
 if ($GroupID && $TorrentHash) {
-    json_die('failure', 'bad parameters');
+    \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
 # Get id from hash
 if ($TorrentHash) {
     if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
-        json_die('failure', 'bad hash parameter');
+        \Gazelle\Api\Base::failure(400, 'bad hash parameter');
     } else {
         $GroupID = (int) TorrentFunctions::torrenthash_to_groupid($TorrentHash);
         if (!$GroupID) {
-            json_die('failure', 'bad hash parameter');
+            \Gazelle\Api\Base::failure(400, 'bad hash parameter');
         }
     }
 }
 
 # Error if bad id
 if ($GroupID <= 0) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 $TorrentCache = TorrentFunctions::get_group_info($GroupID, true, 0, true, true);
 if (!$TorrentCache) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 # Get torrent details (group, torrents, artists)
@@ -48,7 +48,7 @@ if ($TorrentDetails['category_id'] === 0) {
 
 # Get tag list (name and id)
 $TagIDs = explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`ID` SEPARATOR '|')"]);
-$TagNames= explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
+$TagNames = explode('|', $TorrentDetails["GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|')"]);
 
 $TagList = [];
 foreach ($TagIDs as $Key => $ID) {
@@ -157,8 +157,8 @@ foreach ($TorrentList as $Torrent) {
 }
 
 # Print response
-json_die(
-    'success',
+\Gazelle\Api\Base::success(
+    200,
     [
         'group' => $JsonTorrentDetails,
         'torrents' => $JsonTorrentList,

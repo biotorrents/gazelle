@@ -8,7 +8,8 @@ declare(strict_types=1);
  * Loads the app for API requests.
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
+$app->executionContext = "api";
 
 # skip this stuff for internal api calls
 if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
@@ -16,9 +17,9 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
 }
 
 # check for a token
-$_SESSION["token"] = \Gazelle\API\Base::validateBearerToken();
+$_SESSION["token"] = Gazelle\Api\Base::validateBearerToken();
 if (!$_SESSION["token"]) {
-    \Gazelle\API\Base::failure(401, "invalid token");
+    Gazelle\Api\Base::failure(401, "unauthorized");
 }
 
 # rate limit exceptions
@@ -28,8 +29,8 @@ $rateLimitExceptions = [];
 array_push($rateLimitExceptions, 0, 1);
 
 # donors
-$query = "select id from users_main where permissionId = 20"; # donors
-$ref = $app->dbNew->column("id", $query, []);
+$query = "select userId from users_main where permissionId = 110"; # donors
+$ref = $app->dbNew->column($query, []);
 array_push($rateLimitExceptions, ...$ref);
 
 # rate limit = [x requests, y seconds]
@@ -43,11 +44,11 @@ if (!in_array($userId, $rateLimitExceptions)) {
     }
 
     if ($userRequests > $rateLimit[0]) {
-        \Gazelle\API\Base::failure(400, "rate limit exceeded");
+        Gazelle\Api\Base::failure(429, "too many requests");
     } else {
-        $app->cache->increment("ajax_requests_{$_SESSION["token"]["userId"]}");
+        $app->cache->increment("requestCount:{$_SESSION["token"]["userId"]}");
     }
 }
 
-# include routes
+# include the routes
 require_once "{$app->env->serverRoot}/routes/api.php";

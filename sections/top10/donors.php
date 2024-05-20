@@ -9,14 +9,14 @@ View::header('Top 10 Donors');
 <div>
   <div class="header">
     <h2>Top Donors</h2>
-    <?php Top10::render_linkbox("donors"); ?>
+    <?php \Gazelle\Top10::render_linkbox("donors"); ?>
   </div>
   <?php
 
 $Limit = isset($_GET['limit']) ? intval($_GET['limit']) : 10;
 $Limit = in_array($Limit, array(10, 100, 250)) ? $Limit : 10;
 
-$IsMod = check_perms("users_mod");
+$IsMod = $app->user->can(["admin" => "moderateUsers"]);
 $app->dbOld->prepared_query("
 SELECT
   `UserID`,
@@ -88,7 +88,7 @@ function generate_user_table($Caption, $Results, $Limit)
     </table><br>';
   }
 
-      $Position = 0;
+    $Position = 0;
     foreach ($Results as $Result) {
         $Position++; ?>
     <tr class="row">
@@ -101,7 +101,7 @@ function generate_user_table($Caption, $Results, $Limit)
       </td>
 
       <td style="text-align: left;">
-        <?=check_perms('users_mod') || $Position < 51 ? $Result['TotalRank'] : 'Hidden'; ?>
+        <?=$app->user->can(["admin" => "moderateUsers"]) || $Position < 51 ? $Result['TotalRank'] : 'Hidden'; ?>
       </td>
 
       <td style="text-align: left;">

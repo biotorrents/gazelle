@@ -1,0 +1,31 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+    {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minClassEdit %}
+        <h2>
+            <input type="text" id="articleTitle" maxlength="255" style="width: 100%;" value="{{ article.attributes.title }}">
+        </h2>
+    {% else %}
+        <h2>{{ article.attributes.title }}</h2>
+    {% endif %}
+
+    {% set vars = { "id": article.id, "content": article.attributes.body } %}
+    {% include "_base/starboardNotebook.twig" with vars %}
+</section>
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("wiki/sidebar.twig") }}
+
+{% endblock %}

@@ -3,18 +3,22 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 $auth = new Auth();
 
 # https://github.com/paragonie/anti-csrf
-Http::csrf();
+Gazelle\Http::csrf();
 
 # variables
-$get = Http::request("get");
-$post = Http::request("post");
-
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
 
 try {
+    # is registration disabled?
+    if (!$app->env->openRegistration) {
+        throw new Exception("Registration is currently disabled");
+    }
+
     # delight-im/auth
     if (!empty(["post"]) && isset($post["submit"])) {
         $response = $auth->register($post);
@@ -32,7 +36,6 @@ try {
 } catch (Throwable $e) {
     $response = $e->getMessage();
 }
-
 
 $app->twig->display("user/auth/register.twig", [
     "title" => "Register",

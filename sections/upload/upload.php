@@ -24,7 +24,7 @@ $sourceKey = User::uploadSource();
 
 # tagList
 $query = "select name from tags where tagType = ? order by name";
-$tagList = $app->dbNew->column("name", $query, ["genre"]);
+$tagList = $app->dbNew->column($query, ["genre"]);
 
 
 
@@ -163,8 +163,8 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_numeric($_GET['groupid'
 
     $UploadForm = $Categories[$Properties['CategoryID'] - 1];
     $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
-    $Properties['Artists'] = Requests::get_artists($_GET['requestid']);
-    $Properties['TagList'] = implode(', ', Requests::get_tags($_GET['requestid'])[$_GET['requestid']]);
+    $Properties['Artists'] = \Gazelle\Requests::get_artists($_GET['requestid']);
+    $Properties['TagList'] = implode(', ', \Gazelle\Requests::get_tags($_GET['requestid'])[$_GET['requestid']]);
 }
 
 if (!empty($ArtistForm)) {

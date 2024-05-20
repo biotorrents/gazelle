@@ -5,7 +5,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 $Val = new Validate();
 
@@ -55,7 +55,7 @@ function add_torrent($CollageID, $GroupID)
     }
 }
 
-$CollageID = $_POST['collageid'];
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(404);
 }
@@ -65,7 +65,7 @@ $app->dbOld->query("
   WHERE ID = '$CollageID'");
 list($UserID, $CategoryID, $Locked, $NumTorrents, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld->next_record();
 
-if (!check_perms('site_collages_delete')) {
+if ($app->user->cant(["collages" => "updateAny"])) {
     if ($Locked) {
         $Err = 'This collage is locked';
     }
@@ -88,7 +88,7 @@ if ($MaxGroupsPerUser > 0) {
     WHERE CollageID = '$CollageID'
       AND UserID = '{$app->user->core['id']}'");
     list($GroupsForUser) = $app->dbOld->next_record();
-    if (!check_perms('site_collages_delete') && $GroupsForUser >= $MaxGroupsPerUser) {
+    if ($app->user->cant(["collages" => "updateAny"]) && $GroupsForUser >= $MaxGroupsPerUser) {
         error(403);
     }
 }
@@ -106,7 +106,6 @@ if ($_REQUEST['action'] == 'add_torrent') {
     // Get torrent ID
     preg_match("/{$app->env->regexTorrentGroup}/i", $URL, $Matches);
     $TorrentID = (int) $Matches[4];
-    Security::int($TorrentID);
 
     $app->dbOld->query("
     SELECT ID
@@ -130,7 +129,7 @@ if ($_REQUEST['action'] == 'add_torrent') {
     }
     unset($URL);
 
-    if (!check_perms('site_collages_delete')) {
+    if ($app->user->cant(["collages" => "updateAny"])) {
         if ($MaxGroups > 0 && ($NumTorrents + count($URLs) > $MaxGroups)) {
             $Err = "This collage can only hold $MaxGroups torrents.";
         }

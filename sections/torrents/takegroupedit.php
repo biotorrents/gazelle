@@ -2,28 +2,26 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Input validation
  */
 
 # User permissions
-authorize();
 
-if (!check_perms('site_edit_wiki')) {
+
+if ($app->user->cant(["torrentGroups" => "updateAny"])) {
     error(403);
 }
 
 # Variables for database input
 $user_id = (int) $app->user->core['id'];
 $group_id = (int) $_REQUEST['groupid'];
-Security::int($user_id, $group_id);
 
 # If we're reverting to a previous revision
 if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     $revision_id = (int) $_GET['revisionid'];
-    Security::int($revision_id);
 
     # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {
@@ -68,7 +66,7 @@ else {
     $description = $_POST['body'];
     $picture = $_POST['image'];
 
-    if (($GroupInfo = $app->cache->get('torrents_details_'.$group_id)) && !isset($GroupInfo[0][0])) {
+    if (($GroupInfo = $app->cache->get('torrents_details_' . $group_id)) && !isset($GroupInfo[0][0])) {
         $GroupCategoryID = $GroupInfo[0]['category_id'];
     } else {
         $app->dbOld->query("
@@ -167,8 +165,8 @@ WHERE
 ");
 
 // There we go, all done!
-$app->cache->delete('torrents_details_'.$group_id);
-$app->cache->delete('torrent_group_'.$group_id);
+$app->cache->delete('torrents_details_' . $group_id);
+$app->cache->delete('torrent_group_' . $group_id);
 
 $app->dbOld->query("
 SELECT
@@ -181,7 +179,7 @@ WHERE
 
 if ($app->dbOld->has_results()) {
     while (list($CollageID) = $app->dbOld->next_record()) {
-        $app->cache->delete('collage_'.$CollageID);
+        $app->cache->delete('collage_' . $CollageID);
     }
 }
 
@@ -200,7 +198,7 @@ WHERE
 
 $user_ids = $app->dbOld->collect('UserID');
 foreach ($user_ids as $user_id) {
-    $RecentUploads = $app->cache->get('recent_uploads_'.$user_id);
+    $RecentUploads = $app->cache->get('recent_uploads_' . $user_id);
 
     if (is_array($RecentUploads)) {
         foreach ($RecentUploads as $Key => $Recent) {
@@ -241,7 +239,7 @@ if ($app->dbOld->has_results()) {
 
     $Snatchers = $app->dbOld->collect('uid');
     foreach ($Snatchers as $user_id) {
-        $RecentSnatches = $app->cache->get('recent_snatches_'.$user_id);
+        $RecentSnatches = $app->cache->get('recent_snatches_' . $user_id);
 
         if (is_array($RecentSnatches)) {
             foreach ($RecentSnatches as $Key => $Recent) {
@@ -261,4 +259,4 @@ if ($app->dbOld->has_results()) {
     }
 }
 
-Http::redirect("torrents.php?id=$group_id");
+Gazelle\Http::redirect("torrents.php?id=$group_id");

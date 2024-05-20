@@ -1,3 +1,35 @@
+/**
+ * collages
+ */
+
+(() => {
+  "use strict";
+
+  // reset the form
+  $("#resetSearchForm").on("click", () => {
+    // normal form
+    let formObject = $("#torrentSearch").get(0);
+    formObject.reset();
+
+    // text inputs
+    $("input[type=text]").map(function () {
+      this.value = "";
+    });
+
+    // number inputs
+    $("input[type=number]").map(function () {
+      this.value = "";
+    });
+
+    // tom select elements
+    tomSelects.forEach((element) => {
+      element.clear();
+    });
+  });
+})();
+
+/** legacy */
+
 function Add(input) {
   if (input.checked == false) {
     Cancel();
@@ -20,14 +52,14 @@ function Cancel() {
   document.getElementById("choices").raw().value = "";
 }
 
-function CollageSubscribe(collageid) {
+function CollageSubscribe(collageId) {
   ajax.get(
-    "userhistory.php?action=collage_subscribe&collageid=" +
-      collageid +
-      "&auth=" +
-      authkey,
+    "userhistory.php?action=collage_subscribe&collageId=" +
+    collageId +
+    "&auth=" +
+    authkey,
     function () {
-      var subscribeLink = $("#subscribelink" + collageid).raw();
+      var subscribeLink = $("#subscribelink" + collageId).raw();
       if (subscribeLink) {
         subscribeLink.firstChild.nodeValue =
           subscribeLink.firstChild.nodeValue.charAt(0) == "U"

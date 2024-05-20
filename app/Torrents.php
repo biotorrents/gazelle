@@ -9,23 +9,40 @@
 
 class Torrents
 {
-    public const FILELIST_DELIM = 0xF7; // Hex for &divide; Must be the same as phrase_boundary in sphinx.conf!
-    public const SNATCHED_UPDATE_INTERVAL = 3600; // How often we want to update users' snatch lists
-    public const SNATCHED_UPDATE_AFTERDL = 300; // How long after a torrent download we want to update a user's snatch lists
-
-    // Some constants for self::display_string's $Mode parameter
-    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
-    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
-    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
-    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
-    // Keep this in mind when defining presets below!
-
-    // Presets to facilitate the use of $Mode
-    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+    # object properties
+    public $uuid;
+    public $id;
+    public $groupId;
+    public $userId;
+    public $platform;
+    public $format;
+    public $license;
+    public $scope;
+    public $version;
+    public $aligned;
+    public $anonymous;
+    public $infoHash;
+    public $fileCount;
+    public $fileList;
+    public $filePath;
+    public $dataSize;
+    public $leecherCount;
+    public $seederCount;
+    public $lastAction;
+    public $freeleech;
+    public $freeleechType;
+    #public $createdAt;
+    public $description;
+    public $snatchCount;
+    public $balance;
+    public $lastReseedRequest;
+    public $archive;
+    public $createdAt;
+    public $updatedAt;
+    public $deletedAt;
 
     # ["database" => "display"]
-    private $maps = [
+    protected array $maps = [
         "uuid" => "uuid",
         "ID" => "id",
         "GroupID" => "groupId",
@@ -59,13 +76,34 @@ class Torrents
     ];
 
 
+    # hex for ÷, must be the same as phrase_boundary in manticore.conf
+    public const FILELIST_DELIM = 0xF7;
+
+    # how often we want to update users' snatch lists
+    public const SNATCHED_UPDATE_INTERVAL = 3600;
+
+    # how long after a torrent download we want to update a user's snatch lists
+    public const SNATCHED_UPDATE_AFTERDL = 300;
+
+    // Some constants for self::display_string's $Mode parameter
+    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
+    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
+    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
+    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
+    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
+    // Keep this in mind when defining presets below!
+
+    // Presets to facilitate the use of $Mode
+    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+
+
     /**
      * __construct
      */
     public function __construct(int|string $identifier = null)
     {
         if ($identifier) {
-            return $this->read($identifier);
+            $this->read($identifier);
         }
     }
 
@@ -149,7 +187,7 @@ class Torrents
 
         # escape just in case, because `in()` can't into prepared queries
         foreach ($groupIds as $key => $value) {
-            $groupIds[$key] = \Gazelle\Esc::int($value);
+            $groupIds[$key] = \Gazelle\Escape::int($value);
         }
 
         $groupIds = array_filter($groupIds);
@@ -231,6 +269,8 @@ class Torrents
     public static function get_groups($GroupIDs, $Return = true, $GetArtists = true, $Torrents = true)
     {
         $app = \Gazelle\App::go();
+
+        $GroupIDs ??= [];
 
         $Found = $NotFound = array_fill_keys($GroupIDs, false);
         $Key = $Torrents ? 'torrent_group_' : 'torrent_group_light_';
@@ -574,7 +614,7 @@ class Torrents
             $app->cache->decrement('num_torrent_reportsv2', $Reports);
         }
 
-        unlink($app->env->torrentStore.'/'.$ID.'.torrent');
+        unlink($app->env->torrentStore . '/' . $ID . '.torrent');
         $app->dbOld->query("
         DELETE FROM torrents_bad_tags
           WHERE TorrentID = ?", $ID);
@@ -643,7 +683,7 @@ class Torrents
             $app->dbOld->query("
             UPDATE collages
             SET NumTorrents = NumTorrents - 1
-              WHERE ID IN (".implode(', ', $CollageIDs).')');
+              WHERE ID IN (" . implode(', ', $CollageIDs) . ')');
             $app->dbOld->query("
             DELETE FROM collages_torrents
               WHERE GroupID = ?", $GroupID);
@@ -838,7 +878,7 @@ class Torrents
           WHERE ID = ?", $TorrentID);
         if ($app->dbOld->has_results()) {
             list($GroupID) = $app->dbOld->next_record(MYSQLI_NUM, false);
-            $Contents = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
+            $Contents = file_get_contents($app->env->torrentStore . '/' . $TorrentID . '.torrent');
             if (\Misc::is_new_torrent($Contents)) {
                 $Tor = new \BencodeTorrent($Contents);
                 $FilePath = (isset($Tor->Dec['info']['files']) ? \Gazelle\Text::utf8($Tor->get_name()) : '');
@@ -1029,32 +1069,32 @@ class Torrents
         $Data['FreeTorrent'] ??= '0';
 
         if ($Data['IsLeeching']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Leeching', 'important_text_semi') : 'Leeching';
+            $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Leeching', 'important_text_semi') : 'Leeching';
         } elseif ($Data['IsSeeding']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Seeding', 'important_text_alt') : 'Seeding';
+            $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Seeding', 'important_text_alt') : 'Seeding';
         } elseif ($Data['IsSnatched']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Snatched', 'bold') : 'Snatched';
+            $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Snatched', 'bold') : 'Snatched';
         }
 
         if ($Data['FreeTorrent'] === '1') {
             if ($Data['FreeLeechType'] === '3') {
                 if ($Data['ExpiryTime']) {
-                    $Info[] = ($HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech') . ($HTMLy ? " <strong>(" : " (").str_replace(['month','week','day','hour','min','s'], ['m','w','d','h','m',''], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)).($HTMLy ? ")</strong>" : ")");
+                    $Info[] = ($HTMLy ? \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech') . ($HTMLy ? " <strong>(" : " (") . str_replace(['month','week','day','hour','min','s'], ['m','w','d','h','m',''], time_diff(max(strtotime($Data['ExpiryTime']), time()), 1, false)) . ($HTMLy ? ")</strong>" : ")");
                 } else {
-                    $Info[] = $HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech';
+                    $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech';
                 }
             } else {
-                $Info[] = $HTMLy ? Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech';
+                $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Freeleech', 'important_text_alt') : 'Freeleech';
             }
         }
 
         if ($Data['FreeTorrent'] == '2') {
-            $Info[] = $HTMLy ? Format::torrent_label('Neutral Leech', 'bold') : 'Neutral Leech';
+            $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Neutral Leech', 'bold') : 'Neutral Leech';
         }
 
         $Data['PersonalFL'] ??= null;
         if ($Data['PersonalFL']) {
-            $Info[] = $HTMLy ? Format::torrent_label('Personal Freeleech', 'important_text_alt') : 'Personal Freeleech';
+            $Info[] = $HTMLy ? \Gazelle\Format::torrent_label('Personal Freeleech', 'important_text_alt') : 'Personal Freeleech';
         }
 
         return implode(' | ', $Info);
@@ -1082,12 +1122,12 @@ class Torrents
         $app->dbOld->query("
           UPDATE torrents
           SET FreeTorrent = '$FreeNeutral', FreeLeechType = '$FreeLeechType'
-          WHERE ID IN (".implode(', ', $TorrentIDs).')');
+          WHERE ID IN (" . implode(', ', $TorrentIDs) . ')');
 
         $app->dbOld->query('
           SELECT ID, GroupID, info_hash
           FROM torrents
-          WHERE ID IN ('.implode(', ', $TorrentIDs).')
+          WHERE ID IN (' . implode(', ', $TorrentIDs) . ')
             ORDER BY GroupID ASC');
 
         $Torrents = $app->dbOld->to_array(false, MYSQLI_NUM, false);
@@ -1098,11 +1138,12 @@ class Torrents
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
             Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
-            Misc::write_log(($app->user->core["username"]??'System')." marked torrent $TorrentID freeleech type $FreeLeechType");
-            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"]??0), "marked as freeleech type $FreeLeechType", 0);
+            Misc::write_log(($app->user->core["username"] ?? 'System') . " marked torrent $TorrentID freeleech type $FreeLeechType");
+            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
-                send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
+                # todo: fsockopen(): Unable to connect to 10.10.10.60:51010 (Connection refused)
+                #send_irc(ANNOUNCE_CHAN, 'FREELEECH - '.site_url()."torrents.php?id=$GroupID / ".site_url()."torrents.php?action=download&id=$TorrentID");
             }
         }
 
@@ -1134,7 +1175,7 @@ class Torrents
         $app->dbOld->query('
           SELECT ID
           FROM torrents
-          WHERE GroupID IN ('.implode(', ', $GroupIDs).')');
+          WHERE GroupID IN (' . implode(', ', $GroupIDs) . ')');
 
         if ($app->dbOld->has_results()) {
             $TorrentIDs = $app->dbOld->collect('ID');
@@ -1240,7 +1281,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurSnatchedTorrents =& $SnatchedTorrents[$BucketID];
+        $CurSnatchedTorrents = & $SnatchedTorrents[$BucketID];
         if ($CurSnatchedTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1258,7 +1299,7 @@ class Torrents
                     FROM xbt_snatched
                       WHERE uid = ?", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $SnatchedTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $SnatchedTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurSnatchedTorrents[$TorrentID])) {
@@ -1279,7 +1320,7 @@ class Torrents
                                 $SnatchedTorrents[$CurBucketID] = [];
                             }
                         }
-                        $SnatchedTorrents[$CurBucketID][(int)$ID] = true;
+                        $SnatchedTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1326,7 +1367,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected seeding lists
-        $CurSeedingTorrents =& $SeedingTorrents[$BucketID];
+        $CurSeedingTorrents = & $SeedingTorrents[$BucketID];
         if ($CurSeedingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1346,7 +1387,7 @@ class Torrents
                       AND active = 1
                       AND Remaining = 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $SeedingTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $SeedingTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurSeedingTorrents[$TorrentID])) {
@@ -1369,7 +1410,7 @@ class Torrents
                                 $SeedingTorrents[$CurBucketID] = [];
                             }
                         }
-                        $SeedingTorrents[$CurBucketID][(int)$ID] = true;
+                        $SeedingTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1418,7 +1459,7 @@ class Torrents
         }
 
         // Torrent was not found in the previously inspected snatch lists
-        $CurLeechingTorrents =& $LeechingTorrents[$BucketID];
+        $CurLeechingTorrents = & $LeechingTorrents[$BucketID];
         if ($CurLeechingTorrents === false) {
             $CurTime = time();
             // This bucket hasn't been checked before
@@ -1438,7 +1479,7 @@ class Torrents
                       AND active = 1
                       AND Remaining > 0", $UserID);
                     while (list($ID) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
-                        $LeechingTorrents[$ID & $LastBucket][(int)$ID] = true;
+                        $LeechingTorrents[$ID & $LastBucket][(int) $ID] = true;
                     }
                     $Updated = array_fill(0, $Buckets, true);
                 } elseif (isset($CurLeechingTorrents[$TorrentID])) {
@@ -1461,7 +1502,7 @@ class Torrents
                                 $LeechingTorrents[$CurBucketID] = [];
                             }
                         }
-                        $LeechingTorrents[$CurBucketID][(int)$ID] = true;
+                        $LeechingTorrents[$CurBucketID][(int) $ID] = true;
                         $Updated[$CurBucketID] = true;
                     }
                 }
@@ -1540,7 +1581,7 @@ class Torrents
         }
 
         if (($Mode & self::DISPLAYSTRING_RELEASETYPE) && $GroupInfo['ReleaseType'] > 0) {
-            $DisplayName .= ' ['.$ReleaseTypes[$GroupInfo['ReleaseType']].']';
+            $DisplayName .= ' [' . $ReleaseTypes[$GroupInfo['ReleaseType']] . ']';
         }
 
         return $DisplayName;
@@ -1549,8 +1590,9 @@ class Torrents
 
     /**
      * get_reports
+     *
+     * Used to get reports info on a unison cache in both browsing pages and torrent pages.
      */
-    // Used to get reports info on a unison cache in both browsing pages and torrent pages.
     public static function get_reports($TorrentID)
     {
         $app = \Gazelle\App::go();
@@ -1572,7 +1614,7 @@ class Torrents
             $app->dbOld->set_query_id($QueryID);
             $app->cache->set("reports_torrent_$TorrentID", $Reports, 0);
         }
-        if (!check_perms('admin_reports')) {
+        if ($app->user->cant(["admin" => "reports"])) {
             $Return = [];
             foreach ($Reports as $Report) {
                 if ($Report['Type'] !== 'edited') {

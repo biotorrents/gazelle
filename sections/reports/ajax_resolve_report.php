@@ -2,9 +2,9 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
 
-if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
+
+if ($app->user->cant(["admin" => "reports"]) && $app->user->cant(["admin" => "moderateForums"])) {
     ajax_error();
 }
 
@@ -15,12 +15,12 @@ $app->dbOld->query("
   FROM reports
   WHERE ID = $ReportID");
 list($Type) = $app->dbOld->next_record();
-if (!check_perms('admin_reports')) {
-    if (check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"])) {
+    if ($app->user->can(["admin" => "moderateForums"])) {
         if (!in_array($Type, array('comment', 'post', 'thread'))) {
             ajax_error();
         }
-    } elseif (check_perms('project_team')) {
+    } elseif (true) {
         if ($Type != 'request_update') {
             ajax_error();
         }

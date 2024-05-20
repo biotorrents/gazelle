@@ -1,0 +1,314 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+<h2>Complete your purchase</h2>
+
+<p>
+    Thank you for shopping at {{ env.siteName }}.
+    Please complete your purchase of: <strong>{{ bonusPoints.friendlyItemNames[item] }}.</strong>
+    We appreciate your contribution to the site.
+</p>
+
+{% if not actionRequired %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if not actionRequired #}
+</section>
+
+{% if actionRequired %}
+<section>
+<h3>Action required</h3>
+
+<p>
+    We need more information to complete your purchase.
+    Please enter the requested information in the form below.
+</p>
+
+
+{# currency exchange #}
+
+
+{# pointsToUpload or uploadToPoints #}
+{% if item == "pointsToUpload" or item == "uploadToPoints" %}
+<p>
+    If you approve this transaction, your new balances will be:
+</p>
+
+<ul>
+    <li>{{ newPointsBalance|number_format }} {{ env.bonusPoints }}</li>
+    <li>{{ newUploadBalance|get_size }} uploaded</li>
+</ul>
+
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+    {% if item == "pointsToUpload" %}
+    <input type="hidden" name="amount" value="{{ post.pointsAmount }}">
+    {% endif %} {# if item == "pointsToUpload" #}
+
+    {% if item == "uploadToPoints" %}
+    <input type="hidden" name="amount" value="{{ post.dataAmount }}">
+    {% endif %} {# if item == "uploadToPoints" #}
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "pointsToUpload" or item == "uploadToPoints" #}
+
+
+{# torrents #}
+
+
+{# specificFreeleech #}
+{% if item == "specificFreeleech" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="text" name="identifier" placeholder="Torrent group link, e.g., https://torrents.bio/torrents.php?id=33" class="grow" required>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "specificFreeleech" #}
+
+
+{# neutralLeechTag or freeleechTag #}
+{% if item == "neutralLeechTag" or item == "freeleechTag" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <label for="identifier">Which tag would you like to use?</label>
+    <select class="grow select" name="identifier" placeholder="Select a tag" required>
+        {% for item in tagList %}
+        <option value="{{ item.ID }}">{{ item.Name }}</option>
+        {% endfor %}
+    </select>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "neutralLeechTag" or item == "freeleechTag" #}
+
+
+{# neutralLeechCategory or freeleechCategory #}
+{% if item == "neutralLeechCategory" or item == "freeleechCategory" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <label for="identifier">Which category would you like to use?</label>
+    <select class="grow select" name="identifier" placeholder="Select a category" required>
+        {% for item in env.categories %}
+        <option value="{{ item.id }}">{{ item.title }}</option>
+        {% endfor %}
+    </select>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "neutralLeechCategory" or item == "freeleechCategory" #}
+
+
+{# user profile #}
+
+
+{# customTitle #}
+{% if item == "customTitle" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="text" class="grow" name="title" max="64" placeholder="Please enter your custom title (64 characters max)">
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "customTitle" #}
+
+
+{# glitchUsername #}
+{% if item == "glitchUsername" and not hasGlitchUsername %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+    <input type="hidden" name="delete" value="false">
+
+    <p>
+        Preview the glitch effect below.
+        Is it to your liking?
+    </p>
+
+    <p class="glitch xx-large" data-text="{{ user.username }}">{{ user.username }}</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "glitchUsername" and not hasGlitchUsername #}
+
+
+{% if item == "glitchUsername" and hasGlitchUsername %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+    <input type="hidden" name="delete" value="true">
+
+    <p>
+        Are you sure you'd like to delete the glitch username effect?
+        You'll need to buy it again at full price to reinstate it later.
+    </p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-red" value="delete the effect">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "glitchUsername" and hasGlitchUsername #}
+
+
+{# snowflakeProfile #}
+{% if item == "snowflakeProfile" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p>
+    <label for="emoji">Your snowflake effect must be a single <a href="https://emojipedia.org" target="_blank" class="external">emoji</a> of your choice</label>
+</p>
+
+<p class="flexRow">
+    <input type="text" class="grow" name="emoji" placeholder="Please enter the emoji you'd like to use" required>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "snowflakeProfile" #}
+
+
+{# badges #}
+
+
+{# lotteryBadge #}
+{% if item == "lotteryBadge" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="number" class="grow" name="amount" placeholder="How many {{ env.bonusPoints }} would you like to bet?" max={{ bonusPoints.bonusPoints }} required>
+</p>
+
+<p>
+    <label for="votes">Please enter up to 20 numbers between 1 and 80</label>
+</p>
+
+<p class="flexRow">
+    <select class="grow select" name="ticket[]" multiple>
+        {% for i in range(1, 80) %}
+        <option value="{{ i }}">{{ i }}</option>
+        {% endfor %}
+    </select>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="try your luck">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "lotteryBadge" #}
+
+
+{# auctionBadge #}
+{% if item == "auctionBadge" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="number" class="grow" name="amount" min="{{ bonusPoints.auctionBadgeCurrentCost + bonusPoints.auctionBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "auctionBadge" #}
+
+
+{# coinBadge #}
+{% if item == "coinBadge" %}
+<form method="post" action="/store/confirm">
+    {{ form_token("/store/confirm") }}
+
+    <input type="hidden" name="item" value="{{ item }}">
+
+<p class="flexRow">
+    <input type="number" class="grow" name="amount" min="{{ bonusPoints.coinBadgeCurrentCost + bonusPoints.coinBadgePremium }}" placeholder="How many {{ env.bonusPoints }} would you like to spend?" required>
+</p>
+
+<p class="flexRow">
+    <input type="submit" class="button button-primary" value="complete purchase">
+    <a href="/store" class="button">cancel and return</a>
+</p>
+</form>
+{% endif %} {# if item == "coinBadge" #}
+
+
+</section>
+{% endif %} {# if actionRequired #}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{{ include("bonusPoints/sidebar.twig") }}
+
+{% endblock %}

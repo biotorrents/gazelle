@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 //******************************************************************************//
 //--------------- Take edit ----------------------------------------------------//
@@ -11,8 +11,8 @@ $app = \Gazelle\App::go();
 // that correspond to the torrent in question.                                  //
 //******************************************************************************//
 
-enforce_login();
-authorize();
+
+
 
 $Validate = new Validate();
 
@@ -23,10 +23,10 @@ $Validate = new Validate();
 // it into the database.                                                        //
 //******************************************************************************//
 
-$Properties=[];
+$Properties = [];
 $_POST['type'] = $_POST['type'] + 1;
 $TypeID = (int) $_POST['type'];
-$Type = $Categories[$TypeID-1];
+$Type = $Categories[$TypeID - 1];
 $TorrentID = (int) $_POST['torrentid'];
 
 $Properties['BadTags'] = (isset($_POST['bad_tags'])) ? 1 : 0;
@@ -51,7 +51,7 @@ if ($_POST['album_desc']) {
     $Properties['GroupDescription'] = $_POST['album_desc'];
 }
 
-if (check_perms('torrents_freeleech')) {
+if ($app->user->can(["admin" => "freeleechTorrents"])) {
     $Free = (int) $_POST['freeleech'];
     if (!in_array($Free, array(0, 1, 2))) {
         error(404);
@@ -61,7 +61,7 @@ if (check_perms('torrents_freeleech')) {
     if ($Free == 0) {
         $FreeType = 0;
     } else {
-        $FreeType = (int)$_POST['freeleechtype'];
+        $FreeType = (int) $_POST['freeleechtype'];
         if (!in_array($Free, array(0, 1, 2, 3))) {
             error(404);
         }
@@ -85,11 +85,11 @@ if (!$app->dbOld->has_results()) {
 // list($UserID, $Remastered, $RemasterYear, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 list($UserID, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
-if ($app->user->core['id'] != $UserID && !check_perms('torrents_edit')) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "updateAny"])) {
     error(403);
 }
 
-if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && !check_perms('edit_unknowns')) {
+if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && $app->user->cant(["torrents" => "updateAny"])) {
     // It's Unknown now, and it wasn't before
     if ($app->user->core['id'] != $UserID) {
         // Hax
@@ -102,7 +102,7 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
     //Unknown Edit!
-    if ($app->user->core['id'] == $UserID || check_perms('edit_unknowns')) {
+    if ($app->user->core['id'] == $UserID || $app->user->can(["torrents" => "updateAny"])) {
         //Fine!
     } else {
         $Err = "You may not edit someone else's upload to unknown release.";
@@ -113,11 +113,11 @@ if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
 $AmazonReg = '/(http:\/\/ecx.images-amazon.com\/images\/.+)(\._.*_\.jpg)/i';
 $Matches = [];
 if (preg_match($RegX, $Properties['Image'], $Matches)) {
-    $Properties['Image'] = $Matches[1].'.jpg';
+    $Properties['Image'] = $Matches[1] . '.jpg';
 }
 
 if ($Err) { // Show the upload form, with the data the user entered
-    if (check_perms('site_debug')) {
+    if (true) {
         error($Err);
     }
     error($Err);
@@ -130,7 +130,7 @@ if ($Err) { // Show the upload form, with the data the user entered
 // Shorten and escape $Properties for database input
 $T = [];
 foreach ($Properties as $Key => $Value) {
-    $T[$Key] = "'".db_string(trim($Value))."'";
+    $T[$Key] = "'" . db_string(trim($Value)) . "'";
     if (!$T[$Key]) {
         $T[$Key] = null;
     }
@@ -165,9 +165,9 @@ foreach ($dbTorVals as $Key => $Value) {
         }
 
         if ($LogDetails == '') {
-            $LogDetails = "$Key: $Value -> ".$T[$Key];
+            $LogDetails = "$Key: $Value -> " . $T[$Key];
         } else {
-            $LogDetails = "$LogDetails, $Key: $Value -> ".$T[$Key];
+            $LogDetails = "$LogDetails, $Key: $Value -> " . $T[$Key];
         }
     }
 }
@@ -188,12 +188,12 @@ $SQL = "
     Censored = $T[Censored],
     Anonymous = $T[Anonymous],";
 
-if (check_perms('torrents_freeleech')) {
+if ($app->user->can(["admin" => "freeleechTorrents"])) {
     $SQL .= "FreeTorrent = $T[FreeLeech],";
     $SQL .= "FreeLeechType = $T[FreeLeechType],";
 }
 
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $app->dbOld->query("
       SELECT TorrentID
       FROM torrents_bad_tags
@@ -254,7 +254,7 @@ $SQL .= "
   WHERE ID = $TorrentID";
 $app->dbOld->query($SQL);
 
-if (check_perms('torrents_freeleech') && $Properties['FreeLeech'] != $CurFreeLeech) {
+if ($app->user->can(["admin" => "freeleechTorrents"]) && $Properties['FreeLeech'] != $CurFreeLeech) {
     Torrents::freeleech_torrents($TorrentID, $Properties['FreeLeech'], $Properties['FreeLeechType']);
 }
 
@@ -263,16 +263,6 @@ $app->dbOld->query("
   FROM torrents
   WHERE ID = '$TorrentID'");
 list($GroupID, $Time) = $app->dbOld->next_record();
-
-// Competition
-if (strtotime($Time) > 1241352173) {
-    if ($_POST['log_score'] == '100') {
-        $app->dbOld->query("
-          INSERT IGNORE into users_points (GroupID, UserID, Points)
-          VALUES ('$GroupID', '$UserID', '1')");
-    }
-}
-// End competiton
 
 $app->dbOld->query("
   SELECT Enabled
@@ -286,7 +276,7 @@ $app->dbOld->query("
   WHERE `id` = $GroupID");
 list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by ".$app->user->core['username']." ($LogDetails)"); // TODO: this is probably broken
+Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by " . $app->user->core['username'] . " ($LogDetails)"); // TODO: this is probably broken
 Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $LogDetails, 0);
 
 $app->cache->delete("torrents_details_$GroupID");
@@ -295,4 +285,4 @@ $app->cache->delete("torrent_download_$TorrentID");
 Torrents::update_hash($GroupID);
 // All done!
 
-Http::redirect("torrents.php?id=$GroupID");
+Gazelle\Http::redirect("torrents.php?id=$GroupID");

@@ -5,12 +5,12 @@
 $app = \Gazelle\App::go();
 
 # todo: Go through line by line
-if (!check_perms('site_torrents_notify')) {
-    json_die('failure');
+if ($app->user->cant(["notifications" => "read"])) {
+    \Gazelle\Api\Base::failure(400);
 }
 
 define('NOTIFICATIONS_PER_PAGE', 50);
-list($Page, $Limit) = Format::page_limit(NOTIFICATIONS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(NOTIFICATIONS_PER_PAGE);
 
 $Results = $app->dbOld->query("
     SELECT
@@ -23,10 +23,10 @@ $Results = $app->dbOld->query("
     FROM users_notify_torrents AS unt
       JOIN torrents AS t ON t.ID = unt.TorrentID
       LEFT JOIN users_notify_filters AS unf ON unf.ID = unt.FilterID
-    WHERE unt.UserID = {$app->user->core['id']}".
+    WHERE unt.UserID = {$app->user->core['id']}" .
     ((!empty($_GET['filterid']) && is_numeric($_GET['filterid']))
       ? " AND unf.ID = '$_GET[filterid]'"
-      : '')."
+      : '') . "
     ORDER BY TorrentID DESC
     LIMIT $Limit");
 $GroupIDs = array_unique($app->dbOld->collect('GroupID'));
@@ -65,7 +65,7 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
     unset($FilterResults['FilterLabel']);
     foreach ($FilterResults as $Result) {
         $TorrentID = $Result['TorrentID'];
-//    $GroupID = $Result['GroupID'];
+        //    $GroupID = $Result['GroupID'];
 
         $GroupInfo = $TorrentGroups[$Result['GroupID']];
         extract(Torrents::array_group($GroupInfo)); // all group data
@@ -76,28 +76,28 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
         }
 
         $JsonNotifications[] = array(
-      'torrentId' => (int)$TorrentID,
-      'groupId' => (int)$GroupID,
+      'torrentId' => (int) $TorrentID,
+      'groupId' => (int) $GroupID,
       'groupName' => $GroupName,
-      'groupCategoryId' => (int)$GroupCategoryID,
+      'groupCategoryId' => (int) $GroupCategoryID,
       'wikiImage' => $WikiImage,
       'torrentTags' => $TagList,
-      'size' => (float)$TorrentInfo['Size'],
-      'fileCount' => (int)$TorrentInfo['FileCount'],
+      'size' => (float) $TorrentInfo['Size'],
+      'fileCount' => (int) $TorrentInfo['FileCount'],
       'format' => $TorrentInfo['Format'],
       'encoding' => $TorrentInfo['Encoding'],
       'media' => $TorrentInfo['Media'],
       'scene' => $TorrentInfo['Scene'] == 1,
-      'groupYear' => (int)$GroupYear,
-      'remasterYear' => (int)$TorrentInfo['RemasterYear'],
+      'groupYear' => (int) $GroupYear,
+      'remasterYear' => (int) $TorrentInfo['RemasterYear'],
       'remasterTitle' => $TorrentInfo['RemasterTitle'],
-      'snatched' => (int)$TorrentInfo['Snatched'],
-      'seeders' => (int)$TorrentInfo['Seeders'],
-      'leechers' => (int)$TorrentInfo['Leechers'],
+      'snatched' => (int) $TorrentInfo['Snatched'],
+      'seeders' => (int) $TorrentInfo['Seeders'],
+      'leechers' => (int) $TorrentInfo['Leechers'],
       'notificationTime' => $TorrentInfo['Time'],
       'hasLog' => $TorrentInfo['HasLog'] == 1,
       'hasCue' => $TorrentInfo['HasCue'] == 1,
-      'logScore' => (float)$TorrentInfo['LogScore'],
+      'logScore' => (float) $TorrentInfo['LogScore'],
       'freeTorrent' => $TorrentInfo['FreeTorrent'] == 1,
       'logInDb' => $TorrentInfo['HasLog'] == 1,
       'unread' => $Result['UnRead'] == 1
@@ -105,7 +105,7 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
     }
 }
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'currentPages' => intval($Page),
   'pages' => ceil($TorrentCount / NOTIFICATIONS_PER_PAGE),
   'numNew' => $NumNew,

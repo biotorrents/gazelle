@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -25,7 +25,7 @@ Should the advanced search really only show if they match 3 perms?
 Make sure all constants are defined in config.php and not in random files
 *****************************************************************/
 
-enforce_login();
+
 
 #require_once serverRoot."/classes/validate.class.php" ;
 $Val = new Validate();
@@ -44,26 +44,18 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'notify_delete':
-        authorize();
+
         if ($_GET['id'] && is_numeric($_GET['id'])) {
-            $app->dbOld->query("DELETE FROM users_notify_filters WHERE ID='".db_string($_GET['id'])."' AND UserID='{$app->user->core['id']}'");
-            $ArtistNotifications = $app->cache->get('notify_artists_'.$app->user->core['id']);
+            $app->dbOld->query("DELETE FROM users_notify_filters WHERE ID='" . db_string($_GET['id']) . "' AND UserID='{$app->user->core['id']}'");
+            $ArtistNotifications = $app->cache->get('notify_artists_' . $app->user->core['id']);
 
             if (is_array($ArtistNotifications) && $ArtistNotifications['ID'] == $_GET['id']) {
-                $app->cache->delete('notify_artists_'.$app->user->core['id']);
+                $app->cache->delete('notify_artists_' . $app->user->core['id']);
             }
         }
 
-        $app->cache->delete('notify_filters_'.$app->user->core['id']);
-        Http::redirect("user.php?action=notify");
-        break;
-
-    case 'search':// User search
-        if (check_perms('admin_advanced_user_search') && check_perms('users_view_ips') && check_perms('users_view_email')) {
-            require_once 'advancedsearch.php';
-        } else {
-            require_once 'search.php';
-        }
+        $app->cache->delete('notify_filters_' . $app->user->core['id']);
+        Gazelle\Http::redirect("user.php?action=notify");
         break;
 
     case 'edit':
@@ -121,13 +113,10 @@ switch ($_REQUEST['action']) {
         break;
 
     case 'points':
-        require_once serverRoot.'/sections/user/points.php';
+        require_once serverRoot . '/sections/user/points.php';
         break;
 
     default:
-        if (isset($_REQUEST['id'])) {
-            require_once serverRoot.'/sections/user/user.php';
-        } else {
-            #Http::redirect("index.php");
-        }
+        require_once serverRoot . '/sections/user/user.php';
+        break;
 }

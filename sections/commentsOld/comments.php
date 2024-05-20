@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * $_REQUEST['action'] is artist, collages, requests or torrents (default torrents)
@@ -19,7 +19,7 @@ $app = \Gazelle\App::go();
 
 // User ID
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $UserID = (int)$_GET['id'];
+    $UserID = (int) $_GET['id'];
     $UserInfo = User::user_info($UserID);
     $Username = $UserInfo['Username'];
 
@@ -27,13 +27,6 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
         $Self = true;
     } else {
         $Self = false;
-    }
-
-    $Perms = Permissions::get_permissions($UserInfo['PermissionID']);
-    $UserClass = $Perms['Class'];
-
-    if (!check_paranoia('torrentcomments', $UserInfo['Paranoia'], $UserClass, $UserID)) {
-        error(403);
     }
 } else {
     $UserID = $app->user->core['id'];
@@ -47,7 +40,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = Gazelle\Format::page_limit($PerPage);
 
 if (!isset($_REQUEST['action'])) {
     $Action = 'torrents';
@@ -90,12 +83,12 @@ switch ($Action) {
             $Title = 'Comments left on collages ' . ($Self ? 'you' : $Username) . ' created';
             $Header = 'Comments left on collages ' . ($Self ? 'you' : User::format_username($UserID, false, false, false)) . ' created';
         } elseif ($Type == 'contributed') {
-            $Conditions[] = 'IF(`collages`.`CategoryID` = ' . array_search('Artists', $CollageCats) . ', `collages_artists`.`ArtistID`, `collages_torrents`.`GroupID`) IS NOT NULL';
+            $Conditions[] = 'IF(`collages`.`CategoryID` = ' . array_search('Artists', $app->env->collageCategories) . ', `collages_artists`.`ArtistID`, `collages_torrents`.`GroupID`) IS NOT NULL';
             $Conditions[] = "`comments`.`AuthorID` != $UserID";
             $Join[] = "LEFT JOIN `collages_torrents` ON `collages_torrents`.`CollageID` = `collages`.`ID` AND `collages_torrents`.`UserID` = $UserID";
             $Join[] = "LEFT JOIN `collages_artists` ON `collages_artists`.`CollageID` = `collages`.`ID` AND `collages_artists`.`UserID` = $UserID";
             $Title = 'Comments left on collages ' . ($Self ? 'you\'ve' : $Username . ' has') . ' contributed to';
-            $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false).' has') . ' contributed to';
+            $Header = 'Comments left on collages ' . ($Self ? 'you\'ve' : User::format_username($UserID, false, false, false) . ' has') . ' contributed to';
         } else {
             $Type = 'default';
             $Conditions[] = "`comments`.`AuthorID` = $UserID";
@@ -187,7 +180,7 @@ $Count = $app->dbOld->record_count();
 
 $app->dbOld->query("SELECT FOUND_ROWS()");
 list($Results) = $app->dbOld->next_record();
-$Pages = Format::get_pages($Page, $Results, $PerPage, 11);
+$Pages = Gazelle\Format::get_pages($Page, $Results, $PerPage, 11);
 $app->dbOld->set_query_id($Comments);
 
 # Remove the weird comment headings on torrent and request comments
@@ -197,7 +190,7 @@ if ($Action === 'requests') {
   $Artists = [];
 
   foreach ($RequestIDs as $RequestID) {
-    $Artists[$RequestID] = Requests::get_artists($RequestID);
+    $Artists[$RequestID] = Gazelle\Requests::get_artists($RequestID);
   }
   $app->dbOld->set_query_id($Comments);
 } elseif ($Action === 'torrents') {
@@ -243,7 +236,7 @@ switch ($Action) {
         }
 
         if ($Type !== 'created') {
-            $TypeLinks[] = '<a href="' . $BaseLink . '&amp;type=created" class="brackets">Display comments left on ' . ($Self ? 'your collections' : 'collections created by ' .$Username) . '</a>';
+            $TypeLinks[] = '<a href="' . $BaseLink . '&amp;type=created" class="brackets">Display comments left on ' . ($Self ? 'your collections' : 'collections created by ' . $Username) . '</a>';
         }
 
         if ($Type !== 'contributed') {

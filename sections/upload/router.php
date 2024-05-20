@@ -16,9 +16,9 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
 
-if (!check_perms('site_upload')) {
+
+if ($app->user->cant(["torrents" => "create"])) {
     error('Please read the site wiki for information on how to become a Member and gain upload privileges.');
 }
 

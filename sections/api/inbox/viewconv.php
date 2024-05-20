@@ -81,7 +81,7 @@ $app->dbOld->query("
 
 $JsonMessages = [];
 while (list($SentDate, $SenderID, $Body, $MessageID) = $app->dbOld->next_record()) {
-    $Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
+    $Body = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Body) : '[Encrypted]';
     $JsonMessage = array(
     'messageId' => (int)$MessageID,
     'senderId' => (int)$SenderID,
@@ -100,7 +100,7 @@ print
       'status' => 'success',
       'response' => array(
         'convId' => (int)$ConvID,
-        'subject' => $Subject.($ForwardedID > 0 ? " (Forwarded to $ForwardedName)" : ''),
+        'subject' => $Subject . ($ForwardedID > 0 ? " (Forwarded to $ForwardedName)" : ''),
         'sticky' => $Sticky == 1,
         'messages' => $JsonMessages
       )

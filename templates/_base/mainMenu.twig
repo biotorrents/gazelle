@@ -14,7 +14,7 @@
 
 	{# search #}
 	<div id="searchForm">
-		<form id="universalSearch" name="universalSearch" method="get" action="torrents.php">
+		<form id="universalSearch" name="universalSearch" method="get" action="/universalSearch">
 
 			{# workaround for some endpoints that need &action=search #}
 			<input type="hidden" name="action" value="search">
@@ -25,12 +25,12 @@
 			{# select which site area to search #}
 			<select id="searchWhat" name="searchWhat" {# class="select" #}>
 				<option value="torrents" selected>Torrents</option>
-				{# <option value="artist">Creators</option> #}
+				{# <option value="creators">Creators</option> #}
 				<option value="requests">Requests</option>
 				{# <option value="forums">Forums</option> #}
 				<option value="wiki">Wiki</option>
-				<option value="log">Log</option>
-				<option value="user">Users</option>
+				{# <option value="log">Log</option> #}
+				<option value="users">Users</option>
 			</select>
 
 			{# submit button, maybe unnecessary #}
@@ -56,8 +56,8 @@
 		<h3 id="torrentsHeader">Torrents</h3>
 		<ul>
 			<li><a href="/torrents.php">Browse</a></li>
-			<li><a href="/collages.php">Collections</a></li>
-			<li><a href="/requests.php">Requests</a></li>
+			<li><a href="/collages.php">Collages</a></li>
+			<li><a href="/requests">Requests</a></li>
 			<li><a href="/top10">Top 10</a></li>
 			<li><a href="/better">Better</a></li>
 		</ul>
@@ -80,7 +80,7 @@
 		<ul>
 			{# <li><a href="/forums.php">Forums</a></li> #}
 			<li><a href="/rules">Rules</a></li>
-			<li><a href="/wiki.php">Wiki</a></li>
+			<li><a href="/wiki">Wiki</a></li>
 			<li><a href="/comments.php">Comments</a></li>
 			<li><a href="/friends">Friends</a></li>
 			<li><a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a></li>

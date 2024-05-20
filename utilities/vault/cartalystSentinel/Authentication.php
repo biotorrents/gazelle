@@ -51,10 +51,10 @@ class Authentication
 
             $capsule->addConnection([
                 "driver" => "mysql",
-                "host" => $app->env->getPriv("sqlHost"),
-                "database" => $app->env->getPriv("sqlDatabase"),
-                "username" => $app->env->getPriv("sqlUsername"),
-                "password" => $app->env->getPriv("sqlPassphrase"),
+                "host" => $app->env->private("sqlHost"),
+                "database" => $app->env->private("sqlDatabase"),
+                "username" => $app->env->private("sqlUsername"),
+                "password" => $app->env->private("sqlPassphrase"),
                 "charset" => "utf8mb4",
                 "collation" => "utf8mb4_unicode_ci",
             ]);
@@ -142,8 +142,7 @@ class Authentication
     public function register(array $credentials)
     {
         try {
-            $user = Sentinel::register($credentials, function () {
-            });
+            $user = Sentinel::register($credentials, function () {});
         } catch (\Throwable $e) {
             return $e->getMessage();
         }

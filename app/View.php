@@ -23,26 +23,26 @@ class View
      */
     public static function pushAsset(string $uri, string $type)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         $uri = preg_replace(".$ENV->staticServer.", '', $uri);
-        #$integrity = base64_encode(hash_file($ENV->SRI, "$ENV->serverRoot/$uri", true));
+        #$integrity = base64_encode(hash_file($ENV->subresourceIntegrity, "$ENV->serverRoot/$uri", true));
 
         switch ($type) {
             case 'script':
                 $HTML = "<script src='$uri' crossorigin='anonymous'></script>";
-                #$HTML = "<script defer src='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'></script>";
+                #$HTML = "<script defer src='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'></script>";
                 break;
 
             case 'style':
                 $HTML = "<link rel='stylesheet' href='$uri' crossorigin='anonymous'>";
-                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
-                #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='stylesheet' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='style' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
                 break;
 
             case 'font':
                 $HTML = "<link rel='preload' as='font' href='$uri' crossorigin='anonymous'>";
-                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->SRI-$integrity' crossorigin='anonymous'>";
+                #$HTML = "<link rel='preload' as='font' href='$uri' integrity='$ENV->subresourceIntegrity-$integrity' crossorigin='anonymous'>";
                 break;
 
             default:
@@ -64,7 +64,7 @@ class View
      */
     public static function header($PageTitle = '', $JSIncludes = '', $CSSIncludes = '')
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         global $Document, $Mobile, $Classes;
 
         if ($PageTitle !== '') {
@@ -93,12 +93,11 @@ class View
      */
     public static function footer($Options = [])
     {
-        $ENV = ENV::go();
-        global $SessionID, $UserSessions, $Time, $Mobile;
-        #global $ScriptStartTime, $SessionID, $UserSessions, $debug, $Time, $Mobile;
+        $app = \Gazelle\App::go();
 
-        # hardcode private (public already twig'd)
-        require_once "$ENV->serverRoot/design/privatefooter.php";
+        echo "<footer>";
+        $app->twig->display("_base/footer.twig");
+        echo "</footer>";
     }
 
 

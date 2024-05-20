@@ -1,136 +1,23 @@
 <h3>Actions</h3>
 
-<form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+<form>
+    <a href="/better/single" {{ (currentPage == "single") ? "class='button button-primary'" : "class='button'" }}>single seeder</a>
 
-    <input type="button" id="create" name="create" value="new thread" class="button-primary">
+    <a href="/better/literature" {{ (currentPage == "literature") ? "class='button button-primary'" : "class='button'" }}>doi numbers</a>
 
-    <input type="button" id="unread" name="unread" value="unread" class="button-orange">
+    <a href="/better/pictures" {{ (currentPage == "pictures") ? "class='button button-primary'" : "class='button'" }}>pictures</a>
 
-    <input type="button" id="subscribe" name="subscribe" value="subscribe">
+    <a href="/better/tags" {{ (currentPage == "tags") ? "class='button button-primary'" : "class='button'" }}>tags</a>
+
+    <a href="/better/folders" {{ (currentPage == "folders") ? "class='button button-primary'" : "class='button'" }}>folder names</a>
+
+    <hr>
+
+    {% if snatchedOnly %}
+        <a href="/better/{{ currentPage }}" class="button">show all torrents</a>
+    {% else %}
+        <a href="/better/{{ currentPage }}?snatches=true" class="button">show snatched torrents</a>
+    {% endif %}
+
+    <a href="/better" class="button button-orange">back to index</a>
 </form>
-
-
-{% if freeleeches is defined %}
-<h3>Current freeleeches</h3>
-
-<ul>
-
-    {% for freeleech in freeleeches %}
-    <li>
-        <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
-        <br>
-
-        <span class="u-pull-left">
-            {{ topic.Username }}
-        </span>
-
-        <span class="u-pull-right">
-            {{ topic.Time|relativeTime }}
-        </span>
-    </li>
-    {% endfor %}
-
-</ul>
-{% endif %}
-
-{#
-<ul class="stats nobullet">
-    <?php
-  for ($i = 0; $i < count($freeleeches); $i++) {
-      list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
-      if ($ExpiryTime < time()) {
-          continue;
-      }
-      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
-      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
-      if (!isset($user['CoverArt']) || $user['CoverArt']) {
-          $DisplayName .= ' data-cover="'.\Gazelle\Images::process($Image, 'thumb').'"';
-      }
-      $DisplayName .= '>'.$Name.'</a>'; ?>
-    <li>
-        <strong class="fl_time">
-            <?=$DisplayTime?>
-        </strong>
-        <?=$DisplayName?>
-    </li>
-    <?php
-  } ?>
-</ul>
-</div>
-<?php
-}
-?>
-
-if (count($Freeleeches)) {
-?>
-<div class="box">
-    <div class="head colhead_dark"><strong><a
-                href="torrents.php?freetorrent=1&order_by=seeders&order_way=asc">Freeleeches</a></strong></div>
-    <ul class="stats nobullet">
-        <?php
-  for ($i = 0; $i < count($freeleeches); $i++) {
-      list($ID, $ExpiryTime, $Name, $Image) = $freeleeches[$i];
-      if ($ExpiryTime < time()) {
-          continue;
-      }
-      $DisplayTime = '('.str_replace(['year','month','week','day','hour','min','Just now','s',' '], ['y','M','w','d','h','m','0m'], time_diff($ExpiryTime, 1, false)).') ';
-      $DisplayName = '<a href="torrents.php?torrentid='.$ID.'"';
-      if (!isset($user['CoverArt']) || $user['CoverArt']) {
-          $DisplayName .= ' data-cover="'.\Gazelle\Images::process($Image, 'thumb').'"';
-      }
-      $DisplayName .= '>'.$Name.'</a>'; ?>
-        <li>
-            <strong class="fl_time">
-                <?=$DisplayTime?>
-            </strong>
-            <?=$DisplayName?>
-        </li>
-        <?php
-  } ?>
-    </ul>
-</div>
-<?php
-}
-#}
-
-
-{% if blog is defined %}
-<h3>Latest blog posts</h3>
-
-<ul>
-
-    {% for blog in blog %}
-    <li>
-        <a href="{# /boards/{{ topic.categorySlug }}/{{ topic.slug }} #}">{{ blog.Title }}</a>
-        <br>
-
-        <span class="u-pull-left">
-            {{ topic.Username }}
-        </span>
-
-        <span class="u-pull-right">
-            {{ topic.Time|relativeTime }}
-        </span>
-    </li>
-    {% endfor %}
-
-</ul>
-{% endif %}
-
-
-{% if topic.suggested_topics is defined %}
-<h3>Suggested</h3>
-
-<ul>
-
-    {% for topic in topic.suggested_topics %}
-    <li>
-        <a href="/boards/{{ category }}/{{ topic.slug }}">{{ topic.title }}</a>
-        <br>
-        {{ topic.last_posted_at|relativeTime }}
-    </li>
-    {% endfor %}
-
-</ul>
-{% endif %}

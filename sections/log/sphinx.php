@@ -7,7 +7,7 @@
 /*
 $app = \Gazelle\App::go();
 
-$debug = Debug::go();
+$debug = \Gazelle\Debug::go();
 
 if (!empty($_GET['page']) && is_numeric($_GET['page'])) {
     $Page = min(SPHINX_MAX_MATCHES / LOG_ENTRIES_PER_PAGE, $_GET['page']);

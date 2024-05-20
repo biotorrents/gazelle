@@ -12,7 +12,7 @@ $app = \Gazelle\App::go();
  * which are off limits to most members.
  */
 
-require_once serverRoot.'/classes/torrent_form.class.php';
+require_once serverRoot . '/classes/torrent_form.class.php';
 if (!is_numeric($_GET['id']) || !$_GET['id']) {
     error(400);
 }
@@ -81,7 +81,7 @@ if (!$Properties) {
 # Error on bad permissions
 $UploadForm = $Categories[$Properties['CategoryID'] - 1];
 if (($app->user->core['id'] !== $Properties['UserID']
-  && !check_perms('torrents_edit'))
+  && $app->user->cant(["torrents" => "updateAny"]))
   || $app->user->extra['DisableWiki']) {
     error(403);
 }
@@ -108,7 +108,7 @@ $TorrentForm->upload_form();
  *
  * Various inlined tools to manage torrent grouping, etc.
  */
-if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
+if ($app->user->can(["torrents" => "updateAny"]) || $app->user->can(["admin" => "moderateUsers"])) { ?>
 <!-- Start HTML -->
 
 
@@ -256,7 +256,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
 </div> <!-- box pad -->
 
 <?php
-    if (check_perms('users_mod')) { ?>
+    if ($app->user->can(["admin" => "moderateUsers"])) { ?>
 
 <!-- Change Category -->
 <h2>Change Category</h2>
@@ -280,7 +280,7 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
           <select id="newcategoryid" name="newcategoryid">
             <?php foreach ($Categories as $CatID => $CatName) { ?>
             <option value="<?=($CatID + 1)?>"
-              <?Format::selected('CategoryID', $CatID + 1, 'selected', $Properties)?>><?=($CatName)?>
+              <?\Gazelle\Format::selected('CategoryID', $CatID + 1, 'selected', $Properties)?>><?=($CatName)?>
             </option>
             <?php } ?>
           </select>
@@ -325,5 +325,5 @@ if (check_perms('torrents_edit') || check_perms('users_mod')) { ?>
 <?php
     } ?>
 <?php
-} // if check_perms('torrents_edit')
+} // if $app->user->can(["torrents" => "updateAny"])
 View::footer();

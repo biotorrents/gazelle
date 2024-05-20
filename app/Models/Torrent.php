@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace Gazelle\Models;
 
-class Torrent extends Base
+class Torrent extends BaseOld
 {
     # the table associated with the model
     protected $table = "torrents";

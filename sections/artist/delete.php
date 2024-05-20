@@ -11,14 +11,14 @@ requests and torrents. It is called when $_GET['action'] == 'delete'.
 
 ************************************************************************
 
-authorize();
+
 
 $ArtistID = $_GET['artistid'];
 if (!is_numeric($ArtistID) || empty($ArtistID)) {
   error(0);
 }
 
-if (!check_perms('site_delete_artist') || !check_perms('torrents_delete')) {
+if ($app->user->cant(["creators" => "deleteAny"]) || $app->user->cant(["torrents" => "deleteAny"])) {
   error(403);
 }
 

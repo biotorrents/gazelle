@@ -2,13 +2,13 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 //******************************************************************************//
 //--------------- Delete request -----------------------------------------------//
 
-authorize();
+
 
 $RequestID = $_POST['id'];
 if (!is_numeric($RequestID)) {
@@ -25,7 +25,7 @@ $app->dbOld->query("
   WHERE ID = $RequestID");
 list($UserID, $Title, $CategoryID, $GroupID) = $app->dbOld->next_record();
 
-if ($app->user->core['id'] != $UserID && !check_perms('site_moderate_requests')) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 
@@ -33,9 +33,9 @@ $CategoryName = $Categories[$CategoryID - 1];
 
 //Do we need to get artists?
 if ($CategoryName != 'Music') {
-    $ArtistForm = Requests::get_artists($RequestID);
+    $ArtistForm = Gazelle\Requests::get_artists($RequestID);
     $ArtistName = Artists::display_artists($ArtistForm, false, true);
-    $FullName = $ArtistName.$Title;
+    $FullName = $ArtistName . $Title;
 } else {
     $FullName = $Title;
 }
@@ -62,10 +62,10 @@ $app->dbOld->query("
 $app->cache->delete("request_artists_$RequestID");
 
 if ($UserID != $app->user->core['id']) {
-    Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=".site_url().'user.php?id='.$app->user->core['id'].']'.$app->user->core['username'].'[/url] for the reason: [quote]'.$_POST['reason'].'[/quote]');
+    Misc::send_pm($UserID, 0, 'A request you created has been deleted', "The request \"$FullName\" was deleted by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . '[/url] for the reason: [quote]' . $_POST['reason'] . '[/quote]');
 }
 
-Misc::write_log("Request $RequestID ($FullName) was deleted by user ".$app->user->core['id'].' ('.$app->user->core['username'].') for the reason: '.$_POST['reason']);
+Misc::write_log("Request $RequestID ($FullName) was deleted by user " . $app->user->core['id'] . ' (' . $app->user->core['username'] . ') for the reason: ' . $_POST['reason']);
 
 $app->cache->delete("request_$RequestID");
 $app->cache->delete("request_votes_$RequestID");
@@ -73,4 +73,4 @@ if ($GroupID) {
     $app->cache->delete("requests_group_$GroupID");
 }
 
-Http::redirect("requests.php");
+Gazelle\Http::redirect("requests.php");

@@ -1,28 +1,7 @@
 {
   "dependencies": {
-    "@simplewebauthn/browser": "^7.2.0",
-    "chart.js": "^4.1.1",
-    "chartjs-chart-geo": "^4.1.1",
-    "chartjs-chart-graph": "^4.1.0",
-    "chartjs-chart-wordcloud": "^4.1.0",
-    "easymde": "^2.18.0",
-    "highlight.js": "^11.7.0",
-    "instant.page": "^5.1.1",
-    "jquery": "^3.6.3",
-    "tom-select": "^2.2.2"
-  },
-  "devDependencies": {
-    "@hotwired/stimulus": "^3.2.1",
-    "@symfony/stimulus-bridge": "^3.2.2",
-    "@symfony/webpack-encore": "^4.3.0",
-    "sass": "^1.62.1",
-    "sass-loader": "^13.2.2",
-    "webpack-notifier": "^1.15.0"
-  },
-  "scripts": {
-    "dev-server": "encore dev-server",
-    "dev": "encore dev",
-    "watch": "encore dev --watch",
-    "build": "encore production --progress"
+    "starboard-notebook": "^0.15.7",
+    "starboard-rich-editor": "^0.15.7",
+    "starboard-wrap": "^0.4.1"
   }
 }

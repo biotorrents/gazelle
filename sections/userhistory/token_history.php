@@ -10,7 +10,7 @@ declare(strict_types=1);
  * Non-mods and empty userid show $app->user->core['id']'s history.
  */
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 # Validate user ID
 if (isset($_GET['userid'])) {
@@ -19,28 +19,32 @@ if (isset($_GET['userid'])) {
     $UserID = (int) $app->user->core['id'];
 }
 
-Security::int($UserID);
 
 # Get user info
 $UserInfo = User::user_info($UserID);
-$Perms = Permissions::get_permissions($UserInfo['PermissionID']);
+
+/*
+$Perms = Gazelle\Permissions::get_permissions($UserInfo['PermissionID']);
 $UserClass = $Perms['Class'];
+*/
+
+# new shim
+$UserClass = $app->user->extra["PermissionID"];
 
 # Validate mod permissions
-if (!check_perms('users_mod')) {
-    if ($app->user->core['id'] !== $UserID && !check_paranoia(false, $User['Paranoia'], $UserClass, $UserID)) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
+    if ($app->user->core['id'] !== $UserID) {
         error(403);
     }
 }
 
 if (isset($_GET['expire'])) {
-    if (!check_perms('users_mod')) {
+    if ($app->user->cant(["admin" => "moderateUsers"])) {
         error(403);
     }
 
     $UserID = (int) $_GET['userid'];
     $TorrentID = (int) $_GET['torrentid'];
-    Security::int($UserID, $TorrentID);
 
     $app->dbOld->prepared_query("
     SELECT
@@ -66,15 +70,15 @@ if (isset($_GET['expire'])) {
         $app->cache->delete("users_tokens_$UserID");
         Tracker::update_tracker(
             'remove_token',
-            ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
+            ['info_hash' => substr('%' . chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]
         );
     }
-    Http::redirect("userhistory.php?action=token_history&userid=$UserID");
+    Gazelle\Http::redirect("userhistory.php?action=token_history&userid=$UserID");
 }
 
 # Render HTML
 View::header('Freeleech token history');
-list($Page, $Limit) = Format::page_limit(25);
+list($Page, $Limit) = Gazelle\Format::page_limit(25);
 
 $app->dbOld->prepared_query("
 SELECT SQL_CALC_FOUND_ROWS
@@ -105,7 +109,7 @@ LIMIT $Limit
 $Tokens = $app->dbOld->to_array();
 $app->dbOld->prepared_query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
-$Pages = Format::get_pages($Page, $NumResults, 25);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, 25);
 ?>
 
 <div class="header">
@@ -125,7 +129,7 @@ $Pages = Format::get_pages($Page, $NumResults, 25);
     <th>Time</th>
     <th>Expired</th>
 
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <th>Downloaded</th>
     <th>Tokens used</th>
     <?php } ?>
@@ -164,14 +168,14 @@ foreach ($Tokens as $Token) {
 
     <td>
       <?= ($Expired ? 'Yes' : 'No') ?>
-      <?= (check_perms('users_mod') && !$Expired)
+      <?= ($app->user->can(["admin" => "moderateUsers"]) && !$Expired)
         ? " <a href='userhistory.php?action=token_history&amp;expire=1&amp;userid=$UserID&amp;torrentid=$TorrentID'>(expire)</a>"
         : ''; ?>
     </td>
 
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <td>
-      <?= Format::get_size($Downloaded) ?>
+      <?= Gazelle\Format::get_size($Downloaded) ?>
     </td>
 
     <td>

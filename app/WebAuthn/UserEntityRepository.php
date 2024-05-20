@@ -34,7 +34,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
 
         return PublicKeyCredentialUserEntity::create(
             $username, # name
-            $app->dbNew->uuidBinary($userId), # id
+            $app->dbNew->binaryUuid($userId), # id
             $username, # display name
             null # icon
         );
@@ -60,7 +60,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
 
         # get the username from the userId
         $query = "select username from users where uuid = ?";
-        $username = $app->dbNew->single($query, [ $app->dbNew->uuidBinary($userId) ]);
+        $username = $app->dbNew->single($query, [ $app->dbNew->binaryUuid($userId) ]);
 
         if (!$username) {
             return null;
@@ -68,7 +68,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
 
         return PublicKeyCredentialUserEntity::create(
             $username, # name
-            $app->dbNew->uuidBinary($userId), # id
+            $app->dbNew->binaryUuid($userId), # id
             $username, # display name
             null # icon
         );

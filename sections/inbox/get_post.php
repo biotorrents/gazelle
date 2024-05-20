@@ -31,9 +31,9 @@ $app->dbOld->query("
   FROM pm_messages AS m
     JOIN pm_conversations_users AS u ON m.ConvID = u.ConvID
   WHERE m.ID = '$PostID'
-    AND u.UserID = ".$app->user->core['id']);
+    AND u.UserID = " . $app->user->core['id']);
 list($Body) = $app->dbOld->next_record(MYSQLI_NUM);
-$Body = apcu_exists('DBKEY') ? Crypto::decrypt($Body) : '[Encrypted]';
+$Body = apcu_exists('DBKEY') ? \Gazelle\Crypto::decrypt($Body) : '[Encrypted]';
 
 // This gets sent to the browser, which echoes it wherever
 

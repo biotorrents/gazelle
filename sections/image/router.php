@@ -18,7 +18,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 
-if (!check_perms('site_proxy_images')) {
+if ($app->user->cant(["admin" => "proxyImages"])) {
     img_error('forbidden');
 }
 
@@ -60,7 +60,7 @@ if (!isset($Data) || !$Data) {
 // Reset avatar, add mod note
 function reset_image($UserID, $Type, $AdminComment, $PrivMessage)
 {
-    $ENV = ENV::go();
+    $ENV = \Gazelle\ENV::go();
 
     if ($Type === 'avatar') {
         $cacheKey = "user_info_$UserID";

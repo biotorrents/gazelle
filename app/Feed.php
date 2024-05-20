@@ -19,7 +19,7 @@ class Feed
      */
     public function authenticate(): void
     {
-        $get = Http::request("get");
+        $get = \Gazelle\Http::request("get");
 
         if (empty($get["feed"])
             || empty($get["authkey"])
@@ -31,7 +31,7 @@ class Feed
             || strlen($get["passkey"]) !== 32
             || strlen($get["auth"]) !== 32
         ) {
-            Http::response(400);
+            \Gazelle\Http::response(400);
         }
     }
 

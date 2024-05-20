@@ -1,11 +1,53 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+
+/**
+ * collage details page
+ */
+
+$app = Gazelle\App::go();
+
+# http request
+$get = Gazelle\Http::get();
+$id = $get["id"];
+
+# collage details
+$collage = new Gazelle\Collages($id);
+
+if (!$collage->id) {
+    $app->error(404);
+}
+
+$torrentGroups = $collage->torrentGroups();
+$isSubscribed = $collage->isSubscribed();
+$stats = $collage->readStats();
+
+# create a conversation if it doesn't exist
+$conversation = Gazelle\Conversations::createIfNotExists($collage->id, "collages");
+#!d($conversation->relationships->messages);exit;
+
+# twig template
+$app->twig->display("collages/details.twig", [
+    "title" => $collage->attributes->title,
+    "sidebar" => true,
+
+    "collage" => $collage,
+    "torrentGroups" => $torrentGroups,
+    "isSubscribed" => $isSubscribed,
+    "isBookmarked" => false, # todo
+    "stats" => $stats,
+
+    "enableConversation" => true,
+    "conversation" => $conversation,
+]);
+
+exit;
+
+/****** */
 
 $CollageID = (int) $_GET['id'];
-Security::int($CollageID);
 
 $CollageData = $app->cache->get("collage_$CollageID");
 
@@ -40,12 +82,12 @@ if ($CollageData) {
 }
 
 if ($Deleted === '1') {
-    Http::redirect("log.php?search=Collage+$CollageID");
+    Gazelle\Http::redirect("log.php?search=Collage+$CollageID");
     error(404);
 }
 
 // Handle subscriptions
-if (($CollageSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->core['id'])) === false) {
+if (($CollageSubscriptions = $app->cache->get('collage_subs_user_' . $app->user->core['id'])) === false) {
     $app->dbOld->query("
     SELECT
       `CollageID`
@@ -56,7 +98,7 @@ if (($CollageSubscriptions = $app->cache->get('collage_subs_user_'.$app->user->c
     ");
 
     $CollageSubscriptions = $app->dbOld->collect(0);
-    $app->cache->set('collage_subs_user_'.$app->user->core['id'], $CollageSubscriptions, 0);
+    $app->cache->set('collage_subs_user_' . $app->user->core['id'], $CollageSubscriptions, 0);
 }
 
 if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)) {
@@ -66,17 +108,13 @@ if (!empty($CollageSubscriptions) && in_array($CollageID, $CollageSubscriptions)
     SET
       `LastVisit` = NOW()
     WHERE
-      `UserID` = ".$app->user->core['id']."
+      `UserID` = " . $app->user->core['id'] . "
       AND `CollageID` = $CollageID
     ");
-    $app->cache->delete('collage_subs_user_new_'.$app->user->core['id']);
+    $app->cache->delete('collage_subs_user_new_' . $app->user->core['id']);
 }
 
-if ($CollageCategoryID === array_search(ARTIST_COLLAGE, $CollageCats)) {
-    include serverRoot.'/sections/collages/artist_collage.php';
-} else {
-    include serverRoot.'/sections/collages/torrent_collage.php';
-}
+include serverRoot . '/sections/collages/torrent_collage.php';
 
 if (isset($SetCache)) {
     $CollageData = array(

@@ -16,5 +16,5 @@ declare(strict_types=1);
 /** LEGACY ROUTES */
 
 
-enforce_login();
+
 include(serverRoot.'/sections/snatchlist/snatchlist.php');

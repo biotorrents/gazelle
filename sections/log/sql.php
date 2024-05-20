@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-list($Page, $Limit) = Format::page_limit(LOG_ENTRIES_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(LOG_ENTRIES_PER_PAGE);
 
 if (!empty($_GET['search'])) {
     $Search = db_string($_GET['search']);
@@ -29,13 +29,13 @@ if ($Search) {
     $SQL .= "%' ";
 }
 
-if (!check_perms('site_view_full_log')) {
+if ($app->user->cant(["admin" => "readSiteLog"])) {
     if ($Search) {
         $SQL .= ' AND ';
     } else {
         $SQL .= ' WHERE ';
     }
-    $SQL .= " Time>'".time_minus(3600 * 24 * 28)."' ";
+    $SQL .= " Time>'" . time_minus(3600 * 24 * 28) . "' ";
 }
 
 $SQL .= "

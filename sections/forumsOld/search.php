@@ -9,7 +9,7 @@ $app = \Gazelle\App::go();
 Forums search result page
 */
 
-list($Page, $Limit) = Format::page_limit(POSTS_PER_PAGE);
+list($Page, $Limit) = \Gazelle\Format::page_limit(POSTS_PER_PAGE);
 
 if (isset($_GET['type']) && $_GET['type'] === 'body') {
     $Type = 'body';
@@ -44,7 +44,7 @@ if (!empty($_GET['user'])) {
     $app->dbOld->query("
     SELECT ID
     FROM users_main
-    WHERE Username = '".db_string($User)."'");
+    WHERE Username = '" . db_string($User) . "'");
     list($AuthorID) = $app->dbOld->next_record();
     if ($AuthorID === null) {
         $AuthorID = 0;
@@ -247,7 +247,7 @@ if ($Type == 'body') {
     SELECT
       SQL_CALC_FOUND_ROWS
       t.ID,
-      ".(!empty($ThreadID) ? "SUBSTRING_INDEX(p.Body, ' ', 40)" : 't.Title').",
+      " . (!empty($ThreadID) ? "SUBSTRING_INDEX(p.Body, ' ', 40)" : 't.Title') . ",
       t.ForumID,
       f.Name,
       p.AddedTime,
@@ -334,7 +334,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($Results) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($Records);
 
-$Pages = Format::get_pages($Page, $Results, POSTS_PER_PAGE, 9);
+$Pages = \Gazelle\Format::get_pages($Page, $Results, POSTS_PER_PAGE, 9);
 echo $Pages;
 ?>
   </div>

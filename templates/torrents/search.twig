@@ -88,7 +88,7 @@
 
 					{# sequences #}
 					<select id="sequencePlatforms" name="platforms[]" placeholder="Sequences" multiple>
-						{% for item in env.META.Platforms.Sequences %}
+						{% for item in env.metadata.platforms.sequences %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
@@ -97,7 +97,7 @@
 
 					{# graphs #}
 					<select id="graphPlatforms" name="platforms[]" placeholder="Graphs" multiple>
-						{% for item in env.META.Platforms.Graphs %}
+						{% for item in env.metadata.platforms.graphs %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
@@ -106,7 +106,7 @@
 
 					{# images #}
 					<select id="imagePlatforms" name="platforms[]" placeholder="Images" multiple>
-						{% for item in env.META.Platforms.Images %}
+						{% for item in env.metadata.platforms.images %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
@@ -115,7 +115,7 @@
 
 					{# documents #}
 					<select id="documentPlatforms" name="platforms[]" placeholder="Documents" multiple>
-						{% for item in env.META.Platforms.Documents %}
+						{% for item in env.metadata.platforms.documents %}
 							<option value="{{ item }}" {{ (item in searchTerms.platforms) ? "selected" : "" }}>
 								{{ item }}
 							</option>
@@ -133,14 +133,14 @@
 					{# sequenceFormats #}
 					<select id="sequenceFormats" name="formats[]" placeholder="Sequences" multiple>
 						<option disabled>Nucleotides</option>
-						{% for key, value in env.META.Formats.Sequences %}
+						{% for key, value in env.metadata.formats.nucleotides %}
 							<option value="{{ key }}" {{ (key in searchTerms.formats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
 						{% endfor %}
 
 						<option disabled>Proteins</option>
-						{% for key, value in env.META.Formats.Proteins %}
+						{% for key, value in env.metadata.formats.proteins %}
 							<option value="{{ key }}" {{ (key in searchTerms.formats) ? "selected" : "" }}>
 								{{ key }}
 							</option>
@@ -184,7 +184,7 @@
 
 					{# archiveFormats: todo #}
 					<select id="archiveFormats" name="archives[]" placeholder="Archives" multiple>
-						{% for key, value in env.META.Formats.Archives %}
+						{% for key, value in env.metadata.formats.archives %}
 							<option value="{{ key }}" {{ (key in searchTerms.archives) ? "selected" : "" }}>
 								{{ key }}
 							</option>
@@ -230,7 +230,7 @@
 					<select name="licenses[]" id="license" multiple>
 						<option value="">License</option>
 
-						{% for item in env.META.Licenses %}
+						{% for item in env.metadata.licenses %}
 							<option value="{{ item }}" {{ (item in searchTerms.licenses) ? "selected" : "" }}>
 								{{ item }}
 							</option>

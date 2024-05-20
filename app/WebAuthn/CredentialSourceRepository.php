@@ -90,7 +90,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
 
             $variables = [
                 "uuid" => $app->dbNew->uuid() ?? null,
-                "userId" => $app->dbNew->uuidBinary($app->user->core["uuid"]) ?? null,
+                "userId" => $app->dbNew->binaryUuid($app->user->core["uuid"]) ?? null,
                 "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
                 "type" => $publicKeyCredentialSource["type"] ?? null,
                 "transports" => $publicKeyCredentialSource["transports"] ?? null,
@@ -106,7 +106,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             # massage some of the variables
             $variables["transports"] = json_encode($variables["transports"]);
             $variables["trustPath"] = json_encode($variables["trustPath"]);
-            $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
+            $variables["aaguid"] = $app->dbNew->binaryUuid($variables["aaguid"]);
             $variables["json"] = json_encode($variables["json"]);
 
             $app->dbNew->do($query, $variables);
@@ -136,7 +136,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             # massage some of the variables
             $variables["transports"] = json_encode($variables["transports"]);
             $variables["trustPath"] = json_encode($variables["trustPath"]);
-            $variables["aaguid"] = $app->dbNew->uuidBinary($variables["aaguid"]);
+            $variables["aaguid"] = $app->dbNew->binaryUuid($variables["aaguid"]);
             $variables["json"] = json_encode($variables["json"]);
 
             $app->dbNew->do($query, $variables);
@@ -155,7 +155,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $app = \Gazelle\App::go();
 
         $query = "select json from webauthn where userId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
+        $ref = $app->dbNew->multi($query, [ $app->dbNew->binaryUuid($userId) ]);
 
         $return = [];
         foreach ($ref as $row) {
@@ -175,7 +175,7 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
         $app = \Gazelle\App::go();
 
         $query = "select credentialId, userHandle, created_at from webauthn where userId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [ $app->dbNew->uuidBinary($userId) ]);
+        $ref = $app->dbNew->multi($query, [ $app->dbNew->binaryUuid($userId) ]);
 
         return $ref;
     }

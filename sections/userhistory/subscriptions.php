@@ -7,14 +7,14 @@
 
 $app = \Gazelle\App::go();
 
-$debug = Debug::go();
+$debug = \Gazelle\Debug::go();
 
 if (isset($app->user->extra['PostsPerPage'])) {
     $PerPage = $app->user->extra['PostsPerPage'];
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 View::header('Subscriptions', 'subscriptions');
 
@@ -107,7 +107,7 @@ foreach ($Results as $Result) {
 }
 
 $TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
-$Requests = Requests::get_requests($Requests);
+$Requests = \Gazelle\Requests::get_requests($Requests);
 ?>
 
 <div>
@@ -155,7 +155,7 @@ if (!$NumResults) {
     ?>
   <div class="linkbox">
     <?php
-  $Pages = Format::get_pages($Page, $NumResults, $PerPage, 11);
+  $Pages = \Gazelle\Format::get_pages($Page, $NumResults, $PerPage, 11);
     echo $Pages; ?>
   </div>
   <?php
@@ -169,7 +169,7 @@ if (!$NumResults) {
 
           case 'collages':
               $Links = 'Collage: <a href="collages.php?id=' . $Result['PageID'] . '">' . \Gazelle\Text::esc($Result['Name']) . '</a>';
-              $JumpLink = 'collages.php?action=comments&collageid=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
+              $JumpLink = 'collages.php?action=comments&collageId=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'];
               break;
 
 

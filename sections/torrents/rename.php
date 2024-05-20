@@ -2,16 +2,15 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Input validation
  */
 
-authorize();
+
 
 $group_id = (int) $_POST['groupid'];
-Security::int($group_id);
 
 $NewTitle = $_POST['name'];
 $NewSubject = $_POST['Title2'];
@@ -28,7 +27,7 @@ WHERE
 
 
 $Contributed = $app->dbOld->has_results();
-if (!($Contributed || check_perms('torrents_edit'))) {
+if (!($Contributed || $app->user->can(["torrentGroups" => "updateAny"]))) {
     error(403);
 }
 
@@ -71,18 +70,18 @@ $Title2 = 'Organism';
 $Title3 = 'Strain/Variety';
 
 if ($OldTitle !== $NewTitle) {
-    Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by ".$app->user->core['username']);
+    Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by " . $app->user->core['username']);
     Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
 }
 
 if ($OldSubject !== $NewSubject) {
-    Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by ".$app->user->core['username']);
+    Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by " . $app->user->core['username']);
     Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
 }
 
 if ($OldObject !== $NewObject) {
-    Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by ".$app->user->core['username']);
+    Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by " . $app->user->core['username']);
     Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
 }
 
-Http::redirect("torrents.php?id=$group_id");
+Gazelle\Http::redirect("torrents.php?id=$group_id");

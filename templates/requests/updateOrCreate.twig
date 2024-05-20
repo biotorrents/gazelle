@@ -1,0 +1,104 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+{% if isUpdate %}
+	<h2>Edit the request {{ request.attributes.title }}</h2>
+{% else %}
+	<h2>Create a new request</h2>
+{% endif %}
+
+{# success and error messages #}
+{% if successMessage %}
+	<div class="alertbar success">{{ successMessage }}</div>
+{% endif %}
+
+{% if errorMessage %}
+	<div class="alertbar failure">{{ errorMessage }}</div>
+{% endif %}
+
+
+{# the request form #}
+<section>
+
+<form method="post">
+	{{ form_token(query.server.REQUEST_URI) }}
+
+	{# id #}
+	{% if request.id %}
+		<input type="hidden" name="id" value="{{ request.id }}">
+	{% endif %}
+
+	{# doi number #}
+	<input type="hidden" id="identifierFormField" name="identifier" value="">
+
+	<table class="torrentForm">
+		{# category #}
+		{{ include( "torrentForm/categoryId.twig", {"value": request.attributes.categoryId} ) }}
+
+		{# title, subject, and object #}
+		{% set variables = {
+			"db": env.database,
+			"title": (request.attributes.title) ? request.attributes.title : "",
+			"subject": (request.attributes.subject) ? request.attributes.subject : "",
+			"object": (request.attributes.object) ? request.attributes.object : "",
+			"newTorrent": true
+		} %}
+		{% include "torrentForm/titles.twig" with variables %}
+
+		{# creatorList #}
+		{% set variables = {
+			"db": env.database.version,
+			"value": (request.relationships.creators) ? request.relationships.creators : "",
+			"newTorrent": true
+		} %}
+		{% include "torrentForm/creatorList.twig" with variables %}
+
+		{# tagList #}
+		{% set variables = {
+			"db": env.database.tag_list,
+			"value": (request.relationships.tags) ? request.relationships.tags : "",
+			"newTorrent": true
+		} %}
+		{% include "torrentForm/tagList.twig" with variables %}
+
+		{# picture #}
+		{% set variables = {
+			"db": env.database.picture,
+			"value": (request.attributes.picture) ? request.attributes.picture : "",
+			"newTorrent": true
+		} %}
+		{% include "torrentForm/picture.twig" with variables %}
+
+		{# groupDescription #}
+		{% set variables = {
+			"db": env.database.description,
+			"value": (request.attributes.description) ? request.attributes.description : "",
+			"required": true,
+			"newTorrent": true
+		} %}
+		{% include "torrentForm/groupDescription.twig" with variables %}
+
+	</table>
+
+</section>
+
+{# form controls #}
+<div id="formControls">
+	{% if isUpdate %}
+		<input id="submit" name="submit" type="submit" value="update the request" class="button-orange">
+	{% else %}
+		<input id="submit" name="submit" type="submit" value="create the request" class="button-primary">
+	{% endif %}
+	</div>
+
+</form>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "requests/sidebarForm.twig" %}
+
+{% endblock %}

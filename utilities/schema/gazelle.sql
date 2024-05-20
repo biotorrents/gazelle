@@ -5,7 +5,7 @@ USE gazelle_development;
 
 
 -- 2020-10-11
-CREATE TABLE `api_user_tokens`(
+CREATE TABLE `api_tokens`(
     `ID` int NOT NULL AUTO_INCREMENT,
     `UserID` int NOT NULL,
     `AppID` int DEFAULT NULL,
@@ -96,14 +96,19 @@ CREATE TABLE `artists_tags` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
--- 2020-03-09
+-- 2023-09-19
 CREATE TABLE `badges` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `Icon` varchar(255) NOT NULL,
-  `Name` varchar(255) DEFAULT NULL,
-  `Description` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
+  `id` bigint(20) UNSIGNED NOT NULL DEFAULT uuid_short(),	
+  `uuid` binary(16) NOT NULL DEFAULT unhex(replace(uuid(),'-','')),
+  `icon` varchar(64) NOT NULL,
+  `name` varchar(128) DEFAULT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT NULL ON UPDATE current_timestamp(),
+  `deleted_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
 
 
 -- 2021-07-28
@@ -275,16 +280,6 @@ CREATE TABLE `email_blacklist` (
 
 
 -- 2020-03-09
-CREATE TABLE `featured_albums` (
-  `GroupID` int NOT NULL DEFAULT '0',
-  `ThreadID` int NOT NULL DEFAULT '0',
-  `Title` varchar(35) NOT NULL DEFAULT '', -- todo: 35 vs. 50 vs. 255?
-  `Started` datetime,
-  `Ended` datetime
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `forums` (
   `ID` int unsigned NOT NULL AUTO_INCREMENT,
   `CategoryID` tinyint NOT NULL DEFAULT '0',
@@ -358,13 +353,6 @@ CREATE TABLE `forums_posts` (
   PRIMARY KEY (`ID`),
   KEY `TopicID` (`TopicID`),
   KEY `AuthorID` (`AuthorID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
-CREATE TABLE `forums_specific_rules` (
-  `ForumID` int unsigned DEFAULT NULL,
-  `ThreadID` int DEFAULT NULL
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
@@ -450,13 +438,6 @@ CREATE TABLE `invite_tree` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
--- 2020-03-09
-CREATE TABLE `last_sent_email` (
-  `UserID` int NOT NULL,
-  PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 -- 2021-07-29
 CREATE TABLE `literature` (
   `id` int NOT NULL,
@@ -513,26 +494,6 @@ CREATE TABLE `news` (
   PRIMARY KEY (`ID`),
   KEY `UserID` (`UserID`),
   KEY `Time` (`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
-CREATE TABLE `new_info_hashes` (
-  `TorrentID` int NOT NULL,
-  `InfoHash` binary(20) DEFAULT NULL,
-  PRIMARY KEY (`TorrentID`),
-  KEY `InfoHash` (`InfoHash`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
-CREATE TABLE `ocelot_query_times` (
-  `buffer` enum('users','torrents','snatches','peers') NOT NULL,
-  `starttime` datetime,
-  `ocelotinstance` datetime,
-  `querylength` int NOT NULL,
-  `timespent` int NOT NULL,
-  UNIQUE KEY `starttime` (`starttime`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
@@ -705,14 +666,6 @@ CREATE TABLE `requests_votes` (
 
 
 -- 2020-03-09
-CREATE TABLE `schedule` (
-  `NextHour` int NOT NULL DEFAULT '0',
-  `NextDay` int NOT NULL DEFAULT '0',
-  `NextBiWeekly` int NOT NULL DEFAULT '0'
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `shop_freeleeches` (
   `TorrentID` int NOT NULL,
   `ExpiryTime` datetime,
@@ -792,23 +745,6 @@ CREATE TABLE `tags` (
   KEY `TagType` (`TagType`),
   KEY `Uses` (`Uses`),
   KEY `UserID` (`UserID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `top10_history` (
-  `ID` int NOT NULL AUTO_INCREMENT,
-  `Date` datetime,
-  `Type` enum('Daily','Weekly') DEFAULT NULL,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `top10_history_torrents` (
-  `HistoryID` int NOT NULL DEFAULT '0',
-  `Rank` tinyint NOT NULL DEFAULT '0',
-  `TorrentID` int NOT NULL DEFAULT '0',
-  `TitleString` varchar(150) NOT NULL DEFAULT '',
-  `TagString` varchar(100) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
@@ -924,22 +860,6 @@ CREATE TABLE `torrents_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-CREATE TABLE `torrents_logs_new` (
-  `LogID` int NOT NULL AUTO_INCREMENT,
-  `TorrentID` int NOT NULL DEFAULT '0',
-  `Log` mediumtext,
-  `Details` mediumtext,
-  `Score` int NOT NULL,
-  `Revision` int NOT NULL,
-  `Adjusted` enum('1','0') NOT NULL DEFAULT '0',
-  `AdjustedBy` int NOT NULL DEFAULT '0',
-  `NotEnglish` enum('1','0') NOT NULL DEFAULT '0',
-  `AdjustmentReason` text,
-  PRIMARY KEY (`LogID`),
-  KEY `TorrentID` (`TorrentID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `torrents_peerlists` (
   `TorrentID` int NOT NULL,
   `GroupID` int DEFAULT NULL,
@@ -962,15 +882,6 @@ CREATE TABLE `torrents_peerlists_compare` (
   KEY `GroupID` (`GroupID`),
   KEY `Stats` (`TorrentID`,`Seeders`,`Leechers`,`Snatches`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-CREATE TABLE `torrents_recommended` (
-  `GroupID` int NOT NULL,
-  `UserID` int NOT NULL,
-  `Time` datetime,
-  PRIMARY KEY (`GroupID`),
-  KEY `Time` (`Time`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
 -- 2021-07-28
@@ -1056,14 +967,6 @@ CREATE TABLE `users_dupes` (
   KEY `GroupID` (`GroupID`),
   CONSTRAINT `users_dupes_ibfk_1` FOREIGN KEY (`UserID`) REFERENCES `users_main` (`ID`) ON DELETE CASCADE,
   CONSTRAINT `users_dupes_ibfk_2` FOREIGN KEY (`GroupID`) REFERENCES `dupe_groups` (`ID`) ON DELETE CASCADE
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `users_enable_recommendations` (
-  `ID` int NOT NULL,
-  `Enable` tinyint DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  KEY `Enable` (`Enable`)
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
@@ -1279,26 +1182,6 @@ CREATE TABLE `users_notify_torrents` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `users_points` (
-  `UserID` int NOT NULL,
-  `GroupID` int NOT NULL,
-  `Points` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`UserID`,`GroupID`),
-  KEY `UserID` (`UserID`),
-  KEY `GroupID` (`GroupID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
-CREATE TABLE `users_points_requests` (
-  `UserID` int NOT NULL,
-  `RequestID` int NOT NULL,
-  `Points` tinyint NOT NULL DEFAULT '1',
-  PRIMARY KEY (`RequestID`),
-  KEY `UserID` (`UserID`),
-  KEY `RequestID` (`RequestID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `users_seedtime` (
   `UserID` int unsigned NOT NULL,
   `TorrentID` int unsigned NOT NULL,
@@ -1500,6 +1383,80 @@ CREATE TABLE `openai` (
 -- Okay, that's all for the schema structure
 -- Now we have the default values to initialize the DB with
 SET FOREIGN_KEY_CHECKS = 1;
+
+
+INSERT INTO `badges` (`id`, `icon`, `name`, `description`) VALUES
+
+(10, '🥖', 'Baguette Bread', '16 GiB Downloaded'),
+(11, '🍜', 'Steaming Bowl', '32 GiB Downloaded'),
+(12, '🍷', 'Wine Glass', '64 GiB Downloaded'),
+(13, '🍲', 'Pot of Food', '128 GiB Downloaded'),
+(14, '🥩', 'Cut of Meat', '256 GiB Downloaded'),
+(15, '🥗', 'Green Salad', '512 GiB Downloaded'),
+(16, '☕', 'Hot Beverage', '1024 GiB Downloaded'),
+(17, '🍨', 'Ice Cream', '2048 GiB Downloaded'),
+(18, '🥧', 'Pie', '4096 GiB Downloaded'),
+(19, '🥡', 'Takeout Box', '8192 GiB Downloaded'),
+
+(20, '🔮', 'Crystal Ball', '16 GiB Uploaded'),
+(21, '🧮', 'Abacus', '32 GiB Uploaded'),
+(22, '⚗️', 'Alembic', '64 GiB Uploaded'),
+(23, '🔬', 'Microscope', '128 GiB Uploaded'),
+(24, '🔭', 'Telescope', '256 GiB Uploaded'),
+(25, '☎️', 'Telephone', '512 GiB Uploaded'),
+(26, '📺', 'Television', '1024 GiB Uploaded'),
+(27, '🖥️', 'Desktop Computer', '2048 GiB Uploaded'),
+(28, '🚀', 'Rocket', '4096 GiB Uploaded'),
+(29, '🛰️', 'Satellite', '8192 GiB Uploaded'),
+
+(30, '🥜', 'Peanuts', '10 Forum Posts'),
+(31, '🎺', 'Trumpet', '20 Forum Posts'),
+(32, '🐸', 'Frog', '50 Forum Posts'),
+(33, '📢', 'Loudspeaker', '100 Forum Posts'),
+(34, '🍆', 'Eggplant', '200 Forum Posts'),
+(35, '🎙️', 'Studio Microphone', '500 Forum Posts'),
+(36, '🍝', 'Spaghetti', '1,000 Forum Posts'),
+(37, '📯', 'Postal Horn', '2,000 Forum Posts'),
+(38, '🎪', 'Circus Tent', '5,000 Forum Posts'),
+(39, '💩', 'Pile of Poo', '10,000 Forum Posts'),
+
+(40, '🧠', 'Brain', '1% Chance by Login'),
+(41, '🩸', 'Drop of Blood', '1% Chance by Login'),
+(42, '🥽', 'Goggles', '1% Chance by Login'),
+(43, '🏥', 'Hospital', '1% Chance by Login'),
+(44, '🥼', 'Lab Coat', '1% Chance by Login'),
+(45, '🦠', 'Microbe', '1% Chance by Login'),
+(46, '🐒', 'Monkey', '1% Chance by Login'),
+(47, '🐀', 'Rat', '1% Chance by Login'),
+(48, '🩺', 'Stethoscope', '1% Chance by Login'),
+(49, '🧪', 'Test Tube', '1% Chance by Login'),
+
+(50, '🏵️', 'Rosette', '1,000 Bonus Points'),
+(51, '🏆', 'Trophy', '2,000 Bonus Points'),
+(52, '🐎', 'Horse', '5,000 Bonus Points'),
+(53, '💰', 'Money Bag', '10,000 Bonus Points'),
+(54, '🌷', 'Tulip', '20,000 Bonus Points'),
+(55, '💍', 'Ring', '50,000 Bonus Points'),
+(56, '🏺', 'Amphora', '100,000 Bonus Points'),
+(57, '👑', 'Crown', '200,000 Bonus Points'),
+(58, '🏰', 'Castle', '500,000 Bonus Points'),
+(59, '🐲', 'Dragon Face', '1,000,000 Bonus Points'),
+
+(60, '🎲', 'Game Die', 'Odds of 0.9'),
+(61, '🎰', 'Slot Machine', 'Odds of 0.09'),
+(62, '🎱', 'Pool 8 Ball', 'Odds of 0.009'),
+(63, '🃏', 'Joker', 'Odds of 0.0009'),
+(64, '☘️', 'Shamrock', 'Odds of 9.0E-5'),
+(65, '🪩', 'Mirror Ball', 'Odds of 9.0E-6'),
+(66, '🥂', 'Clinking Glasses', 'Odds of 9.0E-7'),
+(67, '🎩', 'Top Hat', 'Odds of 9.0E-8'),
+(68, '💃', 'Woman Dancing', 'Odds of 9.0E-9'),
+(69, '👺', 'Goblin', 'Odds of 9.0E-10'),
+
+(70, '🧸', 'Teddy Bear', 'Auction Winner'),
+
+(80, '🪙', 'Coin', 'Early Investor');
+
 
 INSERT INTO `permissions` (`ID`, `Level`, `Name`, `Values`, `DisplayStaff`) VALUES
   (15, 1000, 'Sysop', 'a:100:{s:10:\"site_leech\";i:1;s:11:\"site_upload\";i:1;s:9:\"site_vote\";i:1;s:20:\"site_submit_requests\";i:1;s:20:\"site_advanced_search\";i:1;s:10:\"site_top10\";i:1;s:19:\"site_advanced_top10\";i:1;s:16:\"site_album_votes\";i:1;s:20:\"site_torrents_notify\";i:1;s:20:\"site_collages_create\";i:1;s:20:\"site_collages_manage\";i:1;s:20:\"site_collages_delete\";i:1;s:23:\"site_collages_subscribe\";i:1;s:22:\"site_collages_personal\";i:1;s:28:\"site_collages_renamepersonal\";i:1;s:19:\"site_make_bookmarks\";i:1;s:14:\"site_edit_wiki\";i:1;s:22:\"site_can_invite_always\";i:1;s:27:\"site_send_unlimited_invites\";i:1;s:22:\"site_moderate_requests\";i:1;s:18:\"site_delete_artist\";i:1;s:20:\"site_moderate_forums\";i:1;s:17:\"site_admin_forums\";i:1;s:23:\"site_forums_double_post\";i:1;s:14:\"site_view_flow\";i:1;s:18:\"site_view_full_log\";i:1;s:28:\"site_view_torrent_snatchlist\";i:1;s:18:\"site_recommend_own\";i:1;s:27:\"site_manage_recommendations\";i:1;s:15:\"site_delete_tag\";i:1;s:23:\"site_disable_ip_history\";i:1;s:14:\"zip_downloader\";i:1;s:10:\"site_debug\";i:1;s:17:\"site_proxy_images\";i:1;s:16:\"site_search_many\";i:1;s:20:\"users_edit_usernames\";i:1;s:16:\"users_edit_ratio\";i:1;s:20:\"users_edit_own_ratio\";i:1;s:17:\"users_edit_titles\";i:1;s:18:\"users_edit_avatars\";i:1;s:18:\"users_edit_invites\";i:1;s:22:\"users_edit_watch_hours\";i:1;s:21:\"users_edit_reset_keys\";i:1;s:19:\"users_edit_profiles\";i:1;s:18:\"users_view_friends\";i:1;s:20:\"users_reset_own_keys\";i:1;s:19:\"users_edit_password\";i:1;s:19:\"users_promote_below\";i:1;s:16:\"users_promote_to\";i:1;s:16:\"users_give_donor\";i:1;s:10:\"users_warn\";i:1;s:19:\"users_disable_users\";i:1;s:19:\"users_disable_posts\";i:1;s:17:\"users_disable_any\";i:1;s:18:\"users_delete_users\";i:1;s:18:\"users_view_invites\";i:1;s:20:\"users_view_seedleech\";i:1;s:19:\"users_view_uploaded\";i:1;s:15:\"users_view_keys\";i:1;s:14:\"users_view_ips\";i:1;s:16:\"users_view_email\";i:1;s:18:\"users_invite_notes\";i:1;s:23:\"users_override_paranoia\";i:1;s:12:\"users_logout\";i:1;s:20:\"users_make_invisible\";i:1;s:9:\"users_mod\";i:1;s:13:\"torrents_edit\";i:1;s:15:\"torrents_delete\";i:1;s:20:\"torrents_delete_fast\";i:1;s:18:\"torrents_freeleech\";i:1;s:20:\"torrents_search_fast\";i:1;i:1;s:19:\"torrents_fix_ghosts\";i:1;s:17:\"admin_manage_news\";i:1;s:17:\"admin_manage_blog\";i:1;s:18:\"admin_manage_polls\";i:1;s:19:\"admin_manage_forums\";i:1;s:16:\"admin_manage_fls\";i:1;s:13:\"admin_reports\";i:1;s:26:\"admin_advanced_user_search\";i:1;i:1;s:15:\"admin_donor_log\";i:1;s:19:\"admin_manage_ipbans\";i:1;i:1;s:17:\"admin_clear_cache\";i:1;s:15:\"admin_whitelist\";i:1;s:24:\"admin_manage_permissions\";i:1;s:14:\"admin_schedule\";i:1;s:17:\"admin_login_watch\";i:1;s:17:\"admin_manage_wiki\";i:1;i:1;s:21:\"site_collages_recover\";i:1;s:19:\"torrents_add_artist\";i:1;s:13:\"edit_unknowns\";i:1;s:19:\"forums_polls_create\";i:1;s:21:\"forums_polls_moderate\";i:1;s:12:\"project_team\";i:1;s:25:\"torrents_edit_vanityhouse\";i:1;s:23:\"artist_edit_vanityhouse\";i:1;s:21:\"site_tag_aliases_read\";i:1;}', '1'),

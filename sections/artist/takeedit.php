@@ -2,20 +2,20 @@
 
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 /*********************************************************************\
 The page that handles the backend of the 'edit artist' function.
 \*********************************************************************/
 
-authorize();
+
 
 if (!$_REQUEST['artistid'] || !is_numeric($_REQUEST['artistid'])) {
     error(404);
 }
 
-if (!check_perms('site_edit_wiki')) {
+if ($app->user->cant(["creators" => "updateAny"])) {
     error(403);
 }
 
@@ -25,7 +25,7 @@ $ArtistID = $_REQUEST['artistid'];
 
 
 if ($_GET['action'] === 'revert') { // if we're reverting to a previous revision
-    authorize();
+
     $RevisionID = $_GET['revisionid'];
     if (!is_numeric($RevisionID)) {
         error(0);
@@ -66,4 +66,4 @@ $app->dbOld->query("
 
 // There we go, all done!
 $app->cache->delete("artist_$ArtistID"); // Delete artist cache
-Http::redirect("artist.php?id=$ArtistID");
+Gazelle\Http::redirect("artist.php?id=$ArtistID");

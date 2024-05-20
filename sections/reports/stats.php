@@ -3,7 +3,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!check_perms('admin_reports') && !check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"]) && $app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 View::header('Other reports stats');
@@ -20,7 +20,7 @@ View::header('Other reports stats');
 <div class="thin u-cf">
   <div class="two_columns pad">
 <?php
-if (check_perms('admin_reports')) {
+if ($app->user->can(["admin" => "reports"])) {
     $app->dbOld->query("
   SELECT um.Username,
     COUNT(r.ID) AS Reports
@@ -147,14 +147,14 @@ $app->dbOld->query("
   } ?>
     </table>
 <?php
-} //if (check_perms('admin_reports'))?>
+} //if ($app->user->can(["admin" => "reports"]))?>
   </div>
   <div class="two_columns pad">
 <?php
 
   $TrashForumIDs = '12';
 
-  $app->dbOld->query("
+$app->dbOld->query("
     SELECT u.Username,
       COUNT(f.LastPostAuthorID) as Trashed
     FROM forums_topics AS f
@@ -163,7 +163,7 @@ $app->dbOld->query("
     GROUP BY f.LastPostAuthorID
     ORDER BY Trashed DESC
     LIMIT 30");
-  $Results = $app->dbOld->to_array();
+$Results = $app->dbOld->to_array();
 ?>
     <h3><strong>Threads trashed since the beginning of time</strong></h3>
     <table class="box border">
@@ -174,13 +174,13 @@ $app->dbOld->query("
       </tr>
 <?php
   $i = 1;
-  foreach ($Results as $Result) {
-      list($Username, $Trashed) = $Result;
-      if ($Username == $app->user->core['username']) {
-          $RowClass = ' class="highlight"';
-      } else {
-          $RowClass = '';
-      } ?>
+foreach ($Results as $Result) {
+    list($Username, $Trashed) = $Result;
+    if ($Username == $app->user->core['username']) {
+        $RowClass = ' class="highlight"';
+    } else {
+        $RowClass = '';
+    } ?>
       <tr<?=$RowClass?>>
         <td class="number_column"><?=$i?></td>
         <td><?=$Username?></td>
@@ -188,7 +188,7 @@ $app->dbOld->query("
       </tr>
 <?php
     $i++;
-  }
+}
 ?>
     </table>
   </div>

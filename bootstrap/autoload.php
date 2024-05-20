@@ -10,11 +10,12 @@ declare(strict_types=1);
  * Temporary fix for class/filename mismatches.
  *
  * @param string $class the class name
+ *
  * @see https://www.php.net/manual/en/language.oop5.autoload.php
  */
 
 spl_autoload_register(function (string $class) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     $path = "{$app->env->serverRoot}/app/{$class}.php";
     if (!file_exists($path)) {
@@ -38,8 +39,8 @@ spl_autoload_register(function (string $class) {
                 $name = "bencodetorrent.class";
                 break;
 
-            case "RecursiveArrayObject":
-                $name = "ENV";
+            case "User":
+                $name = "UserOld";
                 break;
 
             default:

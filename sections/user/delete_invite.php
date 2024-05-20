@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $InviteKey = db_string($_GET['invite']);
 $app->dbOld->query("
@@ -23,7 +23,7 @@ $app->dbOld->query("
   DELETE FROM invites
   WHERE InviteKey = ?", $InviteKey);
 
-if (!check_perms('site_send_unlimited_invites')) {
+if ($app->user->cant(["admin" => "unlimitedInvites"])) {
     $app->dbOld->query("
     SELECT Invites
     FROM users_main
@@ -43,4 +43,4 @@ if (!check_perms('site_send_unlimited_invites')) {
         */
     }
 }
-Http::redirect("user.php?action=invite");
+Gazelle\Http::redirect("user.php?action=invite");

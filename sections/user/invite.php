@@ -1,16 +1,73 @@
 <?php
-#declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+declare(strict_types=1);
 
-$ENV = ENV::go();
 
-if (isset($_GET['userid']) && check_perms('users_view_invites')) {
+/**
+ * user invites page
+ */
+
+$app = Gazelle\App::go();
+
+# check permissions
+if ($app->user->cant(["admin" => "readUserInvites"])) {
+    $app->error(403);
+}
+
+# http query vars
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
+
+# which user's invites to show
+$userId = $get["userId"] ?? $app->user->core["id"];
+$userData = $app->user->readProfile($userId);
+#!d($userData);exit;
+
+# get invited users
+$query = "
+    select users.id, users.username, users.email, users.registered, users.last_login, users_main.uploaded, users_main.downloaded
+    from users inner join users_main on users.id = users_main.userId
+    left join users_info on users.id = users_info.userId
+    where users_info.inviter = ?
+";
+$ref = $app->dbNew->multi($query, [$userId]);
+#!d($ref);exit;
+
+# current user count
+$query = "select count(id) from users where status = ?";
+$userCount = $app->dbNew->single($query, [User::NORMAL]);
+
+
+# twig template
+$app->twig->display("user/profile/invites.twig", [
+    "title" => "Invites for {$app->user->core["username"]}",
+    "sidebar" => true,
+    "invites" => $ref,
+]);
+
+
+exit;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+if (isset($_GET['userid']) && $app->user->can(["admin" => "sensitiveUserData"])) {
     if (!is_numeric($_GET['userid'])) {
         error(403);
     }
 
-    $UserID=$_GET['userid'];
+    $UserID = $_GET['userid'];
     $Sneaky = true;
 } else {
     if (!$UserCount = $app->cache->get('stats_user_count')) {
@@ -82,7 +139,7 @@ switch ($CurrentOrder) {
         break;
 }
 
-$CurrentURL = Format::get_url(array('action', 'order', 'sort'));
+$CurrentURL = Gazelle\Format::get_url(array('action', 'order', 'sort'));
 
 $app->dbOld->query("
   SELECT
@@ -107,11 +164,11 @@ View::header('Invites');
       &gt; Invites</h2>
     <div class="linkbox">
       <a href="user.php?action=invitetree<?php if ($Sneaky) {
-          echo '&amp;userid='.$UserID;
+          echo '&amp;userid=' . $UserID;
       } ?>" class="brackets">Invite tree</a>
     </div>
   </div>
-  <?php if ($UserCount >= userLimit && !check_perms('site_can_invite_always')) { ?>
+  <?php if ($UserCount >= userLimit && $app->user->cant(["admin" => "alwaysInvite"])) { ?>
   <div class="box pad notice">
     <p>Because the user limit has been reached you are unable to send invites at this time.</p>
   </div>
@@ -126,7 +183,7 @@ View::header('Invites');
       - Cannot 'invite always' and the user limit is reached
   */
 
-      $app->dbOld->query("
+$app->dbOld->query("
   SELECT can_leech
   FROM users_main
   WHERE ID = $UserID");
@@ -137,8 +194,8 @@ if (!$Sneaky
   && !$app->user->extra['RatioWatch']
   && $CanLeech
   && empty($app->user->extra['DisableInvites'])
-  && ($app->user->extra['Invites'] > 0 || check_perms('site_send_unlimited_invites'))
-  && ($UserCount <= userLimit || userLimit === 0 || check_perms('site_can_invite_always'))
+  && ($app->user->extra['Invites'] > 0 || $app->user->can(["admin" => "unlimitedInvites"]))
+  && ($UserCount <= userLimit || userLimit === 0 || $app->user->can(["admin" => "alwaysInvite"]))
 ) { ?>
   <div class="box pad">
     <p>
@@ -169,7 +226,7 @@ if (!$Sneaky
           <input type="submit" value="Invite">
         </div>
       </div>
-      <?php if (check_perms('users_invite_notes')) { ?>
+      <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
       <div>
         <div class="label"><strong>Staff Note</strong></div>
         <div class="input">
@@ -209,9 +266,9 @@ if (!empty($Pending)) {
       <?php
   foreach ($Pending as $Invite) {
       list($InviteKey, $Email, $Expires) = $Invite;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+      $Email = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
       <tr class="row">
-        <td><?=\Gazelle\Text::esc($Email)?>
+        <td><?=Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($Expires)?>
         </td>
@@ -256,22 +313,22 @@ if (!empty($Pending)) {
       <?php
   foreach ($Invited as $User) {
       list($ID, $Email, $Uploaded, $Downloaded, $JoinDate, $LastAccess) = $User;
-      $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'
+      $Email = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($Email) : '[Encrypted]'
       ?>
       <tr class="row">
         <td><?=User::format_username($ID, true, true, true, true)?>
         </td>
-        <td><?=\Gazelle\Text::esc($Email)?>
+        <td><?=Gazelle\Text::esc($Email)?>
         </td>
         <td><?=time_diff($JoinDate, 1)?>
         </td>
         <td><?=time_diff($LastAccess, 1); ?>
         </td>
-        <td><?=Format::get_size($Uploaded)?>
+        <td><?=Gazelle\Format::get_size($Uploaded)?>
         </td>
-        <td><?=Format::get_size($Downloaded)?>
+        <td><?=Gazelle\Format::get_size($Downloaded)?>
         </td>
-        <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
+        <td><?=Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
         </td>
       </tr>
       <?php

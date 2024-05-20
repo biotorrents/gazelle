@@ -4,8 +4,8 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
-$ENV = ENV::go();
+
+$ENV = \Gazelle\ENV::go();
 
 // todo: Remove all the stupid queries that could get their information just as easily from the cache
 /*********************************************************************\
@@ -52,7 +52,7 @@ if (!Forums::check_forumperm($ForumID)) {
     error(403);
 }
 
-if (!Forums::check_forumperm($ForumID, 'Write') || $app->user->extra['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && !check_perms('site_moderate_forums')) {
+if (!Forums::check_forumperm($ForumID, 'Write') || $app->user->extra['DisablePosting'] || $ThreadInfo['IsLocked'] == '1' && $app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 
@@ -65,7 +65,7 @@ if (isset($_POST['subscribe']) && Subscriptions::has_subscribed($TopicID) === fa
 }
 
 // Now lets handle the special case of merging posts, we can skip bumping the thread and all that fun
-if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms('site_forums_double_post') || isset($_POST['merge'])))) {
+if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && (($app->user->cant(["admin" => "doublePost"]) || isset($_POST['merge'])))) {
     // Get the id for this post in the database to append
     $app->dbOld->query("
     SELECT ID, Body
@@ -103,7 +103,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
         $app->cache->set("thread_$TopicID".'_info', $ThreadInfo, 0);
     }
 
-//Now we're dealing with a normal post
+    //Now we're dealing with a normal post
 } else {
     //Insert the post into the posts database
     $app->dbOld->query(
@@ -153,7 +153,7 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
             $Thread['LastPostAuthorID'] = $app->user->core['id']; // Last poster ID
             $Part2 = [$TopicID => $Thread]; // Bumped thread
 
-        // if we're bumping from an older page
+            // if we're bumping from an older page
         } else {
             // Remove the last thread from the index
             if (count($Forum) == TOPICS_PER_PAGE && $Stickies < TOPICS_PER_PAGE) {
@@ -237,21 +237,6 @@ if ($ThreadInfo['LastPostAuthorID'] == $app->user->core['id'] && ((!check_perms(
 
     //Increment this now to make sure we redirect to the correct page
     $ThreadInfo['Posts']++;
-
-    //Award a badge if necessary
-    $app->dbOld->query("
-    SELECT COUNT(ID)
-    FROM forums_posts
-    WHERE AuthorID = '{$app->user->core['id']}'");
-    list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
-    foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
-        if ((int) $UserPosts >= $Count) {
-            $Success = Badges::awardBadge($app->user->core['id'], $Badge);
-            if ($Success) {
-                Misc::send_pm($app->user->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-            }
-        }
-    }
 }
 
 Subscriptions::flush_subscriptions('forums', $TopicID);

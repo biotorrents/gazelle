@@ -23,7 +23,7 @@ WHERE
 ");
 list($LastActive, $LastReseedRequest, $UploaderID, $UploadedTime) = $app->dbOld->next_record();
 
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     if (time() - strtotime($LastReseedRequest) < 864000) {
         error('There was already a re-seed request for this torrent within the past 10 days');
     }

@@ -8,7 +8,7 @@ declare(strict_types=1);
  *
  * The main app is now a singleton.
  * Holds the various globals and some methods.
- * Supersedes G::class and ENV::go().
+ * Supersedes G::class and Gazelle\ENV::go().
  * Will eventually kill Misc::class.
  */
 
@@ -17,21 +17,24 @@ namespace Gazelle;
 class App
 {
     # singleton
-    private static $instance = null;
+    private static ?self $instance = null;
+
+    # in what context are we working?
+    public ?string $executionContext = null;
 
     # env is special
-    public $env = null;
+    public ENV $env;
 
     # the rest of the globals
-    public $cache = null;
+    public Cache $cache;
 
-    public $dbNew = null;
-    public $dbOld = null;
+    public Database $dbNew;
+    public \DatabaseOld $dbOld;
 
-    public $debug = null;
-    public $twig = null;
+    public \DebugBar\StandardDebugBar $debug;
+    public \Twig\Environment $twig;
 
-    public $user = null;
+    public Users $user;
 
 
     /**
@@ -62,7 +65,7 @@ class App
     /**
      * go
      */
-    public static function go(array $options = [])
+    public static function go(array $options = []): self
     {
         if (!self::$instance) {
             self::$instance = new self();
@@ -79,26 +82,26 @@ class App
      * These need to be in a specific order to load right,
      * i.e., user depends on debug and twig depends on user.
      */
-    private function factory(array $options = [])
+    private function factory(array $options = []): void
     {
         # env: FIRST
-        $this->env = \ENV::go();
+        $this->env = ENV::go();
 
         # cache
-        $this->cache = \Gazelle\Cache::go();
+        $this->cache = Cache::go();
 
         # database
-        $this->dbNew = \Gazelle\Database::go();
+        $this->dbNew = Database::go();
         $this->dbOld = new \DatabaseOld();
 
         # debug
-        $this->debug = \Debug::go();
+        $this->debug = Debug::go();
 
         # user
-        $this->user = \User::go();
+        $this->user = Users::go();
 
         # twig: LAST
-        $this->twig = \Twig::go();
+        $this->twig = Twig::go();
     }
 
 
@@ -111,9 +114,32 @@ class App
      * Basic sanity checks, just in case.
      * You know, for <? and other such nonsense.
      */
-    public static function gotcha()
+    public function gotcha()
     {
         return true;
+    }
+
+
+    /**
+     * middleware
+     *
+     * Performs a permissions check on a route.
+     * Shows an error page if permissions check fails.
+     *
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @return void
+     */
+    public function middleware(array $permissions): void
+    {
+        $bad = $this->user->cant($permissions);
+        if ($bad) {
+            match ($this->executionContext) {
+                "api" => Api\Base::failure(403, "forbidden"),
+                "cli" => exit,
+                "web" => $this->error(403),
+                default => throw new Exception("1337 h4x0r"),
+            };
+        }
     }
 
 
@@ -127,12 +153,10 @@ class App
      *
      * @see https://github.com/PHPMailer/PHPMailer
      */
-    public static function email(string $to, string $subject, string $body, bool $isHtml = false)
+    public function email(string $to, string $subject, string $body, bool $isHtml = false)
     {
-        $app = self::go();
-
         # check if email is enabled
-        if (!$app->env->enableSiteEmail) {
+        if (!$this->env->enableSiteEmail) {
             return false;
         }
 
@@ -142,7 +166,7 @@ class App
         try {
             # debug on development
             $mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_OFF;
-            if ($app->env->dev) {
+            if ($this->env->dev) {
                 #$mail->SMTPDebug = \PHPMailer\PHPMailer\SMTP::DEBUG_SERVER;
             }
 
@@ -150,11 +174,11 @@ class App
             $mail->isSMTP();
             $mail->SMTPAuth = true;
 
-            $mail->Host = $app->env->getPriv("emailHost");
-            $mail->Port = $app->env->getPriv("emailPort");
+            $mail->Host = $this->env->private("emailHost");
+            $mail->Port = $this->env->private("emailPort");
 
-            $mail->Username = $app->env->getPriv("emailUsername");
-            $mail->Password = $app->env->getPriv("emailPassphrase");
+            $mail->Username = $this->env->private("emailUsername");
+            $mail->Password = $this->env->private("emailPassphrase");
 
             # determine starttls or smtps
             $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
@@ -164,7 +188,7 @@ class App
             }
 
             # from address
-            $mail->setFrom($app->env->getPriv("emailUsername"), $app->env->siteName);
+            $mail->setFrom($this->env->private("emailUsername"), $this->env->siteName);
 
             # recipient(s)
             $mail->addAddress($to);
@@ -201,29 +225,38 @@ class App
      *
      * Beef the specs for a time.
      */
-    public static function unlimit()
+    public function unlimit(): void
     {
+        # clear output buffer
         if (ob_get_status()) {
-            ob_end_clean(); # clear output buffer
+            ob_end_clean();
         }
 
-        set_time_limit(3600); # one hour
-        ini_set("memory_limit", "2G"); # all the shit hetzner memory
+        set_time_limit(0);
+        ini_set("memory_limit", -1);
+
+        gc_enable();
     }
 
 
     /**
      * recursiveGlob
      *
+     * Recursively require all files in a folder.
+     *
+     * @param string $folder
+     * @param string $extension
+     * @return void
+     *
      * @see https://stackoverflow.com/a/12172557
      */
-    public static function recursiveGlob($folder, $extension)
+    public function recursiveGlob(string $folder, string $extension = "php"): void
     {
         $globFiles = glob("{$folder}/*.{$extension}");
         $globFolders  = glob("{$folder}/*", GLOB_ONLYDIR);
 
         foreach ($globFolders as $folder) {
-            self::recursiveGlob($folder, $extension);
+            $this->recursiveGlob($folder, $extension);
         }
 
         foreach ($globFiles as $file) {
@@ -237,52 +270,53 @@ class App
      *
      * Prints an app manifest.
      */
-    public static function manifest()
+    public function manifest(): string
     {
-        $app = self::go();
-
         # https://developer.mozilla.org/en-US/docs/Web/Manifest
         $manifest = [
+            # schema
             "\$schema" => "https://json.schemastore.org/web-manifest-combined.json",
-            "name" => $app->env->siteName,
-            "short_name" => $app->env->siteName,
-            "start_url" => "/",
-            "display" => "standalone",
-            "background_color" => "#ffffff",
+
+            # identity
+            "name" => $this->env->siteName,
+            "short_name" => $this->env->siteName,
+            "description" => $this->env->siteDescription,
+            "id" => $this->env->siteName,
+
+            # presentation
+            "start_url" => ".",
             "theme_color" => "#0288d1",
-            "description" => $app->env->siteDescription,
+            "background_color" => "#ffffff",
+            "orientation" => "landscape-primary",
+            "display" => "standalone",
+
+            # icons
             "icons" => [
                 [
-                    "src" => "/images/logos/liquidrop-bookish-1k.png",
-                    "sizes" => "1024x1024",
-                    "type" => "image/png",
+                    "src" => "/images/logos/colorfulWaves-whiteShadow-2k.webp",
+                    "sizes" => "2048x2048",
+                    "type" => "image/webp",
                 ],
                 [
-                    "src" => "/images/logos/liquidrop-postmod-1k.png",
-                    "sizes" => "1024x1024",
-                    "type" => "image/png",
+                    "src" => "/images/logos/simpleFavicon-2k.webp",
+                    "sizes" => "2048x2048",
+                    "type" => "image/webp",
                 ],
             ],
-            /*
-            "related_applications" => [
-                [
-                    "platform" => "play",
-                    "url" => "https://play.google.com/store/apps/details?id=cheeaun.hackerweb",
-                ],
-            ],
-            */
+
+            # window controls overlay
+            "display_override" => ["window-controls-overlay"],
         ];
 
-        # return array
-        return $manifest;
-
         # return json
-        #return json_encode($manifest, JSON_UNESCAPED_SLASHES);
+        return json_encode($manifest, JSON_UNESCAPED_SLASHES);
     }
 
 
     /**
      * sqlTime
+     *
+     * todo: remove this in favor of $app->dbNew->now()
      */
     public static function sqlTime($timestamp = null): string
     {
@@ -299,7 +333,7 @@ class App
      * Used for pagination of peer/snatch/download lists on torrent details.
      * THIS SHOULD EITHER GO AWAY OR GO SOMEWHERE ELSE.
      */
-    public static function ajaxPagination($action, $torrentId, $resultCount, $currentPage)
+    public static function ajaxPagination($action, $torrentId, $resultCount, $currentPage): string
     {
         $pageCount = ceil($resultCount / 100);
         $pageLinks = [];
@@ -313,5 +347,54 @@ class App
         }
 
         return implode(" | ", $pageLinks);
+    }
+
+
+    /**
+     * error
+     *
+     * Displays an HTTP status code with description and triggers an error.
+     * If you use your own string for $error, it becomes the error description.
+     *
+     * @param int|string $error error type or message
+     */
+    public function error(int|string $error = 400): void
+    {
+        # https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+        $map = [
+            400 => [
+                "400 Bad Request",
+                "The server cannot or will not process the request due to an apparent client error (e.g., malformed request syntax, size too large, invalid request message framing, or deceptive request routing).",
+            ],
+
+            403 => [
+                "403 Forbidden",
+                "The request contained valid data and was understood by the server, but the server is refusing action. This may be due to the user not having the necessary permissions for a resource or needing an account of some sort, or attempting a prohibited action (e.g. creating a duplicate record where only one is allowed). This code is also typically used if the request provided authentication by answering the WWW-Authenticate header field challenge, but the server did not accept that authentication. The request should not be repeated.",
+            ],
+
+            404 => [
+                "404 Not Found",
+                "The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.",
+            ],
+        ];
+
+        # page content
+        if (array_key_exists($error, $map)) {
+            $subject = $map[$error][0];
+            $body = $map[$error][1];
+        } else {
+            $subject = "Other error";
+            $body = "A function supplied this error message: {$error}";
+        }
+
+        # twig
+        $this->twig->display("error.twig", [
+            "title" => $subject,
+            "subject" => $subject,
+            "body" => $body,
+        ]);
+
+        # end all execution
+        exit;
     }
 } # class

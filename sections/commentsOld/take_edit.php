@@ -1,6 +1,6 @@
 <?php
 
-authorize();
+
 
 if (!isset($_POST['postid']) || !is_numeric($_POST['postid']) || !isset($_POST['body'])) {
     error(0);

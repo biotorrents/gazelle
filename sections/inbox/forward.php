@@ -1,8 +1,8 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $UserID = $app->user->core['id'];
 $ConvID = $_POST['convid'];
@@ -10,7 +10,7 @@ $ReceiverID = $_POST['receiverid'];
 if (!is_numeric($ConvID) || !is_numeric($ReceiverID)) {
     error(404);
 }
-if (!check_perms('users_mod') && !isset($StaffIDs[$ReceiverID])) {
+if ($app->user->cant(["admin" => "moderateUsers"]) && !isset($StaffIDs[$ReceiverID])) {
     error(403);
 }
 $app->dbOld->query("
@@ -48,6 +48,6 @@ if (!$app->dbOld->has_results()) {
     header('Location: ' . Inbox::get_inbox_link());
 } else {
     error("$StaffIDs[$ReceiverID] already has this conversation in their inbox.");
-    Http::redirect("inbox.php?action=viewconv&id=$ConvID");
+    Gazelle\Http::redirect("inbox.php?action=viewconv&id=$ConvID");
 }
 //View::footer();

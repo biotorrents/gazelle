@@ -137,13 +137,6 @@
         $("#toggleIcon").html("<i class='fal fa-bars'></i>");
       }
     });
-
-    // change the search bar target
-    // https://stackoverflow.com/a/16750165
-    $("#searchWhat").on("change", function () {
-      let action = $(this).val();
-      $("#universalSearch").attr("action", action + ".php");
-    });
   }); // end main menu
 })(); // end iife
 
@@ -221,6 +214,7 @@ function toggleChecks(formElem, masterElem, elemSelector) {
 /**
  * lightbox
  */
+/*
 var lightbox = {
   init: function (image, size) {
     if ($("#lightbox").length == 0 || $("#curtain").length == 0) {
@@ -310,6 +304,7 @@ window.onkeydown = function (e) {
     }
   }
 };
+*/
 
 
 /**
@@ -383,7 +378,7 @@ function getCover(event) {
   if ($("#coverCont img").length == 0) {
     coverCont.appendChild(document.createElement("img"));
   }
-  $("#coverCont img")[0].src = image ? image : "/public/images/noartwork.png";
+  $("#coverCont img")[0].src = image ? image : "/public/images/noartwork.webp";
   coverCont.style.display = "block";
   coverListener = (mevent) => {
     let wh = window.innerHeight,
@@ -434,6 +429,7 @@ function ungetCover(event) {
 /**
  * iife
  */
+/*
 $(function () {
   document.querySelectorAll("[data-toggle-target]").forEach(function (el) {
     el.addEventListener("click", function (event) {
@@ -456,3 +452,4 @@ $(function () {
     );
   });
 });
+*/

@@ -2,9 +2,9 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $ThreadID = $_POST['threadid'];
 $NewOption = $_POST['new_option'];
@@ -13,7 +13,7 @@ if (!is_numeric($ThreadID)) {
     error(404);
 }
 
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["polls" => "updateAny"])) {
     $app->dbOld->query("
     SELECT
       `ForumID`
@@ -53,10 +53,10 @@ $app->dbOld->query("
 UPDATE
   `forums_polls`
 SET
-  `Answers` = '".db_string($Answers)."'
+  `Answers` = '" . db_string($Answers) . "'
 WHERE
   `TopicID` = $ThreadID
 ");
 $app->cache->delete("polls_$ThreadID");
 
-Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
+Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");

@@ -76,7 +76,7 @@ if (!isset($InputTitle)) {
     <form class="send_form" name="reply" id="quickpostform" <?=isset($Action) ? 'action="'.$Action.'"' : ''?>
       method="post"
 
-      <?php if (!check_perms('users_mod')) { ?>
+      <?php if ($app->user->cant(["admin" => "moderateUsers"])) { ?>
       onsubmit="quickpostform.submit_button.disabled = true;"
       <?php } ?>
 
@@ -179,23 +179,23 @@ if (!isset($InputTitle)) {
         <?php
   }
 
-  // Forum thread logic
-  // This might use some more abstraction
-  if (isset($ForumID)) {
-      if (!Subscriptions::has_subscribed($InputID)) { ?>
+// Forum thread logic
+// This might use some more abstraction
+if (isset($ForumID)) {
+    if (!Subscriptions::has_subscribed($InputID)) { ?>
         <input id="subscribebox" type="checkbox" name="subscribe" <?=!empty($HeavyInfo['AutoSubscribe']) ? ' checked="checked"' : ''?>
         tabindex="2">
         <label for="subscribebox">Subscribe</label>
         <?php
-      }
+    }
 
-      if ($ThreadInfo['LastPostAuthorID'] === $app->user->core["id"]
-          && (check_perms('site_forums_double_post'))) { ?>
+    if ($ThreadInfo['LastPostAuthorID'] === $app->user->core["id"]
+        && ($app->user->can(["admin" => "doublePost"]))) { ?>
         <input id="mergebox" type="checkbox" name="merge" tabindex="2">
         <label for="mergebox">Merge</label>
         <?php
-      }
-  } ?>
+    }
+} ?>
 
         <input type="button" value="Preview"
           class="hidden button_preview_<?=$ReplyText->getID()?>"

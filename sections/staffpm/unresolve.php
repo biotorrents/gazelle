@@ -1,8 +1,8 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-if ($ID = (int)($_GET['id'])) {
+if ($ID = (int) ($_GET['id'])) {
     // Check if conversation belongs to user
     $app->dbOld->query("
     SELECT UserID, Level, AssignedToUser
@@ -27,12 +27,12 @@ if ($ID = (int)($_GET['id'])) {
         // Clear cache for user
         $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
-        Http::redirect("staffpm.php");
+        Gazelle\Http::redirect("staffpm.php");
     } else {
         // Conversation does not belong to user
         error(403);
     }
 } else {
     // No ID
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 }

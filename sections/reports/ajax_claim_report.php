@@ -4,7 +4,7 @@
 
 $app = \Gazelle\App::go();
 
-if (!check_perms('site_moderate_forums') || empty($_POST['id'])) {
+if ($app->user->cant(["admin" => "reports"]) || empty($_POST['id'])) {
     print
     json_encode(
         array(

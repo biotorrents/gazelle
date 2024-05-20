@@ -1,6 +1,6 @@
 <?php
 
-authorize();
+
 
 // Quick SQL injection check
 if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {
@@ -8,7 +8,7 @@ if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {
 }
 
 // Make sure they are moderators
-if (!check_perms('site_moderate_forums')) {
+if ($app->user->cant(["messages" => "deleteAny"])) {
     error(403);
 }
 

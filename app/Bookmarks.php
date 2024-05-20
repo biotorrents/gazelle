@@ -21,7 +21,7 @@ class Bookmarks
             "torrent", "group",
             "artist", "creator",
             "collage", "collection",
-            "request"
+            "request",
         ];
 
         return in_array($contentType, $allowedTypes);

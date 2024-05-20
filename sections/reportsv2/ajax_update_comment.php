@@ -4,9 +4,9 @@ $app = \Gazelle\App::go();
 
 // perform the back end of updating a report comment
 
-authorize();
 
-if (!check_perms('admin_reports')) {
+
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

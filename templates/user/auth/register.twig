@@ -20,7 +20,9 @@
         Please remember to read the rules, wiki, and site policies.
     </p>
 
-{% else %}
+{% endif %} {# if emailSent is not null #}
+
+{% if env.openRegistration %}
 
     {# start the registration form itself #}
     <form name="register" id="register" method="post" autocomplete="off">
@@ -104,6 +106,6 @@
 
     </form>
 
-{% endif %} {# if !emailSent #}
+{% endif %} {# env.openRegistration #}
 
 {% endblock %}

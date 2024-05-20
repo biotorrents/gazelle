@@ -1,0 +1,6 @@
+* * * * * php /var/www/html/gazelle/utilities/crontab every   cronToken >> /var/www/log/gazelle/every.log   2>&1
+0 * * * * php /var/www/html/gazelle/utilities/crontab hourly  cronToken >> /var/www/log/gazelle/hourly.log  2>&1
+0 0 * * * php /var/www/html/gazelle/utilities/crontab daily   cronToken >> /var/www/log/gazelle/daily.log   2>&1
+0 0 * * 0 php /var/www/html/gazelle/utilities/crontab weekly  cronToken >> /var/www/log/gazelle/weekly.log  2>&1
+0 0 1 * * php /var/www/html/gazelle/utilities/crontab monthly cronToken >> /var/www/log/gazelle/monthly.log 2>&1
+0 0 1 1 * php /var/www/html/gazelle/utilities/crontab yearly  cronToken >> /var/www/log/gazelle/yearly.log  2>&1

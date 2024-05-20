@@ -3,8 +3,8 @@
 
 $app = \Gazelle\App::go();
 
-if (!empty($_GET['collageid']) && is_numeric($_GET['collageid'])) {
-    $CollageID = $_GET['collageid'];
+if (!empty($_GET['collageId']) && is_numeric($_GET['collageId'])) {
+    $CollageID = $_GET['collageId'];
 }
 if (!is_numeric($CollageID)) {
     error(0);
@@ -17,7 +17,7 @@ $app->dbOld->query("
 list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $app->dbOld->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
-if ($CategoryID == 0 && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID == 0 && $UserID != $app->user->core['id'] && $app->user->cant(["collages" => "updateAny"])) {
     error(403);
 }
 
@@ -44,10 +44,10 @@ if (!empty($Err)) {
       <input type="hidden" name="action" value="edit_handle">
       <input type="hidden" name="auth"
         value="<?=$app->user->extra['AuthKey']?>">
-      <input type="hidden" name="collageid"
+      <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <table id="edit_collage" class="layout collage_edit">
-        <?php if (check_perms('site_collages_delete') || ($CategoryID == 0 && $UserID == $app->user->core['id'] && check_perms('site_collages_renamepersonal'))) { ?>
+        <?php if ($app->user->can(["collages" => "updateAny"]) || ($CategoryID == 0 && $UserID == $app->user->core['id'] && $app->user->can(["collages" => "updateOwn"]))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"
@@ -55,14 +55,14 @@ if (!empty($Err)) {
         </tr>
         <?php
         }
-if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
+if ($CategoryID > 0 || $app->user->can(["collages" => "updateAny"])) { ?>
         <tr>
           <td class="label"><strong>Category</strong></td>
           <td>
             <select name="category">
               <?php
-        foreach ($CollageCats as $CatID => $CatName) {
-            if (!check_perms('site_collages_delete') && $CatID == 0) {
+        foreach ($app->env->collageCategories as $CatID => $CatName) {
+            if ($app->user->cant(["collages" => "updateAny"]) && $CatID == 0) {
                 // Only mod-type get to make things personal
                 continue;
             } ?>
@@ -99,7 +99,7 @@ if ($CategoryID > 0 || check_perms('site_collages_delete')) { ?>
         </tr>
         <?php
         }
-if (check_perms('site_collages_delete')) { ?>
+if ($app->user->can(["collages" => "updateAny"])) { ?>
         <tr>
           <td class="label">Locked</td>
           <td><input type="checkbox" name="locked" <?=$Locked ? 'checked="checked" ' : ''?>>

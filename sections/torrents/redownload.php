@@ -2,7 +2,7 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) {
     $UserID = $_GET['userid'];
@@ -10,13 +10,16 @@ if (!empty($_GET['userid']) && is_numeric($_GET['userid'])) {
     error(0);
 }
 
-if (!check_perms('zip_downloader')) {
-    error(403);
-}
-
 $User = User::user_info($UserID);
-$Perms = Permissions::get_permissions($User['PermissionID']);
+
+/*
+$Perms = Gazelle\Permissions::get_permissions($User['PermissionID']);
 $UserClass = $Perms['Class'];
+*/
+
+# new shim
+$UserClass = $app->user->extra["PermissionID"];
+
 list($UserID, $Username) = array_values($User);
 
 if (empty($_GET['type'])) {
@@ -24,14 +27,14 @@ if (empty($_GET['type'])) {
 } else {
     switch ($_GET['type']) {
         case 'uploads':
-            if (!check_paranoia('uploads', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "WHERE t.UserID = '$UserID'";
             $Month = "t.Time";
             break;
         case 'snatches':
-            if (!check_paranoia('snatched', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "
@@ -40,7 +43,7 @@ if (empty($_GET['type'])) {
             $Month = "FROM_UNIXTIME(x.tstamp)";
             break;
         case 'seeding':
-            if (!check_paranoia('seeding', $User['Paranoia'], $UserClass, $UserID)) {
+            if (!true) {
                 error(403);
             }
             $SQL = "
@@ -72,14 +75,14 @@ $DownloadsQ = $app->dbOld->query("
   $SQL
   GROUP BY TorrentID");
 
-$Collector = new TorrentsDL($DownloadsQ, "$Username's ".ucfirst($_GET['type']));
+$Collector = new TorrentsDL($DownloadsQ, "$Username's " . ucfirst($_GET['type']));
 
 while (list($Downloads, $GroupIDs) = $Collector->get_downloads('TorrentID')) {
     $Artists = Artists::get_artists($GroupIDs);
     $TorrentIDs = array_keys($GroupIDs);
     foreach ($TorrentIDs as $TorrentID) {
-        $TorrentFile = file_get_contents($app->env->torrentStore.'/'.$TorrentID.'.torrent');
-        $Download =& $Downloads[$TorrentID];
+        $TorrentFile = file_get_contents($app->env->torrentStore . '/' . $TorrentID . '.torrent');
+        $Download = & $Downloads[$TorrentID];
         // unzip(1) corrupts files if an emdash is present. Replace them.
         $Download['Artist'] = str_replace('&ndash;', '-', Artists::display_artists($Artists[$Download['GroupID']], false, true, false));
         $Collector->add_file($TorrentFile, $Download, $Download['Month']);

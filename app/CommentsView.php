@@ -60,12 +60,12 @@ class CommentsView
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == $app->user->core["id"] || check_perms('site_moderate_forums')) { ?>
+        <?php if ($AuthorID == $app->user->core["id"] || $app->user->can(["messages" => "updateAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
         <?php }
-        if (check_perms('site_moderate_forums')) { ?>
+        if ($app->user->can(["messages" => "deleteAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>
@@ -75,7 +75,7 @@ class CommentsView
         <a href="reports.php?action=report&amp;type=comment&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-        if (check_perms('users_warn') && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
+        if ($app->user->can(["admin" => "warnUsers"]) && $AuthorID != $app->user->core["id"] && $app->user->extra['Class'] >= $UserInfo['Class']) {
             ?>
         <form class="manage_form hidden" name="user"
           id="warn<?=$PostID?>" action="comments.php" method="post">
@@ -106,7 +106,7 @@ class CommentsView
         <br>
         <br>
         <div class="last_edited">
-          <?php if (check_perms('site_admin_forums')) { ?>
+          <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
           <a href="#content<?=$PostID?>"
             onclick="LoadEdit('<?=substr($Link, 0, strcspn($Link, '.'))?>', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>

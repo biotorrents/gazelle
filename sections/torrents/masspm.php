@@ -5,7 +5,6 @@ $app = \Gazelle\App::go();
 
 $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
-Security::int($GroupID, $TorrentID);
 
 $app->dbOld->prepared_query("
 SELECT
@@ -39,7 +38,7 @@ if (!$Properties) {
 
 View::header('Edit torrent', 'upload');
 
-if (!check_perms('site_moderate_requests')) {
+if ($app->user->cant(["requests" => "updateAny"])) {
     error(403);
 }
 ?>

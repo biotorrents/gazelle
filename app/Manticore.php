@@ -22,11 +22,11 @@ class Manticore
     private $percolate = null;
 
     # cache settings
-    private $cachePrefix = "manticore:";
-    private $cacheDuration = "1 minute";
+    private string $cachePrefix = "manticore:";
+    private string $cacheDuration = "1 minute";
 
     # raw search terms
-    private $rawSearchTerms = [];
+    private array $rawSearchTerms = [];
 
     # the queryLanguage object
     private $query = null;
@@ -37,14 +37,14 @@ class Manticore
     /** */
 
     # indices to search
-    private $indices = [
+    private array $indices = [
         "torrents" => ["torrents_main", "torrents_delta"],
         "requests" => ["requests_main", "requests_delta"],
         "collections" => ["collections_main", "collections_delta"],
     ];
 
     # map of search form fields => index fields
-    private $searchFields = [
+    private array $searchFields = [
         # torrents search
         "simpleSearch" => "*",
         "complexSearch" => ["title", "subject", "object"],
@@ -88,7 +88,7 @@ class Manticore
     ];
 
     # map of sort mode => index field for sorting
-    private $sortOrders = [
+    private array $sortOrders = [
         #"identifier" => "cataloguenumber", # todo?
         "leechers" => "leechers",
         "random" => "rand()",
@@ -105,14 +105,14 @@ class Manticore
      */
     public function __construct()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         try {
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
             $this->connection = new \Foolz\SphinxQL\Drivers\Pdo\Connection();
             $this->connection->setParams([
-                "host" => $app->env->getPriv("manticoreHost"),
-                "port" => $app->env->getPriv("manticorePort"),
+                "host" => $app->env->private("manticoreHost"),
+                "port" => $app->env->private("manticorePort"),
             ]);
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#sphinxql
@@ -124,7 +124,7 @@ class Manticore
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
         } catch (\Throwable $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -148,13 +148,13 @@ class Manticore
      */
     public function search(string $what, array $data = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # start debug
         $app->debug["time"]->startMeasure("manticore", "manticore search");
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . hash($app->env->cacheAlgorithm, json_encode($data));
+        $cacheKey = $this->cachePrefix . "{$what}:" . hash($app->env->cacheAlgorithm, json_encode($data));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
@@ -164,7 +164,7 @@ class Manticore
         # sanity check
         $allowedIndices = array_keys($this->indices);
         if (!in_array($what, $allowedIndices)) {
-            throw new \Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
+            throw new Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
         }
 
         # raw search terms
@@ -193,7 +193,7 @@ class Manticore
         $offset = 0;
         $this->query->limit(
             $offset,
-            $app->env->getPriv("manticoreMaxMatches")
+            $app->env->private("manticoreMaxMatches")
         );
 
         # orderBy and orderWay
@@ -250,9 +250,12 @@ class Manticore
             return $results;
         } catch (\Throwable $e) {
             $app->debug["messages"]->addMessage("Gazelle\Manticore->search(): " . $e->getMessage());
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
+
+
+    /** */
 
 
     /**
@@ -371,7 +374,7 @@ class Manticore
             if ($this->rawSearchTerms["tagsType"] === "excludeTags") {
                 foreach ($value as $k => $v) {
                     # raw expression passed below
-                    $value[$k] = \Gazelle\Text::esc("-{$v}");
+                    $value[$k] = Text::esc("-{$v}");
                 }
 
                 $value = implode(" or ", $value);

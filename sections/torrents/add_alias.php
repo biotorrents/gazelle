@@ -2,7 +2,7 @@
 
 $app = \Gazelle\App::go();
 
-authorize();
+
 
 $UserID = $app->user->core['id'];
 $GroupID = db_string($_POST['groupid']);
@@ -53,8 +53,8 @@ for ($i = 0; $i < count($ArtistNames); $i++) {
             Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "added artist $ArtistName", 0);
             $app->cache->delete("torrents_details_$GroupID");
             $app->cache->delete("groups_artists_$GroupID"); // Delete group artist cache
-      $app->cache->delete("artist_groups_$ArtistID"); // Delete artist group cache
-      Torrents::update_hash($GroupID);
+            $app->cache->delete("artist_groups_$ArtistID"); // Delete artist group cache
+            Torrents::update_hash($GroupID);
         }
     }
 }

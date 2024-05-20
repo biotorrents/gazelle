@@ -1,11 +1,13 @@
 <?php
 
-#declare(strict_types=1);
+declare(strict_types=1);
 
 
 /**
- * Format
+ * Gazelle\Format
  */
+
+namespace Gazelle;
 
 class Format
 {
@@ -152,7 +154,7 @@ class Format
             return '∞';
         }
 
-        return \Gazelle\Text::float(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
+        return Text::float(max($Dividend / $Divisor - (0.5 / pow(10, $Decimal)), 0), $Decimal);
     }
 
 
@@ -181,7 +183,7 @@ class Format
 
             return http_build_query($QueryItems, '', $Separator);
         } else {
-            return $Escape ? \Gazelle\Text::esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
+            return $Escape ? Text::esc($_SERVER['QUERY_STRING']) : $_SERVER['QUERY_STRING'];
         }
     }
 
@@ -230,7 +232,7 @@ class Format
     public static function catalogue_limit($Page, $PerPage, $CatalogueSize = 500)
     {
         $CatalogueID = floor(($PerPage * $Page - $PerPage) / $CatalogueSize);
-        $CatalogueLimit = ($CatalogueID * $CatalogueSize).", $CatalogueSize";
+        $CatalogueLimit = ($CatalogueID * $CatalogueSize) . ", $CatalogueSize";
         return array($CatalogueID, $CatalogueLimit);
     }
 
@@ -302,7 +304,7 @@ class Format
 
             if ($StartPage > 1) {
                 $Pages .= "<a href='$Location?page=1$QueryString$Anchor'><strong>&laquo; First</strong></a> ";
-                $Pages .= "<a href='$Location?page=".($StartPage - 1).$QueryString.$Anchor."' class='pager_prev'><strong>&lsaquo; Prev</strong></a> | ";
+                $Pages .= "<a href='$Location?page=" . ($StartPage - 1) . $QueryString . $Anchor . "' class='pager_prev'><strong>&lsaquo; Prev</strong></a> | ";
             }
             // End change
 
@@ -314,9 +316,9 @@ class Format
 
                     $Pages .= '<strong>';
                     if ($i * $ItemsPerPage > $TotalRecords) {
-                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1)."-$TotalRecords";
+                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1) . "-$TotalRecords";
                     } else {
-                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1).'-'.($i * $ItemsPerPage);
+                        $Pages .= ((($i - 1) * $ItemsPerPage) + 1) . '-' . ($i * $ItemsPerPage);
                     }
 
                     $Pages .= '</strong>';
@@ -333,7 +335,7 @@ class Format
             }
 
             if ($StartPage && $StartPage < $TotalPages) {
-                $Pages .= " | <a href='$Location?page=".($StartPage + 1).$QueryString.$Anchor."' class='pager_next'><strong>Next &rsaquo;</strong></a> ";
+                $Pages .= " | <a href='$Location?page=" . ($StartPage + 1) . $QueryString . $Anchor . "' class='pager_next'><strong>Next &rsaquo;</strong></a> ";
                 $Pages .= "<a href='$Location?page=$TotalPages$QueryString$Anchor'><strong> Last&nbsp;&raquo;</strong></a>";
             }
         }
@@ -369,7 +371,7 @@ class Format
         if (func_num_args() === 1 && $steps >= 4) {
             $levels++;
         }
-        return \Gazelle\Text::float($size, $levels) . ' ' . $units[$steps];
+        return Text::float($size, $levels) . ' ' . $units[$steps];
     }
 
 
@@ -409,9 +411,9 @@ class Format
     {
         if (!empty($_GET[$Index])) {
             if ($Return) {
-                return \Gazelle\Text::esc($_GET[$Index]);
+                return Text::esc($_GET[$Index]);
             } else {
-                echo \Gazelle\Text::esc($_GET[$Index]);
+                echo Text::esc($_GET[$Index]);
             }
         }
     }
@@ -477,8 +479,8 @@ class Format
 
         return sprintf(
             '<strong class="torrent_label tooltip %1$s" title="%2$s" style="white-space: nowrap;">%2$s</strong>',
-            \Gazelle\Text::esc($Class),
-            \Gazelle\Text::esc($Text)
+            Text::esc($Class),
+            Text::esc($Text)
         );
     }
 
@@ -514,13 +516,17 @@ class Format
     /**
      * relativeTime
      *
-     * @param string strtotime-compatible
-     * @return string e.g., 4 minutes, 20 seconds ago
+     * @param string|int strtotime-compatible
+     * @return ?string e.g., 4 minutes, 20 seconds ago
      *
      * @see https://stackoverflow.com/a/7487809
      */
-    public static function relativeTime(string|int $time): string
+    public static function relativeTime(string|int $time = null): ?string
     {
+        if (!$time) {
+            return null;
+        }
+
         return \Carbon\Carbon::parse($time)->diffForHumans();
     }
 
@@ -532,7 +538,7 @@ class Format
      */
     public static function breadcrumbs()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
         $server = Http::request("server");
 
         $path = explode("/", $server["REQUEST_URI"]);

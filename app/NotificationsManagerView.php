@@ -7,7 +7,7 @@ class NotificationsManagerView
 
     public static function load_js()
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
 
         # Adapted from design/privateheader.php
         $Scripts = [
@@ -27,7 +27,7 @@ class NotificationsManagerView
 
     public static function render_settings($Settings)
     {
-        $ENV = ENV::go();
+        $ENV = \Gazelle\ENV::go();
         self::$Settings = $Settings; ?>
 <tr>
   <td class="label">
@@ -89,7 +89,7 @@ class NotificationsManagerView
   </td>
 </tr>
 
-<?php if (check_perms('site_torrents_notify')) { ?>
+<?php if ($app->user->can(["notifications" => "read"])) { ?>
 <tr>
   <td class="label tooltip" title="Notify when your torrent notification filters are triggered">
     <strong>Torrent Notifications</strong>
@@ -130,7 +130,7 @@ class NotificationsManagerView
   Traditional
 </label>
 <?php
-      }
+}
     }
 
     public static function format_traditional($Contents)

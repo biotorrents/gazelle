@@ -60,7 +60,7 @@ View::header('Edit artist');
       </div>
     </form>
   </div>
-<?php if (check_perms('torrents_edit')) { ?>
+<?php if ($app->user->can(["creators" => "updateAny"])) { ?>
   <h2>Rename</h2>
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">

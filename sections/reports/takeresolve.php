@@ -1,10 +1,10 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
 
-if (!check_perms('admin_reports') && !check_perms('project_team') && !check_perms('site_moderate_forums')) {
+
+if ($app->user->cant(["admin" => "reports"]) && $app->user->cant(["admin" => "moderateForums"])) {
     error(403);
 }
 
@@ -15,12 +15,12 @@ $app->dbOld->query("
   FROM reports
   WHERE ID = $ReportID");
 list($Type) = $app->dbOld->next_record();
-if (!check_perms('admin_reports')) {
-    if (check_perms('site_moderate_forums')) {
+if ($app->user->cant(["admin" => "reports"])) {
+    if ($app->user->can(["admin" => "moderateForums"])) {
         if (!in_array($Type, array('comment', 'post', 'thread'))) {
             error($Type);
         }
-    } elseif (check_perms('project_team')) {
+    } elseif (true) {
         if ($Type != 'request_update') {
             error(403);
         }
@@ -52,6 +52,6 @@ $app->dbOld->query("
   WHERE Status = 'New'");
 list($Remaining) = $app->dbOld->next_record();
 
-send_irc($Channels, "Report $ReportID resolved by ".preg_replace('/^(.{2})/', '$1·', $app->user->core['username']).' on site ('.(int) $Remaining.' remaining).');
+send_irc($Channels, "Report $ReportID resolved by " . preg_replace('/^(.{2})/', '$1·', $app->user->core['username']) . ' on site (' . (int) $Remaining . ' remaining).');
 $app->cache->delete('num_other_reports');
-Http::redirect("reports.php");
+Gazelle\Http::redirect("reports.php");

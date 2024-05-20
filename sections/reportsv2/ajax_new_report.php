@@ -9,7 +9,7 @@ $app = \Gazelle\App::go();
  * replicated on static.php.
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 
@@ -389,7 +389,7 @@ foreach ($TypeList as $Type => $Data) {
 } ?>
           </select>
           <span id="options<?=$ReportID?>">
-            <?php if (check_perms('users_mod')) { ?>
+            <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
             <span class="tooltip" title="Delete torrent?">
               <label
                 for="delete<?=$ReportID?>"><strong>Delete</strong></label>
@@ -443,7 +443,7 @@ foreach ($TypeList as $Type => $Data) {
         <td>
           <input type="text" name="log_message"
             id="log_message<?=$ReportID?>" size="40" <?php if ($ExtraIDs) {
-                $Extras=explode(' ', $ExtraIDs);
+                $Extras = explode(' ', $ExtraIDs);
                 $Value = '';
                 foreach ($Extras as $ExtraID) {
                     $Value .= site_url()."torrents.php?torrentid=$ExtraID ";

@@ -9,12 +9,12 @@
 $app = \Gazelle\App::go();
 #!d($app->user);exit;
 
-$ENV = ENV::go();
-$twig = Twig::go();
+$ENV = \Gazelle\ENV::go();
+$twig = \Gazelle\Twig::go();
 $View = new View();
 
 if ($ENV->dev) {
-    $debug = Debug::go();
+    $debug = \Gazelle\Debug::go();
     $Render = $debug->getJavascriptRenderer();
 }
 ?>
@@ -127,6 +127,7 @@ HTML;
 }
 
 # New uploads in each categoty
+$ENV->CATS ??= [];
 foreach ($ENV->CATS as $Cat) {
     $name = urlencode(strtolower($Cat->Name));
 
@@ -183,7 +184,7 @@ if (empty($app->user->extra['StyleURL'])) {
         'style'
     );
     */
-    $userStyle = "$ENV->staticServer/css/" . "bookish". ".css";
+    $userStyle = "$ENV->staticServer/css/" . "bookish" . ".css";
     echo $View->pushAsset(
         $userStyle,
         'style'
@@ -193,8 +194,8 @@ if (empty($app->user->extra['StyleURL'])) {
     if (substr($app->user->extra['StyleURL'], -4) === '.css'
         && empty($StyleURLInfo['query']) && empty($StyleURLInfo['fragment'])
         && ($StyleURLInfo['host'] === siteDomain)
-        && file_exists(serverRoot.$StyleURLInfo['path'])) {
-        $StyleURL = $app->user->extra['StyleURL'].'?v='.filemtime(serverRoot.$StyleURLInfo['path']);
+        && file_exists(serverRoot . $StyleURLInfo['path'])) {
+        $StyleURL = $app->user->extra['StyleURL'] . '?v=' . filemtime(serverRoot . $StyleURLInfo['path']);
     } else {
         $StyleURL = $app->user->extra['StyleURL'];
     } ?>
@@ -245,13 +246,13 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
 
 <?php
   if (!empty($app->user->extra['StyleAdditions'])) {
-      $BodyStyles = 'style_'.implode(' style_', $app->user->extra['StyleAdditions']);
+      $BodyStyles = 'style_' . implode(' style_', $app->user->extra['StyleAdditions']);
   }
 ?>
 
 <body
   id="<?=$Document === 'collages' ? 'collage' : $Document?>"
-  class="<?=($BodyStyles??'')?>">
+  class="<?=($BodyStyles ?? '')?>">
   <div id="wrapper">
     <h1 class="hidden">
       <?= $ENV->siteName ?>
@@ -264,7 +265,7 @@ if ($NotificationsManager->is_skipped(NotificationsManager::SUBSCRIPTIONS)) {
     '_base/userInfo.twig',
     [
           'inbox' => Inbox::get_inbox_link(),
-          'notify' => check_perms('site_torrents_notify'),
+          'notify' => $app->user->can(["notifications" => "read"]),
         ]
 );
 ?>
@@ -288,7 +289,7 @@ if (isset($app->user->extra['SearchType']) && $app->user->extra['SearchType']) {
 
         <?php
         /* OLD USER INFO
-if (check_perms('site_send_unlimited_invites')) {
+if ($app->user->can(["admin" => "unlimitedInvites"])) {
     $Invites = ' (∞)';
 } elseif ($app->user->extra['Invites'] > 0) {
     $Invites = ' ('.$app->user->extra['Invites'].')';
@@ -312,7 +313,7 @@ if (check_perms('site_send_unlimited_invites')) {
 
 <!-- OLD USER INFO
         <li id="nav_staff">
-          <a href="staff.php">Staff</a>
+          <a href="/staff">Staff</a>
         </li>
       </ul>
 
@@ -321,18 +322,18 @@ if (check_perms('site_send_unlimited_invites')) {
           <a
             href="torrents.php?type=seeding&amp;userid=<?=null#$app->user->core["id"]?>">Up</a>:
           <span class="stat tooltip"
-            title="<?=null#Format::get_size($app->user->extra['Uploaded'], 5)?>"><?=null#Format::get_size($app->user->extra['Uploaded'])?></span>
+            title="<?=null#\Gazelle\Format::get_size($app->user->extra['Uploaded'], 5)?>"><?=null#\Gazelle\Format::get_size($app->user->extra['Uploaded'])?></span>
         </li>
 
         <li id="stats_leeching">
           <a
             href="torrents.php?type=leeching&amp;userid=<?=null#$app->user->core["id"]?>">Down</a>:
           <span class="stat tooltip"
-            title="<?=null#Format::get_size($app->user->extra['Downloaded'], 5)?>"><?=null#Format::get_size($app->user->extra['Downloaded'])?></span>
+            title="<?=null#\Gazelle\Format::get_size($app->user->extra['Downloaded'], 5)?>"><?=null#\Gazelle\Format::get_size($app->user->extra['Downloaded'])?></span>
         </li>
 
         <li id="stats_ratio">
-          Ratio: <span class="stat"><?=null#Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded'])?></span>
+          Ratio: <span class="stat"><?=null#\Gazelle\Format::get_ratio_html($app->user->extra['Uploaded'], $app->user->extra['Downloaded'])?></span>
         </li>
 -->
         <?php #if (!empty($app->user->extra['RequiredRatio']) && $app->user->extra['RequiredRatio'] > 0) {?>
@@ -363,7 +364,7 @@ if (check_perms('site_send_unlimited_invites')) {
         <li id="bonus_points">
           <a href="wiki.php?action=article&amp;name=bonuspoints"><?=null#bonusPoints?></a>:
           <span class="stat">
-            <a href="store.php"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
+            <a href="/store"><?=null#\Gazelle\Text::float($app->user->extra['BonusPoints'])?></a>
           </span>
         </li>
 
@@ -380,7 +381,7 @@ if (check_perms('site_send_unlimited_invites')) {
 -->
 
     <?php if (!apcu_exists('DBKEY')) { ?>
-    <a id="dbcrypt" class="tooltip" href="wiki.php?action=article&amp;name=databaseencryption"
+    <a id="dbcrypt" class="tooltip" href="wiki/databaseEncryption"
       title="Database is not fully decrypted. Site functionality will be reduced until staff can provide the decryption key. Click to learn more."></a>
     <?php } ?>
   </div>
@@ -422,15 +423,15 @@ if ($NotificationsManager->is_traditional(NotificationsManager::TORRENTS)) {
     $NotificationsManager->clear_notifications_array();
 }
 
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $ModBar[] = '<a href="tools.php">Toolbox</a>';
 }
 
 /** Buggy af rn 2022-01-12
-if (check_perms('users_mod')) {
+if ($app->user->can(["admin" => "moderateUsers"])) {
     $NumStaffPMs = $app->cache->get('num_staff_pms_'.$app->user->core["id"]);
     if ($NumStaffPMs === false) {
-        if (check_perms('users_mod')) {
+        if ($app->user->can(["admin" => "moderateUsers"])) {
             $LevelCap = 1000;
             $app->dbOld->query("
               SELECT COUNT(ID)
@@ -460,7 +461,7 @@ if (check_perms('users_mod')) {
 }
 */
 
-if (check_perms('admin_reports')) {
+if ($app->user->can(["admin" => "reports"])) {
     // Torrent reports code
     $NumTorrentReports = $app->cache->get('num_torrent_reportsv2');
     if ($NumTorrentReports === false) {
@@ -473,7 +474,7 @@ if (check_perms('admin_reports')) {
         $app->cache->set('num_torrent_reportsv2', $NumTorrentReports, 0);
     }
 
-    $ModBar[] = '<a href="reportsv2.php">'.$NumTorrentReports.(($NumTorrentReports === 1) ? ' Report' : ' Reports').'</a>';
+    $ModBar[] = '<a href="reportsv2.php">' . $NumTorrentReports . (($NumTorrentReports === 1) ? ' Report' : ' Reports') . '</a>';
 
     // Other reports code
     $NumOtherReports = $app->cache->get('num_other_reports');
@@ -488,9 +489,9 @@ if (check_perms('admin_reports')) {
     }
 
     if ($NumOtherReports > 0) {
-        $ModBar[] = '<a href="reports.php">'.$NumOtherReports.(($NumTorrentReports === 1) ? ' Other report' : ' Other reports').'</a>';
+        $ModBar[] = '<a href="reports.php">' . $NumOtherReports . (($NumTorrentReports === 1) ? ' Other report' : ' Other reports') . '</a>';
     }
-} elseif (check_perms('project_team')) {
+} elseif (true) {
     $NumUpdateReports = $app->cache->get('num_update_reports');
     if ($NumUpdateReports === false) {
         $app->dbOld->query("
@@ -506,7 +507,7 @@ if (check_perms('admin_reports')) {
     if ($NumUpdateReports > 0) {
         $ModBar[] = '<a href="reports.php">Request update reports</a>';
     }
-} elseif (check_perms('site_moderate_forums')) {
+} elseif ($app->user->can(["admin" => "moderateForums"])) {
     $NumForumReports = $app->cache->get('num_forum_reports');
     if ($NumForumReports === false) {
         $app->dbOld->query("
@@ -520,11 +521,11 @@ if (check_perms('admin_reports')) {
     }
 
     if ($NumForumReports > 0) {
-        $ModBar[] = '<a href="reports.php">'.$NumForumReports.(($NumForumReports === 1) ? ' Forum report' : ' Forum reports').'</a>';
+        $ModBar[] = '<a href="reports.php">' . $NumForumReports . (($NumForumReports === 1) ? ' Forum report' : ' Forum reports') . '</a>';
     }
 }
 
-if (check_perms('users_mod') && FEATURE_EMAIL_REENABLE) {
+if ($app->user->can(["admin" => "moderateUsers"]) && FEATURE_EMAIL_REENABLE) {
     $NumEnableRequests = $app->cache->get(AutoEnable::CACHE_KEY_NAME);
     if ($NumEnableRequests === false) {
         $app->dbOld->query("SELECT COUNT(1) FROM users_enable_requests WHERE Outcome IS NULL");
@@ -546,21 +547,21 @@ if (!empty($Alerts) || !empty($ModBar)) { ?>
     <?php
     }
 
-  if (!empty($ModBar)) { ?>
+    if (!empty($ModBar)) { ?>
     <div class="alertbar modbar">
       <?=implode(' ', $ModBar);
-      echo "\n"?>
+        echo "\n"?>
     </div>
     <?php }
 
-  if (check_perms('site_debug') && !apcu_exists('DBKEY')) { ?>
+    if ($app->user->can(["toolbox" => "databaseKey"]) && !apcu_exists('DBKEY')) { ?>
     <div class="alertbar error">
       Warning: <a href="tools.php?action=database_key">no DB key</a>
     </div>
     <?php } ?>
   </div>
   <?php
-      // Done handling alertbars
+        // Done handling alertbars
 }
 
 # #content is Gazelle, .container is Skeleton

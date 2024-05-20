@@ -2,32 +2,32 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $Val = new Validate();
 
 $P = [];
 $P = db_array($_POST);
 
-if ($P['category'] > 0 || check_perms('site_collages_renamepersonal')) {
+if ($P['category'] > 0 || $app->user->can(["collages" => "updateAny"])) {
     $Val->SetFields('name', '1', 'string', 'The name must be between 5 and 255 characters.', array('maxlength' => 255, 'minlength' => 5));
 } else {
     // Get a collage name and make sure it's unique
-    $name = $app->user->core['username']."'s personal collage";
+    $name = $app->user->core['username'] . "'s personal collage";
     $P['name'] = db_string($name);
     $app->dbOld->query("
     SELECT ID
     FROM collages
-    WHERE Name = '".$P['name']."'");
+    WHERE Name = '" . $P['name'] . "'");
     $i = 2;
     while ($app->dbOld->has_results()) {
         $P['name'] = db_string("$name no. $i");
         $app->dbOld->query("
       SELECT ID
       FROM collages
-      WHERE Name = '".$P['name']."'");
+      WHERE Name = '" . $P['name'] . "'");
         $i++;
     }
 }
@@ -43,9 +43,9 @@ if (!$Err && $P['category'] === '0') {
       AND CategoryID = '0'
       AND Deleted = '0'");
     list($CollageCount) = $app->dbOld->next_record();
-    if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || !check_perms('site_collages_personal')) {
+    if (($CollageCount >= $app->user->extra['Permissions']['MaxCollages']) || $app->user->cant(["collages" => "create"])) {
         $Err = 'You may not create a personal collage.';
-    } elseif (check_perms('site_collages_renamepersonal') && !stristr($P['name'], $app->user->core['username'])) {
+    } elseif ($app->user->can(["collages" => "updateOwn"]) && !stristr($P['name'], $app->user->core['username'])) {
         $Err = "Your personal collage's title must include your username.";
     }
 }
@@ -66,7 +66,7 @@ if (!$Err) {
 }
 
 if (!$Err) {
-    if (empty($CollageCats[$P['category']])) {
+    if (empty($app->env->collageCategories[$P['category']])) {
         $Err = 'Please select a category';
     }
 }
@@ -76,7 +76,7 @@ if ($Err) {
     $Category = $_POST['category'];
     $Tags = $_POST['tags'];
     $Description = $_POST['description'];
-    include(serverRoot.'/sections/collages/new.php');
+    include(serverRoot . '/sections/collages/new.php');
     error();
 }
 
@@ -94,5 +94,5 @@ $app->dbOld->query("
 
 $CollageID = $app->dbOld->inserted_id();
 $app->cache->delete("collage_$CollageID");
-Misc::write_log("Collage $CollageID (".$_POST['name'].') was created by '.$app->user->core['username']);
-Http::redirect("collages.php?id=$CollageID");
+Misc::write_log("Collage $CollageID (" . $_POST['name'] . ') was created by ' . $app->user->core['username']);
+Gazelle\Http::redirect("collages.php?id=$CollageID");

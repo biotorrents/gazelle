@@ -7,17 +7,17 @@ declare(strict_types=1);
  * web app bootstrap
  */
 
-# quick sanity checks
-\Gazelle\App::gotcha();
-
 # load the app
-$app = \Gazelle\App::go();
-#!d($app->user->permissions);
+$app = Gazelle\App::go();
+$app->executionContext = "web";
+
+# quick sanity checks
+$app->gotcha();
 
 # query vars
-$get = Http::request("get");
-$post = Http::request("post");
-$server = Http::request("server");
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
+$server = Gazelle\Http::request("server");
 
 # start a session
 $activeSession = session_status() === PHP_SESSION_ACTIVE;
@@ -38,7 +38,7 @@ $document ??= "index";
 #!d($document);exit;
 
 # redirect unauthenticated to login page
-$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm", "canary", "resend"];
+$allowedPages = ["login", "register", "recover", "about", "privacy", "dmca", "confirm", "canary", "resend", "manifest"];
 if (!$app->user->isLoggedIn() && !in_array($document, $allowedPages)) {
     require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     exit;

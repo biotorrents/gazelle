@@ -1,0 +1,152 @@
+{##
+ # {% set variables = { "conversation": conversation } %}
+ # {% include "_base/conversation.twig" with variables %}
+ #
+ # https://twig.symfony.com/doc/3.x/tags/include.html
+ #}
+
+{% if isSubscribed is defined %}
+	{% set isSubscribed = true %}
+{% else %}
+	{% set isSubscribed = false %}
+{% endif %}
+
+<section>
+
+    <span class="flexHeader">
+        <h3>{{ conversation.attributes.subject }}</h3>
+        {# toggle subscription #}
+        {% if isSubscribed %}
+            <a class="button button-red" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">remove subscription</a>
+        {% else %}
+            <a class="button button-orange" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">add subscription</a>
+        {% endif %}
+    </span>
+
+    {# thread display #}
+    <table>
+        {% for message in conversation.relationships.messages %}
+            <tr id="conversation-{{ message.id }}">
+                <td width="120" style="vertical-align: top;">
+                    {{ getAvatarByUserId(message.attributes.userId) }}
+                    <p class="center">{{ message.attributes.userId|formatUsername }}</p>
+                </td>
+
+                <td>
+                    {# message body #}
+                    {{ message.attributes.body|parse }}
+
+                    {# post metadata #}
+                    <p class="flexRow">
+                        <span class="faded small">
+                            Posted <span class="tooltip" title="{{ message.attributes.createdAt }}">{{ message.attributes.createdAt|relativeTime }}</span>
+                        </span>
+                        {% if message.attributes.updatedAt is not null %}
+                            <span class="faded small">
+                                Edited <span class="tooltip" title="{{ message.attributes.updatedAt }}">{{ message.attributes.updatedAt|relativeTime }}</span>
+                            </span>
+                        {% endif %}
+
+                        {% if message.attributes.replyToId is not null %}
+                            <span class="faded small">
+                                Replying to <a href="#conversation-{{ message.attributes.replyToId }}">{{ message.attributes.replyToId }}</a>
+                            </span>
+                        {% endif %}
+                    </p>
+
+                    {# post actions #}
+                    <p class="flexRow">
+                        {# reply #}
+                        <a class="conversationButton tooltip replyToMessage" title="reply" href="#replyToMessage" data-conversationid="{{ conversation.id }}" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-reply" data-conversationid="{{ conversation.id }}" data-messageid="{{ message.id }}"></i>
+                        </a>
+
+                        {# quote #}
+                        <a class="conversationButton tooltip replyToMessage quoteMessage" title="quote" href="#replyToMessage" data-conversationid="{{ conversation.id }}" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-quote-left" data-conversationid="{{ conversation.id }}" data-messageid="{{ message.id }}"></i>
+                        </a>
+
+                        {# edit #}
+                        {% if message.attributes.userId == user.core.id or can({"messages": "updateAny"}) %}
+                            <a class="conversationButton tooltip" title="edit" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-pen-to-square" data-messageid="{{ message.id }}"></i>
+                            </a>
+                        {% endif %}
+    
+                        {# delete #}
+                        {% if message.attributes.userId == user.core.id or can({"messages": "deleteAny"}) %}
+                            <a class="conversationButton tooltip" title="delete" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-trash" data-messageid="{{ message.id }}"></i>
+                            </a>
+                        {% endif %}
+
+                        {# add a poll #}
+                        {% if message.attributes.userId == user.core.id or can({"polls": "updateAny"}) %}
+                            <a class="conversationButton tooltip" title="add a poll" data-messageid="{{ message.id }}">
+                                <i class="fa-thin fa-poll-people"></i>
+                            </a>
+                        {% endif %}
+
+                        {# report #}
+                        <a class="conversationButton tooltip {{ (message.attributes.isReported) ? "isReported" : "" }}" title="report" data-messageid="{{ message.id }}">
+                            <i class="fa-thin fa-flag" data-messageid="{{ message.id }}"></i>
+                        </a>
+
+                        {# thumbs up #}
+                        <a id="thumbsUpContainer-{{ message.id }}" class="conversationButton tooltip reactToMessage {{ hasUserReacted(message.id, "thumbsUp") ? "hasReacted" : "" }}" title="like" data-reaction="thumbsUp" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                            <i class="fa-thin fa-thumbs-up" data-reaction="thumbsUp" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}"></i>
+                            <span id="thumbsUpCount-{{ message.id }}" data-reaction="thumbsUp" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                                {{ message.attributes.thumbsUpCount|default(0) }}
+                            </span>
+                        </a>
+
+                        {# thumbs down #}
+                        <a id="thumbsDownContainer-{{ message.id }}" class="conversationButton tooltip reactToMessage {{ hasUserReacted(message.id, "thumbsDown") ? "hasReacted" : "" }}" title="dislike" data-reaction="thumbsDown" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                            <i class="fa-thin fa-thumbs-down" data-reaction="thumbsDown" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}"></i>
+                            <span id="thumbsDownCount-{{ message.id }}" data-reaction="thumbsDown" data-messageid="{{ message.id }}" data-userid="{{ user.core.id }}">
+                                {{ message.attributes.thumbsDownCount|default(0) }}
+                            </span>
+                        </a>
+                    </p>
+
+                    {# poll #}
+                    {#
+                    {% if message.relationships.poll is not empty %}
+                        <div class="poll">
+                            <h4>{{ message.relationships.poll.attributes.question }}</h4>
+                            <ul>
+                                {% for option in message.relationships.poll.relationships.options %}
+                                    <li>
+                                        <input type="radio" name="poll-{{ message.id }}" value="{{ option.id }}" id="poll-{{ message.id }}-{{ option.id }}">
+                                        <label for="poll-{{ message.id }}-{{ option.id }}">{{ option.attributes.option }}</label>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <button class="button-primary" data-pollid="{{ message.relationships.poll.id }}" data-messageid="{{ message.id }}">vote</button>
+                        </div>
+                    {% endif %}
+                    #}
+
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    {# add your reply #}
+    <form id="replyToMessage" method="post" action="/conversations/createMessage">
+        {{ form_token("/conversations/createMessage") }}
+
+        <input type="hidden" name="conversationId" value="{{ conversation.id }}">
+        <input type="hidden" name="userId" value="{{ user.core.id }}">
+        <input type="hidden" id="replyToId" name="replyToId" value=""> {# no value yet #}
+        <input type="hidden" name="redirectToUri" value="{{ query.server.REQUEST_URI }}">
+    
+        {# for some reason, only an underscore not a hyphen works in this context #}
+        {# https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id #}
+        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "What are your thoughts about what you've just read? Let's all contribute to a productive and engaging conversation on the topic.", "value": null } %}
+        {% include "_base/textarea.twig" with variables %}
+    
+        <input type="submit" class="button-primary" value="add your reply">
+    </form>
+
+</section>

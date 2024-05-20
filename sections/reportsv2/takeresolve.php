@@ -9,10 +9,10 @@ $app = \Gazelle\App::go();
  * a collision occurs or a POST attack is detected.
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
-authorize();
+
 
 
 //Don't escape: Log message, Admin message
@@ -250,7 +250,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
     }
 
     //Log and delete
-    if (isset($Escaped['delete']) && check_perms('torrents_delete')) {
+    if (isset($Escaped['delete']) && $app->user->can(["torrents" => "deleteAny"])) {
         $app->dbOld->prepared_query("
       SELECT Username
       FROM users_main

@@ -1,11 +1,11 @@
 <?php
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 if ($IDs = $_POST['id']) {
     $Queries = [];
     foreach ($IDs as &$ID) {
-        $ID = (int)$ID;
+        $ID = (int) $ID;
 
         // Check if conversation belongs to user
         $app->dbOld->query("
@@ -18,7 +18,7 @@ if ($IDs = $_POST['id']) {
             // Conversation belongs to user or user is staff, queue query
             $Queries[] = "
         UPDATE staff_pm_conversations
-        SET Status = 'Resolved', ResolverID = ".$app->user->core['id']."
+        SET Status = 'Resolved', ResolverID = " . $app->user->core['id'] . "
         WHERE ID = $ID";
         } else {
             // Trying to run disallowed query
@@ -35,8 +35,8 @@ if ($IDs = $_POST['id']) {
     $app->cache->delete("num_staff_pms_{$app->user->core['id']}");
 
     // Done! Return to inbox
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 } else {
     // No ID
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 }

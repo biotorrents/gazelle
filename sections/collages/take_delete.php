@@ -1,11 +1,11 @@
 <?php
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
 
-$CollageID = $_POST['collageid'];
+
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID) || !$CollageID) {
     error(404);
 }
@@ -16,7 +16,7 @@ $app->dbOld->query("
   WHERE ID = '$CollageID'");
 list($Name, $CategoryID, $UserID) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
-if (!check_perms('site_collages_delete') && $UserID != $app->user->core['id']) {
+if ($app->user->cant(["collages" => "deleteAny"]) && $UserID != $app->user->core['id']) {
     error(403);
 }
 
@@ -53,7 +53,7 @@ if ($CategoryID == 0) {
     Subscriptions::flush_quote_notifications('collages', $CollageID);
 }
 
-Misc::write_log("Collage $CollageID ($Name) was deleted by ".$app->user->core['username'].": $Reason");
+Misc::write_log("Collage $CollageID ($Name) was deleted by " . $app->user->core['username'] . ": $Reason");
 
 $app->cache->delete("collage_$CollageID");
-Http::redirect("collages.php");
+Gazelle\Http::redirect("collages.php");

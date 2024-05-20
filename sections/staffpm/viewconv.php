@@ -1,9 +1,9 @@
 <?php
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-if ($ConvID = (int)$_GET['id']) {
+if ($ConvID = (int) $_GET['id']) {
     // Get conversation info
     $app->dbOld->query("
     SELECT Subject, UserID, Level, AssignedToUser, Unread, Status
@@ -46,7 +46,7 @@ if ($ConvID = (int)$_GET['id']) {
     $OwnerName = $UserInfo['Username']; ?>
 <div>
   <div class="header">
-    <h2>Staff PM - <?=\Gazelle\Text::esc($Subject)?>
+    <h2>Staff PM - <?=Gazelle\Text::esc($Subject)?>
     </h2>
     <div class="linkbox">
       <?php
@@ -108,7 +108,7 @@ if ($ConvID = (int)$_GET['id']) {
           class="brackets">Quote</a>
         <?php } ?>
       </div>
-      <div class="body"><?=\Gazelle\Text::parse($Message)?>
+      <div class="body"><?=Gazelle\Text::parse($Message)?>
       </div>
     </div>
     <div align="center" style="display: none;"></div>
@@ -264,12 +264,12 @@ if ($ConvID = (int)$_GET['id']) {
             onclick="location.href='staffpm.php?action=unresolve&amp;id=<?=$ConvID?>';">
           <?php
           }
-    if (check_perms('users_give_donor')) { ?>
+    if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
           <br>
           <input type="button" value="Make Donor" data-toggle-target="#make_donor_form">
           <?php } ?>
         </form>
-        <?php if (check_perms('users_give_donor')) { ?>
+        <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
         <div id="make_donor_form" class="hidden">
           <form action="staffpm.php" method="post">
             <input type="hidden" name="action" value="make_donor">
@@ -301,5 +301,5 @@ if ($ConvID = (int)$_GET['id']) {
           View::footer();
 } else {
     // No ID
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 }

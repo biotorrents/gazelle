@@ -1,8 +1,8 @@
 <?php
 #declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
-$ENV = ENV::go();
+$app = Gazelle\App::go();
+$ENV = Gazelle\ENV::go();
 
 if (!empty($_GET['search'])) {
     if (preg_match("/{$app->env->regexIp4}/", $_GET['search'])) {
@@ -15,9 +15,9 @@ if (!empty($_GET['search'])) {
         $app->dbOld->query("
       SELECT ID
       FROM users_main
-      WHERE Username = '".db_string($_GET['search'])."'");
+      WHERE Username = '" . db_string($_GET['search']) . "'");
         if (list($ID) = $app->dbOld->next_record()) {
-            Http::redirect("user.php?id=$ID");
+            Gazelle\Http::redirect("user.php?id=$ID");
             error();
         }
         $_GET['username'] = $_GET['search'];
@@ -122,12 +122,12 @@ function num_compare($Field, $Operand, $Num1, $Num2 = '')
 
 // Arrays, regexes, and all that fun stuff we can use for validation, form generation, etc
 
-$DateChoices = array('inarray'=>array('on', 'before', 'after', 'between'));
-$SingleDateChoices = array('inarray'=>array('on', 'before', 'after'));
-$NumberChoices = array('inarray'=>array('equal', 'above', 'below', 'between', 'buffer'));
-$YesNo = array('inarray'=>array('any', 'yes', 'no'));
-$OrderVals = array('inarray'=>array('Username', 'Ratio', 'IP', 'Email', 'Joined', 'Last Seen', 'Uploaded', 'Downloaded', 'Invites', 'Snatches'));
-$WayVals = array('inarray'=>array('Ascending', 'Descending'));
+$DateChoices = array('inarray' => array('on', 'before', 'after', 'between'));
+$SingleDateChoices = array('inarray' => array('on', 'before', 'after'));
+$NumberChoices = array('inarray' => array('equal', 'above', 'below', 'between', 'buffer'));
+$YesNo = array('inarray' => array('any', 'yes', 'no'));
+$OrderVals = array('inarray' => array('Username', 'Ratio', 'IP', 'Email', 'Joined', 'Last Seen', 'Uploaded', 'Downloaded', 'Invites', 'Snatches'));
+$WayVals = array('inarray' => array('Ascending', 'Descending'));
 
 if (count($_GET)) {
     $DateRegex = array('regex' => '/\d{4}-\d{2}-\d{2}/');
@@ -206,7 +206,7 @@ if (count($_GET)) {
         'Invites' => 'um1.Invites',
         'Snatches' => 'Snatches');
 
-        $WayTable = array('Ascending'=>'ASC', 'Descending'=>'DESC');
+        $WayTable = array('Ascending' => 'ASC', 'Descending' => 'DESC');
 
         $Where = [];
         $Having = [];
@@ -258,17 +258,17 @@ if (count($_GET)) {
 
 
         if (!empty($_GET['username'])) {
-            $Where[] = 'um1.Username'.$Match.wrap($_GET['username']);
+            $Where[] = 'um1.Username' . $Match . wrap($_GET['username']);
         }
 
         if (!empty($_GET['email'])) {
             $Join['the'] = ' JOIN users_emails_decrypted AS he ON he.ID = um1.ID ';
-            $Where[] = ' he.Email '.$Match.wrap($_GET['email']);
+            $Where[] = ' he.Email ' . $Match . wrap($_GET['email']);
         }
 
         if (!empty($_GET['ip'])) {
             $Join['tip'] = ' JOIN users_ips_decrypted AS tip ON tip.ID = um1.ID ';
-            $Where[] = ' tip.IP '.$Match.wrap($_GET['ip'], '', true);
+            $Where[] = ' tip.IP ' . $Match . wrap($_GET['ip'], '', true);
         }
 
 
@@ -286,7 +286,7 @@ if (count($_GET)) {
         if (!empty($_GET['tracker_ip'])) {
             $Distinct = 'DISTINCT ';
             $Join['xfu'] = ' JOIN xbt_files_users AS xfu ON um1.ID = xfu.uid ';
-            $Where[] = ' xfu.ip '.$Match.wrap($_GET['tracker_ip'], '', true);
+            $Where[] = ' xfu.ip ' . $Match . wrap($_GET['tracker_ip'], '', true);
         }
 
         //    if (!empty($_GET['tracker_ip'])) {
@@ -296,7 +296,7 @@ if (count($_GET)) {
         //    }
 
         if (!empty($_GET['comment'])) {
-            $Where[] = 'ui1.AdminComment'.$Match.wrap($_GET['comment']);
+            $Where[] = 'ui1.AdminComment' . $Match . wrap($_GET['comment']);
         }
 
         if (strlen($_GET['invites1'])) {
@@ -362,16 +362,16 @@ if (count($_GET)) {
         }
 
         if ($_GET['enabled'] != '') {
-            $Where[] = 'um1.Enabled = '.wrap($_GET['enabled'], '=');
+            $Where[] = 'um1.Enabled = ' . wrap($_GET['enabled'], '=');
         }
 
         if ($_GET['class'] != '') {
-            $Where[] = 'um1.PermissionID = '.wrap($_GET['class'], '=');
+            $Where[] = 'um1.PermissionID = ' . wrap($_GET['class'], '=');
         }
 
         if ($_GET['secclass'] != '') {
             $Join['ul'] = ' JOIN users_levels AS ul ON um1.ID = ul.UserID ';
-            $Where[] = 'ul.PermissionID = '.wrap($_GET['secclass'], '=');
+            $Where[] = 'ul.PermissionID = ' . wrap($_GET['secclass'], '=');
         }
 
         if ($_GET['donor'] == 'yes') {
@@ -392,28 +392,28 @@ if (count($_GET)) {
         }
 
         if (!empty($_GET['passkey'])) {
-            $Where[] = 'um1.torrent_pass'.$Match.wrap($_GET['passkey']);
+            $Where[] = 'um1.torrent_pass' . $Match . wrap($_GET['passkey']);
         }
 
         if (!empty($_GET['avatar'])) {
-            $Where[] = 'ui1.Avatar'.$Match.wrap($_GET['avatar']);
+            $Where[] = 'ui1.Avatar' . $Match . wrap($_GET['avatar']);
         }
 
         if ($_GET['stylesheet'] != '') {
-            $Where[] = 'ui1.StyleID = '.wrap($_GET['stylesheet'], '=');
+            $Where[] = 'ui1.StyleID = ' . wrap($_GET['stylesheet'], '=');
         }
 
         if ($OrderTable[$_GET['order']] && $WayTable[$_GET['way']]) {
-            $Order = ' ORDER BY '.$OrderTable[$_GET['order']].' '.$WayTable[$_GET['way']].' ';
+            $Order = ' ORDER BY ' . $OrderTable[$_GET['order']] . ' ' . $WayTable[$_GET['way']] . ' ';
         }
 
         //---------- Finish generating the search string
 
-        $SQL = 'SELECT '.$Distinct.$SQL;
+        $SQL = 'SELECT ' . $Distinct . $SQL;
         $SQL .= implode(' ', $Join);
 
         if (count($Where)) {
-            $SQL .= ' WHERE '.implode(' AND ', $Where);
+            $SQL .= ' WHERE ' . implode(' AND ', $Where);
         }
 
         if (count($Group)) {
@@ -421,7 +421,7 @@ if (count($_GET)) {
         }
 
         if (count($Having)) {
-            $SQL .= ' HAVING '.implode(' AND ', $Having);
+            $SQL .= ' HAVING ' . implode(' AND ', $Having);
         }
 
         $SQL .= $Order;
@@ -430,7 +430,7 @@ if (count($_GET)) {
             $RunQuery = true;
         }
 
-        list($Page, $Limit) = Format::page_limit(USERS_PER_PAGE);
+        list($Page, $Limit) = Gazelle\Format::page_limit(USERS_PER_PAGE);
         $SQL .= " LIMIT $Limit";
     } else {
         error("Your search returned no results. For privacy and security reasons, user searches must result in an exact hit. Fuzzy matches aren't allowed.");
@@ -446,7 +446,7 @@ View::header('User search');
         <td class="label nobr">Username:</td>
         <td width="24%">
           <input type="text" name="username" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['username'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['username'])?>" />
         </td>
         <td class="label nobr">Joined:</td>
         <td width="24%">
@@ -463,16 +463,16 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>After
             </option>
-            <option value="between" <?php if ($_GET['joined']==='between') {
+            <option value="between" <?php if ($_GET['joined'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
           </select>
           <input type="text" name="join1" size="10"
-            value="<?=\Gazelle\Text::esc($_GET['join1'])?>"
+            value="<?=Gazelle\Text::esc($_GET['join1'])?>"
             placeholder="YYYY-MM-DD" />
           <input type="text" name="join2" size="10"
-            value="<?=\Gazelle\Text::esc($_GET['join2'])?>"
+            value="<?=Gazelle\Text::esc($_GET['join2'])?>"
             placeholder="YYYY-MM-DD" />
         </td>
         <td class="label nobr">Enabled:</td>
@@ -482,15 +482,15 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="0" <?php if ($_GET['enabled']==='0') {
+            <option value="0" <?php if ($_GET['enabled'] === '0') {
                 echo ' selected="selected"' ;
             } ?>>Unconfirmed
             </option>
-            <option value="1" <?php if ($_GET['enabled']==='1') {
+            <option value="1" <?php if ($_GET['enabled'] === '1') {
                 echo ' selected="selected"' ;
             } ?>>Enabled
             </option>
-            <option value="2" <?php if ($_GET['enabled']==='2') {
+            <option value="2" <?php if ($_GET['enabled'] === '2') {
                 echo ' selected="selected"' ;
             } ?>>Disabled
             </option>
@@ -501,7 +501,7 @@ View::header('User search');
         <td class="label nobr">Email address:</td>
         <td>
           <input type="text" name="email" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['email'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['email'])?>" />
         </td>
         <td class="label nobr">Last active:</td>
         <td width="30%">
@@ -518,23 +518,23 @@ View::header('User search');
                 echo ' selected="selected"';
             } ?>>After
             </option>
-            <option value="between" <?php if ($_GET['lastactive']==='between') {
+            <option value="between" <?php if ($_GET['lastactive'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>
               >Between
             </option>
           </select>
           <input type="text" name="lastactive1" size="10"
-            value="<?=\Gazelle\Text::esc($_GET['lastactive1'])?>"
+            value="<?=Gazelle\Text::esc($_GET['lastactive1'])?>"
             placeholder="YYYY-MM-DD" />
           <input type="text" name="lastactive2" size="10"
-            value="<?=\Gazelle\Text::esc($_GET['lastactive2'])?>"
+            value="<?=Gazelle\Text::esc($_GET['lastactive2'])?>"
             placeholder="YYYY-MM-DD" />
         </td>
         <td class="label nobr">Primary class:</td>
         <td>
           <select name="class">
-            <option value="" <?php if ($_GET['class']==='') {
+            <option value="" <?php if ($_GET['class'] === '') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
@@ -544,9 +544,9 @@ View::header('User search');
                 } ?>
             <option value="<?=$Class['ID'] ?>"
               <?php
-                          if ($_GET['class']===$Class['ID']) {
+                          if ($_GET['class'] === $Class['ID']) {
                               echo ' selected="selected"' ;
-                          } ?>><?=\Gazelle\Text::limit($Class['Name'], 10).' ('.$Class['Level'].')'?>
+                          } ?>><?=Gazelle\Text::limit($Class['Name'], 10) . ' (' . $Class['Level'] . ')'?>
             </option>
             <?php
             } ?>
@@ -559,20 +559,20 @@ View::header('User search');
           IP address:</td>
         <td>
           <input type="text" name="ip" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['ip'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['ip'])?>" />
         </td>
         <td class="label nobr">Locked Account:</td>
         <td>
           <select name="lockedaccount">
-            <option value="any" <?php if ($_GET['lockedaccount']=='any') {
+            <option value="any" <?php if ($_GET['lockedaccount'] == 'any') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
-            <option value="locked" <?php if ($_GET['lockedaccount']=='locked') {
+            <option value="locked" <?php if ($_GET['lockedaccount'] == 'locked') {
                 echo ' selected="selected"' ;
             } ?>>Locked
             </option>
-            <option value="unlocked" <?php if ($_GET['lockedaccount']=='unlocked') {
+            <option value="unlocked" <?php if ($_GET['lockedaccount'] == 'unlocked') {
                 echo ' selected="selected"' ;
             } ?>
               >Unlocked
@@ -582,7 +582,7 @@ View::header('User search');
         <td class="label nobr">Secondary class:</td>
         <td>
           <select name="secclass">
-            <option value="" <?php if ($_GET['secclass']==='') {
+            <option value="" <?php if ($_GET['secclass'] === '') {
                 echo ' selected="selected"' ;
             } ?>>Any
             </option>
@@ -603,9 +603,9 @@ foreach ($Secondaries as $Class) {
     ?>
             <option value="<?=$Class['ID'] ?>"
               <?php
-            if ($_GET['secclass']===$Class['ID']) {
+            if ($_GET['secclass'] === $Class['ID']) {
                 echo ' selected="selected"' ;
-            } ?>><?=\Gazelle\Text::limit($Class['Name'], 20)?>
+            } ?>><?=Gazelle\Text::limit($Class['Name'], 20)?>
             </option>
             <?php
 } ?>
@@ -628,15 +628,15 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['ratio']==='between') {
+            <option value="between" <?php if ($_GET['ratio'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
           </select>
           <input type="text" name="ratio1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['ratio1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['ratio1'])?>" />
           <input type="text" name="ratio2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['ratio2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['ratio2'])?>" />
         </td>
         <td class="label nobr">Donor:</td>
         <td>
@@ -645,7 +645,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['donor']==='yes') {
+            <option value="yes" <?php if ($_GET['donor'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -657,11 +657,11 @@ foreach ($Secondaries as $Class) {
         </td>
       </tr>
       <tr>
-        <?php if (check_perms('users_mod')) { ?>
+        <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         <td class="label nobr">Staff notes:</td>
         <td>
           <input type="text" name="comment" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['comment'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['comment'])?>" />
         </td>
         <?php } else { ?>
         <td class="label nobr"></td>
@@ -683,7 +683,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['uploaded']==='between') {
+            <option value="between" <?php if ($_GET['uploaded'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -693,9 +693,9 @@ foreach ($Secondaries as $Class) {
             </option>
           </select>
           <input type="text" name="uploaded1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['uploaded1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['uploaded1'])?>" />
           <input type="text" name="uploaded2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['uploaded2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['uploaded2'])?>" />
         </td>
         <td class="label nobr">Warned:</td>
         <td>
@@ -704,7 +704,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['warned']==='yes') {
+            <option value="yes" <?php if ($_GET['warned'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -732,15 +732,15 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['invites']==='between') {
+            <option value="between" <?php if ($_GET['invites'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
           </select>
           <input type="text" name="invites1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['invites1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['invites1'])?>" />
           <input type="text" name="invites2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['invites2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['invites2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Units are in gibibytes (the base 2 sibling of gigabytes)">Downloaded:</td>
         <td width="30%">
@@ -757,16 +757,16 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if ($_GET['downloaded']==='between') {
+            <option value="between" <?php if ($_GET['downloaded'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>
               >Between
             </option>
           </select>
           <input type="text" name="downloaded1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['downloaded1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['downloaded1'])?>" />
           <input type="text" name="downloaded2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['downloaded2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['downloaded2'])?>" />
         </td>
         <td class="label tooltip nobr" title="Only display users that have a disabled account linked by IP address">
           <label for="disabled_ip">Disabled accounts<br>linked by IP:</label>
@@ -786,7 +786,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if ($_GET['disabled_invites']==='yes') {
+            <option value="yes" <?php if ($_GET['disabled_invites'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -811,7 +811,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Below
             </option>
-            <option value="between" <?php if (isset($_GET['snatched']) && $_GET['snatched']==='between') {
+            <option value="between" <?php if (isset($_GET['snatched']) && $_GET['snatched'] === 'between') {
                 echo ' selected="selected"' ;
             } ?>>Between
             </option>
@@ -821,9 +821,9 @@ foreach ($Secondaries as $Class) {
             </option>
           </select>
           <input type="text" name="snatched1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['snatched1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['snatched1'])?>" />
           <input type="text" name="snatched2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['snatched2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['snatched2'])?>" />
         </td>
         <td class="label nobr">Disabled uploads:</td>
         <td>
@@ -832,7 +832,7 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Any
             </option>
-            <option value="yes" <?php if (isset($_GET['disabled_uploads']) && $_GET['disabled_uploads']==='yes') {
+            <option value="yes" <?php if (isset($_GET['disabled_uploads']) && $_GET['disabled_uploads'] === 'yes') {
                 echo ' selected="selected"' ;
             } ?>>Yes
             </option>
@@ -859,19 +859,19 @@ foreach ($Secondaries as $Class) {
             </option>
           </select>
           <input type="text" name="invitees1" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['invitees1'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['invitees1'])?>" />
           <input type="text" name="invitees2" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['invitees2'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['invitees2'])?>" />
         </td>
         <td class="label nobr">Passkey:</td>
         <td>
           <input type="text" name="passkey" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['passkey'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['passkey'])?>" />
         </td>
         <td class="label nobr">Tracker IP:</td>
         <td>
           <input type="text" name="tracker_ip" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['tracker_ip'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['tracker_ip'])?>" />
         </td>
       </tr>
 
@@ -881,7 +881,7 @@ foreach ($Secondaries as $Class) {
           Avatar URL:</td>
         <td>
           <input type="text" name="avatar" size="20"
-            value="<?=\Gazelle\Text::esc($_GET['avatar'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['avatar'])?>" />
         </td>
         <td class="label nobr">Stylesheet:</td>
         <td>
@@ -889,7 +889,7 @@ foreach ($Secondaries as $Class) {
             <option value="">Any</option>
             <?php foreach ($Stylesheets as $Style) { ?>
             <option value="<?=$Style['ID']?>"
-              <?Format::selected('stylesheet', $Style['ID'])?>><?=$Style['ProperName']?>
+              <?Gazelle\Format::selected('stylesheet', $Style['ID'])?>><?=$Style['ProperName']?>
             </option>
             <?php } ?>
           </select>
@@ -901,14 +901,14 @@ foreach ($Secondaries as $Class) {
                 echo ' selected="selected"';
             } ?>>Equals
             </option>
-            <option value="not_equal" <?php if ($_GET['cc_op']==='not_equal') {
+            <option value="not_equal" <?php if ($_GET['cc_op'] === 'not_equal') {
                 echo ' selected="selected"' ;
             } ?>>Not
               equal
             </option>
           </select>
           <input type="text" name="cc" size="2"
-            value="<?=\Gazelle\Text::esc($_GET['cc'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['cc'])?>" />
         </td>
       </tr>
 
@@ -917,7 +917,7 @@ foreach ($Secondaries as $Class) {
         <td>
           <ul class="options_list nobullet">
             <li>
-              <input type="radio" name="matchtype" id="strict_match_type" value="strict" <?php if ($_GET['matchtype']=='strict' || !$_GET['matchtype']) {
+              <input type="radio" name="matchtype" id="strict_match_type" value="strict" <?php if ($_GET['matchtype'] == 'strict' || !$_GET['matchtype']) {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip"
@@ -925,7 +925,7 @@ foreach ($Secondaries as $Class) {
                 for="strict_match_type">Strict</label>
             </li>
             <li>
-              <input type="radio" name="matchtype" id="fuzzy_match_type" value="fuzzy" <?php if ($_GET['matchtype']=='fuzzy' || !$_GET['matchtype']) {
+              <input type="radio" name="matchtype" id="fuzzy_match_type" value="fuzzy" <?php if ($_GET['matchtype'] == 'fuzzy' || !$_GET['matchtype']) {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip"
@@ -933,7 +933,7 @@ foreach ($Secondaries as $Class) {
                 for="fuzzy_match_type">Fuzzy</label>
             </li>
             <li>
-              <input type="radio" name="matchtype" id="regex_match_type" value="regex" <?php if ($_GET['matchtype']=='regex') {
+              <input type="radio" name="matchtype" id="regex_match_type" value="regex" <?php if ($_GET['matchtype'] == 'regex') {
                   echo ' checked="checked"' ;
               } ?> />
               <label class="tooltip" title="A &quot;regex&quot; search uses MySQL's regular expression syntax."
@@ -947,7 +947,7 @@ foreach ($Secondaries as $Class) {
             <?php
                         foreach (array_shift($OrderVals) as $Cur) { ?>
             <option value="<?=$Cur?>" <?php if (isset($_GET['order']) &&
-                          $_GET['order']==$Cur || (!isset($_GET['order']) && $Cur=='Joined')) {
+                          $_GET['order'] == $Cur || (!isset($_GET['order']) && $Cur == 'Joined')) {
                 echo ' selected="selected"' ;
             } ?>
               ><?=$Cur?>
@@ -957,7 +957,7 @@ foreach ($Secondaries as $Class) {
           <select name="way">
             <?php foreach (array_shift($WayVals) as $Cur) { ?>
             <option value="<?=$Cur?>" <?php if (isset($_GET['way']) &&
-              $_GET['way']==$Cur || (!isset($_GET['way']) && $Cur=='Descending')) {
+              $_GET['way'] == $Cur || (!isset($_GET['way']) && $Cur == 'Descending')) {
                 echo ' selected="selected"' ;
             } ?>
               ><?=$Cur?>
@@ -968,21 +968,21 @@ foreach ($Secondaries as $Class) {
         <td class="label nobr"># of emails:</td>
         <td>
           <select name="emails_opt">
-            <option value="equal" <?php if ($_GET['emails_opt']==='equal') {
+            <option value="equal" <?php if ($_GET['emails_opt'] === 'equal') {
                 echo ' selected="selected"' ;
             } ?>>Equal
             </option>
-            <option value="above" <?php if ($_GET['emails_opt']==='above') {
+            <option value="above" <?php if ($_GET['emails_opt'] === 'above') {
                 echo ' selected="selected"' ;
             } ?>>Above
             </option>
-            <option value="below" <?php if ($_GET['emails_opt']==='below') {
+            <option value="below" <?php if ($_GET['emails_opt'] === 'below') {
                 echo ' selected="selected"' ;
             } ?>>Below
             </option>
           </select>
           <input type="text" name="email_cnt" size="6"
-            value="<?=\Gazelle\Text::esc($_GET['email_cnt'])?>" />
+            value="<?=Gazelle\Text::esc($_GET['email_cnt'])?>" />
         </td>
       </tr>
       <tr>
@@ -998,18 +998,18 @@ if ($RunQuery) {
     if (!empty($_GET['ip'])) {
         $app->dbOld->query("SELECT ID, IP FROM users_main");
         while (list($ID, $EncIP) = $app->dbOld->next_record()) {
-            $IPs[] = $ID.", '".Crypto::decrypt($EncIP)."'";
+            $IPs[] = $ID . ", '" . Gazelle\Crypto::decrypt($EncIP) . "'";
         }
         $app->dbOld->query("CREATE TEMPORARY TABLE users_ips_decrypted (ID INT(10) UNSIGNED NOT NULL, IP VARCHAR(45) NOT NULL, PRIMARY KEY (ID,IP)) ENGINE=MEMORY");
-        $app->dbOld->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(".implode("),(", $IPs).")");
+        $app->dbOld->query("INSERT IGNORE INTO users_ips_decrypted (ID, IP) VALUES(" . implode("),(", $IPs) . ")");
     }
     if (!empty($_GET['email'])) {
         $app->dbOld->query("SELECT ID, Email FROM users_main");
         while (list($ID, $EncEmail) = $app->dbOld->next_record()) {
-            $Emails[] = $ID.", '".Crypto::decrypt($EncEmail)."'";
+            $Emails[] = $ID . ", '" . Gazelle\Crypto::decrypt($EncEmail) . "'";
         }
         $app->dbOld->query("CREATE TEMPORARY TABLE users_emails_decrypted (ID INT(10) UNSIGNED NOT NULL, Email VARCHAR(255) NOT NULL, PRIMARY KEY (ID,Email)) ENGINE=MEMORY");
-        $app->dbOld->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(".implode("),(", $Emails).")");
+        $app->dbOld->query("INSERT IGNORE INTO users_emails_decrypted (ID, Email) VALUES(" . implode("),(", $Emails) . ")");
     }
     $Results = $app->dbOld->query($SQL);
     $app->dbOld->query('SELECT FOUND_ROWS()');
@@ -1028,12 +1028,12 @@ if ($RunQuery) {
 ?>
 <div class="linkbox">
   <?php
-$Pages = Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 11);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, USERS_PER_PAGE, 11);
 echo $Pages;
 ?>
 </div>
 <div class="box pad center">
-  <h2><?=\Gazelle\Text::float($NumResults)?> results</h2>
+  <h2><?=Gazelle\Text::float($NumResults)?> results</h2>
   <table width="100%">
     <tr class="colhead">
       <td>Username</td>
@@ -1053,24 +1053,24 @@ echo $Pages;
     </tr>
     <?php
 while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $Class, $Email, $Enabled, $IP, $Invites, $DisableInvites, $Warned, $Donor, $JoinDate, $LastAccess) = $app->dbOld->next_record()) {
-    $IP = apcu_exists('DBKEY') ? Crypto::decrypt($IP) : '[Encrypted]';
-    $Email = apcu_exists('DBKEY') ? Crypto::decrypt($Email) : '[Encrypted]'; ?>
+    $IP = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($IP) : '[Encrypted]';
+    $Email = apcu_exists('DBKEY') ? Gazelle\Crypto::decrypt($Email) : '[Encrypted]'; ?>
     <tr>
       <td><?=User::format_username($UserID, true, true, true, true)?>
       </td>
-      <td><?=Format::get_ratio_html($Uploaded, $Downloaded)?>
+      <td><?=Gazelle\Format::get_ratio_html($Uploaded, $Downloaded)?>
       </td>
-      <td style="word-break: break-all;"><?=\Gazelle\Text::esc($IP)?>
+      <td style="word-break: break-all;"><?=Gazelle\Text::esc($IP)?>
       </td>
-      <td><?=\Gazelle\Text::esc($Email)?>
+      <td><?=Gazelle\Text::esc($Email)?>
       </td>
       <td><?=time_diff($JoinDate)?>
       </td>
       <td><?=time_diff($LastAccess)?>
       </td>
-      <td><?=Format::get_size($Uploaded)?>
+      <td><?=Gazelle\Format::get_size($Uploaded)?>
       </td>
-      <td><?=Format::get_size($Downloaded)?>
+      <td><?=Gazelle\Format::get_size($Downloaded)?>
       </td>
       <?php $app->dbOld->query("
         SELECT COUNT(ud.UserID)
@@ -1079,19 +1079,19 @@ while (list($UserID, $Username, $Uploaded, $Downloaded, $Snatched, $Invitees, $C
         WHERE ud.UserID = $UserID");
     list($Downloads) = $app->dbOld->next_record();
     $app->dbOld->set_query_id($Results); ?>
-      <td><?=\Gazelle\Text::float((int)$Downloads)?>
+      <td><?=Gazelle\Text::float((int) $Downloads)?>
       </td>
-      <td><?=(is_numeric($Snatched) ? \Gazelle\Text::float($Snatched) : \Gazelle\Text::esc($Snatched))?>
+      <td><?=(is_numeric($Snatched) ? Gazelle\Text::float($Snatched) : Gazelle\Text::esc($Snatched))?>
       </td>
       <td>
         <?php if ($DisableInvites) {
             echo 'X';
         } else {
-            echo \Gazelle\Text::float($Invites);
+            echo Gazelle\Text::float($Invites);
         } ?>
       </td>
       <?php if (isset($_GET['invitees']) && $_GET['invitees'] != 'off') { ?>
-      <td><?=\Gazelle\Text::float($Invitees)?>
+      <td><?=Gazelle\Text::float($Invitees)?>
       </td>
       <?php } ?>
     </tr>

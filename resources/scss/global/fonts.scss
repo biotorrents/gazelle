@@ -1,6 +1,11 @@
 /**
  * font size wrappers
  */
+
+.xx-small {
+  font-size: xx-small;
+}
+
 .x-small {
   font-size: x-small;
 }
@@ -21,6 +26,10 @@
   font-size: x-large;
 }
 
+.xx-large {
+  font-size: xx-large;
+}
+
 /* search results */
 .torrentTitle {
   font-size: larger;
@@ -31,7 +40,7 @@
  */
 
 .center {
-  margin: auto;
+  /* margin: auto; */
   text-align: center;
   vertical-align: middle;
 }
@@ -60,11 +69,24 @@
   text-align: center;
 }
 
+/* https://moderncss.dev/generating-font-size-css-rules-and-creating-a-fluid-type-scale/ */
+p,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
 /**
  * wikipedia-style external links
  */
 a.external {
-  background-image: url("/images/symbols/external-link-ltr-icon.svg");
+  background-image: url("/images/icons/externalLink.svg");
   background-position: center right;
   background-repeat: no-repeat;
   padding-right: 13px;

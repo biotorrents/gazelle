@@ -7,32 +7,32 @@ $TorrentID = (int) $_GET['id'];
 $TorrentHash = (string) $_GET['hash'];
 
 if ($TorrentID && $TorrentHash) {
-    json_die('failure', 'bad parameters');
+    \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
 if ($TorrentHash) {
     if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
-        json_die('failure', 'bad hash parameter');
+        \Gazelle\Api\Base::failure(400, 'bad hash parameter');
     } else {
         $TorrentID = (int) TorrentFunctions::torrenthash_to_torrentid($TorrentHash);
         if (!$TorrentID) {
-            json_die('failure', 'bad hash parameter');
+            \Gazelle\Api\Base::failure(400, 'bad hash parameter');
         }
     }
 }
 
 if ($TorrentID <= 0) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 $TorrentCache = TorrentFunctions::get_torrent_info($TorrentID, true, 0, true, true);
 if (!$TorrentCache) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 list($TorrentDetails, $TorrentList) = $TorrentCache;
 if (!isset($TorrentList[$TorrentID])) {
-    json_die('failure', 'bad id parameter');
+    \Gazelle\Api\Base::failure(400, 'bad id parameter');
 }
 
 $GroupID = $TorrentDetails['ID'];
@@ -102,4 +102,4 @@ $JsonTorrentList[] = [
   'username'    => ($Torrent['Anonymous'] ? 'Anonymous' : $Userinfo['Username'])
 ];
 
-json_die('success', ['group' => $JsonTorrentDetails, 'torrent' => array_pop($JsonTorrentList)]);
+\Gazelle\Api\Base::success(200, ['group' => $JsonTorrentDetails, 'torrent' => array_pop($JsonTorrentList)]);

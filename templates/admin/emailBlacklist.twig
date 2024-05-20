@@ -1,0 +1,82 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Email blacklist</h2>
+
+	{# search #}
+	<section>
+		<form method="get" class="flexRow">
+  			<input type="text" name="search" value="{{ search }}" placeholder="Email address, domain, or comment" style="flex-grow: 666;">
+  			<input type="submit" class="button-primary" value="search">
+		</form>
+	</section>
+
+	{# add to blacklist #}
+	<section>
+	<h3>Add to the blacklist</h3>
+	<form method="post" class="flexRow">
+
+		{{ form_token(query.server.REQUEST_URI) }}
+
+		<input type="hidden" name="create" value="create">
+		<input type="text" name="email" placeholder="Email or domain" required>
+		<input type="text" name="comment" placeholder="Comments for this entry" style="flex-grow: 666;">
+		<input type="submit" name="create" class="button-primary" value="create">
+
+	</form>
+	</section>
+
+
+
+	{# manage blacklist #}
+	<section>
+		<h3>Manage the blacklist</h3>
+
+		<table data-sortable>
+
+			<thead>
+			<tr>
+				<th>Entry</th>
+				<th>Comment</th>
+				<th>Added</th>
+				<th>Actions</th>
+			</tr>
+			</thead>
+
+			<tbody>
+
+			{% for item in data %}
+				<form method="post">
+
+					{{ form_token(query.server.REQUEST_URI) }}
+
+					<input type="hidden" name="uuid" value="{{ item.uuid }}">
+
+					<tr>
+						<td><input type="text" name="email" value="{{ item.Email }}" required></td>
+						<td><input type="text" name="comment" value="{{ item.Comment }}"></td>
+						<td><span class="tooltip" title="{{ item.Time }}">{{ item.Time|relativeTime }}</span></td>
+						<td class="flexRow">
+							<input type="submit" name="update" class="button-orange" value="update">
+							<input type="submit" name="delete" class="button-red" value="delete">
+						</td>
+					</tr>
+
+				</form>
+
+			{% endfor %}
+
+			</tbody>
+
+		</table>
+	</section>
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{{ include("admin/sidebar.twig") }}
+
+{% endblock %}

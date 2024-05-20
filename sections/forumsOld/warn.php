@@ -1,13 +1,13 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-if (!check_perms('users_warn')) {
+if ($app->user->cant(["admin" => "warnUsers"])) {
     error(404);
 }
 
-Http::assertRequest($_POST, array('postid', 'userid', 'key'));
+Gazelle\Http::assertRequest($_POST, array('postid', 'userid', 'key'));
 $PostID = (int) $_POST['postid'];
 $UserID = (int) $_POST['userid'];
 $Key = (int) $_POST['key'];
@@ -56,7 +56,7 @@ View::header('Warn');
               <option value="1">1 week</option>
               <option value="2">2 weeks</option>
               <option value="4">4 weeks</option>
-              <?php if (check_perms('users_mod')) { ?>
+              <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
               <option value="8">8 weeks</option>
               <?php } ?>
             </select>

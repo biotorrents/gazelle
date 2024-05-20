@@ -4,7 +4,7 @@
 	{% if user.siteOptions.coverArtTorrents %}
 		{% set uri = processImage(groupDetails.picture, "thumb") %}
 	{% else %}
-		{% set uri = processImage("#{env.staticServer}/images/noartwork.png", "thumb") %}
+		{% set uri = processImage("#{env.staticServer}/images/noartwork.webp", "thumb") %}
 	{% endif %}
 
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
@@ -29,7 +29,7 @@
 
 
     {# add new picture #}
-    {% if can("site_edit_wiki") %}
+    {% if can({"torrentGroups": "updateAny"}) %}
     <form>
         <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -106,7 +106,7 @@
 					          <ul class="stats nobullet">
 					            <li>
 					              <?=$Summary?>
-					              <?=(check_perms('users_mod') ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
+					              <?=($app->user->can(["admin" => "moderateUsers"]) ? ' added by ' . User::format_username($AddedBy, false, false, false, false, false) : '')?>
 					              <span class="remove remove_cover_art"><a href="#"
 					                  onclick="if (confirm('Do not delete useful alternative pictures. Are you sure you want to delete this picture?') === true) { ajax.get('torrents.php?action=remove_cover_art&amp;auth=<?=$user['AuthKey']?>&amp;id=<?=$ImageID?>&amp;groupid=<?=$GroupID?>'); this.parentNode.parentNode.parentNode.style.display = 'none'; this.parentNode.parentNode.parentNode.previousElementSibling.style.display = 'none'; } else { return false; }"
 					                  class="brackets tooltip" title="Remove image">X</a></span>
@@ -136,7 +136,7 @@
 
 {#
 		{# add new request # }
-		{% if can("site_submit_requests") %}
+		{% if can({"requests": "create"}) %}
 			<a class="button button-green" href="/requests.php?action=new&groupid={{ groupId }}">new request</a>
 		{% endif %}
 #}
@@ -151,12 +151,12 @@
 		<hr />
 
 		{# edit group #}
-		{% if can("site_edit_wiki") %}
+		{% if can({"torrentGroups": "updateAny"}) %}
 			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
 		{% endif %}
 
 		{# use this revision #}
-		{% if revisionId != 0 and can("site_edit_wiki") %}
+		{% if revisionId != 0 and can({"torrentGroups": "updateAny"}) %}
 			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
 		{% endif %}
 
@@ -185,10 +185,10 @@
 <th>{{ displayCreator(item) }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
-
-<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
-
+{% if can({"torrentGroups": "updateAny", "creators": "deleteAny"}) %}
+	<a id="deleteCreatorFromTorrent" class="conversationButton tooltip" title="delete" data-creatorid={{ item.id }}>
+		<i class="fa-thin fa-trash" data-creatorid={{ item.id }}></i>
+	</a>
 {% endif %}
 </td>
 </tr>
@@ -197,7 +197,7 @@
 </table>
 
 {# add new #}
-{% if can("torrents_add_artist") %}
+{% if can({"torrentGroups": "updateAny", "creators": "create"}) %}
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -223,8 +223,10 @@
 <th>{{ item.name }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
+	<a id="deleteGroupTag" class="conversationButton tooltip deleteGroupTag" title="delete" data-tagid={{ item.id }} data-groupid={{ groupId }}>
+		<i class="fa-thin fa-trash" data-tagid={{ item.id }} data-groupid={{ groupId }}></i>
+	</a>
 {% endif %}
 
 </td>
@@ -241,8 +243,10 @@
 <th class="openaiTorrentTag">{{ item.name }}</th>
 
 <td class="right">
-{% if can("torrents_edit") %}
-<a id="deleteTagFromTorrent" data-tagId={{ item.id }} class="button">delete</a>
+{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
+	<a id="deleteGroupTag" class="conversationButton tooltip deleteGroupTag" title="delete" data-tagid={{ item.id }} data-groupid={{ groupId }}>
+		<i class="fa-thin fa-trash" data-tagid={{ item.id }} data-groupid={{ groupId }}></i>
+	</a>
 {% endif %}
 
 </td>
@@ -255,11 +259,17 @@
 </table>
 
 {# add new #}
-<form>
-<input type="hidden" name="groupId" value="{{ groupId }}">
+<form method="post" action="/torrents.php?id=64&action=add_tag">
 
-<input type="text" id="tagName" placeholder="e.g., {{ randomTag() }}">
+<select class="select" placeholder="e.g., {{ randomTag() }}" multiple>
 
-<a class="button button-primary" id="addNewTag">new tag</a>
+{% for item in officialTags %}
+<option name="tagIds[]" value="{{ item.ID }}">{{ item.Name }}</option>
+{% endfor %}
+
+</select>
+
+<input type="submit" value="add tags" class="button button-primary">
+
 </form>
 </section>

@@ -5,7 +5,7 @@
  * todo: I'm not writing documentation for this page until I write this page >.>
  */
 
-if (!check_perms('admin_reports')) {
+if ($app->user->cant(["admin" => "reports"])) {
     error(403);
 }
 

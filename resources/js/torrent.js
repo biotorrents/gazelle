@@ -123,4 +123,36 @@
       });
     }
   });
+
+
+  /**
+   * delete tag from torrent group
+   */
+  $(".deleteGroupTag").on("click", (event) => {
+    // the data to send
+    var request = {
+      groupId: $(event.target).data("groupid"),
+      tagIds: [$(event.target).data("tagid")],
+    };
+
+    // ajax request
+    $.ajax("/api/internal/deleteGroupTags", {
+      method: "POST",
+      headers: { "Authorization": "Bearer " + frontendHash },
+
+      contentType: "application/vnd.api+json",
+      dataType: "json",
+
+      data: JSON.stringify(request),
+
+      success: (response) => {
+        // hide the enclosing tr
+        $(event.target.parentElement.parentElement).hide();
+      },
+
+      error: (response) => {
+        console.log(response);
+      },
+    });
+  });
 })();

@@ -2,11 +2,11 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
 
-$CollageID = $_POST['collageid'];
+
+$CollageID = $_POST['collageId'];
 if (!is_numeric($CollageID)) {
     error(404);
 }
@@ -16,7 +16,7 @@ $app->dbOld->query("
   FROM collages
   WHERE ID = '$CollageID'");
 list($UserID, $CategoryID) = $app->dbOld->next_record();
-if ($CategoryID === '0' && $UserID != $app->user->core['id'] && !check_perms('site_collages_delete')) {
+if ($CategoryID === '0' && $UserID != $app->user->core['id'] && $app->user->cant(["collages" => "updateAny"])) {
     error(403);
 }
 
@@ -74,4 +74,4 @@ if ($_POST['submit'] === 'Remove') {
 }
 
 $app->cache->delete("collage_$CollageID");
-Http::redirect("collages.php?action=manage&collageid=$CollageID");
+Gazelle\Http::redirect("collages.php?action=manage&collageId=$CollageID");

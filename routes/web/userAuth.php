@@ -9,10 +9,10 @@ declare(strict_types=1);
 
 # login
 Flight::route("/login", function () {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     if ($app->user->isLoggedIn()) {
-        Http::redirect();
+        Gazelle\Http::redirect();
     } else {
         require_once "{$app->env->serverRoot}/sections/user/auth/login.php";
     }
@@ -21,17 +21,17 @@ Flight::route("/login", function () {
 
 # disabled
 Flight::route("/disabled", function () {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/disabled.php";
 });
 
 
 # enable: todo
 Flight::route("/enable/@token", function (string $token) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     if (isset($app->user->core["id"]) || !isset($token) || !$app->env->FEATURE_EMAIL_REENABLE) {
-        Http::redirect();
+        Gazelle\Http::redirect();
     }
 
     if (isset($token)) {
@@ -46,7 +46,7 @@ Flight::route("/enable/@token", function (string $token) {
 
 # recover
 Flight::route("/recover(/@selector(/@token))", function (?string $selector, ?string $token) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/recover.php";
 });
 
@@ -58,27 +58,27 @@ Flight::route("/logout", function () {
     $auth->logout();
 
     # send to login
-    Http::redirect("login");
+    Gazelle\Http::redirect("login");
 });
 
 
 # register
 Flight::route("/register(/@invite)", function ($invite) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/register.php";
 });
 
 
 # confirm email
 Flight::route("/confirm/@selector/@token", function (string $selector, string $token) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/confirm.php";
 });
 
 
 # resend confirmation email
 Flight::route("/resend/@identifier", function ($identifier) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
     require_once "{$app->env->serverRoot}/sections/user/auth/resend.php";
 });
 
@@ -86,7 +86,7 @@ Flight::route("/resend/@identifier", function ($identifier) {
 /*
 # pwgen
 Flight::route("/pwgen(/@method)", function ($method) {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     if ($method === "diceware") {
         header("Content-Type: text/plain; charset=utf-8");
@@ -105,7 +105,7 @@ Flight::route("/pwgen(/@method)", function ($method) {
 # https://meta.discourse.org/t/discourseconnect-official-single-sign-on-for-discourse-sso/13045
 # e.g., https://somesite.com/sso?sso=PAYLOAD&sig=SIG
 Flight::route("/discourse?sso=@payload&sig=@signature", function () {
-    $app = \Gazelle\App::go();
+    $app = Gazelle\App::go();
 
     if ($app->env->enableDiscourse === true) {
         require_once "{$app->env->serverRoot}/sections/social/discourseConnect.php";

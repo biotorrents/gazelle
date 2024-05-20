@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $group_id = (int) $_REQUEST['groupid'];
-Security::int($group_id);
 
 // Usual perm checks
-if (!check_perms('torrents_edit')) {
+if ($app->user->cant(["torrents" => "updateAny"])) {
     $app->dbOld->prepared_query("
     SELECT
       `UserID`
@@ -27,7 +26,7 @@ if (!check_perms('torrents_edit')) {
 }
 
 # ?
-if (check_perms('torrents_freeleech')
+if ($app->user->can(["admin" => "freeleechTorrents"])
     && (isset($_POST['freeleech'])
         xor isset($_POST['neutralleech'])
         xor isset($_POST['unfreeleech']))) {
@@ -53,7 +52,7 @@ $Artists = $_POST['idols'];
 // Escape fields
 $workgroup = db_string($_POST['studio']);
 $location = db_string($_POST['series']);
-$year = db_string((int)$_POST['year']);
+$year = db_string((int) $_POST['year']);
 $identifier = db_string($_POST['catalogue']);
 
 // Get some info for the group log
@@ -147,7 +146,7 @@ foreach ($Artists as $Artist) {
           `UserID` = '{$app->user->core['id']}'
         "); // Why does this even happen
 
-        $app->cache->delete('artist_groups_'.$ArtistID);
+        $app->cache->delete('artist_groups_' . $ArtistID);
     }
 }
 
@@ -188,7 +187,7 @@ foreach ($CurrArtists as $CurrArtist) {
             ");
 
 
-            $app->cache->delete('artist_groups_'.$ArtistID);
+            $app->cache->delete('artist_groups_' . $ArtistID);
 
             if (!$app->dbOld->has_results()) {
                 $app->dbOld->prepared_query("
@@ -226,4 +225,4 @@ while (list($TorrentID) = $app->dbOld->next_record()) {
 
 Torrents::update_hash($group_id);
 $app->cache->delete("torrents_details_$group_id");
-Http::redirect("torrents.php?id=$group_id");
+Gazelle\Http::redirect("torrents.php?id=$group_id");

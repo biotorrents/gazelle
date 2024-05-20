@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * New Staff PM conversation backend
@@ -31,8 +31,8 @@ if ($Message = db_string($_POST['message'])) {
         ({$app->user->core['id']}, NOW(), '$Message', $ConvID)"
         );
 
-        Http::redirect("staffpm.php");
-    } elseif ($ConvID = (int)$_POST['convid']) {
+        Gazelle\Http::redirect("staffpm.php");
+    } elseif ($ConvID = (int) $_POST['convid']) {
         // Check if conversation belongs to user
         $app->dbOld->query("
       SELECT UserID, AssignedToUser, Level
@@ -50,7 +50,7 @@ if ($Message = db_string($_POST['message'])) {
         INSERT INTO staff_pm_messages
           (UserID, SentDate, Message, ConvID)
         VALUES
-          (".$app->user->core['id'].", NOW(), '$Message', $ConvID)"
+          (" . $app->user->core['id'] . ", NOW(), '$Message', $ConvID)"
             );
 
             // Update conversation
@@ -77,19 +77,19 @@ if ($Message = db_string($_POST['message'])) {
             $app->cache->delete("staff_pm_new_$UserID");
             $app->cache->delete("staff_pm_new_{$app->user->core['id']}");
 
-            Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
+            Gazelle\Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
         } else {
             // User is trying to respond to conversation that does no belong to them
             error(403);
         }
     } else {
         // Message but no subject or conversation ID
-        Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
+        Gazelle\Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
     }
-} elseif ($ConvID = (int)$_POST['convid']) {
+} elseif ($ConvID = (int) $_POST['convid']) {
     // No message, but conversation ID
-    Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
+    Gazelle\Http::redirect("staffpm.php?action=viewconv&id=$ConvID");
 } else {
     // No message or conversation ID
-    Http::redirect("staffpm.php");
+    Gazelle\Http::redirect("staffpm.php");
 }

@@ -2,8 +2,8 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
-$ENV = ENV::go();
+$app = Gazelle\App::go();
+$ENV = Gazelle\ENV::go();
 
 if (!$UserCount = $app->cache->get('stats_user_count')) {
     $app->dbOld->query("
@@ -18,12 +18,12 @@ $UserID = $app->user->core['id'];
 
 if (!apcu_exists('DBKEY')) {
     error('Invites disabled until database decrypted');
-    Http::redirect("user.php?action=invite");
+    Gazelle\Http::redirect("user.php?action=invite");
     error();
 }
 
 // This is where we handle things passed to us
-authorize();
+
 
 $app->dbOld->query("
   SELECT can_leech
@@ -35,11 +35,11 @@ if ($app->user->extra['RatioWatch']
   || !$CanLeech
   || $app->user->extra['DisableInvites'] == '1'
   || $app->user->extra['Invites'] == 0
-  && !check_perms('site_send_unlimited_invites')
+  && $app->user->cant(["admin" => "unlimitedInvites"])
   || (
       $UserCount >= userLimit
     && userLimit != 0
-    && !check_perms('site_can_invite_always')
+    && $app->user->cant(["admin" => "alwaysInvite"])
   )
 ) {
     error(403);
@@ -50,10 +50,10 @@ $Username = $app->user->core['username'];
 $SiteName =  $ENV->siteName ;
 $SiteURL = site_url();
 $InviteExpires = time_plus(60 * 60 * 24 * 3); // 3 days
-$InviteReason = check_perms('users_invite_notes') ? db_string($_POST['reason']) : '';
+$InviteReason = $app->user->can(["userAccounts" => "updateAny"]) ? db_string($_POST['reason']) : '';
 
 //MultiInvite
-if (strpos($Email, '|') !== false && check_perms('site_send_unlimited_invites')) {
+if (strpos($Email, '|') !== false && $app->user->can(["admin" => "unlimitedInvites"])) {
     $Emails = explode('|', $Email);
 } else {
     $Emails = array($Email);
@@ -65,24 +65,24 @@ foreach ($Emails as $CurEmail) {
             continue;
         } else {
             error('Invalid email.');
-            Http::redirect("user.php?action=invite");
+            Gazelle\Http::redirect("user.php?action=invite");
             error();
         }
     }
     $app->dbOld->query("
     SELECT Email
     FROM invites
-    WHERE InviterID = ".$app->user->core['id']);
+    WHERE InviterID = " . $app->user->core['id']);
     if ($app->dbOld->has_results()) {
         while (list($MaybeEmail) = $app->dbOld->next_record()) {
-            if (Crypto::decrypt($MaybeEmail) == $CurEmail) {
+            if (Gazelle\Crypto::decrypt($MaybeEmail) == $CurEmail) {
                 error('You already have a pending invite to that address!');
-                Http::redirect("user.php?action=invite");
+                Gazelle\Http::redirect("user.php?action=invite");
                 error();
             }
         }
     }
-    $InviteKey = db_string(\Gazelle\Text::random());
+    $InviteKey = db_string(Gazelle\Text::random());
 
     $DisabledChan = DISABLED_CHAN;
     $IRCServer = BOT_SERVER;
@@ -108,9 +108,9 @@ EOT;
     INSERT INTO invites
       (InviterID, InviteKey, Email, Expires, Reason)
     VALUES
-      ('{$app->user->core['id']}', '$InviteKey', '".Crypto::encrypt($CurEmail)."', '$InviteExpires', '$InviteReason')");
+      ('{$app->user->core['id']}', '$InviteKey', '" . Gazelle\Crypto::encrypt($CurEmail) . "', '$InviteExpires', '$InviteReason')");
 
-    if (!check_perms('site_send_unlimited_invites')) {
+    if ($app->user->cant(["admin" => "unlimitedInvites"])) {
         $app->dbOld->query("
       UPDATE users_main
       SET Invites = GREATEST(Invites, 1) - 1
@@ -123,7 +123,7 @@ EOT;
           */
     }
 
-    \Gazelle\App::email($CurEmail, "You have been invited to $ENV->siteName", $Message);
+    $app->email($CurEmail, "You have been invited to $ENV->siteName", $Message);
 }
 
-Http::redirect("user.php?action=invite");
+Gazelle\Http::redirect("user.php?action=invite");

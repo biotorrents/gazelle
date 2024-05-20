@@ -2,15 +2,15 @@
 
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
+
 
 $ThreadID = $_GET['threadid'];
 $NewVote = $_GET['vote'];
 
 if (is_numeric($ThreadID) && is_numeric($NewVote)) {
-    if (!check_perms('site_moderate_forums')) {
+    if ($app->user->cant(["polls" => "updateAny"])) {
         $app->dbOld->query("
         SELECT
           `ForumID`
@@ -36,11 +36,11 @@ if (is_numeric($ThreadID) && is_numeric($NewVote)) {
       `Vote` = $NewVote
     WHERE
       `TopicID` = $ThreadID
-      AND `UserID` = ".$app->user->core['id']
+      AND `UserID` = " . $app->user->core['id']
     );
 
     $app->cache->delete("polls_$ThreadID");
-    Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
+    Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID");
 } else {
     error(404);
 }

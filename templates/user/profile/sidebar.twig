@@ -223,7 +223,7 @@
 
 
 {# moderator actions #}
-{% if can("users_mod") %}
+{% if can({"admin": "moderateUsers"}) %}
 	<section>
 
 		<h3>Moderate</h3>
@@ -233,47 +233,47 @@
 		<form>
 
 			{# go to staff tools #}
-			{% if can("users_mod") %}
+			{% if can({"admin": "moderateUsers"}) %}
 				<a href="#staffTools" class="button">staff tools</a>
 			{% endif %}
 
 			{# update settings #}
 			{# /user/edit/{{ userId }} #}
-			{% if can("users_edit_profiles") %}
+			{% if can({"userProfiles": "updateAny"}) %}
 				<a href="/user.php?action=edit&userid={{ userId }}" class="button">user settings</a>
 			{% endif %}
 
 			{# read invites #}
 			{# /user/invites/{{ userId }} #}
-			{% if can("users_view_invites") %}
+			{% if can({"admin": "readUserInvites"}) %}
 				<a href="/user.php?action=invite&userid={{ userId }}" class="button">invites</a>
 			{% endif %}
 
 			{# update permissions #}
 			{# /user/permissions/{{ userId }} #}
-			{% if can("admin_manage_permissions") %}
+			{% if can({"toolbox": "permissionsManager"}) %}
 				<a href="/user.php?action=permissions&userid={{ userId }}" class="button">permissions</a>
 			{% endif %}
 
 			{# read sessions #}
 			{# /user/sessions/{{ userId }} #}
-			{% if can("users_view_ips") %}
+			{% if can({"admin": "sensitiveUserData"}) %}
 				<a href="/user.php?action=sessions&userid={{ userId }}" class="button">sessions</a>
 			{% endif %}
 
 			{# read reports #}
 			{# /user/reports/{{ userId }} #}
-			{% if can("admin_reports") %}
+			{% if can({"admin": "reports"}) %}
 				<a href="/reportsv2.php?view=reporter&id={{ userId }}" class="button">reports</a>
 			{% endif %}
 
 			{# read freeleech token history #}
 			{# /user/history/{{ userId }} #}
-			{% if can("users_mod") %}
+			{% if can({"admin": "moderateUsers"}) %}
 				<a href="/userhistory.php?action=token_history&userid={{ userId }}" class="button">freeleech tokens</a>
 			{% endif %}
 
 		</form>
 	{% endif %}
-	{# if can("users_mod") #}
+	{# if can({"admin": "moderateUsers"}) #}
 </section>

@@ -7,11 +7,29 @@ declare(strict_types=1);
  * torrents
  */
 
-# browse
-Flight::route("POST /api/torrents/browse", ["Gazelle\API\Torrents", "browse"]);
+# create
+Flight::route("POST /api/torrents", ["Gazelle\Api\Torrents", "create"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["torrents" => "create"]);
+});
 
-# torrents
-Flight::route("POST /api/torrents", ["Gazelle\API\Torrents", "create"]);
-Flight::route("GET /api/torrents/@identifier", ["Gazelle\API\Torrents", "read"]);
-Flight::route("PATCH /api/torrents/@identifier", ["Gazelle\API\Torrents", "update"]);
-Flight::route("DELETE /api/torrents/@identifier", ["Gazelle\API\Torrents", "delete"]);
+
+# read
+Flight::route("GET /api/torrents/@identifier", ["Gazelle\Api\Torrents", "read"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["torrents" => "read"]);
+});
+
+
+# update
+Flight::route("PATCH /api/torrents/@identifier", ["Gazelle\Api\Torrents", "update"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["torrents" => "updateAny"]);
+});
+
+
+# delete
+Flight::route("DELETE /api/torrents/@identifier", ["Gazelle\Api\Torrents", "delete"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["torrents" => "deleteAny"]);
+});

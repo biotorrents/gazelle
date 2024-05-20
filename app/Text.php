@@ -18,8 +18,8 @@ namespace Gazelle;
 class Text
 {
     # cache settings
-    private static $cachePrefix = "text:";
-    private static $cacheDuration = "1 week";
+    private static string $cachePrefix = "text:";
+    private static string $cacheDuration = "1 week";
 
 
     /**
@@ -35,7 +35,7 @@ class Text
      */
     public static function parse(string $string, bool $safe = true): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("parse", "parse markdown text");
 
@@ -50,7 +50,7 @@ class Text
         # prepare clean escapes
         $string = self::esc($string);
 
-        # here's the magic pattern:
+        # here's the magic pattern
         if (!preg_match("/{$app->env->regexBBCode}/s", $string)) {
             # markdown
             $parsedown = new \ParsedownExtra();
@@ -89,7 +89,7 @@ class Text
      */
     private static function fixLinks(string $parsed): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $app->debug["time"]->startMeasure("process", "post-process text");
 
@@ -126,12 +126,13 @@ class Text
      * figlet
      *
      * Make a silly willy, goofery ballery.
-     * @see https://docs.laminas.dev/laminas-text/figlet/
      *
      * @param string $message the message to figlet
      * @param string $color the color of the figlet
      * @param string $font the font of the figlet
      * @return void
+     *
+     * @see https://docs.laminas.dev/laminas-text/figlet/
      */
     public static function figlet(string $message, string $color = "black", string $font = "small"): void
     {
@@ -232,11 +233,11 @@ class Text
      * Wrapper around number_format that casts to float.
      * Hopefully temporary until we clean up the data.
      *
-     * @see https://www.php.net/manual/en/function.number-format.php
-     *
      * @param mixed $number
      * @param int $decimals
      * @return float
+     *
+     * @see https://www.php.net/manual/en/function.number-format.php
      */
     public static function float(mixed $number, int $decimals = 2): float
     {
@@ -253,10 +254,11 @@ class Text
      * random
      *
      * Generate a more truly "random" alpha-numeric string.
-     * @see https://github.com/illuminate/support/blob/master/Str.php
      *
      * @param int $length
      * @return string
+     *
+     * @see https://github.com/illuminate/support/blob/master/Str.php
      */
     public static function random($length = 32): string
     {
@@ -306,7 +308,7 @@ class Text
      */
     public static function userGeneratedContent(string $string): string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         # escape the input
         $string = self::esc($string);
@@ -352,9 +354,35 @@ class Text
 
 
     /**
+     * excerpt
+     *
+     * Excerpts a string and returns plaintext (best effort).
+     *
+     * @param string $string string to cut
+     * @param int $words cut at length
+     * @param string $end end with this
+     * @return string formatted string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
+     */
+    public static function excerpt(string $value, int $words = 100, string $end = "..."): string
+    {
+        $string = \Illuminate\Support\Str::words($value, $words, $end);
+        $string = self::oneLine($string);
+        $string = self::parse($string);
+        $string = strip_tags($string);
+
+        return $string;
+    }
+
+
+    /**
      * isBinary
      *
      * I asked ChatGPT about this one.
+     *
+     * @param string $string
+     * @return bool
      */
     public static function isBinary(string $string): bool
     {
@@ -369,5 +397,35 @@ class Text
         }
 
         return false; # no binary characters found
+    }
+
+
+    /**
+     * camel
+     *
+     * @param string $string
+     * @return string
+     *
+     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_camel
+     */
+    public static function camel(string $string): string
+    {
+        return \Illuminate\Support\Str::camel($string);
+    }
+
+
+    /**
+     * unCamel
+     *
+     * Turns, e.g., "camelCaseString" into "Camel case string."
+     */
+    public static function unCamel(string $string): string
+    {
+        $string = preg_split("/(?=[A-Z])/", $string);
+        $string = implode(" ", $string);
+        $string = strtolower($string);
+        $string = ucfirst($string);
+
+        return $string;
     }
 } # class

@@ -16,18 +16,18 @@ namespace Gazelle;
 class Stats
 {
     # private values
-    private $baseUri = "";
-    private $siteId = "";
-    private $token = "";
+    private string $baseUri = "";
+    private string $siteId = "";
+    private string $token = "";
 
     # default options
-    private $limit = 10;
-    private $metrics = "visitors,pageviews,bounce_rate,visit_duration";
-    private $period = "30d";
+    private int $limit = 10;
+    private string $metrics = "visitors,pageviews,bounce_rate,visit_duration";
+    private string $period = "30d";
 
     # cache settings
-    private $cachePrefix = "stats:";
-    private $cacheDuration = "1 hour";
+    private string $cachePrefix = "stats:";
+    private string $cacheDuration = "1 hour";
 
 
     /**
@@ -35,11 +35,11 @@ class Stats
      */
     public function __construct()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $this->baseUri = $app->env->plausibleUri;
         $this->siteId = $app->env->siteDomain;
-        $this->token = $app->env->getPriv("plausibleKey");
+        $this->token = $app->env->private("plausibleKey");
     }
 
 
@@ -104,7 +104,7 @@ class Stats
      */
     public function overview(array $options = [])
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -134,7 +134,7 @@ class Stats
      */
     public function topPages(array $options = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -153,7 +153,7 @@ class Stats
 
         # entry_page
         $options["property"] = "visit:entry_page";
-        $entry_page= $this->export(
+        $entry_page = $this->export(
             $this->breakdown($options),
             "entry_page",
             "visitors"
@@ -183,7 +183,7 @@ class Stats
      */
     public function sources(array $options = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -194,7 +194,7 @@ class Stats
 
         # source
         $options["property"] = "visit:source";
-        $source= $this->export(
+        $source = $this->export(
             $this->breakdown($options),
             "source",
             "visitors"
@@ -222,7 +222,7 @@ class Stats
      */
     public function overTime(array $options = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -278,7 +278,7 @@ class Stats
      */
     public function locations(array $options = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -308,7 +308,7 @@ class Stats
      */
     public function devices(array $options = []): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -327,7 +327,7 @@ class Stats
 
         # browser
         $options["property"] = "visit:browser";
-        $browser= $this->export(
+        $browser = $this->export(
             $this->breakdown($options),
             "browser",
             "visitors"
@@ -424,7 +424,7 @@ class Stats
      */
     public function economyOverTime()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -517,7 +517,7 @@ class Stats
      */
     public function trackerEconomy(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -545,7 +545,7 @@ class Stats
         ];
 
         # secondary stats: averages
-        $users["averageRatio"] = \Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
+        $users["averageRatio"] = Format::get_ratio($torrents["totalUpload"], $torrents["totalDownload"]);
         $users["totalBuffer"] = $torrents["totalUpload"] - $torrents["totalDownload"];
         $users["averageBuffer"] = ($torrents["totalUpload"] - $torrents["totalDownload"]) / $users["count"];
 
@@ -646,7 +646,7 @@ class Stats
      */
     public function torrentsTimeline(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -694,7 +694,7 @@ class Stats
      */
     public function usersTimeline(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -742,7 +742,7 @@ class Stats
      */
     public function categoryDistribution(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -763,7 +763,7 @@ class Stats
 
         # get category names
         foreach ($categoryDistribution as $k => $v) {
-            $categoryDistribution[$k] = $app->env->CATS->$v->Name;
+            $categoryDistribution[$k] = $app->env->categories->where("id", $v)->value("title");
         }
 
         $categoryDistribution = array_flip($categoryDistribution);
@@ -779,7 +779,7 @@ class Stats
      */
     public function classDistribution(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -812,7 +812,7 @@ class Stats
      */
     public function databaseSpecifics(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -876,7 +876,7 @@ class Stats
      */
     public function activeUsers(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -927,7 +927,7 @@ class Stats
      */
     public function torrentAggregates(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -980,7 +980,7 @@ class Stats
      */
     public function trackerAggregates()
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $cacheKey = $this->cachePrefix . __FUNCTION__;
         $cacheHit = $app->cache->get($cacheKey);
@@ -1009,7 +1009,7 @@ class Stats
         $data["seederCount"] = $peerStats["seeding"][1] ?? 0;
         $data["leecherCount"] = $peerStats["leeching"][1] ?? 0;
         $data["peerCount"] = $data["seederCount"] + $data["leecherCount"];
-        $data["seederLeecherRatio"] = \Format::get_ratio($data["seederCount"], $data["leecherCount"]);
+        $data["seederLeecherRatio"] = Format::get_ratio($data["seederCount"], $data["leecherCount"]);
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);
         return $data;

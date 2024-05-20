@@ -1,0 +1,183 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<h2>Admin tools</h2>
+
+<p>Various tools to help manage the site.</p>
+
+
+<div id="adminGrid">
+
+
+{# administration #}
+<section>
+    <h3>Administration</h3>
+
+    <ul>
+        {% if can({"toolbox": "clientWhitelist"}) %}
+            <li><a href="/toolbox/clientWhitelist">Client whitelist</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "permissionsManager"}) %}
+            <li><a href="/toolbox/permissionsManager">Permissions manager</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "databaseKey"}) %} 
+            <li><a href="/toolbox/databaseKey">Database key</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# announcements #}
+<section>
+    <h3>Announcements</h3>
+
+    <ul>
+        {% if can({"toolbox": "globalNotifications"}) %}
+            <li><a href="/toolbox/globalNotifications">Global notifications</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "massPm"}) %}
+            <li><a href="/toolbox/massPm">Mass PM</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "newsPosts"}) %} 
+            <li><a href="/toolbox/newsPosts">News posts</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# community #}
+{#
+<section>
+    <h3>Community</h3>
+
+    <ul>
+        {% if can({"toolbox": "forumManager"}) %}
+            <li><a href="/toolbox/forumManager">Forum manager</a></li>
+        {% endif %}
+   </ul>
+</section>
+#}
+
+{# queue #}
+<section>
+    <h3>Queue</h3>
+
+    <ul>
+        {% if can({"toolbox": "autoEnableRequests"}) %}
+            <li><a href="/toolbox/autoEnableRequests">Auto-enable requests</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "loginWatch"}) %}
+            <li><a href="/toolbox/loginWatch">Login watch</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# managers #}
+<section>
+    <h3>Managers</h3>
+
+    <ul>
+        {% if can({"toolbox": "emailBlacklist"}) %}
+            <li><a href="/toolbox/emailBlacklist">Email blacklist</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "ipAddressBans"}) %}
+            <li><a href="/toolbox/ipAddressBans">IP address bans</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "manipulateInviteTree"}) %} 
+            <li><a href="/toolbox/manipulateInviteTree">Manipulate invite tree</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# development #}
+<section>
+    <h3>Development</h3>
+
+    <ul>
+        {% if can({"toolbox": "serviceStats"}) %}
+            <li><a href="/toolbox/serviceStats">Service stats</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "miscellaneousValues"}) %} 
+            <li><a href="/toolbox/miscellaneousValues">Miscellaneous values</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "trackerInformation"}) %} 
+            <li><a href="/toolbox/trackerInformation">Tracker information</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# site information #}
+<section>
+    <h3>Site information</h3>
+
+    <ul>
+        {% if can({"toolbox": "invitePool"}) %}
+            <li><a href="/toolbox/invitePool">Invite pool</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "registrationLog"}) %}
+            <li><a href="/toolbox/registrationLog">Registration log</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "upscalePool"}) %} 
+            <li><a href="/toolbox/upscalePool">Upscale pool</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+{# torrents #}
+<section>
+    <h3>Torrents</h3>
+
+    <ul>
+        {% if can({"toolbox": "collageRecovery"}) %}
+            <li><a href="/toolbox/collageRecovery">Collage recovery</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "freeleechTokenManager"}) %}
+            <li><a href="/toolbox/freeleechTokenManager">Freeleech token manager</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "multipleFreeleech"}) %} 
+            <li><a href="/toolbox/multipleFreeleech">Multiple freeleech</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "tagAliases"}) %} 
+            <li><a href="/toolbox/tagAliases">Tag aliases</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "batchTagEditor"}) %} 
+            <li><a href="/toolbox/batchTagEditor">Batch tag editor</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "officialTagsManager"}) %} 
+            <li><a href="/toolbox/officialTagsManager">Official tags manager</a></li>
+        {% endif %}
+
+        {% if can({"toolbox": "sitewideFreeleechManager"}) %} 
+            <li><a href="/toolbox/sitewideFreeleechManager">Sitewide freeleech manager</a></li>
+        {% endif %}
+    </ul>
+</section>
+
+
+</div>
+
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "admin/sidebar.twig" %}
+
+{% endblock %}

@@ -14,7 +14,7 @@
 
 <section>
     {# todo: style this table #}
-    <table id="friendsList">
+    <table id="friendsList" data-sortable>
         <tr>
             <th />
             <th>Username</th>
@@ -28,7 +28,7 @@
         {% if friends is empty %}
             <tr>
                 <td colspan="6">
-                    <p>You have no friends :(</p>
+                    <h3 class="center">You have no friends :(</h3>
                 </td>
             </tr>
         {% endif %}

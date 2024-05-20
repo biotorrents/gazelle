@@ -1,7 +1,7 @@
 <?php
 #declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /************************************************************************
 ||------------|| User IP history page ||---------------------------||
@@ -16,7 +16,7 @@ user.
 
 define('IPS_PER_PAGE', 25);
 
-if (!check_perms('users_mod')) {
+if ($app->user->cant(["admin" => "moderateUsers"])) {
     error(403);
 }
 
@@ -33,7 +33,7 @@ $app->dbOld->query("
   WHERE um.ID = $UserID");
 list($Username, $Class) = $app->dbOld->next_record();
 
-if (!check_perms('users_view_ips', $Class)) {
+if ($app->user->cant(["admin" => "sensitiveUserData"])) {
     error(403);
 }
 
@@ -47,12 +47,14 @@ View::header("Tracker IP address history for $Username");
   }
 </script>
 <?php
-list($Page, $Limit) = Format::page_limit(IPS_PER_PAGE);
+list($Page, $Limit) = Gazelle\Format::page_limit(IPS_PER_PAGE);
 
-$Perms = \Permissions::get_permissions_for_user($UserID);
+/*
+$Perms = Gazelle\Permissions::get_permissions_for_user($UserID);
 if ($Perms['site_disable_ip_history']) {
     $Limit = 0;
 }
+*/
 
 $TrackerIps = $app->dbOld->query("
   SELECT IP, fid, tstamp
@@ -66,7 +68,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($NumResults) = $app->dbOld->next_record();
 $app->dbOld->set_query_id($TrackerIps);
 
-$Pages = Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
+$Pages = Gazelle\Format::get_pages($Page, $NumResults, IPS_PER_PAGE, 9);
 
 ?>
 <div>
@@ -89,7 +91,7 @@ foreach ($Results as $Index => $Result) {
     <tr class="row">
       <td>
         <?=$IP?>
-        <a href="http://whatismyipaddress.com/ip/<?=\Gazelle\Text::esc($IP)?>"
+        <a href="http://whatismyipaddress.com/ip/<?=Gazelle\Text::esc($IP)?>"
           class="brackets tooltip" title="Search WIMIA.com">WI</a>
       </td>
       <td><a href="torrents.php?torrentid=<?=$TorrentID?>"><?=$TorrentID?></a></td>

@@ -2,7 +2,7 @@
 #declare(strict_types = 1);
 
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 
 // todo: Normalize thread_*_info don't need to waste all that ram on things that are already in other caches
@@ -29,7 +29,7 @@ if (!isset($_GET['threadid']) || !is_numeric($_GET['threadid'])) {
       WHERE ID = $_GET[postid]");
         list($ThreadID) = $app->dbOld->next_record();
         if ($ThreadID) {
-            Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
+            Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$ThreadID&postid=$_GET[postid]#post$_GET[postid]");
             error();
         } else {
             error(404);
@@ -63,8 +63,8 @@ if (!Forums::check_forumperm($ForumID)) {
     #error(403);
 }
 //Escape strings for later display
-$ThreadTitle = \Gazelle\Text::esc($ThreadInfo['Title']);
-$ForumName = \Gazelle\Text::esc($Forums[$ForumID]['Name']);
+$ThreadTitle = Gazelle\Text::esc($ThreadInfo['Title']);
+$ForumName = Gazelle\Text::esc($Forums[$ForumID]['Name']);
 
 //Post links utilize the catalogue & key params to prevent issues with custom posts per page
 if ($ThreadInfo['Posts'] > $PerPage) {
@@ -87,11 +87,11 @@ if ($ThreadInfo['Posts'] > $PerPage) {
 } else {
     $PostNum = 1;
 }
-list($Page, $Limit) = Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
+list($Page, $Limit) = Gazelle\Format::page_limit($PerPage, min($ThreadInfo['Posts'], $PostNum));
 if (($Page - 1) * $PerPage > $ThreadInfo['Posts']) {
     $Page = ceil($ThreadInfo['Posts'] / $PerPage);
 }
-list($CatalogueID, $CatalogueLimit) = Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
+list($CatalogueID, $CatalogueLimit) = Gazelle\Format::catalogue_limit($Page, $PerPage, THREAD_CATALOGUE);
 
 // Cache catalogue from which the page is selected, allows block caches and future ability to specify posts per page
 if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID")) {
@@ -107,19 +107,19 @@ if (!$Catalogue = $app->cache->get("thread_{$ThreadID}_catalogue_$CatalogueID"))
     FROM forums_posts AS p
       LEFT JOIN users_main AS ed ON ed.ID = p.EditedUserID
     WHERE p.TopicID = '$ThreadID'
-      AND p.ID != '".$ThreadInfo['StickyPostID']."'
+      AND p.ID != '" . $ThreadInfo['StickyPostID'] . "'
     LIMIT $CatalogueLimit");
     $Catalogue = $app->dbOld->to_array(false, MYSQLI_ASSOC);
     if (!$ThreadInfo['IsLocked'] || $ThreadInfo['IsSticky']) {
         $app->cache->set("thread_{$ThreadID}_catalogue_$CatalogueID", $Catalogue, 0);
     }
 }
-$Thread = Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
+$Thread = Gazelle\Format::catalogue_select($Catalogue, $Page, $PerPage, THREAD_CATALOGUE);
 $LastPost = end($Thread);
 $LastPost = $LastPost['ID'];
 $FirstPost = reset($Thread);
 $FirstPost = $FirstPost['ID'];
-if ($ThreadInfo['Posts'] <= $PerPage*$Page && $ThreadInfo['StickyPostID'] > $LastPost) {
+if ($ThreadInfo['Posts'] <= $PerPage * $Page && $ThreadInfo['StickyPostID'] > $LastPost) {
     $LastPost = $ThreadInfo['StickyPostID'];
 }
 
@@ -139,7 +139,7 @@ if ($LastRead < $LastPost) {
       INSERT INTO forums_last_read_topics
         (UserID, TopicID, PostID)
       VALUES
-        ('{$app->user->core['id']}', '$ThreadID', '".db_string($LastPost)."')
+        ('{$app->user->core['id']}', '$ThreadID', '" . db_string($LastPost) . "')
       ON DUPLICATE KEY UPDATE
         PostID = '$LastPost'");
 }
@@ -153,7 +153,7 @@ if (empty($UserSubscriptions)) {
 }
 
 if (in_array($ThreadID, $UserSubscriptions)) {
-    $app->cache->delete('subscriptions_user_new_'.$app->user->core['id']);
+    $app->cache->delete('subscriptions_user_new_' . $app->user->core['id']);
 }
 
 
@@ -172,9 +172,9 @@ if ($QuoteNotificationsCount === false || $QuoteNotificationsCount > 0) {
 
 // Start printing
 View::header(
-    $ThreadInfo['Title'].' &rsaquo; '.$Forums[$ForumID]['Name'].' &rsaquo; Forums',
+    $ThreadInfo['Title'] . ' &rsaquo; ' . $Forums[$ForumID]['Name'] . ' &rsaquo; Forums',
     'subscriptions,vendor/easymde.min',
-    ($IsDonorForum ?? 'donor,').'vendor/easymde.min'
+    ($IsDonorForum ?? 'donor,') . 'vendor/easymde.min'
 );
 ?>
 <div class="header">
@@ -239,7 +239,7 @@ View::header(
   </div>
 </div>
 <?php
-$Pages = Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
+$Pages = Gazelle\Format::get_pages($Page, $ThreadInfo['Posts'], $PerPage, 9);
 echo $Pages;
 
 if ($ThreadInfo['NoPoll'] == 0) {
@@ -285,7 +285,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
     $app->dbOld->prepared_query("
     SELECT Vote
     FROM forums_polls_votes
-    WHERE UserID = '".$app->user->core['id']."'
+    WHERE UserID = '" . $app->user->core['id'] . "'
       AND TopicID = '$ThreadID'");
     list($UserResponse) = $app->dbOld->next_record(); ?>
 <div class="box thin clear">
@@ -300,7 +300,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
   <div class="pad<?php if (/*$LastRead !== null || */$ThreadInfo['IsLocked']) {
       echo ' hidden';
   } ?>" id="threadpoll">
-    <p><strong><?=\Gazelle\Text::esc($Question)?></strong></p>
+    <p><strong><?=Gazelle\Text::esc($Question)?></strong></p>
     <?php if ($UserResponse !== null || $Closed || $ThreadInfo['IsLocked'] || !Forums::check_forumperm($ForumID)) { ?>
     <ul class="poll nobullet">
       <?php
@@ -314,7 +314,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
                     $Ratio = 0;
                     $Percent = 0;
                 } ?>
-      <li<?=((!empty($UserResponse)&&($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=\Gazelle\Text::esc($Answer)?> (<?=\Gazelle\Text::float($Percent * 100, 2)?>%)</li>
+      <li<?=((!empty($UserResponse) && ($UserResponse == $i)) ? ' class="poll_your_answer"' : '')?>><?=Gazelle\Text::esc($Answer)?> (<?=Gazelle\Text::float($Percent * 100, 2)?>%)</li>
         <li class="graph">
           <span class="center_poll"
             style="width: <?=round($Ratio * 750)?>px;"></span>
@@ -326,7 +326,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         <li>
           <?= ($UserResponse == '0' ? '&raquo;&nbsp;' : '') ?>
           (Blank)
-          (<?= \Gazelle\Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
+          (<?= Gazelle\Text::float((float) ($Votes[0] / $TotalVotes * 100), 2) ?>%)
         </li>
 
         <li class="graph">
@@ -339,11 +339,11 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </ul>
     <br>
 
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($TotalVotes)?><br><br>
+    <strong>Votes:</strong> <?=Gazelle\Text::float($TotalVotes)?><br><br>
     <?php
         } else {
             //Staff forum, output voters, not percentages
-            include(serverRoot.'/sections/staff/functions.php');
+            include(serverRoot . '/sections/staff/functions.php');
             $Staff = get_staff();
 
             $StaffNames = [];
@@ -376,9 +376,9 @@ if ($ThreadInfo['NoPoll'] == 0) {
           ?>
       <li>
         <a
-          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"><?=\Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
-        - <?=$StaffVotes[$i]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[$i] / $TotalVotes) * 100, 2)?>%)
-        <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int)$i?>"
+          href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"><?=Gazelle\Text::esc($Answer == '' ? 'Blank' : $Answer)?></a>
+        - <?=$StaffVotes[$i]?>&nbsp;(<?=Gazelle\Text::float(((float) $Votes[$i] / $TotalVotes) * 100, 2)?>%)
+        <a href="forums.php?action=delete_poll_option&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=<?=(int) $i?>"
           class="brackets tooltip" title="Delete poll option">X</a>
       </li>
       <?php
@@ -386,14 +386,14 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <li>
         <a
           href="forums.php?action=change_vote&amp;threadid=<?=$ThreadID?>&amp;auth=<?=$app->user->extra['AuthKey']?>&amp;vote=0"><?=($UserResponse == '0' ? '&raquo;&nbsp;' : '')?>Blank</a>
-        - <?=$StaffVotes[0]?>&nbsp;(<?=\Gazelle\Text::float(((float)$Votes[0] / $TotalVotes) * 100, 2)?>%)
+        - <?=$StaffVotes[0]?>&nbsp;(<?=Gazelle\Text::float(((float) $Votes[0] / $TotalVotes) * 100, 2)?>%)
       </li>
     </ul>
     <?php
       if ($ForumID == STAFF_FORUM) {
           ?>
     <br>
-    <strong>Votes:</strong> <?=\Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=\Gazelle\Text::float($TotalVotes)?> total
+    <strong>Votes:</strong> <?=Gazelle\Text::float($StaffCount - count($StaffNames))?> / <?=$StaffCount?> current staff, <?=Gazelle\Text::float($TotalVotes)?> total
     <br>
     <strong>Missing votes:</strong> <?=implode(", ", $StaffNames);
           echo "\n"; ?>
@@ -420,7 +420,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
           <li>
             <input type="radio" name="vote" id="answer_<?=$i?>"
               value="<?=$i?>">
-            <label for="answer_<?=$i?>"><?=\Gazelle\Text::esc($Answer)?></label>
+            <label for="answer_<?=$i?>"><?=Gazelle\Text::esc($Answer)?></label>
           </li>
           <?php } ?>
           <li>
@@ -443,10 +443,10 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </div>
     <?php
     }
-  if (check_perms('forums_polls_moderate')) {
-      #if (check_perms('forums_polls_moderate') && !$RevealVoters) {
-      if (!$Featured) {
-          ?>
+    if ($app->user->can(["polls" => "updateAny"])) {
+        #if ($app->user->can(["polls" => "updateAny"]) && !$RevealVoters) {
+        if (!$Featured) {
+            ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
@@ -456,7 +456,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
       <input type="submit" onclick="return confirm('Are you sure you want to feature this poll?');" value="Feature">
     </form>
     <?php
-      } ?>
+        } ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
       <input type="hidden" name="action" value="poll_mod">
       <input type="hidden" name="auth"
@@ -467,7 +467,7 @@ if ($ThreadInfo['NoPoll'] == 0) {
         value="<?=(!$Closed ? 'Close' : 'Open')?>">
     </form>
     <?php
-  } ?>
+    } ?>
   </div>
 </div>
 <?php
@@ -504,9 +504,7 @@ foreach ($Thread as $Key => $Post) {
     if ($PostID == $ThreadInfo['StickyPostID']) {
         echo ' sticky_post';
     }
-    if (Permissions::is_mod($AuthorID)) {
-        echo ' staff_post';
-    } ?>" id="post<?=$PostID?>">
+    ?>" id="post<?=$PostID?>">
   <colgroup>
     <?php if (User::hasAvatarsEnabled()) { ?>
     <col class="col_avatar" />
@@ -524,13 +522,13 @@ foreach ($Thread as $Key => $Post) {
         - <a href="#quickpost" id="quote_<?=$PostID?>"
           onclick="Quote('<?=$PostID?>', '<?=$Username?>', true);"
           class="brackets">Quote</a>
-        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || check_perms('site_moderate_forums')) { ?>
+        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || $app->user->can(["messages" => "updateAny"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>', '<?=$Key?>');"
           class="brackets">Edit</a>
         <?php
         }
-    if (check_perms('site_admin_forums') && $ThreadInfo['Posts'] > 1) { ?>
+    if ($app->user->can(["admin" => "moderateForums"]) && $ThreadInfo['Posts'] > 1) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>
@@ -538,14 +536,14 @@ foreach ($Thread as $Key => $Post) {
     }
     if ($PostID == $ThreadInfo['StickyPostID']) { ?>
         <strong><span class="sticky_post_label brackets">Sticky</span></strong>
-        <?php if (check_perms('site_moderate_forums')) { ?>
+        <?php if ($app->user->can(["conversations" => "updateAny"])) { ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;remove=true&amp;auth=<?=$app->user->extra['AuthKey']?>"
           title="Unsticky this post" class="brackets tooltip">X</a>
         <?php
         }
     } else {
-        if (check_perms('site_moderate_forums')) {
+        if ($app->user->can(["conversations" => "updateAny"])) {
             ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
@@ -558,7 +556,7 @@ foreach ($Thread as $Key => $Post) {
         <a href="reports.php?action=report&amp;type=post&amp;id=<?=$PostID?>"
           class="brackets">Report</a>
         <?php
-    if (check_perms('users_warn') && $AuthorID != $app->user->core['id']) {
+    if ($app->user->can(["admin" => "warnUsers"]) && $AuthorID != $app->user->core['id']) {
         $AuthorInfo = User::user_info($AuthorID);
         if ($app->user->extra['Class'] >= $AuthorInfo['Class']) {
             ?>
@@ -589,12 +587,12 @@ foreach ($Thread as $Key => $Post) {
         echo ' colspan="2"';
     } ?>>
       <div id="content<?=$PostID?>">
-        <?=\Gazelle\Text::parse($Body) ?>
+        <?=Gazelle\Text::parse($Body) ?>
         <?php if ($EditedUserID) { ?>
         <br>
         <br>
         <div class="last_edited">
-          <?php if (check_perms('site_admin_forums')) { ?>
+          <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
           <a href="#content<?=$PostID?>"
             onclick="LoadEdit('forums', <?=$PostID?>, 1); return false;">&laquo;</a>
           <?php } ?>
@@ -624,7 +622,7 @@ foreach ($Thread as $Key => $Post) {
 </div>
 
 <?php
-if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
+if (!$ThreadInfo['IsLocked'] || $app->user->can(["messages" => "updateAny"])) {
     if (Forums::check_forumperm($ForumID, 'Write') && !$app->user->extra['DisablePosting']) {
         View::parse('generic/reply/quickreply.php', array(
       'InputTitle' => 'Reply',
@@ -636,7 +634,7 @@ if (!$ThreadInfo['IsLocked'] || check_perms('site_moderate_forums')) {
     }
 }
 
-if (check_perms('site_moderate_forums')) {
+if ($app->user->can(["admin" => "moderateForums"])) {
     $app->dbOld->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body
       FROM forums_topic_notes
@@ -658,7 +656,7 @@ if (check_perms('site_moderate_forums')) {
       <td><?=User::format_username($Note['AuthorID'])?>
         (<?=time_diff($Note['AddedTime'], 2, true, true)?>)
       </td>
-      <td><?=\Gazelle\Text::parse($Note['Body'])?>
+      <td><?=Gazelle\Text::parse($Note['Body'])?>
       </td>
     </tr>
     <?php
@@ -718,7 +716,7 @@ if (check_perms('site_moderate_forums')) {
       <td class="label"><label for="thread_title_textbox">Title</label></td>
       <td>
         <input type="text" id="thread_title_textbox" name="title" style="width: 75%;"
-          value="<?=\Gazelle\Text::esc($ThreadInfo['Title'])?>"
+          value="<?=Gazelle\Text::esc($ThreadInfo['Title'])?>"
           tabindex="2">
       </td>
     </tr>
@@ -746,7 +744,7 @@ if (check_perms('site_moderate_forums')) {
         } ?>
             <option value="<?=$Forum['ID']?>" <?php if ($ThreadInfo['ForumID'] == $Forum['ID']) {
                 echo ' selected="selected"';
-            } ?>><?=\Gazelle\Text::esc($Forum['Name'])?>
+            } ?>><?=Gazelle\Text::esc($Forum['Name'])?>
             </option>
             <?php
     } ?>
@@ -754,7 +752,7 @@ if (check_perms('site_moderate_forums')) {
         </select>
       </td>
     </tr>
-    <?php if (check_perms('site_admin_forums')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateForums"])) { ?>
     <tr>
       <td class="label"><label for="delete_thread_checkbox">Delete</label></td>
       <td>

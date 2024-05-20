@@ -13,16 +13,16 @@ $MinimumVote = 20 * 1024 * 1024;
  */
 
 if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    json_die("failure");
+    \Gazelle\Api\Base::failure(400);
 }
 
-$RequestID = (int)$_GET['id'];
+$RequestID = (int) $_GET['id'];
 
 //First things first, lets get the data for the request.
 
-$Request = Requests::get_request($RequestID);
+$Request = \Gazelle\Requests::get_request($RequestID);
 if ($Request === false) {
-    json_die("failure");
+    \Gazelle\Api\Base::failure(400);
 }
 
 $CategoryID = $Request['CategoryID'];
@@ -30,7 +30,7 @@ $Requestor = User::user_info($Request['UserID']);
 $Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
-$CanVote = !$IsFilled && check_perms('site_vote');
+$CanVote = !$IsFilled && $app->user->can(["requests" => "updateAny"]);
 
 if ($CategoryID == 0) {
     $CategoryName = 'Unknown';
@@ -38,23 +38,23 @@ if ($CategoryID == 0) {
     $CategoryName = $Categories[$CategoryID - 1];
 }
 
-$JsonArtists = Requests::get_artists($RequestID);
+$JsonArtists = \Gazelle\Requests::get_artists($RequestID);
 
 //Votes time
-$RequestVotes = Requests::get_votes_array($RequestID);
+$RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
-$ProjectCanEdit = (check_perms('project_team') && !$IsFilled && (($CategoryID == 0) || ($CategoryName == 'Music' && $Request['Year'] == 0)));
+$ProjectCanEdit = (!$IsFilled && (($CategoryID == 0) || ($CategoryName == 'Music' && $Request['Year'] == 0)));
 $UserCanEdit = (!$IsFilled && $app->user->core['id'] == $Request['UserID'] && $VoteCount < 2);
-$CanEdit = ($UserCanEdit || $ProjectCanEdit || check_perms('site_moderate_requests'));
+$CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
 
 $JsonTopContributors = [];
 $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);
 for ($i = 0; $i < $VoteMax; $i++) {
     $User = array_shift($RequestVotes['Voters']);
     $JsonTopContributors[] = array(
-    'userId'   => (int)$User['UserID'],
+    'userId'   => (int) $User['UserID'],
     'userName' => $User['Username'],
-    'bounty'   => (int)$User['Bounty']
+    'bounty'   => (int) $User['Bounty']
   );
 }
 reset($RequestVotes['Voters']);
@@ -66,17 +66,17 @@ foreach ($Thread as $Key => $Post) {
     list($PostID, $AuthorID, $AddedTime, $Body, $EditedUserID, $EditedTime, $EditedUsername) = array_values($Post);
     list($AuthorID, $Username, $PermissionID, $Paranoia, $Artist, $Donor, $Warned, $Avatar, $Enabled, $UserTitle) = array_values(User::user_info($AuthorID));
     $JsonRequestComments[] = array(
-    'postId'          => (int)$PostID,
-    'authorId'        => (int)$AuthorID,
+    'postId'          => (int) $PostID,
+    'authorId'        => (int) $AuthorID,
     'name'            => $Username,
     'donor'           => ($Donor == 1),
-    'warned'          => (bool)$Warned,
+    'warned'          => (bool) $Warned,
     'enabled'         => ($Enabled == 2 ? false : true),
     'class'           => $PermissionID,
     'addedTime'       => $AddedTime,
     'avatar'          => $Avatar,
     'comment'         => \Gazelle\Text::parse($Body),
-    'editedUserId'    => (int)$EditedUserID,
+    'editedUserId'    => (int) $EditedUserID,
     'editedUsername'  => $EditedUsername,
     'editedTime'      => $EditedTime
   );
@@ -86,35 +86,35 @@ $JsonTags = [];
 foreach ($Request['Tags'] as $Tag) {
     $JsonTags[] = $Tag;
 }
-json_die('success', array(
-  'requestId'       => (int)$RequestID,
-  'requestorId'     => (int)$Request['UserID'],
+\Gazelle\Api\Base::success(200, array(
+  'requestId'       => (int) $RequestID,
+  'requestorId'     => (int) $Request['UserID'],
   'requestorName'   => $Requestor['Username'],
   'isBookmarked'    => Bookmarks::isBookmarked('request', $RequestID),
-  'requestTax'      => (float)$RequestTax,
+  'requestTax'      => (float) $RequestTax,
   'timeAdded'       => $Request['TimeAdded'],
-  'canEdit'         => (bool)$CanEdit,
-  'canVote'         => (bool)$CanVote,
-  'minimumVote'     => (int)$MinimumVote,
-  'voteCount'       => (int)$VoteCount,
+  'canEdit'         => (bool) $CanEdit,
+  'canVote'         => (bool) $CanVote,
+  'minimumVote'     => (int) $MinimumVote,
+  'voteCount'       => (int) $VoteCount,
   'lastVote'        => $Request['LastVote'],
   'topContributors' => $JsonTopContributors,
-  'totalBounty'     => (int)$RequestVotes['TotalBounty'],
-  'categoryId'      => (int)$CategoryID,
+  'totalBounty'     => (int) $RequestVotes['TotalBounty'],
+  'categoryId'      => (int) $CategoryID,
   'categoryName'    => $CategoryName,
   'title'           => $Request['Title'],
-  'year'            => (int)$Request['Year'],
+  'year'            => (int) $Request['Year'],
   'image'           => $Request['Image'],
   'bbDescription'   => $Request['Description'],
   'description'     => \Gazelle\Text::parse($Request['Description']),
   'artists'         => $JsonArtists,
-  'isFilled'        => (bool)$IsFilled,
-  'fillerId'        => (int)$Request['FillerID'],
+  'isFilled'        => (bool) $IsFilled,
+  'fillerId'        => (int) $Request['FillerID'],
   'fillerName'      => $Filler ? $Filler['Username'] : '',
-  'torrentId'       => (int)$Request['TorrentID'],
+  'torrentId'       => (int) $Request['TorrentID'],
   'timeFilled'      => $Request['TimeFilled'],
   'tags'            => $JsonTags,
   'comments'        => $JsonRequestComments,
-  'commentPage'     => (int)$Page,
-  'commentPages'    => (int)ceil($NumComments / TORRENT_COMMENTS_PER_PAGE)
+  'commentPage'     => (int) $Page,
+  'commentPages'    => (int) ceil($NumComments / TORRENT_COMMENTS_PER_PAGE)
 ));

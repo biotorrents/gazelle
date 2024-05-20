@@ -6,7 +6,7 @@ User topic subscription page
 $app = \Gazelle\App::go();
 
 if (!empty($app->user->extra['DisableForums'])) {
-    json_die('failure');
+    \Gazelle\Api\Base::failure(400);
 }
 
 if (isset($app->user->extra['PostsPerPage'])) {
@@ -14,7 +14,7 @@ if (isset($app->user->extra['PostsPerPage'])) {
 } else {
     $PerPage = POSTS_PER_PAGE;
 }
-list($Page, $Limit) = Format::page_limit($PerPage);
+list($Page, $Limit) = \Gazelle\Format::page_limit($PerPage);
 
 $ShowUnread = (!isset($_GET['showunread']) && !isset($HeavyInfo['SubscriptionsUnread']) || isset($HeavyInfo['SubscriptionsUnread']) && !!$HeavyInfo['SubscriptionsUnread'] || isset($_GET['showunread']) && !!$_GET['showunread']);
 $ShowCollapsed = (!isset($_GET['collapse']) && !isset($HeavyInfo['SubscriptionsCollapse']) || isset($HeavyInfo['SubscriptionsCollapse']) && !!$HeavyInfo['SubscriptionsCollapse'] || isset($_GET['collapse']) && !!$_GET['collapse']);
@@ -27,7 +27,7 @@ $sql = '
     JOIN users_subscriptions AS s ON s.TopicID = t.ID
     LEFT JOIN forums AS f ON f.ID = t.ForumID
     LEFT JOIN forums_last_read_topics AS l ON p.TopicID = l.TopicID AND l.UserID = s.UserID
-  WHERE s.UserID = '.$app->user->core['id'].'
+  WHERE s.UserID = ' . $app->user->core['id'] . '
     AND p.ID <= IFNULL(l.PostID, t.LastPostID)
     AND ' . Forums::user_forums_sql();
 if ($ShowUnread) {
@@ -68,7 +68,7 @@ if ($NumResults > $PerPage * ($Page - 1)) {
       LEFT JOIN users_main AS um ON um.ID = p.AuthorID
       LEFT JOIN users_info AS ui ON ui.UserID = um.ID
       LEFT JOIN users_main AS ed ON ed.ID = um.ID
-    WHERE p.ID IN ('.implode(',', $PostIDs).')
+    WHERE p.ID IN (' . implode(',', $PostIDs) . ')
     ORDER BY f.Name ASC, t.LastPostID DESC';
     $app->dbOld->query($sql);
 }
@@ -76,18 +76,18 @@ if ($NumResults > $PerPage * ($Page - 1)) {
 $JsonPosts = [];
 while (list($ForumID, $ForumName, $TopicID, $ThreadTitle, $Body, $LastPostID, $Locked, $Sticky, $PostID, $AuthorID, $AuthorName, $AuthorAvatar, $EditedUserID, $EditedTime, $EditedUsername) = $app->dbOld->next_record()) {
     $JsonPost = array(
-    'forumId' => (int)$ForumID,
+    'forumId' => (int) $ForumID,
     'forumName' => $ForumName,
-    'threadId' => (int)$TopicID,
+    'threadId' => (int) $TopicID,
     'threadTitle' => $ThreadTitle,
-    'postId' => (int)$PostID,
-    'lastPostId' => (int)$LastPostID,
+    'postId' => (int) $PostID,
+    'lastPostId' => (int) $LastPostID,
     'locked' => $Locked == 1,
     'new' => ($PostID < $LastPostID && !$Locked)
   );
     $JsonPosts[] = $JsonPost;
 }
 
-json_die('success', array(
+\Gazelle\Api\Base::success(200, array(
   'threads' => $JsonPosts
 ));

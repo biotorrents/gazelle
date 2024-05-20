@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 
 /**
- * Badges
+ * Gazelle\Badges
  */
+
+namespace Gazelle;
 
 class Badges
 {
@@ -19,10 +21,15 @@ class Badges
      */
     public static function getBadges(int $userId): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select badgeId, displayed from users_badges where userId = ?";
         $ref = $app->dbNew->multi($query, [$userId]);
+
+        # foreach() argument must be of type array|object, null given
+        if (!$ref) {
+            return [];
+        }
 
         $data = [];
         foreach ($ref as $row) {
@@ -30,7 +37,6 @@ class Badges
             $data[$key] = $row["displayed"];
         }
 
-        #!d($data);exit;
         return $data;
     }
 
@@ -46,7 +52,7 @@ class Badges
      */
     public static function awardBadge(int $userId, int $badgeId): bool
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         if (self::hasBadge($userId, $badgeId)) {
             return false;
@@ -78,7 +84,6 @@ class Badges
             }
         }
 
-        #!d($data);exit;
         return $data;
     }
 
@@ -106,42 +111,65 @@ class Badges
      * Creates HTML for displaying a badge.
      *
      * @param int $badgeId
-     * @param bool $tooltip should the html contain a tooltip?
+     * @param bool $tooltip
      * @return ?string html
      */
     public static function displayBadge(int $badgeId, bool $tooltip = true): ?string
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select * from badges where id = ?";
         $row = $app->dbNew->row($query, [$badgeId]);
-        #!d($row);exit;
 
-        /*
         if (!$row) {
             return null;
         }
-        */
 
         if ($tooltip) {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' title='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>";
+            return "<span class='badge tooltip' title='{$row["name"]}: {$row["description"]}'>{$row["icon"]}</span>";
         } else {
-            $html = "<img class='badge' alt='{$row["Name"]}: {$row["Description"]}' src='{$row["Icon"]}'>"; # no title
+            return "<span class='badge'>{$row["icon"]}</span>";
+        }
+    }
+
+
+    /**
+     * badgeDescription
+     *
+     * Get a badge's description.
+     *
+     * @param int $badgeId
+     * @return ?string
+     */
+    public static function badgeDescription(int $badgeId): ?string
+    {
+        $app = App::go();
+
+        $query = "select name, description from badges where id = ?";
+        $row = $app->dbNew->row($query, [$badgeId]);
+
+        if (!$row) {
+            return null;
         }
 
-        return $html;
+        return "{$row["name"]}: {$row["description"]}";
     }
 
 
     /**
      * displayBadges
+     *
+     * Given an array of badgeId's, returns HTML for displaying them.
+     *
+     * @param array $badgeIds
+     * @return string html
      */
-    public static function displayBadges(array $badgeIds, $tooltip = false): string
+    public static function displayBadges(array $badgeIds): string
     {
         $data = [];
 
         foreach ($badgeIds as $badgeId) {
-            $data[] = self::displayBadge($badgeId, $tooltip);
+            $data[] = self::displayBadge($badgeId);
         }
 
         $data = implode("", $data);
@@ -153,10 +181,14 @@ class Badges
 
     /**
      * getAllBadges
+     *
+     * Returns all badges.
+     *
+     * @return array of badge data
      */
     public static function getAllBadges(): array
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
 
         $query = "select * from badges";
         $ref = $app->dbNew->multi($query, []);

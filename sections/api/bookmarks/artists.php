@@ -5,15 +5,15 @@
 $app = \Gazelle\App::go();
 
 if (!empty($_GET['userid'])) {
-    if (!check_perms('users_override_paranoia')) {
-        json_die('failure');
+    if ($app->user->cant(["admin" => "sensitiveUserData"])) {
+        \Gazelle\Api\Base::failure(400);
     }
 
     $UserID = $_GET['userid'];
     $Sneaky = ($UserID !== $app->user->core['id']);
 
     if (!is_numeric($UserID)) {
-        json_die('failure');
+        \Gazelle\Api\Base::failure(400);
     }
 
     $app->dbOld->query("

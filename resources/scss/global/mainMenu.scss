@@ -12,18 +12,19 @@
 
   #logo {
     order: 0;
-
-    background: url("/images/logos/liquidrop-bookish-1k.png");
+    background: url("/images/logos/colorfulWaves-whiteShadow-2k.webp");
     background-size: contain;
-    width: 50px;
-    min-width: 50px;
+    border: 0.25rem solid whitesmoke;
+    border-radius: 50%;
+    width: 5rem;
+    min-width: 5rem;
     height: 100%;
     min-height: 100%;
     margin-left: 1rem;
 
     a {
       display: block;
-      height: 50px;
+      height: 5rem;
     }
   }
 

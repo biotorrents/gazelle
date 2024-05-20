@@ -1,6 +1,6 @@
 {# formats #}
-{% for key, items in env.CATS %}
-	<tr id="{{ items.Name|camel }}Format">
+{% for key, items in env.categories %}
+	<tr id="{{ items.title|camel }}Format">
 		<th>
 			<label for="format" class="required">Format</label>
 		</th>
@@ -9,7 +9,7 @@
 		{# can't be required #}
 			<select id="format" name="format" class="select">
 				<option value="">The data's main file format</option>
-				{% for label, items in items.Formats %}
+				{% for label, items in items.formats %}
 					<optgroup label="{{ label }}">
 						{% for item, extensions in items %}
 							<option value="{{ item }}" {{ (value == item) ? "selected" : "" }}>{{ item }}</option>

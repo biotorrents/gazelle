@@ -6,8 +6,8 @@
 
 	<td>
 		<select id="license" name="license" class="select">
-			<option value="">{{ db.desc }}</option>
-			{% for item in env.META.Licenses %}
+			<option value="">{{ db.description }}</option>
+			{% for item in env.metadata.licenses %}
 				<option value="{{ item }}">{{ item }}</option>
 			{% endfor %}
 		</select>

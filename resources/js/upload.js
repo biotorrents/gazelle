@@ -25,23 +25,22 @@
         let platforms = [];
         let scopes = [];
 
-        Object.values(env.CATS).forEach(element => {
+        Object.values(env.categories).forEach(element => {
             categories.push(
-                { [element.ID]: _.camelCase(element.Name) }
+                { [element.id]: _.camelCase(element.title) }
             );
 
-            formats.push("#" + _.camelCase(element.Name) + "Format");
-            platforms.push("#" + _.camelCase(element.Name) + "Platform");
-            scopes.push("#" + _.camelCase(element.Name) + "Scope");
+            formats.push("#" + _.camelCase(element.title) + "Format");
+            platforms.push("#" + _.camelCase(element.title) + "Platform");
+            scopes.push("#" + _.camelCase(element.title) + "Scope");
         });
 
         // hide all but selected
-        let categoryId = $(event.target).val();
+        const categoryId = parseInt($(event.target).val());
 
         // formats
         formats.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -52,8 +51,7 @@
 
         // platforms
         platforms.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -64,8 +62,7 @@
 
         // scopes
         scopes.forEach((element, index) => {
-            let categoryIndex = categoryId - 1;
-            if (categoryIndex !== index) {
+            if (index + 1 !== categoryId) {
                 $(element + " select:first").prop("disabled", true);
                 $(element).hide();
             } else {
@@ -75,14 +72,18 @@
         });
 
         // hardcoded seqhash handling
-        if (categoryId === "1") {
+        if (categoryId === 1) {
             $("#seqhashRow").show();
         } else {
             $("#seqhashRow").hide();
         }
 
         // display the correct category description
-        $("#categoryDescription").html(env.CATS[categoryId].Description);
+        Object.values(env.categories).forEach((element) => {
+            if (element.id === categoryId) {
+                $("#categoryDescription").html(element.description);
+            }
+        });
     });
 
 
@@ -101,11 +102,12 @@
 
         // sanity check
         if (!request.paperId || request.paperId.length === 0) {
+            $("#autofillLoader").hide();
             return false;
         }
 
         // ajax request
-        $.ajax("/api/internal/deleteBookmark", {
+        $.ajax("/api/internal/doiNumberAutofill", {
             method: "POST",
             headers: { "Authorization": "Bearer " + frontendHash },
 
@@ -115,13 +117,8 @@
             data: JSON.stringify(request),
 
             success: (response) => {
-                // hide ajax spinner
                 $("#autofillLoader").hide();
-            },
-
-            error: (response) => {
-                // hide ajax spinner
-                $("#autofillLoader").hide();
+                $("#identifierFormField").val($("#doiNumberInput").val());
 
                 $("#title").val(response.data.title);
                 $("#groupDescription").html(response.data.groupDescription);
@@ -130,6 +127,10 @@
                 $("#literature").val(response.data.literature.join("\n"));
                 $("#creatorList").val(response.data.creatorList.join("\n"));
                 $("#workgroup").val(response.data.workgroup);
+            },
+
+            error: (response) => {
+                $("#autofillLoader").hide();
             },
         });
     });
@@ -165,65 +166,4 @@
         });
     });
 
-
-    /**
-     * AddScreenshotField
-     */
-
-    /*
-    function AddScreenshotField() {
-        var sss = $('[name="screenshots[]"]');
-        if (sss.length >= 10) return;
-
-        var ScreenshotField = document.createElement("input");
-        ScreenshotField.type = "text";
-        ScreenshotField.id = "ss_" + sss.length;
-        ScreenshotField.name = "screenshots[]";
-        ScreenshotField.size = 45;
-
-        var a = document.createElement("a");
-        a.className = "brackets";
-        a.innerHTML = "−";
-        a.onclick = function () {
-            RemoveScreenshotField(this);
-        };
-
-        var x = $("#screenshots").raw();
-        var y = document.createElement("div");
-        y.appendChild(ScreenshotField);
-        y.appendChild(document.createTextNode("\n"));
-        y.appendChild(a);
-        x.appendChild(y);
-    }
-    */
-
-
-    /**
-     * RemoveScreenshotField
-     */
-
-    /*
-    function RemoveScreenshotField(el) {
-        var sss = $('[name="screenshots[]"]');
-        el.parentElement.remove();
-    }
-    */
-
-
-    /**
-     * SetResolution
-     */
-
-    /*
-    function SetResolution() {
-        if ($("#ressel").raw().value != "Other") {
-            $("#resolution").raw().value = $("#ressel").raw().value;
-            $("#resolution").ghide();
-        } else {
-            $("#resolution").raw().value = "";
-            $("#resolution").gshow();
-            $("#resolution").raw().readOnly = false;
-        }
-    }
-    */
-})();
+) ();

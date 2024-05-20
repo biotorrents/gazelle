@@ -1,0 +1,129 @@
+{% extends "base.twig" %}
+
+
+{% block content %}
+
+<section>
+
+{# success message #}
+{% if successMessage %}
+    <div class="alertbar info">{{ successMessage }}</div>
+{% endif %}
+
+{# error message #}
+{% if errorMessage %}
+    <div class="alertbar error">{{ errorMessage }}</div>
+{% endif %}
+
+{# page title #}
+<h2>{{ pageTitle }}</h2>
+
+{# form #}
+<form method="post">
+    {{ form_token("") }}
+
+    <input type="hidden" name="id" value="{{ role.id }}">
+
+    <p>
+        <label for="friendlyName" class="required">Friendly name</label>
+        <br>
+        <input type="text" name="friendlyName" maxlength="255" value="{{ role.attributes.friendlyName }}" required>
+    </p>
+
+    <p>
+        <label for="description">Description</label>
+        <br>
+        <input type="text" name="description" maxlength="255" value="{{ role.attributes.description }}" placeholder="Please enter an optional description">
+    </p>
+
+    <p>
+        <label for="maxPersonalCollages">Max personal collages</label>
+        <br>
+        <input type="number" name="maxPersonalCollages" min="0" max="255" value="{{ role.attributes.maxPersonalCollages|default(0) }}">
+    </p>
+
+    {#
+    <p>
+        <label for="permissionsLevel">Permissions level</label>
+        <br>
+        <input type="number" name="permissionsLevel" min="0" max="65535" value="{{ role.attributes.permissionsLevel|default(0) }}">
+    </p>
+    #}
+
+    <p>
+        <input type="radio" name="primaryOrSecondaryRole" value="isPrimaryRole" {{ role.attributes.isPrimaryRole ? "checked" : "" }}>
+        <label for="primaryOrSecondaryRole">Primary role?</label>
+    </p>
+
+    <p>
+        <input type="radio" name="primaryOrSecondaryRole" value="isSecondaryRole" {{ role.attributes.isSecondaryRole ? "checked" : "" }}>
+        <label for="primaryOrSecondaryRole">Secondary role?</label>
+    </p>
+
+    <p>
+        <input type="checkbox" name="isStaffRole" value="1" {{ role.attributes.isStaffRole ? "checked" : "" }}>
+        <label for="isStaffRole">Staff role?</label>
+    </p>
+
+</section>
+
+
+<section>
+
+<h3>Permissions manager</h3>
+
+{#
+<p>
+    Inherit permissions from
+    <select id="inheritFrom" class="select" name="inheritFrom" placeholder="Select a role to inherit permissions from" multiple>
+        {% for role in allRoles %}
+            <option value="{{ role.id }}">{{ role.attributes.friendlyName }}</option>
+        {% endfor %}
+    </select>
+</p>
+#}
+
+<table>
+    {% for category, data in allPermissions %}
+        <tr>
+            <th width="10%">{{ category|unCamel }}</th>
+
+            <td>
+                <select id="{{ category }}" class="select" name="permissionsList[{{ category }}][]" placeholder="Please select permissions" multiple>
+                    {% for key, value in data %}
+                        {% if role.attributes.permissionsList[category] is defined and key in role.attributes.permissionsList[category] %}
+                            {% set permissionExists = true %}
+                        {% else %}
+                            {% set permissionExists = false %}
+                        {% endif %}
+
+                        <option value="{{ key }}" {{ (permissionExists) ? "selected" : "" }}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+        </tr>
+    {% endfor %} {# for heading, data in allPermissions #}
+</table>
+
+{# form submit #}
+<p class="flexRow">
+    <input type="submit" class="button-primary" value="save changes">
+    <a href="/toolbox/permissionsManager/{{ role.id }}/delete" class="button button-red">delete role</a>
+    <a href="/toolbox/permissionsManager" class="button">back to all roles</a>
+</p>
+
+</form>
+
+</section>
+
+
+{% endblock %}
+
+
+{#
+{% block sidebar %}
+
+	{% include "admin/sidebar.twig" %}
+
+{% endblock %}
+#}

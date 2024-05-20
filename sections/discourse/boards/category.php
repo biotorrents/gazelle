@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-Http::csrf();
+Gazelle\Http::csrf();
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 $discourse = new Discourse();
 
 # category

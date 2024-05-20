@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
 /**
  * Flight router
@@ -32,7 +32,7 @@ non members.
 define('WIDTH', 585);
 define('HEIGHT', 400);
 
-enforce_login();
+
 if (!empty($_POST['action'])) {
     switch ($_POST['action']) {
         case 'edit':
@@ -44,27 +44,14 @@ if (!empty($_POST['action'])) {
         case 'rename':
             require(serverRoot . '/sections/artist/rename.php');
             break;
-        case 'add_similar':
-            require(serverRoot . '/sections/artist/add_similar.php');
-            break;
         case 'change_artistid':
             require(serverRoot . '/sections/artist/change_artistid.php');
-            break;
-        case 'concert_thread':
-            include(serverRoot . '/sections/artist/concert_thread.php');
-            break;
-        case 'take_concert_thread':
-            include(serverRoot . '/sections/artist/take_concert_thread.php');
             break;
         default:
             error(0);
     }
 } elseif (!empty($_GET['action'])) {
     switch ($_GET['action']) {
-        case 'autocomplete':
-            require('sections/artist/autocomplete.php');
-            break;
-
         case 'edit':
             require(serverRoot . '/sections/artist/edit.php');
             break;
@@ -76,18 +63,6 @@ if (!empty($_POST['action'])) {
             break;
         case 'history':
             require(serverRoot . '/sections/artist/history.php');
-            break;
-        case 'vote_similar':
-            require(serverRoot . '/sections/artist/vote_similar.php');
-            break;
-        case 'delete_similar':
-            require(serverRoot . '/sections/artist/delete_similar.php');
-            break;
-        case 'similar':
-            require(serverRoot . '/sections/artist/similar.php');
-            break;
-        case 'similar_bg':
-            require(serverRoot . '/sections/artist/similar_bg.php');
             break;
         case 'notify':
             require(serverRoot . '/sections/artist/notify.php');
@@ -121,18 +96,18 @@ if (!empty($_POST['action'])) {
         }
         list($FirstID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
         if ($app->dbOld->record_count() === 1 || !strcasecmp($Name, $NameSearch)) {
-            Http::redirect("artist.php?id=$FirstID");
+            Gazelle\Http::redirect("artist.php?id=$FirstID");
             error();
         }
         while (list($ID, $Name) = $app->dbOld->next_record(MYSQLI_NUM, false)) {
             if (!strcasecmp($Name, $NameSearch)) {
-                Http::redirect("artist.php?id=$ID");
+                Gazelle\Http::redirect("artist.php?id=$ID");
                 error();
             }
         }
-        Http::redirect("artist.php?id=$FirstID");
+        Gazelle\Http::redirect("artist.php?id=$FirstID");
         error();
     } else {
-        Http::redirect("torrents.php");
+        Gazelle\Http::redirect("torrents.php");
     }
 }

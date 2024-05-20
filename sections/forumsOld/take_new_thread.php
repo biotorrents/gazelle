@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+$app = Gazelle\App::go();
 
-authorize();
-$ENV = ENV::go();
+
+$ENV = Gazelle\ENV::go();
 
 /*
 'new' if the user is creating a new thread
@@ -37,7 +37,7 @@ if (isset($_POST['forum']) && !is_numeric($_POST['forum'])) {
 
 // If you're not sending anything, go back
 if (empty($_POST['body']) || empty($_POST['title'])) {
-    header('Location: '.$_SERVER['HTTP_REFERER']);
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     error();
 }
 
@@ -47,7 +47,7 @@ if ($app->user->extra['DisablePosting']) {
     error('Your posting privileges have been removed.');
 }
 
-$Title = \Gazelle\Text::limit(trim($_POST['title']), 150);
+$Title = Gazelle\Text::limit(trim($_POST['title']), 150);
 
 
 $ForumID = $_POST['forum'];
@@ -60,7 +60,7 @@ if (!Forums::check_forumperm($ForumID, 'Write') || !Forums::check_forumperm($For
     error(403);
 }
 
-if (empty($_POST['question']) || empty($_POST['answers']) || !check_perms('forums_polls_create')) {
+if (empty($_POST['question']) || empty($_POST['answers']) || $app->user->cant(["polls" => "create"])) {
     $NoPoll = 1;
 } else {
     $NoPoll = 0;
@@ -88,14 +88,14 @@ $app->dbOld->query("
   INSERT INTO forums_topics
     (Title, AuthorID, ForumID, LastPostTime, LastPostAuthorID, CreatedTime)
   Values
-    ('".db_string($Title)."', '".$app->user->core['id']."', '$ForumID', NOW(), '".$app->user->core['id']."', NOW())");
+    ('" . db_string($Title) . "', '" . $app->user->core['id'] . "', '$ForumID', NOW(), '" . $app->user->core['id'] . "', NOW())");
 $TopicID = $app->dbOld->inserted_id();
 
 $app->dbOld->query("
   INSERT INTO forums_posts
     (TopicID, AuthorID, AddedTime, Body)
   VALUES
-    ('$TopicID', '".$app->user->core['id']."', NOW(), '".db_string($Body)."')");
+    ('$TopicID', '" . $app->user->core['id'] . "', NOW(), '" . db_string($Body) . "')");
 
 $PostID = $app->dbOld->inserted_id();
 
@@ -105,7 +105,7 @@ $app->dbOld->query("
     NumPosts         = NumPosts + 1,
     NumTopics        = NumTopics + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$app->user->core['id']."',
+    LastPostAuthorID = '" . $app->user->core['id'] . "',
     LastPostTopicID  = '$TopicID',
     LastPostTime     = NOW()
   WHERE ID = '$ForumID'");
@@ -115,7 +115,7 @@ $app->dbOld->query("
   SET
     NumPosts         = NumPosts + 1,
     LastPostID       = '$PostID',
-    LastPostAuthorID = '".$app->user->core['id']."',
+    LastPostAuthorID = '" . $app->user->core['id'] . "',
     LastPostTime     = NOW()
   WHERE ID = '$TopicID'");
 
@@ -123,31 +123,16 @@ if (isset($_POST['subscribe'])) {
     Subscriptions::subscribe($TopicID);
 }
 
-//Award a badge if necessary
-$app->dbOld->query("
-  SELECT COUNT(ID)
-  FROM forums_posts
-  WHERE AuthorID = '{$app->user->core['id']}'");
-list($UserPosts) = $app->dbOld->next_record(MYSQLI_NUM, false);
-foreach ($ENV->AUTOMATED_BADGE_IDS->Posts as $Count => $Badge) {
-    if ((int) $UserPosts >= $Count) {
-        $Success = Badges::awardBadge($app->user->core['id'], $Badge);
-        if ($Success) {
-            Misc::send_pm($app->user->core['id'], 0, 'You have received a badge!', "You have received a badge for making ".$Count." forum posts.\n\nIt can be enabled from your user settings.");
-        }
-    }
-}
-
 if (!$NoPoll) { // god, I hate double negatives...
     $app->dbOld->query("
     INSERT INTO forums_polls
       (TopicID, Question, Answers)
     VALUES
-      ('$TopicID', '".db_string($Question)."', '".db_string(serialize($Answers))."')");
+      ('$TopicID', '" . db_string($Question) . "', '" . db_string(serialize($Answers)) . "')");
     $app->cache->set("polls_$TopicID", array($Question, $Answers, $Votes, null, '0'), 0);
 
     if ($ForumID === STAFF_FORUM) {
-        send_irc(STAFF_CHAN, 'Poll created by '.$app->user->core['username'].": '$Question' ".site_url()."forums.php?action=viewthread&threadid=$TopicID");
+        send_irc(STAFF_CHAN, 'Poll created by ' . $app->user->core['username'] . ": '$Question' " . site_url() . "forums.php?action=viewthread&threadid=$TopicID");
     }
 }
 
@@ -212,9 +197,9 @@ $Post = array(
   'EditedUserID' => 0,
   'EditedTime' => null
   );
-$app->cache->set("thread_$TopicID".'_catalogue_0', $Post, 0);
+$app->cache->set("thread_$TopicID" . '_catalogue_0', $Post, 0);
 
-$app->cache->set("thread_$TopicID".'_info', array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']), 0);
+$app->cache->set("thread_$TopicID" . '_info', array('Posts' => '+1', 'LastPostAuthorID' => $app->user->core['id']), 0);
 
-Http::redirect("forums.php?action=viewthread&threadid=$TopicID");
+Gazelle\Http::redirect("forums.php?action=viewthread&threadid=$TopicID");
 die();

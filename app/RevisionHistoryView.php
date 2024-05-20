@@ -10,12 +10,14 @@ class RevisionHistoryView
      */
     public static function render_revision_history($RevisionHistory, $BaseURL)
     {
+        $app = \Gazelle\App::go();
+
         ?>
 <table cellpadding="6" cellspacing="1" border="0" width="100%" class="box">
   <tr class="colhead">
     <td>Revision</td>
     <td>Date</td>
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <td>User</td>
     <?php } ?>
     <td>Summary</td>
@@ -30,7 +32,7 @@ class RevisionHistoryView
     <td>
       <?=$Time?>
     </td>
-    <?php if (check_perms('users_mod')) { ?>
+    <?php if ($app->user->can(["admin" => "moderateUsers"])) { ?>
     <td>
       <?=User::format_username($UserID, false, false, false)?>
     </td>

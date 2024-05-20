@@ -8,10 +8,35 @@ declare(strict_types=1);
  */
 
 # browse
-Flight::route("POST /api/requests/browse", ["Gazelle\API\Requests", "browse"]);
+Flight::route("POST /api/requests/browse", ["Gazelle\Api\Requests", "browse"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["requests" => "read"]);
+});
 
-# requests
-Flight::route("POST /api/requests", ["Gazelle\API\Requests", "create"]);
-Flight::route("GET /api/requests/@identifier", ["Gazelle\API\Requests", "read"]);
-Flight::route("PATCH /api/requests/@identifier", ["Gazelle\API\Requests", "update"]);
-Flight::route("DELETE /api/requests/@identifier", ["Gazelle\API\Requests", "delete"]);
+
+# create
+Flight::route("POST /api/requests", ["Gazelle\Api\Requests", "create"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["requests" => "create"]);
+});
+
+
+# read
+Flight::route("GET /api/requests/@identifier", ["Gazelle\Api\Requests", "read"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["requests" => "read"]);
+});
+
+
+# update
+Flight::route("PATCH /api/requests/@identifier", ["Gazelle\Api\Requests", "update"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["requests" => "updateAny"]);
+});
+
+
+# delete
+Flight::route("DELETE /api/requests/@identifier", ["Gazelle\Api\Requests", "delete"])->addMiddleware(function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["requests" => "deleteAny"]);
+});

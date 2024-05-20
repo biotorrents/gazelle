@@ -7,33 +7,31 @@ declare(strict_types=1);
  * user login page
  */
 
-$app = \Gazelle\App::go();
-
-# https://github.com/paragonie/anti-csrf
-Http::csrf();
-
-# libraries
+$app = Gazelle\App::go();
 $auth = new Auth();
 
+# https://github.com/paragonie/anti-csrf
+Gazelle\Http::csrf();
+
 # variables
-$post = Http::request("post");
-$server = Http::request("server");
-#!d($server["REQUEST_URI"]);exit;
+$post = Gazelle\Http::request("post");
+$server = Gazelle\Http::request("server");
 
 # kinda lazy but it works
 if (str_starts_with($server["REQUEST_URI"], "/resend")) {
-    $_SESSION["requestedPage"] = "/";
+    Gazelle\Http::createCookie(["requestedPage" => "/"]);
     $resendConfirmationMessage = "We've sent you a new confirmation email";
 }
 
 # where are they trying to go?
-if (empty($post)) {
-    $_SESSION["requestedPage"] = $server["REQUEST_URI"] ?? "/";
+$requestedPage = Gazelle\Http::readCookie("requestedPage") ?? null;
+if (empty($post) && !$requestedPage) {
+    Gazelle\Http::createCookie(["requestedPage" => $server["REQUEST_URI"] ?? "/"]);
 }
 
 # redirect if logged in
 if ($auth->library->isLoggedIn()) {
-    Http::redirect($_SESSION["requestedPage"]);
+    Gazelle\Http::redirect($requestedPage);
 }
 
 # delight-im/auth
@@ -49,13 +47,14 @@ if (!empty($post)) {
     } catch (\Delight\Auth\EmailNotVerifiedException $e) {
         $resendConfirmation = true;
         $response = "Your email address hasn't been verified";
-    } catch (\Throwable $e) {
+    } catch (Throwable $e) {
         $response = $e->getMessage();
     }
 
     # silence is golden
     if (!$response) {
-        Http::redirect($_SESSION["requestedPage"] ?? "/");
+        Gazelle\Http::deleteCookie("requestedPage");
+        Gazelle\Http::redirect($requestedPage);
     }
 }
 
