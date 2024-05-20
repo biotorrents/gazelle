@@ -554,6 +554,8 @@ class Internal extends Base
             ];
 
             # doi numbers: the paper itself is first
+            $response["externalIds"] ??= null;
+            $response["externalIds"]["DOI"] ??= null;
             $data["literature"] = [ $response["externalIds"]["DOI"] ] ?? null;
 
             # sort citations by citationCount, descending
@@ -568,8 +570,8 @@ class Internal extends Base
                     : 1;
             });
 
-            # grab the top nine influentian citations
-            $citationCount = 1;
+            # grab the top ten influentian citations
+            $citationCount = 0;
             $citationLimit = 9;
 
             foreach ($response["citations"] as $citation) {
@@ -583,7 +585,7 @@ class Internal extends Base
                 }
 
                 # add the doi number to the array
-                $data["literature"][] = $citation["externalIds"]["DOI"];
+                $data["literature"][] = $citation["externalIds"]["DOI"] ?? null;
                 $citationCount++;
             } # foreach ($response["citations"] as $citation)
 

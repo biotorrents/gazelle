@@ -118,6 +118,7 @@
 
             success: (response) => {
                 $("#autofillLoader").hide();
+                $("#identifierFormField").val($("#doiNumberInput").val());
 
                 $("#title").val(response.data.title);
                 $("#groupDescription").html(response.data.groupDescription);
@@ -165,65 +166,4 @@
         });
     });
 
-
-    /**
-     * AddScreenshotField
-     */
-
-    /*
-    function AddScreenshotField() {
-        var sss = $('[name="screenshots[]"]');
-        if (sss.length >= 10) return;
-
-        var ScreenshotField = document.createElement("input");
-        ScreenshotField.type = "text";
-        ScreenshotField.id = "ss_" + sss.length;
-        ScreenshotField.name = "screenshots[]";
-        ScreenshotField.size = 45;
-
-        var a = document.createElement("a");
-        a.classtitle = "brackets";
-        a.innerHTML = "−";
-        a.onclick = function () {
-            RemoveScreenshotField(this);
-        };
-
-        var x = $("#screenshots").raw();
-        var y = document.createElement("div");
-        y.appendChild(ScreenshotField);
-        y.appendChild(document.createTextNode("\n"));
-        y.appendChild(a);
-        x.appendChild(y);
-    }
-    */
-
-
-    /**
-     * RemoveScreenshotField
-     */
-
-    /*
-    function RemoveScreenshotField(el) {
-        var sss = $('[name="screenshots[]"]');
-        el.parentElement.remove();
-    }
-    */
-
-
-    /**
-     * SetResolution
-     */
-
-    /*
-    function SetResolution() {
-        if ($("#ressel").raw().value != "Other") {
-            $("#resolution").raw().value = $("#ressel").raw().value;
-            $("#resolution").ghide();
-        } else {
-            $("#resolution").raw().value = "";
-            $("#resolution").gshow();
-            $("#resolution").raw().readOnly = false;
-        }
-    }
-    */
-})();
+) ();

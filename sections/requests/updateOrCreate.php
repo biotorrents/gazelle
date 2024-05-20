@@ -1,7 +1,91 @@
 <?php
-#declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+declare(strict_types=1);
+
+
+/**
+ * create or update request
+ */
+
+$app = Gazelle\App::go();
+
+Gazelle\Http::csrf();
+
+# request variables
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
+!d($post);
+exit;
+
+# is it a create or update operation?
+$identifier ??= null;
+if (!$identifier) {
+    # create
+    $isUpdate = false;
+    $request = new Gazelle\Requests();
+} else {
+    # update
+    $isUpdate = true;
+    try {
+        # try to load the request
+        $request = new Gazelle\Requests($identifier);
+        if (!$request->id) {
+            $app->error(404);
+        }
+    } catch (Throwable $e) {
+        $app->error(404);
+    }
+}
+
+# handle a form submission
+if (!empty($post)) {
+    $data = [
+        "id" => $post["id"] ?? null,
+        "userId" => $app->user->core["id"],
+        "categoryId" => $post["categoryId"] ?? null,
+        "title" => $post["title"] ?? null,
+        "subject" => $post["subject"] ?? null,
+        "object" => $post["object"] ?? null,
+        "creatorList" => $post["creatorList"] ?? null,
+        "tagList" => $post["tagList"] ?? null,
+        "picture" => $post["picture"] ?? null,
+        "description" => $post["groupDescription"] ?? null,
+        "identifier" => $post["identifier"] ?? null,
+    ];
+
+    try {
+        # create or update the request
+        $request->updateOrCreate($data);
+        Gazelle\Http::redirect("/requests/{$request->id}");
+    } catch (Throwable $e) {
+        $errorMessage = $e->getMessage();
+    }
+}
+
+# tagList
+$query = "select name from tags where tagType = ? order by name";
+$tagList = $app->dbNew->column($query, ["genre"]);
+
+# twig template
+$app->twig->display("requests/updateOrCreate.twig", [
+    "title" => ($isUpdate ? "Edit the request {$request->attributes->title}" : "Create a new request"),
+    "sidebar" => true,
+
+    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "upload", "requests"],
+    "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+
+    "successMessage" => $successMessage ?? null,
+    "errorMessage" => $errorMessage ?? null,
+
+    "isUpdate" => $isUpdate,
+    "request" => $request,
+    "post" => $post,
+    "tagList" => $tagList,
+]);
+
+
+exit;
+
 
 # todo: Fix multiple authors and bounty preview
 
@@ -11,10 +95,11 @@ $app = \Gazelle\App::go();
  * maintaining 2 copies of almost identical files.
  */
 
-$NewRequest = $_GET['action'] === 'new';
+$NewRequest = false;
+#$NewRequest = $_GET['action'] === 'new';
 
 if (!$NewRequest) {
-    $RequestID = $_GET['id'];
+    $RequestID = 4;
     if (!is_numeric($RequestID)) {
         error(404);
     }
@@ -48,7 +133,8 @@ if (!$NewRequest) {
         $VoteCount = count($VoteArray['Voters']);
 
         $IsFilled = !empty($Request['TorrentID']);
-        $CategoryName = $Categories[$CategoryID - 1];
+        #$CategoryName = $Categories[$CategoryID - 1];
+        $CategoryID = 1;
 
         $ProjectCanEdit = (!$IsFilled && $CategoryID === '0');
         $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
@@ -92,7 +178,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
         WHERE tg.`id` = " . $_GET['groupid']);
     if (list($Title, $Title2, $TitleJP, $Year, $Studio, $Series, $CatalogueNumber, $Image, $Tags, $CategoryID) = $app->dbOld->next_record()) {
         $GroupID = trim($_REQUEST['groupid']);
-        $CategoryName = $Categories[$CategoryID - 1];
+        #$CategoryName = $Categories[$CategoryID - 1];
         $Disabled = 'readonly="readonly"';
     }
 }
@@ -154,10 +240,10 @@ View::header(
               <select id="categories" name="type" onchange="Categories();">
                 <?php } ?>
 
-                <?php foreach (Misc::display_array($Categories) as $Cat) { ?>
+                <?php /*foreach (Misc::display_array($Categories) as $Cat) { ?>
                 <option value="<?= $Cat ?>" <?= (!empty($CategoryName) && ($CategoryName === $Cat) ? ' selected="selected"' : '') ?>><?=$Cat?>
                 </option>
-                <?php } ?>
+                <?php }*/ ?>
               </select>
           </td>
         </tr>
