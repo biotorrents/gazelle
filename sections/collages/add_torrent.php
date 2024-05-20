@@ -106,7 +106,6 @@ if ($_REQUEST['action'] == 'add_torrent') {
     // Get torrent ID
     preg_match("/{$app->env->regexTorrentGroup}/i", $URL, $Matches);
     $TorrentID = (int) $Matches[4];
-    Security::int($TorrentID);
 
     $app->dbOld->query("
     SELECT ID

@@ -10,7 +10,6 @@ $app = Gazelle\App::go();
  */
 
 $RequestID = (int) $_REQUEST['requestid'];
-Security::int($RequestID);
 
 
 # Validation

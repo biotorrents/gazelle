@@ -48,7 +48,6 @@ exit;
 /****** */
 
 $CollageID = (int) $_GET['id'];
-Security::int($CollageID);
 
 $CollageData = $app->cache->get("collage_$CollageID");
 

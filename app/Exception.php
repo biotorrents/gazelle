@@ -14,4 +14,6 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Exception extends \Exception {} # class
+class Exception extends \Exception
+{
+} # class

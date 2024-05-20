@@ -3,9 +3,11 @@
 
 $app = \Gazelle\App::go();
 
+/*
 if ($app->user->cant(["notifications" => "read"])) {
     error(403);
 }
+*/
 
 View::header('Manage notifications'); ?>
 

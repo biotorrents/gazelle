@@ -61,7 +61,7 @@ $env->regexEmail = "[_a-z0-9-]+([.+][_a-z0-9-]+)*@{$env->regexDomain}";
 
 # image
 # flags: i
-$env->regexImage = "{$env->regexUri}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp)(\?\S*)?";
+$env->regexImage = "{$env->regexUri}\/\S+\.(jpg|jpeg|tif|tiff|png|gif|bmp|webp)(\?\S*)?";
 
 
 # video

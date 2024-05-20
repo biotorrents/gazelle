@@ -19,7 +19,6 @@ if (isset($_GET['userid'])) {
     $UserID = (int) $app->user->core['id'];
 }
 
-Security::int($UserID);
 
 # Get user info
 $UserInfo = User::user_info($UserID);
@@ -46,7 +45,6 @@ if (isset($_GET['expire'])) {
 
     $UserID = (int) $_GET['userid'];
     $TorrentID = (int) $_GET['torrentid'];
-    Security::int($UserID, $TorrentID);
 
     $app->dbOld->prepared_query("
     SELECT

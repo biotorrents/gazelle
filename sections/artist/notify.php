@@ -10,7 +10,6 @@ if ($app->user->cant(["notifications" => "read"])) {
 }
 
 $ArtistID = (int) $_GET['artistid'];
-Security::int($ArtistID);
 
 $app->dbOld->prepared_query("
   SELECT Name

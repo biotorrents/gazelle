@@ -72,9 +72,8 @@ $app->twig->display("top10/torrents.twig", [
     "torrentData" => $torrentData,
 ]);
 
+
 exit;
-
-
 
 
 $Where = [];

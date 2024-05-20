@@ -5,7 +5,6 @@ $app = \Gazelle\App::go();
 
 $GroupID = (int) $_GET['id'];
 $TorrentID = (int) $_GET['torrentid'];
-Security::int($GroupID, $TorrentID);
 
 $app->dbOld->prepared_query("
 SELECT

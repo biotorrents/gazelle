@@ -11,7 +11,6 @@ $app = \Gazelle\App::go();
  */
 
 $group_id = (int) $_GET['groupid'];
-Security::int($group_id);
 
 // Get the torrent group name and the body of the last revision
 $app->dbOld->prepared_query("

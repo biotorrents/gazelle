@@ -60,6 +60,7 @@ class Requests extends ObjectCrud
     {
         $app = App::go();
 
+        # default read
         parent::read($identifier);
 
         # get the voteCount
@@ -69,6 +70,143 @@ class Requests extends ObjectCrud
         # get the bounty
         $query = "select sum(bounty) from requests_votes where requestId = ?";
         $this->attributes->bounty = $app->dbNew->single($query, [$this->id]);
+    }
+
+
+    /**
+     * updateOrCreate
+     *
+     * @param array $data
+     * @return void
+     */
+    public function updateOrCreate(array $data = []): void
+    {
+        $app = App::go();
+
+        # required fields
+        $data["userId"] ??= null;
+        if (empty($data["userId"])) {
+            throw new Exception("userId is required");
+        }
+
+        $data["categoryId"] ??= null;
+        if (empty($data["categoryId"])) {
+            throw new Exception("categoryId is required");
+        }
+
+        $data["title"] ??= null;
+        if (empty($data["title"])) {
+            throw new Exception("title is required");
+        }
+
+        $data["creators"] ??= [];
+        if (empty($data["creators"])) {
+            throw new Exception("creators is required");
+        }
+
+        $data["tags"] ??= [];
+        if (empty($data["tags"])) {
+            throw new Exception("tags is required");
+        }
+
+        $data["title"] ??= null;
+        if (empty($data["title"])) {
+            throw new Exception("title is required");
+        }
+
+        $data["description"] ??= null;
+        if (empty($data["description"])) {
+            throw new Exception("description is required");
+        }
+
+        # validate the picture
+        $data["picture"] ??= null;
+        if (!empty($data["picture"])) {
+            $good = preg_match("/{$app->env->regexImage}/i", $data["picture"]);
+            if (!$good) {
+                throw new Exception("picture is invalid");
+            }
+        }
+
+        # loop through the creators
+        foreach ($data["creators"] as $creator) {
+            # does the creator already exist?
+            $query = "select id from artists_group where name = ?";
+            $id = $app->dbNew->single($query, [$creator]);
+
+            # if not, insert it
+            if (!$id) {
+                $query = "insert into artists_group (name) values (?)";
+                $app->dbNew->do($query, [$creator]);
+            }
+
+            # get the artistIds currently associated with the request, if any
+            $query = "
+                select requests_artists.artistId from requests_artists
+                join artists_group on requests_artists.artistId = artists_group.artistId
+                where requests_artists.requestId = ?
+            ";
+            $artistIds = $app->dbNew->multi($query, [$this->id]);
+
+            # compare the artistIds to the creators
+            $artistIds = array_column($artistIds, "artistId");
+            foreach ($artistIds as $artistId) {
+            }
+            if (!in_array($creator, $artistIds)) {
+                # insert the creator
+                $query = "insert into requests_artists (requestId, artistId) values (?, ?)";
+                $app->dbNew->do($query, [$this->id, $creator]);
+            }
+
+            # delete the artistIds that are not in the creators
+            $diff = array_diff($artistIds, $data["creators"]);
+            foreach ($diff as $artistId) {
+                $query = "delete from requests_artists where requestId = ? and artistId = ?";
+                $app->dbNew->do($query, [$this->id, $artistId]);
+            }
+        }
+
+        # loop through the tags
+        foreach ($data["tags"] as $tag) {
+            # does the tag already exist?
+            $query = "select 1 from tags where name = ?";
+            $exists = $app->dbNew->single($query, [$tag]);
+
+            # if not, insert it
+            if (!$exists) {
+                $query = "insert into tags (name) values (?)";
+                $app->dbNew->do($query, [$tag]);
+            }
+
+            # get the tagIds currently associated with the request, if any
+            $query = "
+                select tagId from requests_tags
+                join tags on requests_tags.tagId = tags.id
+                where requests_tags.requestId = ?
+            ";
+            $tagIds = $app->dbNew->multi($query, [$this->id]);
+
+            # compare the tagIds to the tags
+            $tagIds = array_column($tagIds, "tagId");
+            if (!in_array($tag, $tagIds)) {
+                # insert the tag
+                $query = "insert into requests_tags (requestId, tagId) values (?, ?)";
+                $app->dbNew->do($query, [$this->id, $tag]);
+            }
+
+            # delete the tagIds that are not in the tags
+            $diff = array_diff($tagIds, $data["tags"]);
+            foreach ($diff as $tagId) {
+                $query = "delete from requests_tags where requestId = ? and tagId = ?";
+                $app->dbNew->do($query, [$this->id, $tagId]);
+            }
+        }
+
+        # unset the creators and tags
+        unset($data["creators"], $data["tags"]);
+
+        # default updateOrCreate
+        parent::updateOrCreate($data);
     }
 
 

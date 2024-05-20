@@ -107,8 +107,7 @@ abstract class ObjectCrud
 
         # set the id, with workaround for legacy ID columns
         $this->id = $row["id"] ?? $row["ID"] ?? null;
-        unset($row["id"]);
-        unset($row["ID"]);
+        unset($row["id"], $row["ID"]);
 
         # map database => display
         $attributes = [];

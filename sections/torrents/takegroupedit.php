@@ -18,12 +18,10 @@ if ($app->user->cant(["torrentGroups" => "updateAny"])) {
 # Variables for database input
 $user_id = (int) $app->user->core['id'];
 $group_id = (int) $_REQUEST['groupid'];
-Security::int($user_id, $group_id);
 
 # If we're reverting to a previous revision
 if (!empty($_GET['action']) && $_GET['action'] === 'revert') {
     $revision_id = (int) $_GET['revisionid'];
-    Security::int($revision_id);
 
     # To cite from merge: "Everything is legit, let's just confim they're not retarded"
     if (empty($_GET['confirm'])) {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 $CollageID = (int) $_GET['collageId'];
-Security::int($CollageID);
 
 $app->dbOld->prepared_query("
 SELECT

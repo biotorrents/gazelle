@@ -133,6 +133,24 @@ class SiteLog extends ObjectCrud
     }
 
 
+    /** language transformations */
+
+
+    /**
+     * toString
+     *
+     * Turns a site log entry into a sentence.
+     *
+     * @return string
+     */
+    public function toString(): string
+    {
+        $app = App::go();
+
+        return "{$this->user->core["username"]} {$this->action} the {$this->contentType} {$this->description}";
+    }
+
+
     /**
      * pastTense
      *
@@ -149,6 +167,27 @@ class SiteLog extends ObjectCrud
             "update" => "updated",
             "delete" => "deleted",
             default => throw new Exception("invalid action"),
+        };
+    }
+
+
+    /**
+     * singular
+     *
+     * Turns a contentType into singular form.
+     *
+     * @param string $type
+     * @return string
+     */
+    public static function singular(string $type): string
+    {
+        return match ($type) {
+            "torrents" => "torrent",
+            "groups" => "group",
+            "creators" => "creator",
+            "collages" => "collage",
+            "requests" => "request",
+            default => throw new Exception("invalid type"),
         };
     }
 } # class

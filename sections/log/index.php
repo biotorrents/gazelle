@@ -1,8 +1,33 @@
 <?php
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
 
+/**
+ * site log
+ */
+
+$app = Gazelle\App::go();
+
+$get = Gazelle\Http::get();
+
+$log = new Gazelle\SiteLog();
+#!d($log->search("test"));exit;
+
+$app->twig->display("siteLog/index.twig", [
+    #"search" => $get->search,
+    "results" => $log->search("test"),
+]);
+/*
+$siteLog = new Gazelle\SiteLog();
+$siteLog->create([
+    "userId" => 1,
+    "contentId" => 666,
+    "contentType" => "torrents",
+    "action" => "create",
+    "description" => "test site log entry",
+]);
+*/
+exit;
 /**
  * Flight router
  * @see https://flightphp.com/learn

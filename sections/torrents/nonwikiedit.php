@@ -7,7 +7,6 @@ $app = Gazelle\App::go();
 
 
 $group_id = (int) $_REQUEST['groupid'];
-Security::int($group_id);
 
 // Usual perm checks
 if ($app->user->cant(["torrents" => "updateAny"])) {
