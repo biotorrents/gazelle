@@ -51,7 +51,7 @@ class TorrentGroups extends ObjectCrud
 
         $this->relationships = new RecursiveCollection([
             "torrents" => $this->getTorrents(),
-            "creators" => $this->getCreators(),
+            #"creators" => $this->getCreators(),
         ]);
     }
 

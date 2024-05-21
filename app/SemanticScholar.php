@@ -49,7 +49,7 @@ class SemanticScholar
      *   "releaseId" => null,
      * ]);
      */
-    public function __construct(array $params)
+    public function __construct(array $params = [])
     {
         $allowedKeys = array_keys($this->params);
 

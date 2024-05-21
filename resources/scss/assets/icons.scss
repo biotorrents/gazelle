@@ -236,6 +236,82 @@ img.torrent_header {
 
 
 /**
+ * creators
+ */
+
+.hIndex {
+  &:before {
+    content: "💥";
+    margin-right: 0.5rem;
+  }
+}
+
+.paperCount {
+  &:before {
+    content: "📜";
+    margin-right: 0.5rem;
+  }
+}
+
+.citationCount {
+  &:before {
+    content: "📣";
+    margin-right: 0.5rem;
+  }
+}
+
+.semanticScholarId {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/semanticScholar.webp");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.orcid {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/orcid.webp");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.affiliations {
+  &:before {
+    content: "🏫";
+    margin-right: 0.5rem;
+  }
+}
+
+.aliases {
+  &:before {
+    content: "🧑";
+    margin-right: 0.5rem;
+  }
+}
+
+
+.homepage {
+  &:before {
+    content: "🏠";
+    margin-right: 0.5rem;
+  }
+}
+
+
+/**
  * collages
  */
 

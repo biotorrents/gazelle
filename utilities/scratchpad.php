@@ -9,5 +9,11 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-#$torrentGroup = new Gazelle\TorrentGroups(1);
-#!d($torrentGroup->getCreators());exit;
+$creator = new Gazelle\Creators(191);
+!d($creator);
+
+/*
+$semanticScholar = new Gazelle\SemanticScholar([]);
+$data = $semanticScholar->search(urlencode("Laurel L Haak"), "authors");
+!d($data);
+*/

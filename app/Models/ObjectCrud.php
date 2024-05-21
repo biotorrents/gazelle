@@ -102,7 +102,8 @@ abstract class ObjectCrud
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select * from {$this->type} where {$column} = ? and deleted_at is null";
+        $query = "select * from {$this->type} where {$column} = ?"; # todo, deleted_at vs. deletedAt
+        #$query = "select * from {$this->type} where {$column} = ? and deletedAt is null";
         $row = $app->dbNew->row($query, [$identifier]);
 
         # set the id, with workaround for legacy ID columns
@@ -205,7 +206,8 @@ abstract class ObjectCrud
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select 1 from {$this->type} where {$column} = ? and deleted_at is null";
+        $query = "select 1 from {$this->type} where {$column} = ?"; # todo, deleted_at vs. deletedAt
+        #$query = "select 1 from {$this->type} where {$column} = ? and deleted_at is null";
 
         $good = $app->dbNew->single($query, [$identifier]);
         return boolval($good);

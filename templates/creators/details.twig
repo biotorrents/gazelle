@@ -1,0 +1,146 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>{{ creator.attributes.name }}</h2>
+
+	{# essential details table #}
+	<section>
+		<table>
+
+      {# paperCount #}
+			{% if creator.attributes.paperCount %}
+				<tr>
+					<th><span class="paperCount nobr">Publications</span></th>
+					<td>{{ creator.attributes.paperCount|number_format }}</td>
+				</tr>
+			{% endif %}
+
+			{# hIndex #}
+			{% if creator.attributes.hIndex %}
+				<tr>
+					<th><span class="hIndex nobr">h-index</span></th>
+					<td>{{ creator.attributes.hIndex|number_format }}</td>
+				</tr>
+			{% endif %}
+
+      {# citationCount #}
+			{% if creator.attributes.citationCount %}
+				<tr>
+					<th><span class="citationCount nobr">Citations</span></th>
+					<td>{{ creator.attributes.citationCount|number_format }}</td>
+				</tr>
+			{% endif %}
+
+      {# affiliations #}
+			{% if creator.attributes.affiliations %}
+				<tr>
+					<th><span class="affiliations nobr">Affiliations</span></th>
+					<td>{{ creator.attributes.affiliations|join(", ") }}</td>
+				</tr>
+			{% endif %}
+
+      {# aliases #}
+			{% if creator.attributes.aliases %}
+				<tr>
+					<th><span class="aliases nobr">Aliases</span></th>
+					<td>{{ creator.attributes.aliases|join(", ") }}</td>
+				</tr>
+			{% endif %}
+
+      {# semanticScholarId #}
+			{% if creator.attributes.semanticScholarId %}
+				<tr>
+					<th><span class="semanticScholarId nobr">Semantic Scholar</span></th>
+					<td><a href="https://www.semanticscholar.org/author/{{ creator.attributes.semanticScholarId }}" target="_blank" class="external">https://www.semanticscholar.org/author/{{ creator.attributes.semanticScholarId }}</a></td>
+				</tr>
+			{% endif %}
+
+      {# orcid #}
+			{% if creator.attributes.orcid %}
+				<tr>
+					<th><span class="orcid nobr">ORCiD</span></th>
+					<td><a href="https://orcid.org/{{ creator.attributes.orcid }}" target="_blank" class="external">https://orcid.org/{{ creator.attributes.orcid }}</a></td>
+				</tr>
+			{% endif %}
+
+      {# homepage #}
+			{% if creator.attributes.homepage %}
+				<tr>
+					<th><span class="homepage nobr">Homepage</span></th>
+					<td><a href="" target="_blank" class="external">{{ creator.attributes.homepage }}</a></td>
+				</tr>
+			{% endif %}
+		</table>
+
+	</section>
+
+  	{# torrent groups #}
+	<section>
+		<h3>Torrent groups</h3>
+
+		<table>
+<thead>
+<tr>
+
+	{# category icon #}
+	<th class="categoryColumn" />
+
+	{# torrent info #}
+	<th>Torrent&nbsp;info</th>
+
+	{# timeAdded #}
+	<th>Time&nbsp;added</th>
+
+	{# data size #}
+	<th>Data&nbsp;size</th>
+
+	{# seeders #}
+	<th title="Seeders">↑</th>
+	{# <th>Seeders&nbsp;↑</th> #}
+
+	{# leechers #}
+	<th title="Leechers">↓</th>
+	{# <th>Leechers&nbsp;↓</th> #}
+
+  {# snatches #}
+	<th title="Snatches">↻</th>
+	{# <th>Snatches&nbsp;↻</th> #}
+
+</tr>
+</thead>
+
+<tbody>
+{% for group in creator.relationships.torrentGroups %}
+
+{% include "torrents/tableEntry.twig" with group %}
+
+{% endfor %}
+</tbody>
+
+		</table>
+		</section>
+
+
+	{# description #}
+	<section>
+		<h3>Description</h3>
+
+		{{ creator.attributes.description|raw }}
+	</section>
+
+
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "creators/sidebar.twig" %}
+
+{% endblock %}

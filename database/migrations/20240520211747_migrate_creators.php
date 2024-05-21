@@ -26,13 +26,13 @@ final class MigrateCreators extends AbstractMigration
             CREATE TABLE IF NOT EXISTS `creators_groups` (
                 `id` bigint(20) unsigned NOT NULL DEFAULT uuid_short(),
                 `creatorId` bigint(20) unsigned NOT NULL,
-                `torrentId` bigint(20) unsigned NOT NULL,
+                `groupId` bigint(20) unsigned NOT NULL,
                 `userId` bigint(20) unsigned NOT NULL,
                 `createdAt` datetime DEFAULT current_timestamp(),
                 `updatedAt` datetime DEFAULT NULL ON UPDATE current_timestamp(),
                 `deletedAt` datetime DEFAULT NULL,
                 PRIMARY KEY (`id`),
-                KEY `id_creatorId_torrentId` (`id`,`creatorId`,`torrentId`)
+                KEY `id_creatorId_groupId` (`id`,`creatorId`,`groupId`)
             )
         ";
         $app->dbNew->do($query, []);
