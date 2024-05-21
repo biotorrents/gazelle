@@ -46,11 +46,10 @@ class Users extends ObjectCrud
     public const SUSPENDED = 5;
 
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "users"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
-
+    public ?string $id = null; # primary key
+    public static ?string $type = "users"; # resource name
+    protected ?string $table = "users"; # database table
+    
     # [ "table" => ["database" => "display"] ]
     # there are a few big tables in this case
     protected array $maps = [

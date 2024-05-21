@@ -17,23 +17,33 @@ if (!$identifier) {
 try {
     # try to load the creator
     $creator = new Gazelle\Creators($identifier);
+    $torrentGroups = $creator->getTorrentGroups();
 } catch (Throwable $e) {
     $app->error(404);
 }
 
+#!d($creator->relationships->torrentGroups);exit;
+
 # twig template
-$app->twig->display("creators/details.twig", [
-    "title" => $creator->attributes->name,
-    "sidebar" => true,
+try {
+    $app->twig->display("creators/details.twig", [
+        "title" => $creator->attributes->name,
+        "sidebar" => true,
 
-    "creator" => $creator,
+        "creator" => $creator,
+        "torrentGroups" => $torrentGroups,
 
-    "isBookmarked" => false,
-    "isSubscribed" => false,
+        "isBookmarked" => false,
+        "isSubscribed" => false,
 
-    "enableConversation" => false,
-    "conversation" => null,
-]);
+        "enableConversation" => false,
+        "conversation" => null,
+    ]);
+} catch (Throwable $e) {
+    print '<h1>' . $e->getMessage() . '</h1>';
+    print '<br /><br />';
+    print "<pre>".$e->getTraceAsString()."</pre>";
+}
 
 
 exit;

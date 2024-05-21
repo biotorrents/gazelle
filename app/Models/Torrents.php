@@ -12,10 +12,9 @@ namespace Gazelle;
 class Torrents extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "torrents"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "torrents"; # resource name
+    protected ?string $table = "torrents"; # database table
 
     # ["database" => "display"]
     protected array $maps = [
@@ -78,19 +77,30 @@ class Torrents extends ObjectCrud
 
     /**
      * relationships
-     *
-     * Actually, this causes an infinite loop.
+     * 
+     * @return ?array
      */
-    /*
-    public function relationships(): void
+    public function relationships(): ?array
     {
-        $app = App::go();
-
-        $this->relationships = new RecursiveCollection([
-            "torrentGroups" => new TorrentGroups($this->attributes->groupId),
-        ]);
+        return [
+            "torrentGroups" => $this->getTorrentGroups(),
+        ];
     }
-    */
+
+
+    /**
+     * getTorrentGroups
+     */
+    public function getTorrentGroups()
+    {
+        $app = \Gazelle\App::go();
+
+        $query = "select id from torrents_group where id = ?";
+        $ref = $app->dbNew->single($query, [$this->attributes->groupId]);
+
+        return ["id" => $ref, "type" => TorrentGroups::$type];
+    }
+
 
 
     /** legacy */

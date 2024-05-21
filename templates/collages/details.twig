@@ -166,7 +166,7 @@ if ($CollageCovers != 0) { ?>
 <tbody>
 {% for group in torrentGroups %}
 
-{% include "torrents/tableEntry.twig" with group %}
+{% include "torrents/tableEntryForObjects.twig" with group|toArray %}
 
 {% endfor %}
 </tbody>

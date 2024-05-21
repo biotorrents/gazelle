@@ -16,10 +16,16 @@ namespace Gazelle;
 class Wiki extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "wiki_articles"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "wikiArticles"; # resource name
+    protected ?string $table = "wiki_articles"; # database table
+
+    # cache settings
+    private string $cachePrefix = "wiki:";
+    private string $cacheDuration = "1 hour";
+
+    # index article
+    public static int $indexArticleId = 1;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -37,12 +43,8 @@ class Wiki extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
-    # cache settings
-    private string $cachePrefix = "wiki:";
-    private string $cacheDuration = "1 hour";
 
-    # index article
-    public static int $indexArticleId = 1;
+    /** crud */
 
 
     /**
@@ -129,7 +131,7 @@ class Wiki extends ObjectCrud
     }
 
 
-    /** */
+    /** methods */
 
 
     /**

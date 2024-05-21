@@ -6,12 +6,7 @@ declare(strict_types=1);
 /**
  * Gazelle\Twig
  *
- * Converted to a singleton class.
- * One instance should only ever exist,
- * because of its separate disk cache.
- *
- * Based on OPS's useful rule set:
- * https://github.com/OPSnet/Gazelle/blob/master/app/Util/\Twig.php
+ * @see https://github.com/OPSnet/Gazelle/blob/master/app/Util/Twig.php
  */
 
 namespace Gazelle;
@@ -554,6 +549,13 @@ class Twig extends \Twig\Environment
             "ucfirst",
             function ($text) {
                 return ucfirst($text);
+            }
+        ));
+
+        $twig->addFilter(new \Twig\TwigFilter(
+            "toArray",
+            function ($collection) {
+                return $collection->toArray();
             }
         ));
 

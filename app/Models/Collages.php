@@ -12,10 +12,13 @@ namespace Gazelle;
 class Collages extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "collages"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "collages"; # resource name
+    protected ?string $table = "collages"; # database table
+
+    # cache settings
+    private string $cachePrefix = "collages:";
+    private string $cacheDuration = "1 hour";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -39,23 +42,77 @@ class Collages extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
-    # cache settings
-    private string $cachePrefix = "collages:";
-    private string $cacheDuration = "1 hour";
+
+    /** relationships */
 
 
     /**
      * relationships
+     *
+     * @return ?array
      */
-    public function relationships(): void
+    public function relationships(): ?array
     {
         $app = App::go();
 
-        $this->relationships = new RecursiveCollection([
+        return [
             "users" => $app->user->readProfile($this->attributes->userId),
             #"subscribers" => $this->subscribers(),
-            #"torrentGroups" => $this->torrentGroups(),
-        ]);
+            "torrentGroups" => $this->relatedTorrentGroups(),
+        ];
+    }
+
+
+    /**
+     * relatedTorrentGroups
+     *
+     * @return ?array
+     */
+    public function relatedTorrentGroups(): ?array
+    {
+        $app = App::go();
+
+        $query = "select groupId from collages_torrents where collageId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $groupId) {
+            $data[] = new TorrentGroups($groupId);
+        }
+
+        return $data;
+    }
+
+
+    /** methods */
+
+
+    /**
+     * getTorrentGroups
+     *
+     * @return ?array
+     */
+    public function getTorrentGroups(): ?array
+    {
+        $app = App::go();
+
+        $query = "select groupId from collages_torrents where collageId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $groupId) {
+            $data[] = new TorrentGroups($groupId);
+        }
+
+        return $data;
     }
 
 
@@ -154,22 +211,6 @@ class Collages extends ObjectCrud
         $collageId = $app->dbNew->lastInsertId();
         Http::redirect("/collages.php?id={$collageId}");
         */
-    }
-
-
-    /**
-     * torrentGroups
-     *
-     * @return array
-     */
-    public function torrentGroups(): array
-    {
-        $app = App::go();
-
-        $query = "select groupId from collages_torrents where collageId = ?";
-        $groupIds = $app->dbNew->column($query, [$this->id]);
-
-        return \Torrents::get_groups($groupIds);
     }
 
 

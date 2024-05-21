@@ -15,10 +15,9 @@ namespace Gazelle;
 class Roles extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "roles_permissions"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "roles"; # resource name
+    protected ?string $table = "roles_permissions"; # database table
 
     # ["database" => "display"]
     protected array $maps = [

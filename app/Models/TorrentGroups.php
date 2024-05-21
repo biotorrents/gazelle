@@ -12,10 +12,13 @@ namespace Gazelle;
 class TorrentGroups extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "torrents_group"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "torrentGroups"; # resource name
+    protected ?string $table = "torrents_group"; # database table
+
+    # cache settings
+    private string $cachePrefix = "torrentGroups:";
+    private string $cacheDuration = "1 hour";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -37,38 +40,57 @@ class TorrentGroups extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
-    # cache settings
-    private string $cachePrefix = "torrentGroups:";
-    private string $cacheDuration = "1 hour";
+
+    /** crud */
+
+
+    /**
+     * read
+     */
+    public function read(int|string $identifier = null): void
+    {
+        # parent method
+        parent::read($identifier);
+
+        # tags
+        $this->attributes->tags = explode(" ", $this->attributes->tags ?? "");
+    }
+
+
+    /** relationships */
 
 
     /**
      * relationships
+     *
+     * @return ?array
      */
-    public function relationships(): void
+    public function relationships(): ?array
     {
-        $app = App::go();
-
-        $this->relationships = new RecursiveCollection([
-            "torrents" => $this->getTorrents(),
-            #"creators" => $this->getCreators(),
-        ]);
+        return [
+            Torrents::$type => $this->relatedTorrents(),
+            Creators::$type => $this->relatedCreators(),
+        ];
     }
 
 
     /**
-     * getTorrents
+     * relatedTorrents
      */
-    public function getTorrents(): array
+    public function relatedTorrents(): ?array
     {
         $app = App::go();
 
         $query = "select id from torrents where groupId = ?";
-        $ref = $app->dbNew->multi($query, [$this->id]);
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
 
         $data = [];
         foreach ($ref as $row) {
-            $data[] = new Torrents($row["id"]);
+            $data[] = ["id" => $row, "type" => Torrents::$type];
         }
 
         return $data;
@@ -76,23 +98,24 @@ class TorrentGroups extends ObjectCrud
 
 
     /**
-     * getCreators
+     * relatedCreators
      */
-    public function getCreators(): array
+    public function relatedCreators(): ?array
     {
         $app = App::go();
 
         $query = "select creatorId from creators_groups where groupId = ?";
-        $ref = $app->dbNew->multi($query, [$this->id]);
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
 
         $data = [];
         foreach ($ref as $row) {
-            $data[] = new Creators($row["creatorId"]);
+            $data[] = ["id" => $row, "type" => Creators::$type];
         }
 
         return $data;
     }
-
-
-
 } # class

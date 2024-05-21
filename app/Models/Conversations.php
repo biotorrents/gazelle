@@ -15,10 +15,16 @@ namespace Gazelle;
 class Conversations extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "conversations_threads"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "conversations"; # resource name
+    protected ?string $table = "conversations_threads"; # database table
+
+    # cache settings
+    private string $cachePrefix = "conversations:";
+    private string $cacheDuration = "1 minute";
+
+    # pagination
+    private int $perPage = 20;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -31,10 +37,6 @@ class Conversations extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
-
-    # cache settings
-    private string $cachePrefix = "conversations:";
-    private string $cacheDuration = "1 minute";
 
     # content types from the database enum
     private array $allowedContentTypes = [
@@ -49,7 +51,7 @@ class Conversations extends ObjectCrud
         "torrents",
         "users",
         "wiki",
-  ];
+    ];
 
     # reactions in the form of ["text" => "emoji"]
     # https://docs.github.com/en/rest/reactions/reactions?apiVersion=2022-11-28
@@ -64,20 +66,22 @@ class Conversations extends ObjectCrud
         "eyes" => "👀",
     ];
 
-    # pagination
-    private int $perPage = 20;
+
+    /** relationships */
 
 
     /**
      * relationships
+     *
+     * @return ?array
      */
-    public function relationships(): void
+    public function relationships(): ?array
     {
         $app = App::go();
 
-        $this->relationships = new RecursiveCollection([
+        return [
             "messages" => $this->readMessages(),
-        ]);
+        ];
     }
 
 
@@ -903,6 +907,7 @@ class Conversations extends ObjectCrud
      * @param type $PageID
      * @param type $TargetPageID
      */
+    /*
     public static function merge($Page, $PageID, $TargetPageID)
     {
         $app = \Gazelle\App::go();
@@ -955,6 +960,7 @@ class Conversations extends ObjectCrud
         $app->cache->delete($Page . "_comments_$TargetPageID");
         $app->dbOld->set_query_id($QueryID);
     }
+    */
 
 
     /**

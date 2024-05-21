@@ -12,10 +12,16 @@ namespace Gazelle;
 class Requests extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "requests"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "requests"; # resource name
+    protected ?string $table = "requests"; # database table
+
+    # cache settings
+    private string $cachePrefix = "requests:";
+    private string $cacheDuration = "1 hour";
+
+    # request tax
+    private float $requestTax = 0.2;
 
     # ["database" => "display"]
     protected array $maps = [
@@ -42,12 +48,8 @@ class Requests extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
-    # cache settings
-    private string $cachePrefix = "requests:";
-    private string $cacheDuration = "1 hour";
 
-    # request tax
-    private float $requestTax = 0.2;
+    /** crud */
 
 
     /**
@@ -210,20 +212,48 @@ class Requests extends ObjectCrud
     }
 
 
+    /** relationships */
+
+
     /**
      * relationships
+     *
+     * @return ?array
      */
-    public function relationships(): void
+    public function relationships(): ?array
+    {
+        return [
+            Creators::$type => $this->relatedCreators(),
+            "tags" => $this->getTags(),
+            "votes" => $this->getVotes(),
+        ];
+    }
+
+
+    /**
+     * relatedCreators
+     */
+    public function relatedCreators(): ?array
     {
         $app = App::go();
 
-        $this->relationships = new RecursiveCollection([
-            #"user" => $app->user->readProfile($this->attributes->userId),
-            "creators" => $this->getCreators(),
-            "tags" => $this->getTags(),
-            "votes" => $this->getVotes(),
-        ]);
+        $query = "select creatorId from creators_requests where requestId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => Creators::$type];
+        }
+
+        return $data;
     }
+
+
+    /** methods */
 
 
     /**
@@ -312,6 +342,9 @@ class Requests extends ObjectCrud
 
         return $data;
     }
+
+
+    /** */
 
 
     /**

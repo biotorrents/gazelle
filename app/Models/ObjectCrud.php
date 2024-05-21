@@ -12,8 +12,17 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-abstract class ObjectCrud
+abstract class ObjectCrud extends RecursiveCollection
 {
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?string $id = null; # primary key
+    public static ?string $type = null; # resource name
+    protected ?string $table = null; # database table
+
+    public ?RecursiveCollection $attributes = null;
+    public ?RecursiveCollection $relationships = null;
+
+
     /**
      * __construct
      *
@@ -49,7 +58,7 @@ abstract class ObjectCrud
         }
 
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->type, $transform);
+        $upsert = $app->dbNew->upsert($this->table, $transform);
 
         # map database => display
         $attributes = [];
@@ -60,7 +69,7 @@ abstract class ObjectCrud
         }
 
         # use a RecursiveCollection not an array
-        $this->id = $upsert["id"];
+        $this->id = strval($upsert["id"] ?? null);
         $this->attributes = new RecursiveCollection($attributes);
     }
 
@@ -94,20 +103,18 @@ abstract class ObjectCrud
                 $nullAttributes[$key] = null;
             }
 
-            $this->id = null;
             $this->attributes = new RecursiveCollection($nullAttributes);
-
             return;
         }
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select * from {$this->type} where {$column} = ?"; # todo, deleted_at vs. deletedAt
-        #$query = "select * from {$this->type} where {$column} = ? and deletedAt is null";
+        $query = "select * from {$this->table} where {$column} = ?"; # todo, deleted_at vs. deletedAt
+        #$query = "select * from {$this->table} where {$column} = ? and deletedAt is null";
         $row = $app->dbNew->row($query, [$identifier]);
 
         # set the id, with workaround for legacy ID columns
-        $this->id = $row["id"] ?? $row["ID"] ?? null;
+        $this->id = strval($row["id"] ?? $row["ID"]);
         unset($row["id"], $row["ID"]);
 
         # map database => display
@@ -124,12 +131,12 @@ abstract class ObjectCrud
             $attributes["isOwner"] = $attributes["userId"] === $app->user->core["id"];
         }
 
-        # use a RecursiveCollection not an array
+        # the value of the attributes key MUST be an object
         $this->attributes = new RecursiveCollection($attributes);
 
-        # check for relationships
+        # the value of the relationships key MUST be an object
         if (method_exists($this, "relationships")) {
-            $this->relationships(); # method sets $this
+            $this->relationships = new RecursiveCollection($this->relationships());
         }
     }
 
@@ -147,7 +154,7 @@ abstract class ObjectCrud
 
         # does the object exist?
         if (!$this->exists($identifier)) {
-            throw new Exception("can't update on {$this->type} where the {$column} is {$identifier}");
+            throw new Exception("can't update on {$this->type} where the id is {$identifier}");
         }
 
         # map display => database
@@ -158,7 +165,7 @@ abstract class ObjectCrud
         $transform[$column] = $identifier;
 
         # perform an upsert
-        $upsert = $app->dbNew->upsert($this->type, $transform);
+        $upsert = $app->dbNew->upsert($this->table, $transform);
     }
 
 
@@ -172,16 +179,16 @@ abstract class ObjectCrud
     {
         $app = App::go();
 
+        # does the object exist?
+        if (!$this->exists($identifier)) {
+            throw new Exception("can't delete from {$this->type} where the id is {$identifier}");
+        }
+
         # determine the identifier
         $column = $app->dbNew->determineIdentifier($identifier);
 
-        # does the object exist?
-        if (!$this->exists($identifier)) {
-            throw new Exception("can't delete from {$this->type} where the {$column} is {$identifier}");
-        }
-
         # perform a soft delete
-        $query = "update {$this->type} set deleted_at = now() where {$column} = ?";
+        $query = "update {$this->table} set deleted_at = now() where {$column} = ?";
         $app->dbNew->do($query, [$identifier]);
     }
 
@@ -206,8 +213,8 @@ abstract class ObjectCrud
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select 1 from {$this->type} where {$column} = ?"; # todo, deleted_at vs. deletedAt
-        #$query = "select 1 from {$this->type} where {$column} = ? and deleted_at is null";
+        $query = "select 1 from {$this->table} where {$column} = ?";
+        #$query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
 
         $good = $app->dbNew->single($query, [$identifier]);
         return boolval($good);
@@ -229,7 +236,7 @@ abstract class ObjectCrud
             $data[$key] = $this->attributes->$value;
         }
 
-        $upsert = $app->dbNew->upsert($this->type, $data);
+        $upsert = $app->dbNew->upsert($this->table, $data);
         return boolval($upsert);
     }
 

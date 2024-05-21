@@ -12,10 +12,9 @@ namespace Gazelle;
 class SiteLog extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?int $id = null; # primary key
-    public string $type = "site_log"; # database table
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?string $id = null; # primary key
+    public static ?string $type = "siteLog"; # resource name
+    protected ?string $table = "site_log"; # database table
 
     # ["database" => "display"]
     protected array $maps = [
@@ -46,14 +45,16 @@ class SiteLog extends ObjectCrud
 
     /**
      * relationships
+     *
+     * @return ?array
      */
-    public function relationships(): void
+    public function relationships(): ?array
     {
         $app = App::go();
 
-        $this->relationships = new RecursiveCollection([
+        return [
             "user" => $app->user->readProfile($this->attributes->userId),
-        ]);
+        ];
     }
 
 

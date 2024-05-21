@@ -8,7 +8,7 @@
 	<section>
 		<table>
 
-      {# paperCount #}
+      		{# paperCount #}
 			{% if creator.attributes.paperCount %}
 				<tr>
 					<th><span class="paperCount nobr">Publications</span></th>
@@ -24,7 +24,7 @@
 				</tr>
 			{% endif %}
 
-      {# citationCount #}
+      		{# citationCount #}
 			{% if creator.attributes.citationCount %}
 				<tr>
 					<th><span class="citationCount nobr">Citations</span></th>
@@ -32,7 +32,7 @@
 				</tr>
 			{% endif %}
 
-      {# affiliations #}
+      		{# affiliations #}
 			{% if creator.attributes.affiliations %}
 				<tr>
 					<th><span class="affiliations nobr">Affiliations</span></th>
@@ -40,15 +40,17 @@
 				</tr>
 			{% endif %}
 
-      {# aliases #}
+      		{# aliases #}
+			{#
 			{% if creator.attributes.aliases %}
 				<tr>
 					<th><span class="aliases nobr">Aliases</span></th>
 					<td>{{ creator.attributes.aliases|join(", ") }}</td>
 				</tr>
 			{% endif %}
+			#}
 
-      {# semanticScholarId #}
+      		{# semanticScholarId #}
 			{% if creator.attributes.semanticScholarId %}
 				<tr>
 					<th><span class="semanticScholarId nobr">Semantic Scholar</span></th>
@@ -56,7 +58,7 @@
 				</tr>
 			{% endif %}
 
-      {# orcid #}
+      		{# orcid #}
 			{% if creator.attributes.orcid %}
 				<tr>
 					<th><span class="orcid nobr">ORCiD</span></th>
@@ -64,7 +66,7 @@
 				</tr>
 			{% endif %}
 
-      {# homepage #}
+      		{# homepage #}
 			{% if creator.attributes.homepage %}
 				<tr>
 					<th><span class="homepage nobr">Homepage</span></th>
@@ -111,11 +113,13 @@
 </thead>
 
 <tbody>
-{% for group in creator.relationships.torrentGroups %}
 
-{% include "torrents/tableEntry.twig" with group %}
+{% for group in torrentGroups %}
+
+{% include "torrents/tableEntryForObjects.twig" with group %}
 
 {% endfor %}
+
 </tbody>
 
 		</table>

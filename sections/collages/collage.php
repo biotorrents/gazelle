@@ -20,7 +20,7 @@ if (!$collage->id) {
     $app->error(404);
 }
 
-$torrentGroups = $collage->torrentGroups();
+$torrentGroups = $collage->getTorrentGroups();
 $isSubscribed = $collage->isSubscribed();
 $stats = $collage->readStats();
 
