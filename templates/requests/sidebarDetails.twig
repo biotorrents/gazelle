@@ -21,7 +21,7 @@
 
 	{# vote #}
 	<form method="post">
-	    {{ form_token(request.server.REQUEST_URI) }}
+	    {{ form_token(http.server.REQUEST_URI) }}
 
 		<input type="number" id="voteAmount" name="voteAmount" min="1" placeholder="Vote on this request">
 
@@ -78,36 +78,37 @@
 </section>
 
 
-{# creators #}
+{# creators # }
 <section>
 
 	<h3>Creators</h3>
 
 	{% for creator in request.relationships.creators %}
-		{# todo: display_artist #}
+		{# todo: display_artist # }
 		{{ creator.name }}
 
 		{#
 		{% set uri = "/requests?creator=" ~ creator.id %}
 		<a href="{{ uri }}">{{ creator.name }}</a>
-		#}
+		# }
 	{% endfor %}
 
 </section>
 
 
-{# tags #}
+{# tags # }
 <section>
 	<h3>Tags</h3>
 
 	{% for creator in request.relationships.creators %}
-		{# todo: display_artist #}
+		{# todo: display_artist # }
 		{{ creator.name }}
 
 		{#
 		{% set uri = "/requests?creator=" ~ creator.id %}
 		<a href="{{ uri }}">{{ creator.name }}</a>
-		#}
+		# }
 	{% endfor %}
+	#}
 
 </section>

@@ -20,7 +20,7 @@
 	<form id="torrentForm" method="post" enctype="multipart/form-data">
 
 		{# hidden fields #}
-		{{ form_token(request.server.REQUEST_URI) }}
+		{{ form_token(http.server.REQUEST_URI) }}
 		<input type="hidden" name="submit" value="true">
 		<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
 

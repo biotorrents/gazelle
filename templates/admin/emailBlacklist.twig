@@ -17,7 +17,7 @@
 	<h3>Add to the blacklist</h3>
 	<form method="post" class="flexRow">
 
-		{{ form_token(request.server.REQUEST_URI) }}
+		{{ form_token(http.server.REQUEST_URI) }}
 
 		<input type="hidden" name="create" value="create">
 		<input type="text" name="email" placeholder="Email or domain" required>
@@ -49,7 +49,7 @@
 			{% for item in data %}
 				<form method="post">
 
-					{{ form_token(request.server.REQUEST_URI) }}
+					{{ form_token(http.server.REQUEST_URI) }}
 
 					<input type="hidden" name="uuid" value="{{ item.uuid }}">
 

@@ -7,7 +7,7 @@
     <h2>Revision history for <a href="/wiki/{{ article.id }}">{{ article.attributes.title }}</a></h2>
 
     <form method="post">
-        {{ form_token(request.server.REQUEST_URI) }}
+        {{ form_token(http.server.REQUEST_URI) }}
 
         <input type="hidden" name="articleId" value="{{ article.id }}">
 

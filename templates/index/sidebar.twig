@@ -1,7 +1,7 @@
 {# search bar #}
 {#
 <form method="post">
-    {{ form_token(request.server.REQUEST_URI) }}
+    {{ form_token(http.server.REQUEST_URI) }}
 
     <input type="text" id="search" name="search" placeholder="Search the site">
 

@@ -26,7 +26,7 @@
     <form name="collage" method="post">
 
       {# hidden fields #}
-      {{ form_token(request.server.REQUEST_URI) }}
+      {{ form_token(http.server.REQUEST_URI) }}
 		  <input type="hidden" name="id" value={{ collage.id }}>
 		  <input type="hidden" name="userId" value="{{ user.core.id }}">
 

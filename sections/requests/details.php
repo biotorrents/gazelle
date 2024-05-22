@@ -70,8 +70,7 @@ $app->twig->display("requests/details.twig", [
   "successMessage" => $successMessage ?? null,
   "errorMessage" => $errorMessage ?? null,
 
-  "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "conversations", "cover_art", "subscriptions"],
-  "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+  "js" => ["browse", "conversations", "subscriptions"],
 
   "request" => $request,
   "isBookmarked" => false, # todo

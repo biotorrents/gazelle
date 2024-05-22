@@ -153,14 +153,13 @@ class Roles extends ObjectCrud
             }
 
             # user has no permissions on the resource
-            $userRole->attributes->permissionsList[$resource] ??= [];
-            if (empty($userRole->attributes->permissionsList[$resource])) {
+            $userRole->attributes->permissionsList->$resource ??= [];
+            if (empty($userRole->attributes->permissionsList->$resource)) {
                 return false;
             }
 
             # permission not in user's role
-            $permissionsArray = $userRole->attributes->permissionsList->toArray();
-            if (!in_array($action, $permissionsArray[$resource])) {
+            if (!in_array($action, $userRole->attributes->permissionsList->$resource)) {
                 return false;
             }
         }
