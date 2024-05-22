@@ -35,7 +35,7 @@ class Collages extends ObjectCrud
         "userId" => "userId",
         "title" => "title",
         "description" => "description",
-        "tags" => "tags",
+        "tags" => "tags", # json
         "torrentCount" => "torrentCount",
         "subscriberCount" => "subscriberCount",
         "maximumGroups" => "maximumGroups",
@@ -49,6 +49,22 @@ class Collages extends ObjectCrud
 
 
     /** crud */
+
+
+    /**
+     * read
+     *
+     * @param int|string $identifier
+     * @return void
+     */
+    public function read(int|string $identifier = null): void
+    {
+        # parent method
+        parent::read($identifier);
+
+        # decode the json fields
+        $this->attributes->tags = json_decode($this->attributes->tags ?? []);
+    }
 
 
     /**

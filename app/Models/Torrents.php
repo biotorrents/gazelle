@@ -130,8 +130,8 @@ class Torrents extends ObjectCrud
         $groupIds = implode(", ", $groupIds);
 
         $query = "
-            select id, category_id, title, subject, object, year,
-                workgroup, location, identifier, tag_list, timestamp, picture
+            select id, categoryId, title, subject, object, year,
+                workgroup, location, identifier, tag, created_at, picture
             from torrents_group where id in({$groupIds})
         ";
         $ref = $app->dbNew->multi($query, []);
@@ -252,9 +252,9 @@ class Torrents extends ObjectCrud
               `identifier`,
               `workgroup`,
               `location`,
-              `tag_list`,
+              `tags`,
               `picture`,
-              `category_id`
+              `categoryId`
             FROM
               `torrents_group`
             WHERE
@@ -374,12 +374,12 @@ class Torrents extends ObjectCrud
           'subject' => $Group['subject'],
           'object' => $Group['object'],
           'year' => $Group['year'],
-          'category_id' => $Group['category_id'],
+          'category_id' => $Group['categoryId'],
           'identifier' => $Group['identifier'],
           'workgroup' => $Group['workgroup'],
           'location' => $Group['location'],
           'GroupFlags' => ($Group['Flags'] ?? ''),
-          'tag_list' => $Group['tag_list'],
+          'tag_list' => json_decode($Group['tags'] ?? []),
           'picture' => $Group['picture'],
           'Torrents' => $Group['Torrents'],
           'Artists' => $Group['Artists']
@@ -743,6 +743,7 @@ class Torrents extends ObjectCrud
 
         $QueryID = $app->dbOld->get_query_id();
 
+        /*
         $app->dbOld->prepared_query("
         UPDATE
           `torrents_group`
@@ -766,6 +767,7 @@ class Torrents extends ObjectCrud
         WHERE
           `ID` = '$GroupID'
         ");
+        */
 
 
         // Fetch album artists

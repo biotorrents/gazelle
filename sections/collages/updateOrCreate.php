@@ -52,8 +52,7 @@ if ($collage->id) {
         # todo
 
         # check if locked
-        $isLocked = $post["isLocked"] ?? 0;
-        if ($isLocked) {
+        if ($collage->attributes->isLocked) {
             throw new Exception("This collage is locked from further editing");
         }
 
@@ -69,10 +68,13 @@ if ($collage->id) {
 
 # handle a post request
 if (!empty($post)) {
-    $identifier = $post["id"] ?? null;
-    $collage = new Gazelle\Collages($identifier);
-
-    $collage->updateOrCreate($post);
+    try {
+        $identifier = $post["id"] ?? null;
+        $collage = new Gazelle\Collages($identifier);
+        $collage->updateOrCreate($post);
+    } catch (Throwable $e) {
+        $errorMessage = $e->getMessage();
+    }
 }
 
 # official tags
@@ -88,7 +90,7 @@ $app->twig->display("collages/createUpdate.twig", [
     "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
 
     "collage" => $collage ?? null,
-    "collageId" => $collageId ?? null,
+    "categories" => Gazelle\Collages::$categories,
     "errorMessage" => $errorMessage ?? null,
     "isUpdate" => $isUpdate ?? null,
     "tagList" => $tagList ?? [],

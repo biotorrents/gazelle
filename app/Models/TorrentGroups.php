@@ -23,18 +23,18 @@ class TorrentGroups extends ObjectCrud
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
-        "category_id" => "categoryId",
+        "categoryId" => "categoryId",
+        "revisionId" => "revisionId",
+        "identifier" => "identifier",
         "title" => "title",
         "subject" => "subject",
         "object" => "object",
-        "year" => "year",
         "workgroup" => "workgroup",
         "location" => "location",
-        "identifier" => "identifier",
-        "tag_list" => "tags",
-        "revision_id" => "revisionId",
+        "year" => "year",
         "description" => "description",
         "picture" => "picture",
+        "tags" => "tags", # json
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -45,6 +45,26 @@ class TorrentGroups extends ObjectCrud
 
 
     /**
+     * create
+     *
+     * @param array $data
+     * @return void
+     */
+    public function create(array $data): void
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        # encode the json fields
+        $data["tags"] = json_encode($data["tags"] ?? []);
+
+        # parent create
+        parent::create($data);
+    }
+
+
+    /**
      * read
      */
     public function read(int|string $identifier = null): void
@@ -52,8 +72,44 @@ class TorrentGroups extends ObjectCrud
         # parent method
         parent::read($identifier);
 
-        # tags
-        $this->attributes->tags = explode(" ", $this->attributes->tags ?? "");
+        # decode the json fields
+        $this->attributes->tags = json_decode($this->attributes->tags ?? []);
+    }
+
+
+    /**
+     * update
+     *
+     * @param array $data
+     * @return void
+     */
+    public function update(array $data): void
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        # encode the json fields
+        $data["tags"] = json_encode($data["tags"] ?? []);
+
+        # parent update
+        parent::update($data);
+    }
+
+
+    /**
+     * delete
+     *
+     * @return void
+     */
+    public function delete(): void
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        # parent delete
+        parent::delete();
     }
 
 

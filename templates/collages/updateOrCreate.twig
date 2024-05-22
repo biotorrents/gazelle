@@ -27,8 +27,7 @@
 
       {# hidden fields #}
       {{ form_token(request.server.REQUEST_URI) }}
-		  <input type="hidden" name="id" value={{ collageId }}>
-		  <input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
+		  <input type="hidden" name="id" value={{ collage.id }}>
 		  <input type="hidden" name="userId" value="{{ user.core.id }}">
 
       {# visible fields #}
@@ -53,7 +52,7 @@
 
 		    <td>
           <select name="category">
-          {% for key, value in env.collageCategories %}
+          {% for key, value in categories %}
             <option value="{{ key }}" {{ (collage and collage.attributes.categoryId == key) ? " selected" : "" }}>{{ value }}</option>
           {% endfor %}
           </select>
@@ -66,10 +65,9 @@
             </li>
 
             <li>
-              <strong>Theme</strong> &mdash; A collage with thematically grouped torrents
+              <strong>Thematic</strong> &mdash; A collage with thematically grouped torrents
             </li>
 
-{#
             <li>
               <strong>Staff Picks</strong> &mdash; A list of staff recommendations for special occasions
             </li>
@@ -77,7 +75,6 @@
             <li>
               <strong>Group Picks</strong> &mdash; A collage that appears on your profile page
             </li>
-#}
           </ul>
 
 		    </td>
@@ -114,7 +111,7 @@
       <tr>
 				<th>Max groups</th>
 				<td>
-          <input type="number" name="maxGroups" value="{{ (collage and collage.attributes.maxGroups) ? collage.attributes.maxGroups : 0 }}">
+          <input type="number" name="maximumGroups" value="{{ (collage and collage.attributes.maximumGroups) ? collage.attributes.maximumGroups : 0 }}">
 				</td>
 			</tr>
 
@@ -122,7 +119,7 @@
       <tr>
 				<th>Max groups per user</th>
 				<td>
-          <input type="number" name="maxGroupsPerUser" value="{{ (collage and collage.attributes.maxGroupsPerUser) ? collage.attributes.maxGroupsPerUser : 0 }}">
+          <input type="number" name="groupsPerUser" value="{{ (collage and collage.attributes.groupsPerUser) ? collage.attributes.groupsPerUser : 0 }}">
 				</td>
 			</tr>
 
@@ -135,7 +132,7 @@
 			</tr>
 
 {# update button #}
-      {% if collage %}
+      {% if isUpdate %}
         <tr>
           <td colspan="2" class="center">
             <input type="submit" class="button-orange" value="update">
