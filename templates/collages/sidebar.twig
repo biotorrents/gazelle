@@ -6,7 +6,7 @@
 
         {% if can({"collages": "create"}) %}
             {# add new collage #}
-		        <a class="button button-primary" href="/collages.php?action=new">create a collage</a>
+		        <a class="button button-primary" href="/collages">create a collage</a>
         {% endif %}
 
         {# back to search #}
@@ -151,7 +151,7 @@
 {% for key, value in stats.topTags %}
 
 <tr>
-<th><a href="/collages.php?action=search&tags={{ tagNameById(key, false) }}">{{ tagNameById(key, false) }}</a></th>
+<th><a href="/collages/browse&tags={{ tagNameById(key, false) }}">{{ tagNameById(key, false) }}</a></th>
 <td class="right">{{ value }}</td>
 </tr>
 

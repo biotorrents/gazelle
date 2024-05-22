@@ -50,7 +50,7 @@ class TorrentGroups extends ObjectCrud
      * @param array $data
      * @return void
      */
-    public function create(array $data): void
+    public function create(array $data = []): void
     {
         throw new Exception("not implemented");
 
@@ -83,7 +83,7 @@ class TorrentGroups extends ObjectCrud
      * @param array $data
      * @return void
      */
-    public function update(array $data): void
+    public function update(array $data = []): void
     {
         throw new Exception("not implemented");
 

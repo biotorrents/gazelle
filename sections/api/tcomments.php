@@ -6,7 +6,7 @@ if (empty($_GET['id']) || !is_numeric($_GET['id'])) {
     \Gazelle\Api\Base::failure(400);
 }
 
-list($NumComments, $Page, $Thread) = Comments::load('torrents', (int)$_GET['id'], false);
+list($NumComments, $Page, $Thread) = \Gazelle\Conversations::load('torrents', (int)$_GET['id'], false);
 
 # Begin printing
 $JsonComments = [];

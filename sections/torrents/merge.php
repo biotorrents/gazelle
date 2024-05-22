@@ -83,7 +83,7 @@ if (empty($_POST['confirm'])) {
     WHERE PageID = '$GroupID'");
 
     //Comments
-    Comments::merge('torrents', $OldGroupID, $NewGroupID);
+    \Gazelle\Conversations::merge('torrents', $OldGroupID, $NewGroupID);
 
     //Collages
     $app->dbOld->query("

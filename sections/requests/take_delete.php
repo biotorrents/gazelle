@@ -46,7 +46,7 @@ if ($CategoryName != 'Music') {
 $app->dbOld->query("DELETE FROM requests WHERE ID = '$RequestID'");
 $app->dbOld->query("DELETE FROM requests_votes WHERE RequestID = '$RequestID'");
 $app->dbOld->query("DELETE FROM requests_tags WHERE RequestID = '$RequestID'");
-Comments::delete_page('requests', $RequestID);
+\Gazelle\Conversations::delete_page('requests', $RequestID);
 
 $app->dbOld->query("
   SELECT ArtistID

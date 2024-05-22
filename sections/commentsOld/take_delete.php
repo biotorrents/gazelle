@@ -12,4 +12,4 @@ if ($app->user->cant(["messages" => "deleteAny"])) {
     error(403);
 }
 
-Comments::delete((int)$_GET['postid']);
+\Gazelle\Conversations::delete((int)$_GET['postid']);

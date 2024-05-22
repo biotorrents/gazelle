@@ -555,7 +555,7 @@ class Creators extends ObjectCrud
         ");
 
         // Delete artist comments, subscriptions and quote notifications
-        Comments::delete_page('artist', $creatorID);
+        \Gazelle\Conversations::delete_page('artist', $creatorID);
         $app->cache->delete("artist_$creatorID");
         $app->cache->delete("artist_groups_$creatorID");
 

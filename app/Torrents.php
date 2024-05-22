@@ -749,7 +749,7 @@ class Torrents
         }
 
         // Comments
-        Comments::delete_page('torrents', $GroupID);
+        \Gazelle\Conversations::delete_page('torrents', $GroupID);
 
         $app->dbOld->prepared_query("
         DELETE

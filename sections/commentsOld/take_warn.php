@@ -29,7 +29,7 @@ if ($UserInfo['Class'] > $app->user->extra['Class']) {
     error(403);
 }
 
-$URL = site_url() . Comments::get_url_query($PostID);
+$URL = site_url() . \Gazelle\Conversations::get_url_query($PostID);
 if ($Length !== 'verbal') {
     $Time = (int) $Length * (7 * 24 * 60 * 60);
     Tools::warn_user($AuthorID, $Time, "$URL - $Reason");
@@ -45,6 +45,6 @@ if ($Length !== 'verbal') {
 }
 Misc::send_pm($AuthorID, $app->user->core['id'], $Subject, $PrivateMessage);
 
-Comments::edit($PostID, $Body);
+\Gazelle\Conversations::edit($PostID, $Body);
 
 Gazelle\Http::redirect("$URL");

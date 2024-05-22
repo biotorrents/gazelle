@@ -291,7 +291,7 @@ View::header($Title, 'comments');
 if ($Count > 0) {
     $app->dbOld->set_query_id($Comments);
     while (list($AuthorID, $Page, $PageID, $Name, $PostID, $Body, $AddedTime, $EditedTime, $EditedUserID) = $app->dbOld->next_record()) {
-        $Link = Comments::get_url($Page, $PageID, $PostID);
+        $Link = \Gazelle\Conversations::get_url($Page, $PageID, $PostID);
         switch ($Page) {
             case 'artist':
                 $Header = " on <a href=\"artist.php?id=$PageID\">$Name</a>";
@@ -311,7 +311,7 @@ if ($Count > 0) {
                 $Header = ' on ' . \Gazelle\Creators::display_artists($Artists[$PageID]) . " <a href=\"torrents.php?id=$PageID\">$Name</a>";
                 break;
         }
-        CommentsView::render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, false, $Header, false);
+        \Gazelle\Conversations::render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, false, $Header, false);
     }
 } else { ?>
   <h2 class="center">No results.</h2>

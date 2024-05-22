@@ -499,7 +499,7 @@ $TorrentDisplayList = ob_get_clean();
 //----------------- End building list and getting stats
 
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
-list($NumComments, $Page, $Thread, $LastRead) = Comments::load('artist', $ArtistID);
+list($NumComments, $Page, $Thread, $LastRead) = \Gazelle\Conversations::load('artist', $ArtistID);
 
 View::header($Name, 'browse,requests,recommend,subscriptions');
 ?>
@@ -859,7 +859,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PA
       <?php
 
 //---------- Begin printing
-CommentsView::render_comments($Thread, $LastRead, "artist.php?id=$ArtistID");
+\Gazelle\Conversations::render_comments($Thread, $LastRead, "artist.php?id=$ArtistID");
 ?>
       <div class="linkbox">
         <?=($Pages)?>

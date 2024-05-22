@@ -132,7 +132,7 @@ if (!$TargetAliasID) {
         }
     }
 
-    Comments::merge('artist', $ArtistID, $TargetArtistID);
+    \Gazelle\Conversations::merge('artist', $ArtistID, $TargetArtistID);
 }
 
 // Clear torrent caches

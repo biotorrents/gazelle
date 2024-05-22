@@ -200,7 +200,7 @@ $DisplayName = $twig->render(
 );
 
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
-list($NumComments, $Page, $Thread, $LastRead) = Comments::load('torrents', $GroupID);
+list($NumComments, $Page, $Thread, $LastRead) = \Gazelle\Conversations::load('torrents', $GroupID);
 
 // Start output
 View::header(
@@ -1112,7 +1112,7 @@ $Pages = Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAG
         <?=$Pages?>
       </div>
       <?php
-CommentsView::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
+\Gazelle\Conversations::render_comments($Thread, $LastRead, "torrents.php?id=$GroupID");
 ?>
       <div class="linkbox">
         <?=$Pages?>

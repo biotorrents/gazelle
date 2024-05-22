@@ -147,7 +147,7 @@ $UserCanEdit = (!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $
 $CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
 
 // Comments (must be loaded before View::header so that subscriptions and quote notifications are handled properly)
-list($NumComments, $Page, $Thread, $LastRead) = Comments::load('requests', $RequestID);
+list($NumComments, $Page, $Thread, $LastRead) = \Gazelle\Conversations::load('requests', $RequestID);
 
 View::header(
     "View request: $Title",
@@ -497,7 +497,7 @@ echo $Pages;
       <?php
 
 //---------- Begin printing
-CommentsView::render_comments($Thread, $LastRead, "requests.php?action=view&amp;id=$RequestID");
+\Gazelle\Conversations::render_comments($Thread, $LastRead, "requests.php?action=view&amp;id=$RequestID");
 
 if ($Pages) { ?>
       <div class="linkbox pager"><?=$Pages?>
