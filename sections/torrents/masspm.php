@@ -13,7 +13,7 @@ SELECT
   t.`GroupID`,
   t.`UserID`,
   t.`Description` AS TorrentDescription,
-  tg.`category_id`,
+  tg.`categoryId`,
   tg.`title` AS Title,
   tg.`year`,
   tg.`artist_id`,

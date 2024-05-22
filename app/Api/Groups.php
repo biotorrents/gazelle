@@ -27,7 +27,7 @@ class Groups extends Base
 
             $ids = $manticore->search("torrents", $request);
             foreach ($ids as $id) {
-                $data[] = \Torrents::get_group_info($id);
+                $data[] = \Gazelle\Torrents::get_group_info($id);
             }
 
             self::success(200, $data);

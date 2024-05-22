@@ -127,13 +127,13 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 /** torrent group info */
 
 
-# Torrents::get_groups
+# \Gazelle\Torrents::get_groups
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("browse", "get torrent groups");
 $groupIds = array_column($searchResults, "id");
 $groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
 
-$torrentGroups = Torrents::get_groups($groupIds);
+$torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
 $app->debug["time"]->stopMeasure("browse", "get torrent groups");
 #!d($torrentGroups);exit;
 

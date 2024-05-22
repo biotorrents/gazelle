@@ -93,7 +93,7 @@ if (!is_array($Info) || !array_key_exists("PlainArtists", $Info) || empty($Info[
         tg.`id` AS GroupID,
         COALESCE(NULLIF(tg.`title`,''), NULLIF(tg.`subject`,''), tg.`object`) AS Name,
         tg.`picture`,
-        tg.`category_id`,
+        tg.`categoryId`,
         t.`Size`,
         t.`FreeTorrent`,
         HEX(t.`info_hash`)
@@ -152,7 +152,7 @@ if ($useToken && intval($leechStatus) === 0) {
     }
 
     # first make sure this isn't already FL, and if it is, do nothing
-    if (!Torrents::has_token($torrentId)) {
+    if (!\Gazelle\Torrents::has_token($torrentId)) {
         if ($tokenCount <= 0) {
             error("You don't have any freeleech tokens left. Please use the regular DL link.");
             exit;
@@ -238,7 +238,7 @@ function add_passkey($announceUri)
 $query = "insert ignore into users_downloads (userId, torrentId, time) values (?, ?, now())";
 $app->dbNew->do($query, [$userId, $torrentId]);
 
-Torrents::set_snatch_update_time($userId, Torrents::SNATCHED_UPDATE_AFTERDL);
+\Gazelle\Torrents::set_snatch_update_time($userId, \Gazelle\Torrents::SNATCHED_UPDATE_AFTERDL);
 $contents = file_get_contents("{$app->env->torrentStore}/$torrentId.torrent");
 $fileName = TorrentsDL::construct_file_name($torrentId);
 

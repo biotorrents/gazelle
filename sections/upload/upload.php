@@ -103,7 +103,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_numeric($_GET['groupid'
     $app->dbOld->prepared_query("
       SELECT
         tg.`id` as GroupID,
-        tg.`category_id`,
+        tg.`categoryId`,
         tg.`title` AS Title,
         tg.`subject`,
         tg.`object` AS TitleJP,

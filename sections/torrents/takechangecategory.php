@@ -39,17 +39,17 @@ if (!$app->dbOld->has_results()) {
     SET PageID = '$GroupID'
     WHERE Page = 'torrents'
       AND PageID = '$OldGroupID'");
-    Torrents::delete_group($OldGroupID);
+    \Gazelle\Torrents::delete_group($OldGroupID);
     $app->cache->delete("torrent_comments_{$GroupID}_catalogue_0");
 } else {
-    Torrents::update_hash($OldGroupID);
+    \Gazelle\Torrents::update_hash($OldGroupID);
 }
 
-Torrents::update_hash($GroupID);
+\Gazelle\Torrents::update_hash($GroupID);
 $app->cache->delete("torrent_download_$TorrentID");
 
 Misc::write_log("Torrent $TorrentID was edited by $app->user->core[username]");
-Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged from group $OldGroupID", 0);
+\Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged from group $OldGroupID", 0);
 
 $app->dbOld->query("
   UPDATE group_log

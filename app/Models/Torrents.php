@@ -273,7 +273,7 @@ class Torrents extends ObjectCrud
 
                 $app->dbOld->query("
                 SELECT
-                  `ID`,
+                  torrents.id,
                   `GroupID`,
                   `Media`,
                   `Container`,
@@ -290,14 +290,14 @@ class Torrents extends ObjectCrud
                   `Snatched`,
                   `Time`,
                   f.`ExpiryTime`,
-                  `ID` AS `HasFile`,
+                  torrents.id AS `HasFile`,
                   `FreeLeechType`,
                   HEX(`info_hash`) AS `info_hash`
                 FROM
                   `torrents`
                 LEFT JOIN `shop_freeleeches` AS f
                 ON
-                  f.`TorrentID` = `ID`
+                  f.`TorrentID` = torrents.id
                 WHERE
                   `GroupID` IN($IDs)
                 ORDER BY
@@ -305,11 +305,11 @@ class Torrents extends ObjectCrud
                   `Media`,
                   `Container`,
                   `Codec`,
-                  `ID`
+                  torrents.id
                 ");
 
                 while ($Torrent = $app->dbOld->next_record(MYSQLI_ASSOC, true)) {
-                    $NotFound[$Torrent['GroupID']]['Torrents'][$Torrent['ID']] = $Torrent;
+                    $NotFound[$Torrent['GroupID']]['Torrents'][$Torrent['id']] = $Torrent;
                 }
                 $app->dbOld->set_query_id($QueryID);
             }
@@ -362,7 +362,7 @@ class Torrents extends ObjectCrud
      * Use this with extract() instead of the volatile list($GroupID, ...)
      * Then use the variables $GroupID, $GroupName, etc
      *
-     * @example  extract(Torrents::array_group($SomeGroup));
+     * @example  extract(\Gazelle\Torrents::array_group($SomeGroup));
      * @param array $Group torrent group
      * @return array Re-key'd array
      */
@@ -374,12 +374,12 @@ class Torrents extends ObjectCrud
           'subject' => $Group['subject'],
           'object' => $Group['object'],
           'year' => $Group['year'],
-          'category_id' => $Group['categoryId'],
+          'categoryId' => $Group['categoryId'],
           'identifier' => $Group['identifier'],
           'workgroup' => $Group['workgroup'],
           'location' => $Group['location'],
           'GroupFlags' => ($Group['Flags'] ?? ''),
-          'tag_list' => json_decode($Group['tags'] ?? []),
+          'tags' => json_decode($Group['tags'] ?? []),
           'picture' => $Group['picture'],
           'Torrents' => $Group['Torrents'],
           'Artists' => $Group['Artists']
@@ -392,7 +392,7 @@ class Torrents extends ObjectCrud
      *
      * Supplements a torrent array with information that only concerns certain users and therefore cannot be cached
      *
-     * @param array $Torrent torrent array preferably in the form used by Torrents::get_groups() or TorrentFunctions::get_group_info()
+     * @param array $Torrent torrent array preferably in the form used by \Gazelle\Torrents::get_groups() or TorrentFunctions::get_group_info()
      * @param int $TorrentID
      */
     public static function torrent_properties(&$Torrent, &$Flags)
@@ -520,9 +520,9 @@ class Torrents extends ObjectCrud
         list($Count) = $app->dbOld->next_record();
 
         if ($Count == 0) {
-            Torrents::delete_group($GroupID);
+            \Gazelle\Torrents::delete_group($GroupID);
         } else {
-            Torrents::update_hash($GroupID);
+            \Gazelle\Torrents::update_hash($GroupID);
         }
 
         // Torrent notifications
@@ -594,7 +594,7 @@ class Torrents extends ObjectCrud
 
         $app->dbOld->prepared_query("
         SELECT
-          `category_id`
+          `categoryId`
         FROM
           `torrents_group`
         WHERE
@@ -748,7 +748,7 @@ class Torrents extends ObjectCrud
         UPDATE
           `torrents_group`
         SET
-          `tag_list` =(
+          `tags` =(
           SELECT
           REPLACE
             (
@@ -1077,7 +1077,7 @@ class Torrents extends ObjectCrud
             \TrackerOld::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
             Misc::write_log(($app->user->core["username"] ?? 'System') . " marked torrent $TorrentID freeleech type $FreeLeechType");
-            Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
+            \Gazelle\Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);
 
             if ($Announce && ($FreeLeechType === 1 || $FreeLeechType === 3)) {
                 # todo: fsockopen(): Unable to connect to 10.10.10.60:51010 (Connection refused)
@@ -1086,7 +1086,7 @@ class Torrents extends ObjectCrud
         }
 
         foreach ($GroupIDs as $GroupID) {
-            Torrents::update_hash($GroupID);
+            \Gazelle\Torrents::update_hash($GroupID);
         }
     }
 
@@ -1094,11 +1094,11 @@ class Torrents extends ObjectCrud
     /**
      * freeleech_groups
      *
-     * Convenience function to allow for passing groups to Torrents::freeleech_torrents()
+     * Convenience function to allow for passing groups to \Gazelle\Torrents::freeleech_torrents()
      *
      * @param array $GroupIDs the groups in question
-     * @param int $FreeNeutral see Torrents::freeleech_torrents()
-     * @param int $FreeLeechType see Torrents::freeleech_torrents()
+     * @param int $FreeNeutral see \Gazelle\Torrents::freeleech_torrents()
+     * @param int $FreeLeechType see \Gazelle\Torrents::freeleech_torrents()
      */
     public static function freeleech_groups($GroupIDs, $FreeNeutral = 1, $FreeLeechType = 0)
     {
@@ -1117,7 +1117,7 @@ class Torrents extends ObjectCrud
 
         if ($app->dbOld->has_results()) {
             $TorrentIDs = $app->dbOld->collect('ID');
-            Torrents::freeleech_torrents($TorrentIDs, $FreeNeutral, $FreeLeechType);
+            \Gazelle\Torrents::freeleech_torrents($TorrentIDs, $FreeNeutral, $FreeLeechType);
         }
         $app->dbOld->set_query_id($QueryID);
     }

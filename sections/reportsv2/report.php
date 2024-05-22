@@ -19,7 +19,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 } else {
     $TorrentID = $_GET['id'];
     $app->dbOld->prepared_query("
-    SELECT tg.`category_id`, t.`GroupID`, u.`Username`
+    SELECT tg.`categoryId`, t.`GroupID`, u.`Username`
     FROM `torrents_group` AS tg
       LEFT JOIN `torrents` AS t ON t.`GroupID` = tg.`id`
       LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`

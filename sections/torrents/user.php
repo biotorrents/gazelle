@@ -97,7 +97,7 @@ if (!empty($_GET['categories'])) {
         if (!is_numeric($Cat)) {
             error(0);
         }
-        $Cats[] = "tg.`category_id` = '" . db_string($Cat) . "'";
+        $Cats[] = "tg.`categoryId` = '" . db_string($Cat) . "'";
     }
     $SearchWhere[] = '(' . implode(' OR ', $Cats) . ')';
 }
@@ -122,9 +122,9 @@ if (!empty($_GET['tags'])) {
             if (empty($Tag)) {
                 continue;
             }
-            $TagList[] = "tg.`tag_list` NOT RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tags` NOT RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
         } else {
-            $TagList[] = "tg.`tag_list` RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
+            $TagList[] = "tg.`tags` RLIKE '[[:<:]]" . db_string($Tag) . "(:[^ ]+)?[[:>:]]'";
         }
     }
 
@@ -234,7 +234,7 @@ if ((empty($_GET['search'])
         t.`ID` AS TorrentID,
         $Time AS Time,
         COALESCE(NULLIF(tg.`title`, ''), NULLIF(tg. subject, ''), tg.`object`) AS Name,
-        tg.`category_id`
+        tg.`categoryId`
       FROM $From
         JOIN `torrents_group` AS tg ON tg.`id` = t.`GroupID`
       WHERE $UserField = '$UserID'
@@ -263,7 +263,7 @@ if ((empty($_GET['search'])
         t.`GroupID`,
         t.`ID` AS TorrentID,
         $Time AS Time,
-        tg.`category_id`,
+        tg.`categoryId`,
         t.`Seeders`,
         t.`Leechers`,
         t.`Snatched`,
@@ -308,7 +308,7 @@ $TorrentsInfo = $app->dbOld->to_array('TorrentID', MYSQLI_ASSOC);
 $app->dbOld->query('SELECT FOUND_ROWS()');
 list($TorrentCount) = $app->dbOld->next_record();
 
-$Results = Torrents::get_groups($GroupIDs);
+$Results = \Gazelle\Torrents::get_groups($GroupIDs);
 $Action = Gazelle\Text::esc($_GET['type']);
 $User = User::user_info($UserID);
 
@@ -522,7 +522,7 @@ foreach ($Categories as $CatKey => $CatName) {
   $PageSize = 0;
       foreach ($TorrentsInfo as $TorrentID => $Info) {
           list($GroupID, , $Time) = array_values($Info);
-          extract(Torrents::array_group($Results[$GroupID]));
+          extract(\Gazelle\Torrents::array_group($Results[$GroupID]));
           $Torrent = $Torrents[$TorrentID];
           $TorrentTags = new Tags($TagList ?? []);
 
@@ -598,7 +598,7 @@ foreach ($Categories as $CatKey => $CatName) {
 
             <?= "$DisplayName\n"; ?>
             <?php
-          $ExtraInfo = Torrents::torrent_info($Torrent);
+          $ExtraInfo = \Gazelle\Torrents::torrent_info($Torrent);
           if ($ExtraInfo) {
               echo "<br>$ExtraInfo";
           } ?>

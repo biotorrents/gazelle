@@ -124,7 +124,7 @@ class TorrentGroups extends ObjectCrud
     public function relationships(): ?array
     {
         return [
-            Torrents::$type => $this->relatedTorrents(),
+            \Gazelle\Torrents::$type => $this->relatedTorrents(),
             Creators::$type => $this->relatedCreators(),
         ];
     }
@@ -146,7 +146,7 @@ class TorrentGroups extends ObjectCrud
 
         $data = [];
         foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => Torrents::$type];
+            $data[] = ["id" => $row, "type" => \Gazelle\Torrents::$type];
         }
 
         return $data;

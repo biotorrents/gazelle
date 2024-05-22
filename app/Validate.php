@@ -666,7 +666,7 @@ class Validate
             }
 
             # add file info to array
-            $temporaryFileList[] = Torrents::filelist_format_file($file);
+            $temporaryFileList[] = \Gazelle\Torrents::filelist_format_file($file);
         } # foreach ($fileList as $file)
 
 

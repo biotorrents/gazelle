@@ -45,8 +45,7 @@ class TorrentFunctions
           g.`workgroup`,
           g.`location`,
           g.`identifier`,
-          g.`category_id`,
-          g.`timestamp`,
+          g.`categoryId`,
             GROUP_CONCAT(DISTINCT tags.`Name` SEPARATOR '|'),
             GROUP_CONCAT(DISTINCT tags.`ID` SEPARATOR '|'),
             GROUP_CONCAT(tt.`UserID` SEPARATOR '|')
@@ -74,7 +73,6 @@ class TorrentFunctions
         SELECT
           `id`,
           `user_id`,
-          `timestamp`,
           `doi`
         FROM
           `literature`
@@ -94,7 +92,6 @@ class TorrentFunctions
         SELECT
           `id`,
           `user_id`,
-          `timestamp`,
           `uri`
         FROM
           `torrents_mirrors`
@@ -179,7 +176,7 @@ class TorrentFunctions
             // Fetch all user specific torrent and group properties
             $TorrentDetails['Flags'] = array('IsSnatched' => false, 'IsLeeching' => false, 'IsSeeding' => false);
             foreach ($TorrentList as &$Torrent) {
-                Torrents::torrent_properties($Torrent, $TorrentDetails['Flags']);
+                \Gazelle\Torrents::torrent_properties($Torrent, $TorrentDetails['Flags']);
             }
         }
 
@@ -343,7 +340,7 @@ class TorrentFunctions
                 $HasFile, $PersonalFL, $IsSnatched, $IsSeeding, $IsLeeching) = array_values($Torrent);
 
             $Reported = false;
-            $Reports = Torrents::get_reports($TorrentID);
+            $Reports = \Gazelle\Torrents::get_reports($TorrentID);
             $NumReports = count($Reports);
 
             if ($NumReports > 0) {
@@ -416,7 +413,7 @@ class TorrentFunctions
             } else {
                 $FileListSplit = explode("\n", $FileList);
                 foreach ($FileListSplit as $File) {
-                    $FileInfo = Torrents::filelist_get_file($File);
+                    $FileInfo = \Gazelle\Torrents::filelist_get_file($File);
                     $FileTable .= sprintf("\n<tr class=\"row\"><td>%s</td><td class=\"number_column\">%s</td></tr>", $FileInfo['name'], \Gazelle\Format::get_size($FileInfo['size']));
                 }
             }
@@ -426,7 +423,7 @@ class TorrentFunctions
             $AddExtra = '&thinsp;|&thinsp;'; // Separator between torrent properties
 
             $TorrentUploader = $Username; // Save this for "Uploaded by:" below
-            // Similar to Torrents::torrent_info()
+            // Similar to \Gazelle\Torrents::torrent_info()
             if (!$ExtraInfo) {
                 $ExtraInfo = $GroupName;
             }
@@ -473,7 +470,7 @@ class TorrentFunctions
         <span>[ <a
                 href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($user['AuthKey'])?>&amp;torrent_pass=<?=($user['torrent_pass'])?>"
                 class="tooltip" title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
-            <?php if (Torrents::can_use_token($Torrent)) { ?>
+            <?php if (\Gazelle\Torrents::can_use_token($Torrent)) { ?>
             | <a href="torrents.php?action=download&amp;id=<?=($TorrentID)?>&amp;authkey=<?=($user['AuthKey'])?>&amp;torrent_pass=<?=($user['torrent_pass'])?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"
                 onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>

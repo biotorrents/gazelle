@@ -50,11 +50,11 @@ for ($i = 0; $i < count($ArtistNames); $i++) {
 
         if ($app->dbOld->affected_rows()) {
             Misc::write_log("Artist $ArtistID ($ArtistName) was added to the group $GroupID ($GroupName) by user ".$app->user->core['id'].' ('.$app->user->core['username'].')');
-            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "added artist $ArtistName", 0);
+            \Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "added artist $ArtistName", 0);
             $app->cache->delete("torrents_details_$GroupID");
             $app->cache->delete("groups_artists_$GroupID"); // Delete group artist cache
             $app->cache->delete("artist_groups_$ArtistID"); // Delete artist group cache
-            Torrents::update_hash($GroupID);
+            \Gazelle\Torrents::update_hash($GroupID);
         }
     }
 }

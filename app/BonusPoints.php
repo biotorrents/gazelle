@@ -352,7 +352,7 @@ class BonusPoints
             # make the torrent freeleech
             $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
             $app->dbNew->do($query, [ $row["id"] ]);
-            \Torrents::freeleech_torrents($row["id"], 1);
+            \Gazelle\Torrents::freeleech_torrents($row["id"], 1);
         }
 
         # return the torrent group
@@ -402,7 +402,7 @@ class BonusPoints
             # make the torrent freeleech
             $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
             $app->dbNew->do($query, [ $row["id"] ]);
-            \Torrents::freeleech_torrents($row["id"], 1);
+            \Gazelle\Torrents::freeleech_torrents($row["id"], 1);
         }
 
         # return the torrent group
@@ -477,7 +477,7 @@ class BonusPoints
                 # make the torrent freeleech
                 $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
                 $app->dbNew->do($query, [ $groupId["id"] ]);
-                \Torrents::freeleech_torrents($groupId["id"], 2);
+                \Gazelle\Torrents::freeleech_torrents($groupId["id"], 2);
             }
         }
 
@@ -533,7 +533,7 @@ class BonusPoints
                 # make the torrent freeleech
                 $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
                 $app->dbNew->do($query, [ $groupId["id"] ]);
-                \Torrents::freeleech_torrents($groupId["id"], 1);
+                \Gazelle\Torrents::freeleech_torrents($groupId["id"], 1);
             }
         }
 
@@ -589,7 +589,7 @@ class BonusPoints
                 # make the torrent freeleech
                 $query = "replace into shop_freeleeches (torrentId, expiryTime) values (?, now() + interval 1 day)";
                 $app->dbNew->do($query, [ $groupId["id"] ]);
-                \Torrents::freeleech_torrents($groupId["id"], 1);
+                \Gazelle\Torrents::freeleech_torrents($groupId["id"], 1);
             }
         }
 

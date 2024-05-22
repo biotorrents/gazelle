@@ -754,9 +754,9 @@ class Stats
 
         # get torrents by category
         $app->dbOld->prepared_query("
-            select torrents_group.category_id, count(torrents.id) as torrents from torrents
+            select torrents_group.categoryId, count(torrents.id) as torrents from torrents
             join torrents_group on torrents_group.id = torrents.groupId
-            group by torrents_group.category_id order by torrents desc
+            group by torrents_group.categoryId order by torrents desc
         ");
 
         $categoryDistribution = $app->dbOld->to_array();

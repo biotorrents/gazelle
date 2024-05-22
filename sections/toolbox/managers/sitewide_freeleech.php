@@ -26,7 +26,7 @@ if (isset($_POST['type'])) {
             JOIN `torrents_group` AS tg ON t.`GroupID` = tg.`id`
             WHERE t.`FreeTorrent` != '2'
             AND (t.`FreeLeechType` = '0' OR t.`FreeLeechType` = '3')
-            AND tg.`tag_list` LIKE '%$Tag%'
+            AND tg.`tags` LIKE '%$Tag%'
             ");
 
             if ($app->dbOld->has_results()) {
@@ -52,7 +52,7 @@ if (isset($_POST['type'])) {
                   `First` = CONVERT(`First`, UNSIGNED INTEGER) + " . (60 * 60 * $Duration)
                 );
 
-                Torrents::freeleech_torrents($IDs, 1, 3, false);
+                \Gazelle\Torrents::freeleech_torrents($IDs, 1, 3, false);
                 echo("Success! Now run the indexer.");
             } else {
                 error('No torrents with that tag exist.');
@@ -94,7 +94,7 @@ if (isset($_POST['type'])) {
           `First` = CONVERT(`First`, UNSIGNED INTEGER) + " . (60 * 60 * $Duration)
             );
 
-            Torrents::freeleech_torrents($IDs, 1, 3, false);
+            \Gazelle\Torrents::freeleech_torrents($IDs, 1, 3, false);
             echo("Success! Now run the indexer.");
         } else {
             error("RIP Oppaitime");

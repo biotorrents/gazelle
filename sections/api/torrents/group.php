@@ -40,10 +40,10 @@ list($TorrentDetails, $TorrentList) = $TorrentCache;
 $Artists = \Gazelle\Creators::get_artist($GroupID);
 
 # Get category name if possible
-if ($TorrentDetails['category_id'] === 0) {
+if ($TorrentDetails['categoryId'] === 0) {
     $CategoryName = 'Unknown';
 } else {
-    $CategoryName = $Categories[$TorrentDetails['category_id'] - 1];
+    $CategoryName = $Categories[$TorrentDetails['categoryId'] - 1];
 }
 
 # Get tag list (name and id)
@@ -81,7 +81,7 @@ $JsonTorrentDetails = [
     'id'            => (int) $TorrentDetails['id'],
     'identifier'    => $TorrentDetails['identifier'],
 
-    'categoryId'   => (int) $TorrentDetails['category_id'],
+    'categoryId'   => (int) $TorrentDetails['categoryId'],
     'categoryName' => $CategoryName,
 
     'title'         => $TorrentDetails['title'],
@@ -112,7 +112,7 @@ foreach ($TorrentList as $Torrent) {
     $FileList = explode("\n", $Torrent['FileList']);
 
     foreach ($FileList as &$File) {
-        $File = Torrents::filelist_old_format($File);
+        $File = \Gazelle\Torrents::filelist_old_format($File);
     }
 
     # todo: Make a nested object
@@ -121,7 +121,7 @@ foreach ($TorrentList as $Torrent) {
     $FileList = implode('|||', $FileList);
     $Userinfo = User::user_info($Torrent['UserID']);
 
-    $Reports = Torrents::get_reports($Torrent['ID']);
+    $Reports = \Gazelle\Torrents::get_reports($Torrent['ID']);
     $Torrent['Reported'] = count($Reports) > 0;
 
     # Torrent details response

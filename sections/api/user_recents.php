@@ -32,7 +32,7 @@ if (true) {
     ON
       t.`GroupID` = g.`id`
     WHERE
-      s.`uid` = '$UserID' AND g.`category_id` = '1' AND g.`picture` != ''
+      s.`uid` = '$UserID' AND g.`categoryId` = '1' AND g.`picture` != ''
     GROUP BY
       g.`id`
     ORDER BY
@@ -65,7 +65,7 @@ if (true) {
     ON
       t.`GroupID` = g.`id`
     WHERE
-      t.`UserID` = '$UserID' AND g.`category_id` = '1' AND g.`picture` != ''
+      t.`UserID` = '$UserID' AND g.`categoryId` = '1' AND g.`picture` != ''
     GROUP BY
       g.`id`
     ORDER BY

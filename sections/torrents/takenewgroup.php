@@ -110,12 +110,12 @@ if (empty($_POST['confirm'])) {
     FROM torrents
     WHERE GroupID = '$OldGroupID'");
     if (!$app->dbOld->has_results()) {
-        Torrents::delete_group($OldGroupID);
+        \Gazelle\Torrents::delete_group($OldGroupID);
     } else {
-        Torrents::update_hash($OldGroupID);
+        \Gazelle\Torrents::update_hash($OldGroupID);
     }
 
-    Torrents::update_hash($GroupID);
+    \Gazelle\Torrents::update_hash($GroupID);
 
     $app->cache->delete("torrent_download_$TorrentID");
 

@@ -14,7 +14,7 @@ $app = Gazelle\App::go();
 $query = "select torrentId from shop_freeleeches where expiryTime < now()";
 $torrentIds = $app->dbNew->column($query, []);
 
-Torrents::freeleech_torrents($torrentIds, 0, 0);
+\Gazelle\Torrents::freeleech_torrents($torrentIds, 0, 0);
 
 $query = "delete from shop_freeleeches where expiryTime < now()";
 $app->dbNew->do($query, []);

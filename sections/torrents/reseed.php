@@ -42,8 +42,8 @@ WHERE
   `ID` = '$TorrentID'
 ");
 
-$Group = Torrents::get_groups(array($GroupID));
-extract(Torrents::array_group($Group[$GroupID]));
+$Group = \Gazelle\Torrents::get_groups(array($GroupID));
+extract(\Gazelle\Torrents::array_group($Group[$GroupID]));
 
 $Name = '';
 #$Name .= \Gazelle\Creators::display_artists(array('1' => $Artists), false, true);

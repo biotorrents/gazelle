@@ -266,13 +266,13 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
       FROM torrents
       WHERE ID = $TorrentID");
         list($GroupID, $InfoHash) = $app->dbOld->next_record();
-        Torrents::delete_torrent($TorrentID, 0, $ResolveType['reason']);
+        \Gazelle\Torrents::delete_torrent($TorrentID, 0, $ResolveType['reason']);
 
         //$InfoHash = unpack("H*", $InfoHash);
         $Log .= ' ('.strtoupper($InfoHash).')';
         Misc::write_log($Log);
         $Log = 'deleted torrent for the reason: '.$ResolveType['title'].'. ( '.$Escaped['log_message'].' )';
-        Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $Log, 0);
+        \Gazelle\Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $Log, 0);
     } else {
         $Log = "No log message (torrent wasn't deleted).";
     }

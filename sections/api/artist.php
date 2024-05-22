@@ -127,7 +127,7 @@ if (($Importances = $app->cache->get("artist_groups_$ArtistID")) === false) {
     }
 }
 if (count($GroupIDs) > 0) {
-    $TorrentList = Torrents::get_groups($GroupIDs, true, true);
+    $TorrentList = \Gazelle\Torrents::get_groups($GroupIDs, true, true);
 } else {
     $TorrentList = [];
 }
@@ -180,7 +180,7 @@ foreach ($GroupIDs as $GroupID) {
         continue;
     }
     $Group = $TorrentList[$GroupID];
-    extract(Torrents::array_group($Group));
+    extract(\Gazelle\Torrents::array_group($Group));
 
     foreach ($Artists as &$Artist) {
         $Artist['id'] = (int)$Artist['id'];

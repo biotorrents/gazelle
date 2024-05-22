@@ -48,7 +48,7 @@ class TorrentGroups extends Base
             "id" => $this->id,
             "type" => "torrentGroups",
             "attributes" => [
-                "categoryId" => $this->category_id,
+                "categoryId" => $this->categoryId,
                 "description" => $this->description,
                 "identifier" => $this->identifier,
                 "location" => $this->location,
@@ -56,7 +56,7 @@ class TorrentGroups extends Base
                 "picture" => $this->picture,
                 "revisionId" => $this->revision_id,
                 "subject" => $this->subject,
-                "tags" => explode(" ", $this->tag_list),
+                "tags" => explode(" ", $this->tags),
                 "title" => $this->title,
                 "workgroup" => $this->workgroup,
                 "year" => $this->year,

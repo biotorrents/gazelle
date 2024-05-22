@@ -36,7 +36,7 @@ $app->dbOld->query("
 SELECT
   t.`UserID`,
   t.`Time`,
-  tg.`category_id`,
+  tg.`categoryId`,
   tg.`identifier`
 FROM
   `torrents` AS t

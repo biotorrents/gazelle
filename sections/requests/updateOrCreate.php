@@ -171,7 +171,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
         tg.`identifier`,
         tg.`picture`,
         GROUP_CONCAT(t.Name SEPARATOR ', '),
-        tg.`category_id`
+        tg.`categoryId`
         FROM `torrents_group` AS tg
         JOIN `torrents_tags` AS tt ON tt.`GroupID` = tg.`id`
         JOIN `tags` AS t ON t.`ID` = tt.`TagID`

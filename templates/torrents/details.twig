@@ -78,11 +78,11 @@
 
 			{# tags #}
 		    {#
-			{% if groupDetails.tag_list is not empty %}
+			{% if groupDetails.tags is not empty %}
 				<tr>
 					<th>#️ Tags</th>
 		
-					<td>{{ displayTags(item.tag_list)|raw }}</td>
+					<td>{{ displayTags(item.tags)|raw }}</td>
 		
 					<td/>
 				</tr>
@@ -91,11 +91,11 @@
 
 			{# creators #}
 			{#
-			{% if groupDetails.tag_list is not empty %}
+			{% if groupDetails.tags is not empty %}
 				<tr>
 					<th>#️ Tags</th>
 			
-					<td>{{ displayTags(item.tag_list)|raw }}</td>
+					<td>{{ displayTags(item.tags)|raw }}</td>
 			
 					<td/>
 				</tr>
@@ -669,7 +669,7 @@ foreach ($TorrentList as $Torrent) {
     ) = array_values($Torrent);
 
     $Reported = false;
-    $Reports = Torrents::get_reports($TorrentID);
+    $Reports = \Gazelle\Torrents::get_reports($TorrentID);
     $NumReports = count($Reports);
 
     if ($NumReports > 0) {
@@ -737,7 +737,7 @@ foreach ($TorrentList as $Torrent) {
     } else {
         $FileListSplit = explode("\n", $FileList);
         foreach ($FileListSplit as $File) {
-            $FileInfo = Torrents::filelist_get_file($File);
+            $FileInfo = \Gazelle\Torrents::filelist_get_file($File);
             $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], \Gazelle\Format::get_size($FileInfo['size']));
         }
     }
@@ -747,7 +747,7 @@ foreach ($TorrentList as $Torrent) {
     $ExtraInfo = ''; // String that contains information on the torrent (e.g., format and encoding)
     $AddExtra = '&Tab;|&Tab;'; // Separator between torrent properties
 
-    // Similar to Torrents::torrent_info()
+    // Similar to \Gazelle\Torrents::torrent_info()
 
 
 

@@ -460,14 +460,14 @@ $revisionId = $data["revisionId"] ?? null;
 # does it belong in a group?
 if ($groupId) {
     $query = "
-        select id, picture, description, revision_id, title, year, tag_list
+        select id, picture, description, revision_id, title, year, tags
         from torrents_group where id = ?
     ";
     $row = $app->dbNew->row($query, [$groupId]);
 
     if ($row) {
         # tagList
-        $data["tagList"] = str_replace([" ", ".", "_"], [", ", ".", "."], $row["tag_list"]);
+        $data["tagList"] = str_replace([" ", ".", "_"], [", ", ".", "."], $row["tags"]);
 
         # picture
         if (!$data["picture"] && $row["picture"]) {
@@ -515,17 +515,17 @@ if (!$groupId) {
 if (!$groupId) {
     $query = "
         insert into torrents_group
-            (category_id, title, subject, object, year,
+            (categoryId, title, subject, object, year,
             location, workgroup, identifier, timestamp,
             description, picture)
         values
-            (:category_id, :title, :subject, :object, :year,
+            (:categoryId, :title, :subject, :object, :year,
             :location, :workgroup, :identifier, now(),
             :description, :picture)
     ";
 
     $variables = [
-        "category_id" => $data["categoryId"],
+        "categoryId" => $data["categoryId"],
         "title" => $data["title"],
         "subject" => $data["subject"],
         "object" => $data["object"],
@@ -643,7 +643,7 @@ if ($data["freeleechReason"] === 3) {
           ON DUPLICATE KEY UPDATE
             ExpiryTime = FROM_UNIXTIME(UNIX_TIMESTAMP(ExpiryTime) + ($Expiry - FROM_UNIXTIME(NOW())))");
     } else {
-        Torrents::freeleech_torrents($torrentId, 0, 0);
+        \Gazelle\Torrents::freeleech_torrents($torrentId, 0, 0);
     }
 }
 */
@@ -775,10 +775,10 @@ $torrentLogMessage = "Torrent {$torrentId} - {$data["title"]} - "
 Misc::write_log($torrentLogMessage);
 
 $groupLogMessage = "uploaded " . Gazelle\Text::float($torrentData["dataSize"] / (1024 * 1024), 2) . " MB";
-Torrents::write_group_log($groupId, $torrentId, $app->user->core["id"], $groupLogMessage, 0);
+\Gazelle\Torrents::write_group_log($groupId, $torrentId, $app->user->core["id"], $groupLogMessage, 0);
 
 # update hash
-Torrents::update_hash($groupId);
+\Gazelle\Torrents::update_hash($groupId);
 $app->debug["messages"]->info("manticore updated");
 
 
@@ -876,7 +876,7 @@ $torrentInfo = [
 
 $announceMessage = "[{$categoryName}]"
     . " " . Illuminate\Support\Str::limit($data["title"]) . " "
-    . "[ " . Torrents::torrent_info($torrentInfo, true, false, false) . " ]"
+    . "[ " . \Gazelle\Torrents::torrent_info($torrentInfo, true, false, false) . " ]"
     . " - " . trim(implode(", ", $data["tagList"]))
     . " - " . site_url() . "/torrents.php?id={$groupId}&torrentId={$torrentId}"
     . " - " . site_url() . "/torrents.php?action=download&id={$torrentId}";

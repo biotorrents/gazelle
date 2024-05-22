@@ -44,7 +44,7 @@ $query = "select text from openai where groupId = ?";
 $openAiDescription = $app->dbNew->single($query, [$groupId]);
 
 # alternative pictures
-$query = "select id, image, summary, userId, time from cover_art where groupId = ? order by time asc";
+$query = "select id, image, summary, userId from cover_art where groupId = ?";
 $coverArt = $app->dbNew->multi($query, [$groupId]) ?? [];
 
 
@@ -191,7 +191,7 @@ $DisplayName = $twig->render(
     [
       'db' => $ENV->DB,
       'g' => $TorrentDetails,
-      #'cat_icon' => $ENV->CATS->{$TorrentDetails['category_id']}->Icon,
+      #'cat_icon' => $ENV->CATS->{$TorrentDetails['categoryId']}->Icon,
       'url' => Gazelle\Format::get_url($_GET),
       'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
       'thumb' => Gazelle\Images::process($CoverArt, 'thumb'),
@@ -483,7 +483,7 @@ foreach ($TorrentList as $Torrent) {
     ) = array_values($Torrent);
 
     $Reported = false;
-    $Reports = Torrents::get_reports($TorrentID);
+    $Reports = \Gazelle\Torrents::get_reports($TorrentID);
     $NumReports = count($Reports);
 
     if ($NumReports > 0) {
@@ -551,7 +551,7 @@ foreach ($TorrentList as $Torrent) {
     } else {
         $FileListSplit = explode("\n", $FileList);
         foreach ($FileListSplit as $File) {
-            $FileInfo = Torrents::filelist_get_file($File);
+            $FileInfo = \Gazelle\Torrents::filelist_get_file($File);
             $FileTable .= sprintf("\n<tr class='row'><td>%s</td><td class='number_column nobr'>%s</td></tr>", $FileInfo['name'], Gazelle\Format::get_size($FileInfo['size']));
         }
     }
@@ -561,7 +561,7 @@ foreach ($TorrentList as $Torrent) {
     $ExtraInfo = ''; // String that contains information on the torrent (e.g., format and encoding)
     $AddExtra = '&Tab;|&Tab;'; // Separator between torrent properties
 
-    // Similar to Torrents::torrent_info()
+    // Similar to \Gazelle\Torrents::torrent_info()
     if ($Media) {
         $ExtraInfo .= '<x style="tooltip" title="Platform">' . Gazelle\Text::esc($Media) . '</x>';
     }
@@ -665,7 +665,7 @@ foreach ($TorrentList as $Torrent) {
             <span>[ <a href="<?=$TorrentDL?>" class="tooltip"
                 title="Download"><?=($HasFile ? 'DL' : 'Missing')?></a>
               <?php
-    if (Torrents::can_use_token($Torrent)) { ?>
+    if (\Gazelle\Torrents::can_use_token($Torrent)) { ?>
               | <a
                 href="torrents.php?action=download&amp;id=<?=$TorrentID ?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"

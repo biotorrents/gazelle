@@ -703,7 +703,7 @@ foreach ($Collages as $CollageInfo) {
     SELECT
       ct.GroupID,
       tg.`picture`,
-      tg.`category_id`
+      tg.`categoryId`
     FROM
       collages_torrents AS ct
     JOIN torrents_group AS tg
@@ -730,8 +730,8 @@ foreach ($Collages as $CollageInfo) {
       </div>
       <div id="user_collage_images" class="collage_images" data-wall-child=".collage_image" data-wall-size="5">
         <?php foreach ($Collage as $C) {
-            $Group = Torrents::get_groups(array($C['GroupID']), true, true, false);
-            extract(Torrents::array_group($Group[$C['GroupID']]));
+            $Group = \Gazelle\Torrents::get_groups(array($C['GroupID']), true, true, false);
+            extract(\Gazelle\Torrents::array_group($Group[$C['GroupID']]));
 
             if (!$C['WikiImage']) {
                 $C['WikiImage'] = staticServer . '/images/noartwork.webp';

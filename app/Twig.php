@@ -218,10 +218,10 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        # Torrents::can_use_token
+        # \Gazelle\Torrents::can_use_token
         $twig->addFunction(new \Twig\TwigFunction("canUseToken", function ($torrentId) {
             return new \Twig\Markup(
-                \Torrents::can_use_token($torrentId),
+                \Gazelle\Torrents::can_use_token($torrentId),
                 "UTF-8"
             );
         }));

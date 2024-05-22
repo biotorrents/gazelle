@@ -38,10 +38,10 @@ if (!isset($TorrentList[$TorrentID])) {
 $GroupID = $TorrentDetails['ID'];
 $Artists = \Gazelle\Creators::get_artist($GroupID);
 
-if ($TorrentDetails['category_id'] === 0) {
+if ($TorrentDetails['categoryId'] === 0) {
     $CategoryName = 'Unknown';
 } else {
-    $CategoryName = $Categories[$TorrentDetails['category_id'] - 1];
+    $CategoryName = $Categories[$TorrentDetails['categoryId'] - 1];
 }
 
 $TagList = explode('|', $TorrentDetails['GROUP_CONCAT(DISTINCT tags.Name SEPARATOR \'|\')']);
@@ -56,7 +56,7 @@ $JsonTorrentDetails = [
   'authors'      => $Artists,
   'year'         => (int) $TorrentDetails['published'],
   'identifier'    => $TorrentDetails['identifier'],
-  'categoryId'   => (int) $TorrentDetails['category_id'],
+  'categoryId'   => (int) $TorrentDetails['categoryId'],
   'icategoryName' => $CategoryName,
   'timestamp'         => $TorrentDetails['timestamp'],
   'bookmarked' => Bookmarks::isBookmarked('torrent', $GroupID),
@@ -65,13 +65,13 @@ $JsonTorrentDetails = [
 
 $Torrent = $TorrentList[$TorrentID];
 
-$Reports = Torrents::get_reports($TorrentID);
+$Reports = \Gazelle\Torrents::get_reports($TorrentID);
 $Torrent['Reported'] = (count($Reports) > 0);
 
 // Convert file list back to the old format
 $FileList = explode("\n", $Torrent['FileList']);
 foreach ($FileList as &$File) {
-    $File = Torrents::filelist_old_format($File);
+    $File = \Gazelle\Torrents::filelist_old_format($File);
 }
 
 unset($File);

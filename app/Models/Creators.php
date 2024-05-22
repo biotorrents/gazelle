@@ -333,13 +333,13 @@ class Creators extends ObjectCrud
             $app->dbOld->prepared_query("
             SELECT
               ta.`GroupID`,
-              ta.`ArtistID`,
+              ta.`creatorId`,
               ag.`Name`
             FROM
-              `torrents_artists` AS ta
-            JOIN `artists_group` AS ag
+              `creators_groups` AS ta
+            JOIN `creators` AS ag
             ON
-              ta.`ArtistID` = ag.`ArtistID`
+              ta.`creatorId` = ag.`id`
             WHERE
               ta.`GroupID` IN($IDs)
             ORDER BY

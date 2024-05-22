@@ -162,7 +162,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE TagID = $TagID;");
             if ($app->dbOld->has_results()) {
                 while (list($GroupID) = $app->dbOld->next_record()) {
-                    Torrents::update_hash($GroupID);
+                    \Gazelle\Torrents::update_hash($GroupID);
                 }
             }
         } elseif ($Mode == MODE_DELETE) {
@@ -188,7 +188,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
             // 8) update the newly tagless groups
             foreach ($AffectedGroups as $AffectedGroup) {
                 list($GroupID) = $AffectedGroup;
-                Torrents::update_hash($GroupID);
+                \Gazelle\Torrents::update_hash($GroupID);
             }
         } elseif ($Mode == MODE_MERGE) {
             // HARD! merge two tags together and update usage
@@ -289,7 +289,7 @@ if (isset($_GET['tag']) || isset($_GET['replace'])) {
         WHERE TagID = $ReplacementID;");
             if ($app->dbOld->has_results()) {
                 while (list($GroupID) = $app->dbOld->next_record()) {
-                    Torrents::update_hash($GroupID);
+                    \Gazelle\Torrents::update_hash($GroupID);
                 }
             }
         }

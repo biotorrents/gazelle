@@ -11,7 +11,7 @@
 
 	{# category icon #}
 	<td class="center">
-		{{group.category_id|categoryIcon }}
+		{{group.categoryId|categoryIcon }}
 	</td>
 
 
@@ -61,8 +61,8 @@
 		</div>
 
 		{# tags #}
-		{% if group.tag_list is not empty %}
-			<div class="tooltip tagList" title="Tags">{{ displayTags(group.tag_list)|raw }}</div>
+		{% if group.tags is not empty %}
+			<div class="tooltip tagList" title="Tags">{{ displayTags(group.tags)|raw }}</div>
 		{% endif %}
 
 		{# creators #}
@@ -120,7 +120,7 @@
 
 	{# category icon #}
 <td class="center">
-<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.ID }}">Go&nbsp;»</a>
+<a href="/torrents.php?id={{ group.id }}#torrentId-{{ torrent.id }}">Go&nbsp;»</a>
 </td>
 
 

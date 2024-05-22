@@ -49,7 +49,7 @@ WHERE
 
 
 $app->cache->delete("torrents_details_$group_id");
-Torrents::update_hash($group_id);
+\Gazelle\Torrents::update_hash($group_id);
 
 $app->dbOld->query("
 SELECT
@@ -71,17 +71,17 @@ $Title3 = 'Strain/Variety';
 
 if ($OldTitle !== $NewTitle) {
     Misc::write_log("Torrent Group $group_id ($OldTitle)'s $Title1 was changed to '$NewTitle' from '$OldTitle' by " . $app->user->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
+    \Gazelle\Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title1 changed to '$NewTitle' from '$OldTitle'", 0);
 }
 
 if ($OldSubject !== $NewSubject) {
     Misc::write_log("Torrent Group $group_id ($OldSubject)'s $Title2 was changed to '$NewSubject' from '$OldSubject' by " . $app->user->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
+    \Gazelle\Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title2 changed to '$NewSubject' from '$OldSubject'", 0);
 }
 
 if ($OldObject !== $NewObject) {
     Misc::write_log("Torrent Group $group_id ($OldObject)'s $Title3 was changed to '$NewObject' from '$OldObject' by " . $app->user->core['username']);
-    Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
+    \Gazelle\Torrents::write_group_log($group_id, 0, $app->user->core['id'], "$Title3 changed to '$NewObject' from '$OldObject'", 0);
 }
 
 Gazelle\Http::redirect("torrents.php?id=$group_id");

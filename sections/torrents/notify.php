@@ -136,7 +136,7 @@ $Pages = \Gazelle\Format::get_pages($Page, $TorrentCount, NOTIFICATIONS_PER_PAGE
 if (!empty($GroupIDs)) {
     $GroupIDs = array_keys($GroupIDs);
     $FilterIDs = array_keys($FilterIDs);
-    $TorrentGroups = Torrents::get_groups($GroupIDs);
+    $TorrentGroups = \Gazelle\Torrents::get_groups($GroupIDs);
 
     // Get the relevant filter labels
     $app->dbOld->query('
@@ -312,7 +312,7 @@ if (empty($Results)) {
             */
 
             // append extra info to torrent title
-            $ExtraInfo = Torrents::torrent_info($TorrentInfo, true, true);
+            $ExtraInfo = \Gazelle\Torrents::torrent_info($TorrentInfo, true, true);
 
             $TorrentTags = new Tags($GroupInfo['TagList']);
 
@@ -338,7 +338,7 @@ if (empty($Results)) {
               [ <a
                 href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>"
                 class="tooltip" title="Download">DL</a>
-              <?php if (Torrents::can_use_token($TorrentInfo)) { ?>
+              <?php if (\Gazelle\Torrents::can_use_token($TorrentInfo)) { ?>
               | <a
                 href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"

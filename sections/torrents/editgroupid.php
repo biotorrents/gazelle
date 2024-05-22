@@ -95,14 +95,14 @@ if (empty($_POST['confirm'])) {
         AND PageID = '$OldGroupID'");
         $app->cache->delete("torrent_comments_{$GroupID}_catalogue_0");
         $app->cache->delete("torrent_comments_$GroupID");
-        Torrents::delete_group($OldGroupID);
+        \Gazelle\Torrents::delete_group($OldGroupID);
     } else {
-        Torrents::update_hash($OldGroupID);
+        \Gazelle\Torrents::update_hash($OldGroupID);
     }
-    Torrents::update_hash($GroupID);
+    \Gazelle\Torrents::update_hash($GroupID);
 
     Misc::write_log("Torrent $TorrentID was edited by " . $app->user->core['username']); // TODO: this is probably broken
-    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged group $OldGroupID", 0);
+    \Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "merged group $OldGroupID", 0);
     $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $GroupID

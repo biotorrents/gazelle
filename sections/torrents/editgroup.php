@@ -26,7 +26,7 @@ SELECT
   tg.`workgroup`,
   tg.`location`,
   tg.`identifier`,
-  tg.`category_id`
+  tg.`categoryId`
 FROM
   `torrents_group` AS tg
 LEFT JOIN `wiki_torrents` AS wt
@@ -40,7 +40,7 @@ WHERE
 if (!$app->dbOld->has_results()) {
     error(404);
 }
-list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $category_id) = $app->dbOld->next_record();
+list($title, $subject, $object, $Image, $Body, $picture, $description, $published, $workgroup, $location, $identifier, $categoryId) = $app->dbOld->next_record();
 
 $app->dbOld->prepared_query("
 SELECT

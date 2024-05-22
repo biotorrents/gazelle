@@ -66,7 +66,7 @@ foreach ($Results as $Result) {
     }
 }
 
-$TorrentGroups = Torrents::get_groups($TorrentGroups, true, true, false);
+$TorrentGroups = \Gazelle\Torrents::get_groups($TorrentGroups, true, true, false);
 $Requests = Gazelle\Requests::get_requests($Requests);
 
 //Start printing page

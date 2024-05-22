@@ -824,7 +824,7 @@ class Users extends ObjectCrud
             $app->cache->set("bookmarks_group_ids_$UserID", [$GroupIDs, $BookmarkData], 3600);
         }
 
-        $TorrentList = \Torrents::get_groups($GroupIDs);
+        $TorrentList = \Gazelle\Torrents::get_groups($GroupIDs);
         return [$GroupIDs, $BookmarkData, $TorrentList];
     }
 
@@ -1588,7 +1588,7 @@ class Users extends ObjectCrud
         $data = [];
         foreach ($ref as $row) {
             $query = "
-                select collages_torrents.groupId, torrents_group.picture, torrents_group.category_id
+                select collages_torrents.groupId, torrents_group.picture, torrents_group.categoryId
                 from collages_torrents join torrents_group on torrents_group.id = collages_torrents.groupId
                 where collages_torrents.collageId = ?
                 order by collages_torrents.sort limit 5

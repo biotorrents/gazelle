@@ -86,11 +86,11 @@ $app->dbOld->query("
     ");
 
 $GroupIDs = $app->dbOld->collect('GroupID');
-$GroupList = Torrents::get_groups($GroupIDs);
+$GroupList = \Gazelle\Torrents::get_groups($GroupIDs);
 
 foreach ($GroupIDs as $GroupID) {
     if (!empty($GroupList[$GroupID])) {
-        $GroupDetails = Torrents::array_group($GroupList[$GroupID]);
+        $GroupDetails = \Gazelle\Torrents::array_group($GroupList[$GroupID]);
         $TorrentList = [];
 
         foreach ($GroupDetails['Torrents'] as $Torrent) {
@@ -103,7 +103,7 @@ foreach ($GroupIDs as $GroupID) {
               'leechers'    => (int)$Torrent['Leechers'],
               'snatched'    => (int)$Torrent['Snatched'],
               'freeTorrent' => ($Torrent['FreeTorrent'] === 1),
-              'reported'    => (count(Torrents::get_reports((int)$Torrent['ID'])) > 0),
+              'reported'    => (count(\Gazelle\Torrents::get_reports((int)$Torrent['ID'])) > 0),
               'time'        => $Torrent['Time']
             );
         }

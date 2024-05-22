@@ -122,7 +122,7 @@
 				{% include "torrentForm/creatorList.twig" with variables %}
 
 				{# tagList #}
-				{% set variables = {"db": env.database.tag_list, "value": (data.tagList) ? data.tagList : ""} %}
+				{% set variables = {"db": env.database.tags, "value": (data.tagList) ? data.tagList : ""} %}
 				{% include "torrentForm/tagList.twig" with variables %}
 
 				{## #}

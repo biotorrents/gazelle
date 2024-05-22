@@ -35,7 +35,7 @@ $app->dbOld->query('SELECT FOUND_ROWS()');
 list($TorrentCount) = $app->dbOld->next_record();
 
 if (count($GroupIDs)) {
-    $TorrentGroups = Torrents::get_groups($GroupIDs);
+    $TorrentGroups = \Gazelle\Torrents::get_groups($GroupIDs);
     $app->dbOld->query("
     UPDATE users_notify_torrents
     SET UnRead = '0'
@@ -68,7 +68,7 @@ foreach ($FilterGroups as $FilterID => $FilterResults) {
         //    $GroupID = $Result['GroupID'];
 
         $GroupInfo = $TorrentGroups[$Result['GroupID']];
-        extract(Torrents::array_group($GroupInfo)); // all group data
+        extract(\Gazelle\Torrents::array_group($GroupInfo)); // all group data
         $TorrentInfo = $GroupInfo['Torrents'][$TorrentID];
 
         if ($Result['UnRead'] == 1) {

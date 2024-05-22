@@ -70,7 +70,7 @@ ON
   t.`GroupID` = c.`GroupID` AND c.`CollageID` = '$CollageID'
 INNER JOIN `torrents_group` AS tg
 ON
-  tg.`id` = t.`GroupID` AND tg.`category_id` = '1'
+  tg.`id` = t.`GroupID` AND tg.`categoryId` = '1'
 ORDER BY
   t.`GroupID` ASC,
   `Rank` DESC,

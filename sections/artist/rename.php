@@ -71,7 +71,7 @@ if (!$TargetAliasID) {
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
             $app->cache->delete("groups_artists_$GroupID"); // Delete group artist cache
-            Torrents::update_hash($GroupID);
+            \Gazelle\Torrents::update_hash($GroupID);
         }
     }
 
@@ -112,7 +112,7 @@ if (!$TargetAliasID) {
     if (!empty($Groups)) {
         foreach ($Groups as $GroupID) {
             $app->cache->delete("groups_artists_$GroupID");
-            Torrents::update_hash($GroupID);
+            \Gazelle\Torrents::update_hash($GroupID);
         }
     }
 

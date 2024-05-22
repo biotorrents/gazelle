@@ -104,7 +104,7 @@ if (($GroupIDs = $app->cache->get("artist_groups_$ArtistID")) === false) {
 }
 
 if (count($GroupIDs) > 0) {
-    $TorrentList = Torrents::get_groups($GroupIDs, true, true);
+    $TorrentList = \Gazelle\Torrents::get_groups($GroupIDs, true, true);
 } else {
     $TorrentList = [];
 }
@@ -185,7 +185,7 @@ $OldGroupID = 0;
     <?php
 
 foreach ($TorrentList as $Group) {
-    extract(Torrents::array_group($TorrentList[$Group['id']]), EXTR_OVERWRITE);
+    extract(\Gazelle\Torrents::array_group($TorrentList[$Group['id']]), EXTR_OVERWRITE);
 
     if ($GroupID === $OldGroupID) {
         continue;
@@ -206,7 +206,7 @@ foreach ($TorrentList as $Group) {
               'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
               'artists' => \Gazelle\Creators::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
-              'extra_info' => Torrents::torrent_info($Data, true, true),
+              'extra_info' => \Gazelle\Torrents::torrent_info($Data, true, true),
             ]
         );
 
@@ -298,7 +298,7 @@ foreach ($TorrentList as $Group) {
       <?php
     foreach ($Torrents as $TorrentID => $Torrent) {
         $Reported = false;
-        $Reports = Torrents::get_reports($TorrentID);
+        $Reports = \Gazelle\Torrents::get_reports($TorrentID);
         if (count($Reports) > 0) {
             $Reported = true;
         }
@@ -312,7 +312,7 @@ foreach ($TorrentList as $Group) {
           [ <a href="<?=$TorrentDL?>" class="tooltip"
             title="Download">DL</a>
           <?php
-        if (Torrents::can_use_token($Torrent)) { ?>
+        if (\Gazelle\Torrents::can_use_token($Torrent)) { ?>
           | <a
             href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
             class="tooltip" title="Use a FL Token"
@@ -323,7 +323,7 @@ foreach ($TorrentList as $Group) {
             class="tooltip" title="Report">RP</a> ]
         </span>
         &nbsp;&nbsp;&raquo;&nbsp; <a
-          href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
+          href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=\Gazelle\Torrents::torrent_info($Torrent)?></a>
       </td>
       <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
       </td>
@@ -358,7 +358,7 @@ foreach ($TorrentList as $Group) {
               'thumb' => \Gazelle\Images::process(($CoverArt ?? ""), 'thumb'),
               'artists' => \Gazelle\Creators::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
-              'extra_info' => Torrents::torrent_info($Torrent, true, true),
+              'extra_info' => \Gazelle\Torrents::torrent_info($Torrent, true, true),
             ]
         );
 
@@ -368,7 +368,7 @@ foreach ($TorrentList as $Group) {
         $DisplayName = '';
 
         $Reported = false;
-        $Reports = Torrents::get_reports($TorrentID);
+        $Reports = \Gazelle\Torrents::get_reports($TorrentID);
         if (count($Reports) > 0) {
             $Reported = true;
         }
@@ -419,7 +419,7 @@ foreach ($TorrentList as $Group) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
-        #$ExtraInfo = Torrents::torrent_info($Torrent, true, true);
+        #$ExtraInfo = \Gazelle\Torrents::torrent_info($Torrent, true, true);
 
         $SnatchedGroupClass = ($GroupFlags['IsSnatched'] ? ' snatched_group' : '');
         $SnatchedTorrentClass = $Torrent['IsSnatched'] ? ' snatched_torrent' : '';
@@ -436,7 +436,7 @@ foreach ($TorrentList as $Group) {
               [ <a href="<?=$TorrentDL?>" class="tooltip"
                 title="Download">DL</a>
               <?php
-        if (Torrents::can_use_token($Torrent)) { ?>
+        if (\Gazelle\Torrents::can_use_token($Torrent)) { ?>
               | <a
                 href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->user->extra['AuthKey']?>&amp;torrent_pass=<?=$app->user->extra['torrent_pass']?>&amp;usetoken=1"
                 class="tooltip" title="Use a FL Token"

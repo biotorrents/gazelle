@@ -255,7 +255,7 @@ $SQL .= "
 $app->dbOld->query($SQL);
 
 if ($app->user->can(["admin" => "freeleechTorrents"]) && $Properties['FreeLeech'] != $CurFreeLeech) {
-    Torrents::freeleech_torrents($TorrentID, $Properties['FreeLeech'], $Properties['FreeLeechType']);
+    \Gazelle\Torrents::freeleech_torrents($TorrentID, $Properties['FreeLeech'], $Properties['FreeLeechType']);
 }
 
 $app->dbOld->query("
@@ -277,12 +277,12 @@ $app->dbOld->query("
 list($Name) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 Misc::write_log("Torrent $TorrentID ($Name) in group $GroupID was edited by " . $app->user->core['username'] . " ($LogDetails)"); // TODO: this is probably broken
-Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $LogDetails, 0);
+\Gazelle\Torrents::write_group_log($GroupID, $TorrentID, $app->user->core['id'], $LogDetails, 0);
 
 $app->cache->delete("torrents_details_$GroupID");
 $app->cache->delete("torrent_download_$TorrentID");
 
-Torrents::update_hash($GroupID);
+\Gazelle\Torrents::update_hash($GroupID);
 // All done!
 
 Gazelle\Http::redirect("torrents.php?id=$GroupID");

@@ -190,7 +190,7 @@ $app->dbOld->prepared_query("
       ELSE 'Various Artists'
     END AS ArtistName,
     tg.`year`,
-    tg.`category_id`,
+    tg.`categoryId`,
     t.`Time`,
     t.`Media`,
     t.`Size`,

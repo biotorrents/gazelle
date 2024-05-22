@@ -194,7 +194,7 @@ if (!empty($_REQUEST['action'])) {
 
         case 'regen_filelist':
             if ($app->user->can(["admin" => "moderateUsers"]) && !empty($_GET['torrentid']) && is_numeric($_GET['torrentid'])) {
-                Torrents::regenerate_filelist($_GET['torrentid']);
+                \Gazelle\Torrents::regenerate_filelist($_GET['torrentid']);
                 header('Location: torrents.php?torrentid='.$_GET['torrentid']);
                 error();
             } else {
@@ -220,7 +220,7 @@ if (!empty($_REQUEST['action'])) {
                 list($Count) = $app->dbOld->next_record();
 
                 if ($Count === 0) {
-                    Torrents::delete_group($_GET['groupid']);
+                    \Gazelle\Torrents::delete_group($_GET['groupid']);
                 }
 
                 if (!empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {

@@ -27,7 +27,7 @@ class Creators extends Base
 
             $ids = $manticore->search("torrents", $request);
             foreach ($ids as $torrentId) {
-                $data[] = \Torrents::get_groups($torrentId);
+                $data[] = \Gazelle\Torrents::get_groups($torrentId);
             }
 
             self::success(200, $data);

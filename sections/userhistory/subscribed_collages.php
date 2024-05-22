@@ -97,7 +97,7 @@ if (!$NumResults) {
 
         $GroupIDs = $app->dbOld->collect('GroupID', false);
         if (count($GroupIDs) > 0) {
-            $TorrentList = Torrents::get_groups($GroupIDs);
+            $TorrentList = \Gazelle\Torrents::get_groups($GroupIDs);
         } else {
             $TorrentList = [];
         }
@@ -110,7 +110,7 @@ if (!$NumResults) {
                 continue;
             }
             $Group = $TorrentList[$GroupID];
-            extract(Torrents::array_group($Group));
+            extract(\Gazelle\Torrents::array_group($Group));
 
             $TorrentTags = new Tags($TagList);
 
@@ -169,7 +169,7 @@ if (!$NumResults) {
           title="Download" class="brackets tooltip">DL</a>
       </span>
       &nbsp;&nbsp;&raquo;&nbsp;<a
-        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=Torrents::torrent_info($Torrent)?></a>
+        href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"><?=\Gazelle\Torrents::torrent_info($Torrent)?></a>
     </td>
     <td class="number_column nobr"><?=\Gazelle\Format::get_size($Torrent['Size'])?>
     </td>

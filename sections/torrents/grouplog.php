@@ -10,7 +10,7 @@ if (!is_numeric($GroupID)) {
 
 View::header("History for Group $GroupID");
 
-$Groups = Torrents::get_groups([$GroupID], true, true, false);
+$Groups = \Gazelle\Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
     $Group = $Groups[$GroupID];
     $Group['ExtendedArtists'] ??= null;

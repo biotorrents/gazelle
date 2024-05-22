@@ -148,7 +148,7 @@ continue;
 														
 {# NOT NEEDED #}
 	{#
-		      $CategoryID = $GroupInfo['category_id'];
+		      $CategoryID = $GroupInfo['categoryId'];
 		      $GroupYear = $GroupInfo['year'];
 		      $Artists = $GroupInfo['Artists'];
 		      $GroupCatalogueNumber = $GroupInfo['identifier'];
@@ -181,7 +181,7 @@ continue;
 		      }
 		      {% endif %} {# if groupResults # }
 		
-		      $TorrentTags = new Tags($GroupInfo['tag_list']);
+		      $TorrentTags = new Tags($GroupInfo['tags']);
 		
 		      # Start making $DisplayName (first torrent result line)
 		      #$DisplayName = '';
@@ -281,7 +281,7 @@ continue;
 		
 		        // Get report info for each torrent, use the cache if available, if not, add to it
 		        $Reported = false;
-		        $Reports = Torrents::get_reports($TorrentID);
+		        $Reports = \Gazelle\Torrents::get_reports($TorrentID);
 		        if (count($Reports) > 0) {
 		            $Reported = true;
 		        }
@@ -302,7 +302,7 @@ continue;
 		        [ <a href="<?=$TorrentDL?>" class="tooltip"
 		          title="Download"><?=$Data['HasFile'] ? 'DL' : 'Missing'?></a>
 		        <?php
-		        if (Torrents::can_use_token($Data)) { ?>
+		        if (\Gazelle\Torrents::can_use_token($Data)) { ?>
 		        | <a
 		          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
 		          class="tooltip" title="Use a FL Token"
@@ -314,7 +314,7 @@ continue;
 		      </span>
 		      <a href="torrents.php?id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>#torrent<?=$TorrentID?>"
 		        class="torrent_label tl_reported tooltip search_link"><strong>Details</strong></a>
-		      | <?=Torrents::torrent_info($Data)?>
+		      | <?=\Gazelle\Torrents::torrent_info($Data)?>
 		      <?php if ($Reported) { ?>
 		      | <strong class="torrent_label tl_reported tooltip search_link important_text"
 		        title="Type: <?=ucfirst($Reports[0]['Type'])?><br>
@@ -343,7 +343,7 @@ continue;
 		          $Data = current($Torrents);
 		
 		          $Reported = false;
-		          $Reports = Torrents::get_reports($TorrentID);
+		          $Reports = \Gazelle\Torrents::get_reports($TorrentID);
 		          if (count($Reports) > 0) {
 		              $Reported = true;
 		          }
@@ -355,7 +355,7 @@ continue;
 		
 		          # Extra info (non-group metadata)
 		          if (isset($GroupedCategories[$CategoryID - 1])) {
-		              $ExtraInfo = Torrents::torrent_info($Data, true, true);
+		              $ExtraInfo = \Gazelle\Torrents::torrent_info($Data, true, true);
 		          } elseif ($Data['IsSnatched']) {
 		              $ExtraInfo = \Gazelle\Format::torrent_label('Snatched!');
 		          } else {
@@ -372,7 +372,7 @@ continue;
 		                'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
 		                'artists' => \Gazelle\Creators::display_artists($Artists),
 		                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
-		                'extra_info' => Torrents::torrent_info($Data, true, true),
+		                'extra_info' => \Gazelle\Torrents::torrent_info($Data, true, true),
 		              ]
 		          );
 		
@@ -404,7 +404,7 @@ continue;
 		            [ <a href="<?=$TorrentDL?>" class="tooltip"
 		              title="Download">DL</a>
 		            <?php
-		          if (Torrents::can_use_token($Data)) { ?>
+		          if (\Gazelle\Torrents::can_use_token($Data)) { ?>
 		            | <a
 		              href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
 		              class="tooltip" title="Use a FL Token"

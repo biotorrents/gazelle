@@ -42,7 +42,7 @@ if (count($CleanArtists) > 0) {
         foreach ($CleanArtists as $Artist) {
             list($Importance, $ArtistID) = $Artist;
             Misc::write_log("Artist $ArtistID (" . $ArtistNames[$ArtistID]['Name'] . ") was removed from the group " . $_POST['groupid'] . " ($GroupName) by user " . $app->user->core['id'] . ' (' . $app->user->core['username'] . ')');
-            Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist " . $ArtistNames[$ArtistID]['Name'], 0);
+            \Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Removed artist " . $ArtistNames[$ArtistID]['Name'], 0);
             $app->dbOld->query("
         DELETE FROM torrents_artists
         WHERE GroupID = '$GroupID'
@@ -71,6 +71,6 @@ if (count($CleanArtists) > 0) {
         AND ArtistID IN ($ArtistsString)");
     }
     $app->cache->delete("groups_artists_$GroupID");
-    Torrents::update_hash($GroupID);
+    \Gazelle\Torrents::update_hash($GroupID);
     Gazelle\Http::redirect("torrents.php?id=$GroupID");
 }

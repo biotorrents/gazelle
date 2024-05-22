@@ -44,7 +44,7 @@ if ($app->user->can(["admin" => "freeleechTorrents"])
         error(404);
     }
 
-    Torrents::freeleech_groups($group_id, $Free, $FreeType);
+    \Gazelle\Torrents::freeleech_groups($group_id, $Free, $FreeType);
 }
 
 $Artists = $_POST['idols'];
@@ -223,6 +223,6 @@ while (list($TorrentID) = $app->dbOld->next_record()) {
     $app->cache->delete("torrent_download_$TorrentID");
 }
 
-Torrents::update_hash($group_id);
+\Gazelle\Torrents::update_hash($group_id);
 $app->cache->delete("torrents_details_$group_id");
 Gazelle\Http::redirect("torrents.php?id=$group_id");

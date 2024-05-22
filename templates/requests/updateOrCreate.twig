@@ -56,7 +56,7 @@
 
 		{# tagList #}
 		{% set variables = {
-			"db": env.database.tag_list,
+			"db": env.database.tags,
 			"value": (request.relationships.tags) ? request.relationships.tags : "",
 			"newTorrent": true
 		} %}

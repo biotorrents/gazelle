@@ -377,7 +377,7 @@ class Tags
             $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
 
             # delete torrent group cache
-            Torrents::update_hash($groupId);
+            \Gazelle\Torrents::update_hash($groupId);
         } catch (\Throwable $e) {
             $app->dbNew->rollBack();
             throw $e;
@@ -425,7 +425,7 @@ class Tags
             $app->dbNew->do($query, [$groupId, $app->user->core["id"], $message]);
 
             # delete torrent group cache
-            Torrents::update_hash($groupId);
+            \Gazelle\Torrents::update_hash($groupId);
         } catch (\Throwable $e) {
             $app->dbNew->rollBack();
             throw $e;

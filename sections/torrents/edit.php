@@ -34,7 +34,7 @@ SELECT
   t.`FreeLeechType`,
   t.`Description` AS TorrentDescription,
   t.`FileList`,
-  tg.`category_id`,
+  tg.`categoryId`,
   tg.`title` AS title,
   tg.`subject` AS subject,
   tg.`object` AS object,

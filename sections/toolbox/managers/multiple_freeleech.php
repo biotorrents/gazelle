@@ -69,11 +69,11 @@ if (isset($_POST['torrents'])) {
                 }
 
                 if (sizeof($TorrentIDs) > 0) {
-                    Torrents::freeleech_torrents($TorrentIDs, $FreeLeechType, $FreeLeechReason);
+                    \Gazelle\Torrents::freeleech_torrents($TorrentIDs, $FreeLeechType, $FreeLeechReason);
                 }
 
                 if (isset($LargeTorrents) && sizeof($LargeTorrents) > 0) {
-                    Torrents::freeleech_torrents($LargeTorrents, 2, $FreeLeechReason);
+                    \Gazelle\Torrents::freeleech_torrents($LargeTorrents, 2, $FreeLeechReason);
                 }
 
                 $Err = 'Done!';

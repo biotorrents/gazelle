@@ -120,9 +120,9 @@ if (empty($_POST['confirm'])) {
     }
     $app->cache->delete('requests_group_'.$NewGroupID);
 
-    Torrents::delete_group($GroupID);
+    \Gazelle\Torrents::delete_group($GroupID);
 
-    Torrents::write_group_log($NewGroupID, 0, $app->user->core['id'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
+    \Gazelle\Torrents::write_group_log($NewGroupID, 0, $app->user->core['id'], "Merged Group $GroupID ($Name) to $NewGroupID ($NewName)", 0);
     $app->dbOld->query("
     UPDATE group_log
     SET GroupID = $NewGroupID
@@ -139,7 +139,7 @@ if (empty($_POST['confirm'])) {
     }
     $app->cache->delete("torrents_details_$GroupID");
     $app->cache->delete("groups_artists_$GroupID");
-    Torrents::update_hash($GroupID);
+    \Gazelle\Torrents::update_hash($GroupID);
 
     header("Location: torrents.php?id=" . $GroupID);
 }

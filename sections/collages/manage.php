@@ -46,7 +46,7 @@ $GroupIDs = $app->dbOld->collect('GroupID');
 
 $CollageDataList = $app->dbOld->to_array('GroupID', MYSQLI_ASSOC);
 if (count($GroupIDs) > 0) {
-    $TorrentList = Torrents::get_groups($GroupIDs);
+    $TorrentList = \Gazelle\Torrents::get_groups($GroupIDs);
 } else {
     $TorrentList = [];
 }
@@ -104,7 +104,7 @@ foreach ($GroupIDs as $GroupID) {
         continue;
     }
     $Group = $TorrentList[$GroupID];
-    extract(Torrents::array_group($Group));
+    extract(\Gazelle\Torrents::array_group($Group));
     list(, $UserID, $Username, $Sort, $CatNum) = array_values($CollageDataList[$GroupID]);
 
     $Number++;

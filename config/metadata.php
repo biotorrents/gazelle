@@ -16,7 +16,7 @@ $env->database = [
     /**
      * torrents_group
      */
-    "category_id" => ["name" => "Category", "description" => ""],
+    "categoryId" => ["name" => "Category", "description" => ""],
     "title" => ["name" => "Torrent title", "description" => "Definition line, e.g., Alcohol dehydrogenase ADH1"],
     "subject" => ["name" => "Organism", "description" => "Organism line binomial, e.g., Saccharomyces cerevisiae", "icon" => "🦠"],
     "object" => ["name" => "Strain or variety", "description" => "Organism line if any, e.g., S288C"],
@@ -24,7 +24,7 @@ $env->database = [
     "workgroup" => ["name" => "Department or lab", "description" => "Last author's institution, e.g., Lawrence Berkeley Laboratory", "icon" => "🏫"],
     "location" => ["name" => "Location", "description" => "Physical location, e.g., Berkeley, CA 94720", "icon" => "📍"],
     "identifier" => ["name" => "Accession number", "description" => "RefSeq and UniProt preferred", "icon" => "🔑"],
-    "tag_list" => ["name" => "Tag list", "description" => "Please select at least 5 tags"],
+    "tags" => ["name" => "Tag list", "description" => "Please select at least 5 tags"],
     "timestamp" => ["name" => "Uploaded on", "description" => ""],
     "revision_id" => ["name" => "Revision ID", "description" => ""],
     "description" => ["name" => "Group description", "description" => "General info about the study's function or significance"],

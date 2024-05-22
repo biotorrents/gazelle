@@ -92,7 +92,7 @@ if (!empty($Deleted)) {
         foreach ($DeleteList as $ScreenDel) {
         }
 
-        Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) " . implode(' , ', $DeleteList), 0);
+        \Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Deleted screenshot(s) " . implode(' , ', $DeleteList), 0);
         Misc::write_log("Screenshots ( " . implode(' , ', $DeleteList) . " ) deleted from Torrent Group " . $GroupID . " by " . $app->user->core['username']);
     }
 }
@@ -114,7 +114,7 @@ if (!empty($New)) {
     foreach ($New as $Screenshot) {
     }
 
-    Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) " . implode(' , ', $New), 0);
+    \Gazelle\Torrents::write_group_log($GroupID, 0, $app->user->core['id'], "Added screenshot(s) " . implode(' , ', $New), 0);
     Misc::write_log("Screenshots ( " . implode(' , ', $New) . " ) added to Torrent Group " . $GroupID . " by " . $app->user->core['username']);
 }
 

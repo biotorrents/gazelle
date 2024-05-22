@@ -837,7 +837,7 @@ CREATE TABLE `torrents_bad_tags` (
 -- 2021-07-08
 CREATE TABLE `torrents_group` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `category_id` tinyint DEFAULT NULL,
+  `categoryId` tinyint DEFAULT NULL,
   `title` varchar(255) DEFAULT NULL,
   `subject` varchar(255) DEFAULT NULL,
   `object` varchar(255) DEFAULT NULL,
@@ -845,14 +845,14 @@ CREATE TABLE `torrents_group` (
   `workgroup` varchar(128) DEFAULT NULL,
   `location` varchar(128) DEFAULT NULL,
   `identifier` varchar(64) DEFAULT NULL,
-  `tag_list` varchar(512) DEFAULT NULL,
+  `tags` varchar(512) DEFAULT NULL,
   `timestamp` datetime DEFAULT NULL,
   `revision_id` int DEFAULT NULL,
   `description` text DEFAULT NULL,
   `picture` varchar(255) DEFAULT NULL,
 
   PRIMARY KEY (`id`),
-  KEY `category_id` (`category_id`),
+  KEY `categoryId` (`categoryId`),
   KEY `title` (`title`),
   KEY `year` (`year`),
   KEY `timestamp` (`timestamp`),

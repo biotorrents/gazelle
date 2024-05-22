@@ -15,42 +15,42 @@ $limit = intval($get["limit"] ?? Gazelle\Top10::$defaultLimit);
 # data
 $dailyTorrents = Gazelle\Top10::dailyTorrents($limit);
 if (!empty($dailyTorrents)) {
-    $dailyTorrents = Torrents::get_groups(array_column($dailyTorrents, "id"));
+    $dailyTorrents = \Gazelle\Torrents::get_groups(array_column($dailyTorrents, "id"));
 }
 
 $weeklyTorrents = Gazelle\Top10::weeklyTorrents($limit);
 if (!empty($weeklyTorrents)) {
-    $weeklyTorrents = Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
+    $weeklyTorrents = \Gazelle\Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
 }
 
 $monthlyTorrents = Gazelle\Top10::monthlyTorrents($limit);
 if (!empty($monthlyTorrents)) {
-    $monthlyTorrents = Torrents::get_groups(array_column($monthlyTorrents, "id"));
+    $monthlyTorrents = \Gazelle\Torrents::get_groups(array_column($monthlyTorrents, "id"));
 }
 
 $yearlyTorrents = Gazelle\Top10::yearlyTorrents($limit);
 if (!empty($yearlyTorrents)) {
-    $yearlyTorrents = Torrents::get_groups(array_column($yearlyTorrents, "id"));
+    $yearlyTorrents = \Gazelle\Torrents::get_groups(array_column($yearlyTorrents, "id"));
 }
 
 $overallTorrents = Gazelle\Top10::overallTorrents($limit);
 if (!empty($overallTorrents)) {
-    $overallTorrents = Torrents::get_groups(array_column($overallTorrents, "id"));
+    $overallTorrents = \Gazelle\Torrents::get_groups(array_column($overallTorrents, "id"));
 }
 
 $torrentSeeders = Gazelle\Top10::torrentSeeders($limit);
 if (!empty($torrentSeeders)) {
-    $torrentSeeders = Torrents::get_groups(array_column($torrentSeeders, "id"));
+    $torrentSeeders = \Gazelle\Torrents::get_groups(array_column($torrentSeeders, "id"));
 }
 
 $torrentSnatches = Gazelle\Top10::torrentSnatches($limit);
 if (!empty($torrentSnatches)) {
-    $torrentSnatches = Torrents::get_groups(array_column($torrentSnatches, "id"));
+    $torrentSnatches = \Gazelle\Torrents::get_groups(array_column($torrentSnatches, "id"));
 }
 
 $torrentData = Gazelle\Top10::torrentData($limit);
 if (!empty($torrentData)) {
-    $torrentData = Torrents::get_groups(array_column($torrentData, "id"));
+    $torrentData = \Gazelle\Torrents::get_groups(array_column($torrentData, "id"));
 }
 
 # template
@@ -236,9 +236,9 @@ SELECT
   g.`title`,
   g.`subject`,
   g.`object`,
-  g.`category_id`,
+  g.`categoryId`,
   g.`picture`,
-  g.`tag_list`,
+  g.`tags`,
   t.`Media`,
   g.`year`,
   g.`workgroup`,
@@ -595,7 +595,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
       */
 
         $IsBookmarked = Bookmarks::isBookmarked('torrent', intval($GroupID));
-        $IsSnatched = Torrents::has_snatched($TorrentID);
+        $IsSnatched = \Gazelle\Torrents::has_snatched($TorrentID);
 
         $Rank++;
 
@@ -671,7 +671,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
 
         // Get report info, use the cache if available. If not, add to it
         $Reported = false;
-        $Reports = Torrents::get_reports($TorrentID);
+        $Reports = \Gazelle\Torrents::get_reports($TorrentID);
         if (count($Reports) > 0) {
             $Reported = true;
         }

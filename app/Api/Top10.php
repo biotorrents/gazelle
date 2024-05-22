@@ -28,42 +28,42 @@ class Top10 extends Base
 
             $dailyTorrents = \Gazelle\Top10::dailyTorrents($limit);
             if (!empty($dailyTorrents)) {
-                $data["dailyTorrents"] = \Torrents::get_groups(array_column($dailyTorrents, "id"));
+                $data["dailyTorrents"] = \Gazelle\Torrents::get_groups(array_column($dailyTorrents, "id"));
             }
 
             $weeklyTorrents = \Gazelle\Top10::weeklyTorrents($limit);
             if (!empty($weeklyTorrents)) {
-                $data["weeklyTorrents"] = \Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
+                $data["weeklyTorrents"] = \Gazelle\Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
             }
 
             $monthlyTorrents = \Gazelle\Top10::monthlyTorrents($limit);
             if (!empty($monthlyTorrents)) {
-                $data["monthlyTorrents"] = \Torrents::get_groups(array_column($monthlyTorrents, "id"));
+                $data["monthlyTorrents"] = \Gazelle\Torrents::get_groups(array_column($monthlyTorrents, "id"));
             }
 
             $yearlyTorrents = \Gazelle\Top10::yearlyTorrents($limit);
             if (!empty($yearlyTorrents)) {
-                $data["yearlyTorrents"] = \Torrents::get_groups(array_column($yearlyTorrents, "id"));
+                $data["yearlyTorrents"] = \Gazelle\Torrents::get_groups(array_column($yearlyTorrents, "id"));
             }
 
             $overallTorrents = \Gazelle\Top10::overallTorrents($limit);
             if (!empty($overallTorrents)) {
-                $data["overallTorrents"] = \Torrents::get_groups(array_column($overallTorrents, "id"));
+                $data["overallTorrents"] = \Gazelle\Torrents::get_groups(array_column($overallTorrents, "id"));
             }
 
             $torrentSeeders = \Gazelle\Top10::torrentSeeders($limit);
             if (!empty($torrentSeeders)) {
-                $data["torrentSeeders"] = \Torrents::get_groups(array_column($torrentSeeders, "id"));
+                $data["torrentSeeders"] = \Gazelle\Torrents::get_groups(array_column($torrentSeeders, "id"));
             }
 
             $torrentSnatches = \Gazelle\Top10::torrentSnatches($limit);
             if (!empty($torrentSnatches)) {
-                $data["torrentSnatches"] = \Torrents::get_groups(array_column($torrentSnatches, "id"));
+                $data["torrentSnatches"] = \Gazelle\Torrents::get_groups(array_column($torrentSnatches, "id"));
             }
 
             $torrentData = \Gazelle\Top10::torrentData($limit);
             if (!empty($torrentData)) {
-                $data["torrentData"] = \Torrents::get_groups(array_column($torrentData, "id"));
+                $data["torrentData"] = \Gazelle\Torrents::get_groups(array_column($torrentData, "id"));
             }
 
             self::success(200, $data);

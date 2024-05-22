@@ -67,11 +67,11 @@ else {
     $picture = $_POST['image'];
 
     if (($GroupInfo = $app->cache->get('torrents_details_' . $group_id)) && !isset($GroupInfo[0][0])) {
-        $GroupCategoryID = $GroupInfo[0]['category_id'];
+        $GroupCategoryID = $GroupInfo[0]['categoryId'];
     } else {
         $app->dbOld->query("
         SELECT
-          `category_id`
+          `categoryId`
         FROM
           `torrents_group`
         WHERE

@@ -77,7 +77,7 @@ if (!$app->dbOld->has_results()) {
           `title`,
           `year`,
           `description`,
-          `tag_list`
+          `tags`
         FROM
           `torrents_group`
         WHERE

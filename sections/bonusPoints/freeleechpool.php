@@ -68,7 +68,7 @@ if (isset($_POST['donation'])) {
                                 (TorrentID, ExpiryTime)
                               VALUES($TorrentID, NOW() + INTERVAL 2 DAY)");
 
-                            Torrents::freeleech_torrents($TorrentID, 1, 3);
+                            \Gazelle\Torrents::freeleech_torrents($TorrentID, 1, 3);
                             $Pool -= $TorrentSize / 100000;
                         } else {
                             // Failed to find a torrent. Maybe try again with a new value, maybe move on
