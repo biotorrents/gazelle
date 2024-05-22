@@ -15,16 +15,6 @@ Flight::route("/top10(/torrents)", function () {
 });
 
 
-/*
-# torrent history
-Flight::route("/top10/history", function () {
-    $app = Gazelle\App::go();
-    $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/top10/history.php";
-});
-*/
-
-
 # tags
 Flight::route("/top10/tags", function () {
     $app = Gazelle\App::go();
@@ -39,13 +29,3 @@ Flight::route("/top10/users", function () {
     $app->middleware(["userProfiles" => "read"]);
     require_once "{$app->env->serverRoot}/sections/top10/users.php";
 });
-
-
-/*
-# donors
-Flight::route("/top10/donors", function () {
-    $app = Gazelle\App::go();
-    $app->middleware(["userProfiles" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/top10/donors.php";
-});
-*/

@@ -367,7 +367,7 @@ $Index++;
 
       <ul class="stats nobullet" id="artist_list">
         <?php foreach ($Artists as $Num => $Artist) { ?>
-        <li class="artist"><?=Artists::display_artist($Artist)?>
+        <li class="artist"><?=\Gazelle\Creators::display_artist($Artist)?>
           <?php if ($app->user->can(["creators" => "deleteAny"])) { ?>
           <span class="remove remove_artist u-pull-right"><a href="javascript:void(0);"
               onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';"

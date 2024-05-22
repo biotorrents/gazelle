@@ -42,7 +42,7 @@ if (true) {
     ");
 
     $RecentSnatches = $app->dbOld->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($app->dbOld->collect('ID'));
+    $Artists = \Gazelle\Creators::get_artists($app->dbOld->collect('ID'));
 
     foreach ($RecentSnatches as $Key => $SnatchInfo) {
         $RecentSnatches[$Key]['artists'][] = $Artists[$SnatchInfo['ID']];
@@ -75,7 +75,7 @@ if (true) {
     ");
 
     $RecentUploads = $app->dbOld->to_array(false, MYSQLI_ASSOC);
-    $Artists = Artists::get_artists($app->dbOld->collect('ID'));
+    $Artists = \Gazelle\Creators::get_artists($app->dbOld->collect('ID'));
 
     foreach ($RecentUploads as $Key => $UploadInfo) {
         $RecentUploads[$Key]['artists'][] = $Artists[$UploadInfo['ID']];

@@ -117,14 +117,14 @@ foreach ($Results as $Result) {
         $Request = $Requests[$Result['PageID']];
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
         $Links = 'Request: ';
-        $Links .= Artists::display_artists(Gazelle\Requests::get_artists($Result['PageID'])) . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a> &gt; ";
+        $Links .= \Gazelle\Creators::display_artists(Gazelle\Requests::get_artists($Result['PageID'])) . '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '">' . $Request['Title'] . "</a> &gt; ";
         $Links .= '<a href="requests.php?action=view&amp;id=' . $Result['PageID'] . '&amp;postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '"> Post #' . $Result['PostID'] . '</a>';
     } elseif ($Result['Page'] == 'torrents') {
         if (!isset($TorrentGroups[$Result['PageID']])) {
             continue;
         }
         $GroupInfo = $TorrentGroups[$Result['PageID']];
-        $Links = 'Torrent: ' . Artists::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['ID'] . '">' . ($GroupInfo['Name'] ? $GroupInfo['Name'] : ($GroupInfo['Title2'] ? $GroupInfo['Title2'] : $GroupInfo['NameJP'])) . '</a> &gt; ';
+        $Links = 'Torrent: ' . \Gazelle\Creators::display_artists($GroupInfo['ExtendedArtists']) . '<a href="torrents.php?id=' . $GroupInfo['ID'] . '">' . ($GroupInfo['Name'] ? $GroupInfo['Name'] : ($GroupInfo['Title2'] ? $GroupInfo['Title2'] : $GroupInfo['NameJP'])) . '</a> &gt; ';
         $Links .= '<a href="torrents.php?id=' . $GroupInfo['ID'] . '&postid=' . $Result['PostID'] . '#post' . $Result['PostID'] . '"> Post #' . $Result['PostID'] . '</a>';
     } else {
         continue;

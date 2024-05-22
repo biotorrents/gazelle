@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class TokenPermissions extends AbstractMigration
+final class ShortUuid extends AbstractMigration
 {
     /**
      * Change Method.
@@ -19,9 +19,14 @@ final class TokenPermissions extends AbstractMigration
      */
     public function change(): void
     {
-        $app = \Gazelle\App::go();
+        $app = Gazelle\App::go();
 
-        $query = "update api_tokens set permissions = ? where deleted_at is null";
-        $app->dbNew->do($query, [ json_encode(["create", "read", "update", "delete"]) ]);
+        $query = "select table_name from information_schema.tables where table_schema = 'gazelle_staging'";
+        $ref = $app->dbNew->column($query, []);
+
+        foreach ($ref as $row) {
+            $query = "alter table {$row} modify column id bigint unsigned not null default uuid_short()";
+            $app->dbNew->do($query, []);
+        }
     }
 }

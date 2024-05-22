@@ -204,7 +204,7 @@ foreach ($TorrentList as $Group) {
               'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
-              'artists' => Artists::display_artists($Artists),
+              'artists' => \Gazelle\Creators::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Data, true, true),
             ]
@@ -213,7 +213,7 @@ foreach ($TorrentList as $Group) {
 
         /*
         $DisplayName = '';
-        #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID), true, true);
+        #$DisplayName = \Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($GroupID), true, true);
 
         $DisplayName .= "<a href='torrents.php?id=$GroupID' class='tooltip' title='View torrent group' ";
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
@@ -241,7 +241,7 @@ foreach ($TorrentList as $Group) {
         if (isset($Artists)) {
             # Emoji in classes/astists.class.php
             $Label = '&ensp;'; # breaking
-            $DisplayName .= $Label.Artists::display_artists(Artists::get_artist($GroupID), true, true);
+            $DisplayName .= $Label.\Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($GroupID), true, true);
         }
         */
 
@@ -356,7 +356,7 @@ foreach ($TorrentList as $Group) {
               'url' => \Gazelle\Format::get_url($_GET),
               'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
               'thumb' => \Gazelle\Images::process(($CoverArt ?? ""), 'thumb'),
-              'artists' => Artists::display_artists($Artists),
+              'artists' => \Gazelle\Creators::display_artists($Artists),
               'tags' => $TorrentTags->format('torrents.php?' . $Action . '&amp;taglist='),
               'extra_info' => Torrents::torrent_info($Torrent, true, true),
             ]
@@ -403,7 +403,7 @@ foreach ($TorrentList as $Group) {
         if (isset($Artists)) {
             # Emoji in classes/astists.class.php
             $Label = '&ensp;';
-            $DisplayName .= $Label.Artists::display_artists(Artists::get_artist($GroupID), true, true);
+            $DisplayName .= $Label.\Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($GroupID), true, true);
         }
         */
 
@@ -804,7 +804,7 @@ if ($NumRequests > 0) {
         $CategoryName = $Categories[$Request['CategoryID'] - 1];
         $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? \Gazelle\Text::esc($Request['TitleJP']) : \Gazelle\Text::esc($Request['Title2'])) : \Gazelle\Text::esc($Request['Title']);
         $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
-        $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+        $ArtistLink = \Gazelle\Creators::display_artists($ArtistForm, true, true);
         $FullName = $ArtistLink . "<a href='requests.php?action=view&amp;id=$RequestID'><span dir='ltr'>$Title</span></a>";
 
         if ($Request['CatalogueNumber']) {

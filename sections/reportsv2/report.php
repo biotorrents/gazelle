@@ -25,7 +25,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
       LEFT JOIN `users_main` AS u ON t.`UserID` = u.`ID`
     WHERE t.`ID` = " . $_GET['id']);
     list($CategoryID, $GroupID, $Username) = $app->dbOld->next_record();
-    $Artists = Artists::get_artist($GroupID);
+    $Artists = \Gazelle\Creators::get_artist($GroupID);
     $TorrentCache = TorrentFunctions::get_group_info($GroupID, true);
     $GroupDetails = $TorrentCache[0];
     $TorrentList = $TorrentCache[1];
@@ -49,10 +49,10 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     $WikiBody = \Gazelle\Text::parse($WikiBody);
 
     // Get the artist name, group name etc.
-    $Artists = Artists::get_artist($GroupID);
+    $Artists = \Gazelle\Creators::get_artist($GroupID);
     if ($Artists) {
-        $DisplayName = '<span dir="ltr">' . Artists::display_artists($Artists, true) . "<a href=\"torrents.php?torrentid=$TorrentID\">$DisplayName</a></span>";
-        $AltName = \Gazelle\Text::esc(Artists::display_artists($Artists, false)) . $AltName;
+        $DisplayName = '<span dir="ltr">' . \Gazelle\Creators::display_artists($Artists, true) . "<a href=\"torrents.php?torrentid=$TorrentID\">$DisplayName</a></span>";
+        $AltName = \Gazelle\Text::esc(\Gazelle\Creators::display_artists($Artists, false)) . $AltName;
         $Title = $AltName;
     }
     if ($GroupYear > 0) {
@@ -126,11 +126,11 @@ TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCa
   } else {
       $TypeList = $Types['master'];
   }
-  foreach ($TypeList as $Type => $Data) {
-      ?>
+foreach ($TypeList as $Type => $Data) {
+    ?>
               <option value="<?=($Type)?>"><?=($Data['title'])?></option>
 <?php
-  } ?>
+} ?>
             </select>
           </td>
         </tr>
@@ -140,10 +140,10 @@ TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCa
 
       <div id="dynamic_form">
 <?php
-  /**
-   * THIS IS WHERE SEXY AJAX COMES IN
-   * The following malarky is needed so that if you get sent back here, the fields are filled in.
-   */
+/**
+ * THIS IS WHERE SEXY AJAX COMES IN
+ * The following malarky is needed so that if you get sent back here, the fields are filled in.
+ */
 ?>
         <input id="sitelink" type="hidden" name="sitelink" size="50" value="<?=(!empty($_POST['sitelink']) ? \Gazelle\Text::esc($_POST['sitelink']) : '')?>">
         <input id="image" type="hidden" name="image" size="50" value="<?=(!empty($_POST['image']) ? \Gazelle\Text::esc($_POST['image']) : '')?>">

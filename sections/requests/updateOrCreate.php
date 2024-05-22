@@ -159,7 +159,7 @@ if ($NewRequest && !empty($_GET['artistid']) && is_numeric($_GET['artistid'])) {
     1 => array(array('name' => trim($ArtistName))),
     );
 } elseif ($NewRequest && !empty($_GET['groupid']) && is_numeric($_GET['groupid'])) {
-    $ArtistForm = Artists::get_artist($_GET['groupid']);
+    $ArtistForm = \Gazelle\Creators::get_artist($_GET['groupid']);
     $app->dbOld->query("
         SELECT
         tg.`title`,

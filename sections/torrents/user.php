@@ -573,7 +573,7 @@ foreach ($Categories as $CatKey => $CatName) {
           if (isset($Artists)) {
               # Emoji in classes/astists.class.php
               $Label = '&ensp;';
-              $DisplayName .= $Label . '<div>' . Artists::display_artists($Artists) . '</div>';
+              $DisplayName .= $Label . '<div>' . \Gazelle\Creators::display_artists($Artists) . '</div>';
           } ?>
 
       <tr

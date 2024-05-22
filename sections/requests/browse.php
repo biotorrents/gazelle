@@ -703,7 +703,7 @@ View::header($Title, 'requests');
                     $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['TitleJP'] : $Request['Title2']) : $Request['Title'];
 
                     $ArtistForm = Gazelle\Requests::get_artists($RequestID);
-                    $ArtistLink = Artists::display_artists($ArtistForm, true, true);
+                    $ArtistLink = \Gazelle\Creators::display_artists($ArtistForm, true, true);
                     $FullName = "<a class='torrentTitle' href='requests.php?action=view&amp;id=$RequestID'><span ";
 
                     if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {

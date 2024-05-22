@@ -583,9 +583,9 @@ if (true) {
 
         $RecentSnatches = $app->dbOld->to_array();
 
-        $Artists = Artists::get_artists($app->dbOld->collect('ID'));
+        $Artists = \Gazelle\Creators::get_artists($app->dbOld->collect('ID'));
         foreach ($RecentSnatches as $Key => $SnatchInfo) {
-            $RecentSnatches[$Key]['Artist'] = Artists::display_artists($Artists[$SnatchInfo['ID']], false, true);
+            $RecentSnatches[$Key]['Artist'] = \Gazelle\Creators::display_artists($Artists[$SnatchInfo['ID']], false, true);
         }
 
         $app->cache->set("recent_snatches_$userId", $RecentSnatches, 0); //inf cache
@@ -649,9 +649,9 @@ if (true) {
 
         $RecentUploads = $app->dbOld->to_array();
 
-        $Artists = Artists::get_artists($app->dbOld->collect('ID'));
+        $Artists = \Gazelle\Creators::get_artists($app->dbOld->collect('ID'));
         foreach ($RecentUploads as $Key => $UploadInfo) {
-            $RecentUploads[$Key]['Artist'] = Artists::display_artists($Artists[$UploadInfo['ID']], false, true);
+            $RecentUploads[$Key]['Artist'] = \Gazelle\Creators::display_artists($Artists[$UploadInfo['ID']], false, true);
         }
 
         $app->cache->set("recent_uploads_$userId", $RecentUploads, 0); // inf cache
@@ -738,7 +738,7 @@ foreach ($Collages as $CollageInfo) {
             }
 
             $Name = '';
-            $Name .= Artists::display_artists($Artists, false, true);
+            $Name .= \Gazelle\Creators::display_artists($Artists, false, true);
             $Name .= $GroupName; ?>
         <div class="collage_image">
           <a href="torrents.php?id=<?=$GroupID?>">

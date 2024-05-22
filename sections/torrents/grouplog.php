@@ -14,7 +14,7 @@ $Groups = Torrents::get_groups([$GroupID], true, true, false);
 if (!empty($Groups[$GroupID])) {
     $Group = $Groups[$GroupID];
     $Group['ExtendedArtists'] ??= null;
-    $Title = Artists::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['title'] ? $Group['title'] : ($Group['subject'] ? $Group['subject'] : $Group['object'])).'</a>';
+    $Title = \Gazelle\Creators::display_artists($Group['ExtendedArtists']).'<a href="torrents.php?id='.$GroupID.'">'.($Group['title'] ? $Group['title'] : ($Group['subject'] ? $Group['subject'] : $Group['object'])).'</a>';
 } else {
     $Title = "Group $GroupID";
 }

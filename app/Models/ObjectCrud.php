@@ -109,13 +109,12 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # try to find the object
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select * from {$this->table} where {$column} = ?"; # todo, deleted_at vs. deletedAt
-        #$query = "select * from {$this->table} where {$column} = ? and deletedAt is null";
+        $query = "select * from {$this->table} where {$column} = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$identifier]);
 
-        # set the id, with workaround for legacy ID columns
-        $this->id = strval($row["id"] ?? $row["ID"]);
-        unset($row["id"], $row["ID"]);
+        # set the id
+        $this->id = strval($row["id"]);
+        unset($row["id"]);
 
         # map database => display
         $attributes = [];
@@ -144,25 +143,24 @@ abstract class ObjectCrud extends RecursiveCollection
     /**
      * update
      *
-     * @param int|string $identifier
      * @param array $data
      * @return void
      */
-    public function update(int|string $identifier = null, array $data = []): void
+    public function update(array $data = []): void
     {
         $app = App::go();
 
         # does the object exist?
-        if (!$this->exists($identifier)) {
-            throw new Exception("can't update on {$this->type} where the id is {$identifier}");
+        if (!$this->exists($this->id)) {
+            throw new Exception("can't update on {$this->type} with the id {$this->id}");
         }
 
         # map display => database
         $transform = $this->displayToDatabase($data);
 
         # add the identifier to the data
-        $column = $app->dbNew->determineIdentifier($identifier);
-        $transform[$column] = $identifier;
+        $column = $app->dbNew->determineIdentifier($this->id);
+        $transform[$column] = $this->id;
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
@@ -172,24 +170,46 @@ abstract class ObjectCrud extends RecursiveCollection
     /**
      * delete
      *
-     * @param int|string $identifier
      * @return void
      */
-    public function delete(int|string $identifier = null): void
+    public function delete(): void
     {
         $app = App::go();
 
         # does the object exist?
-        if (!$this->exists($identifier)) {
-            throw new Exception("can't delete from {$this->type} where the id is {$identifier}");
+        if (!$this->exists($this->id)) {
+            throw new Exception("can't delete from {$this->type} with the id {$this->id}");
         }
 
         # determine the identifier
-        $column = $app->dbNew->determineIdentifier($identifier);
+        $column = $app->dbNew->determineIdentifier($this->id);
 
         # perform a soft delete
         $query = "update {$this->table} set deleted_at = now() where {$column} = ?";
-        $app->dbNew->do($query, [$identifier]);
+        $app->dbNew->do($query, [$this->id]);
+    }
+
+
+    /**
+     * restore
+     *
+     * @return void
+     */
+    public function restore(): void
+    {
+        $app = App::go();
+
+        # does the object exist?
+        if (!$this->exists($this->id)) {
+            throw new Exception("can't restore {$this->type} with the id {$this->id}");
+        }
+
+        # determine the identifier
+        $column = $app->dbNew->determineIdentifier($this->id);
+
+        # perform a soft restore
+        $query = "update {$this->table} set deleted_at = null where {$column} = ?";
+        $app->dbNew->do($query, [$this->id]);
     }
 
 
@@ -213,8 +233,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # does the object exist?
         $column = $app->dbNew->determineIdentifier($identifier);
-        $query = "select 1 from {$this->table} where {$column} = ?";
-        #$query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
+        $query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
 
         $good = $app->dbNew->single($query, [$identifier]);
         return boolval($good);
@@ -232,9 +251,18 @@ abstract class ObjectCrud extends RecursiveCollection
     {
         $app = App::go();
 
+        # does the object exist?
+        if (!$this->exists($this->id)) {
+            throw new Exception("can't save {$this->type} with the id {$this->id}");
+        }
+
         foreach ($this->maps as $key => $value) {
             $data[$key] = $this->attributes->$value;
         }
+
+        # add the identifier to the data
+        $column = $app->dbNew->determineIdentifier($this->id);
+        $data[$column] = $this->id;
 
         $upsert = $app->dbNew->upsert($this->table, $data);
         return boolval($upsert);

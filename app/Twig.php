@@ -306,26 +306,26 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        # Artists::display_artists
+        # \Gazelle\Creators::display_artists
         $twig->addFunction(new \Twig\TwigFunction("displayCreators", function ($creators) {
             return new \Twig\Markup(
-                \Artists::display_artists($creators),
+                \Gazelle\Creators::display_artists($creators),
                 "UTF-8"
             );
         }));
 
-        # Artists::display_artist
+        # \Gazelle\Creators::display_artist
         $twig->addFunction(new \Twig\TwigFunction("displayCreator", function ($creator) {
             return new \Twig\Markup(
-                \Artists::display_artist($creator),
+                \Gazelle\Creators::display_artist($creator),
                 "UTF-8"
             );
         }));
 
-        # Artists::getNameById
+        # \Gazelle\Creators::getNameById
         $twig->addFunction(new \Twig\TwigFunction("creatorNameById", function ($id, $html = false) {
             return new \Twig\Markup(
-                \Artists::getNameById($id, $html),
+                \Gazelle\Creators::getNameById($id, $html),
                 "UTF-8"
             );
         }));

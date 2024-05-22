@@ -37,7 +37,7 @@ if (!$TorrentCache) {
 
 # Get torrent details (group, torrents, artists)
 list($TorrentDetails, $TorrentList) = $TorrentCache;
-$Artists = Artists::get_artist($GroupID);
+$Artists = \Gazelle\Creators::get_artist($GroupID);
 
 # Get category name if possible
 if ($TorrentDetails['category_id'] === 0) {

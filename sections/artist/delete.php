@@ -93,7 +93,7 @@ if ($app->dbOld->has_results()) {
 }
 
 if ($Count == 0) {
-  Artists::delete_artist($ArtistID);
+  \Gazelle\Creators::delete_artist($ArtistID);
 ?>
 <div class="box pad">
   Artist "<?=$Name?>" deleted!

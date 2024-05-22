@@ -62,7 +62,7 @@ foreach ($GroupIDs as $GroupID) {
 
     $TorrentTags = new Tags($tag_list);
     $DisplayName = '';
-    #$DisplayName = Artists::display_artists($Artists);
+    #$DisplayName = \Gazelle\Creators::display_artists($Artists);
     $GroupName = empty($title) ? (empty($subject) ? $object : $subject) : $title;
 
     $DisplayName .= '<a href="torrents.php?id=' . $GroupID . '" ';
@@ -154,7 +154,7 @@ foreach ($GroupIDs as $GroupID) {
         $Torrent = current($Torrents);
 
         $DisplayName = '';
-        #$DisplayName = Artists::display_artists(Artists::get_artist($GroupID));
+        #$DisplayName = \Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($GroupID));
         $DisplayName .= '<a href="torrents.php?id=' . $GroupID . '" ';
 
         if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
@@ -230,7 +230,7 @@ foreach ($GroupIDs as $GroupID) {
     ob_start();
 
     $DisplayName = '';
-    #$DisplayName .= Artists::display_artists($Artists, false);
+    #$DisplayName .= \Gazelle\Creators::display_artists($Artists, false);
     $DisplayName .= $GroupName;
 
     if ($year > 0) {

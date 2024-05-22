@@ -19,7 +19,7 @@ final class HydrateRolesPermissions extends AbstractMigration
      */
     public function change(): void
     {
-        $app = \Gazelle\App::go();
+        $app = Gazelle\App::go();
 
         # it's the same query for all roles
         $query = "insert into roles_permissions (id, machineName, friendlyName, permissionsList) values (?, ?, ?, ?)";

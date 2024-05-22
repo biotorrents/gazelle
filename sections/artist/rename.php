@@ -28,7 +28,7 @@ $app = Gazelle\App::go();
 
 
 $ArtistID = $_POST['artistid'];
-$NewName = Artists::normalise_artist_name($_POST['name']);
+$NewName = \Gazelle\Creators::normalise_artist_name($_POST['name']);
 
 if (!$ArtistID || !is_numeric($ArtistID)) {
     error(404);

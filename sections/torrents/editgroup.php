@@ -62,7 +62,7 @@ if ($app->dbOld->has_results()) {
     }
 }
 
-$Artists = Artists::get_artists(array($group_id))[$group_id];
+$Artists = \Gazelle\Creators::get_artists(array($group_id))[$group_id];
 
 if (!$Body) {
     $Body = $description;

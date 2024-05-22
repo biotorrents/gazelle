@@ -81,16 +81,16 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
             # yes userId: create
             $query = "
                 insert into webauthn
-                    (uuid, userId, credentialId, type, transports, attestationType,
+                    (id, userId, credentialId, type, transports, attestationType,
                     trustPath, aaguid, publicKey, userHandle, counter, json)
                 values
-                    (:uuid, :userId, :credentialId, :type, :transports, :attestationType,
+                    (:id, :userId, :credentialId, :type, :transports, :attestationType,
                     :trustPath, :aaguid, :publicKey, :userHandle, :counter, :json)
             ";
 
             $variables = [
-                "uuid" => $app->dbNew->uuid() ?? null,
-                "userId" => $app->dbNew->binaryUuid($app->user->core["uuid"]) ?? null,
+                "id" => $app->dbNew->shortUuid() ?? null,
+                "userId" => $app->dbNew->binaryUuid($app->user->core["id"]) ?? null,
                 "credentialId" => $publicKeyCredentialSource["publicKeyCredentialId"] ?? null,
                 "type" => $publicKeyCredentialSource["type"] ?? null,
                 "transports" => $publicKeyCredentialSource["transports"] ?? null,
@@ -150,12 +150,12 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     /**
      * findAllByUserUuid
      */
-    public function findAllByUserUuid(string $userId): array
+    public function findAllByUserUuid(int $userId): array
     {
         $app = \Gazelle\App::go();
 
         $query = "select json from webauthn where userId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [ $app->dbNew->binaryUuid($userId) ]);
+        $ref = $app->dbNew->multi($query, [$userId]);
 
         $return = [];
         foreach ($ref as $row) {
@@ -170,12 +170,12 @@ class CredentialSourceRepository implements PublicKeyCredentialSourceRepository
     /**
      * findMetadataByUserUuid
      */
-    public function findMetadataByUserUuid(string $userId): array
+    public function findMetadataByUserUuid(int $userId): array
     {
         $app = \Gazelle\App::go();
 
         $query = "select credentialId, userHandle, created_at from webauthn where userId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [ $app->dbNew->binaryUuid($userId) ]);
+        $ref = $app->dbNew->multi($query, [$userId]);
 
         return $ref;
     }

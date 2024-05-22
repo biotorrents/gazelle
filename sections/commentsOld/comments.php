@@ -195,7 +195,7 @@ if ($Action === 'requests') {
   $app->dbOld->set_query_id($Comments);
 } elseif ($Action === 'torrents') {
   $GroupIDs = array_flip(array_flip($app->dbOld->collect('PageID')));
-  $Artists = Artists::get_artists($GroupIDs);
+  $Artists = \Gazelle\Creators::get_artists($GroupIDs);
   $app->dbOld->set_query_id($Comments);
 }
 */
@@ -303,12 +303,12 @@ if ($Count > 0) {
 
             case 'requests':
                 $Artists[$PageID] ??= null;
-                $Header = ' on ' . Artists::display_artists($Artists[$PageID]) . " <a href=\"requests.php?action=view&id=$PageID\">$Name</a>";
+                $Header = ' on ' . \Gazelle\Creators::display_artists($Artists[$PageID]) . " <a href=\"requests.php?action=view&id=$PageID\">$Name</a>";
                 break;
 
             case 'torrents':
                 $Artists[$PageID] ??= null;
-                $Header = ' on ' . Artists::display_artists($Artists[$PageID]) . " <a href=\"torrents.php?id=$PageID\">$Name</a>";
+                $Header = ' on ' . \Gazelle\Creators::display_artists($Artists[$PageID]) . " <a href=\"torrents.php?id=$PageID\">$Name</a>";
                 break;
         }
         CommentsView::render_comment($AuthorID, $PostID, $Body, $AddedTime, $EditedUserID, $EditedTime, $Link, false, $Header, false);

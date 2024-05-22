@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Models\TorrentGroup
+ * Gazelle\Models\TorrentGroups
  */
 
 namespace Gazelle\Models;
 
-class TorrentGroup extends Base
+class TorrentGroups extends Base
 {
     # https://laravel.com/docs/master/eloquent#table-names
     protected $table = "torrents_group";
@@ -49,17 +49,17 @@ class TorrentGroup extends Base
             "type" => "torrentGroups",
             "attributes" => [
                 "categoryId" => $this->category_id,
-                "title" => $this->title,
-                "subject" => $this->subject,
-                "object" => $this->object,
-                "year" => $this->year,
-                "workgroup" => $this->workgroup,
-                "location" => $this->location,
-                "identifier" => $this->identifier,
-                "tags" => explode(" ", $this->tag_list),
-                "revisionId" => $this->revision_id,
                 "description" => $this->description,
+                "identifier" => $this->identifier,
+                "location" => $this->location,
+                "object" => $this->object,
                 "picture" => $this->picture,
+                "revisionId" => $this->revision_id,
+                "subject" => $this->subject,
+                "tags" => explode(" ", $this->tag_list),
+                "title" => $this->title,
+                "workgroup" => $this->workgroup,
+                "year" => $this->year,
                 "createdAt" => $this->created_at,
                 "updatedAt" => $this->updated_at,
                 "deletedAt" => $this->deleted_at,

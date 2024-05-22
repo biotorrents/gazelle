@@ -435,14 +435,14 @@ class Stats
 
         # torrents
         $app->dbOld->prepared_query("
-            select count(ID), sum(Size), sum(FileCount) from torrents
+            select count(id), sum(size), sum(fileCount) from torrents
         ");
 
         $torrents = $app->dbOld->to_array();
         $torrents = [
-            "count" => intval($torrents[0]["count(ID)"]),
-            "totalDataSize" => intval($torrents[0]["sum(Size)"]),
-            "totalFileCount" => intval($torrents[0]["sum(FileCount)"]),
+            "count" => intval($torrents[0]["count(id)"]),
+            "totalDataSize" => intval($torrents[0]["sum(size)"]),
+            "totalFileCount" => intval($torrents[0]["sum(fileCount)"]),
         ];
 
         # secondary stats: averages
@@ -452,12 +452,12 @@ class Stats
 
         # users
         $app->dbOld->prepared_query("
-            select count(ID) from users_main where Enabled = '1'
+            select count(id) from users where verified = 1
         ");
 
         $users = $app->dbOld->to_array();
         $users = [
-            "count" => intval($users[0]["count(ID)"]),
+            "count" => intval($users[0]["count(id)"]),
         ];
 
         # secondary stats: averages
@@ -465,38 +465,38 @@ class Stats
 
         # daily
         $app->dbOld->prepared_query("
-            select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 1 day)
+            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 1 day)
         ");
 
         $daily = $app->dbOld->to_array();
         $daily = [
-            "count" => intval($daily[0]["count(ID)"]),
-            "totalSize" => intval($daily[0]["sum(Size)"]),
-            "fileCount" => intval($daily[0]["sum(FileCount)"]),
+            "count" => intval($daily[0]["count(id)"]),
+            "totalSize" => intval($daily[0]["sum(size)"]),
+            "fileCount" => intval($daily[0]["sum(fileCount)"]),
         ];
 
         # weekly
         $app->dbOld->prepared_query("
-            select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 7 day)
+            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 7 day)
         ");
 
         $weekly = $app->dbOld->to_array();
         $weekly = [
-            "count" => intval($weekly[0]["count(ID)"]),
-            "totalSize" => intval($weekly[0]["sum(Size)"]),
-            "fileCount" => intval($weekly[0]["sum(FileCount)"]),
+            "count" => intval($weekly[0]["count(id)"]),
+            "totalSize" => intval($weekly[0]["sum(size)"]),
+            "fileCount" => intval($weekly[0]["sum(fileCount)"]),
         ];
 
         # monthly
         $app->dbOld->prepared_query("
-            select count(ID), sum(Size), sum(FileCount) from torrents where Time > subdate(now(), interval 30 day)
+            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 30 day)
         ");
 
         $monthly = $app->dbOld->to_array();
         $monthly = [
-            "count" => intval($monthly[0]["count(ID)"]),
-            "totalSize" => intval($monthly[0]["sum(Size)"]),
-            "fileCount" => intval($monthly[0]["sum(FileCount)"]),
+            "count" => intval($monthly[0]["count(id)"]),
+            "totalSize" => intval($monthly[0]["sum(size)"]),
+            "fileCount" => intval($monthly[0]["sum(fileCount)"]),
         ];
 
         $economyOverTime = [
@@ -528,19 +528,20 @@ class Stats
 
         # total upload and download
         $app->dbOld->prepared_query("
-            select sum(Uploaded), sum(Downloaded), count(ID) from users_main where Enabled = '1'
+            select sum(uploaded), sum(downloaded), count(userId) from users_main
+            join users on users.id = users_main.userId where verified = 1
         ");
 
         $torrents = $app->dbOld->to_array();
 
         # user count: before $torrents work
         $users = [
-            "count" => intval($torrents[0]["count(ID)"]),
+            "count" => intval($torrents[0]["count(userId)"]),
         ];
 
         $torrents = [
-            "totalUpload" => intval($torrents[0]["sum(Uploaded)"]),
-            "totalDownload" => intval($torrents[0]["sum(Downloaded)"]),
+            "totalUpload" => intval($torrents[0]["sum(uploaded)"]),
+            "totalDownload" => intval($torrents[0]["sum(downloaded)"]),
 
         ];
 
@@ -554,26 +555,26 @@ class Stats
 
         # request bounty
         $app->dbOld->prepared_query("
-            select sum(Bounty) from requests_votes
+            select sum(bounty) from requests_votes
         ");
 
         $totalBounty = $app->dbOld->to_array();
 
         # vote bounty
         $app->dbOld->prepared_query("
-            select sum(requests_votes.Bounty) from requests_votes
-            join requests on requests.ID = requests_votes.RequestID where TorrentID > 0
+            select sum(requests_votes.bounty) from requests_votes
+            join requests on requests.id = requests_votes.requestId where torrentId > 0
         ");
 
         $availableBounty = $app->dbOld->to_array();
         $requests = [
-            "totalBounty" => intval($totalBounty[0]["sum(Bounty)"]),
-            "availableBounty" => intval($availableBounty[0]["sum(requests_votes.Bounty)"]),
+            "totalBounty" => intval($totalBounty[0]["sum(bounty)"]),
+            "availableBounty" => intval($availableBounty[0]["sum(requests_votes.bounty)"]),
         ];
 
         # total snatches for torrents that still exist
         $app->dbOld->prepared_query("
-            select sum(Snatched), count(ID) from torrents
+            select sum(snatched), count(id) from torrents
         ");
 
         $activeSnatches = $app->dbOld->to_array();
@@ -585,8 +586,8 @@ class Stats
 
         $totalSnatches = $app->dbOld->to_array();
         $snatches = [
-            "active" => intval($activeSnatches[0]["sum(Snatched)"]),
-            "torrents" => intval($activeSnatches[0]["count(ID)"]),
+            "active" => intval($activeSnatches[0]["sum(snatched)"]),
+            "torrents" => intval($activeSnatches[0]["count(id)"]),
             "total" => intval($totalSnatches[0]["count(uid)"]),
         ];
 
@@ -655,19 +656,19 @@ class Stats
             return $cacheHit;
         }
 
-        # uploads: real data :)
+        # uploads
         $app->dbOld->prepared_query("
-            select date_format(Time, '%Y-%m') as months, count(ID) from torrents
-            group by months order by Time asc
+            select date_format(created_at, '%Y-%m') as months, count(id) from torrents
+            group by months order by created_at asc
         ");
 
         $uploads = $app->dbOld->to_array();
         $uploads = array_column($uploads, 1, 0);
 
-        # deletes: log data :/
+        # deletes
         $app->dbOld->prepared_query("
-            select date_format(Time, '%Y-%m') as months, count(ID) from log
-            where Message like 'Torrent % deleted %' group by months order by Time asc
+            select date_format(deleted_at, '%Y-%m') as months, count(id) from torrents
+            group by months order by deleted_at asc
         ");
 
         $deletes = $app->dbOld->to_array();
@@ -705,17 +706,17 @@ class Stats
 
         # registrations
         $app->dbOld->prepared_query("
-            select date_format(JoinDate,'%Y-%m') as months, count(UserID) from users_info
-            group by months order by JoinDate asc limit 1, 11
+            select date_format(registered, '%Y-%m') as months, count(id) from users
+            group by months order by registered asc limit 1, 11
         ");
 
         $registrations = $app->dbOld->to_array();
         $registrations = array_column($registrations, 1, 0);
 
-        # disables
+        # disables: todo
         $app->dbOld->prepared_query("
-            select date_format(BanDate, '%Y-%m') as months, count(UserID) from users_info
-            where BanDate > 0 group by months order by BanDate asc limit 1, 11
+            select date_format(banDate, '%Y-%m') as months, count(userId) from users_info
+            where banDate > 0 group by months order by banDate asc limit 1, 11
         ");
 
         $disables = $app->dbOld->to_array();
@@ -754,7 +755,7 @@ class Stats
         # get torrents by category
         $app->dbOld->prepared_query("
             select torrents_group.category_id, count(torrents.id) as torrents from torrents
-            join torrents_group on torrents_group.id = torrents.GroupID
+            join torrents_group on torrents_group.id = torrents.groupId
             group by torrents_group.category_id order by torrents desc
         ");
 
@@ -951,7 +952,7 @@ class Stats
         $data["dataSize"] = $app->dbNew->single($query, []);
 
         # creator count
-        $query = "select count(artistId) from artists_group";
+        $query = "select count(id) from creators";
         $data["creatorCount"] = $app->dbNew->single($query, []);
 
         # request total count

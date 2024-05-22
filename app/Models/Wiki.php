@@ -29,15 +29,13 @@ class Wiki extends ObjectCrud
 
     # ["database" => "display"]
     protected array $maps = [
-        "uuid" => "uuid",
         "id" => "id",
-        "Revision" => "revision",
-        "Title" => "title",
-        "Body" => "body",
-        "MinClassRead" => "minClassRead",
-        "MinClassEdit" => "minClassEdit",
-        #"Date" => "createdAt",
-        "Author" => "authorId",
+        "userId" => "userId",
+        "revision" => "revision",
+        "title" => "title",
+        "body" => "body",
+        "minimumReadClass" => "minimumReadClass",
+        "minimumEditClass" => "minimumEditClass",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -50,11 +48,10 @@ class Wiki extends ObjectCrud
     /**
      * update
      *
-     * @param int|string $identifier
      * @param array $data
      * @return void
      */
-    public function update(int|string $identifier = null, array $data = []): void
+    public function update(array $data = []): void
     {
         $app = App::go();
 
@@ -63,42 +60,54 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minimumEditClass > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
-        # first, create a revision
-        $query = "
-            insert into wiki_revisions (id, revision, title, body, date, author)
-            values (:id, :revision, :title, :body, :date, :author)
-        ";
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
 
-        $variables = [
-            "id" => $this->id,
-            "revision" => $this->attributes->revision,
-            "title" => $this->attributes->title,
-            "body" => $this->attributes->body,
-            "date" => $this->attributes->updatedAt ?? $this->attributes->createdAt,
-            "author" => $this->attributes->authorId,
-        ];
+            # create a revision
+            $query = "
+                insert into wiki_revisions (id, articleId, userId, revision, title, body)
+                values (:id, :articleId, :userId, :revision, :title, :body)
+            ";
 
-        $app->dbNew->do($query, $variables);
+            $variables = [
+                "id" => $app->dbNew->shortUuid(),
+                "articleId" => $this->id,
+                "userId" => $this->attributes->userId,
+                "revision" => $this->attributes->revision,
+                "title" => $this->attributes->title,
+                "body" => $this->attributes->body,
+            ];
 
-        # then, update the article
-        $data["revision"] = $this->attributes->revision + 1;
-        $data["author"] = $app->user->core["id"];
+            $app->dbNew->do($query, $variables);
 
-        parent::update($this->id, $data);
+            # then, update the article
+            $data["revision"] = $this->attributes->revision + 1;
+            $data["userId"] = $app->user->core["id"];
+
+            # parent update
+            parent::update($data);
+
+            # commit the transaction
+            $app->dbNew->commit();
+        } catch (\Throwable $e) {
+            # rollback and rethrow
+            $app->dbNew->rollBack();
+            throw $e;
+        }
     }
 
 
     /**
      * delete
      *
-     * @param int|string $identifier
      * @return void
      */
-    public function delete(int|string $identifier = null): void
+    public function delete(): void
     {
         $app = App::go();
 
@@ -107,7 +116,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minimumEditClass > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -116,22 +125,34 @@ class Wiki extends ObjectCrud
             throw new Exception("can't delete the index article");
         }
 
-        # write to the site log
-        \Misc::write_log("the wiki article {$identifier} with the title {$this->attributes->title} was deleted by {$app->user->core["username"]}");
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
 
-        # delete aliases and revisions
-        $query = "delete from wiki_aliases where articleId = ?";
-        $app->dbNew->do($query, [$this->id]);
+            # delete aliases and revisions
+            $query = "update wiki_aliases set deleted_at = now() where articleId = ?";
+            $app->dbNew->do($query, [$this->id]);
 
-        $query = "delete from wiki_revisions where id = ?";
-        $app->dbNew->do($query, [$this->id]);
+            $query = "update wiki_revisions set deleted_at = now() where articleId = ?";
+            $app->dbNew->do($query, [$this->id]);
 
-        # perform a soft delete on the article itself
-        parent::delete($this->id);
+            # parent delete
+            parent::delete($this->id);
+
+            # commit the transaction
+            $app->dbNew->commit();
+
+            # write to the site log
+            \Misc::write_log("the wiki article {$this->id} with the title {$this->attributes->title} was deleted by {$app->user->core["username"]}");
+        } catch (\Throwable $e) {
+            # rollback and rethrow
+            $app->dbNew->rollBack();
+            throw $e;
+        }
     }
 
 
-    /** methods */
+    /** accessors */
 
 
     /**
@@ -145,10 +166,123 @@ class Wiki extends ObjectCrud
     {
         $app = App::go();
 
-        $query = "select alias from wiki_aliases where articleId = ?";
+        $query = "select alias from wiki_aliases where articleId = ? and deleted_at is null";
         $ref = $app->dbNew->column($query, [$this->id]);
 
         return $ref;
+    }
+
+
+    /**
+     * getOneRevision
+     *
+     * Gets one revision for a wiki article by id and revision.
+     *
+     * @param int $revision
+     * @return ?array
+     */
+    public function getOneRevision(int $revision): ?array
+    {
+        $app = App::go();
+
+        $query = "select * from wiki_revisions where articleId = ? and revision = ? and deleted_at is null";
+        $ref = $app->dbNew->row($query, [$this->id, $revision]);
+
+        return $ref;
+    }
+
+
+    /**
+     * getAllRevisions
+     *
+     * Gets all the revisions for a wiki article by id.
+     *
+     * @return array e.g., [revisionId => date] in descending order
+     */
+    public function getAllRevisions(): array
+    {
+        $app = App::go();
+
+        $query = "select revision, created_at from wiki_revisions where articleId = ? and deleted_at is null order by revision desc";
+        $ref = $app->dbNew->multi($query, [$this->id]);
+
+        $revisions = [];
+        foreach ($ref as $row) {
+            $revisions[ $row["revision"] ] = $row["created_at"];
+        }
+
+        return $revisions;
+    }
+
+
+    /**
+     * getIdByAlias
+     *
+     * Gets the article id by alias.
+     *
+     * @param string $alias
+     * @return ?int
+     */
+    public static function getIdByAlias(string $alias): ?int
+    {
+        $app = App::go();
+
+        # normalize the alias
+        $alias = self::normalizeAlias($alias);
+
+        $query = "select articleId from wiki_aliases where alias = ?";
+        $ref = $app->dbNew->single($query, [$alias]);
+
+        return $ref;
+    }
+
+
+    /** methods */
+
+
+    /**
+     * searchDatabase
+     *
+     * Naive database like "%foo%" search.
+     * Index this with Manticore later.
+     *
+     * @param ?string $searchWhat the search string, obviously
+     * @param bool $titlesOnly only search article titles?
+     * @return ?array array of Gazelle\Wiki objects
+     */
+    public static function searchDatabase(?string $searchWhat = "*", bool $titlesOnly = false): ?array
+    {
+        $app = App::go();
+
+        # strip garbage from the search string
+        $searchWhat ??= "*";
+        $searchWhat = Escape::string($searchWhat);
+
+        if (!$titlesOnly) {
+            # search titles and bodies
+            $query = "select id from wiki_articles where title like ? or body like ? and deleted_at is null order by title asc";
+            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
+        } else {
+            # search titles only
+            $query = "select id from wiki_articles where title like ? and deleted_at is null order by title asc";
+            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
+        }
+
+        $results = [];
+        foreach ($ref as $row) {
+            # load it up
+            $item = new self($row["id"]);
+
+            # skip soft deletes or bad data
+            if (!$item->id) {
+                continue;
+            }
+
+            # add to the return array
+            $results[] = $item;
+        }
+
+        return $results;
     }
 
 
@@ -169,7 +303,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minimumEditClass > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -185,8 +319,8 @@ class Wiki extends ObjectCrud
         }
 
         # create the alias
-        $query = "insert into wiki_aliases (alias, articleId, userId) values (?, ?, ?)";
-        $app->dbNew->do($query, [ $alias, $this->id, $app->user->core["id"] ]);
+        $query = "insert into wiki_aliases (articleId, userId, alias) values (?, ?, ?)";
+        $app->dbNew->do($query, [$this->id, $app->user->core["id"], $alias]);
     }
 
 
@@ -207,7 +341,7 @@ class Wiki extends ObjectCrud
             throw new Exception("invalid permissions");
         }
 
-        if ($this->attributes->minClassEdit > $app->user->extra["Class"]) {
+        if ($this->attributes->minimumEditClass > $app->user->extra["Class"]) {
             throw new Exception("invalid permissions");
         }
 
@@ -215,50 +349,30 @@ class Wiki extends ObjectCrud
         $alias = self::normalizeAlias($alias);
 
         # delete the alias
-        $query = "delete from wiki_aliases where alias = ? and articleId = ?";
-        $app->dbNew->do($query, [$alias, $this->id]);
+        $query = "update wiki_aliases set deleted_at = now() where articleId = ? and alias = ?";
+        $app->dbNew->do($query, [$this->id, $alias]);
     }
 
 
     /**
-     * getOneRevision
+     * normalizeAlias
      *
-     * Gets one revision for a wiki article by id and revision.
+     * Normalize a wiki alias.
      *
-     * @param int $revision
-     * @return ?array
+     * @param string $alias
+     * @return string
      */
-    public function getOneRevision(int $revision): ?array
+    public static function normalizeAlias(string $alias): string
     {
-        $app = App::go();
+        $alias = Text::utf8($alias);
 
-        $query = "select * from wiki_revisions where id = ? and revision = ?";
-        $ref = $app->dbNew->row($query, [$this->id, $revision]);
+        # only allow alphanumeric characters
+        $alias = preg_replace("/[^a-z0-9]/", "", strtolower($alias));
 
-        return $ref;
-    }
+        # limit to 64 characters
+        $alias = substr($alias, 0, 64);
 
-
-    /**
-     * getAllRevisions
-     *
-     * Gets all the revisions for a wiki article by id.
-     *
-     * @return array e.g., [revisionId => date] in descending order
-     */
-    public function getAllRevisions(): array
-    {
-        $app = App::go();
-
-        $query = "select revision, created_at from wiki_revisions where id = ? order by revision desc";
-        $ref = $app->dbNew->multi($query, [$this->id]);
-
-        $revisions = [];
-        foreach ($ref as $row) {
-            $revisions[$row["revision"]] = $row["created_at"];
-        }
-
-        return $revisions;
+        return $alias;
     }
 
 
@@ -267,6 +381,8 @@ class Wiki extends ObjectCrud
      *
      * Hydrates a new article with some basic info such as id, title, body, etc.
      * Used to repurpose the same interface for creating and editing articles.
+     *
+     * @return self
      */
     public function hydrateNewArticle(): self
     {
@@ -314,112 +430,20 @@ EOT;
         $this->id = $app->dbNew->shortUuid();
 
         $attributes = [
-            "uuid" => $app->dbNew->uuid(),
+            "userId" => $app->user->core["id"],
             "revision" => 1,
             "title" => "What will you call your new article?",
             "body" => $defaultBodyText,
-            "minClassRead" => 2,
-            "minClassEdit" => 2,
-            "authorId" => $app->user->core["id"],
+            "minimumReadClass" => Roles::getGuestRoleId(),
+            "minimumEditClass" => Roles::getUserRoleId(),
             "createdAt" => $app->dbNew->now(),
             "updatedAt" => $app->dbNew->now(),
         ];
 
+        # make a RecursiveCollection
         $this->attributes = new RecursiveCollection($attributes);
 
         # return the object
         return $this;
-    }
-
-
-    /** static */
-
-
-    /**
-     * normalizeAlias
-     *
-     * Normalize a wiki alias.
-     *
-     * @param string $alias
-     * @return string
-     */
-    public static function normalizeAlias(string $alias): string
-    {
-        $alias = Text::utf8($alias);
-
-        # only allow alphanumeric characters
-        $alias = preg_replace("/[^a-z0-9]/", "", strtolower($alias));
-
-        # limit to 64 characters
-        $alias = substr($alias, 0, 64);
-
-        return $alias;
-    }
-
-
-    /**
-     * getIdByAlias
-     *
-     * Gets the article id by alias.
-     *
-     * @param string $alias
-     * @return ?int
-     */
-    public static function getIdByAlias(string $alias): ?int
-    {
-        $app = App::go();
-
-        $alias = self::normalizeAlias($alias);
-
-        $query = "select articleId from wiki_aliases where alias = ?";
-        $ref = $app->dbNew->single($query, [$alias]);
-
-        return $ref;
-    }
-
-
-    /**
-     * search
-     *
-     * Naive database like "%foo%" search.
-     * Index this with Manticorelater.
-     *
-     * @param ?string $searchWhat the search string, obviously
-     * @param bool $titlesOnly only search article titles?
-     * @return ?array array of Gazelle\Wiki objects
-     */
-    public static function search(?string $searchWhat = "*", bool $titlesOnly = false): ?array
-    {
-        $app = App::go();
-
-        # strip garbage from the search string
-        $searchWhat ??= "*";
-        $searchWhat = Text::utf8($searchWhat);
-
-        if (!$titlesOnly) {
-            # search titles and bodies
-            $query = "select id from wiki_articles where title like ? or body like ? and deleted_at is null order by title asc";
-            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%", "%{$searchWhat}%"]);
-        } else {
-            # search titles only
-            $query = "select id from wiki_articles where title like ? and deleted_at is null order by title asc";
-            $ref = $app->dbNew->multi($query, ["%{$searchWhat}%"]);
-        }
-
-        $results = [];
-        foreach ($ref as $row) {
-            # load it up
-            $item = new self($row["id"]);
-
-            # skip soft deletes or bad data
-            if (empty($item->id || !empty($this->attributes->deletedAt))) {
-                continue;
-            }
-
-            # add to the return array
-            $results[] = $item;
-        }
-
-        return $results;
     }
 } # class

@@ -287,7 +287,7 @@ if (isset($ArtistForm)) {
             list($GroupCount) = $app->dbOld->next_record();
             if (($ReqCount + $GroupCount) === 0) {
                 // The only group to use this artist
-                Artists::delete_artist($ArtistID);
+                \Gazelle\Creators::delete_artist($ArtistID);
             } else {
                 // Not the only group, still need to clear cache
                 $app->cache->delete("artists_requests_$ArtistID");
@@ -345,7 +345,7 @@ if ($NewRequest) {
 
     $AnnounceTitle = empty($Title) ? (empty($Title2) ? $TitleJP : $Title2) : $Title;
 
-    $Announce = "\"$AnnounceTitle\"" . (isset($ArtistForm) ? (' - ' . Artists::display_artists($ArtistForm, false, false)) : '') . ' ' . site_url() . "requests.php?action=view&id=$RequestID - " . implode(' ', $Tags);
+    $Announce = "\"$AnnounceTitle\"" . (isset($ArtistForm) ? (' - ' . \Gazelle\Creators::display_artists($ArtistForm, false, false)) : '') . ' ' . site_url() . "requests.php?action=view&id=$RequestID - " . implode(' ', $Tags);
     send_irc(REQUEST_CHAN, $Announce);
 } else {
     $app->cache->delete("request_$RequestID");

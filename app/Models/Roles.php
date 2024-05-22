@@ -269,6 +269,20 @@ class Roles extends ObjectCrud
     }
 
 
+    /**
+     * getUserRoleId
+     *
+     * Gets the user role id.
+     *
+     * @return int
+     */
+    public static function getUserRoleId(): int
+    {
+        # todo: hardcoded
+        return 20;
+    }
+
+
     /** role state introspection */
 
 

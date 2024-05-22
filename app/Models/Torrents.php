@@ -151,7 +151,7 @@ class Torrents extends ObjectCrud
         #!d($ref);exit;
 
         # now the creators
-        $data["creators"] = Artists::get_artists($groupIds) ?? [];
+        $data["creators"] = \Gazelle\Creators::get_artists($groupIds) ?? [];
 
         return $data;
     }
@@ -165,7 +165,7 @@ class Torrents extends ObjectCrud
       * @param array $GroupIDs
       * @param boolean $Return if false, nothing is returned. For priming cache.
       * @param boolean $GetArtists if true, each group will contain the result of
-      *  Artists::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
+      *  \Gazelle\Creators::get_artists($GroupID), in result[$GroupID]['ExtendedArtists']
       * @param boolean $Torrents if true, each group contains a list of torrents, in result[$GroupID]['Torrents']
       *
       * @return array each row of the following format:
@@ -194,7 +194,7 @@ class Torrents extends ObjectCrud
       *    }
       *  }
       *  ExtendedArtists => {
-      *    [1-6] => { // See documentation on Artists::get_artists
+      *    [1-6] => { // See documentation on \Gazelle\Creators::get_artists
       *      id, name, aliasid
       *    }
       *  }
@@ -325,7 +325,7 @@ class Torrents extends ObjectCrud
         $Found = array_filter($Found);
 
         if ($GetArtists) {
-            $Artists = \Artists::get_artists($GroupIDs);
+            $Artists = \Gazelle\Creators::get_artists($GroupIDs);
         } else {
             $Artists = [];
         }
@@ -663,7 +663,7 @@ class Torrents extends ObjectCrud
             list($GroupCount) = $app->dbOld->next_record();
             if (($ReqCount + $GroupCount) == 0) {
                 //The only group to use this artist
-                Artists::delete_artist($ArtistID);
+                \Gazelle\Creators::delete_artist($ArtistID);
             } else {
                 //Not the only group, still need to clear cache
                 $app->cache->delete("artist_groups_$ArtistID");
@@ -788,7 +788,7 @@ class Torrents extends ObjectCrud
         $app->cache->delete("torrent_group_$GroupID");
         $app->cache->delete("torrent_group_light_$GroupID");
 
-        $ArtistInfo = \Artists::get_artist($GroupID);
+        $ArtistInfo = \Gazelle\Creators::get_artist($GroupID);
         $app->cache->delete("groups_artists_$GroupID");
         $app->dbOld->set_query_id($QueryID);
     }
@@ -1500,7 +1500,7 @@ class Torrents extends ObjectCrud
         || !empty($ExtendedArtists[6])
             ) {
                 unset($ExtendedArtists[2], $ExtendedArtists[3]);
-                $DisplayName = \Artists::display_artists($ExtendedArtists, ($Mode & self::DISPLAYSTRING_LINKED));
+                $DisplayName = \Gazelle\Creators::display_artists($ExtendedArtists, ($Mode & self::DISPLAYSTRING_LINKED));
             } else {
                 $DisplayName = '';
             }

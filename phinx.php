@@ -22,9 +22,6 @@ return
     ],
 
     "environments" => [
-        "default_migration_table" => "phinxLog",
-        "default_environment" => "development",
-
         # production and development are the same in the config
         # they transparently switch databases on $app->env->dev
         "production" => [

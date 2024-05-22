@@ -42,7 +42,7 @@ list($Name) = $app->dbOld->next_record();
 
 // Everything is legit, let's just confim they're not retarded
 if (empty($_POST['confirm'])) {
-    $Artists = Artists::get_artists(array($GroupID, $NewGroupID));
+    $Artists = \Gazelle\Creators::get_artists(array($GroupID, $NewGroupID));
 
     View::header(); ?>
   <div class="center">
@@ -58,11 +58,11 @@ if (empty($_POST['confirm'])) {
       <input type="hidden" name="targetgroupid" value="<?=$NewGroupID?>">
       <h3>You are attempting to merge the group:</h3>
       <ul>
-        <li><?= Artists::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></li>
+        <li><?= \Gazelle\Creators::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$Name?></a></li>
       </ul>
       <h3>Into the group:</h3>
       <ul>
-        <li><?= Artists::display_artists($Artists[$NewGroupID], true, false)?> - <a href="torrents.php?id=<?=$NewGroupID?>"><?=$NewName?></a></li>
+        <li><?= \Gazelle\Creators::display_artists($Artists[$NewGroupID], true, false)?> - <a href="torrents.php?id=<?=$NewGroupID?>"><?=$NewName?></a></li>
       </ul>
       <input type="submit" value="Confirm">
     </form>

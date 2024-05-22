@@ -22,7 +22,7 @@ if (!$app->dbOld->has_results()) {
 list($GroupName) = $app->dbOld->next_record(MYSQLI_NUM, false);
 
 for ($i = 0; $i < count($ArtistNames); $i++) {
-    $ArtistName = Artists::normalise_artist_name($ArtistNames[$i]);
+    $ArtistName = \Gazelle\Creators::normalise_artist_name($ArtistNames[$i]);
 
     if (strlen($ArtistName) > 0) {
         $app->dbOld->query("

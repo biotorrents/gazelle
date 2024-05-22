@@ -18,27 +18,27 @@ if (!is_numeric($identifier)) {
     $identifier = Gazelle\Wiki::getIdByAlias($identifier);
 }
 
-# load the article
-$article = new Gazelle\Wiki($identifier);
-if (!$article->id) {
+try {
+    # load the article
+    $article = new Gazelle\Wiki($identifier);
+} catch (Throwable $e) {
     $app->error(404);
 }
 
 # make sure it's a valid starboard notebook
-$good = preg_match("/{$app->env->regexStarboard}/", strval($article->attributes->body));
+$good = preg_match("/{$app->env->regexStarboard}/", strval($article->body));
 if (!$good) {
     # default to markdown
-    $article->attributes->body = "# %% [markdown]\n" . $article->attributes->body;
+    $article->body = "# %% [markdown]\n" . $article->body;
     $article->save();
 }
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($article->id, "wiki");
-#!d($conversation->relationships->messages);exit;
 
 # twig template
 $app->twig->display("wiki/article.twig", [
-    "title" => $article->attributes->title,
+    "title" => $article->title,
     "sidebar" => true,
     "js" => ["wiki", "conversations"],
 

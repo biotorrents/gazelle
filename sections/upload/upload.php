@@ -124,7 +124,7 @@ if (empty($Properties) && !empty($_GET['groupid']) && is_numeric($_GET['groupid'
         list($Properties) = $app->dbOld->to_array(false, MYSQLI_BOTH);
         $UploadForm = $Categories[$Properties['CategoryID'] - 1];
         $Properties['CategoryName'] = $Categories[$Properties['CategoryID'] - 1];
-        $Properties['Artists'] = Artists::get_artist($_GET['groupid']);
+        $Properties['Artists'] = \Gazelle\Creators::get_artist($_GET['groupid']);
 
         $app->dbOld->query("
         SELECT

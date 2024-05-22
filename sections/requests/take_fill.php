@@ -127,7 +127,7 @@ WHERE
 ");
 
 $ArtistForm = Gazelle\Requests::get_artists($RequestID);
-$ArtistName = Artists::display_artists($ArtistForm, false, true);
+$ArtistName = \Gazelle\Creators::display_artists($ArtistForm, false, true);
 $FullName = $ArtistName . $Title;
 
 $app->dbOld->prepared_query("

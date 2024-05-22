@@ -17,7 +17,7 @@
 
     <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
-    {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minClassEdit and isEditorAvailable %}
+    {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minimumEditClass and isEditorAvailable %}
         <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" data-authorid="{{ user.core.id }}" class="button button-orange">save your edits</a>
     {% endif %}
 
@@ -41,7 +41,7 @@
 
     <tr>
         <th>Last edited by</th>
-        <td>{{ article.attributes.authorId|formatUsername }}</td>
+        <td>{{ article.attributes.userId|formatUsername }}</td>
     </tr>
 
     <tr>
@@ -64,31 +64,31 @@
 <table class="compact">
     <tr>
         <th>Minimum read class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
             <td>
                 <select id="minClassRead">
                     {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minClassRead == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
+                        <option value="{{ key }}" {{ (article.attributes.minimumReadClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
                     {% endfor %}
                 </select>
             </td>
         {% else %}
-            <td>{{ roles[article.attributes.minClassRead].friendlyName }}</td>
+            <td>{{ roles[article.attributes.minimumReadClass].friendlyName }}</td>
         {% endif %}
     </tr>
 
     <tr>
         <th>Minimum edit class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minClassEdit and isEditorAvailable %}
+        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
             <td>
                 <select id="minClassEdit">
                     {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minClassEdit == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
+                        <option value="{{ key }}" {{ (article.attributes.minimumEditClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
                     {% endfor %}
                 </select>
             </td>
         {% else %}
-            <td>{{ roles[article.attributes.minClassEdit].friendlyName }}</td>
+            <td>{{ roles[article.attributes.minimumEditClass].friendlyName }}</td>
         {% endif %}
     </tr>
 </table>
@@ -105,7 +105,9 @@
             <th>{{ item }}</th>
             <td class="right">
                 {% if can({"wiki": "updateAny"}) %}
-                    <a class="button deleteWikiAlias" data-articleid="{{ article.id }}" data-alias="{{ item }}">delete</a>
+                    <a class="conversationButton deleteWikiAlias tooltip" title="delete" data-articleid="{{ article.id }}" data-alias="{{ item }}">
+                    	<i class="fa-thin fa-trash" data-articleid="{{ article.id }}" data-alias="{{ item }}"></i>
+                    </a>
                 {% endif %}
             </td>
         </tr>

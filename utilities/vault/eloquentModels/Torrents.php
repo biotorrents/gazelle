@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Models\Torrent
+ * Gazelle\Models\Torrents
  */
 
 namespace Gazelle\Models;
 
-class Torrent extends Base
+class Torrents extends Base
 {
     # https://laravel.com/docs/master/eloquent#table-names
     protected $table = "torrents";
 
     # https://laravel.com/docs/master/eloquent#primary-keys
-    protected $primaryKey = "ID";
+    protected $primaryKey = "id";
     public $incrementing = false;
 
     # https://laravel.com/docs/master/eloquent#mass-assignment
@@ -45,33 +45,33 @@ class Torrent extends Base
     public function toJsonApi(): array
     {
         return [
-            "id" => $this->ID,
+            "id" => $this->id,
             "type" => "torrents",
             "attributes" => [
-                "groupId" => $this->GroupID,
-                "userId" => $this->UserID,
-                "platform" => $this->media,
-                "format" => $this->container,
-                "license" => $this->codec,
-                "scope" => $this->resolution,
-                "version" => $this->version,
-                "isCensored" => $this->Censored,
-                "isAnonymous" => $this->Anonymous,
-                "infoHash" => $this->info_hash,
+                "archive" => $this->archive,
+                "balance" => $this->balance,
+                "dataSize" => $this->Size,
+                "description" => $this->Description,
                 "fileCount" => $this->FileCount,
                 "fileList" => $this->FileList,
                 "filePath" => $this->FilePath,
-                "dataSize" => $this->Size,
-                "leecherCount" => $this->Leechers,
-                "seederCount" => $this->Seeders,
-                "lastAction" => $this->last_action,
-                "isFreeTorrent" => $this->FreeTorrent,
+                "format" => $this->container,
                 "freeLeechType" => $this->FreeLeechType,
-                "description" => $this->Description,
-                "snatchCount" => $this->Snatched,
-                "balance" => $this->balance,
+                "groupId" => $this->GroupID,
+                "infoHash" => $this->info_hash,
+                "isAnonymous" => $this->Anonymous,
+                "isCensored" => $this->Censored,
+                "isFreeTorrent" => $this->FreeTorrent,
+                "lastAction" => $this->last_action,
                 "lastReseedRequest" => $this->LastReseedRequest,
-                "archive" => $this->archive,
+                "leecherCount" => $this->Leechers,
+                "license" => $this->codec,
+                "platform" => $this->media,
+                "scope" => $this->resolution,
+                "seederCount" => $this->Seeders,
+                "snatchCount" => $this->Snatched,
+                "userId" => $this->UserID,
+                "version" => $this->version,
                 "createdAt" => $this->created_at,
                 "updatedAt" => $this->updated_at,
                 "deletedAt" => $this->deleted_at,

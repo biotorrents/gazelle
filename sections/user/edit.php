@@ -47,7 +47,7 @@ if (!empty($app->user->extra["TwoFactor"])) {
 }
 
 # webauthn: query the repository for the user
-$webAuthnKeys = $webAuthn->publicKeyCredentialSourceRepository->findMetadataByUserUuid($app->user->core["uuid"]);
+$webAuthnKeys = $webAuthn->publicKeyCredentialSourceRepository->findMetadataByUserUuid($app->user->core["id"]);
 foreach ($webAuthnKeys as $key => $value) {
     $webAuthnKeys[$key]["truncatedId"] = \Illuminate\Support\Str::limit($value["credentialId"], 20);
 }

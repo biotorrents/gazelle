@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class UpdateOpenAITags extends AbstractMigration
+final class ResetWikiPermissions extends AbstractMigration
 {
     /**
      * Change Method.
@@ -17,16 +17,11 @@ final class UpdateOpenAITags extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change()
+    public function change(): void
     {
-        $app = \Gazelle\App::go();
+        $app = Gazelle\App::go();
 
-        # change data definition
-        $query = "alter table tags modify tagType varchar(16)";
+        $query = "update wiki_articles set minimumReadClass = 10, minimumEditClass = 20";
         $app->dbNew->do($query, []);
-
-        # update userId 0 tags to openai
-        $query = "update tags set tagType = ? where userId = ?";
-        $app->dbNew->do($query, ["openai", 0]);
     }
 }

@@ -20,23 +20,28 @@ class Collages extends ObjectCrud
     private string $cachePrefix = "collages:";
     private string $cacheDuration = "1 hour";
 
+    # categories
+    public static array $categories = [
+        1 => "Personal",
+        2 => "Thematic",
+        3 => "Group picks",
+        4 => "Staff picks",
+    ];
+
     # ["database" => "display"]
     protected array $maps = [
-        "uuid" => "uuid",
-        "ID" => "id",
-        "Name" => "title",
-        "Description" => "description",
-        "UserID" => "userId",
-        "NumTorrents" => "torrentCount",
-        #"Deleted" => "deletedAt",
-        "Locked" => "isLocked",
-        "CategoryID" => "categoryId",
-        "TagList" => "tagList",
-        "MaxGroups" => "maxGroups",
-        "MaxGroupsPerUser" => "maxGroupsPerUser",
-        "Featured" => "isFeatured",
-        "Subscribers" => "subscriberCount",
-        #"updated" => "updatedAt",
+        "id" => "id",
+        "categoryId" => "categoryId",
+        "userId" => "userId",
+        "title" => "title",
+        "description" => "description",
+        "tags" => "tags",
+        "torrentCount" => "torrentCount",
+        "subscriberCount" => "subscriberCount",
+        "maximumGroups" => "maximumGroups",
+        "groupsPerUser" => "groupsPerUser",
+        "isFeatured" => "isFeatured",
+        "isLocked" => "isLocked",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -49,16 +54,12 @@ class Collages extends ObjectCrud
     /**
      * relationships
      *
-     * @return ?array
+     * @return array
      */
-    public function relationships(): ?array
+    public function relationships(): array
     {
-        $app = App::go();
-
         return [
-            "users" => $app->user->readProfile($this->attributes->userId),
-            #"subscribers" => $this->subscribers(),
-            "torrentGroups" => $this->relatedTorrentGroups(),
+            TorrentGroups::$type => $this->relatedTorrentGroups(),
         ];
     }
 
@@ -66,22 +67,42 @@ class Collages extends ObjectCrud
     /**
      * relatedTorrentGroups
      *
-     * @return ?array
+     * @return array
      */
-    public function relatedTorrentGroups(): ?array
+    public function relatedTorrentGroups(): array
     {
         $app = App::go();
 
-        $query = "select groupId from collages_torrents where collageId = ?";
+        $query = "select groupId from collages_torrents where collageId = ? and deleted_at is null order by sortOrder asc";
         $ref = $app->dbNew->column($query, [$this->id]);
 
-        if (!$ref) {
-            return null;
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => TorrentGroups::$type];
         }
 
+        return $data;
+    }
+
+
+    /** accessors */
+
+
+    /**
+     * getTorrentGroups
+     *
+     * @return array
+     */
+    public function getTorrentGroups(): array
+    {
+        $app = App::go();
+
+        # get related id's
+        $ref = $this->relatedTorrentGroups();
+
         $data = [];
-        foreach ($ref as $groupId) {
-            $data[] = new TorrentGroups($groupId);
+        foreach ($ref as $row) {
+            $data[] = new TorrentGroups($row["id"]);
         }
 
         return $data;
@@ -92,64 +113,70 @@ class Collages extends ObjectCrud
 
 
     /**
-     * getTorrentGroups
-     *
-     * @return ?array
-     */
-    public function getTorrentGroups(): ?array
-    {
-        $app = App::go();
-
-        $query = "select groupId from collages_torrents where collageId = ?";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        if (!$ref) {
-            return null;
-        }
-
-        $data = [];
-        foreach ($ref as $groupId) {
-            $data[] = new TorrentGroups($groupId);
-        }
-
-        return $data;
-    }
-
-
-    /**
-     * addSubscription
+     * createSubscription
      *
      * @param int $collageId
      * @return void
      */
-    public static function addSubscription(int $collageId): void
+    public static function createSubscription(int $collageId): void
     {
         $app = App::go();
 
-        $query = "update collages set subscribers = subscribers + 1 where id = ?";
-        $app->dbNew->do($query, [$collageId]);
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
+            # increment the subscriberCount
+            $query = "update collages set subscriberCount = subscriberCount + 1 where id = ? and deleted_at is null";
+            $app->dbNew->do($query, [$collageId]);
+
+            # add the user's subscription
+            $query = "insert ignore into subscriptions_collages (collageId, userId) values (?, ?)";
+            $app->dbNew->do($query, [ $collageId, $app->user->core["id"] ]);
+
+            # commit the transaction
+            $app->dbNew->commit();
+        } catch (\Throwable $e) {
+            # rollback and rethrow
+            $app->dbNew->rollBack();
+            throw $e;
+        }
     }
 
 
     /**
-     * subtractSubscription
+     * deleteSubscription
      *
      * @param int $collageId
      * @return void
      */
-    public static function subtractSubscription(int $collageId): void
+    public static function deleteSubscription(int $collageId): void
     {
         $app = App::go();
 
-        $query = "select subscribers from collages where id = ?";
-        $subscriberCount = $app->dbNew->single($query, [$collageId]) ?? 0;
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
 
-        if (empty($subscriberCount)) {
-            return;
+            # get the subscriberCount
+            $query = "select subscriberCount from collages where id = ?";
+            $subscriberCount = $app->dbNew->single($query, [$collageId]) ?? 0;
+
+            # decrement the subscriberCount
+            $query = "update collages set subscriberCount = subscriberCount - 1 where id = ?";
+            $app->dbNew->do($query, [$collageId]);
+
+            # remove the user's subscription
+            $query = "update subscriptions_collages set deleted_at = now() where collageId = ? and userId = ?";
+            $app->dbNew->do($query, [ $collageId, $app->user->core["id"] ]);
+
+            # commit the transaction
+            $app->dbNew->commit();
+        } catch (\Throwable $e) {
+            # rollback and rethrow
+            $app->dbNew->rollBack();
+            throw $e;
         }
-
-        $query = "update collages set subscribers = subscribers - 1 where id = ?";
-        $app->dbNew->do($query, [$collageId]);
     }
 
 
@@ -162,8 +189,8 @@ class Collages extends ObjectCrud
     {
         $app = App::go();
 
-        $query = "select 1 from users_collage_subs where userId = ? and collageId = ?";
-        $isSubscribed = $app->dbNew->single($query, [ $app->user->core["id"], $this->id ]);
+        $query = "select 1 from subscriptions_collages where collageId = ? and userId = ?";
+        $isSubscribed = $app->dbNew->single($query, [ $this->id, $app->user->core["id"] ]);
 
         return boolval($isSubscribed);
     }
@@ -174,14 +201,14 @@ class Collages extends ObjectCrud
      *
      * Creates a personal collage.
      *
-     * @return array collage data
+     * @return self
      */
-    public static function createPersonal(): array
+    public static function createPersonal(): self
     {
         $app = App::go();
 
-        $query = "select count(id) from collages where userId = ? and categoryId = ? and deleted = ?";
-        $collageCount = $app->dbNew->single($query, [$app->user->core["id"], 0, 0]) ?? 0;
+        $query = "select count(id) from collages where categoryId = ? and userId = ? and deleted_at is null";
+        $collageCount = $app->dbNew->single($query, [ 1, $app->user->core["id"] ]) ?? 0;
 
         # todo: permissions are meh and this is hardcoded
         $maxCollages = $app->user->permissions["MaxCollages"] ?? 5;
@@ -189,27 +216,30 @@ class Collages extends ObjectCrud
             throw new Exception("you may only create {$maxCollages} personal collages");
         }
 
-        # default title and description
-        $title = "{$app->user->core["username"]}'s personal collage #{$collageCount}";
-        $description = "Personal collage for {$app->user->core["username"]}";
-
-        # database insert
-        $query = "insert into collages (name, description, categoryId, userId) values (?, ?, ?, ?)";
-        $app->dbNew->do($query, [ $title, $description, 0, $app->user->core["id"] ]);
-
-        # return the collage data
-        $collageId = $app->dbNew->lastInsertId();
-
-        return [
-            "id" => $collageId,
-            "name" => $title,
-            "description" => $description,
+        # seed the data
+        $data = [
+            "id" => $app->dbNew->shortUuid(),
+            "categoryId" => 1,
+            "userId" => $app->user->core["id"],
+            "title" => "{$app->user->core["username"]}'s personal collage #{$collageCount}",
+            "description" => "Personal collage for {$app->user->core["username"]}",
         ];
 
+        # database insert
+        $query = "
+            insert into collages (id, categoryId, userId, title, description)
+            values (:id, :categoryId, :userId, :title, :description)
+        ";
+
+        $app->dbNew->do($query, $data);
+
+        # return the collage data
+        return new self($data["id"]);
+
         /*
-        # redirect to new collage
+        # redirect to the new collage
         $collageId = $app->dbNew->lastInsertId();
-        Http::redirect("/collages.php?id={$collageId}");
+        Http::redirect("/collages/{$data["id"]}");
         */
     }
 
@@ -252,7 +282,7 @@ class Collages extends ObjectCrud
             select collages_torrents.groupId, collages_torrents.userId from collages_torrents
             inner join torrents_group on torrents_group.id = collages_torrents.groupId
             where collages_torrents.collageId = ?
-            order by collages_torrents.sort
+            order by collages_torrents.sortOrder asc
         ";
 
         $ref = $app->dbNew->multi($query, [$this->id]);
@@ -312,6 +342,7 @@ class Collages extends ObjectCrud
      * @param int $creatorId
      * @return void
      */
+    /*
     public function addCreator($collageId, $creatorId): void
     {
         $app = App::go();
@@ -346,4 +377,5 @@ class Collages extends ObjectCrud
             $app->cache->delete("collage_subs_user_new_{$userId}");
         }
     }
+    */
 } # class

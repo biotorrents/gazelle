@@ -50,7 +50,7 @@ $app->dbOld->query("
 $CategoryName = $Categories[$CategoryID - 1];
 
 $ArtistForm = Gazelle\Requests::get_artists($RequestID);
-$ArtistName = Artists::display_artists($ArtistForm, false, true);
+$ArtistName = \Gazelle\Creators::display_artists($ArtistForm, false, true);
 $FullName = $ArtistName . $Title;
 
 $RequestVotes = Gazelle\Requests::get_votes_array($RequestID);

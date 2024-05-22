@@ -148,7 +148,7 @@ function generate_torrent_json($Caption, $Tag, $Details, $Limit)
             $Snatched, $Seeders, $Leechers, $Data, $Size) = $Detail;
 
         # todo: Make JSON object if multiple artists
-        $Artist = Artists::display_artists(Artists::get_artist($GroupID), false, false);
+        $Artist = \Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($GroupID), false, false);
 
         $TagList = [];
 

@@ -521,7 +521,7 @@ class Format
      *
      * @see https://stackoverflow.com/a/7487809
      */
-    public static function relativeTime(string|int $time = null): ?string
+    public static function relativeTime($time = null): ?string
     {
         if (!$time) {
             return null;

@@ -17,7 +17,7 @@ $post = Gazelle\Http::post();
 $searchWhat = $get["search"] ?? null;
 $titlesOnly = boolval($get["titlesOnly"] ?? null);
 
-$searchResults = Gazelle\Wiki::search($searchWhat, $titlesOnly);
+$searchResults = Gazelle\Wiki::searchDatabase($searchWhat, $titlesOnly);
 $resultCount = count($searchResults);
 
 # worry about pagination later, when the wiki is large

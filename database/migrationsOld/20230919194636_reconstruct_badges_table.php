@@ -19,7 +19,7 @@ final class ReconstructBadgesTable extends AbstractMigration
      */
     public function change(): void
     {
-        $app = \Gazelle\App::go();
+        $app = Gazelle\App::go();
 
         # drop the table if it exists
         $query = "drop table if exists badges";

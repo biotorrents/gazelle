@@ -409,10 +409,10 @@ $week = 3600 * 24 * 7;
 $env->classPromotions = [
 
     "user" => [
-        "id" => 2,
+        "id" => 20,
         "title" => "User",
 
-        "nextId" => 3,
+        "nextId" => 30,
         "nextTitle" => "Member",
 
         "dataUploaded" => 0,
@@ -422,10 +422,10 @@ $env->classPromotions = [
     ],
 
     "member" => [
-        "id" => 3,
+        "id" => 30,
         "title" => "Member",
 
-        "nextId" => 4,
+        "nextId" => 40,
         "nextTitle" => "Power User",
 
         "dataUploaded" => 10 * $GiB,
@@ -435,10 +435,10 @@ $env->classPromotions = [
     ],
 
     "powerUser" => [
-        "id" => 4,
+        "id" => 40,
         "title" => "Power User",
 
-        "nextId" => 5,
+        "nextId" => 50,
         "nextTitle" => "Elite",
 
         "dataUploaded" => 20 * $GiB,
@@ -448,10 +448,10 @@ $env->classPromotions = [
     ],
 
     "elite" => [
-        "id" => 5,
+        "id" => 50,
         "title" => "Elite",
 
-        "nextId" => 23,
+        "nextId" => 60,
         "nextTitle" => "Torrent Master",
 
         "dataUploaded" => 50 * $GiB,
@@ -461,10 +461,10 @@ $env->classPromotions = [
     ],
 
     "torrentMaster" => [
-        "id" => 23,
+        "id" => 60,
         "title" => "Torrent Master",
 
-        "nextId" => 24,
+        "nextId" => 70,
         "nextTitle" => "Power Master",
 
         "dataUploaded" => 100 * $GiB,
@@ -474,10 +474,10 @@ $env->classPromotions = [
     ],
 
     "powerMaster" => [
-        "id" => 24,
+        "id" => 70,
         "title" => "Power Master",
 
-        "nextId" => 25,
+        "nextId" => 80,
         "nextTitle" => "Elite Master",
 
         "dataUploaded" => 200 * $GiB,
@@ -487,10 +487,10 @@ $env->classPromotions = [
     ],
 
     "eliteMaster" => [
-        "id" => 25,
+        "id" => 80,
         "title" => "Elite Master",
 
-        "nextId" => 8,
+        "nextId" => 90,
         "nextTitle" => "Legend",
 
         "dataUploaded" => 500 * $GiB,
@@ -500,7 +500,7 @@ $env->classPromotions = [
     ],
 
     "legend" => [
-        "id" => 8,
+        "id" => 90,
         "title" => "Legend",
 
         "nextId" => null,

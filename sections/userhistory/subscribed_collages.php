@@ -102,7 +102,7 @@ if (!$NumResults) {
             $TorrentList = [];
         }
 
-        $Artists = Artists::get_artists($GroupIDs);
+        $Artists = \Gazelle\Creators::get_artists($GroupIDs);
         $Number = 0;
 
         foreach ($GroupIDs as $GroupID) {
@@ -117,7 +117,7 @@ if (!$NumResults) {
             $DisplayName = '';
 
             if (isset($Artists)) {
-                $DisplayName .= '<div>' . Artists::display_artists($Artists) . '</div> ';
+                $DisplayName .= '<div>' . \Gazelle\Creators::display_artists($Artists) . '</div> ';
             }
             $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {
@@ -193,7 +193,7 @@ if (!$NumResults) {
                 $DisplayName = '';
 
                 if (isset($Artists)) {
-                    $DisplayName .= '<div>' . Artists::display_artists($Artists) . '</div> ';
+                    $DisplayName .= '<div>' . \Gazelle\Creators::display_artists($Artists) . '</div> ';
                 }
 
                 $DisplayName .= "<a class=\"torrentTitle\" href=\"torrents.php?id=$GroupID\" ";

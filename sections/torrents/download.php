@@ -107,9 +107,9 @@ if (!is_array($Info) || !array_key_exists("PlainArtists", $Info) || empty($Info[
     }
 
     $Info = array($app->dbOld->next_record(MYSQLI_NUM, array(4, 5, 6, 10)));
-    $Artists = Artists::get_artist($Info[0][4], false);
-    $Info["Artists"] = Artists::display_artists($Artists, false, true);
-    $Info["PlainArtists"] = Artists::display_artists($Artists, false, true, false);
+    $Artists = \Gazelle\Creators::get_artist($Info[0][4], false);
+    $Info["Artists"] = \Gazelle\Creators::display_artists($Artists, false, true);
+    $Info["PlainArtists"] = \Gazelle\Creators::display_artists($Artists, false, true, false);
     $app->cache->set("torrent_download_$torrentId", $Info, 0);
 }
 

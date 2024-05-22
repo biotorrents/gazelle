@@ -289,7 +289,7 @@ if (empty($Results)) {
                     }
                 }
                 $MatchingArtistsText = (!empty($MatchingArtists) ? 'Caught by filter for ' . implode(', ', $MatchingArtists) : '');
-                $DisplayName = Artists::display_artists($GroupInfo['Artists'], true, true);
+                $DisplayName = \Gazelle\Creators::display_artists($GroupInfo['Artists'], true, true);
             }
             $DisplayName .= "<a href=\"torrents.php?id=$GroupID&amp;torrentid=$TorrentID#torrent$TorrentID\" ";
             if (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) {

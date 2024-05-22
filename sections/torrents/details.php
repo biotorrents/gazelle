@@ -36,7 +36,7 @@ $torrentDetails = $torrentCache[1];
 
 # description and creators
 $description = Gazelle\Text::parse($groupDetails["description"]);
-$creatorList = Artists::get_artist($groupId);
+$creatorList = \Gazelle\Creators::get_artist($groupId);
 #!d($creatorList);
 
 # get an openai description if it exists
@@ -147,7 +147,7 @@ list($WikiBody, $WikiImage, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $G
 $AltName = $GroupName; // Goes in the alt text of the image
 $Title = $GroupName; // Goes in <title>
 $WikiBody = Gazelle\Text::parse($WikiBody);
-$Artists = Artists::get_artist($GroupID);
+$Artists = \Gazelle\Creators::get_artist($GroupID);
 
 
 $CoverArt = $app->cache->get("torrents_cover_art_$GroupID");
@@ -195,7 +195,7 @@ $DisplayName = $twig->render(
       'url' => Gazelle\Format::get_url($_GET),
       'cover_art' => (!isset($app->user->extra['CoverArt']) || $app->user->extra['CoverArt']) ?? true,
       'thumb' => Gazelle\Images::process($CoverArt, 'thumb'),
-      'artists' => Artists::display_artists($Artists),
+      'artists' => \Gazelle\Creators::display_artists($Artists),
     ]
 );
 
@@ -385,7 +385,7 @@ $Index++;
 
       <ul class="stats nobullet" id="artist_list">
         <?php foreach ($Artists as $Num => $Artist) { ?>
-        <li class="artist"><?=Artists::display_artist($Artist)?>
+        <li class="artist"><?=\Gazelle\Creators::display_artist($Artist)?>
           <?php if ($app->user->can(["creators" => "deleteAny"])) { ?>
           <span class="remove remove_artist u-pull-right"><a href="javascript:void(0);"
               onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';"

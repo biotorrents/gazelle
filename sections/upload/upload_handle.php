@@ -93,7 +93,7 @@ $data["torrentId"] = Gazelle\Escape::int($post["torrentId"] ?? null);
 
 # get creators (unsure if needed)
 if ($data["groupId"]) {
-    $data["creatorList"] = Artists::get_artist($data["groupId"]);
+    $data["creatorList"] = \Gazelle\Creators::get_artist($data["groupId"]);
 }
 
 
@@ -376,7 +376,7 @@ if (empty($data["groupId"])) {
     foreach ($data["creatorList"] as $key => $value) {
         # escape and normalize
         $data["creatorList"][$key] = Gazelle\Escape::string($value);
-        $data["creatorList"][$key] = Artists::normalise_artist_name($value);
+        $data["creatorList"][$key] = \Gazelle\Creators::normalise_artist_name($value);
     }
 }
 
@@ -388,12 +388,12 @@ if (empty($data['GroupID']) && empty($ArtistForm)) {
     for ($i = 0; $i < count($Artists); $i++) {
         if (trim($Artists[$i]) !== '') {
             if (!in_array($Artists[$i], $ArtistNames)) {
-                $ArtistForm[$i] = array('name' => Artists::normalise_artist_name($Artists[$i]));
+                $ArtistForm[$i] = array('name' => \Gazelle\Creators::normalise_artist_name($Artists[$i]));
                 array_push($ArtistNames, $ArtistForm[$i]['name']);
             }
         }
     }
-    $LogName .= Artists::display_artists($ArtistForm, false, true, false);
+    $LogName .= \Gazelle\Creators::display_artists($ArtistForm, false, true, false);
 } elseif (empty($ArtistForm)) {
     $app->dbOld->query("
       SELECT ta.ArtistID, ag.Name
@@ -407,7 +407,7 @@ if (empty($data['GroupID']) && empty($ArtistForm)) {
         array_push($ArtistForm, array('id' => $ArtistID, 'name' => Gazelle\Text::esc($ArtistName)));
         array_push($ArtistsUnescaped, array('name' => $ArtistName));
     }
-    $LogName .= Artists::display_artists($ArtistsUnescaped, false, true, false);
+    $LogName .= \Gazelle\Creators::display_artists($ArtistsUnescaped, false, true, false);
 }
 
 if ($Err) { // Show the upload form, with the data the user entered
@@ -483,7 +483,7 @@ if ($groupId) {
         }
 
         # probably unnecesary
-        #$data["creator"] = Artists::display_artists(Artists::get_artist($groupId), false, false);
+        #$data["creator"] = \Gazelle\Creators::display_artists(\Gazelle\Creators::get_artist($groupId), false, false);
     }
 }
 
@@ -803,7 +803,7 @@ if ($data["picture"]) {
             array_unshift($recentUploads, [
                 "ID" => $GroupID,
                 "Name" => $data["title"],
-                "Artist" => Artists::display_artists($data["creatorList"], false, true),
+                "Artist" => \Gazelle\Creators::display_artists($data["creatorList"], false, true),
                 "WikiImage" => $data["picture"],
             ]);
             $app->cache->set("recent_uploads_{$app->user->core["id"]}", $recentUploads, 0);

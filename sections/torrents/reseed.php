@@ -46,7 +46,7 @@ $Group = Torrents::get_groups(array($GroupID));
 extract(Torrents::array_group($Group[$GroupID]));
 
 $Name = '';
-#$Name .= Artists::display_artists(array('1' => $Artists), false, true);
+#$Name .= \Gazelle\Creators::display_artists(array('1' => $Artists), false, true);
 $Name .= $GroupName;
 
 $app->dbOld->query("

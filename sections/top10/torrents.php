@@ -583,7 +583,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
         $GroupIDs[] = $Detail[1];
     }
 
-    $Artists = Artists::get_artists($GroupIDs);
+    $Artists = \Gazelle\Creators::get_artists($GroupIDs);
 
     foreach ($Details as $Detail) {
         list($TorrentID, $GroupID, $GroupName, $GroupTitle2, $GroupNameJP, $GroupCategoryID, $WikiImage, $TagsList,
@@ -631,7 +631,7 @@ function generate_torrent_table($Caption, $Tag, $Details, $Limit)
             if ($Artists) {
                 # Emoji in classes/astists.class.php
                 $Label = '&ensp;'; # breaking
-                $DisplayName .= $Label . Artists::display_artists($Artists[$GroupID], true, true);
+                $DisplayName .= $Label . \Gazelle\Creators::display_artists($Artists[$GroupID], true, true);
             }
 
             # Catalogue Number

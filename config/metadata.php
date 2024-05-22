@@ -514,14 +514,6 @@ $env->metadata = [
  * @see https://www.ncbi.nlm.nih.gov/books/NBK25464/
  */
 
-$env->collageCategories = [
-    0 => "Personal",
-    1 => "Theme",
-    2 => "Staff Picks",
-    3 => "Group Picks",
-];
-
-
 # main torrent categories
 $env->categories = [
 

@@ -36,7 +36,7 @@ if (!isset($TorrentList[$TorrentID])) {
 }
 
 $GroupID = $TorrentDetails['ID'];
-$Artists = Artists::get_artist($GroupID);
+$Artists = \Gazelle\Creators::get_artist($GroupID);
 
 if ($TorrentDetails['category_id'] === 0) {
     $CategoryName = 'Unknown';

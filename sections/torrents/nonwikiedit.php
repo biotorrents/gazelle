@@ -202,7 +202,7 @@ foreach ($CurrArtists as $CurrArtist) {
 
 
                 if (!$app->dbOld->has_results()) {
-                    Artists::delete_artist($ArtistID);
+                    \Gazelle\Creators::delete_artist($ArtistID);
                 }
             }
         }

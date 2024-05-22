@@ -23,7 +23,6 @@ if (!$identifier) {
 try {
     # load the request
     $request = new Gazelle\Requests($identifier);
-    #!d($request);exit;
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -113,8 +112,8 @@ $Title = empty($Request['Title']) ? (empty($Request['Title2']) ? $Request['Title
 
 // Do we need to get artists?
 $ArtistForm = \Gazelle\Requests::get_artists($RequestID);
-$ArtistName = Artists::display_artists($ArtistForm, false, true);
-$ArtistLink = Artists::display_artists($ArtistForm, true, true);
+$ArtistName = \Gazelle\Creators::display_artists($ArtistForm, false, true);
+$ArtistLink = \Gazelle\Creators::display_artists($ArtistForm, true, true);
 
 if ($IsFilled) {
     $DisplayLink = "<a href='torrents.php?torrentid=$Request[TorrentID]' dir='ltr'>$Title</a>";
@@ -258,7 +257,7 @@ switch ($CategoryName) {
       <ul class="stats nobullet">
         <?php foreach ($ArtistForm as $Artist) { ?>
         <li class="artist">
-          <?= Artists::display_artist($Artist) ?>
+          <?= \Gazelle\Creators::display_artist($Artist) ?>
         </li>
         <?php } ?>
       </ul>

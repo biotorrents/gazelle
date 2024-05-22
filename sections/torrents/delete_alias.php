@@ -50,7 +50,7 @@ $app->dbOld->query("
 $GroupCount = $app->dbOld->record_count();
 if (($ReqCount + $GroupCount) == 0) {
     // The only group to use this artist
-    Artists::delete_artist($ArtistID);
+    \Gazelle\Creators::delete_artist($ArtistID);
 }
 
 $app->cache->delete("torrents_details_$GroupID"); // Delete torrent group cache

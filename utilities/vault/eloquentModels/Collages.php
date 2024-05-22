@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Models\Collage
+ * Gazelle\Models\Collages
  */
 
 namespace Gazelle\Models;
 
-class Collage extends Base
+class Collages extends Base
 {
     # https://laravel.com/docs/master/eloquent#table-names
     protected $table = "collages";
 
     # https://laravel.com/docs/master/eloquent#primary-keys
-    protected $primaryKey = "ID";
+    protected $primaryKey = "id";
     public $incrementing = false;
 
     # https://laravel.com/docs/master/eloquent#mass-assignment
@@ -44,5 +44,6 @@ class Collage extends Base
      */
     public function toJsonApi(): array
     {
+        # todo
     }
 } # class

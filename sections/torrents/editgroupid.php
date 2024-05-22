@@ -44,7 +44,7 @@ if (empty($_POST['confirm'])) {
     WHERE ID = $GroupID");
     list($CategoryID, $NewName) = $app->dbOld->next_record();
 
-    $Artists = Artists::get_artists(array($OldGroupID, $GroupID));
+    $Artists = \Gazelle\Creators::get_artists(array($OldGroupID, $GroupID));
 
     View::header(); ?>
   <div>
@@ -61,11 +61,11 @@ if (empty($_POST['confirm'])) {
         <input type="hidden" name="groupid" value="<?=$GroupID?>">
         <h3>You are attempting to move the torrent with ID <?=$TorrentID?> from the group:</h3>
         <ul>
-          <li><?= Artists::display_artists($Artists[$OldGroupID], true, false)?> - <a href="torrents.php?id=<?=$OldGroupID?>"><?=$Name?></a></li>
+          <li><?= \Gazelle\Creators::display_artists($Artists[$OldGroupID], true, false)?> - <a href="torrents.php?id=<?=$OldGroupID?>"><?=$Name?></a></li>
         </ul>
         <h3>Into the group:</h3>
         <ul>
-          <li><?= Artists::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$NewName?></a></li>
+          <li><?= \Gazelle\Creators::display_artists($Artists[$GroupID], true, false)?> - <a href="torrents.php?id=<?=$GroupID?>"><?=$NewName?></a></li>
         </ul>
         <input type="submit" value="Confirm">
       </form>

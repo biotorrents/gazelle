@@ -933,23 +933,6 @@ CREATE TABLE `users_comments_last_read` (
 ) ENGINE=InnoDB CHARSET=utf8mb4;
 
 
-CREATE TABLE `users_donor_ranks` (
-  `UserID` int NOT NULL DEFAULT '0',
-  `Rank` tinyint NOT NULL DEFAULT '0',
-  `DonationTime` datetime DEFAULT NULL,
-  `Hidden` tinyint NOT NULL DEFAULT '0',
-  `TotalRank` int NOT NULL DEFAULT '0',
-  `SpecialRank` tinyint DEFAULT '0',
-  `InvitesRecievedRank` tinyint DEFAULT '0',
-  `RankExpirationTime` datetime DEFAULT NULL,
-  PRIMARY KEY (`UserID`),
-  KEY `DonationTime` (`DonationTime`),
-  KEY `SpecialRank` (`SpecialRank`),
-  KEY `Rank` (`Rank`),
-  KEY `TotalRank` (`TotalRank`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
 CREATE TABLE `users_downloads` (
   `UserID` int NOT NULL,
   `TorrentID` int NOT NULL,

@@ -12,20 +12,20 @@ require_once __DIR__ . "/../../../bootstrap/cli.php";
 $app = Gazelle\App::go();
 
 # get all creator id's without a semanticScholarId or haven't been updated in a month
-$query = "select id from creators where semanticScholarId is null and failCount < 3 or updatedAt < date_sub(now(), interval 1 month)";
-$ref = $app->dbNew->multi($query);
+$query = "select id from creators where semanticScholarId is null and failCount < 3 or updated_at < date_sub(now(), interval 1 month)";
+$ref = $app->dbNew->column($query);
 
 # loop through
 foreach ($ref as $row) {
     # announce
-    Gazelle\Text::figlet("creator {$row["id"]}");
+    Gazelle\Text::figlet("creator {$row}");
 
     try {
-        $creator = new Gazelle\Creators($row["id"]);
+        $creator = new Gazelle\Creators($row);
         $data = $creator->hydrateFromSemanticScholar();
         !d($data);
     } catch (Exception $e) {
-        ~d("error: {$e->getMessage()} on creator {$row["id"]}");
+        ~d("error: {$e->getMessage()} on creator {$row}");
         continue;
     }
 

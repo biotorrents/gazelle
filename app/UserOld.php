@@ -1321,9 +1321,9 @@ class User
         }
 
         # append creators
-        $creators = Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1362,9 +1362,9 @@ class User
         }
 
         # append creators
-        $creators = Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1402,9 +1402,9 @@ class User
         }
 
         # append creators
-        $creators = Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);

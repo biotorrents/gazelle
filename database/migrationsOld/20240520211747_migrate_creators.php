@@ -19,7 +19,7 @@ final class MigrateCreators extends AbstractMigration
      */
     public function change(): void
     {
-        $app = \Gazelle\App::go();
+        $app = Gazelle\App::go();
 
         # create the groups linking table
         $query = "
@@ -84,7 +84,7 @@ final class MigrateCreators extends AbstractMigration
         $ref = $app->dbNew->multi($query, []);
 
         foreach ($ref as $row) {
-            $query = "insert into creators_groups (creatorId, torrentId, userId) values (?, ?, ?)";
+            $query = "insert into creators_groups (creatorId, groupId, userId) values (?, ?, ?)";
             $app->dbNew->do($query, [ $row["ArtistID"], $row["GroupID"], $row["UserID"] ]);
         }
 

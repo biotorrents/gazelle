@@ -61,7 +61,7 @@ if (count($CleanArtists) > 0) {
         $Items = $app->dbOld->collect('ArtistID');
         $EmptyArtists = array_diff($ArtistIDs, $Items);
         foreach ($EmptyArtists as $ArtistID) {
-            Artists::delete_artist($ArtistID);
+            \Gazelle\Creators::delete_artist($ArtistID);
         }
     } else {
         $app->dbOld->query("

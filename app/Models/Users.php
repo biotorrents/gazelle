@@ -605,11 +605,10 @@ class Users extends ObjectCrud
      *
      * Handled elsewhere in this class.
      *
-     * @param int|string $identifier
      * @param array $data
      * @return void
      */
-    public function update(int|string $identifier = null, array $data = []): void
+    public function update(array $data = []): void
     {
         throw new Exception("not implemented");
     }
@@ -620,10 +619,9 @@ class Users extends ObjectCrud
      *
      * We don't delete users yet.
      *
-     * @param int|string $identifier
      * @return void
      */
-    public function delete(int|string $identifier = null): void
+    public function delete(): void
     {
         throw new Exception("not implemented");
     }
@@ -1445,9 +1443,9 @@ class Users extends ObjectCrud
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1486,9 +1484,9 @@ class Users extends ObjectCrud
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1526,9 +1524,9 @@ class Users extends ObjectCrud
         }
 
         # append creators
-        $creators = \Artists::get_artists(array_column($ref, "id"));
+        $creators = \Gazelle\Creators::get_artists(array_column($ref, "id"));
         foreach ($ref as $key => $row) {
-            $ref[$key]["creator"] = \Artists::display_artists($creators[$row["id"]], false, true);
+            $ref[$key]["creator"] = \Gazelle\Creators::display_artists($creators[$row["id"]], false, true);
         }
 
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -1735,7 +1733,7 @@ class Users extends ObjectCrud
 
 
         # creators added
-        $query = "select count(artistId) from torrents_artists where userId = ?";
+        $query = "select count(creatorId) from creators_groups where userId = ?";
         $data["creatorsAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 

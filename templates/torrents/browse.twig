@@ -188,7 +188,7 @@ continue;
 		
 		      /*
 		      if (isset($Artists)) {
-		          $DisplayName = '<div>'.Artists::display_artists($Artists).'</div> ';
+		          $DisplayName = '<div>'.\Gazelle\Creators::display_artists($Artists).'</div> ';
 		      } else {
 		          $DisplayName = '';
 		      }
@@ -209,7 +209,7 @@ continue;
 		                'url' => \Gazelle\Format::get_url($_GET),
 		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
 		                'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
-		                'artists' => Artists::display_artists($Artists),
+		                'artists' => \Gazelle\Creators::display_artists($Artists),
 		                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
 		                'extra_info' => false,
 		              ]
@@ -370,7 +370,7 @@ continue;
 		                'url' => \Gazelle\Format::get_url($_GET),
 		                'cover_art' => (!isset($app->userNew->extra['CoverArt']) || $app->userNew->extra['CoverArt']) ?? true,
 		                'thumb' => \Gazelle\Images::process($CoverArt, 'thumb'),
-		                'artists' => Artists::display_artists($Artists),
+		                'artists' => \Gazelle\Creators::display_artists($Artists),
 		                'tags' => $TorrentTags->format('torrents.php?'.$Action.'&amp;taglist='),
 		                'extra_info' => Torrents::torrent_info($Data, true, true),
 		              ]

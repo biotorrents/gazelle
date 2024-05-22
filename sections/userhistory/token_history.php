@@ -139,7 +139,7 @@ $Pages = Gazelle\Format::get_pages($Page, $NumResults, 25);
 foreach ($Tokens as $Token) {
     $GroupIDs[] = $Token['GroupID'];
 }
-$Artists = Artists::get_artists($GroupIDs);
+$Artists = \Gazelle\Creators::get_artists($GroupIDs);
 
 foreach ($Tokens as $Token) {
     list($TorrentID, $GroupID, $Time, $Expired, $Downloaded, $Uses, $Name) = $Token;
@@ -151,7 +151,7 @@ foreach ($Tokens as $Token) {
     }
 
     /*
-    $ArtistName = Artists::display_artists($Artists[$GroupID]);
+    $ArtistName = \Gazelle\Creators::display_artists($Artists[$GroupID]);
     if ($ArtistName) {
         $Name = $ArtistName.$Name;
     }

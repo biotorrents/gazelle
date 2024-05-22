@@ -92,6 +92,7 @@ class Base extends \Illuminate\Database\Eloquent\Model
         return strval($app->dbNew->shortUuid());
     }
 
+
     /**
      * uniqueIds
      *
