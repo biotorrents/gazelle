@@ -23,7 +23,6 @@ $resultCount = count($searchResults);
 # worry about pagination later, when the wiki is large
 $app->twig->display("wiki/browse.twig", [
     "title" => "Search the wiki",
-    #"sidebar" => true,
 
     "searchWhat" => $searchWhat,
     "titlesOnly" => $titlesOnly,

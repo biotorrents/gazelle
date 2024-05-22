@@ -10,7 +10,7 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 # is there an identifier?
-$identifier ??= Gazelle\Wiki::$indexArticleId; # default to articleId 1
+$identifier ??= Gazelle\Wiki::$indexArticleId;
 
 # is the identifier an integer?
 if (!is_numeric($identifier)) {
@@ -26,10 +26,10 @@ try {
 }
 
 # make sure it's a valid starboard notebook
-$good = preg_match("/{$app->env->regexStarboard}/", strval($article->body));
+$good = preg_match("/{$app->env->regexStarboard}/", strval($article->attributes->body));
 if (!$good) {
     # default to markdown
-    $article->body = "# %% [markdown]\n" . $article->body;
+    $article->body = "# %% [markdown]\n" . $article->attributes->body;
     $article->save();
 }
 
@@ -38,15 +38,17 @@ $conversation = Gazelle\Conversations::createIfNotExists($article->id, "wiki");
 
 # twig template
 $app->twig->display("wiki/article.twig", [
-    "title" => $article->title,
+    "title" => $article->attributes->title,
     "sidebar" => true,
+
+    "css" => [],
     "js" => ["wiki", "conversations"],
 
     "article" => $article,
     "aliases" => $article->getAliases(),
     "roles" => Gazelle\Roles::getAll(),
-
     "isEditorAvailable" => true,
+
     "enableConversation" => true,
     "conversation" => $conversation,
 ]);

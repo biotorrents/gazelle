@@ -24,7 +24,7 @@ Flight::route("/wiki/create", function () {
 
 
 # compare
-Flight::route("/wiki/compare/@identifier", function ($identifier) {
+Flight::route("/wiki/compare/@identifier", function (int|string $identifier = null) {
     $app = Gazelle\App::go();
     $app->middleware(["wiki" => "read"]);
     require_once "{$app->env->serverRoot}/sections/wiki/compare.php";
@@ -32,7 +32,7 @@ Flight::route("/wiki/compare/@identifier", function ($identifier) {
 
 
 # delete
-Flight::route("/wiki/delete/@identifier", function ($identifier) {
+Flight::route("/wiki/delete/@identifier", function (int|string $identifier = null) {
     $app = Gazelle\App::go();
     $app->middleware(["wiki" => "deleteAny"]);
     require_once "{$app->env->serverRoot}/sections/wiki/delete.php";
@@ -40,7 +40,7 @@ Flight::route("/wiki/delete/@identifier", function ($identifier) {
 
 
 # article: must be last!
-Flight::route("/wiki(/@identifier)", function ($identifier = null) {
+Flight::route("/wiki(/@identifier)", function (int|string $identifier = null) {
     $app = Gazelle\App::go();
     $app->middleware(["wiki" => "read"]);
     require_once "{$app->env->serverRoot}/sections/wiki/article.php";

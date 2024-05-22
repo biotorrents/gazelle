@@ -1,121 +1,121 @@
 {# actions #}
 <section>
-<h3>Actions</h3>
+    <h3>Actions</h3>
 
-<form method="get" action="/wiki/browse">
-    <input type="text" name="search" placeholder="Find wiki articles" required>
-    <input type="submit" class="button-primary" value="search the wiki">
-</form>
+    <form method="get" action="/wiki/browse">
+        <input type="text" name="search" placeholder="Find wiki articles" required>
+        <input type="submit" class="button-primary" value="search the wiki">
+    </form>
 
-<hr>
-<br>
+    <hr>
+    <br>
 
-<form>
-    {% if can({"wiki": "create"}) %}
-        <a href="/wiki/create" class="button button-primary">create a new article</a>
-    {% endif %}
+    <form>
+        {% if can({"wiki": "create"}) %}
+            <a href="/wiki/create" class="button button-primary">create a new article</a>
+        {% endif %}
 
-    <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
+        <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
-    {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minimumEditClass and isEditorAvailable %}
-        <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" data-authorid="{{ user.core.id }}" class="button button-orange">save your edits</a>
-    {% endif %}
+        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minimumEditClass and isEditorAvailable %}
+            <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" data-authorid="{{ user.core.id }}" class="button button-orange">save your edits</a>
+        {% endif %}
 
-    {# todo: the index article id is hardcoded here #}
-    {% if can({"wiki": "deleteAny"}) and article.id != 1 %}
-        <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
-    {% endif %}
-</form>
+        {# todo: the index article id is hardcoded here #}
+        {% if can({"wiki": "deleteAny"}) and article.id != 1 %}
+            <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
+        {% endif %}
+    </form>
 </section>
 
 
 {# about this article #}
 <section>
-<h3>About this article</h3>
+    <h3>About this article</h3>
 
-<table class="compact">
-    <tr>
-        <th>Revision</th>
-        <td>{{ article.attributes.revision }}</td>
-    </tr>
+    <table class="compact">
+        <tr>
+            <th>Revision</th>
+            <td>{{ article.attributes.revision|number_format }}</td>
+        </tr>
 
-    <tr>
-        <th>Last edited by</th>
-        <td>{{ article.attributes.userId|formatUsername }}</td>
-    </tr>
+        <tr>
+            <th>Last edited by</th>
+            <td>{{ article.attributes.userId|formatUsername }}</td>
+        </tr>
 
-    <tr>
-        <th>Last updated</th>
-        {% if not article.attributes.updatedAt %}
-            <td>
-                <span class="tooltip" title="{{ article.attributes.createdAt }}">{{ article.attributes.createdAt|relativeTime }}</span>
-            </td>
-        {% else %}
-            <td>
-                <span class="tooltip" title="{{ article.attributes.updatedAt }}">{{ article.attributes.updatedAt|relativeTime }}</span>
-            </td>
-        {% endif %}
-    </tr>
-</table>
+        <tr>
+            <th>Last updated</th>
+            {% if not article.attributes.updatedAt %}
+                <td>
+                    <span class="tooltip" title="{{ article.attributes.createdAt }}">{{ article.attributes.createdAt|relativeTime }}</span>
+                </td>
+            {% else %}
+                <td>
+                    <span class="tooltip" title="{{ article.attributes.updatedAt }}">{{ article.attributes.updatedAt|relativeTime }}</span>
+                </td>
+            {% endif %}
+        </tr>
+    </table>
 
-<hr>
-<br>
+    <hr>
+    <br>
 
-<table class="compact">
-    <tr>
-        <th>Minimum read class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
-            <td>
-                <select id="minClassRead">
-                    {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minimumReadClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        {% else %}
-            <td>{{ roles[article.attributes.minimumReadClass].friendlyName }}</td>
-        {% endif %}
-    </tr>
+    <table class="compact">
+        <tr>
+            <th>Minimum read class</th>
+            {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
+                <td>
+                    <select id="minimumReadClass">
+                        {% for key, value in roles %}
+                            <option value="{{ key }}" {{ (article.attributes.minimumReadClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            {% else %}
+                <td>{{ roles[article.attributes.minimumReadClass].friendlyName }}</td>
+            {% endif %}
+        </tr>
 
-    <tr>
-        <th>Minimum edit class</th>
-        {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
-            <td>
-                <select id="minClassEdit">
-                    {% for key, value in roles %}
-                        <option value="{{ key }}" {{ (article.attributes.minimumEditClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-        {% else %}
-            <td>{{ roles[article.attributes.minimumEditClass].friendlyName }}</td>
-        {% endif %}
-    </tr>
-</table>
+        <tr>
+            <th>Minimum edit class</th>
+            {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
+                <td>
+                    <select id="minimumEditClass">
+                        {% for key, value in roles %}
+                            <option value="{{ key }}" {{ (article.attributes.minimumEditClass == key) ? "selected" : "" }}>{{ value.friendlyName }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            {% else %}
+                <td>{{ roles[article.attributes.minimumEditClass].friendlyName }}</td>
+            {% endif %}
+        </tr>
+    </table>
 </section>
 
 
 {# aliases #}
 <section>
-<h3>Aliases</h3>
+    <h3>Aliases</h3>
 
-<table id="wikiAliases" class="compact">
-    {% for item in aliases %}
-        <tr>
-            <th>{{ item }}</th>
-            <td class="right">
-                {% if can({"wiki": "updateAny"}) %}
-                    <a class="conversationButton deleteWikiAlias tooltip" title="delete" data-articleid="{{ article.id }}" data-alias="{{ item }}">
-                    	<i class="fa-thin fa-trash" data-articleid="{{ article.id }}" data-alias="{{ item }}"></i>
-                    </a>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-</table>
+    <table id="wikiAliases" class="compact">
+        {% for item in aliases %}
+            <tr>
+                <th>{{ item }}</th>
+                <td class="right">
+                    {% if can({"wiki": "updateAny"}) %}
+                        <a class="conversationButton deleteWikiAlias tooltip" title="delete" data-articleid="{{ article.id }}" data-alias="{{ item }}">
+                    	    <i class="fa-thin fa-trash" data-articleid="{{ article.id }}" data-alias="{{ item }}"></i>
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
-<form>
-    <input type="text" name="alias" id="newAliasContent" data-articleid="{{ article.id }}" placeholder="e.g., someDescriptiveSlug">
-
-    <a class="button button-primary" id="createWikiAlias">add an alias</a>
+    <form>
+        <input type="text" name="alias" id="newAliasContent" data-articleid="{{ article.id }}" placeholder="e.g., descriptive-slug">
+        <a class="button button-primary" id="createWikiAlias">add an alias</a>
+    </form>
 </section>

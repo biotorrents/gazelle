@@ -30,6 +30,7 @@
     </form>
 </section>
 
+
 {# search results #}
 <section>
     <h2>Displaying {{ resultCount }} results</h2>
@@ -38,10 +39,9 @@
         <thead>
             <tr>
                 <th>Title</th>
-                <th>Author</th>
-                <th>Created</th>
-                <th>Updated</th>
-                {# <th class="center">Revision</th> #}
+                <th>User</th>
+                <th>Created at</th>
+                <th>Updated at</th>
             </tr>
         </thead>
         <tbody>
@@ -62,12 +62,6 @@
                     <td data-value="{{ item.attributes.updatedAt }}">
                         <span class="tooltip" title="{{ item.attributes.updatedAt }}">{{ item.attributes.updatedAt|relativeTime }}</span>
                     </td>
-
-                    {#
-                    <td class="center">
-                        {{ item.attributes.revision }}
-                    </td>
-                    #}
                 </tr>
             {% else %}
                 <tr>
@@ -79,12 +73,3 @@
 </section>
 
 {% endblock %}
-
-
-{#
-{% block sidebar %}
-
-{{ include("wiki/sidebar.twig") }}
-
-{% endblock %}
-#}

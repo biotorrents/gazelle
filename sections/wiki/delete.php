@@ -21,26 +21,16 @@ if (!is_numeric($identifier)) {
     $identifier = Gazelle\Wiki::getIdByAlias($identifier);
 }
 
-# prevent deleting the wiki index
-if ($identifier === Gazelle\Wiki::$indexArticleId) {
-    $app->error("You can't delete the main wiki article");
-}
-
 # load the article
 $article = new Gazelle\Wiki($identifier);
-if (!$article) {
+if (!$article->id) {
     $app->error(404);
-}
-
-# check permissions
-if ($article->attributes->minClassEdit > $app->user->extra["Class"]) {
-    $app->error(403);
 }
 
 # try to delete the article
 try {
     $article->delete($identifier);
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     $app->error($e->getMessage());
 }
 

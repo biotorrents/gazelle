@@ -31,7 +31,6 @@ if (!$article->id) {
 
 # get the article revisions
 $revisions = $article->getAllRevisions();
-#!d($revisions);exit;
 
 # note the reversed order of the revisions
 $post = Gazelle\Http::post();

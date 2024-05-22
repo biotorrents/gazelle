@@ -141,9 +141,10 @@ class Twig extends \Twig\Environment
         $frontendHash = password_hash($frontendKey, PASSWORD_DEFAULT);
         $twig->addGlobal("frontendHash", $frontendHash);
 
-        # query
-        $query = Http::request();
-        $twig->addGlobal("query", $query);
+        # request
+        $request = Http::request();
+        $twig->addGlobal("request", $request);
+        $twig->addGlobal("query", $request); # todo: delete
         #!d($twig->getGlobals());exit;
 
         # https://github.com/paragonie/anti-csrf
