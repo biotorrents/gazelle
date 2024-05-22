@@ -19,7 +19,7 @@ if ($get["search"]) {
 }
 
 
-/** torrent search handling */
+/** search handling */
 
 
 # collect the query
@@ -79,7 +79,6 @@ $queryString = http_build_query($get);
 $manticore = new Gazelle\Manticore();
 $searchResults = $manticore->search("collections", $get);
 $resultCount = count($searchResults);
-#!d($searchResults);
 
 
 /** pagination */
@@ -158,7 +157,7 @@ $app->twig->display("collages/browse.twig", [
     "js" => ["vendor/tom-select.base.min", "browse", "collages"],
     "css" => ["vendor/tom-select.bootstrap5.min"],
 
-    "categories" => $app->env->collageCategories,
+    "categories" => Gazelle\Collages::$categories,
 
     "searchResults" => $searchResults,
     "collages" => $collages,

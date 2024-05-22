@@ -4,41 +4,47 @@ declare(strict_types=1);
 
 
 /**
- * create or update a collage
+ * update or create a collage
  */
 
 $app = Gazelle\App::go();
 
-# check permissions
-if ($app->user->cant(["collages" => "create", "collages" => "updateAny"])) {
-    $app->error(403);
-}
-
-# http requests
+# request variables
 $get = Gazelle\Http::get();
 $post = Gazelle\Http::post();
 
-# default to create a new collage
-$collageId = $get["collageId"] ?? null;
-$isUpdate = false;
-$title = "Create a new collage";
-$tagList = [];
+$identifier ??= null;
+if (!$identifier) {
+    # create a new collage
+    $collage = new Gazelle\Collages();
+
+    $isUpdate = false;
+    $title = "Create a new collage";
+} else {
+    try {
+        # update an existing collage
+        $collage = new Gazelle\Collages($identifier);
+        if (!$collage->id) {
+            throw new Exception("not found");
+        }
+    } catch (Throwable $e) {
+        $app->error(404);
+    }
+
+    $isUpdate = true;
+    $title = "Edit the collage {$collage->attributes->title}";
+}
 
 # are we editing an existing collage?
-if ($collageId) {
+if ($collage->id) {
     try {
-        $collage = new Gazelle\Collages($collageId);
-        if (!$collage->id) {
-            throw new Exception("The requested collage doesn't exist");
-        }
-
         # todo: magic number
-        if ($collage->categoryId === 0 && $collage->userId !== $app->user->core["id"]) {
+        if ($collage->categoryId === 1 && $collage->attributes->userId !== $app->user->core["id"]) {
             throw new Exception("You can't edit someone else's personal collage");
         }
 
         # check max groups
-        if ($collage->maxGroups > 0 && $collage->torrentCount >= $collage->maxGroups) {
+        if ($collage->attributes->maximumGroups > 0 && $collage->attributes->torrentCount >= $collage->attributes->maxGroups) {
             throw new Exception("This collage already holds its maximum allowed number of groups");
         }
 

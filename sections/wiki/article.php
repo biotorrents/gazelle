@@ -29,7 +29,7 @@ try {
 $good = preg_match("/{$app->env->regexStarboard}/", strval($article->attributes->body));
 if (!$good) {
     # default to markdown
-    $article->body = "# %% [markdown]\n" . $article->attributes->body;
+    $article->attributes->body = "# %% [markdown]\n" . $article->attributes->body;
     $article->save();
 }
 

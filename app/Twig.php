@@ -144,8 +144,6 @@ class Twig extends \Twig\Environment
         # request
         $request = Http::request();
         $twig->addGlobal("request", $request);
-        $twig->addGlobal("query", $request); # todo: delete
-        #!d($twig->getGlobals());exit;
 
         # https://github.com/paragonie/anti-csrf
         $twig->addFunction(new \Twig\TwigFunction(

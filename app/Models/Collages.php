@@ -48,6 +48,46 @@ class Collages extends ObjectCrud
     ];
 
 
+    /** crud */
+
+
+    /**
+     * delete
+     *
+     * @return void
+     */
+    public function delete(): void
+    {
+        $app = App::go();
+
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
+            # delete the collage's torrents
+            $query = "update collages_torrents set deleted_at = now() where collageId = ?";
+            $app->dbNew->do($query, [$this->id]);
+
+            # delete the subscriptions
+            $query = "update subscriptions_collages set deleted_at = now() where collageId = ?";
+            $app->dbNew->do($query, [$this->id]);
+
+            # parent delete
+            parent::delete();
+
+            # write to the site log
+            \Misc::write_log("collage {$this->id} was deleted by {$app->user->core["username"]}");
+
+            # commit the transaction
+            $app->dbNew->commit();
+        } catch (\Throwable $e) {
+            # rollback and rethrow
+            $app->dbNew->rollBack();
+            throw $e;
+        }
+    }
+
+
     /** relationships */
 
 

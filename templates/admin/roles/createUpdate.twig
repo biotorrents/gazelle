@@ -20,7 +20,7 @@
 
 {# form #}
 <form method="post">
-    {{ form_token("") }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <input type="hidden" name="id" value="{{ role.id }}">
 

@@ -26,23 +26,23 @@
 
     {# start the registration form itself #}
     <form name="register" id="register" method="post" autocomplete="off">
-        {{ form_token(query.server.REQUEST_URI) }}
+        {{ form_token(request.server.REQUEST_URI) }}
 
         {# invite #}
-        {% if query.get.invite is defined %}
+        {% if request.get.invite is defined %}
             <input type="hidden" name="invite" id="invite" value="{{ invite }}">
         {% endif %}
 
         {# username #}
-        {% if query.post.username is defined %}
-            <input type="text" name="username" id="username" placeholder="Username" value="{{ query.post.username }}" required>
+        {% if request.post.username is defined %}
+            <input type="text" name="username" id="username" placeholder="Username" value="{{ request.post.username }}" required>
         {% else %}
             <input type="text" name="username" id="username" placeholder="Username" required>
         {% endif %}
 
         {# email #}
-        {% if query.post.email is defined %}
-            <input type="email" name="email" id="email" placeholder="Email address" value="{{ query.post.email }}" required>
+        {% if request.post.email is defined %}
+            <input type="email" name="email" id="email" placeholder="Email address" value="{{ request.post.email }}" required>
         {% else %}
             <input type="email" name="email" id="email" placeholder="Email address" required>
         {% endif %}
@@ -72,7 +72,7 @@
         <ul>
             <li>
                 {# isAdult #}
-                {% if query.post.isAdult is defined %}
+                {% if request.post.isAdult is defined %}
                     <input type="checkbox" name="isAdult" id="isAdult" value="true" checked>
                 {% else %}
                     <input type="checkbox" name="isAdult" id="isAdult" value="true">
@@ -82,7 +82,7 @@
 
             <li>
                 {# privacyConsent #}
-                {% if query.post.privacyConsent is defined %}
+                {% if request.post.privacyConsent is defined %}
                     <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true" checked>
                 {% else %}
                     <input type="checkbox" name="privacyConsent" id="privacyConsent" value="true">
@@ -92,7 +92,7 @@
 
             <li>
                 {# ruleWikiPledge #}
-                {% if query.post.ruleWikiPledge is defined %}
+                {% if request.post.ruleWikiPledge is defined %}
                     <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true" checked>
                 {% else %}
                     <input type="checkbox" name="ruleWikiPledge" id="ruleWikiPledge" value="true">

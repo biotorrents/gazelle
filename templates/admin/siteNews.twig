@@ -20,7 +20,7 @@
 
 		{# start the news form (subject and body should be nullable in the controller) #}
 		<form name="siteNews" method="post" action="/toolbox/newsPosts">
-			{{ form_token(query.server.REQUEST_URI) }}
+			{{ form_token(request.server.REQUEST_URI) }}
 
 			<input type="hidden" name="auth" value="{{ user.extra.AuthKey }}">
 

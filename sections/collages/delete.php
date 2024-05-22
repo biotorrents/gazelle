@@ -1,55 +1,25 @@
 <?php
-#declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+declare(strict_types=1);
 
-$CollageID = $_GET['collageId'];
-if (!is_numeric($CollageID) || !$CollageID) {
-    error(404);
+
+/**
+ * delete a collage
+ */
+
+$app = Gazelle\App::go();
+
+$identifier ??= null;
+if (!$identifier) {
+    $app->error(404);
 }
 
-$app->dbOld->query("
-  SELECT Name, CategoryID, UserID
-  FROM collages
-  WHERE ID = '$CollageID'");
-list($Name, $CategoryID, $UserID) = $app->dbOld->next_record();
-
-if ($app->user->cant(["collages" => "deleteAny"]) && $UserID != $app->user->core['id']) {
-    error(403);
+try {
+    $collage = new Gazelle\Collages($identifier);
+    $collage->delete();
+} catch (Throwable $e) {
+    $app->error(404);
 }
 
-View::header('Delete collage');
-?>
-<div class="center">
-  <div class="box" style="width: 600px; margin: 0px auto;">
-    <div class="head colhead">
-      Delete collage
-    </div>
-    <div class="pad">
-      <form class="delete_form" name="collage" action="collages.php" method="post">
-        <input type="hidden" name="action" value="take_delete">
-        <input type="hidden" name="auth" value="<?=$app->user->extra['AuthKey']?>">
-        <input type="hidden" name="collageId" value="<?=$CollageID?>">
-<?php
-if ($CategoryID == 0) {
-    ?>
-        <div class="alertbar" style="margin-bottom: 1em;">
-          <strong>Warning: This is a personal collage. If you delete this collage, it <em>cannot</em> be recovered!</strong>
-        </div>
-<?php
-}
-?>
-        <div>
-          <strong>Reason: </strong>
-          <input type="text" name="reason" size="40">
-        </div>
-        <div class="submit_div">
-          <input value="Delete" type="submit">
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-<?php
-View::footer();
-?>
+# redirect to collages index
+Gazelle\Http::redirect("/collages");

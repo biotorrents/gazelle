@@ -15,7 +15,7 @@
 <form method="post" id="userSettingsForm" name="userSettingsForm">
 
   {# hidden fields #}
-  	{{ form_token(query.server.REQUEST_URI) }}
+  	{{ form_token(request.server.REQUEST_URI) }}
   <input type="hidden" name="userId" value="{{ user.core.id }}">
   <input type="hidden" name="authKey" value="{{ user.extra.AuthKey }}">
 

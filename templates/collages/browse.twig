@@ -2,16 +2,16 @@
 
 {% block content %}
 
-{# include the main search form #}
-{% include "collages/search.twig" %}
+    {# include the main search form #}
+    {% include "collages/search.twig" %}
 
-{# no results message #}
-{% if pagination.resultCount == 0 %}
-	<div class="alertbar warning halfwide">
-		<h3>No search results :(</h3>
-		<p>Please ensure you didn't make too many typos or apply too many filters.</p>
-	</div>
-{% else %}
+	{# no results message #}
+	{% if pagination.resultCount == 0 %}
+		  <div class="alertbar warning halfwide">
+				<h3>No search results :(</h3>
+				<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+		  </div>
+	{% else %}
   {# resultCount and pagination controls #}
   <div id="searchResultsHeader">
   <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
@@ -28,11 +28,11 @@
 
   {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
   <a href="/torrents.php{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
-    {% endif %}
+	{% endif %}
 
 	  {% if pagination.currentPage != pagination.lastPage %}
   <a href="/torrents.php{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
-     {% endif %}
+	 {% endif %}
  
   </div>
   </div>
@@ -83,43 +83,43 @@
   <tr>
 
 	{# category #}
-    <td class="center">
-	    {{ categories[item.attributes.categoryId] }}
-      {# <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$app->env->collageCategories[(int)$CategoryID]?></a> #}
-    </td>
+	<td class="center">
+		{{ categories[item.attributes.categoryId] }}
+	  {# <a href="collages.php?action=search&amp;cats[<?=(int)$CategoryID?>]=1"><?=$app->env->collageCategories[(int)$CategoryID]?></a> #}
+	</td>
 
-    <td>
-      <a class="torrentTitle" id="collage_name"
-        href="collages.php?id={{ item.id }}">{{ item.attributes.title }}</a>
+	<td>
+	  <a class="torrentTitle" id="collage_name"
+		href="collages/{{ item.id }}">{{ item.attributes.title }}</a>
 		{#
-      <?php if ($BookmarkView) { ?>
-      <span class="u-pull-right">
-        <a href="#"
-          onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
-          class="brackets">Remove bookmark</a>
-      </span>
-      <?php } ?>
+	  <?php if ($BookmarkView) { ?>
+	  <span class="u-pull-right">
+		<a href="#"
+		  onclick="Unbookmark('collage', <?=$ID?>, ''); return false;"
+		  class="brackets">Remove bookmark</a>
+	  </span>
+	  <?php } ?>
 	  #}
 
-    {% if item.attributes.tagList is not empty %}
-      <div class="tooltip tagList" title="Tags">{{ item.attributes.tagList }}</div>
-    {% endif %}
-    </td>
+	{% if item.attributes.tags is not empty %}
+	  <div class="tooltip tagList" title="Tags">{{ item.attributes.tags }}</div>
+	{% endif %}
+	</td>
 
 	{# torrent count #}
-    <td class="number_column">{{ item.attributes.torrentCount }}</td>
+	<td class="number_column">{{ item.attributes.torrentCount }}</td>
 
 		{# subscriber count #}
-    <td class="number_column">{{ item.attributes.subscriberCount }}</td>
+	<td class="number_column">{{ item.attributes.subscriberCount }}</td>
 
 	{# last update #}
 	{% if item.attributes.updatedAt %}
-    <td class="nobr">{{ item.attributes.updatedAt|relativeTime }}</td>
+	<td class="nobr">{{ item.attributes.updatedAt|relativeTime }}</td>
 	{% else %}
-	    <td class="nobr">{{ item.attributes.createdAt|relativeTime }}</td>
+		<td class="nobr">{{ item.attributes.createdAt|relativeTime }}</td>
 		{% endif %}
 
-    <td>{{ item.attributes.userId|formatUsername }}</td>
+	<td>{{ item.attributes.userId|formatUsername }}</td>
   </tr>
 
 

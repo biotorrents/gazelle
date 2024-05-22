@@ -4,34 +4,34 @@ declare(strict_types=1);
 
 
 /**
- * collage details page
+ * collage details
  */
 
 $app = Gazelle\App::go();
 
-# http request
-$get = Gazelle\Http::get();
-$id = $get["id"];
-
-# collage details
-$collage = new Gazelle\Collages($id);
-
-if (!$collage->id) {
+$identifier ??= null;
+if (!$identifier) {
     $app->error(404);
 }
 
-$torrentGroups = $collage->getTorrentGroups();
-$isSubscribed = $collage->isSubscribed();
-$stats = $collage->readStats();
+try {
+    $collage = new Gazelle\Collages($identifier);
+    $torrentGroups = $collage->getTorrentGroups();
+    $isSubscribed = $collage->isSubscribed();
+    $stats = $collage->readStats();
+} catch (Gazelle\Exception\ResourceNotFoundException $e) {
+    $app->error(404);
+}
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($collage->id, "collages");
-#!d($conversation->relationships->messages);exit;
 
 # twig template
 $app->twig->display("collages/details.twig", [
     "title" => $collage->attributes->title,
     "sidebar" => true,
+
+    "js" => ["collages", "conversations"],
 
     "collage" => $collage,
     "torrentGroups" => $torrentGroups,
@@ -43,9 +43,9 @@ $app->twig->display("collages/details.twig", [
     "conversation" => $conversation,
 ]);
 
+
 exit;
 
-/****** */
 
 $CollageID = (int) $_GET['id'];
 

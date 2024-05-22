@@ -19,7 +19,7 @@
 {% block sidebar %}
 
 <form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <input type="text" id="search" name="search" placeholder="Search the wiki">
 </form>
@@ -28,7 +28,7 @@
 <h3>Actions</h3>
 
 <form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <input type="button" id="create" name="create" value="create" class="button-primary">
 

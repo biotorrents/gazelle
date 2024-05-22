@@ -1,5 +1,5 @@
 <form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <input type="text" id="query" name="query" placeholder="Search your private messages">
 </form>
@@ -8,7 +8,7 @@
 <h3>Actions</h3>
 
 <form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <select name="action" id="action">
         <option value="">Do this to the selected messages</option>
@@ -26,7 +26,7 @@
 <h3>Filters</h3>
 
 <form method="post">
-    {{ form_token(query.server.REQUEST_URI) }}
+    {{ form_token(request.server.REQUEST_URI) }}
 
     <input type="submit" id="inbox" name="inbox" value="inbox" class="button-primary">
 
