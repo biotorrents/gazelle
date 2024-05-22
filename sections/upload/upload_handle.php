@@ -744,7 +744,7 @@ if ($app->env->enableBioPhp && !empty($data['Seqhash'])) {
  * update the tracker
  */
 
-Tracker::update_tracker("add_torrent", [
+\TrackerOld::update_tracker("add_torrent", [
    "id" => $torrentId,
    "info_hash" => rawurlencode($infoHash),
    "freetorrent" => $data["freeleechType"]

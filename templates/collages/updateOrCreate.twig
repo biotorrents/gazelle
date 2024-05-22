@@ -47,11 +47,11 @@
       {# category #}
 	    <tr>
 		    <th>
-          <label for="category">Category</label>
+          <label for="categoryId">Category</label>
 		    </th>
 
 		    <td>
-          <select name="category">
+          <select name="categoryId">
           {% for key, value in categories %}
             <option value="{{ key }}" {{ (collage and collage.attributes.categoryId == key) ? " selected" : "" }}>{{ value }}</option>
           {% endfor %}
@@ -96,9 +96,9 @@
 			<tr>
 				<th>Tags</th>
 				<td>
-					<select id="tagList" name="tagList[]" class="select" placeholder="Add or remove tags" multiple>
+					<select id="tags" name="tags[]" class="select" placeholder="Add or remove tags" multiple>
 						{% for item in officialTags %}
-							<option value="{{ item }}" {{ (item in tagList) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in collage.attributes.tags) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
@@ -130,28 +130,18 @@
           <input type="checkbox" name="isLocked" value="1" {{ (collage and collage.attributes.isLocked) ? "checked" : "" }}>
 				</td>
 			</tr>
+  </table>
 
+<p class="center">
 {# update button #}
       {% if isUpdate %}
-        <tr>
-          <td colspan="2" class="center">
             <input type="submit" class="button-orange" value="update">
-          </td>
-        </tr>
 
 {# create button #}
       {% else %}
-        <tr>
-          <td colspan="2" class="center">
             <input type="submit" class="button-primary" value="create">
-          </td>
-        </tr>
       {% endif %}
-
-
-
-  </table>
-
+</p>
 
     </form>
 

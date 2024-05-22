@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Tracker
+ * TrackerOld
  *
  * Handles interactions with Ocelot.
  * todo: Turn this into a class with nice functions like update_user, delete_torrent, etc.
  */
 
-namespace Gazelle;
-
-class Tracker
+class TrackerOld
 {
     public const STATS_MAIN = 0;
     public const STATS_USER = 1;

@@ -67,10 +67,10 @@
 	<th>Subscribers</th>
 
 	{# last update #}
-	<th>Updated</th>
+	<th>Updated at</th>
 
 	{# author #}
-	<th>Author</th>
+	<th>User</th>
 
 </tr>
 </thead>
@@ -102,7 +102,7 @@
 	  #}
 
 	{% if item.attributes.tags is not empty %}
-	  <div class="tooltip tagList" title="Tags">{{ item.attributes.tags }}</div>
+	  <div class="tooltip tagList" title="Tags">{{ item.attributes.tags|join(", ") }}</div>
 	{% endif %}
 	</td>
 

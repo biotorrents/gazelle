@@ -382,7 +382,7 @@ EOT;
                 // Good request, decrement cache value and enable account
                 $app->cache->decrement(AutoEnable::CACHE_KEY_NAME);
                 $VisibleTrIP = ($Visible && \Gazelle\Crypto::decrypt($IP) !== '127.0.0.1') ? '1' : '0';
-                Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
+                \TrackerOld::update_tracker('add_user', array('id' => $UserID, 'passkey' => $TorrentPass, 'visible' => $VisibleTrIP));
 
                 $app->dbOld->query("
                 UPDATE

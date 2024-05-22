@@ -126,7 +126,7 @@ class Debug # extends DebugBar\StandardDebugBar
     {
         /*
           if (class_exists("Tracker")) {
-              return Tracker::$Requests;
+              return \TrackerOld::$Requests;
           }
           */
     }

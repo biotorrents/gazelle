@@ -6,7 +6,7 @@ if (isset($_GET['userid']) && is_numeric($_GET['userid'])) {
 
     if (isset($UserHeavyInfo['torrent_pass'])) {
         $TorrentPass = $UserHeavyInfo['torrent_pass'];
-        $UserPeerStats = Tracker::user_peer_count($TorrentPass);
+        $UserPeerStats = \TrackerOld::user_peer_count($TorrentPass);
         $UserInfo = User::user_info($_GET['userid']);
         $UserLevel = $Classes[$UserInfo['PermissionID']]['Level'];
 
@@ -21,7 +21,7 @@ if (isset($_GET['userid']) && is_numeric($_GET['userid'])) {
         $UserPeerStats = false;
     }
 } else {
-    $MainStats = Tracker::info();
+    $MainStats = \TrackerOld::info();
 }
 
 View::header('Tracker info');

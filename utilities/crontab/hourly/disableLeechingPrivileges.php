@@ -35,5 +35,5 @@ foreach ($ref as $row) {
     $app->dbNew->do($query, [ 0, "{$now} - Leeching privileges disabled by ratio watch system for downloading more than 10 GiB on ratio watch.\n\n", $row["userId"] ]);
 
     Misc::send_pm($row["userId"], 0, $subject, $body);
-    Tracker::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 0]);
+    \TrackerOld::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 0]);
 }

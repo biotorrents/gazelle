@@ -25,13 +25,13 @@ class Roles extends ObjectCrud
         "machineName" => "machineName",
         "friendlyName" => "friendlyName",
         "description" => "description",
-        "isPrimaryRole" => "isPrimaryRole",
-        "isSecondaryRole" => "isSecondaryRole",
-        "isDefaultRole" => "isDefaultRole",
-        "isStaffRole" => "isStaffRole",
+        "isPrimaryRole" => "isPrimaryRole", # bool
+        "isSecondaryRole" => "isSecondaryRole", # bool
+        "isDefaultRole" => "isDefaultRole", # bool
+        "isStaffRole" => "isStaffRole", # bool
         "maxPersonalCollages" => "maxPersonalCollages",
         "permissionsLevel" => "permissionsLevel",
-        "permissionsList" => "permissionsList",
+        "permissionsList" => "permissionsList", # json
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -86,8 +86,14 @@ class Roles extends ObjectCrud
         # normal read
         parent::read($identifier);
 
-        # decode the permissions
-        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList ?? "{}", true);
+        # decode the boolean fields
+        $this->attributes->isPrimaryRole = boolval($this->attributes->isPrimaryRole);
+        $this->attributes->isSecondaryRole = boolval($this->attributes->isSecondaryRole);
+        $this->attributes->isDefaultRole = boolval($this->attributes->isDefaultRole);
+        $this->attributes->isStaffRole = boolval($this->attributes->isStaffRole);
+
+        # decode the json fields
+        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList ?? "{}");
 
         # get the user count
         $query = "select count(userId) from users_main where permissionId = ?";

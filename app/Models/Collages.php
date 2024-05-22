@@ -40,8 +40,8 @@ class Collages extends ObjectCrud
         "subscriberCount" => "subscriberCount",
         "maximumGroups" => "maximumGroups",
         "groupsPerUser" => "groupsPerUser",
-        "isFeatured" => "isFeatured",
-        "isLocked" => "isLocked",
+        "isFeatured" => "isFeatured", # bool
+        "isLocked" => "isLocked", # bool
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -62,8 +62,12 @@ class Collages extends ObjectCrud
         # parent method
         parent::read($identifier);
 
+        # decode the boolean fields
+        $this->attributes->isFeatured = boolval($this->attributes->isFeatured);
+        $this->attributes->isLocked = boolval($this->attributes->isLocked);
+
         # decode the json fields
-        $this->attributes->tags = json_decode($this->attributes->tags ?? []);
+        $this->attributes->tags = json_decode($this->attributes->tags ?? "{}");
     }
 
 

@@ -573,7 +573,7 @@ class Torrents
         $app->dbOld->query("
         DELETE FROM torrents
           WHERE ID = $ID");
-        Tracker::update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID, 'reason' => $OcelotReason));
+        \TrackerOld::update_tracker('delete_torrent', array('info_hash' => rawurlencode($InfoHash), 'id' => $ID, 'reason' => $OcelotReason));
 
         $app->cache->decrement('stats_torrent_count');
 
@@ -1136,7 +1136,7 @@ class Torrents
 
         foreach ($Torrents as $Torrent) {
             list($TorrentID, $GroupID, $InfoHash) = $Torrent;
-            Tracker::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
+            \TrackerOld::update_tracker('update_torrent', array('info_hash' => rawurlencode($InfoHash), 'freetorrent' => $FreeNeutral));
             $app->cache->delete("torrent_download_$TorrentID");
             Misc::write_log(($app->user->core["username"] ?? 'System') . " marked torrent $TorrentID freeleech type $FreeLeechType");
             Torrents::write_group_log($GroupID, $TorrentID, ($app->user->core["id"] ?? 0), "marked as freeleech type $FreeLeechType", 0);

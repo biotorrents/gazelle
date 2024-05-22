@@ -19,7 +19,7 @@ $query = "
 $ref = $app->dbNew->multi($query, []);
 
 foreach ($ref as $row) {
-    Tracker::update_tracker("remove_token", [
+    \TrackerOld::update_tracker("remove_token", [
         "info_hash" => substr("%" . chunk_split($row["info_hash"], 2, "%"), 0, -1),
         "userid" => $row["userId"]
     ]);

@@ -36,7 +36,7 @@ foreach ($ref as $row) {
     ";
     $app->dbNew->do($query, [ 0, 1, "{$now} - Leeching re-enabled by adequate ratio.\n\n", $row["userId"] ]);
 
-    Tracker::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 1]);
+    \TrackerOld::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 1]);
     Misc::send_pm($row["userId"], 0, "You've been taken off ratio watch", "Congratulations! Feel free to begin downloading again. To ensure that you don't get put on ratio watch again, please read the [required ratio rules](/rules/ratio).");
     ~d("ratio watch off: {$row["userId"]}");
 }
@@ -90,7 +90,7 @@ foreach ($ref as $row) {
     ";
     $app->dbNew->do($query, [ 0, "{$now} - Leeching disabled by ratio watch system - required ratio: {$row["requiredRatio"]}\n\n", $row["userId"] ]);
 
-    Tracker::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 0]);
+    \TrackerOld::update_tracker("update_user", ["passkey" => $row["torrent_pass"], "can_leech" => 0]);
     Misc::send_pm($row["userId"], 0, "Your downloading privileges have been disabled", "Because you didn't raise your ratio in time, your downloading privileges have been revoked. You won' be able to download any torrents until your ratio is above your new required ratio.");
     ~d("leeching disabled: {$row["userId"]}");
 

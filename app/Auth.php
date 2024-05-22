@@ -362,7 +362,7 @@ class Auth # extends Delight\Auth\Auth
             $app->dbNew->do($query, [$userId]);
 
             # update ocelot and commit
-            Tracker::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
+            \TrackerOld::update_tracker("add_user", ["id" => $userId, "passkey" => $torrent_pass]);
             $app->dbNew->commit();
         } catch (Throwable $e) {
             $app->dbNew->rollBack();

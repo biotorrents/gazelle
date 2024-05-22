@@ -42,7 +42,7 @@ Flight::route("/rules/chat", function () {
 # clients
 Flight::route("/rules/clients", function () {
     $app = Gazelle\App::go();
-    $allowedClients = Tracker::allowedClients();
+    $allowedClients = \TrackerOld::allowedClients();
     $conversation = Gazelle\Conversations::createIfNotExists(30, "rules");
 
     $app->twig->display("siteText/rules/clients.twig", [

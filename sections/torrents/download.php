@@ -168,7 +168,7 @@ if ($useToken && intval($leechStatus) === 0) {
 
         # let the tracker know about this
         try {
-            Tracker::update_tracker(
+            \TrackerOld::update_tracker(
                 "add_token",
                 ["info_hash" => substr("%" . chunk_split($infoHash, 2, "%"), 0, -1), "userid" => $userId]
             );

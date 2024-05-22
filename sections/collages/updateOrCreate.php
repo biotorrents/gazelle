@@ -83,7 +83,7 @@ $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
 
 # twig template
-$app->twig->display("collages/createUpdate.twig", [
+$app->twig->display("collages/updateOrCreate.twig", [
     "title" => strip_tags($title),
     "pageTitle" => $title,
     "js" => ["vendor/easymde.min", "vendor/tom-select.base.min"],

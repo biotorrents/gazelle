@@ -191,7 +191,7 @@ if ($_POST['UserStatus'] === 'delete' && $app->user->can(["userAccounts" => "del
       WHERE UserID = $UserID");
 
     $app->cache->delete("user_info_$UserID");
-    Tracker::update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
+    \TrackerOld::update_tracker('remove_user', array('passkey' => $Cur['torrent_pass']));
 
     Gazelle\Http::redirect("log.php?search=User+$UserID");
     error();
@@ -676,7 +676,7 @@ if ($EnableUser != $Cur['Enabled'] && $app->user->can(["admin" => "banUsers"])) 
     } elseif ($EnableUser == '1') {
         $app->cache->increment('stats_user_count');
         $VisibleTrIP = ($Visible && Gazelle\Crypto::decrypt($Cur['IP']) != '127.0.0.1') ? '1' : '0';
-        Tracker::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
+        \TrackerOld::update_tracker('add_user', array('id' => $UserID, 'passkey' => $Cur['torrent_pass'], 'visible' => $VisibleTrIP));
 
         if (($Cur['Downloaded'] == 0) || ($Cur['Uploaded'] / $Cur['Downloaded'] >= $Cur['RequiredRatio'])) {
             $UpdateSet[] = "i.RatioWatchEnds = NULL";
@@ -709,7 +709,7 @@ if ($ResetPasskey == 1 && $app->user->can(["admin" => "sensitiveUserData"])) {
     $TrackerUserUpdates['passkey'] = $Passkey;
     $app->cache->delete('user_' . $Cur['torrent_pass']);
     // MUST come after the case for updating can_leech
-    Tracker::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
+    \TrackerOld::update_tracker('change_passkey', array('oldpasskey' => $Cur['torrent_pass'], 'newpasskey' => $Passkey));
 }
 
 if ($ResetAuthkey == 1 && $app->user->can(["admin" => "sensitiveUserData"])) {
@@ -788,7 +788,7 @@ if (empty($UpdateSet) && empty($EditSummary)) {
 }
 
 if (count($TrackerUserUpdates) > 1) {
-    Tracker::update_tracker('update_user', $TrackerUserUpdates);
+    \TrackerOld::update_tracker('update_user', $TrackerUserUpdates);
 }
 
 if ($DeleteKeys) {

@@ -1125,7 +1125,7 @@ class User
                 $newPassKey = Gazelle\Text::random(32);
 
                 # update the tracker
-                Tracker::update_tracker(
+                \TrackerOld::update_tracker(
                     "change_passkey",
                     ["oldpasskey" => $oldPassKey, "newpasskey" => $newPassKey]
                 );

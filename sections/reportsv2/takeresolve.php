@@ -235,7 +235,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
             }
             $AffectedUsers = array_unique($AffectedUsers);
             foreach ($AffectedUsers as $UserID) {
-                Tracker::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]);
+                \TrackerOld::update_tracker('add_token', ['info_hash' => substr('%'.chunk_split($InfoHash, 2, '%'), 0, -1), 'userid' => $UserID]);
                 $app->dbOld->prepared_query("
           INSERT INTO users_freeleeches (UserID, TorrentID, Time, Uses)
           VALUES ($UserID, $ExtraID, NOW(), 0)
