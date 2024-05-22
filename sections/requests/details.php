@@ -60,7 +60,6 @@ if ($post["submitVote"]) {
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($request->id, "requests");
-#!d($conversation->relationships->messages);exit;
 
 # twig template
 $app->twig->display("requests/details.twig", [
