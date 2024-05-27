@@ -71,6 +71,31 @@ class Tags
 
 
     /**
+     * stringify
+     *
+     * Converts an array of tagIds to a string.
+     *
+     * @param array $tags, e.g., [ ["id" => 1, "type" => "tags"] ]
+     * @return string
+     */
+    public static function stringify($tags): string
+    {
+        $app = \Gazelle\App::go();
+
+        $tagNames = [];
+        foreach ($tags as $tag) {
+            $query = "select name from tags where id = ?";
+            $name = $app->dbNew->single($query, [$tag["id"]]);
+            if ($name) {
+                $tagNames[] = $name;
+            }
+        }
+
+        return implode(" ", $tagNames);
+    }
+
+
+    /**
      * @return string Primary Tag
      */
     public function get_primary()

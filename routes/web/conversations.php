@@ -13,3 +13,10 @@ Flight::route("/conversations/createMessage", function () {
     $app->middleware(["conversations" => "create"]);
     require_once "{$app->env->serverRoot}/sections/conversations/createMessage.php";
 });
+
+# user conversations
+Flight::route("/userNew/conversations", function () {
+    $app = Gazelle\App::go();
+    $app->middleware(["conversations" => "read"]);
+    require_once "{$app->env->serverRoot}/sections/conversations/user.php";
+});

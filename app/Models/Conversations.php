@@ -461,6 +461,31 @@ class Conversations extends ObjectCrud
     }
 
 
+    /**
+     * getForUserId
+     *
+     * Get all conversations for a user.
+     *
+     * @param int|string $userId
+     * @return array
+     */
+    public static function getForUserId(int|string $userId): array
+    {
+        $app = App::go();
+
+        $query = "select id, conversationId from conversations_messages where userId = ?";
+        $ref = $app->dbNew->multi($query, [$userId]);
+        return $ref;
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = new self($row["conversationId"]);
+        }
+
+        return $ref;
+    }
+
+
     /** legacy Comments and CommentsView classes */
 
 

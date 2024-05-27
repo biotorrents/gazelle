@@ -18,8 +18,7 @@ class Torrents extends ObjectCrud
 
     # ["database" => "display"]
     protected array $maps = [
-        "uuid" => "uuid",
-        "ID" => "id",
+        "id" => "id",
         "GroupID" => "groupId",
         "UserID" => "userId",
         "media" => "platform",
@@ -77,7 +76,7 @@ class Torrents extends ObjectCrud
 
     /**
      * relationships
-     * 
+     *
      * @return ?array
      */
     public function relationships(): ?array
@@ -104,57 +103,6 @@ class Torrents extends ObjectCrud
 
 
     /** legacy */
-
-
-    /**
-     * getGroupsForReal
-     *
-     * todo: finish this later
-     */
-    public static function getGroupsForReal(array $groupIds): array
-    {
-        $app = \Gazelle\App::go();
-
-        if (empty($groupIds)) {
-            return [];
-        }
-
-        $data = [];
-
-        # escape just in case, because `in()` can't into prepared queries
-        foreach ($groupIds as $key => $value) {
-            $groupIds[$key] = \Gazelle\Escape::int($value);
-        }
-
-        $groupIds = array_filter($groupIds);
-        $groupIds = implode(", ", $groupIds);
-
-        $query = "
-            select id, categoryId, title, subject, object, year,
-                workgroup, location, identifier, tag, created_at, picture
-            from torrents_group where id in({$groupIds})
-        ";
-        $ref = $app->dbNew->multi($query, []);
-        $data["torrentGroups"] = $ref;
-        #!d($ref);exit;
-
-        # now do the torrents themselves
-        $query = "
-            select id, groupId, userId, media, container, codec, resolution,
-                version, censored, anonymous, hex(info_hash) as infoHash, fileCount,
-                size, leechers, seeders, freeTorrent, time, snatched, archive, shop_freeleeches.expiryTime
-            from torrents left join shop_freeleeches on shop_freeleeches.torrentId = torrents.id
-            where groupId in({$groupIds})
-        ";
-        $ref = $app->dbNew->multi($query, []);
-        $data["torrents"] = $ref;
-        #!d($ref);exit;
-
-        # now the creators
-        $data["creators"] = \Gazelle\Creators::get_artists($groupIds) ?? [];
-
-        return $data;
-    }
 
 
     /**
@@ -204,6 +152,23 @@ class Torrents extends ObjectCrud
       */
     public static function get_groups($GroupIDs, $Return = true, $GetArtists = true, $Torrents = true)
     {
+        $app = \Gazelle\App::go();
+
+        $data = [];
+        foreach ($GroupIDs as $groupId) {
+            $data[$groupId] = new \Gazelle\TorrentGroups($groupId);
+        }
+
+        foreach ($data as $group) {
+            if (!$group->id) {
+                unset($data[$group->id]);
+            }
+        }
+
+        return $data;
+
+        /** */
+
         $app = \Gazelle\App::go();
 
         $GroupIDs ??= [];
@@ -341,6 +306,9 @@ class Torrents extends ObjectCrud
             // Fetch all user specific torrent properties
             if ($Torrents) {
                 foreach ($Found as &$Group) {
+                    !d($Group["tags"]);
+                    exit;
+
                     $Group['Flags'] = array('IsSnatched' => false, 'IsSeeding' => false, 'IsLeeching' => false);
                     if (!empty($Group['Torrents'])) {
                         foreach ($Group['Torrents'] as &$Torrent) {
@@ -349,6 +317,7 @@ class Torrents extends ObjectCrud
                     }
                 }
             }
+
             return $Found;
         }
     }
@@ -398,24 +367,24 @@ class Torrents extends ObjectCrud
     public static function torrent_properties(&$Torrent, &$Flags)
     {
         # FL Token
-        $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['ID']);
+        $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['id']);
 
         # Snatched
-        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['ID'])) {
+        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['id'])) {
             $Flags['IsSnatched'] = true;
         } else {
             $Flags['IsSnatched'] = false;
         }
 
         # Seeding
-        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['ID'])) {
+        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['id'])) {
             $Flags['IsSeeding'] = true;
         } else {
             $Flags['IsSeeding'] = false;
         }
 
         # Leeching
-        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['ID'])) {
+        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['id'])) {
             $Flags['IsLeeching'] = true;
         } else {
             $Flags['IsLeeching'] = false;

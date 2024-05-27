@@ -7,7 +7,7 @@
 
 	{# category icon #}
 	<td class="center">
-		{{item.CategoryID|categoryIcon }}
+		{{item.attributes.categoryId|categoryIcon }}
 	</td>
 
 
@@ -16,54 +16,56 @@
 <div class="flexColumn">
 
 		{# title link #}
-		<a class="torrentTitle" href="/requests.php?action=view&id={{ item.ID }}" {# open tag #}
+		<a class="torrentTitle" href="/requests/{{ item.id }}" {# open tag #}
 
-    {% if item.Image %}
-        data-cover="{{ item.Image }}" {# open tag #}
+    {% if item.attributes.picture %}
+        data-cover="{{ item.attributes.picture }}" {# open tag #}
     {% endif %}
 
     dir="ltr">
-			{{ item.Title|raw }}
+			{{ item.attributes.title|raw }}
 		</a>
 
 		<div class="flexRow">
 			{# subject #}
-			{% if item.Title2 %}
-				<span class="tooltip subjectObject" title="Organism">{{ "<em>#{item.Title2}</em>"|raw }}
+			{% if item.attributes.subject %}
+				<span class="tooltip subjectObject" title="Organism">{{ "<em>#{item.attributes.subject}</em>"|raw }}
 					{# object #}
-					{{ (item.TitleJP) ? item.TitleJP : "" }}
+					{{ (item.attributes.object) ? item.attributes.object : "" }}
 				</span>
 			{% endif %}
 
 			{# identifier #}
-			{% if item.CatalogueNumber %}
-				<span class="tooltip identifier" title="Identifier">{{ item.CatalogueNumber }}</span>
+			{% if item.attributes.identifier %}
+				<span class="tooltip identifier" title="Identifier">{{ item.attributes.identifier }}</span>
 			{% endif %}
 
 			{# workgroup #}
 			{#
-			{% if item.workgroup %}
-				<span class="tooltip workgroup" title="Workgroup">{{ item.workgroup|raw }}</span>
+			{% if item.attributes.workgroup %}
+				<span class="tooltip workgroup" title="Workgroup">{{ item.attributes.workgroup|raw }}</span>
 			{% endif %}
 			#}
 
 			{# location #}
 			{#
-			{% if item.location %}
-				<span class="tooltip location" title="Location">{{ item.location|raw }}</span>
+			{% if item.attributes.location %}
+				<span class="tooltip location" title="Location">{{ item.attributes.location|raw }}</span>
 			{% endif %}
 			#}
 		</div>
 
 		{# tags #}
-		{% if item.Tags is not empty %}
-			<div class="tooltip tagList" title="Tags">{{ displayTagsFromArray(item.Tags)|raw }}</div>
+		
+		{% if item.relationships.tags is not empty %}
+			<div class="tooltip tagList" title="tags">{{ item.relationships.tags|stringifyTags }}</div>
 		{% endif %}
+		
 
 		{# creators #}
 		{#
-		{% if item.Artists is not empty %}
-			<div class="tooltip creatorList" title="Creators">{{ displayCreators(item.Artists)|raw }}</div>
+		{% if item.attributes.Artists is not empty %}
+			<div class="tooltip creatorList" title="Creators">{{ displayCreators(item.attributes.Artists)|raw }}</div>
 		{% endif %}
 		#}
 
@@ -79,20 +81,20 @@
 </div>
 	</td>
 
-		{# timeAdded #}
-	<td class="center nobr" title="{{ item.created_at }}">
-  {{ item.created_at|relativeTime }}
+		{# createdAt #}
+	<td class="center nobr" title="{{ item.attributes.createdAt }}">
+  {{ item.attributes.createdAt|relativeTime }}
   </td>
 
 		{# lastVote #}
-	<td class="center nobr" title="{{ item.LastVote }}">
-  {{ item.LastVote|relativeTime }}
+	<td class="center nobr" title="{{ item.attributes.lastVote }}">
+  {{ item.attributes.lastVote|relativeTime }}
   </td>
 
-		{# filled #}
-		{% if item.TimeFilled is not empty %}
-	<td class="center nobr" title="{{ item.TimeFilled }}">
-  {{ item.TimeFilled|relativeTime }}
+		{# filledAt #}
+		{% if item.attributes.filledAt is not empty %}
+	<td class="center nobr" title="{{ item.attributes.filledAt }}">
+  {{ item.attributes.filledAt|relativeTime }}
   </td>
 		{% else %}
 	<td class="center nobr" title="Not filled">

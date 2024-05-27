@@ -124,7 +124,7 @@ class TorrentGroups extends ObjectCrud
     public function relationships(): ?array
     {
         return [
-            \Gazelle\Torrents::$type => $this->relatedTorrents(),
+            Torrents::$type => $this->relatedTorrents(),
             Creators::$type => $this->relatedCreators(),
         ];
     }
@@ -173,5 +173,30 @@ class TorrentGroups extends ObjectCrud
         }
 
         return $data;
+    }
+
+
+    /** methods */
+
+
+    /**
+     * hydrateObject
+     *
+     * Loads the relationships as full objects for one level of depth.
+     *
+     * @return void
+     */
+    public function hydrateObject(): void
+    {
+        foreach ($this->relationships as $type => $data) {
+            if (!$data) {
+                continue;
+            }
+
+            match ($type) {
+                Torrents::$type => $this->relationships[$type]["data"] = new Torrents($data["id"]),
+                Creators::$type => $this->relationships[$type]["data"] = new Creators($data["id"]),
+            };
+        }
     }
 } # class

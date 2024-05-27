@@ -62,7 +62,7 @@
 
 		{# tags #}
 		{% if group.tags is not empty %}
-			<div class="tooltip tagList" title="Tags">{{ displayTags(group.tags)|raw }}</div>
+			<div class="tooltip tagList" title="Tags">{{ group.tags|join(", ") }}</div>
 		{% endif %}
 
 		{# creators #}

@@ -103,7 +103,7 @@ class Top10
 
         # set limit and query extras
         $limit ??= self::$defaultLimit;
-        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 day) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 day) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
         $app->cache->set($cacheKey, $ref, self::$cacheDuration);
@@ -133,7 +133,7 @@ class Top10
 
         # set limit and query extras
         $limit ??= self::$defaultLimit;
-        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 week) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 week) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
         $app->cache->set($cacheKey, $ref, self::$cacheDuration);
@@ -163,7 +163,7 @@ class Top10
 
         # set limit and query extras
         $limit ??= self::$defaultLimit;
-        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 month) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 month) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
         $app->cache->set($cacheKey, $ref, self::$cacheDuration);
@@ -193,7 +193,7 @@ class Top10
 
         # set limit and query extras
         $limit ??= self::$defaultLimit;
-        $query = self::$torrentQuery . "where torrents.time > (now() - interval 1 year) order by (torrents.seeders + torrents.leechers) desc limit :limit";
+        $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 year) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
         $app->cache->set($cacheKey, $ref, self::$cacheDuration);

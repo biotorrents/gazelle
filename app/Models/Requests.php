@@ -398,8 +398,27 @@ class Requests extends ObjectCrud
      * Format: array(RequestID => Associative array)
      * To see what's exactly inside each associate array, peek inside the function. It won't bite.
      */
-    public static function get_requests($RequestIDs, $Return = true)
+    public static function get_requests($requestIds, $returnUnused = true)
     {
+        $app = App::go();
+
+        $data = [];
+        foreach ($requestIds as $requestId) {
+            #$query = "select * from requests where id = ?";
+            #$data[] = $app->dbNew->row($query, [$requestId]);
+            $data[] = new self($requestId);
+        }
+
+        foreach ($data as $key => $value) {
+            if (!$value->id) {
+                unset($data[$key]);
+            }
+        }
+
+        return $data;
+
+        /** */
+
         $app = App::go();
 
         $Found = $NotFound = array_fill_keys($RequestIDs, false);

@@ -14,7 +14,7 @@
 			<tbody>
 				{% for group in dailyTorrents %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -32,7 +32,7 @@
 			<tbody>
 				{% for group in weeklyTorrents %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -50,7 +50,7 @@
 			<tbody>
 				{% for group in monthlyTorrents %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -68,7 +68,7 @@
 			<tbody>
 				{% for group in yearlyTorrents %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -86,7 +86,7 @@
 			<tbody>
 				{% for group in overallTorrents %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -104,7 +104,7 @@
 			<tbody>
 				{% for group in torrentSeeders %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -122,7 +122,7 @@
 			<tbody>
 				{% for group in torrentSnatches %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>
@@ -140,7 +140,7 @@
 			<tbody>
 				{% for group in torrentData %}
 
-					{% include "torrents/tableEntry.twig" with group %}
+					{% include "torrents/tableEntryForObjects.twig" with group %}
 
 				{% endfor %}
 			</tbody>

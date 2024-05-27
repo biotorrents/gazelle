@@ -38,20 +38,35 @@ if (!$identifier) {
 
 # handle a form submission
 if (!empty($post)) {
+    /*
+      $data = [
+          "id" => intval($post["id"] ?? null),
+          "userId" => intval($app->user->core["id"] ?? null),
+          "categoryId" => intval($post["categoryId"] ?? null),
+          "title" => Gazelle\Escape::string($post["title"] ?? null),
+          "subject" => Gazelle\Escape::string($post["subject"] ?? null),
+          "object" => Gazelle\Escape::string($post["object"] ?? null),
+          "creators" => explode("\n", $post["creatorList"] ?? ""),
+          "tags" => $post["tagList"] ?? [],
+          "picture" => Gazelle\Escape::string($post["picture"] ?? null),
+          "description" => Gazelle\Escape::string($post["groupDescription"] ?? null),
+          "identifier" => Gazelle\Escape::string($post["identifier"] ?? null),
+      ];
+      */
+
     $data = [
-        "id" => intval($post["id"] ?? null),
-        "userId" => intval($app->user->core["id"] ?? null),
-        "categoryId" => intval($post["categoryId"] ?? null),
-        "title" => Gazelle\Escape::string($post["title"] ?? null),
-        "subject" => Gazelle\Escape::string($post["subject"] ?? null),
-        "object" => Gazelle\Escape::string($post["object"] ?? null),
-        "creators" => explode("\n", $post["creatorList"] ?? ""),
-        "tags" => $post["tagList"] ?? [],
-        "picture" => Gazelle\Escape::string($post["picture"] ?? null),
-        "description" => Gazelle\Escape::string($post["groupDescription"] ?? null),
-        "identifier" => Gazelle\Escape::string($post["identifier"] ?? null),
+      "id" => $post["id"] ?? null,
+      "userId" => $app->user->core["id"] ?? null,
+      "categoryId" => $post["categoryId"] ?? null,
+      "title" => $post["title"] ?? null,
+      "subject" => $post["subject"] ?? null,
+      "object" => $post["object"] ?? null,
+      "creators" => json_encode($post["creatorList"] ?? null),
+      "tags" => json_encode($post["tagList"] ?? null),
+      "picture" => $post["picture"] ?? null,
+      "description" => $post["groupDescription"] ?? null,
+      "identifier" => $post["identifier"] ?? null,
     ];
-    $request->updateOrCreate($data);
 
     try {
         # create or update the request

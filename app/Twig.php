@@ -351,6 +351,16 @@ class Twig extends \Twig\Environment
             );
         }));
 
+        # stringifyTags
+        $twig->addFilter(new \Twig\TwigFilter("stringifyTags", function ($tags) {
+            return new \Twig\Markup(
+                \Tags::stringify($tags),
+                "UTF-8"
+            );
+        }));
+
+
+
         # Tags::getNameById
         $twig->addFunction(new \Twig\TwigFunction("tagNameById", function ($id, $html = true) {
             return new \Twig\Markup(
