@@ -65,7 +65,7 @@ if (!is_array($Requests)) {
         r.Title2,
         r.TitleJP,
         r.CatalogueNumber,
-        r.TimeAdded,
+        r.created_at,
         COUNT(rv.UserID) AS Votes,
         SUM(rv.Bounty) AS Bounty
       FROM requests AS r
@@ -831,7 +831,7 @@ if ($NumRequests > 0) {
           <span id="bounty_<?=$RequestID?>"><?=\Gazelle\Format::get_size($Request['Bounty'])?></span>
         </td>
         <td>
-          <?=time_diff($Request['TimeAdded'])?>
+          <?=time_diff($Request['created_at'])?>
         </td>
       </tr>
       <?php

@@ -783,7 +783,7 @@ View::header($Title, 'requests');
                     href="user.php?id=<?=$Request['UserID']?>"><?=User::format_username($Request['UserID'], false, false, false)?></a>
             </td>
             <td class="nobr">
-                <?=time_diff(intval($Request['TimeAdded']), 1)?>
+                <?=time_diff(intval($Request['created_at']), 1)?>
             </td>
             <td class="nobr">
                 <?=time_diff(intval($Request['LastVote']), 1)?>

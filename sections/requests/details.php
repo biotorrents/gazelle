@@ -326,7 +326,7 @@ if (!$ViewerVote) {
           <tr>
             <td class="label">Created</td>
             <td>
-              <?= time_diff($Request['TimeAdded']) ?> by
+              <?= time_diff($Request['created_at']) ?> by
               <strong><?= User::format_username($Request['UserID'], false, false, false) ?></strong>
             </td>
           </tr>
@@ -361,7 +361,7 @@ if ($Request['GroupID']) {
               <?php } ?>
             </td>
           </tr>
-          <?php if ($Request['LastVote'] > $Request['TimeAdded']) { ?>
+          <?php if ($Request['LastVote'] > $Request['created_at']) { ?>
           <tr>
             <td class="label">Last Voted</td>
             <td><?= time_diff($Request['LastVote']) ?>

@@ -177,7 +177,7 @@ if (!isset($GroupID)) {
 if ($NewRequest) {
     $app->dbOld->query('
     INSERT INTO requests (
-      UserID, TimeAdded, LastVote, CategoryID, Title, Title2, TitleJP, Image, Description,
+      UserID, created_at, LastVote, CategoryID, Title, Title2, TitleJP, Image, Description,
       CatalogueNumber, Visible, GroupID)
     VALUES
       (' . $app->user->core['id'] . ", NOW(), NOW(), $CategoryID, '" . db_string($Title) . "', '" . db_string($Title2) . "', '" . db_string($TitleJP) . "', '" . db_string($Image) . "', '" . db_string($Description) . "',

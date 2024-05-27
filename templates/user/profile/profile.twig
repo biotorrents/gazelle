@@ -182,7 +182,7 @@ if (empty($user['DisableRequests'])) {
             <span id="bounty_<?=$RequestID?>"><?=\Gazelle\Format::get_size($Bounty)?></span>
           </td>
           <td>
-            <?=time_diff($Request['TimeAdded']) ?>
+            <?=time_diff($Request['created_at']) ?>
           </td>
         </tr>
         <?php

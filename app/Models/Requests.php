@@ -433,7 +433,7 @@ class Requests extends ObjectCrud
             SELECT
               ID,
               UserID,
-              TimeAdded,
+              created_at,
               LastVote,
               CategoryID,
               Title,

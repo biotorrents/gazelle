@@ -92,7 +92,7 @@ foreach ($Request['Tags'] as $Tag) {
   'requestorName'   => $Requestor['Username'],
   'isBookmarked'    => Bookmarks::isBookmarked('request', $RequestID),
   'requestTax'      => (float) $RequestTax,
-  'timeAdded'       => $Request['TimeAdded'],
+  'timeAdded'       => $Request['created_at'],
   'canEdit'         => (bool) $CanEdit,
   'canVote'         => (bool) $CanVote,
   'minimumVote'     => (int) $MinimumVote,

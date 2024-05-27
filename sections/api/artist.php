@@ -77,7 +77,7 @@ if (empty($app->user->extra['DisableRequests'])) {
         r.CategoryID,
         r.Title,
         r.Year,
-        r.TimeAdded,
+        r.created_at,
         COUNT(rv.UserID) AS Votes,
         SUM(rv.Bounty) AS Bounty
       FROM requests AS r
@@ -268,7 +268,7 @@ foreach ($Requests as $RequestID => $Request) {
     'categoryId' => (int)$Request['CategoryID'],
     'title' => $Request['Title'],
     'year' => (int)$Request['Year'],
-    'timeAdded' => $Request['TimeAdded'],
+    'timeAdded' => $Request['created_at'],
     'votes' => (int)$Request['Votes'],
     'bounty' => (int)$Request['Bounty']
   );
