@@ -442,7 +442,7 @@ class Requests extends ObjectCrud
               Image,
               Description,
               CatalogueNumber,
-              FillerID,
+              filledById,
               TorrentID,
               TimeFilled,
               GroupID
@@ -455,7 +455,7 @@ class Requests extends ObjectCrud
 
             foreach ($Requests as $Request) {
                 $Request['AnonymousFill'] = false;
-                if ($Request['FillerID']) {
+                if ($Request['filledById']) {
                     $app->dbOld->query("
                     SELECT Anonymous
                     FROM torrents

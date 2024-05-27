@@ -256,7 +256,7 @@ if (true) {
       SUM(rv.Bounty)
     FROM requests AS r
       LEFT JOIN requests_votes AS rv ON r.ID = rv.RequestID
-    WHERE r.FillerID = $userId");
+    WHERE r.filledById = $userId");
     list($RequestsFilled, $TotalBounty) = $app->dbOld->next_record();
 } else {
     $RequestsFilled = $TotalBounty = 0;

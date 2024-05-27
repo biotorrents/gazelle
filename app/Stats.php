@@ -960,7 +960,7 @@ class Stats
         $data["requestTotalCount"] = $app->dbNew->single($query, []) ?? 1; # division by zero fix
 
         # request filled count
-        $query = "select count(id) from requests where fillerId > 0";
+        $query = "select count(id) from requests where filledById > 0";
         $data["requestFilledCount"] = $app->dbNew->single($query, []);
 
         # request filled percent

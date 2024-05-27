@@ -137,7 +137,7 @@ class UserRank
               `users_main` AS um
             JOIN `requests` AS r
             ON
-              r.`FillerID` = um.`ID`
+              r.`filledById` = um.`ID`
             WHERE
               um.`Enabled` = '1'
             GROUP BY

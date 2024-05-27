@@ -209,23 +209,23 @@ if ($ArtistID == 0 && empty($ArtistName)) {
 
                   $app->dbOld->prepared_query("
             SELECT DISTINCT req.ID,
-              req.FillerID,
+              req.filledById,
               um.Username,
               req.TimeFilled
             FROM requests AS req
               LEFT JOIN torrents AS t ON t.ID = req.TorrentID
               LEFT JOIN reportsv2 AS rep ON rep.TorrentID = t.ID
-              JOIN users_main AS um ON um.ID = req.FillerID
+              JOIN users_main AS um ON um.ID = req.filledById
             WHERE rep.Status != 'Resolved'
               AND req.TimeFilled > '2010-03-04 02:31:49'
               AND req.TorrentID = $TorrentID");
                   $Requests = $app->dbOld->has_results();
                   if ($Requests > 0) {
-                      while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
+                      while (list($RequestID, $filledById, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
                           ?>
           <div style="text-align: right;">
             <strong class="important_text"><a
-                href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a
+                href="user.php?id=<?=$filledById?>"><?=$FillerName?></a> used this torrent to fill <a
                 href="requests.php?action=view&amp;id=<?=$RequestID?>">this
                 request</a> <?=time_diff($FilledTime)?></strong>
           </div>

@@ -27,7 +27,7 @@ if ($Request === false) {
 
 $CategoryID = $Request['CategoryID'];
 $Requestor = User::user_info($Request['UserID']);
-$Filler = $Request['FillerID'] ? User::user_info($Request['FillerID']) : null;
+$Filler = $Request['filledById'] ? User::user_info($Request['filledById']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
 $CanVote = !$IsFilled && $app->user->can(["requests" => "updateAny"]);
@@ -109,7 +109,7 @@ foreach ($Request['Tags'] as $Tag) {
   'description'     => \Gazelle\Text::parse($Request['Description']),
   'artists'         => $JsonArtists,
   'isFilled'        => (bool) $IsFilled,
-  'fillerId'        => (int) $Request['FillerID'],
+  'filledById'        => (int) $Request['filledById'],
   'fillerName'      => $Filler ? $Filler['Username'] : '',
   'torrentId'       => (int) $Request['TorrentID'],
   'timeFilled'      => $Request['TimeFilled'],

@@ -98,7 +98,7 @@ if (true) {
     ON
       r.`ID` = rv.`RequestID`
     WHERE
-      r.`FillerID` = $UserID
+      r.`filledById` = $UserID
     ");
     list($RequestsFilled, $TotalBounty) = $app->dbOld->next_record();
 

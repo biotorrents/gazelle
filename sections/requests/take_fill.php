@@ -53,7 +53,7 @@ if (!$app->dbOld->has_results()) {
 }
 list($UploaderID, $UploadTime, $TorrentCategoryID, $TorrentCatalogueNumber) = $app->dbOld->next_record();
 
-$FillerID = $app->user->core['id'];
+$filledById = $app->user->core['id'];
 $FillerUsername = $app->user->core['username'];
 
 if (!empty($_POST['user']) && $app->user->can(["requests" => "updateAny"])) {
@@ -70,11 +70,11 @@ if (!empty($_POST['user']) && $app->user->can(["requests" => "updateAny"])) {
     if (!$app->dbOld->has_results()) {
         $Err = 'No such user to fill the request for!';
     } else {
-        list($FillerID) = $app->dbOld->next_record();
+        list($filledById) = $app->dbOld->next_record();
     }
 }
 
-if (time_ago($UploadTime) < 3600 && $UploaderID !== $FillerID && $app->user->cant(["requests" => "updateAny"])) {
+if (time_ago($UploadTime) < 3600 && $UploaderID !== $filledById && $app->user->cant(["requests" => "updateAny"])) {
     $Err = "There's a one hour grace period for new uploads to allow the torrent's uploader to fill the request.";
 }
 
@@ -119,7 +119,7 @@ $app->dbOld->prepared_query("
 UPDATE
   `requests`
 SET
-  `FillerID` = '$FillerID',
+  `filledByIdId` = '$filledById',
   `TorrentID` = '$TorrentID',
   `TimeFilled` = NOW()
 WHERE
@@ -144,18 +144,18 @@ foreach ($UserIDs as $User) {
     list($VoterID) = $User;
     Misc::send_pm($VoterID, 0, "The request \"$FullName\" has been filled", 'One of your requests&#8202;&mdash;&#8202;[url=' . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . '[/url]&#8202;&mdash;&#8202;has been filled. You can view it here: [url]' . site_url() . "torrents.php?torrentid=$TorrentID" . '[/url]');
 }
-if ($UploaderID != $FillerID) {
+if ($UploaderID != $filledById) {
     Misc::send_pm($UploaderID, 0, "The request \"$FullName\" has been filled with your torrent", 'The request&#8202;&mdash;&#8202;[url=' . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . '[/url]&#8202;&mdash;&#8202;has been filled with a torrent you uploaded. You automatically received ' . Gazelle\Format::get_size($RequestVotes['TotalBounty'] * (3 / 4)) . ' of the total bounty. You can view the torrent you uploaded here: [url]' . site_url() . "torrents.php?torrentid=$TorrentID" . '[/url]');
 }
 
 $RequestVotes = Gazelle\Requests::get_votes_array($RequestID);
-Misc::write_log("Request $RequestID ($FullName) was filled by user $FillerID ($FillerUsername) with the torrent $TorrentID for a " . Gazelle\Format::get_size($RequestVotes['TotalBounty']) . ' bounty.');
+Misc::write_log("Request $RequestID ($FullName) was filled by user $filledById ($FillerUsername) with the torrent $TorrentID for a " . Gazelle\Format::get_size($RequestVotes['TotalBounty']) . ' bounty.');
 
 // Give bounty
 $app->dbOld->prepared_query("
 UPDATE `users_main`
 SET `Uploaded` = (`Uploaded` + " . intval($RequestVotes['TotalBounty'] * (1 / 4)) . ")
-WHERE `ID` = '$FillerID'
+WHERE `ID` = '$filledById'
 ");
 
 $app->dbOld->prepared_query("
@@ -164,7 +164,7 @@ SET `Uploaded` = (`Uploaded` + " . intval($RequestVotes['TotalBounty'] * (3 / 4)
 WHERE `ID` = '$UploaderID'
 ");
 
-$app->cache->delete("user_stats_$FillerID");
+$app->cache->delete("user_stats_$filledById");
 $app->cache->delete("request_$RequestID");
 if (isset($GroupID)) {
     $app->cache->delete("requests_group_$GroupID");

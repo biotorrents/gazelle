@@ -264,10 +264,10 @@ if (empty($_GET['type'])) {
                     error(403);
                 }
                 $Title = "Requests filled by $UserInfo[Username]";
-                $SphQL->where('fillerid', $UserInfo['ID']);
+                $SphQL->where('filledById', $UserInfo['ID']);
             } else {
                 $Title = 'Requests I have filled';
-                $SphQL->where('fillerid', $app->user->core['id']);
+                $SphQL->where('filledById', $app->user->core['id']);
             }
             break;
         case 'bookmarks':
@@ -695,7 +695,7 @@ View::header($Title, 'requests');
 
                     if ($Request['TorrentID'] !== 0) {
                         $IsFilled = true;
-                        $FillerInfo = User::user_info($Request['FillerID']);
+                        $FillerInfo = User::user_info($Request['filledById']);
                     } else {
                         $IsFilled = false;
                     }

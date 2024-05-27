@@ -1572,7 +1572,7 @@ class User
         $query = "
             select count(distinct requests.id), sum(requests_votes.bounty) from requests
             left join requests_votes on requests_votes.requestId = requests.id
-            where requests.fillerId = ?
+            where requests.filledById = ?
         ";
         $row = $app->dbNew->row($query, [$userId]);
 

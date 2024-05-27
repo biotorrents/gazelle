@@ -208,18 +208,18 @@ if ($app->user->can(["admin" => "reports"])) {
 
     $app->dbOld->query("
         SELECT DISTINCT req.ID,
-          req.FillerID,
+          req.filledById,
           um.Username,
           req.TimeFilled
         FROM requests AS req
-          JOIN users_main AS um ON um.ID = req.FillerID
+          JOIN users_main AS um ON um.ID = req.filledById
         AND req.TorrentID = $TorrentID");
     $Requests = ($app->dbOld->has_results());
     if ($Requests > 0) {
-        while (list($RequestID, $FillerID, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
+        while (list($RequestID, $filledById, $FillerName, $FilledTime) = $app->dbOld->next_record()) {
             ?>
             <div style="text-align: right;">
-              <strong class="important_text"><a href="user.php?id=<?=$FillerID?>"><?=$FillerName?></a> used this torrent to fill <a href="requests.php?action=viewrequest&amp;id=<?=$RequestID?>">this request</a> <?=time_diff($FilledTime)?></strong>
+              <strong class="important_text"><a href="user.php?id=<?=$filledById?>"><?=$FillerName?></a> used this torrent to fill <a href="requests.php?action=viewrequest&amp;id=<?=$RequestID?>">this request</a> <?=time_diff($FilledTime)?></strong>
             </div>
 <?php
         }

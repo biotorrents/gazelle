@@ -17,7 +17,7 @@ $app->dbOld->query("
   SELECT
     r.CategoryID,
     r.UserID,
-    r.FillerID,
+    r.filledById,
     r.Title,
     u.Uploaded,
     u.BonusPoints,
@@ -25,16 +25,16 @@ $app->dbOld->query("
     t.UserID
   FROM requests AS r
     LEFT JOIN torrents AS t ON t.ID = TorrentID
-    LEFT JOIN users_main AS u ON u.ID = FillerID
+    LEFT JOIN users_main AS u ON u.ID = filledById
   WHERE r.ID = $RequestID");
-list($CategoryID, $UserID, $FillerID, $Title, $Uploaded, $BonusPoints, $GroupID, $UploaderID) = $app->dbOld->next_record();
+list($CategoryID, $UserID, $filledById, $Title, $Uploaded, $BonusPoints, $GroupID, $UploaderID) = $app->dbOld->next_record();
 
 if (!$UploaderID) {
     // If the torrent was deleted and we don't know who the uploader was, just assume it was the filler
-    $UploaderID = $FillerID;
+    $UploaderID = $filledById;
 }
 
-if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $FillerID) && $app->user->cant(["requests" => "updateAny"])) || $FillerID === '0') {
+if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $filledById) && $app->user->cant(["requests" => "updateAny"])) || $filledById === '0') {
     error(403);
 }
 
@@ -42,7 +42,7 @@ if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $FillerID
 $app->dbOld->query("
   UPDATE requests
   SET TorrentID = 0,
-    FillerID = 0,
+    filledById = 0,
     TimeFilled = NULL,
     Visible = 1
   WHERE ID = $RequestID");
@@ -61,28 +61,28 @@ if (intval($RequestVotes['TotalBounty'] * (1 / 4)) > $Uploaded) {
     $app->dbOld->query("
     UPDATE users_main
     SET Uploaded = 0
-    WHERE ID = $FillerID");
+    WHERE ID = $filledById");
     if (intval($RequestVotes['TotalBounty'] * (1 / 4) - $Uploaded) > $BonusPoints) {
         // If we can't take the rest as bonus points, turn the remaining bit to download
         $app->dbOld->query("
       UPDATE users_main
       SET BonusPoints = 0
-      WHERE ID = $FillerID");
+      WHERE ID = $filledById");
         $app->dbOld->query('
       UPDATE users_main
       SET Downloaded = Downloaded + ' . intval($RequestVotes['TotalBounty'] * (1 / 4) - $Uploaded - $BonusPoints * 1000) . "
-      WHERE ID = $FillerID");
+      WHERE ID = $filledById");
     } else {
         $app->dbOld->query('
       UPDATE users_main
       SET BonusPoints = BonusPoints - ' . intval(($RequestVotes['TotalBounty'] * (1 / 4) - $Uploaded) / 1000) . "
-      WHERE ID = $FillerID");
+      WHERE ID = $filledById");
     }
 } else {
     $app->dbOld->query('
     UPDATE users_main
     SET Uploaded = Uploaded - ' . intval($RequestVotes['TotalBounty'] * (1 / 4)) . "
-    WHERE ID = $FillerID");
+    WHERE ID = $filledById");
 }
 
 $app->dbOld->query("
@@ -122,12 +122,12 @@ if (intval($RequestVotes['TotalBounty'] * (3 / 4)) > $UploaderUploaded) {
     SET Uploaded = Uploaded - ' . intval($RequestVotes['TotalBounty'] * (3 / 4)) . "
     WHERE ID = $UploaderID");
 }
-Misc::send_pm($FillerID, 0, 'A request you filled has been unfilled', "The request \"[url=" . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . "[/url]\" was unfilled by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . '[/url] for the reason: [quote]' . $_POST['reason'] . "[/quote]\nIf you feel like this request was unjustly unfilled, please [url=" . site_url() . "reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
-if ($UploaderID != $FillerID) {
+Misc::send_pm($filledById, 0, 'A request you filled has been unfilled', "The request \"[url=" . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . "[/url]\" was unfilled by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . '[/url] for the reason: [quote]' . $_POST['reason'] . "[/quote]\nIf you feel like this request was unjustly unfilled, please [url=" . site_url() . "reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
+if ($UploaderID != $filledById) {
     Misc::send_pm($UploaderID, 0, 'A request filled with your torrent has been unfilled', "The request \"[url=" . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . "[/url]\" was unfilled by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . '[/url] for the reason: [quote]' . $_POST['reason'] . "[/quote]\nIf you feel like this request was unjustly unfilled, please [url=" . site_url() . "reports.php?action=report&amp;type=request&amp;id=$RequestID]report the request[/url] and explain why this request should not have been unfilled.");
 }
 
-$app->cache->delete("user_stats_$FillerID");
+$app->cache->delete("user_stats_$filledById");
 
 if ($UserID != $app->user->core['id']) {
     Misc::send_pm($UserID, 0, 'A request you created has been unfilled', "The request \"[url=" . site_url() . "requests.php?action=view&amp;id=$RequestID]$FullName" . "[/url]\" was unfilled by [url=" . site_url() . 'user.php?id=' . $app->user->core['id'] . ']' . $app->user->core['username'] . "[/url] for the reason: [quote]" . $_POST['reason'] . '[/quote]');

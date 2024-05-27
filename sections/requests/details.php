@@ -436,8 +436,8 @@ if ($IsFilled) {
             <td>
               <strong><a
                   href="torrents.php?<?=(strtotime($Request['TimeFilled']) < $TimeCompare ? 'id=' : 'torrentid=') . $Request['TorrentID']?>">Yes</a></strong>,
-              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : User::format_username($Request['FillerID'], false, false, false))?>
-              <?php if ($app->user->core['id'] == $Request['UserID'] || $app->user->core['id'] == $Request['FillerID'] || $app->user->can(["requests" => "updateAny"])) { ?>
+              by user <?=($Request['AnonymousFill'] ? '<em>Anonymous</em>' : User::format_username($Request['filledById'], false, false, false))?>
+              <?php if ($app->user->core['id'] == $Request['UserID'] || $app->user->core['id'] == $Request['filledById'] || $app->user->can(["requests" => "updateAny"])) { ?>
               <strong><a
                   href="requests.php?action=unfill&amp;id=<?=$RequestID?>"
                   class="brackets">Unfill</a></strong> Unfilling a request without a valid, nontrivial reason will
