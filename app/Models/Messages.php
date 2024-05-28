@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Gazelle\Conversations
+ * Gazelle\Messages
  *
  * Class for handling threaded conversations for site content.
  * This replaces the forums with "comment sections everywhere."
@@ -12,12 +12,12 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-class Conversations extends ObjectCrud
+class Messages extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
     public ?string $id = null; # primary key
-    public static ?string $type = "conversations"; # resource name
-    protected ?string $table = "conversations_threads"; # database table
+    public static ?string $type = "messages"; # resource name
+    protected ?string $table = "conversations_messages"; # database table
 
     # cache settings
     private string $cachePrefix = "conversations:";
@@ -29,28 +29,13 @@ class Conversations extends ObjectCrud
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
-        "contentId" => "contentId",
-        "contentType" => "contentType",
+        "conversationId" => "conversationId",
         "userId" => "userId",
-        "subject" => "subject",
-        "created_at" => "createdAt",
+        "replyToId" => "replyToId",
+        "body" => "body", # crypto
+        "isReported" => "isReported", # bool
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
-    ];
-
-    # content types from the database enum
-    private array $allowedContentTypes = [
-        "blog",
-        "collages",
-        "creators",
-        "forums",
-        "news",
-        "rules",
-        "private",
-        "requests",
-        "torrents",
-        "users",
-        "wiki",
     ];
 
     # reactions in the form of ["text" => "emoji"]
@@ -80,33 +65,33 @@ class Conversations extends ObjectCrud
         $app = App::go();
 
         return [
-            Messages::$type => $this->relatedMessages(),
+            Conversations::$type => $this->relatedConversations(),
         ];
     }
 
 
     /**
-     * relatedMessages
+     * relatedConversations
      *
      * @return ?array
      */
-    public function relatedMessages(): ?array
+    public function relatedConversations(): ?array
     {
         $app = App::go();
 
-        $query = "select id from conversations_messages where conversationId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [$this->id]);
+        $query = "select id from conversations_threads where id = ?";
+        $ref = $app->dbNew->row($query, [$this->conversationId]);
 
         $data = [];
         foreach ($ref as $row) {
-            $data[] = ["id" => $row["id"], "type" => Messages::$type];
+            $data[] = ["id" => $row, "type" => Conversations::$type];
         }
 
         return $data;
     }
 
 
-    /** single message crud */
+    /** crud */
 
 
     /**
@@ -122,7 +107,7 @@ class Conversations extends ObjectCrud
         $app = App::go();
 
         # validate the conversation
-        if (!$this->id) {
+        if (!$data["conversationId"]) {
             throw new Exception("conversation not found");
         }
 
@@ -139,7 +124,7 @@ class Conversations extends ObjectCrud
         # create the message
         $variables = [
             "id" => $app->dbNew->shortUuid(),
-            "conversationId" => $this->id,
+            "conversationId" => $data["conversationId"],
             "userId" => $app->user->core["id"],
             "replyToId" => $data["replyToId"] ?? null,
             "body" => $data["body"],
@@ -152,7 +137,7 @@ class Conversations extends ObjectCrud
         $app->dbNew->do($query, $variables);
 
         # return the whole conversation
-        return new self($this->id);
+        return new Conversations($this->id);
     }
 
 

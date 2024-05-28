@@ -38,7 +38,7 @@
     {# stats #}
     <ul id="userInfo_stats">
 
-        {# seeding #}
+        {# seeding # }
         <li id="stats_seeding">
             <a href="/torrents.php?type=seeding&userid={{ user.core.id }}">Up</a>:
             <span class="stat tooltip" title="{{ user.extra.Uploaded|get_size(levels = 5) }}">
@@ -46,7 +46,7 @@
             </span>
         </li>
 
-        {# leeching #}
+        {# leeching # }
         <li id="stats_leeching">
             <a href="/torrents.php?type=leeching&userid={{ user.core.id }}">Down</a>:
             <span class="stat tooltip" title="{{ user.extra.Downloaded|get_size(levels = 5) }}">
@@ -54,7 +54,7 @@
             </span>
         </li>
 
-        {# ratio #}
+        {# ratio # }
         <li id="stats_ratio">
             Ratio:
             <span class="stat">
@@ -62,7 +62,7 @@
             </span>
         </li>
 
-        {# required ratio #}
+        {# required ratio # }
         {% if user.extra.RequiredRatio and user.extra.RequiredRatio > 0 %}
         <li id="stats_required">
             <a href="/rules/ratio">Required</a>:
@@ -74,10 +74,10 @@
     </ul>
 
 
-    {# extra #}
+    {# extra # }
     <ul id="userInfoExtra">
 
-        {# freeleech tokens #}
+        {# freeleech tokens # }
         {% if user.extra.FLTokens > 0 %}
         <li id="fl_tokens">
             <a href="/wiki/tokens">Tokens</a>:
@@ -89,7 +89,7 @@
         </li>
         {% endif %}
 
-        {# bonus points #}
+        {# bonus points # }
         <li id="bonus_points">
             <a href="/wiki/bonusPoints">{{ env.bonusPoints }}</a>:
             <span class="stat">
@@ -97,7 +97,7 @@
             </span>
         </li>
 
-        {# hit and runs #}
+        {# hit and runs # }
         {% if user.extra.HnR > 0 %}
         <li id="hnr">
             <a href="/snatchlist.php">HnRs</a>:
@@ -106,6 +106,7 @@
             </span>
         </li>
         {% endif %}
+        #}
     </ul>
 
 </nav>

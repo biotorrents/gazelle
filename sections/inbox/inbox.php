@@ -1,7 +1,20 @@
 <?php
-#declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+declare(strict_types=1);
+
+
+/**
+ * inbox
+ */
+
+$app = Gazelle\App::go();
+
+$inbox = Inbox::getMessagesForUser($app->user->core["id"]);
+!d($inbox);exit;
+
+
+exit;
+
 
 $UserID = $app->user->core['id'];
 

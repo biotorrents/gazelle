@@ -159,9 +159,17 @@ class Roles extends ObjectCrud
             }
 
             # permission not in user's role
+            $good = $userRole->attributes->permissionsList->contains($resource);
+            if (!$good) {
+                return false;
+            }
+
+            /*
+            # permission not in user's role
             if (!in_array($action, $userRole->attributes->permissionsList->$resource)) {
                 return false;
             }
+            */
         }
 
         # checks passed, allow the action

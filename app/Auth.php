@@ -272,9 +272,11 @@ class Auth # extends Delight\Auth\Auth
                 "flTokens" => $app->env->newUserTokens,
             ]);
 
+            /*
             # todo: we're just updating users_main.id, it's technically wrong
             $query = "update users_main set id = userId where userId = ?";
             $app->dbNew->do($query, [$userId]);
+            */
 
             /** */
 
@@ -409,7 +411,7 @@ class Auth # extends Delight\Auth\Auth
                 throw new Exception("2fa code required");
             }
         } catch (Throwable $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         }
 
@@ -418,16 +420,18 @@ class Auth # extends Delight\Auth\Auth
             try {
                 $this->verify2FA($userId, $twoFactor);
             } catch (Throwable $e) {
-                #return $e->getMessage();
+                return $e->getMessage();
                 return $message;
             }
         }
 
         try {
+            /*
             # todo: we're just updating users_main.id, it's technically wrong
             # also this executes on every login, kinda lazy and not ideal
             $query = "update users_main set id = userId where userId = ?";
             $app->dbNew->do($query, [$userId]);
+            */
 
             # todo: same as above
             $query = "select email from users where id = ?";
@@ -479,25 +483,25 @@ class Auth # extends Delight\Auth\Auth
             }
             */
         } catch (\Delight\Auth\InvalidEmailException $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\InvalidPasswordException $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             # this throws to provide a "resend confirmation email" link
             throw new \Delight\Auth\EmailNotVerifiedException($e->getMessage());
         } catch (\Delight\Auth\TooManyRequestsException $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\UnknownUsernameException $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         } catch (\Delight\Auth\AmbiguousUsernameException $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         } catch (Throwable $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         }
 
@@ -505,7 +509,7 @@ class Auth # extends Delight\Auth\Auth
             # gazelle session
             $this->createSession($userId, $rememberMe);
         } catch (Throwable $e) {
-            #return $e->getMessage();
+            return $e->getMessage();
             return $message;
         }
     } # login
@@ -524,12 +528,12 @@ class Auth # extends Delight\Auth\Auth
 
         # no secret
         if (!$twoFactorSecret) {
-            throw new Exception("Unable to find the 2FA seed");
+            throw new Exception("unable to find the 2FA seed");
         }
 
         # failed to verify
         if (!$this->twoFactor->verifyCode($twoFactorSecret, $twoFactorCode)) {
-            throw new Exception("Unable to verify the 2FA token");
+            throw new Exception("unable to verify the 2FA token");
         }
     }
 
@@ -1041,17 +1045,17 @@ class Auth # extends Delight\Auth\Auth
 
         $query = "
             insert into users_sessions
-                (uuid, userId, sessionId, expires, ipAddress, userAgent)
+                (id, userId, sessionId, expires, ipAddress, userAgent)
             values
-                (:uuid, :userId, :sessionId, :expires, :ipAddress, :userAgent)
+                (:id, :userId, :sessionId, :expires, :ipAddress, :userAgent)
         ";
 
-        $uuid = $app->dbNew->uuid();
+        $uuid = $app->dbNew->shortUuid();
         $rememberDuration = time() + $this->remember($rememberMe);
         $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
 
         $data = [
-            "uuid" => $uuid,
+            "id" => $id,
             "userId" => $userId,
             "sessionId" => \Gazelle\Text::random(128),
             "expires" => $expires,

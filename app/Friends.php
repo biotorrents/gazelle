@@ -59,7 +59,7 @@ class Friends
         # did they want only one friend?
         if ($data["friendId"]) {
             $query = "
-                select users_friends.friendId, users_friends.comment, users_friends.created,
+                select users_friends.friendId, users_friends.comment, users_friends.created_at,
                     users.username, users.last_login, users_main.uploaded, users_main.downloaded, users_info.avatar
                 from users_friends
                     join users on users.id = users_friends.friendId
@@ -75,7 +75,7 @@ class Friends
 
         # get all friends instead
         $query = "
-            select users_friends.friendId, users_friends.comment, users_friends.created,
+            select users_friends.friendId, users_friends.comment, users_friends.created_at,
                 users.username, users.last_login, users_main.uploaded, users_main.downloaded, users_info.avatar
             from users_friends
                 join users on users.id = users_friends.friendId

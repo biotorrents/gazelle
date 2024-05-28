@@ -80,6 +80,18 @@ table.torrent-header {
   }
 }
 
+
+/**
+ * no data found
+ */
+
+td.noData {
+  margin: 5rem;
+  text-align: center;
+  font-size: larger;
+}
+
+
 /**
  * boards/forums/discourse
  */

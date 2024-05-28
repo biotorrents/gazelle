@@ -181,7 +181,8 @@ $app->twig->display("torrents/browse.twig", [
     "searchResults" => $searchResults,
     "torrentGroups" => $torrentGroups,
 
-    "bookmarks" => Bookmarks::all_bookmarks("torrent"),
+    "bookmarks" => [],
+    #"bookmarks" => Bookmarks::all_bookmarks("torrent"),
     "officialTags" => $officialTags,
 
     "searchTerms" => $searchTerms,
