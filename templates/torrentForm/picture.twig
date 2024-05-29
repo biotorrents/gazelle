@@ -1,12 +1,10 @@
 {# picture #}
-{% if newTorrent %}
-	<tr>
-		<th>
-			<label for="picture">{{db.name }}</label>
-		</th>
+<tr>
+	<th>
+		<label for="picture">{{db.name }}</label>
+	</th>
 
-		<td>
-			<input type="text" id="picture" name="picture" maxlength="255" placeholder="{{ db.description }}" value="{{ value }}">
-		</td>
-	</tr>
-{% endif %}
+	<td>
+		<input type="text" id="picture" name="picture" maxlength="255" placeholder="{{ db.description }}" value="{{ value }}">
+	</td>
+</tr>

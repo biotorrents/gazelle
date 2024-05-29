@@ -382,6 +382,7 @@ class SemanticScholar
                 "hIndex",
             ],
 
+            /*
             "citations" => [
                 "corpusId",
                 "externalIds",
@@ -401,7 +402,9 @@ class SemanticScholar
                 "journal",
                 "authors",
             ],
+            */
 
+            /*
             "references" => [
                 "externalIds",
                 "url",
@@ -420,6 +423,7 @@ class SemanticScholar
                 "publicationDate",
                 "journal",
             ],
+            */
 
             #"embedding",
             "tldr",

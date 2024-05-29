@@ -1,14 +1,10 @@
 {# creatorList #}
-{% if newTorrent %}
-	<tr>
-		<th>
-			<label for="creatorList" class="required">
-				Creator(s)
-			</label>
-		</th>
+<tr>
+	<th>
+		<label for="creatorList" class="required">Creator(s)</label>
+	</th>
 
-		<td>
-			<textarea id="creatorList" name="creatorList" placeholder="List of creators, one per line" required>{{ value }}</textarea>
-		</td>
-	</tr>
-{% endif %}
+	<td>
+		<textarea id="creatorList" name="creatorList" placeholder="List of creators, one per line" required>{{ value }}</textarea>
+	</td>
+</tr>

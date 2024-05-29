@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 $app = \Gazelle\App::go();
 
-
 # get the news
 # todo: use discourse
 $query = "select * from news order by time desc";

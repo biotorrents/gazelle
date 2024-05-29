@@ -129,7 +129,7 @@ class Collages extends ObjectCrud
      *
      * @return array
      */
-    public function relatedTorrentGroups(): array
+    private function relatedTorrentGroups(): array
     {
         $app = App::go();
 
@@ -139,30 +139,6 @@ class Collages extends ObjectCrud
         $data = [];
         foreach ($ref as $row) {
             $data[] = ["id" => $row, "type" => TorrentGroups::$type];
-        }
-
-        return $data;
-    }
-
-
-    /** accessors */
-
-
-    /**
-     * getTorrentGroups
-     *
-     * @return array
-     */
-    public function getTorrentGroups(): array
-    {
-        $app = App::go();
-
-        # get related id's
-        $ref = $this->relatedTorrentGroups();
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = new TorrentGroups($row["id"]);
         }
 
         return $data;

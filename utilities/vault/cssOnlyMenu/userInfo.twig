@@ -1,0 +1,128 @@
+<nav id="userInfo">
+
+    {# stats #}
+    <ul id="userInfo_stats">
+
+        {# seeding #}
+        <li id="seeding">
+            <a href="/torrents.php?type=seeding&userid=1">
+                <i class="fa-light fa-cloud-arrow-up"></i>
+            </a>
+
+            <span class="stat tooltip" title="{{ 500000|get_size(levels = 5) }}">
+                {{ 500000|get_size }}
+            </span>
+        </li>
+
+        {#
+        <li id="stats_seeding">
+            <a href="/torrents.php?type=seeding&userid={{ user.core.id }}">Up</a>:
+            <span class="stat tooltip" title="{{ user.extra.Uploaded|get_size(levels = 5) }}">
+                {{ user.extra.Uploaded|get_size }}
+            </span>
+        </li>
+        #}
+
+
+        {# leeching #}
+        <li id="leeching">
+            <a href="/torrents.php?type=leeching&userid=1">
+                <i class="fa-light fa-cloud-arrow-down"></i>
+            </a>
+
+            <span class="stat tooltip" title="{{ 500000|get_size(levels = 5) }}">
+                {{ 500000|get_size }}
+            </span>
+        </li>
+
+        {#
+        <li id="stats_leeching">
+            <a href="/torrents.php?type=leeching&userid={{ user.core.id }}">Down</a>:
+            <span class="stat tooltip" title="{{ user.extra.Downloaded|get_size(levels = 5) }}">
+                {{ user.extra.Downloaded|get_size }}
+            </span>
+        </li>
+        #}
+
+
+        {# ratio #}
+        <li id="stats_ratio">
+            <a href="/rules/ratio">
+                <i class="fa-light fa-percent"></i>
+            </a>
+
+            <span class="stat">
+                {{ ratio(500000, 500000) }}
+            </span>
+        </li>
+
+        {#
+        <li id="stats_ratio">
+            Ratio:
+            <span class="stat">
+                {{ ratio(user.extra.Uploaded, user.extra.Downloaded) }}
+            </span>
+        </li>
+        #}
+
+
+        {# required ratio #}
+        {#
+        {% if user.extra.RequiredRatio and user.extra.RequiredRatio > 0 %}
+        <li id="stats_required">
+            <a href="/rules/ratio">Required</a>:
+            <span class="stat tooltip" title="{{ user.extra.RequiredRatio|float(decimals = 5) }}">
+                {{ user.extra.RequiredRatio|float }}
+            </span>
+        </li>
+        {% endif %}
+        #}
+
+
+        {# freeleech tokens #}
+        {#
+        {% if user.extra.FLTokens > 0 %}
+            <li id="fl_tokens">
+                <a href="/wiki/tokens">
+                    <i class="fa-light fa-ticket"></i>
+                </a>
+
+                <span class="stat">
+                    <a href="/userhistory.php?action=token_history&userid={{ user.core.id }}">
+                        {{ user.extra.FLTokens }}
+                    </a>
+                </span>
+            </li>
+        {% endif %}
+        #}
+
+
+        {# bonus points #}
+        {#
+        <li id="bonus_points">
+            <a href="/wiki/bonusPoints">
+                <i class="fa-light fa-cart-shopping"></i>
+            </a>
+
+            <span class="stat">
+                <a href="/store">{{ user.extra.BonusPoints|number_format }}</a>
+            </span>
+        </li>
+        #}
+
+
+        {# hit and runs #}
+        {#
+        {% if user.extra.HnR > 0 %}
+            <li id="hnr">
+                <a href="/snatchlist.php">HnRs</a>:
+                <span class="stat">
+                    <a>{{ user.extra.HnR }}</a>
+                </span>
+            </li>
+        {% endif %}
+        #}
+
+    </ul>
+
+</nav>

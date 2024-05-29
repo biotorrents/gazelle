@@ -1,0 +1,519 @@
+/**
+ * main navigation menu
+ */
+
+nav#navigation {
+  display: grid;
+  place-items: center;
+
+  gap: 5rem;
+  margin: 2rem;
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+
+    li {
+      list-style: none;
+      padding: 0;
+    }
+  }
+
+  >ul {
+    grid-auto-flow: column;
+
+    >li {
+      margin: 0 0.5rem;
+
+      /*
+      // All links contained in the li
+      a,
+      .dropdown__title {
+        text-decoration: none;
+        text-align: center;
+        display: inline-block;
+        color: blue;
+        font-size: 1.125rem;
+      }
+      */
+
+      // Only direct links contained in the li
+      >a,
+      .dropdown__title {
+        padding: 1rem 0.5rem;
+      }
+    }
+  }
+
+  .dropdown {
+    position: relative;
+
+    // Clear native browser button styles
+    .dropdown__title {
+      background-color: white;
+      border: none;
+      font-family: inherit;
+
+      display: inline-flex;
+      align-items: center;
+
+      /*
+      &:after {
+        content: "";
+        border: 0.35rem solid transparent;
+        border-top-color: rgba(blue, 0.45);
+        margin-left: 0.25em;
+        transform: translateY(0.15em);
+      }
+      */
+    }
+
+    .dropdown__menu {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 0.15em 0.25em rgba(black, 0.25);
+      padding: 2rem 100vw;
+      min-width: 15ch;
+
+      position: absolute;
+
+      // Pull up to overlap the parent list item very slightly
+      top: calc(100% - 0.25rem);
+      // Use the left from absolute position to shift the left side
+      left: 50%;
+      // Use translateX to shift the menu 50% of it's width back to the left
+      transform: rotateX(-90deg) translateX(-50%);
+      transform-origin: top center;
+      opacity: 0.3;
+
+      transition: 280ms all 120ms ease-out;
+      z-index: 666;
+
+      a {
+        color: #444;
+        display: block;
+        padding: 0.5em;
+      }
+    }
+
+    &:hover,
+    &:focus-within {
+      .dropdown__menu {
+        opacity: 1;
+        transform: rotateX(0) translateX(-50%);
+        visibility: visible;
+      }
+    }
+  }
+
+
+
+  /* logo */
+  #logo {
+    order: 0;
+    background: url("/images/logos/colorfulWaves-whiteShadow-2k.webp");
+    background-size: contain;
+    border: 0.25rem solid whitesmoke;
+    border-radius: 50%;
+    width: 5rem;
+    min-width: 5rem;
+    height: 5rem;
+    min-height: 5rem;
+
+    a {
+      display: block;
+      height: 5rem;
+    }
+  }
+
+  /* torrents */
+  #torrents {
+    #header {
+      &:before {
+        content: "🌊";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* more */
+  #more {
+    #header {
+      &:before {
+        content: "🔔";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* community */
+  #community {
+    #header {
+      &:before {
+        content: "📣";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* user */
+  #user {
+    #header {
+      &:before {
+        content: "👤";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@media (orientation: landscape) {
+  #mainMenu {
+    grid-template-areas:
+      "logo torrents more community user search auth"
+      ".    info     info info      info info   .";
+  }
+}
+
+@media (orientation: portrait) {
+  #mainMenu {
+    grid-template-areas:
+      "logo      search"
+      "info      info"
+      "torrents  more"
+      "community user";
+  }
+}
+
+#mainMenu {
+  display: inline-grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  gap: 2rem;
+  margin: 2rem;
+
+  /* logo */
+  #logo {
+    grid-area: logo;
+
+    order: 0;
+    background: url("/images/logos/colorfulWaves-whiteShadow-2k.webp");
+    background-size: contain;
+    border: 0.25rem solid whitesmoke;
+    border-radius: 50%;
+    width: 5rem;
+    min-width: 5rem;
+    height: 5rem;
+    min-height: 5rem;
+
+    a {
+      display: block;
+      height: 5rem;
+    }
+  }
+
+  /* torrents */
+  #torrents {
+    grid-area: torrents;
+
+    #header {
+      &:before {
+        content: "🌊";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* more */
+  #more {
+    grid-area: more;
+
+    #header {
+      &:before {
+        content: "🔔";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* community */
+  #community {
+    grid-area: community;
+
+    #header {
+      &:before {
+        content: "📣";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  /* user */
+  #user {
+    grid-area: user;
+
+    #header {
+      &:before {
+        content: "👤";
+        margin-right: 1rem;
+      }
+    }
+  }
+
+
+
+
+
+}
+
+
+
+#universalSearch {
+  grid-area: search;
+
+  display: inline-flex;
+  flex-flow: row nowrap;
+  gap: 1rem;
+  margin-bottom: 0;
+}
+
+#userInfo {
+  grid-area: info;
+}
+
+
+
+
+
+.subMenu {
+  grid-area: info;
+  display: none;
+}
+
+/*
+#mainMenu {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 2rem;
+  align-items: top;
+  justify-content: space-between;
+  margin: 2rem;
+
+  #logo {
+    order: 0;
+    background: url("/images/logos/colorfulWaves-whiteShadow-2k.webp");
+    background-size: contain;
+    border: 0.25rem solid whitesmoke;
+    border-radius: 50%;
+    width: 5rem;
+    min-width: 5rem;
+    height: 5rem;
+    min-height: 5rem;
+
+    a {
+      display: block;
+      height: 5rem;
+    }
+  }
+
+  .spacer {
+    flex-grow: 666;
+  }
+
+  #universalSearch {
+    display: inline-flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+    margin-bottom: 0;
+  }
+
+  .button {
+    margin-bottom: 0;
+  }
+
+  #hamburger {
+    font-size: xx-large;
+
+    #toggleIcon {
+      cursor: pointer;
+    }
+  }
+}
+*/
+
+
+/**
+ * sub navigation menu
+ */
+
+#subMenu {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 2rem 5rem;
+  justify-content: space-around;
+  max-width: 1280px;
+  margin: auto;
+
+
+
+
+
+
+  #torrentsHeader {
+    &:before {
+      content: "🌊";
+      margin-right: 1rem;
+    }
+  }
+
+  /*
+  .subMenu {
+    display: none;
+  }
+      
+  #torrentsHeader:hover + .subMenu {
+    display: block;
+  }
+  #torrentsMenu:hover + .subMenu {
+    display: block;
+  }
+  */
+
+
+  #communityHeader {
+    &:before {
+      content: "📣";
+      margin-right: 1rem;
+    }
+  }
+
+  #userHeader {
+    &:before {
+      content: "👤";
+      margin-right: 1rem;
+    }
+  }
+
+  #moreHeader {
+    &:before {
+      content: "🔔";
+      margin-right: 1rem;
+    }
+  }
+
+  ul {
+    list-style-type: none !important;
+    margin-left: 3.5rem;
+
+    /*
+    li {
+      font-size: larger;
+    }
+    */
+  }
+
+  a {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+/**
+ * main user info bar
+ */
+
+#userInfo {
+  color: #222;
+  text-align: center;
+  width: 100%;
+
+  a:not(.conversationButton) {
+    color: #222;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    display: inline;
+    margin: 0 1%;
+
+    li {
+      display: inline;
+      margin: 0 0.1rem;
+      line-height: 2rem;
+      vertical-align: middle;
+      padding: 1rem;
+    }
+  }
+}
+
+
+/**
+ * optional sticky header
+ */
+
+header.sticky {
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 666;
+}

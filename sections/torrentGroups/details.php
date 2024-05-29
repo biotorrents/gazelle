@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * torrent details page
+ * torrent group details page
  */
 
 $app = Gazelle\App::go();

@@ -49,6 +49,73 @@ class Torrents extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
+    /**
+     * wishlist database schema
+     *
+     * create table torrents
+     * (
+     *     ID             int(10) auto_increment primary key,
+     *     GroupID        int(10)                                 not null,
+     *     TorrentType    enum ('anime', 'music')                 not null,
+     *     info_hash      blob                                    not null,
+     *     Leechers       int(6)                  default 0       not null,
+     *     Seeders        int(6)                  default 0       not null,
+     *     last_action    int                     default 0       not null,
+     *     Snatched       int unsigned            default 0       not null,
+     *     DownMultiplier float                   default 1       not null,
+     *     UpMultiplier   float                   default 1       not null,
+     *     Status         int                     default 0       not null,
+     *     constraint InfoHash unique (info_hash (20))
+     * );
+     */
+    /*
+    protected array $wishfulMaps = [
+        # keys
+        "id" => "id", # chihaya
+        "groupId" => "groupId", # chihaya
+        "userId" => "userId",
+
+        # metadata
+        "platform" => "platform",
+        "format" => "format",
+        "version" => "version",
+        "scope" => "scope",
+        "license" => "license",
+        "archive" => "archive",
+        "description" => "description",
+        "isAnnotated" => "isAnnotated",
+        "isAnonymous" => "isAnonymous",
+
+        # files
+        "info_hash" => "infoHash", # chihaya
+        "filePath" => "filePath",
+        "fileCount" => "fileCount",
+        "fileList" => "fileList",
+        "dataSize" => "dataSize",
+
+        # tracker
+        "torrentType" => "torrentType", # chihaya
+        "status" => "status", # chihaya
+        "seeders" => "seederCount", # chihaya
+        "leechers" => "leecherCount", # chihaya
+        "snatched" => "snatchCount", # chihaya
+        "last_action" => "lastAction", # chihaya
+        "upMultiplier" => "upMultiplier", # chihaya
+        "downMultiplier" => "downMultiplier", # chihaya
+
+        # freeleech
+        "freeleechStatus" => "freeleechStatus",
+        "freeleechType" => "freeleechType",
+        "balance" => "balance",
+        "lastReseedRequest" => "lastReseedRequest",
+
+        # dates
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+    */
+
     # cache settings
     private string $cachePrefix = "torrents:";
     private string $cacheDuration = "1 hour";
@@ -82,24 +149,30 @@ class Torrents extends ObjectCrud
     public function relationships(): ?array
     {
         return [
-            "torrentGroups" => $this->getTorrentGroups(),
+            TorrentGroups::$type => $this->relatedTorrentGroups(),
         ];
     }
 
 
     /**
-     * getTorrentGroups
+     * relatedTorrentGroups
+     *
+     * @return array
      */
-    public function getTorrentGroups()
+    private function relatedTorrentGroups(): array
     {
         $app = \Gazelle\App::go();
 
-        $query = "select id from torrents_group where id = ?";
-        $ref = $app->dbNew->single($query, [$this->attributes->groupId]);
+        $query = "select torrents_group.id from torrents_group join torrents on torrents.groupId = torrents_group.id where torrents.id = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
 
-        return ["id" => $ref, "type" => TorrentGroups::$type];
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => TorrentGroups::$type];
+        }
+
+        return $data;
     }
-
 
 
     /** legacy */
@@ -367,24 +440,24 @@ class Torrents extends ObjectCrud
     public static function torrent_properties(&$Torrent, &$Flags)
     {
         # FL Token
-        $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['id']);
+        $Torrent['PersonalFL'] = empty($Torrent['FreeTorrent']) && self::has_token($Torrent['ID']);
 
         # Snatched
-        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['id'])) {
+        if ($Torrent['IsSnatched'] = self::has_snatched($Torrent['ID'])) {
             $Flags['IsSnatched'] = true;
         } else {
             $Flags['IsSnatched'] = false;
         }
 
         # Seeding
-        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['id'])) {
+        if ($Torrent['IsSeeding'] = self::is_seeding($Torrent['ID'])) {
             $Flags['IsSeeding'] = true;
         } else {
             $Flags['IsSeeding'] = false;
         }
 
         # Leeching
-        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['id'])) {
+        if ($Torrent['IsLeeching'] = self::is_leeching($Torrent['ID'])) {
             $Flags['IsLeeching'] = true;
         } else {
             $Flags['IsLeeching'] = false;

@@ -198,6 +198,15 @@ class Twig extends \Twig\Environment
             );
         }));
 
+        # route: {{ route("readTorrentGroups", {"id": torrentGroup.id}) }}
+        $twig->addFunction(new \Twig\TwigFunction("route", function ($route, $variables = []) {
+            return new \Twig\Markup(
+                \Flight::getUrl($route, $variables),
+                "UTF-8"
+            );
+        }));
+
+
         # can: {{ can({"torrents": "read", "tags": "updateAny"}) }}
         $twig->addFunction(new \Twig\TwigFunction("can", function ($permissions) {
             $app = App::go();

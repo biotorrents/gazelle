@@ -1,0 +1,95 @@
+{##
+ # main menu
+ #
+ # https://moderncss.dev/css-only-accessible-dropdown-navigation-menu/
+ #}
+
+
+
+<nav id="navigation" aria-label="Main Navigation">
+    <ul>
+
+        {# logo #}
+        <li id="logo">
+            <a href="/" aria-label="home"></a>
+        </li>
+
+
+        {# torrents #}
+        <li id="torrents" class="dropdown">
+        	<button id="header" class="button button-invisible dropdown__title" aria-expanded="false" aria-controls="torrents-dropdown">torrents</button>
+            <ul class="dropdown__menu" id="torrents-dropdown">
+			    <li><a href="/torrents.php">Browse</a></li>
+			    <li><a href="/collages">Collages</a></li>
+			    <li><a href="/requests">Requests</a></li>
+			    <li><a href="/top10">Top 10</a></li>
+            </ul>
+        </li>
+
+
+        {# more #}
+        <li id="more" class="dropdown">
+        	<button id="header" class="button button-invisible dropdown__title" aria-expanded="false" aria-controls="more-dropdown">more</button>
+            <ul class="dropdown__menu" id="more-dropdown">
+                {# <li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li> #}
+			    <li><a href="/bookmarks.php?type=torrents">Bookmarks</a></li>
+			    <li><a href="/userhistory.php?action=subscriptions">Subscriptions</a></li>
+			    <li><a href="/user.php?action=notify">Notifications</a></li>
+			    <li><a href="/better">Better</a></li>
+            </ul>
+        </li>
+
+
+        {# community #}
+        <li id="community" class="dropdown">
+        	<button id="header" class="button button-invisible dropdown__title" aria-expanded="false" aria-controls="community-dropdown">community</button>
+            <ul class="dropdown__menu" id="community-dropdown">
+                {# <li><a href="/forums.php">Forums</a></li> #}
+			    <li><a href="/rules">Rules</a></li>
+			    <li><a href="/wiki">Wiki</a></li>
+			    <li><a href="/staffpm.php">Staff&nbsp;Inbox</a></li>
+			    <li><a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a></li>
+            </ul>
+        </li>
+
+
+        {# user #}
+        <li id="user" class="dropdown">
+        	<button id="header" class="button button-invisible dropdown__title" aria-expanded="false" aria-controls="user-dropdown">user</button>
+            <ul class="dropdown__menu" id="user-dropdown">
+                <li><a href="/user.php?id=1">Profile</a></li>
+			    {# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}
+			    <li><a href="/user.php?action=edit&amp;userid=1">Settings</a></li>
+			    {# <li><a href="/{{ inbox }}">Inbox</a></li> #}
+			    <li><a href="/comments.php">Conversations</a></li>
+			    <li><a href="/friends">Friends</a></li>
+			    {# <li><a href="/logout" data-no-instant>Logout</a></li> #}
+            </ul>
+        </li>
+
+
+        {# search #}
+        {#
+        <li id="search">
+            <button id="header" class="button button-invisible dropdown__title" aria-expanded="false" aria-controls="search-dropdown">search</button>
+            <ul class="dropdown__menu" id="search-dropdown">
+                <li>
+                    <form action="/torrents.php" method="get">
+                        <input type="search" name="search" id="search" placeholder="search" aria-label="search">
+                    </form>
+                </li>
+            </ul>
+        </li>
+        #}
+
+
+        {# authentication #}
+        <li id="auth" class="dropdown">
+        	<button id="header" class="button-invisible dropdown__title" aria-expanded="false" aria-controls="auth-dropdown">auth</button>
+            <ul class="dropdown__menu" id="auth-dropdown">
+                <li><a href="/login.php">Login</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+

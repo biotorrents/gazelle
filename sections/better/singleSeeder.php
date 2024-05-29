@@ -20,5 +20,5 @@ $app->twig->display("better/list.twig", [
 
     "torrentGroups" => $torrentGroups,
     "snatchedOnly" => null,
-    "currentPage" => "single",
+    "currentPage" => "single-seeder",
   ]);

@@ -18,44 +18,44 @@ Flight::route("/better", function () {
         "currentPage" => "index",
         "snatchedOnly" => null,
     ]);
-});
+}, false, "betterIndex");
 
 
-# single
-Flight::route("/better/single", function () {
+# single-seeder
+Flight::route("/better/single-seeder", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/better/single.php";
-});
+    require_once "{$app->env->serverRoot}/sections/better/singleSeeder.php";
+}, false, "betterSingleSeeder");
 
 
-# literature
-Flight::route("/better/literature", function () {
+# missing citations
+Flight::route("/better/missing-citations", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/better/literature.php";
-});
+    require_once "{$app->env->serverRoot}/sections/better/missingCitations.php";
+}, false, "betterNoLiterature");
 
 
-# pictures
-Flight::route("/better/pictures", function () {
+# missing pictures
+Flight::route("/better/missing-pictures", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/better/pictures.php";
-});
+    require_once "{$app->env->serverRoot}/sections/better/missingPictures.php";
+}, false, "betterNoPictures");
 
 
-# folders
-Flight::route("/better/folders", function () {
+# bad folders
+Flight::route("/better/bad-folders", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/better/folders.php";
-});
+    require_once "{$app->env->serverRoot}/sections/better/badFolders.php";
+}, false, "betterBadFolders");
 
 
-# tags
-Flight::route("/better/tags", function () {
+# bad tags
+Flight::route("/better/bad-tags", function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
-    require_once "{$app->env->serverRoot}/sections/better/tags.php";
-});
+    require_once "{$app->env->serverRoot}/sections/better/badTags.php";
+}, false, "betterBadTags");

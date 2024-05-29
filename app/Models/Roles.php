@@ -159,7 +159,13 @@ class Roles extends ObjectCrud
             }
 
             # permission not in user's role
-            $good = $userRole->attributes->permissionsList->contains($resource);
+            # todo: fix inconsistent RecursiveCollection vs. array type casting
+            if (is_array($userRole->attributes->permissionsList->$resource)) {
+                $good = in_array($action, $userRole->attributes->permissionsList->$resource);
+            } else {
+                $good = $userRole->attributes->permissionsList->$resource->contains($action);
+            }
+
             if (!$good) {
                 return false;
             }

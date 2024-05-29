@@ -1,7 +1,31 @@
 <?php
-#declare(strict_types = 1);
 
-$app = \Gazelle\App::go();
+declare(strict_types=1);
+
+
+/**
+ * update a torrent
+ */
+
+$app = Gazelle\App::go();
+
+$identifier ??= null;
+if (!$identifier) {
+    $app->error(404);
+}
+
+try {
+    $torrent = new Gazelle\Torrents($identifier);
+    if (!$torrent->id) {
+        throw new Exception("not found");
+    }
+} catch (Throwable $e) {
+    $app->error(404);
+}
+
+
+exit;
+
 
 /**
  * Edit form

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * tags
+ * pictures
  */
 
 $app = Gazelle\App::go();
@@ -14,16 +14,16 @@ $snatchedOnly = (!empty($get["snatches"]))
     ? true
     : false;
 
-$torrentGroups = Gazelle\Better::badTags($snatchedOnly);
+$torrentGroups = Gazelle\Better::missingPictures($snatchedOnly);
 #!d($torrentGroups);exit;
 
 # twig template
 $app->twig->display("better/list.twig", [
   "title" => "Better",
-  "header" => "Torrents with bad tags",
+  "header" => "Torrent groups with no picture",
   "sidebar" => true,
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,
-  "currentPage" => "tags",
+  "currentPage" => "missing-pictures",
 ]);

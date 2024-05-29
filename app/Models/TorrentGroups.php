@@ -133,7 +133,7 @@ class TorrentGroups extends ObjectCrud
     /**
      * relatedTorrents
      */
-    public function relatedTorrents(): ?array
+    private function relatedTorrents(): ?array
     {
         $app = App::go();
 
@@ -146,7 +146,7 @@ class TorrentGroups extends ObjectCrud
 
         $data = [];
         foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => \Gazelle\Torrents::$type];
+            $data[] = ["id" => $row, "type" => Torrents::$type];
         }
 
         return $data;
@@ -156,7 +156,7 @@ class TorrentGroups extends ObjectCrud
     /**
      * relatedCreators
      */
-    public function relatedCreators(): ?array
+    private function relatedCreators(): ?array
     {
         $app = App::go();
 

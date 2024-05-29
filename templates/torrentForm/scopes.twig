@@ -1,5 +1,4 @@
 {# scopes #}
-{% if newTorrent %}
 	{% for key, value in env.categories %}
 		<tr id="{{ value.title|camel }}Scope">
 			<th>
@@ -20,10 +19,6 @@
 			</td>
 		</tr>
 	{% endfor %}
-
-{% else %}
-	<input type="hidden" id="scope" name="scope" value="{{ value }}">
-{% endif %}
 
 {#
 <script>

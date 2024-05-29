@@ -143,7 +143,7 @@
     
         {# for some reason, only an underscore not a hyphen works in this context #}
         {# https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id #}
-        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "What are your thoughts about what you've just read? Let's all contribute to a productive and engaging conversation on the topic.", "value": null } %}
+        {% set variables = { "id": "replyEditor_" ~ conversation.id, "name": "messageBody", "placeholder": "", "value": null } %}
         {% include "_base/textarea.twig" with variables %}
     
         <input type="submit" class="button-primary" value="add your reply">

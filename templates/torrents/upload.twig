@@ -11,10 +11,14 @@
 	<h2>Upload a torrent</h2>
 
 	{# notice #}
-	{% include "torrentForm/notice.twig" %}
+	{% if newTorrent %}
+		{% include "torrentForm/notice.twig" %}
+	{% endif %}
 
 	{# announce and source #}
-	{% include "torrentForm/announceSource.twig" %}
+	{% if newTorrent %}
+		{% include "torrentForm/announceSource.twig" %}
+	{% endif %}
 
 	{# the upload form itself #}
 	<form id="torrentForm" method="post" enctype="multipart/form-data">
@@ -77,6 +81,7 @@
 			<table class="torrentForm">
 
 				{# title, subject, and object #}
+				{% if newTorrent %}
 				{% set variables = {
 					"db": env.database,
 					"title": (data.title) ? data.title : "",
@@ -84,6 +89,7 @@
 					"object": (data.object) ? data.object : "",
 				} %}
 				{% include "torrentForm/titles.twig" with variables %}
+				{% endif %}
 
 				{## #}
 
@@ -92,12 +98,16 @@
 				{% include "torrentForm/year.twig" with variables %}
 
 				{# workgroup #}
-				{% set variables = {"db": env.database.workgroup, "value": (data.workgroup) ? data.workgroup : ""} %}
-				{% include "torrentForm/workgroup.twig" with variables %}
+				{% if newTorrent %}
+					{% set variables = {"db": env.database.workgroup, "value": (data.workgroup) ? data.workgroup : ""} %}
+					{% include "torrentForm/workgroup.twig" with variables %}
+				{% endif %}
 
 				{# location #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.location, "value": (data.location) ? data.location : ""} %}
 				{% include "torrentForm/location.twig" with variables %}
+				{% endif %}
 
 				{## #}
 
@@ -112,28 +122,38 @@
 				{## #}
 
 				{# groupDescription #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.description, "value": (data.groupDescription) ? data.groupDescription : "", "required": true} %}
 				{% include "torrentForm/groupDescription.twig" with variables %}
+				{% endif %}
 
 				{## #}
 
 				{# creatorList #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.version, "value": (data.creatorList) ? data.creatorList : ""} %}
 				{% include "torrentForm/creatorList.twig" with variables %}
+				{% endif %}
 
 				{# tagList #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.tags, "value": (data.tagList) ? data.tagList : ""} %}
 				{% include "torrentForm/tagList.twig" with variables %}
+				{% endif %}
 
 				{## #}
 
 				{# picture #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.picture, "value": (data.picture) ? data.picture : ""} %}
 				{% include "torrentForm/picture.twig" with variables %}
+				{% endif %}
 
 				{# literature #}
+				{% if newTorrent %}
 				{% set variables = {"db": env.database.picture, "value": (data.literature) ? data.literature : ""} %}
 				{% include "torrentForm/literature.twig" with variables %}
+				{% endif %}
 
 			</table>
 		</section>
@@ -152,16 +172,24 @@
 			<table class="torrentForm">
 
 				{# platform #}
-				{% set variables = {"db": env.metadata.platforms, "value": (data.platform) ? data.platform : ""} %}
-				{% include "torrentForm/platforms.twig" with variables %}
+				{% if newTorrent %}
+					{% set variables = {"db": env.metadata.platforms, "value": (data.platform) ? data.platform : ""} %}
+					{% include "torrentForm/platforms.twig" with variables %}
+				{% else %}
+					<input type="hidden" id="platform" name="platform" value="{{ value }}">
+				{% endif %}
 
 				{# format #}
 				{% set variables = {"db": env.metadata.formats, "value": (data.format) ? data.format : ""} %}
 				{% include "torrentForm/formats.twig" with variables %}
 
 				{# scopes #}
-				{% set variables = {"db": env.metadata.formats, "value": (data.scope) ? data.scope : ""} %}
-				{% include "torrentForm/scopes.twig" with variables %}
+				{% if newTorrent %}	
+					{% set variables = {"db": env.metadata.formats, "value": (data.scope) ? data.scope : ""} %}
+					{% include "torrentForm/scopes.twig" with variables %}
+				{% else %}
+					<input type="hidden" id="scope" name="scope" value="{{ value }}">
+				{% endif %}
 
 				{# archive #}
 				{% set variables = {"db": env.metadata.formats, "value": (data.archive) ? data.archive : ""} %}

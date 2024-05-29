@@ -8,6 +8,10 @@ declare(strict_types=1);
  *
  * A simple way to perform CRUD operations on core site objects without going "full Eloquent."
  * This class is intended to be extended by other classes that represent a specific object.
+ *
+ * Primary data MUST be either:
+ *   - a single resource object, a single resource identifier object, or null, for requests that target single resources
+ *   - an array of resource objects, an array of resource identifier objects, or an empty array ([]), for requests that target resource collections
  */
 
 namespace Gazelle;
@@ -126,7 +130,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # is it the user's own resource?
         $hasOwner = isset($attributes["userId"]);
-        if ($hasOwner) {
+        if ($hasOwner && $app->user->isLoggedIn()) {
             $attributes["isOwner"] = $attributes["userId"] === $app->user->core["id"];
         }
 
@@ -210,6 +214,335 @@ abstract class ObjectCrud extends RecursiveCollection
         # perform a soft restore
         $query = "update {$this->table} set deleted_at = null where {$column} = ?";
         $app->dbNew->do($query, [$this->id]);
+    }
+
+
+    /** accessors: returns the relationship as an array of objects */
+
+
+    /**
+     * getRelationships
+     *
+     * Basic function for the helpers below.
+     *
+     * @param $object, e.g., TorrentGroups::class
+     * @return array
+     */
+    private function getRelationships($object): array
+    {
+        $app = App::go();
+
+        $this->relationships->{$object::$type} ??= null;
+        if (!$this->relationships->{$object::$type}) {
+            return [];
+        }
+
+        $data = [];
+        foreach ($this->relationships->{$object::$type} as $row) {
+            $data[] = new $object($row["id"]);
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * getCollages
+     *
+     * @return array
+     */
+    public function getCollages(): array
+    {
+        return $this->getRelationships(Collages::class);
+    }
+
+
+    /**
+     * getConversations
+     *
+     * @return array
+     */
+    public function getConversations(): array
+    {
+        return $this->getRelationships(Conversations::class);
+    }
+
+    /**
+     * getCreators
+     *
+     * @return array
+     */
+    public function getCreators(): array
+    {
+        return $this->getRelationships(Creators::class);
+    }
+
+
+    /**
+     * getLiterature
+     *
+     * @return array
+     */
+    public function getLiterature(): array
+    {
+        return $this->getRelationships(Literature::class);
+    }
+
+
+    /**
+     * getMessages
+     *
+     * @return array
+     */
+    public function getMessages(): array
+    {
+        return $this->getRelationships(Messages::class);
+    }
+
+
+    /**
+     * getRequests
+     *
+     * @return array
+     */
+    public function getRequests(): array
+    {
+        return $this->getRelationships(Requests::class);
+    }
+
+
+    /**
+     * getRoles
+     *
+     * @return array
+     */
+    public function getRoles(): array
+    {
+        return $this->getRelationships(Roles::class);
+    }
+
+
+    /**
+     * getSiteLog
+     *
+     * @return array
+     */
+    public function getSiteLog(): array
+    {
+        return $this->getRelationships(SiteLog::class);
+    }
+
+
+    /**
+     * getTorrentGroups
+     *
+     * @return array
+     */
+    public function getTorrentGroups(): array
+    {
+        return $this->getRelationships(TorrentGroups::class);
+    }
+
+
+    /**
+     * getTorrents
+     *
+     * @return array
+     */
+    public function getTorrents(): array
+    {
+        return $this->getRelationships(Torrents::class);
+    }
+
+
+    /**
+     * getUsers
+     *
+     * @return array
+     */
+    public function getUsers(): array
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        return $this->getRelationships(Users::class);
+    }
+
+
+    /**
+     * getWiki
+     *
+     * @return array
+     */
+    public function getWiki(): array
+    {
+        return $this->getRelationships(Wiki::class);
+    }
+
+
+    /** mutators: updates $this->relationships with an array of objects */
+
+
+    /**
+     * loadRelationships
+     *
+     * Basic function for the helpers below.
+     *
+     * @param $object, e.g., TorrentGroups::class
+     * @return void
+     */
+    private function loadRelationships($object): void
+    {
+        $app = App::go();
+
+        $this->relationships->{$object::$type} ??= null;
+        if (!$this->relationships->{$object::$type}) {
+            unset($this->relationships->{$object::$type});
+
+            return;
+        }
+
+        foreach ($this->relationships->{$object::$type} as $key => $row) {
+            $this->relationships->{$object::$type}[$key] = new $object($row["id"]);
+        }
+
+        return;
+    }
+
+
+    /**
+     * loadCollages
+     *
+     * @return void
+     */
+    public function loadCollages(): void
+    {
+        $this->loadRelationships(Collages::class);
+    }
+
+
+    /**
+     * loadConversations
+     *
+     * @return void
+     */
+    public function loadConversations(): void
+    {
+        $this->loadRelationships(Conversations::class);
+    }
+
+    /**
+     * loadCreators
+     *
+     * @return void
+     */
+    public function loadCreators(): void
+    {
+        $this->loadRelationships(Creators::class);
+    }
+
+
+    /**
+     * loadLiterature
+     *
+     * @return void
+     */
+    public function loadLiterature(): void
+    {
+        $this->loadRelationships(Literature::class);
+    }
+
+
+    /**
+     * loadMessages
+     *
+     * @return void
+     */
+    public function loadMessages(): void
+    {
+        $this->loadRelationships(Messages::class);
+    }
+
+
+    /**
+     * loadRequests
+     *
+     * @return void
+     */
+    public function loadRequests(): void
+    {
+        $this->loadRelationships(Requests::class);
+    }
+
+
+    /**
+     * loadRoles
+     *
+     * @return void
+     */
+    public function loadRoles(): void
+    {
+        $this->loadRelationships(Roles::class);
+    }
+
+
+    /**
+     * loadSiteLog
+     *
+     * @return void
+     */
+    public function loadSiteLog(): void
+    {
+        $this->loadRelationships(SiteLog::class);
+    }
+
+
+    /**
+     * loadTorrentGroups
+     *
+     * @return void
+     */
+    public function loadTorrentGroups(): void
+    {
+        $this->loadRelationships(TorrentGroups::class);
+    }
+
+
+    /**
+     * loadTorrents
+     *
+     * @return void
+     */
+    public function loadTorrents(): void
+    {
+        $this->loadRelationships(Torrents::class);
+    }
+
+
+    /**
+     * loadUsers
+     *
+     * @return void
+     */
+    public function loadUsers(): void
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        $this->loadRelationships(Users::class);
+    }
+
+
+    /**
+     * loadWiki
+     *
+     * @return void
+     */
+    public function loadWiki(): void
+    {
+        $this->loadRelationships(Wiki::class);
     }
 
 

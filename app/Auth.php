@@ -387,12 +387,13 @@ class Auth # extends Delight\Auth\Auth
 
         $username = \Gazelle\Escape::username($data["username"] ?? null);
         $passphrase = \Gazelle\Escape::passphrase($data["passphrase"] ?? null);
+        $twoFactor = \Gazelle\Escape::string($data["twoFactor"] ?? null);
         $rememberMe = \Gazelle\Escape::bool($data["rememberMe"] ?? null);
 
-        # 2fa code needs to be a string (RobThree)
-        $twoFactor = \Gazelle\Escape::string($data["twoFactor"] ?? null);
-
         try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
             # validate userId and 2fa
             $query = "
                 select users.id, users_main.twoFactor from users
@@ -410,30 +411,12 @@ class Auth # extends Delight\Auth\Auth
             if ($row["twoFactor"] && empty($twoFactor)) {
                 throw new Exception("2fa code required");
             }
-        } catch (Throwable $e) {
-            return $e->getMessage();
-            return $message;
-        }
 
-        # gazelle 2fa
-        if (!empty($twoFactor)) {
-            try {
+            if (!empty($twoFactor)) {
                 $this->verify2FA($userId, $twoFactor);
-            } catch (Throwable $e) {
-                return $e->getMessage();
-                return $message;
             }
-        }
 
-        try {
-            /*
-            # todo: we're just updating users_main.id, it's technically wrong
-            # also this executes on every login, kinda lazy and not ideal
-            $query = "update users_main set id = userId where userId = ?";
-            $app->dbNew->do($query, [$userId]);
-            */
-
-            # todo: same as above
+            # are there any unencrypted emails left?
             $query = "select email from users where id = ?";
             $email = $app->dbNew->single($query, [$userId]);
 
@@ -443,7 +426,7 @@ class Auth # extends Delight\Auth\Auth
                 $app->dbNew->do($query, [ \Gazelle\Crypto::encrypt($email), $userId ]);
             }
 
-            # legacy: remove after 2024-04-01
+            # legacy isPassphraseMigrated: remove after 2025-04-01
             $query = "select isPassphraseMigrated from users_info where userId = ?";
             $isPassphraseMigrated = $app->dbNew->single($query, [$userId]);
 
@@ -482,29 +465,34 @@ class Auth # extends Delight\Auth\Auth
                 $response = $this->library->loginWithUsername($username, $passphrase, $this->remember($rememberMe));
             }
             */
-        } catch (\Delight\Auth\InvalidEmailException $e) {
-            return $e->getMessage();
-            return $message;
-        } catch (\Delight\Auth\InvalidPasswordException $e) {
-            return $e->getMessage();
-            return $message;
+            /*
+            } catch (\Delight\Auth\InvalidEmailException $e) {
+                return $e->getMessage();
+                return $message;
+            } catch (\Delight\Auth\InvalidPasswordException $e) {
+                return $e->getMessage();
+                return $message;
+            */
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             # this throws to provide a "resend confirmation email" link
             throw new \Delight\Auth\EmailNotVerifiedException($e->getMessage());
-        } catch (\Delight\Auth\TooManyRequestsException $e) {
-            return $e->getMessage();
-            return $message;
-        } catch (\Delight\Auth\UnknownUsernameException $e) {
-            return $e->getMessage();
-            return $message;
-        } catch (\Delight\Auth\AmbiguousUsernameException $e) {
-            return $e->getMessage();
-            return $message;
+            /*
+            } catch (\Delight\Auth\TooManyRequestsException $e) {
+                return $e->getMessage();
+                return $message;
+            } catch (\Delight\Auth\UnknownUsernameException $e) {
+                return $e->getMessage();
+                return $message;
+            } catch (\Delight\Auth\AmbiguousUsernameException $e) {
+                return $e->getMessage();
+                return $message;
+            */
         } catch (Throwable $e) {
             return $e->getMessage();
             return $message;
         }
 
+        /*
         try {
             # gazelle session
             $this->createSession($userId, $rememberMe);
@@ -512,6 +500,7 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
             return $message;
         }
+        */
     } # login
 
 

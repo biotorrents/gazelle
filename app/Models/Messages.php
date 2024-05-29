@@ -75,7 +75,7 @@ class Messages extends ObjectCrud
      *
      * @return ?array
      */
-    public function relatedConversations(): ?array
+    private function relatedConversations(): ?array
     {
         $app = App::go();
 

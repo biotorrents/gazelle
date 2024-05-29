@@ -9,18 +9,18 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-# is there an identifier?
-$identifier ??= Gazelle\Wiki::$indexArticleId;
+# is there an id?
+$id ??= Gazelle\Wiki::$indexArticleId;
 
-# is the identifier an integer?
-if (!is_numeric($identifier)) {
+# is the id an integer?
+if (!is_numeric($id)) {
     # no, it's not an integer, so it must be an alias
-    $identifier = Gazelle\Wiki::getIdByAlias($identifier);
+    $id = Gazelle\Wiki::getIdByAlias($id);
 }
 
 try {
     # load the article
-    $article = new Gazelle\Wiki($identifier);
+    $article = new Gazelle\Wiki($id);
 } catch (Throwable $e) {
     $app->error(404);
 }

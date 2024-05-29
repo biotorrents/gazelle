@@ -83,7 +83,7 @@ class Creators extends ObjectCrud
      *
      * @return array
      */
-    public function relatedTorrentGroups(): array
+    private function relatedTorrentGroups(): array
     {
         $app = App::go();
 
@@ -104,7 +104,7 @@ class Creators extends ObjectCrud
      *
      * @return array
      */
-    public function relatedRequests(): array
+    private function relatedRequests(): array
     {
         $app = App::go();
 
@@ -121,55 +121,6 @@ class Creators extends ObjectCrud
 
 
     /** methods */
-
-
-    /**
-     * getTorrentGroups
-     *
-     * Gets the torrent groups for a creator.
-     *
-     * @return array
-     */
-    public function getTorrentGroups(): array
-    {
-        $app = App::go();
-
-        # get related id's
-        $ref = $this->relatedTorrentGroups();
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = new TorrentGroups($row["id"]);
-        }
-
-        return $data;
-    }
-
-
-    /**
-     * getRequests
-     *
-     * Gets the requests for a creator.
-     *
-     * @return array
-     */
-    public function getRequests(): array
-    {
-        $app = App::go();
-
-        # get related id's
-        $ref = $this->relatedRequests();
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = new Requests($row["id"]);
-        }
-
-        return $data;
-    }
-
-
-    /** */
 
 
     /**
@@ -209,11 +160,12 @@ class Creators extends ObjectCrud
         # prepare the data for the database
         $data = [
             "id" => $this->id,
+            "orcid" => $canonicalCreator["externalIds"]["ORCID"] ?? null,
             "semanticScholarId" => $canonicalCreator["authorId"] ?? null,
             "name" => $canonicalCreator["name"] ?? null,
             "slug" => \Illuminate\Support\Str::slug($canonicalCreator["name"] ?? null),
-            "aliases" => json_encode($canonicalCreator["aliases"] ?? null),
-            "affiliations" => json_encode($canonicalCreator["affiliations"] ?? null),
+            "aliases" => json_encode($canonicalCreator["aliases"] ?? []),
+            "affiliations" => json_encode($canonicalCreator["affiliations"] ?? []),
             "homepage" => $canonicalCreator["homepage"] ?? null,
             "hIndex" => $canonicalCreator["hIndex"] ?? null,
             "paperCount" => $canonicalCreator["paperCount"] ?? null,

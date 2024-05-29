@@ -1,7 +1,20 @@
 <?php
+
 declare(strict_types=1);
 
-$app = \Gazelle\App::go();
+
+/**
+ * update a torrent group
+ */
+
+$app = Gazelle\App::go();
+
+$identifier ??= null;
+$torrentGroup = new Gazelle\TorrentGroup($identifier);
+
+if (!$torrentGroup->id) {
+    $app->error(404);
+}
 
 /**
  * Edit torrent group wiki page

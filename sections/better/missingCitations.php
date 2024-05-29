@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * bad folders
+ * literature
  */
 
 $app = Gazelle\App::go();
@@ -14,16 +14,16 @@ $snatchedOnly = (!empty($get["snatches"]))
     ? true
     : false;
 
-$torrentGroups = Gazelle\Better::badFolders($snatchedOnly);
+$torrentGroups = Gazelle\Better::missingCitations($snatchedOnly);
 #!d($torrentGroups);exit;
 
 # twig template
 $app->twig->display("better/list.twig", [
   "title" => "Better",
-  "header" => "Torrents with bad folder names",
+  "header" => "Torrent groups with no publications",
   "sidebar" => true,
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,
-  "currentPage" => "folders",
+  "currentPage" => "missing-citations",
 ]);

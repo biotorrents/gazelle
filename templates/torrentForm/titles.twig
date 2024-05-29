@@ -1,34 +1,32 @@
 {# title #}
-{% if newTorrent %}
-	<tr>
-		<th>
-			<label for="title" class="required">{{ db.title.name }}</label>
-		</th>
+<tr>
+	<th>
+		<label for="title" class="required">{{ db.title.name }}</label>
+	</th>
 
-		<td>
-			<input type="text" id="title" name="title" maxlength="255" placeholder="{{ db.title.description }}" value="{{ title }}" required>
-		</td>
-	</tr>
+	<td>
+		<input type="text" id="title" name="title" maxlength="255" placeholder="{{ db.title.description }}" value="{{ title }}" required>
+	</td>
+</tr>
 
-	{# subject #}
-	<tr>
-		<th>
-			<label for="subject">{{ db.subject.name }}</label>
-		</th>
+{# subject #}
+<tr>
+	<th>
+		<label for="subject">{{ db.subject.name }}</label>
+	</th>
 
-		<td>
-			<input type="text" id="subject" name="subject" maxlength="255" placeholder="{{ db.subject.description }}" value="{{ subject }}">
-		</td>
-	</tr>
+	<td>
+		<input type="text" id="subject" name="subject" maxlength="255" placeholder="{{ db.subject.description }}" value="{{ subject }}">
+	</td>
+</tr>
 
-	{# object #}
-	<tr>
-		<th>
-			<label for="object">{{ db.object.name }}</label>
-		</th>
+{# object #}
+<tr>
+	<th>
+		<label for="object">{{ db.object.name }}</label>
+	</th>
 
-		<td>
-			<input type="text" id="object" name="object" maxlength="255" placeholder="{{ db.object.description }}" value="{{ object }}">
-		</td>
-	</tr>
-{% endif %}
+	<td>
+		<input type="text" id="object" name="object" maxlength="255" placeholder="{{ db.object.description }}" value="{{ object }}">
+	</td>
+</tr>

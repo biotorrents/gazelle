@@ -229,7 +229,7 @@ class Requests extends ObjectCrud
     /**
      * relatedCreators
      */
-    public function relatedCreators(): ?array
+    private function relatedCreators(): ?array
     {
         $app = App::go();
 
@@ -250,36 +250,6 @@ class Requests extends ObjectCrud
 
 
     /** methods */
-
-
-    /**
-     * getCreators
-     *
-     * Gets the creators associated with a request.
-     *
-     * @return array
-     */
-    public function getCreators(): array
-    {
-        $app = App::go();
-
-        $query = "
-            select requests_artists.artistId, artists_group.name from requests_artists
-            join artists_group on requests_artists.artistId = artists_group.artistId
-            where requests_artists.requestId = ?
-        ";
-        $ref = $app->dbNew->multi($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = [
-                "id" => $row["artistId"],
-                "name" => $row["name"],
-            ];
-        }
-
-        return $data;
-    }
 
 
     /**

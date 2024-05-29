@@ -72,12 +72,12 @@ class TorrentFunctions
             $app->dbOld->query("
         SELECT
           `id`,
-          `user_id`,
+          `userId`,
           `doi`
         FROM
           `literature`
         WHERE
-          `group_id` = '$GroupID'
+          `groupId` = '$GroupID'
         ");
 
             if ($app->dbOld->has_results()) {
@@ -108,7 +108,7 @@ class TorrentFunctions
             // Fetch the individual torrents
             $app->dbOld->query("
         SELECT
-          t.ID,
+          t.id,
           t.Media,
           t.Container,
           t.Codec,
@@ -135,16 +135,16 @@ class TorrentFunctions
           tbf.TorrentID AS BadFolders,
           tfi.TorrentID AS BadFiles,
           t.LastReseedRequest,
-          t.ID AS HasFile
+          t.id AS HasFile
         FROM torrents AS t
-          LEFT JOIN torrents_bad_tags AS tbt ON tbt.TorrentID = t.ID
-          LEFT JOIN torrents_bad_folders AS tbf ON tbf.TorrentID = t.ID
-          LEFT JOIN torrents_bad_files AS tfi ON tfi.TorrentID = t.ID
+          LEFT JOIN torrents_bad_tags AS tbt ON tbt.TorrentID = t.id
+          LEFT JOIN torrents_bad_folders AS tbf ON tbf.TorrentID = t.id
+          LEFT JOIN torrents_bad_files AS tfi ON tfi.TorrentID = t.id
         WHERE t.GroupID = '" . db_string($GroupID) . "'
-        GROUP BY t.ID
+        GROUP BY t.id
         ORDER BY
           t.Media ASC,
-          t.ID");
+          t.id");
 
             $TorrentList = $app->dbOld->to_array('ID', MYSQLI_ASSOC);
             if (count($TorrentList) === 0 && $ApiCall == false) {

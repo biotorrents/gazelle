@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * delete a torrent
+ * delete a torrent group
  */
 
 $app = \Gazelle\App::go();

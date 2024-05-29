@@ -1,5 +1,4 @@
 {# platforms #}
-{% if newTorrent %}
 	{% for key, items in env.categories %}
 		<tr id="{{ items.title|camel }}Platform">
 			<th>
@@ -17,7 +16,3 @@
 			</td>
 		</tr>
 	{% endfor %}
-
-{% else %}
-	<input type="hidden" id="platform" name="platform" value="{{ value }}">
-{% endif %}

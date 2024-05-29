@@ -128,7 +128,7 @@ class Better
             from torrents_group
             {$subQuery}
             where torrents_group.id not in
-            (select distinct group_id from literature)
+            (select distinct groupId from literature_groups)
             order by rand() limit {$resultCount}
         ";
 

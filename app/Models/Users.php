@@ -50,11 +50,27 @@ class Users extends ObjectCrud
     public static ?string $type = "users"; # resource name
     protected ?string $table = "users"; # database table
     
-    # [ "table" => ["database" => "display"] ]
-    # there are a few big tables in this case
+    /*
+     * [ "table" => ["database" => "display"] ]
+     * there are a few big tables in this case
+     * 
+     * create table users_main
+     * (
+     *     ID              int unsigned auto_increment primary key,
+     *     Uploaded        bigint unsigned      default 0   not null,
+     *     Downloaded      bigint unsigned      default 0   not null,
+     *     Enabled         enum ('0', '1', '2') default '0' not null,
+     *     torrent_pass    char(32)                         not null,
+     *     rawup           bigint unsigned      default 0   not null,
+     *     rawdl           bigint unsigned      default 0   not null,
+     *     DownMultiplier  float                default 1   not null,
+     *     UpMultiplier    float                default 1   not null,
+     *     DisableDownload tinyint(1)           default 0   not null,
+     *     TrackerHide     tinyint(1)           default 0   not null
+     * );
+     */
     protected array $maps = [
         "users" => [
-            "uuid" => "uuid",
             "id" => "id",
             "email" => "email",
             "password" => "passphrase",
@@ -72,8 +88,7 @@ class Users extends ObjectCrud
         ],
 
         "users_main" => [
-            "uuid" => "uuid",
-            "ID" => "id",
+            "id" => "id", # chihaya
             "username" => "username",
             "Email" => "email",
             "PassHash" => "passphrase",
@@ -84,17 +99,23 @@ class Users extends ObjectCrud
             "LastAccess" => "lastAccess",
             "IP" => "ipAddress",
             "Class" => "classId",
-            "Uploaded" => "bytesUploaded",
-            "Downloaded" => "bytesDownloaded",
+            "Uploaded" => "bytesUploaded", # chihaya
+            "Downloaded" => "bytesDownloaded", # chihaya
+            "rawup" => "rawup", # chihaya
+            "rawdl" => "rawdl", # chihaya
+            "upMultiplier" => "upMultiplier", # chihaya
+            "downMultiplier" => "downMultiplier", # chihaya
+            "disableDownload" => "disableDownload", # chihaya
+            "trackerHide" => "trackerHide", # chihaya
             "Title" => "customTitle",
-            "Enabled" => "isEnabled",
+            "Enabled" => "isEnabled", # chihaya
             "Paranoia" => "paranoia",
             "Visible" => "isVisible",
             "Invites" => "inviteCount",
             "PermissionID" => "permissionId",
             "CustomPermissions" => "customPermissions",
             "can_leech" => "canLeech",
-            "torrent_pass" => "torrentPass",
+            "torrent_pass" => "torrentPass", # chihaya
             "RequiredRatio" => "requiredRatio",
             "RequiredRatioWork" => "requiredRatioWork",
             "FLTokens" => "freeleechTokens",
@@ -108,7 +129,6 @@ class Users extends ObjectCrud
         ],
 
         "users_info" => [
-            "uuid" => "uuid",
             "UserID" => "userId",
             "StyleID" => "styleId",
             "StyleURL" => "styleUri",
@@ -209,9 +229,10 @@ class Users extends ObjectCrud
         # session superglobal
         $this->session = $_SESSION;
 
-        # Gazelle\Roles
+        # Gazelle\Roles: hardcoded to guest
         $this->role = new Roles(10);
 
+        /*
         # untrusted input
         $userId = Http::readCookie("userId") ?? null;
         $sessionId = Http::readCookie("sessionId") ?? null;
@@ -235,6 +256,7 @@ class Users extends ObjectCrud
         if (!$userId && !$sessionId) {
             return;
         }
+        */
 
         /*
         # get the most recent session
@@ -246,6 +268,11 @@ class Users extends ObjectCrud
             return;
         }
         */
+
+        $userId = $this->auth->library->id();
+        if (!$userId) {
+            return;
+        }
 
         # check enabled state
         $query = "select 1 from users where id = ? and status = ?";
