@@ -48,12 +48,12 @@ class Creators extends ObjectCrud
     /**
      * read
      */
-    public function read(int|string $identifier = null): void
+    public function read(int|string $id = null): void
     {
         $app = App::go();
 
         # parent read
-        parent::read($identifier);
+        parent::read($id);
 
         # decode the json fields
         $this->attributes->aliases = json_decode($this->attributes->aliases ?? "");

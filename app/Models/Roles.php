@@ -76,15 +76,15 @@ class Roles extends ObjectCrud
      *
      * Decodes the permissions JSON and adds extra attributes.
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function read(int|string $identifier = null): void
+    public function read(int|string $id = null): void
     {
         $app = App::go();
 
         # normal read
-        parent::read($identifier);
+        parent::read($id);
 
         # decode the boolean fields
         $this->attributes->isPrimaryRole = boolval($this->attributes->isPrimaryRole);
@@ -106,10 +106,10 @@ class Roles extends ObjectCrud
      *
      * Deletes a role, unless it's a default role.
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function delete(int|string $identifier = null): void
+    public function delete(int|string $id = null): void
     {
         # can't delete default roles
         if ($this->attributes->isDefaultRole) {
@@ -117,7 +117,7 @@ class Roles extends ObjectCrud
         }
 
         # normal delete
-        parent::delete($identifier);
+        parent::delete($id);
     }
 
 

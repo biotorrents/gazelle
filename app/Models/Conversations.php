@@ -163,10 +163,10 @@ class Conversations extends ObjectCrud
      *
      * Gets a message in a conversation.
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return array
      */
-    public function readMessage(int|string $identifier): array
+    public function readMessage(int|string $id): array
     {
         throw new Exception("not implemented");
 
@@ -184,7 +184,7 @@ class Conversations extends ObjectCrud
 
         # get the message
         $query = "select * from conversations_messages where id = ? and deleted_at is null";
-        $ref = $app->dbNew->row($query, [$identifier]);
+        $ref = $app->dbNew->row($query, [$id]);
 
         # return the message
         $app->cache->set($cacheKey, $ref, $this->cacheDuration);
@@ -263,11 +263,11 @@ class Conversations extends ObjectCrud
      *
      * Updates a message in a conversation.
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @param array $data
      * @return self
      */
-    public function updateMessage(int|string $identifier, array $data): self
+    public function updateMessage(int|string $id, array $data): self
     {
         $app = App::go();
 
@@ -288,7 +288,7 @@ class Conversations extends ObjectCrud
 
         # update the message
         $variables = [
-            "id" => $identifier,
+            "id" => $id,
             "body" => $data["body"],
         ];
 
@@ -305,10 +305,10 @@ class Conversations extends ObjectCrud
      *
      * Deletes a message in a conversation.
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return self
      */
-    public function deleteMessage(int|string $identifier): self
+    public function deleteMessage(int|string $id): self
     {
         $app = App::go();
 
@@ -324,7 +324,7 @@ class Conversations extends ObjectCrud
 
         # delete the message
         $query = "update conversations_messages set deleted_at = now() where id = ?";
-        $app->dbNew->do($query, [$identifier]);
+        $app->dbNew->do($query, [$id]);
 
         # return the whole conversation
         return new self($this->id);
@@ -399,11 +399,11 @@ class Conversations extends ObjectCrud
      * If the user has already reacted as such, remove the reaction.
      * This should hopefully prevent "dislike spamming" comments.
      *
-     * @param int|string $identifier messageId
+     * @param int|string $id messageId
      * @param string $reaction $this->allowedReactions
      * @return array of data about the event
      */
-    public function reactToMessage(int|string $identifier, string $reaction): array
+    public function reactToMessage(int|string $id, string $reaction): array
     {
         $app = App::go();
 
@@ -413,7 +413,7 @@ class Conversations extends ObjectCrud
         }
 
         # did the user already react?
-        $hasUserReacted = $this->hasUserReacted($identifier, $reaction);
+        $hasUserReacted = $this->hasUserReacted($id, $reaction);
 
         /** */
 
@@ -427,11 +427,11 @@ class Conversations extends ObjectCrud
         # delete the reaction if they've already used it, and return the new count
         if ($hasUserReacted) {
             $query = "delete from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
-            $app->dbNew->do($query, [$app->user->core["id"], $identifier]);
+            $app->dbNew->do($query, [$app->user->core["id"], $id]);
 
             # return the new reaction count
             $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
-            $reactionCount = $app->dbNew->single($query, [$identifier]);
+            $reactionCount = $app->dbNew->single($query, [$id]);
 
             $return["totalCount"] = intval($reactionCount);
             $return["hasUserReacted"] = false;
@@ -441,15 +441,15 @@ class Conversations extends ObjectCrud
 
         # get the current reaction count
         $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
-        $reactionCount = $app->dbNew->single($query, [$identifier]);
+        $reactionCount = $app->dbNew->single($query, [$id]);
 
         # update the message
         $query = "insert into conversations_reactions (id, messageId, userId, {$reaction}) values (?, ?, ?, ?)";
-        $app->dbNew->do($query, [$app->dbNew->shortUuid(), $identifier, $app->user->core["id"], $reactionCount + 1]);
+        $app->dbNew->do($query, [$app->dbNew->shortUuid(), $id, $app->user->core["id"], $reactionCount + 1]);
 
         # return the new reaction count
         $query = "select sum({$reaction}) from conversations_reactions where messageId = ?";
-        $reactionCount = $app->dbNew->single($query, [$identifier]);
+        $reactionCount = $app->dbNew->single($query, [$id]);
 
         $return["totalCount"] = intval($reactionCount);
         $return["hasUserReacted"] = true;
@@ -463,11 +463,11 @@ class Conversations extends ObjectCrud
      *
      * Checks if the user has reacted to a message.
      *
-     * @param int|string $identifier messageId
+     * @param int|string $id messageId
      * @param string $reaction $this->allowedReactions
      * @return bool
      */
-    public function hasUserReacted(int|string $identifier, string $reaction): bool
+    public function hasUserReacted(int|string $id, string $reaction): bool
     {
         $app = App::go();
 
@@ -478,7 +478,7 @@ class Conversations extends ObjectCrud
 
         # check if the user has reacted
         $query = "select 1 from conversations_reactions where userId = ? and messageId = ? and {$reaction} > 0";
-        $ref = $app->dbNew->single($query, [$app->user->core["id"], $identifier]);
+        $ref = $app->dbNew->single($query, [$app->user->core["id"], $id]);
 
         return boolval($ref);
     }

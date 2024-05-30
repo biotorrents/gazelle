@@ -30,12 +30,12 @@ abstract class ObjectCrud extends RecursiveCollection
     /**
      * __construct
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function __construct(int|string $identifier = null)
+    public function __construct(int|string $id = null)
     {
-        $this->read($identifier);
+        $this->read($id);
     }
 
 
@@ -93,15 +93,15 @@ abstract class ObjectCrud extends RecursiveCollection
     /**
      * read
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function read(int|string $identifier = null): void
+    public function read(int|string $id = null): void
     {
         $app = App::go();
 
         # set $this->attributes to null if the object doesn't exist
-        if (!$this->exists($identifier)) {
+        if (!$this->exists($id)) {
             $nullAttributes = [];
             foreach ($this->maps as $key => $value) {
                 $nullAttributes[$key] = null;
@@ -112,9 +112,9 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # try to find the object
-        $column = $app->dbNew->determineIdentifier($identifier);
+        $column = $app->dbNew->determineIdentifier($id);
         $query = "select * from {$this->table} where {$column} = ? and deleted_at is null";
-        $row = $app->dbNew->row($query, [$identifier]);
+        $row = $app->dbNew->row($query, [$id]);
 
         # set the id
         $this->id = strval($row["id"]);
@@ -574,23 +574,23 @@ abstract class ObjectCrud extends RecursiveCollection
     /**
      * exists
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return bool
      */
-    public function exists(int|string $identifier = null): bool
+    public function exists(int|string $id = null): bool
     {
         $app = App::go();
 
-        $identifier ??= null;
-        if (!$identifier) {
+        $id ??= null;
+        if (!$id) {
             return false;
         }
 
         # does the object exist?
-        $column = $app->dbNew->determineIdentifier($identifier);
+        $column = $app->dbNew->determineIdentifier($id);
         $query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
 
-        $good = $app->dbNew->single($query, [$identifier]);
+        $good = $app->dbNew->single($query, [$id]);
         return boolval($good);
     }
 

@@ -432,15 +432,15 @@ class Users extends ObjectCrud
      * Gets a user profile as a JSON:API compliant object.
      * There's a lot of data to manually work through...
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function readTest(int|string $identifier)
+    public function readTest(int|string $id)
     {
         $app = App::go();
 
         # allow usernames instead of slugs
-        $column = $app->dbNew->determineIdentifier($identifier);
+        $column = $app->dbNew->determineIdentifier($id);
         if ($column === "slug") {
             $column = "username";
         } else {
@@ -450,22 +450,22 @@ class Users extends ObjectCrud
         # try to resolve an id from a username
         if ($column === "username") {
             $query = "select id from users where username = ?";
-            $identifier = $app->dbNew->single($query, [$identifier]);
+            $id = $app->dbNew->single($query, [$id]);
 
-            if (!$identifier) {
+            if (!$id) {
                 throw new Exception("user not found");
             }
         }
 
         # are they viewing their own profile?
         # todo: this relies on "core" and "extra"
-        $isOwnProfile = $identifier === $app->user->core["id"];
+        $isOwnProfile = $id === $app->user->core["id"];
 
         /** database queries */
 
         # draft a user object
         $userData = [
-            "id" => $identifier,
+            "id" => $id,
             "type" => $this->type,
             "attributes" => [
                 "isOwnProfile" => $isOwnProfile,
@@ -474,7 +474,7 @@ class Users extends ObjectCrud
 
         # query the users table
         $query = "select * from users where id = ?";
-        $ref = $app->dbNew->row($query, [$identifier]);
+        $ref = $app->dbNew->row($query, [$id]);
 
         if (!$ref) {
             throw new Exception("user not found");
@@ -487,7 +487,7 @@ class Users extends ObjectCrud
 
         # query the users_main table
         $query = "select * from users_main where userId = ?";
-        $ref = $app->dbNew->row($query, [$identifier]);
+        $ref = $app->dbNew->row($query, [$id]);
 
         if (!$ref) {
             throw new Exception("user not found");
@@ -526,7 +526,7 @@ class Users extends ObjectCrud
 
         # query the users_info table
         $query = "select * from users_info where userId = ?";
-        $ref = $app->dbNew->row($query, [$identifier]);
+        $ref = $app->dbNew->row($query, [$id]);
 
         if (!$ref) {
             throw new Exception("user not found");

@@ -51,15 +51,15 @@ class Requests extends ObjectCrud
     /**
      * read
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function read(string|int $identifier = null): void
+    public function read(string|int $id = null): void
     {
         $app = App::go();
 
         # default read
-        parent::read($identifier);
+        parent::read($id);
 
         # get the voteCount
         $query = "select count(*) from requests_votes where requestId = ?";

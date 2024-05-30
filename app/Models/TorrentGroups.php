@@ -67,12 +67,12 @@ class TorrentGroups extends ObjectCrud
     /**
      * read
      */
-    public function read(int|string $identifier = null): void
+    public function read(int|string $id = null): void
     {
         $app = App::go();
 
         # parent method
-        parent::read($identifier);
+        parent::read($id);
 
         # decode the json fields
         $this->attributes->tags = json_decode($this->attributes->tags ?? []);

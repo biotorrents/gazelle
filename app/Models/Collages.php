@@ -54,13 +54,13 @@ class Collages extends ObjectCrud
     /**
      * read
      *
-     * @param int|string $identifier
+     * @param int|string $id
      * @return void
      */
-    public function read(int|string $identifier = null): void
+    public function read(int|string $id = null): void
     {
         # parent method
-        parent::read($identifier);
+        parent::read($id);
 
         # decode the boolean fields
         $this->attributes->isFeatured = boolval($this->attributes->isFeatured);
