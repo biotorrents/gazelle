@@ -363,17 +363,17 @@ class Twig extends \Twig\Environment
         # stringifyTags
         $twig->addFilter(new \Twig\TwigFilter("stringifyTags", function ($tags) {
             return new \Twig\Markup(
-                \Tags::stringify($tags),
+                \Gazelle\Tags::stringify($tags),
                 "UTF-8"
             );
         }));
 
 
 
-        # Tags::getNameById
+        # \Gazelle\Tags::getNameById
         $twig->addFunction(new \Twig\TwigFunction("tagNameById", function ($id, $html = true) {
             return new \Twig\Markup(
-                \Tags::getNameById($id, $html),
+                \Gazelle\Tags::getNameById($id, $html),
                 "UTF-8"
             );
         }));

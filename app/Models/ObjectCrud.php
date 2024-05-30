@@ -334,6 +334,17 @@ abstract class ObjectCrud extends RecursiveCollection
 
 
     /**
+     * getTags
+     *
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->getRelationships(Tags::class);
+    }
+
+
+    /**
      * getTorrentGroups
      *
      * @return array
@@ -495,6 +506,17 @@ abstract class ObjectCrud extends RecursiveCollection
     public function loadSiteLog(): void
     {
         $this->loadRelationships(SiteLog::class);
+    }
+
+
+    /**
+     * loadTags
+     *
+     * @return void
+     */
+    public function loadTags(): void
+    {
+        $this->loadRelationships(Tags::class);
     }
 
 

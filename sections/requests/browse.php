@@ -740,7 +740,7 @@ View::header($Title, 'requests');
                     <?php
     $TagList = [];
                     foreach ($Request['Tags'] as $TagID => $TagName) {
-                        $Split = Tags::get_name_and_class($TagName);
+                        $Split = \Gazelle\Tags::get_name_and_class($TagName);
                         $TagList[] = '<a class="' . $Split['class'] . '" href="?tags=' . $TagName . ($BookmarkView ? '&amp;type=requests' : '') . '">' . Gazelle\Text::esc($Split['name']) . '</a>';
                     }
                     $TagList = implode(', ', $TagList); ?>

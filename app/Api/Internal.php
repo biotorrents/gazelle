@@ -445,7 +445,7 @@ class Internal extends Base
         $tagIds = array_unique($request["tagIds"]);
 
         try {
-            \Tags::deleteGroupTags($groupId, $tagIds);
+            \Gazelle\Tags::deleteGroupTags($groupId, $tagIds);
 
             self::success(200, "deleted tags " . implode(", ", $request["tagIds"]) . " from group {$request["groupId"]}");
         } catch (\Throwable $e) {

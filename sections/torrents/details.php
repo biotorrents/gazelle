@@ -7,6 +7,60 @@ declare(strict_types=1);
  * torrent details page
  */
 
+ $app = Gazelle\App::go();
+
+ try {
+     $id ??= null;
+     $torrent = new Gazelle\Torrents($id);
+    # !d($torrent);exit;
+ 
+     if (!$torrent->id) {
+         throw new Exception("not found");
+     }
+ 
+     $torrent->loadTorrentGroups();
+     $torrentGroup = $torrent->relationships->torrentGroups->first();
+     #echo "<pre>";~d($torrentGroup);exit;
+ } catch (Throwable $e) {
+     $app->error(404);
+ }
+ 
+ # request variables
+ $get = Gazelle\Http::request("get");
+ $post = Gazelle\Http::request("post");
+ $revisionId = intval($get["revisionId"] ?? 0);
+ 
+ # create a conversation if it doesn't exist
+ $conversation = Gazelle\Conversations::createIfNotExists($torrent->id, "torrents");
+ 
+ # twig template
+ $app->twig->display("torrents/details.twig", [
+     "title" => $torrent->attributes->infoHash,
+     "sidebar" => true,
+ 
+     "css" => [],
+     "js" => ["browse", "conversations", "torrent", "recommend", "subscriptions"],
+ 
+     "torrent" => $torrent,
+     "torrentGroup" => $torrentGroup,
+     "revisionId" => $revisionId ?? null,
+ 
+     "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrent->id),
+     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $torrent->id),
+ 
+     "enableConversation" => true,
+     "conversation" => $conversation,
+ ]);
+ 
+ 
+ exit;
+ 
+
+
+/**
+ * torrent details page
+ */
+
 $app = Gazelle\App::go();
 
 $get = Gazelle\Http::request("get");
@@ -21,7 +75,7 @@ if (!empty($post)) {
     $tagIds = $post["tagIds"] ?? [];
     if (!empty($tagIds)) {
         try {
-            Tags::updateGroupTags($groupId, $tagIds);
+            \Gazelle\Tags::updateGroupTags($groupId, $tagIds);
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
         }
@@ -59,7 +113,7 @@ $tagList = $app->dbNew->multi($query, [$groupId]);
 #!d($tagList);exit;
 
 # official tags
-$officialTags = Tags::getOfficialTags();
+$officialTags = \Gazelle\Tags::getOfficialTags();
 #!d($officialTags);exit;
 
 # create a conversation if it doesn't exist
@@ -162,7 +216,7 @@ if ($TorrentTags !== '') {
         $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
         $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
 
-        $Split = Tags::get_name_and_class($TagName);
+        $Split = \Gazelle\Tags::get_name_and_class($TagName);
         $Tags[$TagKey]['display'] = $Split['name'];
         $Tags[$TagKey]['class'] = $Split['class'];
     }
@@ -202,13 +256,13 @@ View::header(
   </h2>
 
   <div class="linkbox">
-    <?php if ($app->user->can(["torrentGroups" => "updateAny"])) { ?>
+    <?php if ($app->user->can(["torrents" => "updateAny"])) { ?>
     <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>"
       class="brackets">Edit group</a>
     <?php } ?>
     <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
       class="brackets">View history</a>
-    <?php if ($RevisionID && $app->user->can(["torrentGroups" => "updateAny"])) { ?>
+    <?php if ($RevisionID && $app->user->can(["torrents" => "updateAny"])) { ?>
     <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Revert to this revision</a>
     <?php
@@ -339,7 +393,7 @@ $Index++;
       </div>
 
       <?php
-    if ($app->user->can(["torrentGroups" => "updateAny"]) && $WikiImage !== '') { ?>
+    if ($app->user->can(["torrents" => "updateAny"]) && $WikiImage !== '') { ?>
       <div id="add_cover_div">
         <div style="padding: 10px;">
           <span class="additional_add_artists u-pull-right">
@@ -507,7 +561,7 @@ foreach ($TorrentList as $Torrent) {
         $ReportInfo .= "</table>";
     }
 
-    $CanEdit = ($app->user->can(["torrentGroups" => "updateAny"]) || (($UserID == $app->user->core['id'] && !$app->user->extra['DisableWiki']) && !($Remastered && !$RemasterYear)));
+    $CanEdit = ($app->user->can(["torrents" => "updateAny"]) || (($UserID == $app->user->core['id'] && !$app->user->extra['DisableWiki']) && !($Remastered && !$RemasterYear)));
 
     $RegenLink = $app->user->can(["admin" => "moderateUsers"]) ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
     $FileTable = '
@@ -1006,7 +1060,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"])) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "updateAny"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#mirrors_section">Add/Remove</a>
@@ -1046,7 +1100,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrentGroups" => "updateAny"])) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "updateAny"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>

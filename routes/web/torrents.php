@@ -16,7 +16,7 @@ Flight::route("/torrents", function () {
 
 
 # details: a new single-torrent page with stats
-Flight::route("/torrents/@identifier", function ($identifier) {
+Flight::route("/torrents/@id", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
     require_once "{$app->env->serverRoot}/sections/torrents/details.php";
@@ -28,7 +28,7 @@ Flight::route("/torrents/@identifier", function ($identifier) {
 
 
 # update
-Flight::route("/torrents/@identifier/update", function ($identifier) {
+Flight::route("/torrents/@id/update", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "updateAny"]);
     require_once "{$app->env->serverRoot}/sections/torrents/update.php";
@@ -36,7 +36,7 @@ Flight::route("/torrents/@identifier/update", function ($identifier) {
 
 
 # delete
-Flight::route("/torrents/@identifier/delete", function ($identifier) {
+Flight::route("/torrents/@id/delete", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "deleteAny"]);
     require_once "{$app->env->serverRoot}/sections/torrents/delete.php";

@@ -691,7 +691,7 @@ END THE COLLECTOR
     <div class="box box_tags">
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
-        <?php Tags::format_top(50, 'torrents.php?taglist=', $Name); ?>
+        <?php \Gazelle\Tags::format_top(50, 'torrents.php?taglist=', $Name); ?>
       </ul>
     </div>
     <?php

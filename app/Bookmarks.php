@@ -111,10 +111,10 @@ class Bookmarks
      * Is a piece of content bookmarked?
      *
      * @param string $contentType the type of bookmarks to check
-     * @param int $contentId the bookmark's id
+     * @param int|string $contentId the bookmark's id
      * @return boolean
      */
-    public static function isBookmarked(string $contentType, int $contentId): bool
+    public static function isBookmarked(string $contentType, int|string $contentId): bool
     {
         $app = \Gazelle\App::go();
 

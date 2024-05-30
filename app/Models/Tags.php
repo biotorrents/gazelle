@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * Tags
+ * Gazelle\Tags
  *
  * Formatting and sorting methods for tags and tag accessories.
  *
@@ -13,15 +13,34 @@ declare(strict_types=1);
  *   $tags->format();
  *
  * e.g., returns a list of tags ordered by use
- *   Tags::format_top();
+ *   \Gazelle\Tags::format_top();
  *
  * Each time a new Tags object is instantiated,
  * the tag list is merged with the complete tag list.
  * This provides a Top Tags list, and merging is optional.
  */
 
-class Tags
+namespace Gazelle;
+
+class Tags extends ObjectCrud
 {
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public ?string $id = null; # primary key
+    public static ?string $type = "tags"; # resource name
+    protected ?string $table = "tags"; # database table
+
+    # ["database" => "display"]
+    protected array $maps = [
+        "id" => "id",
+        "Name" => "name",
+        "tagType" => "tagType",
+        "Uses" => "useCount",
+        "UserID" => "userId",
+        "created_at" => "createdAt",
+        "updated_at" => "updatedAt",
+        "deleted_at" => "deletedAt",
+    ];
+
     /**
      * Collects all tags processed by the Tags Class
      * @static
@@ -53,6 +72,7 @@ class Tags
      * @param boolean $Merge Merge the tag list with the Class' tags
      *        E.g., compilations and soundtracks are skipped, so false
      */
+    /*
     public function __construct($TagList, $Merge = true)
     {
         if ($TagList) {
@@ -68,6 +88,7 @@ class Tags
             $this->Tags = [];
         }
     }
+    */
 
 
     /**
@@ -126,10 +147,12 @@ class Tags
     /**
      * @return array All tags
      */
+    /*
     public static function all()
     {
         return self::$All;
     }
+    */
 
 
     /**

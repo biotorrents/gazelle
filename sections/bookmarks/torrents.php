@@ -324,7 +324,7 @@ View::header($Title, 'browse,collage');
     <div class="head"><strong>Top Tags</strong></div>
     <div class="pad">
       <ol style="padding-left: 5px;">
-        <?php Tags::format_top(5) ?>
+        <?php \Gazelle\Tags::format_top(5) ?>
       </ol>
     </div>
   </div>

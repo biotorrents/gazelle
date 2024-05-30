@@ -9,88 +9,62 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
+try {
+    $id ??= null;
+    $torrentGroup = new Gazelle\TorrentGroups($id);
+
+    if (!$torrentGroup->id) {
+        throw new Exception("not found");
+    }
+
+    $torrentGroup->loadCreators();
+    $torrentGroup->loadLiterature();
+    $torrentGroup->loadTags();
+    $torrentGroup->loadTorrents();
+} catch (Throwable $e) {
+    $app->error(404);
+}
+
+# request variables
 $get = Gazelle\Http::request("get");
 $post = Gazelle\Http::request("post");
-
-$groupId = $identifier ?? null;
 $revisionId = intval($get["revisionId"] ?? 0);
 
-# handle any necessary for stuff
+/*
+# handle any necessary form stuff
 if (!empty($post)) {
     # add tags
     $tagIds = $post["tagIds"] ?? [];
     if (!empty($tagIds)) {
         try {
-            Tags::updateGroupTags($groupId, $tagIds);
+            \Gazelle\Tags::updateGroupTags($groupId, $tagIds);
         } catch (\Throwable $e) {
             $errorMessage = $e->getMessage();
         }
     }
 }
-
-# get torrent/group info
-$torrentCache = TorrentFunctions::get_group_info($groupId, true, $revisionId);
-$groupDetails = $torrentCache[0];
-$torrentDetails = $torrentCache[1];
-#!d($groupDetails, $torrentDetails);
-
-# description and creators
-$description = Gazelle\Text::parse($groupDetails["description"]);
-$creatorList = \Gazelle\Creators::get_artist($groupId);
-#!d($creatorList);
-
-# get an openai description if it exists
-$query = "select text from openai where groupId = ?";
-$openAiDescription = $app->dbNew->single($query, [$groupId]);
-
-# alternative pictures
-$query = "select id, image, summary, userId from cover_art where groupId = ?";
-$coverArt = $app->dbNew->multi($query, [$groupId]) ?? [];
-
-
-# tagList: new
-$query = "
-    select tags.id, name, tagType from torrents_tags
-    left join tags on tags.id = torrents_tags.tagId
-    where groupId = ?
-";
-
-$tagList = $app->dbNew->multi($query, [$groupId]);
-#!d($tagList);exit;
+*/
 
 # official tags
-$officialTags = Tags::getOfficialTags();
-#!d($officialTags);exit;
+$officialTags = \Gazelle\Tags::getOfficialTags();
 
 # create a conversation if it doesn't exist
-$conversation = Gazelle\Conversations::createIfNotExists($groupId, "torrents");
+$conversation = Gazelle\Conversations::createIfNotExists($torrentGroup->id, "torrentGroups");
 
-/** twig template */
-
-$app->twig->display("torrents/details.twig", [
-    "title" => $groupDetails["title"],
+# twig template
+$app->twig->display("torrentGroups/details.twig", [
+    "title" => $torrentGroup->attributes->title,
     "sidebar" => true,
-    "errorMessage" => $errorMessage ?? null,
 
-    "js" => ["vendor/easymde.min", "vendor/tom-select.base.min", "browse", "conversations", "torrent", "recommend", "cover_art", "subscriptions"],
-    "css" => ["vendor/easymde.min", "vendor/tom-select.bootstrap5.min"],
+    "css" => [],
+    "js" => ["browse", "conversations", "torrent", "recommend", "subscriptions"],
 
-    "groupId" => $groupId,
-    "revisionId" => $revisionId,
-
-    "groupDetails" => $groupDetails,
-    "torrentDetails" => $torrentDetails,
-
-    "description" => $description,
-    "openAiDescription" => $openAiDescription,
-    "creatorList" => $creatorList,
-
-    "coverArt" => $coverArt,
-    "tagList" => $tagList,
+    "torrentGroup" => $torrentGroup,
+    "revisionId" => $revisionId ?? null,
     "officialTags" => $officialTags,
 
-    "isBookmarked" => Bookmarks::isBookmarked("torrent", $groupId),
-    "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $groupId),
+    "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrentGroup->id),
+    "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $torrentGroup->id),
 
     "enableConversation" => true,
     "conversation" => $conversation,
@@ -162,7 +136,7 @@ if ($TorrentTags !== '') {
         $Tags[$TagKey]['id'] = $TorrentTagIDs[$TagKey];
         $Tags[$TagKey]['userid'] = $TorrentTagUserIDs[$TagKey];
 
-        $Split = Tags::get_name_and_class($TagName);
+        $Split = \Gazelle\Tags::get_name_and_class($TagName);
         $Tags[$TagKey]['display'] = $Split['name'];
         $Tags[$TagKey]['class'] = $Split['class'];
     }

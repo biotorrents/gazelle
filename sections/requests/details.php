@@ -264,7 +264,7 @@ switch ($CategoryName) {
       <div class="head"><strong>Tags</strong></div>
       <ul class="stats nobullet">
         <?php foreach ($Request['Tags'] as $TagID => $TagName) {
-            $Split = Tags::get_name_and_class($TagName); ?>
+            $Split = \Gazelle\Tags::get_name_and_class($TagName); ?>
         <li>
           <a class="<?= $Split['class']?>"
             href="torrents.php?taglist=<?=$TagName?>"><?=\Gazelle\Text::esc($Split['name']) ?></a>

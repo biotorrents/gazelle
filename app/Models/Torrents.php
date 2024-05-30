@@ -26,8 +26,8 @@ class Torrents extends ObjectCrud
         "codec" => "license",
         "resolution" => "scope",
         "version" => "version",
-        "Censored" => "aligned",
-        "Anonymous" => "anonymous",
+        "Censored" => "isAnnotated",
+        "Anonymous" => "isAnonymous",
         "info_hash" => "infoHash",
         "FileCount" => "fileCount",
         "FileList" => "fileList",
@@ -139,6 +139,16 @@ class Torrents extends ObjectCrud
 
     // Presets to facilitate the use of $Mode
     public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
+
+
+    /** crud */
+
+
+    /**
+     * read
+     * 
+     * @param int|string $id
+     */
 
 
     /**

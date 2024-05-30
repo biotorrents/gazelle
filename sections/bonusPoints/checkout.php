@@ -54,7 +54,7 @@ if (!empty($post)) {
 }
 
 # get the official tags
-$tagList = Tags::getOfficialTags();
+$tagList = \Gazelle\Tags::getOfficialTags();
 #!d($tagList);exit;
 
 # is any extra action required?

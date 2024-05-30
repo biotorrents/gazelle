@@ -68,6 +68,7 @@ class TorrentFunctions
             $TorrentDetails['Screenshots'] = [];
             $TorrentDetails['Mirrors'] = [];
 
+            /*
             # Screenshots (Publications)
             $app->dbOld->query("
         SELECT
@@ -85,6 +86,7 @@ class TorrentFunctions
                     $TorrentDetails['Screenshots'][] = $Screenshot;
                 }
             }
+*/
 
             # Mirrors
             # todo: Fix $GroupID

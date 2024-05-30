@@ -69,11 +69,34 @@ class TorrentGroups extends ObjectCrud
      */
     public function read(int|string $identifier = null): void
     {
+        $app = App::go();
+
         # parent method
         parent::read($identifier);
 
         # decode the json fields
         $this->attributes->tags = json_decode($this->attributes->tags ?? []);
+
+        # add openai content if it exists
+        $fields = [
+            "jobId",
+            "object",
+            "model",
+            "text",
+            #"index",
+            "logprobs",
+            "finishReason",
+            "promptTokens",
+            "completionTokens",
+            "totalTokens",
+            "failCount",
+            "type",
+        ];
+
+        $query = "select " . implode(", ", $fields) . " from openai where groupId = ? and type = ?";
+        $ref = $app->dbNew->row($query, [$this->id, "summary"]);
+
+        $this->attributes->openai = $ref;
     }
 
 
@@ -124,32 +147,11 @@ class TorrentGroups extends ObjectCrud
     public function relationships(): ?array
     {
         return [
-            Torrents::$type => $this->relatedTorrents(),
             Creators::$type => $this->relatedCreators(),
+            Literature::$type => $this->relatedLiterature(),
+            Tags::$type => $this->relatedTags(),
+            Torrents::$type => $this->relatedTorrents(),
         ];
-    }
-
-
-    /**
-     * relatedTorrents
-     */
-    private function relatedTorrents(): ?array
-    {
-        $app = App::go();
-
-        $query = "select id from torrents where groupId = ?";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        if (!$ref) {
-            return null;
-        }
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => Torrents::$type];
-        }
-
-        return $data;
     }
 
 
@@ -170,6 +172,77 @@ class TorrentGroups extends ObjectCrud
         $data = [];
         foreach ($ref as $row) {
             $data[] = ["id" => $row, "type" => Creators::$type];
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * relatedLiterature
+     */
+    private function relatedLiterature(): ?array
+    {
+        $app = App::go();
+
+        $query = "select literatureId from literature_groups where groupId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => Literature::$type];
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * relatedTags
+     */
+    private function relatedTags(): ?array
+    {
+        $app = App::go();
+
+        $query = "select tagId from torrents_tags where groupId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => Tags::$type];
+        }
+
+        return $data;
+    }
+
+
+
+
+    /**
+     * relatedTorrents
+     */
+    private function relatedTorrents(): ?array
+    {
+        $app = App::go();
+
+        $query = "select id from torrents where groupId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => Torrents::$type];
         }
 
         return $data;
