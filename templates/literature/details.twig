@@ -2,122 +2,118 @@
 
 {% block content %}
 
-	<h2>{{ torrent.attributes.infoHash }}</h2>
+<aside class="breadcrumbs">
+  <a href="/">Home</a> »
+  <a href="/literature">Literature</a> »
+</aside>
+
+	<h2>{{ literature.attributes.title }}</h2>
 
 	{# essential details table #}
 	<section>
 		<table>
 
-			{# platform #}
-			{% if torrent.attributes.platform %}
+			{# publicationDate #}
+			{% if literature.attributes.publicationDate %}
 				<tr>
-					<th><span class="platform nobr">Platform</span></th>
-
-					<td>{{ torrent.attributes.platform }}</td>
-
-					<td>
-						<a href="/torrents?platform={{ torrent.attributes.platform }}">Search&nbsp;»</a>
-					</td>
+					<th><span class="publicationDate nobr">Publication date</span></th>
+					<td>{{ literature.attributes.publicationDate }}</td>
 				</tr>
 			{% endif %}
 
-			{# format #}
-			{% if torrent.attributes.format %}
+
+      {# doi #}
+			{% if literature.attributes.doi %}
 				<tr>
-					<th><span class="format nobr">Format</span></th>
-
-					<td>{{ torrent.attributes.format }}</td>
-
+					<th><span class="doi nobr">DOI</span></th>
 					<td>
-						<a href="/torrents?format={{ torrent.attributes.format }}">Search&nbsp;»</a>
-					</td>
+            <a href="https://doi.org/{{ literature.attributes.doi }}" target="_blank" class="external">{{ literature.attributes.doi }}</a>
+          </td>
 				</tr>
 			{% endif %}
 
-			{# license #}
-			{% if torrent.attributes.license %}
+
+      {# semanticScholarId #}
+			{% if literature.attributes.semanticScholarId %}
 				<tr>
-					<th><span class="license nobr">License</span></th>
-
-					<td>{{ torrent.attributes.license }}</td>
-
-					<td/>
+					<th><span class="semanticScholarId nobr">Semantic Scholar</span></th>
+					<td>
+            <a href="https://www.semanticscholar.org/paper/{{ literature.attributes.semanticScholarId }}" target="_blank" class="external">{{ literature.attributes.semanticScholarId }}</a>
+          </td>
 				</tr>
 			{% endif %}
 
-			{# scope #}
-			{% if torrent.attributes.scope %}
+
+      {# sci-hub #}
+			{% if literature.attributes.doi %}
 				<tr>
-					<th><span class="scope nobr">Scope</span></th>
-
-					<td>{{ torrent.attributes.scope }}</td>
-
+					<th><span class="sci-hub nobr">Sci-Hub</span></th>
 					<td>
-						<a href="/torrents.php?scope={{ torrent.attributes.scope }}">Search&nbsp;»</a>
-					</td>
+            <a href="{{ sciHubLink(literature.attributes.doi) }}" target="_blank" class="external">{{ sciHubLink(literature.attributes.doi) }}</a>
+          </td>
 				</tr>
 			{% endif %}
 
-			{# version #}
-			{% if torrent.attributes.version %}
-				<tr>
-					<th><span class="version nobr">version</span></th>
 
-					<td>{{ torrent.attributes.version }}</td>
+
+      {# journal #}
+      {#
+			{% if literature.attributes.journal %}
+				<tr>
+					<th><span class="journal nobr">journal</span></th>
+
+					<td>{{ literature.attributes.journal|getJournalAsString }}</td>
 
 					<td>
-						<a href="/torrents.php?version={{ torrent.attributes.version }}">Search&nbsp;»</a>
+						<a href="/literature?journal={{ literature.attributes.journal }}">Search&nbsp;»</a>
 					</td>
+				</tr>
+			{% endif %}
+      #}
+
+
+      {# influentialCitationCount #}
+			{% if literature.attributes.influentialCitationCount %}
+				<tr>
+					<th><span class="influentialCitationCount nobr">Influential citations</span></th>
+					<td>{{ literature.attributes.influentialCitationCount|number_format }}</td>
+				</tr>
+			{% endif %}
+
+
+      {# citationCount #}
+			{% if literature.attributes.citationCount %}
+				<tr>
+					<th><span class="citationCount nobr">Citations</span></th>
+					<td>{{ literature.attributes.citationCount|number_format }}</td>
+				</tr>
+			{% endif %}
+
+
+      {# referenceCount #}
+			{% if literature.attributes.referenceCount %}
+				<tr>
+					<th><span class="referenceCount nobr">References</span></th>
+					<td>{{ literature.attributes.referenceCount|number_format }}</td>
 				</tr>
 			{% endif %}
 
 		</table>
 	</section>
 
-	{# description #}
-	<section>
-		<h3>Description</h3>
 
-		{{ torrent.attributes.description|raw }}
+	{# abstract #}
+	<section>
+		<h3>Abstract</h3>
+
+		{{ literature.attributes.abstract|raw }}
+
+    {% if literature.attributes.tldr is not empty %}
+      <h4>TL;DR</h4>
+      {{ literature.attributes.tldr.text|raw }}
+    {% endif %}
 	</section>
 
-  	{# fileList #}
-	<section>
-		<h3>File list</h3>
-
-    <select class="select" multiple>
-      {% for file in torrent.attributes.fileList %}
-      <option value="{{ file.name }}">{{ file.name }}</option>
-      {% endfor %}
-    </select>
-
-{#
-    <table class="compact">
-      <tr>
-        <th>File name</th>
-        <th>Size</th>
-      </tr>
-
-      {% for file in torrent.attributes.fileList %}
-        <tr>
-          <td>{{ file.name }}</td>
-          <td>{{ file.size|get_size }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-#}
-
-	</section>
-
-    	{# torrentGroup #}
-	<section>
-		<h3>Torrent group</h3>
-
-    {{ include("torrents/tableEntryForObjects.twig", {group: torrentGroup}) }}
-
-
-
-	</section>
 
 
 
@@ -130,7 +126,7 @@
 
 {% block sidebar %}
 
-	{% include "torrents/sidebar.twig" %}
+	{% include "literature/sidebar.twig" %}
 
 {% endblock %}
 
@@ -834,7 +830,7 @@ if (count($PersonalCollages) > 0) {
       <div class="body"><?php if ($WikiBody != '') {
           echo $WikiBody;
       } else {
-          echo 'There is no information on this torrent.';
+          echo 'There is no information on this literature.';
       } ?>
       </div>
     </div>

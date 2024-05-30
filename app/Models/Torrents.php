@@ -149,6 +149,32 @@ class Torrents extends ObjectCrud
      * 
      * @param int|string $id
      */
+    public function read(int|string $id = null): void
+    {
+        $app = \Gazelle\App::go();
+
+        # parent read
+        parent::read($id);
+
+        # explode the fileList
+        $fileList = explode("÷", $this->attributes->fileList);
+        $fileData = [];
+
+        foreach ($fileList as $file) {
+            if (empty($file)) {
+                continue;
+            }
+
+            $fileArray = explode(" ", $file);
+            $fileData[] = [
+                "ext" => trim($fileArray[0]),
+                "size" => str_replace("s", "", trim($fileArray[1])),
+                "name" => trim($fileArray[2]),
+            ];
+        }
+
+        $this->attributes->fileList = $fileData;
+    }
 
 
     /**

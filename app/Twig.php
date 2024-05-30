@@ -388,6 +388,15 @@ class Twig extends \Twig\Environment
             return Format::get_size($size, $levels);
         }));
 
+        # Gazelle\Literature::getJournalAsString
+        $twig->addFilter(new \Twig\TwigFilter("getJournalAsString", function ($journal) {
+            return new \Twig\Markup(
+                \Gazelle\Literature::getJournalAsString($journal),
+                "UTF-8"
+            );
+        }));
+
+
         # Gazelle\Text::float
         $twig->addFilter(new \Twig\TwigFilter("float", function ($number, $decimals = 2) {
             return Text::float($number, $decimals);
@@ -397,6 +406,16 @@ class Twig extends \Twig\Environment
         $twig->addFunction(new \Twig\TwigFunction("displayAvatar", function ($uri, $username) {
             return new \Twig\Markup(
                 \User::displayAvatar($uri, $username),
+                "UTF-8"
+            );
+        }));
+
+        # format sci-hub uri
+        $twig->addFunction(new \Twig\TwigFunction("sciHubLink", function ($doi) {
+            $app = \Gazelle\App::go();
+            $randomMirror = $app->env->sciHubMirrors->random();
+            return new \Twig\Markup(
+                "https://{$randomMirror}/{$doi}",
                 "UTF-8"
             );
         }));

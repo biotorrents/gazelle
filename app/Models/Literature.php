@@ -46,6 +46,28 @@ class Literature extends ObjectCrud
     ];
 
 
+    /** crud */
+
+
+    /**
+     * read
+     *
+     * @param int|string $id
+     * @return void
+     */
+    public function read(int|string $id = null): void
+    {
+        # parent read
+        parent::read($id);
+
+        # decode the boolean fields
+        $this->attributes->isOpenAccess = boolval($this->attributes->isOpenAccess ?? false);
+
+        # decode the json fields
+        $this->attributes->journal = json_decode($this->attributes->journal ?? "");
+        $this->attributes->tldr = json_decode($this->attributes->tldr ?? "");
+    }
+
     /** relationships */
 
 
@@ -129,6 +151,26 @@ class Literature extends ObjectCrud
 
 
     /** methods */
+
+
+    /**
+     * getJournalAsString
+     *
+     * Formats a Semantic Scholar journal entry object, e.g.,
+     * {"name": "The Journal of Biological Chemistry", "pages": "8028-8034", "volume": "278"}
+     *
+     * @param object $literature->attributes->journal
+     * @return string "The Journal of Biological Chemistry 278, 8028-8034"
+     */
+    public static function getJournalAsString(object $journal): string
+    {
+        $journal = trim($journal->name ?? "");
+        $volume = trim($journal->volume ?? "");
+        $pages = trim($journal->pages ?? "");
+
+        return "{$journal} {$volume}, {$pages}";
+    }
+
 
 
     /**

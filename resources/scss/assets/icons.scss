@@ -236,10 +236,17 @@ img.torrent_header {
 
 
 /**
- * creators
+ * creators and literature
  */
 
 .hIndex {
+  &:before {
+    content: "💥";
+    margin-right: 0.5rem;
+  }
+}
+
+.influentialCitationCount {
   &:before {
     content: "💥";
     margin-right: 0.5rem;
@@ -256,6 +263,20 @@ img.torrent_header {
 .citationCount {
   &:before {
     content: "📣";
+    margin-right: 0.5rem;
+  }
+}
+
+.publicationDate {
+  &:before {
+    content: "📅";
+    margin-right: 0.5rem;
+  }
+}
+
+.doi {
+  &:before {
+    content: "🔑";
     margin-right: 0.5rem;
   }
 }
@@ -280,6 +301,20 @@ img.torrent_header {
     margin-right: 0.5rem;
 
     background-image: url("/images/logos/orcid.webp");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.sci-hub {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/sci-hub.webp");
     background-size: 100% 100%;
     display: inline-block;
 

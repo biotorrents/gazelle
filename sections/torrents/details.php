@@ -9,21 +9,28 @@ declare(strict_types=1);
 
  $app = Gazelle\App::go();
 
- try {
+ #try {
      $id ??= null;
      $torrent = new Gazelle\Torrents($id);
-    # !d($torrent);exit;
- 
+     $torrent->loadTorrentGroups();
+
      if (!$torrent->id) {
          throw new Exception("not found");
      }
  
-     $torrent->loadTorrentGroups();
      $torrentGroup = $torrent->relationships->torrentGroups->first();
-     #echo "<pre>";~d($torrentGroup);exit;
- } catch (Throwable $e) {
-     $app->error(404);
- }
+     $torrentGroup->loadLiterature();
+     $torrentGroup->loadTorrents();
+
+     $literature = $torrentGroup->relationships->literature;
+     foreach ($literature as $item) {
+         $item->loadCreators();
+     }
+     echo "<pre>";~d($literature);exit;
+     #!d($torrentGroup->relationships->literature);exit;
+ #} catch (Throwable $e) {
+ #    $app->error(404);
+ #}
  
  # request variables
  $get = Gazelle\Http::request("get");

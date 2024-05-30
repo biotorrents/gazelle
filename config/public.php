@@ -386,8 +386,12 @@ $env->defaultSiteOptions = json_encode([
  */
 
 # current sci-hub domains
-# https://lovescihub.wordpress.com
-$env->sciHubTlds = ["ren", "tw", "se"];
+# https://sci-hub.se/mirrors
+$env->sciHubMirrors = [
+    "sci-hub.se",
+    "sci-hub.st",
+    "sci-hub.ru",
+];
 
 
 # REMOVE ME
