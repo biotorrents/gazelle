@@ -21,6 +21,14 @@ try {
     $torrentGroup->loadLiterature();
     $torrentGroup->loadTags();
     $torrentGroup->loadTorrents();
+
+    $literature = $torrentGroup->relationships->literature;
+    foreach ($literature as $item) {
+        $item->loadCreators();
+    }
+
+    # debug
+    #echo "<pre>"; ~d($literature); echo "</pre>"; exit;
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -59,7 +67,13 @@ $app->twig->display("torrentGroups/details.twig", [
     "css" => [],
     "js" => ["browse", "conversations", "torrent", "recommend", "subscriptions"],
 
+    "breadcrumbs" => [
+        "/torrents" => "torrents",
+        "/torrent-groups/{$torrentGroup->id}" => $torrentGroup->attributes->title,
+    ],
+
     "torrentGroup" => $torrentGroup,
+    "literature" => $literature,
     "revisionId" => $revisionId ?? null,
     "officialTags" => $officialTags,
 

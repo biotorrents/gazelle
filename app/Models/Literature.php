@@ -40,6 +40,7 @@ class Literature extends ObjectCrud
         "isOpenAccess" => "isOpenAccess", # bool
         "openAccessPdf" => "openAccessPdf",
         "failCount" => "failCount",
+        "degreesOfSeparation" => "degreesOfSeparation",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",

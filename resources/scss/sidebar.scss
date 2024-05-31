@@ -1,0 +1,44 @@
+/* desktop */
+@media (orientation: landscape) {
+    #main {
+        display: inline-grid;
+        grid-template-areas:
+            "content sidebar";
+
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+
+        #content {
+            grid-area: content;
+            margin-left: 5rem;
+        }
+
+        #sidebar {
+            grid-area: sidebar;
+            margin-right: 5rem;
+        }
+    }
+}
+
+/* mobile */
+@media (orientation: portrait) {
+    #main {
+        display: inline-grid;
+        grid-template-areas:
+            "content"
+            "sidebar";
+
+        grid-template-columns: 1fr;
+        gap: 2rem;
+
+        #content {
+            grid-area: content;
+            margin: 0 2rem;
+        }
+
+        #sidebar {
+            grid-area: sidebar;
+            margin: 0 2rem;
+        }
+    }
+}

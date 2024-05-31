@@ -52,7 +52,11 @@ class Better
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "groupId");
-        $torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+
+        $torrentGroups = [];
+        foreach ($groupIds as $groupId) {
+            $torrentGroups[] = new \Gazelle\TorrentGroups($groupId);
+        }
 
         return $torrentGroups;
     }
@@ -92,7 +96,11 @@ class Better
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "groupId");
-        $torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+
+        $torrentGroups = [];
+        foreach ($groupIds as $groupId) {
+            $torrentGroups[] = new \Gazelle\TorrentGroups($groupId);
+        }
 
         return $torrentGroups;
     }
@@ -134,7 +142,11 @@ class Better
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+
+        $torrentGroups = [];
+        foreach ($groupIds as $groupId) {
+            $torrentGroups[] = new \Gazelle\TorrentGroups($groupId);
+        }
 
         return $torrentGroups;
     }
@@ -174,7 +186,11 @@ class Better
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+
+        $torrentGroups = [];
+        foreach ($groupIds as $groupId) {
+            $torrentGroups[] = new \Gazelle\TorrentGroups($groupId);
+        }
 
         return $torrentGroups;
     }
@@ -202,7 +218,11 @@ class Better
 
         $ref = $app->dbNew->multi($query) ?? [];
         $groupIds = array_column($ref, "id");
-        $torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+
+        $torrentGroups = [];
+        foreach ($groupIds as $groupId) {
+            $torrentGroups[] = new \Gazelle\TorrentGroups($groupId);
+        }
 
         return $torrentGroups;
     }

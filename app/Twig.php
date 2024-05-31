@@ -145,6 +145,12 @@ class Twig extends \Twig\Environment
         $http = Http::request();
         $twig->addGlobal("http", $http);
 
+        # sidebar stats
+        $stats = new \Gazelle\Stats();
+        $twig->addGlobal("activeUsers", $stats->activeUsers());
+        $twig->addGlobal("torrentAggregates", $stats->torrentAggregates());
+        $twig->addGlobal("trackerAggregates", $stats->trackerAggregates());
+
         # https://github.com/paragonie/anti-csrf
         $twig->addFunction(new \Twig\TwigFunction(
             "form_token",
@@ -401,6 +407,12 @@ class Twig extends \Twig\Environment
         $twig->addFilter(new \Twig\TwigFilter("float", function ($number, $decimals = 2) {
             return Text::float($number, $decimals);
         }));
+
+        # Illuminate\Support\Str::words
+        $twig->addFunction(new \Twig\TwigFunction("words", function (string $value, int $words = 100, string $end = "...") {
+            return \Illuminate\Support\Str::words($value, $words, $end);
+        }));
+
 
         # Users::displayAvatar
         $twig->addFunction(new \Twig\TwigFunction("displayAvatar", function ($uri, $username) {

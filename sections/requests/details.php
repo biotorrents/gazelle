@@ -66,6 +66,11 @@ $app->twig->display("requests/details.twig", [
   "title" => $request->attributes->title,
   "sidebar" => true,
 
+  "breadcrumbs" => [
+    "/requests" => "requests",
+    "/requests/{$request->id}" => $request->attributes->title,
+  ],
+
   "successMessage" => $successMessage ?? null,
   "errorMessage" => $errorMessage ?? null,
 

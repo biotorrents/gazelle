@@ -136,6 +136,11 @@
 			{# gazelle global #}
 			<link rel="stylesheet" type="text/css" href="/css/global.css">
 
+			{% if sidebar is defined and sidebar == true %}
+				<link rel="stylesheet" type="text/css" href="/css/sidebar.css">
+			{% endif %}
+
+
 
 			{% if authenticated %}
 				{# private #}
@@ -228,6 +233,7 @@
 	{% block header %}
 
 	{# start header #}
+		<header id="header top">
 
 	{# there's no crypto key loaded! #}
 	{% if not env.apcuExists %}
@@ -267,7 +273,6 @@
 		</div>
 	{% endif %}
 
-		<header id="top">
 			{% if authenticated %}
 				{# private #}
 				{{ include("_base/mainMenu.twig") }}
@@ -276,19 +281,23 @@
 				{# public #}
 				{{ include("_base/publicHeader.twig") }}
 			{% endif %}
+
+			{# alert bars #}
+			{% if authenticated %}
+				{{ include("_base/alertBars.twig") }}
+			{% endif %}
+
 		</header>
 
 		{% endblock %}
 
 
-		<main class="container">
+		<main id="main">
 
-			{# admin bar #}
-			{% if authenticated and can({"toolbox": "access"}) %}
-				{{ include("_base/adminBar.twig") }}
-			{% endif %}
+                {# start content block #}
+				<section id="content">
+
 			
-			<div class="row">
 
 				{# splash logo #}
 				{% if not authenticated %}
@@ -300,32 +309,34 @@
 
 				{# breadcrumbs #}
 				{% if breadcrumbs is defined %}
-					<h2 id="breadcrumbs">{{ include("_base/breadcrumbs.twig") }}</h2>
+					{{ include("_base/breadcrumbs.twig") }}
 				{% endif %}
 
 
-                {# start content block #}
-				<div id="content" class="{{ layoutContent }}">
                     {% block content %}
                     {% endblock %}
-				</div>
+				</section>
                 {# end content block #}
 
 
 				{# start sidebar block #}
-				<div id="sidebar" class="{{ layoutSidebar }}">
+				{% if sidebar is defined and sidebar == true %}
+				<section id="sidebar">
                     {% block sidebar %}
                     {% endblock %}
-				</div>
+				</section>
+				{% endif %}
 				{# end sidebar block #}
 
 
-			</div>
+
 		</main>
 
 
+
+
 		{# start footer block #}
-		<footer id="bottom">
+		<footer id="footer bottom">
 			{% block footer %}
 				{# there's only one footer #}
 				{{ include("_base/footer.twig") }}

@@ -36,6 +36,7 @@ class Creators extends ObjectCrud
         "paperCount" => "paperCount",
         "citationCount" => "citationCount",
         "failCount" => "failCount",
+        "degreesOfSeparation" => "degreesOfSeparation",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -228,7 +229,7 @@ class Creators extends ObjectCrud
         }
 
         if ($html) {
-            return "<a href='/artist.php?id={$id}'>{$name}</a>";
+            return "<a href='/creators/{$id}'>{$name}</a>";
         }
 
         return $name;

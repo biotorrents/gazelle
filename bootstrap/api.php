@@ -16,6 +16,11 @@ if (str_starts_with($server["REQUEST_URI"], "/api/internal")) {
     require_once "{$app->env->serverRoot}/routes/internal.php";
 }
 
+# also skip it for jwt authentication
+if (str_starts_with($server["REQUEST_URI"], "/api/auth")) {
+    require_once "{$app->env->serverRoot}/routes/apiAuthentication.php";
+}
+
 # check for a token
 $_SESSION["token"] = Gazelle\Api\Base::validateBearerToken();
 if (!$_SESSION["token"]) {

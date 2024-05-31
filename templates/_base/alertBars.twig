@@ -1,0 +1,40 @@
+{##
+ # alert bars
+ #}
+
+{# admin toolbox #}
+{% if can({"toolbox": "access"}) %}
+    <div class="alertbar modbar">
+        {% if can({"toolbox": "access"}) %}
+            <a href="/toolbox">Toolbox</a>
+        {% endif %}
+
+        {% if can({"admin": "staffInbox"}) %}
+            <a href="/staffpm.php">Staff PMs</a>
+        {% endif %}
+
+        {% if can({"admin": "reports"}) %}
+            <a href="/reportsv2.php">Reports</a>
+        {% endif %}
+    </div>
+{% endif %}
+
+{# success message #}
+{% if successMessage is defined and successMessage is not empty %}
+    <div class="alertbar success">{{ successMessage }}</div>
+{% endif %}
+
+{# error message #}
+{% if errorMessage is defined and errorMessage is not empty %}
+    <div class="alertbar error">{{ errorMessage }}</div>
+{% endif %}
+
+{# warning message #}
+{% if warningMessage is defined and warningMessage is not empty %}
+    <div class="alertbar warning">{{ warningMessage }}</div>
+{% endif %}
+
+{# info message #}
+{% if infoMessage is defined and infoMessage is not empty %}
+    <div class="alertbar info">{{ infoMessage }}</div>
+{% endif %}

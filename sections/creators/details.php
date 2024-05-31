@@ -17,7 +17,8 @@ if (!$identifier) {
 try {
     # try to load the creator
     $creator = new Gazelle\Creators($identifier);
-    $torrentGroups = $creator->getTorrentGroups();
+    $creator->loadLiterature();
+    $creator->loadTorrentGroups();
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -25,25 +26,25 @@ try {
 #!d($creator->relationships->torrentGroups);exit;
 
 # twig template
-try {
-    $app->twig->display("creators/details.twig", [
-        "title" => $creator->attributes->name,
-        "sidebar" => true,
+$app->twig->display("creators/details.twig", [
+    "title" => $creator->attributes->name,
+    "sidebar" => true,
 
-        "creator" => $creator,
-        "torrentGroups" => $torrentGroups,
+    "breadcrumbs" => [
+      "/creators" => "creators",
+      "/creators/{$creator->id}" => $creator->attributes->name,
+    ],
 
-        "isBookmarked" => false,
-        "isSubscribed" => false,
+    "creator" => $creator,
+    "literature" => $creator->relationships->literature,
+    "torrentGroups" => $creator->relationships->torrentGroups,
 
-        "enableConversation" => false,
-        "conversation" => null,
-    ]);
-} catch (Throwable $e) {
-    print '<h1>' . $e->getMessage() . '</h1>';
-    print '<br /><br />';
-    print "<pre>".$e->getTraceAsString()."</pre>";
-}
+    "isBookmarked" => false,
+    "isSubscribed" => false,
+
+    "enableConversation" => false,
+    "conversation" => null,
+]);
 
 
 exit;

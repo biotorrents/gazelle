@@ -255,7 +255,7 @@ class Subscriptions
             LEFT JOIN comments AS c ON c.ID = (SELECT MAX(ID) FROM comments WHERE Page = s.Page AND PageID = s.PageID)
             LEFT JOIN collages AS co ON s.Page = 'collages' AND co.ID = s.PageID
           WHERE s.UserID = " . $app->user->core["id"] . "
-            AND (s.Page != 'collages' OR co.Deleted = '0')
+            AND (s.Page != 'collages')
             AND IF(lr.PostID IS NULL, 0, lr.PostID) < c.ID");
             list($NewCommentSubscriptions) = $app->dbOld->next_record();
 

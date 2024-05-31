@@ -274,11 +274,32 @@ img.torrent_header {
   }
 }
 
+.journal {
+  &:before {
+    content: "📕";
+    margin-right: 0.5rem;
+  }
+}
+
 .doi {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/doi.svg");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /*
   &:before {
     content: "🔑";
     margin-right: 0.5rem;
   }
+  */
 }
 
 .semanticScholarId {

@@ -20,7 +20,7 @@
 			<input type="hidden" name="action" value="search">
 
 			{# the universal search bar itself #}
-			<input type="text" id="search" name="search" size="50" placeholder="Search the site for anything">
+			<input type="text" id="search" name="search" placeholder="Search for anything">
 
 			{# select which site area to search #}
 			<select id="searchWhat" name="searchWhat" {# class="select" #}>
@@ -34,7 +34,7 @@
 			</select>
 
 			{# submit button, maybe unnecessary #}
-			<input type="submit" class="button-primary" value="go">
+			{# <input type="submit" class="button-primary" value="go"> #}
 		</form>
 	</div>
 
@@ -53,7 +53,7 @@
 
 	{# torrents #}
 	<div id="torrents">
-		<h3 id="torrentsHeader">Torrents</h3>
+		<span id="torrentsHeader" class="button button-invisible">Torrents</span>
 		<ul>
 			<li><a href="/torrents">Browse</a></li>
 			<li><a href="/collages">Collages</a></li>
@@ -65,7 +65,7 @@
 
 	{# more #}
 	<div id="more">
-		<h3 id="moreHeader">More</h3>
+		<span id="moreHeader" class="button button-invisible">More</span>
 		<ul>
 			<li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li>
 			<li><a href="/bookmarks.php?type=torrents">Bookmarks</a></li>
@@ -76,7 +76,7 @@
 
 	{# community #}
 	<div id="community">
-		<h3 id="communityHeader">Community</h3>
+		<span id="communityHeader" class="button button-invisible">Community</span>
 		<ul>
 			{# <li><a href="/forums.php">Forums</a></li> #}
 			<li><a href="/rules">Rules</a></li>
@@ -89,7 +89,7 @@
 
 	{# user #}
 	<div id="user">
-		<h3 id="userHeader">User</h3>
+		<span id="userHeader" class="button button-invisible">User</span>
 		<ul>
 			<li><a href="/user.php?id={{ user.core.id }}">Profile</a></li>
 			{# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}

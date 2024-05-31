@@ -13,8 +13,8 @@ $app = Gazelle\App::go();
 $get = Gazelle\Http::get();
 $post = Gazelle\Http::post();
 
-$identifier ??= null;
-if (!$identifier) {
+$id ??= null;
+if (!$id) {
     # create a new collage
     $collage = new Gazelle\Collages();
 
@@ -23,7 +23,7 @@ if (!$identifier) {
 } else {
     try {
         # update an existing collage
-        $collage = new Gazelle\Collages($identifier);
+        $collage = new Gazelle\Collages($id);
         if (!$collage->id) {
             throw new Exception("not found");
         }
@@ -69,8 +69,8 @@ if ($collage->id) {
 # handle a post request
 if (!empty($post)) {
     try {
-        $identifier = $post["id"] ?? null;
-        $collage = new Gazelle\Collages($identifier);
+        $id = $post["id"] ?? null;
+        $collage = new Gazelle\Collages($id);
         $collage->updateOrCreate($post);
     } catch (Throwable $e) {
         $errorMessage = $e->getMessage();

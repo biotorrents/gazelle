@@ -1579,9 +1579,9 @@ class Users extends ObjectCrud
 
         # and categoryId = 0
         $query = "
-            select id, name from collages
-            where userId = ? and deleted = '0'
-            order by featured desc, name asc limit 5
+            select id, title from collages
+            where userId = ? and deleted_at is null
+            order by isFeatured desc, title asc limit 5
         ";
         $ref = $app->dbNew->multi($query, [$userId]);
 
@@ -1606,7 +1606,7 @@ class Users extends ObjectCrud
             }
 
             $data[$index]["id"] = $row["id"];
-            $data[$index]["title"] = $row["name"];
+            $data[$index]["title"] = $row["title"];
             $data[$index]["picture"] = $picture;
         }
 
@@ -1702,7 +1702,7 @@ class Users extends ObjectCrud
 
         # collages created
         # collages.php?userid={{ userId }}
-        $query = "select count(id) from collages where deleted = 0 and userId = ?";
+        $query = "select count(id) from collages where deleted_at is null and userId = ?";
         $data["collagesCreated"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
@@ -1711,7 +1711,7 @@ class Users extends ObjectCrud
         $query = "
             select count(distinct collageId) from collages_torrents
             join collages on collages.id = collages_torrents.collageId
-            where deleted = 0 and collages_torrents.userId = ?
+            where collages.deleted_at is null and collages_torrents.userId = ?
         ";
         $data["collageContributions"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
@@ -1755,7 +1755,7 @@ class Users extends ObjectCrud
 
 
         # screenshots (doi numbers) added
-        $query = "select count(*) from literature where user_id = ?";
+        $query = "select count(*) from literature where userId = ?";
         $data["referencesAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 

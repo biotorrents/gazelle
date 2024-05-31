@@ -1,0 +1,104 @@
+{#
+ # literature table
+ #}
+
+{#107                    'userId' => integer 2
+                    'doi' => string (22) "10.1074/JBC.M211914200"
+                    'semanticScholarId' => string (40) "fd29d55bea8295907d3d62af7725361436bcf58e"
+                    'title' => string (94) "The Catabolism of Amino Acids to Long Chain and Complex Alcohols in Saccharomyces cerevisiae *"
+                    'venue' => string (31) "Journal of Biological Chemistry"
+                    'journal' => stdClass (3) (
+                        public 'name' -> string (35) "The Journal of Biological Chemistry"
+                        public 'pages' -> string (11) "8028 - 8034"
+                        public 'volume' -> string (3) "278"
+                    )
+                    'year' => integer 2003
+                    'publicationDate' => string (10) "2003-03-07"
+                    'abstract' => string (1122) "The catabolism of phenylalanine to 2-phenylethanol and of tryptophan to tryptophol were studied by13C NMR spectroscopy and gas chromatography-mass spectrometry. Phenylalanine and tryptophan are first deaminated (to 3-phenylpyruvate and 3-indolepyruvate, respectively) and then decarboxylated. This decarboxylation can be effected by any of Pdc1p, Pdc5p, Pdc6p, or Ydr380wp; Ydl080cp has no role in the catabolism of either amino acid. We also report that in leucine catabolism Ydr380wp is the minor decarboxylase. Hence, all amino acid catabolic pathways studied to date use a subtly different spectrum of decarboxylases from the five-membered family that comprises Pdc1p, Pdc5p, Pdc6p, Ydl080cp, and Ydr380wp. Using strains containing all possible combinations of mutations affecting the seven AAD genes (putativearyl alcohol dehydrogenases), fiveADH genes, and SFA1, showed that the final step of amino acid catabolism (conversion of an aldehyde to a long chain or complex alcohol) can be accomplished by any one of the ethanol dehydrogenases (Adh1p, Adh2p, Adh3p, Adh4p, Adh5p) or by Sfa1p (formaldehyde dehydrogenase.)"
+                    'tldr' => stdClass (2) (
+                        public 'model' -> string (11) "tldr@v2.0.0"
+                        public 'text' -> string (279) "Using strains containing all possible combinations of mutations affecting the seven AAD genes, fiveADH genes, and SFA1, it is shown that the final step of amino acid catabolism can be accomplished by any one of the ethanol dehydrogenases or by Sfa1p (formaldehyde dehydrogenase.)"
+                    )
+                    'bibtex' => null
+                    'influentialCitationCount' => integer 10
+                    'citationCount' => integer 323
+                    'referenceCount' => integer 28
+                    'isOpenAccess' => boolean true
+                    'openAccessPdf' => null
+                    'failCount' => null
+                    'createdAt' => string (19) "2023-05-12 02:30:32"
+                    'updatedAt' => string (19) "2024-05-29 18:07:53"
+                    'deletedAt' => null
+                    'isOwner' => boolean false
+					#}
+<table>
+    <thead>
+	        {# literature info #}
+	        <th>Literature&nbsp;info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in literature %}
+            <tr>
+	            {# title #}
+	            <td class="tableGroup">
+		            <div class="flexColumn">
+
+		                {# title link #}
+		                <a class="torrentTitle" href="/literature/{{ item.id }}">
+			                {{ item.attributes.title }}
+		                </a>
+
+		                <div class="flexRow">
+			                {# doi #}
+			                {% if item.attributes.doi is not empty %}
+				                <span class="tooltip doi" title="DOI">{{ item.attributes.doi }}</span>
+			                {% endif %}
+
+			                {# journal #}
+			                {% if item.attributes.journal is not empty %}
+				                <span class="tooltip journal" title="Journal">{{ item.attributes.journal.name }}</span>
+			                {% endif %}
+
+			                {# publicationDate #}
+			                {% if item.attributes.publicationDate is not empty %}
+				                <span class="tooltip publicationDate" title="Publication date">{{ item.attributes.publicationDate }}</span>
+			                {% endif %}
+
+							{# sci-hub #}
+			                {% if item.attributes.doi is not empty %}
+				                <a href="{{ sciHubLink(item.attributes.doi) }}" target="_blank" class="tooltip sci-hub external" title="Sci-Hub">Sci-Hub</a>
+			                {% endif %}
+		                </div>
+
+		                {# creators #}
+                        {#
+		                {% if item.attributes.Artists is not empty %}
+			                <div class="tooltip creatorList" title="Creators">{{ displayCreators(item.attributes.Artists)|raw }}</div>
+		                {% endif %}
+		                #}
+
+						{# tl;dr: no tooltip #}
+		                {% if item.attributes.tldr is not empty %}
+			                <p class="tldr faded ai">{{ item.attributes.tldr.text }}</p>
+		                {% endif %}
+                    </div>
+	            </td>
+            </tr>
+        {% endfor %}
+
+        {# semantic scholar ajax search #}
+        <tr>
+            <td>
+                {#
+                <select id="searchSemanticScholar" placeholder="Find with Semantic Scholar" autocomplete="off">
+		        </select>
+                #}
+                <input type="text" id="searchSemanticScholar" placeholder="Find with Semantic Scholar" autocomplete="off">
+                  <input type="hidden" id="literatureIds" name="literatureIds" value=""> 
+            </td>
+    </tbody>
+</table>
+
+<script src="/js/literature.js"></script>

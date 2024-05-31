@@ -1,0 +1,86 @@
+{#
+ # torrent groups table
+ # NO TORRENTS DISPLAYED
+ #}
+
+<table>
+    <thead>
+        <tr>
+            {# category icon #}
+	        <th class="categoryColumn" />
+
+	        {# torrent info #}
+	        <th>Torrent&nbsp;info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for torrentGroup in torrentGroups %}
+            <tr>
+                {# category icon #}
+	            <td class="center">
+		            {{ torrentGroup.attributes.categoryId|categoryIcon }}
+	            </td>
+
+	            {# title #}
+	            <td class="tableGroup">
+		            <div class="flexColumn">
+
+		                {# title link #}
+		                <a class="torrentTitle" href="/torrent-groups/{{ torrentGroup.id }}" {# open tag #}
+
+    	                {% if torrentGroup.attributes.picture is not empty %}
+        	                data-cover="{{ torrentGroup.attributes.picture }}" {# open tag #}
+    	                {% endif %}
+
+    	                dir="ltr">
+			                {{ torrentGroup.attributes.title|raw }}
+		                </a>
+
+		                <div class="flexRow">
+			                {# subject #}
+			                {% if torrentGroup.attributes.subject is not empty %}
+				                <span class="tooltip subjectObject" title="Organism">{{ "<em>#{torrentGroup.attributes.subject}</em>"|raw }}
+					                {# object #}
+					                {{ (torrentGroup.attributes.object is not empty) ? torrentGroup.attributes.object : "" }}
+				                </span>
+			                {% endif %}
+
+			                {# year #}
+			                {% if torrentGroup.attributes.year is not empty %}
+				                <span class="tooltip year" title="Year">{{ torrentGroup.attributes.year }}</span>
+			                {% endif %}
+
+			                {# identifier #}
+			                {% if torrentGroup.attributes.identifier is not empty %}
+				                <span class="tooltip identifier" title="Identifier">{{ torrentGroup.attributes.identifier }}</span>
+			                {% endif %}
+
+			                {# workgroup #}
+			                {% if torrentGroup.attributes.workgroup is not empty %}
+				                <span class="tooltip workgroup" title="Workgroup">{{ torrentGroup.attributes.workgroup|raw }}</span>
+			                {% endif %}
+
+			                {# location #}
+			                {% if torrentGroup.attributes.location is not empty %}
+				                <span class="tooltip location" title="Location">{{ torrentGroup.attributes.location|raw }}</span>
+			                {% endif %}
+		                </div>
+
+		                {# tags #}
+		                {% if torrentGroup.attributes.tags is not empty %}
+			                <div class="tooltip tagList" title="Tags">{{ torrentGroup.attributes.tags|slice(0, 5)|join(", ") }}</div>
+		                {% endif %}
+
+		                {# creators #}
+                        {#
+		                {% if torrentGroup.attributes.Artists is not empty %}
+			                <div class="tooltip creatorList" title="Creators">{{ displayCreators(torrentGroup.attributes.Artists)|raw }}</div>
+		                {% endif %}
+		                #}
+                    </div>
+	            </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

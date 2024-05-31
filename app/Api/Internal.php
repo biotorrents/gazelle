@@ -631,6 +631,37 @@ class Internal extends Base
     }
 
 
+    /**
+     * searchSemanticScholar
+     *
+     * Interactively searches Semantic Scholar for papers.
+     *
+     * @return void
+     */
+    public static function searchSemanticScholar(): void
+    {
+        $app = \Gazelle\App::go();
+
+        self::validateFrontendHash();
+
+        $request = \Gazelle\Http::json();
+        $query = trim($request["query"] ?? null);
+
+        if (empty($query)) {
+            self::failure(400, "query required");
+        }
+
+        try {
+            $semanticScholar = new Gazelle\SemanticScholar();
+            $response = $semanticScholar->search($query, "interactive");
+
+            self::success(200, $response);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
     /** friends */
 
 

@@ -27,27 +27,32 @@ $shadow: 2px 2px 10px -2px slategray;
   text-align: center;
   color: #222;
   font-weight: bold;
-  /* width: 50%; */
   margin: 2em auto;
   padding: 1rem;
   border-radius: 4px;
   border: 1px solid $bg;
+  width: 50vw;
 }
 
 .alertbar {
+
+  &.silver,
   &.modbar {
     @include alertbar(silver);
   }
 
+  &.green,
   &.info,
   &.success {
     @include alertbar(green);
   }
 
+  &.orange,
   &.warning {
     @include alertbar(orange);
   }
 
+  &.red,
   &.error,
   &.failure {
     @include alertbar(red);

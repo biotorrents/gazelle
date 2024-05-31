@@ -7,61 +7,69 @@ declare(strict_types=1);
  * torrent details page
  */
 
- $app = Gazelle\App::go();
+$app = Gazelle\App::go();
 
- #try {
-     $id ??= null;
-     $torrent = new Gazelle\Torrents($id);
-     $torrent->loadTorrentGroups();
+#try {
+$id ??= null;
+$torrent = new Gazelle\Torrents($id);
+$torrent->loadTorrentGroups();
 
-     if (!$torrent->id) {
-         throw new Exception("not found");
-     }
- 
-     $torrentGroup = $torrent->relationships->torrentGroups->first();
-     $torrentGroup->loadLiterature();
-     $torrentGroup->loadTorrents();
+if (!$torrent->id) {
+    throw new Exception("not found");
+}
 
-     $literature = $torrentGroup->relationships->literature;
-     foreach ($literature as $item) {
-         $item->loadCreators();
-     }
-     echo "<pre>";~d($literature);exit;
-     #!d($torrentGroup->relationships->literature);exit;
- #} catch (Throwable $e) {
- #    $app->error(404);
- #}
- 
- # request variables
- $get = Gazelle\Http::request("get");
- $post = Gazelle\Http::request("post");
- $revisionId = intval($get["revisionId"] ?? 0);
- 
- # create a conversation if it doesn't exist
- $conversation = Gazelle\Conversations::createIfNotExists($torrent->id, "torrents");
- 
- # twig template
- $app->twig->display("torrents/details.twig", [
-     "title" => $torrent->attributes->infoHash,
-     "sidebar" => true,
- 
-     "css" => [],
-     "js" => ["browse", "conversations", "torrent", "recommend", "subscriptions"],
- 
-     "torrent" => $torrent,
-     "torrentGroup" => $torrentGroup,
-     "revisionId" => $revisionId ?? null,
- 
-     "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrent->id),
-     "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $torrent->id),
- 
-     "enableConversation" => true,
-     "conversation" => $conversation,
- ]);
- 
- 
- exit;
- 
+$torrentGroup = $torrent->relationships->torrentGroups->first();
+$torrentGroup->loadLiterature();
+$torrentGroup->loadTorrents();
+
+$literature = $torrentGroup->relationships->literature;
+foreach ($literature as $item) {
+    $item->loadCreators();
+}
+echo "<pre>";
+~d($literature);
+exit;
+#!d($torrentGroup->relationships->literature);exit;
+#} catch (Throwable $e) {
+#    $app->error(404);
+#}
+
+# request variables
+$get = Gazelle\Http::request("get");
+$post = Gazelle\Http::request("post");
+$revisionId = intval($get["revisionId"] ?? 0);
+
+# create a conversation if it doesn't exist
+$conversation = Gazelle\Conversations::createIfNotExists($torrent->id, "torrents");
+
+# twig template
+$app->twig->display("torrents/details.twig", [
+    "title" => $torrent->attributes->infoHash,
+    "sidebar" => true,
+
+    "css" => [],
+    "js" => ["browse", "conversations", "torrent", "recommend", "subscriptions"],
+
+    "breadcrumbs" => [
+     "/torrents" => "torrents",
+     "/torrents/{$torrent->id}" => $torrent->attributes->infoHash,
+ ],
+
+
+    "torrent" => $torrent,
+    "torrentGroup" => $torrentGroup,
+    "revisionId" => $revisionId ?? null,
+
+    "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrent->id),
+    "isSubscribed" => Subscriptions::has_subscribed_comments("torrents", $torrent->id),
+
+    "enableConversation" => true,
+    "conversation" => $conversation,
+]);
+
+
+exit;
+
 
 
 /**

@@ -9,13 +9,13 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-$identifier ??= null;
-if (!$identifier) {
+$id ??= null;
+if (!$id) {
     $app->error(404);
 }
 
 try {
-    $collage = new Gazelle\Collages($identifier);
+    $collage = new Gazelle\Collages($id);
     $collage->delete();
 } catch (Throwable $e) {
     $app->error(404);

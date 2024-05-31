@@ -20,6 +20,7 @@ try {
     $literature->loadCreators();
     $literature->loadTorrentGroups();
     $literature->loadRequests();
+    #!d($literature->attributes->journal);exit;
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -38,6 +39,11 @@ $app->twig->display("literature/details.twig", [
 
     "css" => [],
     "js" => ["conversations"],
+
+    "breadcrumbs" => [
+        "/literature" => "literature",
+        "/literature/{$literature->id}" => $literature->attributes->title,
+    ],
 
     "literature" => $literature,
 

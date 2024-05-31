@@ -12,14 +12,9 @@
 {% endif %}
 
 {# torrent list #}
-<table>
-{% for group in torrentGroups %}
-
-{% include "torrents/tableEntryForObjects.twig" with group %}
-
-{% endfor %}
-</table>
-
+<section>
+<h3>{{ Torrent groups }}</h3>
+{% include("tables/torrentGroupsWithoutTorrents.twig") %}
 </section>
 
 {% endblock %}

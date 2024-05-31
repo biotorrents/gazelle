@@ -1,36 +1,116 @@
 /**
- * main column and sidebar
- * NOW DONE BY SKELETON.CSS
+ * main column, without sidebar by default
+ * if ["sidebar" => true] use sidebar.css
  */
+
+/* desktop */
+@media (orientation: landscape) {
+  #main {
+    display: inline-grid;
+    grid-template-areas:
+      "content";
+
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    #content {
+      grid-area: content;
+      margin: 0 5rem;
+    }
+  }
+}
+
+/* mobile */
+@media (orientation: portrait) {
+  #main {
+    display: inline-grid;
+    grid-template-areas:
+      "content";
+
+    grid-template-columns: 1fr;
+    gap: 2rem;
+
+    #content {
+      grid-area: content;
+      margin: 0 2rem;
+    }
+  }
+}
+
+/* main body grid */
+body {
+  display: grid;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto;
+
+  grid-template-areas:
+    "header"
+    "main"
+    "footer";
+
+  gap: 2rem;
+  justify-content: space-between;
+
+  #header {
+    grid-area: header;
+  }
+
+  #main {
+    #sidebar {
+      hr {
+        margin: 1rem auto;
+        width: 100%;
+      }
+    }
+  }
+
+  #footer {
+    grid-area: footer;
+  }
+}
+
 
 /**
- * override main skeleton resolution
- * viewport taken from twitter tbh
+ * breadcrumbs
  */
-.container {
-  max-width: 1280px !important;
-}
 
-#content,
-#sidebar {
-  padding: 2rem;
-}
+.breadcrumbs {
+  font-variant: small-caps;
+  margin-bottom: 2rem;
+  letter-spacing: .1rem;
 
-#sidebar {
-  /*
-  position: sticky;
-  top: 0;
-  */
+  ul {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 1rem;
+    margin: 0 !important;
 
-  hr {
-    margin: 1rem auto;
-    width: 100%;
+    li {
+      list-style: none;
+      margin: 0 !important;
+
+      &:after {
+        content: "»";
+        margin: 0 0.5rem;
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: #222;
+      text-decoration: underline;
+    }
   }
 }
 
 section {
   margin-bottom: 5rem;
 }
+
 
 /**
  * flex elements
@@ -51,6 +131,29 @@ section {
   flex-flow: row wrap;
   gap: 0 2rem;
   align-items: baseline;
+}
+
+/* torrent collage cover display */
+#torrentCollage {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 1rem;
+  justify-content: center;
+
+  .collageItem {
+    width: 20rem;
+    height: 20rem;
+    margin: 0;
+    overflow: hidden;
+    border: 0.1rem solid #222;
+    box-shadow: 0.25rem 0.25rem 0.5rem gray;
+    transition: ease-in-out 0.1s;
+
+    &:hover {
+      filter: brightness(0.9) contrast(1.1);
+      transition: ease-in-out 0.1s;
+    }
+  }
 }
 
 /**
@@ -91,19 +194,6 @@ aside {
     color: red;
     margin: 2rem auto;
     font-size: larger;
-  }
-}
-
-/**
- * footer
- */
-
-footer {
-  margin-top: 2rem;
-  width: 100%;
-
-  p {
-    text-align: center;
   }
 }
 

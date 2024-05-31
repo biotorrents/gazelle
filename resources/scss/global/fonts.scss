@@ -188,6 +188,18 @@ summary {
 
 
 /**
+ * ai disclosure text
+ */
+.ai {
+  &:after {
+    content: " [AI]";
+    font-size: xx-small;
+    vertical-align: super;
+  }
+}
+
+
+/**
  * pure css tooltips to remove jquery ui
  *
  * https://codepen.io/zmmbreeze/pen/kxWgvQ

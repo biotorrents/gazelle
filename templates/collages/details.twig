@@ -10,6 +10,22 @@
   {% endif %}
   </h2>
 
+  {# collage #}
+  <section>
+    <div id="torrentCollage" style="display: inline-flex; flex-flow: row wrap; gap: 2rem;">
+      {% for item in picturedGroups %}
+		    {% set uri = processImage(item.picture, "thumb") %}
+	      <figure class="collageItem">
+          <a href="/torrent-groups/{{ item.groupId }}">
+            <img src="{{ uri }}">
+          </a>
+	      </figure>
+      {% endfor %}
+    </div>
+  </section>
+
+
+
   {# description #}
   <section>
     <h3>Description</h3>
@@ -112,66 +128,11 @@ if ($CollageCovers != 0) { ?>
     #}
 
 
+<section>
+    <h3>Torrent groups</h3>
+    {{ include("tables/torrentGroupsWithTorrents.twig") }}
+</section>
 
-	{# torrents table #}
-	<section>
-  <h3>Torrent groups</h3>
-
-		<table>
-<thead>
-<tr>
-
-	{# grouped #}
-  	{# <th /> #}
-
-	{#
-  {% if searchTerms.groupResults %}
-		<th />
-	{% endif %}
-  #}
-
-	{# category icon #}
-	<th class="categoryColumn" />
-
-	{# torrent info #}
-	<th>Torrent&nbsp;info</th>
-
-	{# timeAdded #}
-	<th>Time&nbsp;added</th>
-
-	{# data size #}
-	<th>Data&nbsp;size</th>
-
-	{# file count #}
-	{#
-	<th>File&nbsp;count</th>
-	#}
-
-	{# seeders #}
-	<th title="Seeders">↑</th>
-	{# <th>Seeders&nbsp;↑</th> #}
-
-	{# leechers #}
-	<th title="Leechers">↓</th>
-	{# <th>Leechers&nbsp;↓</th> #}
-
-  {# snatches #}
-	<th title="Snatches">↻</th>
-	{# <th>Snatches&nbsp;↻</th> #}
-
-</tr>
-</thead>
-
-<tbody>
-{% for group in torrentGroups %}
-
-{% include "torrents/tableEntryForObjects.twig" with group|toArray %}
-
-{% endfor %}
-</tbody>
-
-		</table>
-	</section>
 
 {% if enableConversation and conversation %}
     {% set variables = { "conversation": conversation } %}

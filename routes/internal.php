@@ -31,8 +31,9 @@ Flight::route("POST /api/internal/createBookmark", ["Gazelle\Api\Internal", "cre
 Flight::route("POST /api/internal/deleteBookmark", ["Gazelle\Api\Internal", "deleteBookmark"]);
 
 
-# doi number autofill
+# semantic scholar integrations
 Flight::route("POST /api/internal/doiNumberAutofill", ["Gazelle\Api\Internal", "doiNumberAutofill"]);
+Flight::route("POST /api/internal/searchSemanticScholar", ["Gazelle\Api\Internal", "searchSemanticScholar"]);
 
 
 # friends

@@ -9,32 +9,59 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-$identifier ??= null;
-if (!$identifier) {
-    $app->error(404);
-}
-
 try {
-    $collage = new Gazelle\Collages($identifier);
-    $torrentGroups = $collage->getTorrentGroups();
+    $id ??= null;
+    $collage = new Gazelle\Collages($id);
+
+    if (!$collage->id) {
+        throw new Exception("not found");
+    }
+
+    $collage->loadTorrentGroups();
+    $torrentGroups = $collage->relationships->torrentGroups;
+
+    foreach ($torrentGroups as $torrentGroup) {
+        $torrentGroup->loadTorrents();
+    }
+
     $isSubscribed = $collage->isSubscribed();
     $stats = $collage->readStats();
-} catch (Gazelle\Exception\ResourceNotFoundException $e) {
+
+    # create a conversation if it doesn't exist
+    $conversation = Gazelle\Conversations::createIfNotExists($collage->id, "collages");
+} catch (Throwable $e) {
     $app->error(404);
 }
 
-# create a conversation if it doesn't exist
-$conversation = Gazelle\Conversations::createIfNotExists($collage->id, "collages");
+$query = "select groupId, picture from collages_torrents join torrents_group on torrents_group.id = collages_torrents.groupId where collageId = ?";
+$ref = $app->dbNew->multi($query, [$collage->id]);
+
+$picturedGroups = [];
+foreach ($ref as $row) {
+  if (empty($row["picture"])) {
+    continue;
+  }
+
+  $picturedGroups[] = $row;
+}
 
 # twig template
 $app->twig->display("collages/details.twig", [
     "title" => $collage->attributes->title,
     "sidebar" => true,
 
+    "breadcrumbs" => [
+        "/collages" => "collages",
+        "/collages/{$collage->id}" => $collage->attributes->title,
+    ],
+
+    "css" => [],
     "js" => ["collages", "conversations"],
 
     "collage" => $collage,
     "torrentGroups" => $torrentGroups,
+    "picturedGroups" => $picturedGroups,
+
     "isSubscribed" => $isSubscribed,
     "isBookmarked" => false, # todo
     "stats" => $stats,

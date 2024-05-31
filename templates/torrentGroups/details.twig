@@ -82,18 +82,17 @@
 	{# description #}
 	<section>
 		<h3>Description</h3>
-
 		{{ torrentGroup.attributes.description|raw }}
-
-        {# plz be my ai gf #}
-        {% if torrentGroup.attributes.openai is not empty and user.siteOptions.openaiContent %}
-            <div class="faded">
-                <h4>OpenAI tl;dr</h4>
-
-                {{ torrentGroup.attributes.openai.text }}
-            </div>
-        {% endif %}
 	</section>
+
+
+  	{# openai #}
+   {% if torrentGroup.attributes.openai is not empty and user.siteOptions.openaiContent %}
+	<section class="faded">
+		<h3>tl;dr by {{ torrentGroup.attributes.openai.model }}</h3>
+    {{ torrentGroup.attributes.openai.text }}
+	</section>
+  {% endif %}
 
 
     {# torrent list #}
@@ -339,6 +338,15 @@
 {% endfor %}
 
     </section>
+
+
+    {# literature #}
+    <section>
+    <h3>Literature</h3>
+   {{ include("tables/literature.twig") }}
+    </section>
+
+
 
 {% if enableConversation and conversation %}
     {% set variables = { "conversation": conversation } %}

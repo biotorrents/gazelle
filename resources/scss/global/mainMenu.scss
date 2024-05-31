@@ -2,10 +2,16 @@
  * main navigation menu
  */
 
+/* desktop */
+@media (orientation: landscape) {}
+
+/* mobile */
+@media (orientation: portrait) {}
+
 #mainMenu {
   display: flex;
   flex-flow: row nowrap;
-  gap: 5rem;
+  gap: 2rem;
   align-items: center;
   justify-content: space-between;
   margin: 2rem;
@@ -17,10 +23,7 @@
     border: 0.25rem solid whitesmoke;
     border-radius: 50%;
     width: 5rem;
-    min-width: 5rem;
-    height: 100%;
-    min-height: 100%;
-    margin-left: 1rem;
+    height: 5rem;
 
     a {
       display: block;
@@ -53,7 +56,6 @@
   flex-flow: row wrap;
   gap: 2rem 5rem;
   justify-content: space-around;
-  max-width: 1280px;
   margin: 2rem auto;
 
   #torrentsHeader {
@@ -86,11 +88,7 @@
 
   ul {
     list-style-type: none !important;
-    margin-left: 1.5rem;
-
-    li {
-      font-size: larger;
-    }
+    margin-left: 3.5rem;
   }
 
   a {
@@ -108,16 +106,20 @@
  */
 
 #userInfo {
+  display: inline-flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  gap: 2rem;
+
   color: #222;
   text-align: center;
-  margin-bottom: 5rem;
   width: 100%;
 
   a {
     color: #222;
     text-decoration: none;
 
-    &:hover {
+    &:hover:not(.conversationButton) {
       text-decoration: underline;
     }
   }
@@ -133,6 +135,10 @@
       vertical-align: middle;
       padding: 1rem;
     }
+  }
+
+  .conversationButton {
+    margin-right: 1rem;
   }
 }
 

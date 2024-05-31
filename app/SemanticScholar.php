@@ -268,14 +268,14 @@ class SemanticScholar
      * Search the Academic Graph API for papers and authors.
      *
      * @param string $query get results related to this
-     * @param string $what one of ["papers", "authors"]
+     * @param string $what one of ["papers", "authors", "interactive"]
      *
      * @see https://api.semanticscholar.org/api-docs/graph#operation/get_graph_get_paper_search
      */
     public function search(string $query, string $what = "papers")
     {
-        if (!in_array($what, ["papers", "authors"])) {
-            throw new Exception("expected [\"papers\", \"authors\"], got {$what}");
+        if (!in_array($what, ["papers", "authors", "interactive"])) {
+            throw new Exception("expected [\"papers\", \"authors\", \"interactive\"], got {$what}");
         }
 
         # it doesn't ignore invalid
@@ -340,6 +340,13 @@ class SemanticScholar
         if ($what === "authors") {
             $uri = "{$this->academicGraphUri}/author/search";
             $response = $this->curl($uri, $authorFields, $query);
+
+            return $response;
+        }
+
+        if ($what === "interactive") {
+            $uri = "{$this->academicGraphUri}/paper/autocomplete";
+            $response = $this->curl($uri, [], $query);
 
             return $response;
         }

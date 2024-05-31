@@ -66,13 +66,13 @@ if (!$freeleeches) {
     $app->cache->set("shop_freeleech_list", $freeleeches, 3600 * 24 * 30);
 }
 
-
+/*
 # sidebar stats
 $stats = new \Gazelle\Stats();
 $activeUsers = $stats->activeUsers();
 $torrentAggregates = $stats->torrentAggregates();
 $trackerAggregates = $stats->trackerAggregates();
-
+*/
 
 /** twig template */
 
@@ -81,10 +81,12 @@ $app->twig->display("index/private.twig", [
     "sidebar" => true,
     "news" => $news,
 
+    /*
     # stats
     "activeUsers" => $activeUsers,
     "torrentAggregates" => $torrentAggregates,
     "trackerAggregates" => $trackerAggregates,
+    */
 
 
 

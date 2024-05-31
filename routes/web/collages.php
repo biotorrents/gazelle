@@ -25,7 +25,7 @@ Flight::route("/collages/create", function () {
 
 
 # read
-Flight::route("/collages/@identifier", function (int|string $identifier = null) {
+Flight::route("/collages/@identifier", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "read"]);
     require_once "{$app->env->serverRoot}/sections/collages/details.php";
@@ -33,7 +33,7 @@ Flight::route("/collages/@identifier", function (int|string $identifier = null) 
 
 
 # update
-Flight::route("/collages/@identifier/update", function (int|string $identifier = null) {
+Flight::route("/collages/@identifier/update", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "updateAny"]);
     require_once "{$app->env->serverRoot}/sections/collages/updateOrCreate.php";
@@ -41,7 +41,7 @@ Flight::route("/collages/@identifier/update", function (int|string $identifier =
 
 
 # delete
-Flight::route("/collages/@identifier/delete", function (int|string $identifier = null) {
+Flight::route("/collages/@identifier/delete", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "deleteAny"]);
     require_once "{$app->env->serverRoot}/sections/collages/delete.php";

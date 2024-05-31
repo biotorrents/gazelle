@@ -50,6 +50,7 @@
     "ergebnis/composer-normalize": "^2.42.0",
     "erusev/parsedown": "1.8.0-beta-7",
     "erusev/parsedown-extra": "0.8.0",
+    "firebase/php-jwt": "^6.10",
     "foolz/sphinxql-query-builder": "^3.0.2",
     "friendsofphp/php-cs-fixer": "^3.57.1",
     "guzzlehttp/guzzle": "^7.8.1",
