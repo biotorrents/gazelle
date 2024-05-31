@@ -690,7 +690,6 @@ foreach ($TorrentList as $Torrent) {
       </table>
     </div>
     <?php
-$Requests = TorrentFunctions::get_group_requests($GroupID);
 if (empty($user['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">

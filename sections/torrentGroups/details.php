@@ -815,7 +815,6 @@ HTML;
       </table>
     </div>
     <?php
-$Requests = TorrentFunctions::get_group_requests($GroupID);
 if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
     ?>
     <div class="box">

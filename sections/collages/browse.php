@@ -126,7 +126,7 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
 /** torrent group info */
 
 
-# \Gazelle\Torrents::get_groups
+# Gazelle\Torrents::get_groups
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("browse", "get collages");
 

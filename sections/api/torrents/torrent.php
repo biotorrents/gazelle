@@ -13,11 +13,6 @@ if ($TorrentID && $TorrentHash) {
 if ($TorrentHash) {
     if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
         \Gazelle\Api\Base::failure(400, 'bad hash parameter');
-    } else {
-        $TorrentID = (int) TorrentFunctions::torrenthash_to_torrentid($TorrentHash);
-        if (!$TorrentID) {
-            \Gazelle\Api\Base::failure(400, 'bad hash parameter');
-        }
     }
 }
 

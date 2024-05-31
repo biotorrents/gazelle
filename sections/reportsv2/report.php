@@ -95,7 +95,6 @@ View::header('Report', 'reportsv2,browse,torrent,recommend');
       </tr>
       <?php
       $LangName = $GroupName ? $GroupName : ($GroupTitle2 ? $GroupTitle2 : $GroupNameJP);
-TorrentFunctions::build_torrents_table($app->user, $GroupID, $LangName, $GroupCategoryID, $TorrentList, $Types, $Username);
 ?>
     </table>
   </div>

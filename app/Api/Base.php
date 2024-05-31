@@ -168,8 +168,8 @@ class Base
         # https://jsonapi.org/format/1.2/#document-meta
         match ($app->executionContext) {
             "api" => $payload["meta"] = [
-                "clientId" => $json["clientId"] ?? null,
-                "clientSecret" => $json["clientSecret"] ?? null,
+                "client_id" => $json["client_id"] ?? null,
+                "client_secret" => $json["client_secret"] ?? null,
             ],
 
             "web" => $payload["meta"] = [
@@ -184,14 +184,13 @@ class Base
             return $payload;
         }
 
+        # https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-09.html#name-token-endpoint
         $jwt = JWT::encode($payload, $app->env->private("jwtPrivateKey"), self::$algorithm);
         return [
-            "accessToken" => $jwt,
-            "tokenType" => "Bearer",
-            "expiresIn" => self::$expiresIn,
+            "access_token" => $jwt,
+            "token_type" => "bearer",
+            "expires_in" => self::$expiresIn,
         ];
-
-
     }
 
 
@@ -199,7 +198,12 @@ class Base
      * getJwt
      *
      * Issues a new JWT in response to this POST request:
-     * { "clientId": "string", "clientSecret": "string" }
+     *
+     * {
+     *   "grant_type": "client_credentials",
+     *   "client_id": 666,
+     *   "client_secret": "foobar"
+     * }
      *
      * @param bool $debug = false
      * @return void
@@ -211,23 +215,30 @@ class Base
         # escape client credentials data
         $json = \Gazelle\Http::json();
 
-        $json["clientId"] ??= null;
-        $json["clientSecret"] ??= null;
+        # https://www.ietf.org/archive/id/draft-ietf-oauth-v2-1-09.html#name-client-authentication
+        $json["grant_type"] ??= null;
+        $json["client_id"] ??= null;
+        $json["client_secret"] ??= null;
 
-        if (!$json["clientId"] || !$json["clientSecret"]) {
+        if (!$json["grant_type"] || !$json["client_id"] || !$json["client_secret"]) {
+            self::failure(401, "unauthorized");
+        }
+
+        # only one grant type is supported :)
+        if ($json["grant_type"] !== "client_credentials") {
             self::failure(401, "unauthorized");
         }
 
         # check the database
         $query = "select id, userId, token from api_tokens use index (userId_token) where id = ? and deleted_at is null";
-        $row = $app->dbNew->row($query, [ $json["clientId"] ]);
+        $row = $app->dbNew->row($query, [ $json["client_id"] ]);
 
         if (empty($row)) {
             self::failure(401, "unauthorized");
         }
 
-        # verify the clientSecret against the token hash
-        $good = password_verify($json["clientSecret"], $row["token"]);
+        # verify the client_secret against the token hash
+        $good = password_verify($json["client_secret"], $row["token"]);
         if (!$good) {
             self::failure(401, "unauthorized");
         }

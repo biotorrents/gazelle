@@ -13,18 +13,6 @@ if ($GroupID && $TorrentHash) {
     \Gazelle\Api\Base::failure(400, 'bad parameters');
 }
 
-# Get id from hash
-if ($TorrentHash) {
-    if (!TorrentFunctions::is_valid_torrenthash($TorrentHash)) {
-        \Gazelle\Api\Base::failure(400, 'bad hash parameter');
-    } else {
-        $GroupID = (int) TorrentFunctions::torrenthash_to_groupid($TorrentHash);
-        if (!$GroupID) {
-            \Gazelle\Api\Base::failure(400, 'bad hash parameter');
-        }
-    }
-}
-
 # Error if bad id
 if ($GroupID <= 0) {
     \Gazelle\Api\Base::failure(400, 'bad id parameter');
