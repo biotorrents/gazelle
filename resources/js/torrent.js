@@ -16,12 +16,14 @@
     return confirm("Are you sure you want to use a freeleech token here?");
   });
 
+  /*
   // toggle biblatex citation
   $(".bibtexCitation").hide();
   $(".toggleBibtex").on("click", (event) => {
     let torrentId = $(event.target).data("torrentid");
     $("#bibtexCitation-" + torrentId).toggle(toggleDuration);
   });
+  */
 
 
   /**

@@ -19,9 +19,14 @@ $torrentGroups = Gazelle\Better::badTags($snatchedOnly);
 
 # twig template
 $app->twig->display("better/list.twig", [
-  "title" => "Better",
+  "title" => "Torrents with bad tags",
   "header" => "Torrents with bad tags",
   "sidebar" => true,
+
+  "breadcrumbs" => [
+    "/torrents" => "torrents",
+    "/better" => "better",
+  ],
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,

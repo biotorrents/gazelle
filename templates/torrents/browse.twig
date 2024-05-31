@@ -3,7 +3,7 @@
 {% block content %}
 
 {# include the main search form #}
-{% include "torrents/search.twig" %}
+{{ include("torrents/search.twig") }}
 
 {# no results message #}
 {% if pagination.resultCount == 0 %}
@@ -47,90 +47,9 @@
 
 
 {# start the results table #}
-<table id="torrentSearchResults" class="{{ grouping }}">
-
-{# start results table headings #}
-{# todo: this can be reorganized to suck less #}
-<thead>
-<tr>
-
-	{# grouped #}
-  	{# <th /> #}
-
-	{#
-  {% if searchTerms.groupResults %}
-		<th />
-	{% endif %}
-  #}
-
-	{# category icon #}
-	<th class="categoryColumn" />
-
-	{# torrent info #}
-	<th>Torrent&nbsp;info</th>
-
-	{# timeAdded #}
-	<th>Time&nbsp;added</th>
-
-	{# data size #}
-	<th>Data&nbsp;size</th>
-
-	{# file count #}
-	{#
-	<th>File&nbsp;count</th>
-	#}
-
-	{# seeders #}
-	<th title="Seeders">↑</th>
-	{# <th>Seeders&nbsp;↑</th> #}
-
-	{# leechers #}
-	<th title="Leechers">↓</th>
-	{# <th>Leechers&nbsp;↓</th> #}
-
-  {# snatches #}
-	<th title="Snatches">↻</th>
-	{# <th>Snatches&nbsp;↻</th> #}
-
-</tr>
-</thead>
-{# end results table headings #}
-
-{# start the results themselves #}
-<tbody>
-{% for group in torrentGroups %}
-
-{% include "torrents/tableEntryForObjects.twig" with group %}
-
-{% endfor %}
-</tbody>
-{# end the results themselves #}
-
-{# end the results table #}
-</table>
-
-{# todo: share search #}
-{# <a id="searchParamsPermalink" class="button">link this search</a> #}
-
-{# todo: download all this page #}
-{# <a id="downloadAllThisPage" class="button">download all this page</a> #}
-
-{# back to top: lazy af #}
-{# <a href="#searchResultsHeader" class="button">back to top</a> #}
+{{ include("tables/torrentGroupsWithTorrents.twig") }}
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 {#}														  foreach ($Results as $Key => $GroupID) {

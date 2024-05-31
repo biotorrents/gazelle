@@ -10,7 +10,7 @@
 	        <th class="categoryColumn" />
 
 	        {# torrent info #}
-	        <th>Torrent&nbsp;info</th>
+	        <th>Info</th>
 
 	        {# timeAdded #}
 	        <th>Time&nbsp;added</th>
@@ -43,8 +43,8 @@
 	            </td>
 
 	            {# title #}
-	            <td class="tableGroup" colspan="6">
-		            <div class="flexColumn">
+	            <td colspan="4">
+		            <p class="flexRow">
 
 		                {# title link #}
 		                <a class="torrentTitle" href="/torrent-groups/{{ torrentGroup.id }}" {# open tag #}
@@ -56,8 +56,9 @@
     	                dir="ltr">
 			                {{ torrentGroup.attributes.title|raw }}
 		                </a>
+					</p>
 
-		                <div class="flexRow">
+		                <p class="flexRow">
 			                {# subject #}
 			                {% if torrentGroup.attributes.subject is not empty %}
 				                <span class="tooltip subjectObject" title="Organism">{{ "<em>#{torrentGroup.attributes.subject}</em>"|raw }}
@@ -85,11 +86,11 @@
 			                {% if torrentGroup.attributes.location is not empty %}
 				                <span class="tooltip location" title="Location">{{ torrentGroup.attributes.location|raw }}</span>
 			                {% endif %}
-		                </div>
+		                </p>
 
 		                {# tags #}
 		                {% if torrentGroup.attributes.tags is not empty %}
-			                <div class="tooltip tagList" title="Tags">{{ torrentGroup.attributes.tags|slice(0, 5)|join(", ") }}</div>
+			                <p class="flexRow tooltip tagList" title="Tags">{{ torrentGroup.attributes.tags|slice(0, 5)|join(", ") }}</p>
 		                {% endif %}
 
 		                {# creators #}
@@ -98,7 +99,6 @@
 			                <div class="tooltip creatorList" title="Creators">{{ displayCreators(torrentGroup.attributes.Artists)|raw }}</div>
 		                {% endif %}
 		                #}
-                    </div>
 	            </td>
             </tr>
                 
@@ -107,48 +107,53 @@
                 {% for torrent in torrentGroup.relationships.torrents %}
                     <tr>
 	                    {# category icon #}
-                        <td class="center">
-                            <a href="/torrents/{{ torrent.id }}">Go&nbsp;»</a>
-                        </td>
+                        <td />
 
 	                    {# title #}
-	                    <td class="flexRow">
-                            {# platform #}
-                            {% if torrent.attributes.platform is not empty %}
-                                <span class="tooltip platform" title="Platform">{{ torrent.attributes.platform }}</span>
-                            {% endif %}
+	                    <td>
+							<p class="flexRow">
+		                		{# title link #}
+		                		<a class="torrentTitle monospace" href="/torrents/{{ torrent.id }}">{{ torrent.attributes.infoHash }}</a>
+							</p>
 
-                            {# format #}
-                            {% if torrent.attributes.format is not empty %}
-                                <span class="tooltip format" title="Format">{{ torrent.attributes.format }}</span>
-                            {% endif %}
+							<p class="flexRow">
+                            	{# platform #}
+                            	{% if torrent.attributes.platform is not empty %}
+                                	<span class="tooltip platform" title="Platform">{{ torrent.attributes.platform }}</span>
+                            	{% endif %}
 
-                            {# version #}
-                            {% if torrent.attributes.version is not empty %}
-                                <span class="tooltip version" title="Version">{{ torrent.attributes.version }}</span>
-                            {% endif %}
+                            	{# format #}
+                            	{% if torrent.attributes.format is not empty %}
+                                	<span class="tooltip format" title="Format">{{ torrent.attributes.format }}</span>
+                            	{% endif %}
 
-                            {# scope #}
-                            {% if torrent.attributes.scope is not empty %}
-                                <span class="tooltip scope" title="Scope">{{ torrent.attributes.scope }}</span>
-                            {% endif %}
+                            	{# version #}
+                            	{% if torrent.attributes.version is not empty %}
+                                	<span class="tooltip version" title="Version">{{ torrent.attributes.version }}</span>
+                            	{% endif %}
 
-                            {# archive #}
-                            {% if torrent.attributes.archive is not empty %}
-                                <span class="tooltip archive" title="Archive">{{ torrent.attributes.archive }}</span>
-                            {% endif %}
+                            	{# scope #}
+                            	{% if torrent.attributes.scope is not empty %}
+                                	<span class="tooltip scope" title="Scope">{{ torrent.attributes.scope }}</span>
+                            	{% endif %}
 
-                            {# license #}
-                            {% if torrent.attributes.license is not empty %}
-                                <span class="tooltip license" title="License">{{ torrent.attributes.license }}</span>
-                            {% endif %}
+                            	{# archive #}
+                            	{% if torrent.attributes.archive is not empty %}
+                                	<span class="tooltip archive" title="Archive">{{ torrent.attributes.archive }}</span>
+                            	{% endif %}
 
-                            {# isAnnotated #}
-                            {% if torrent.attributes.isAnnotated is not empty %}
-                                <span title="Alignment" class="tooltip good">Aligned</span>
-                            {% else %}
-                                <span title="Alignment" class="tooltip bad">Not aligned</span>
-                            {% endif %}
+                            	{# license #}
+                            	{% if torrent.attributes.license is not empty %}
+                                	<span class="tooltip license" title="License">{{ torrent.attributes.license }}</span>
+                            	{% endif %}
+
+                            	{# isAnnotated #}
+                            	{% if torrent.attributes.isAnnotated is not empty %}
+                                	<span title="Alignment" class="tooltip good">Aligned</span>
+                            	{% else %}
+                                	<span title="Alignment" class="tooltip bad">Not aligned</span>
+                            	{% endif %}
+							</p>
                         </td>
 
 	                    {# createdAt #}

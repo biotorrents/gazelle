@@ -4,17 +4,15 @@
 {% block content %}
 
 <section>
-<h2>{{ header }}</h2>
+    <h2>{{ header }}</h2>
 
-{# no torrents #}
-{% if torrentGroups is empty %}
-<h3 class="center">No torrents found :)</h3>
-{% endif %}
-
-{# torrent list #}
-<section>
-<h3>{{ Torrent groups }}</h3>
-{% include("tables/torrentGroupsWithoutTorrents.twig") %}
+    {# no torrents #}
+    {% if torrentGroups is empty %}
+        <h3 class="center">No torrents found :)</h3>
+    {% else %}
+        {# torrent list #}
+        {{ include("tables/torrentGroupsWithoutTorrents.twig") }}
+    {% endif %}
 </section>
 
 {% endblock %}

@@ -409,6 +409,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
         $this->relationships->{$object::$type} ??= null;
         if (!$this->relationships->{$object::$type}) {
+            $this->relationships->{$object::$type} = [];
             return;
         }
 

@@ -12,9 +12,7 @@
             <a href="/torrents.php?type=seeding&userid={{ user.core.id }}" class="tooltip conversationButton" title="Seeding">
                 <i class="fa-thin fa-cloud-arrow-up"></i>
             </a>
-            <span class="stat tooltip" title="{{ user.extra.Uploaded|get_size(levels = 5) }}">
-                {{ user.extra.Uploaded|get_size }}
-            </span>
+            {{ user.extra.Uploaded|get_size }}
         </li>
 
         {# leeching #}
@@ -22,9 +20,7 @@
             <a href="/torrents.php?type=leeching&userid={{ user.core.id }}" class="tooltip conversationButton" title="Leeching">
                 <i class="fa-thin fa-cloud-arrow-down"></i>
             </a>
-            <span class="stat tooltip" title="{{ user.extra.Downloaded|get_size(levels = 5) }}">
-                {{ user.extra.Downloaded|get_size }}
-            </span>
+            {{ user.extra.Downloaded|get_size }}
         </li>
 
         {# ratio #}
@@ -32,9 +28,7 @@
             <a href="/rules/ratio" class="tooltip conversationButton" title="Ratio">
                 <i class="fa-thin fa-percent"></i>
             </a>
-            <span class="stat">
-                {{ ratio(user.extra.Uploaded, user.extra.Downloaded) }}
-            </span>
+            {{ ratio(user.extra.Uploaded, user.extra.Downloaded) }}
         </li>
 
         {# required ratio #}
@@ -43,9 +37,7 @@
             <a href="/rules/ratio" class="tooltip conversationButton" title="Required ratio">
                 Required
             </a>
-            <span class="stat tooltip" title="{{ user.extra.RequiredRatio|float(decimals = 5) }}">
-                {{ user.extra.RequiredRatio|float }}
-            </span>
+            {{ user.extra.RequiredRatio|float }}
         </li>
         {% endif %}
 
@@ -55,11 +47,9 @@
             <a href="/wiki/tokens" class="tooltip conversationButton" title="Freeleech tokens">
                 <i class="fa-thin fa-ticket"></i>
             </a>
-            <span class="stat">
-                <a href="/userhistory.php?action=token_history&userid={{ user.core.id }}">
-                    {{ user.extra.FLTokens }}
-                </a>
-            </span>
+            <a href="/userhistory.php?action=token_history&userid={{ user.core.id }}">
+                {{ user.extra.FLTokens }}
+            </a>
         </li>
         {% endif %}
 
@@ -68,9 +58,7 @@
             <a href="/store" class="tooltip conversationButton" title="{{ env.bonusPoints }}">
                 <i class="fa-thin fa-cart-shopping"></i>
             </a>
-            <span class="stat">
-                {{ user.extra.BonusPoints|number_format }}
-            </span>
+            {{ user.extra.BonusPoints|number_format }}
         </li>
 
         {# hit and runs #}
@@ -79,12 +67,8 @@
             <a href="/snatchlist.php" class="tooltip conversationButton" title="HnRs">
                 <i class="fa-thin fa-car-bolt"></i>
             </a>
-            <span class="stat">
-                {{ user.extra.HnR }}
-            </span>
+            {{ user.extra.HnR }}
         </li>
         {% endif %}
-
     </ul>
-
 </nav>

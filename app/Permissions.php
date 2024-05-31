@@ -67,6 +67,16 @@ class Permissions
             "deleteAny" => "Can delete any creators",
         ],
 
+        # literature
+        "literature" => [
+            "create" => "Can create literature",
+            "read" => "Can read literature",
+            "updateOwn" => "Can update own literature",
+            "updateAny" => "Can update any literature",
+            "deleteOwn" => "Can delete own literature",
+            "deleteAny" => "Can delete any literature",
+        ],
+
         # requests
         "requests" => [
             "create" => "Can create requests",

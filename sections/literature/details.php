@@ -46,6 +46,7 @@ $app->twig->display("literature/details.twig", [
     ],
 
     "literature" => $literature,
+    "torrentGroups" => $literature->relationships->torrentGroups,
 
     "enableConversation" => true,
     "conversation" => $conversation,

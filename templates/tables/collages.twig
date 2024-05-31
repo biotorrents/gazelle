@@ -1,0 +1,66 @@
+{#
+ # collages table
+ #}
+
+<table>
+    <thead>
+		<tr>
+			{# category #}
+			<th class="categoryColumn" />
+
+			{# collage title #}
+			<th>Title</th>
+
+			{# torrent count #}
+			<th>Torrents</th>
+
+			{# subscriber count #}
+			<th>Subscribers</th>
+
+			{# last update #}
+			<th>Updated at</th>
+
+			{# author #}
+			<th>User</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in collages %}
+            <tr>
+				{# category #}
+				<td class="center">
+					{{ env.collageCategories[item.attributes.categoryId] }}
+				</td>
+
+				<td>
+					{# title #}
+					<p class="flexRow">
+	  					<a class="torrentTitle" href="collages/{{ item.id }}">{{ item.attributes.title }}</a>
+					</p>
+
+					{# tags #}
+					{% if item.attributes.tags is not empty %}
+	  					<div class="tooltip tagList" title="Tags">{{ item.attributes.tags|join(", ") }}</div>
+					{% endif %}
+				</td>
+
+				{# torrent count #}
+				<td>{{ item.attributes.torrentCount|number_format }}</td>
+
+				{# subscriber count #}
+				<td>{{ item.attributes.subscriberCount|number_format }}</td>
+
+				{# last update #}
+				{% if item.attributes.updatedAt is not empty %}
+					<td class="nobr">{{ item.attributes.updatedAt|relativeTime }}</td>
+				{% else %}
+					<td class="nobr">{{ item.attributes.createdAt|relativeTime }}</td>
+				{% endif %}
+
+				{# collage owner #}
+				<td>{{ item.attributes.userId|formatUsername }}</td>
+			</tr>
+		{% endfor %}
+    </tbody>
+</table>

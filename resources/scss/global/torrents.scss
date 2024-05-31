@@ -44,11 +44,11 @@
   }
 
   /* tom select */
-  .ts-control > * {
+  .ts-control>* {
     width: auto;
   }
 
-  .ts-wrapper.multi .ts-control > div.active {
+  .ts-wrapper.multi .ts-control>div.active {
     background: $skeletonDefault;
   }
 
@@ -94,6 +94,7 @@
     display: flex;
     flex-flow: row wrap;
     gap: 0 2rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -137,6 +138,7 @@
     display: flex;
     flex-flow: row wrap;
     gap: 0 2rem;
+    margin-bottom: 1rem;
   }
 }
 

@@ -4,6 +4,14 @@ declare(strict_types=1);
 
 
 /**
+ * metadata configuration
+ */
+
+# set the collage categories before things get too intense
+$env->collageCategories = \Gazelle\Collages::$categories;
+
+
+/**
  * $env->database
  *
  * One flat array with all possible torrent/group fields.

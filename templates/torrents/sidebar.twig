@@ -46,43 +46,57 @@
 
 {# tracker #}
 <section>
-	<h3>Tracker</h3>
+	<h3>Tracker data</h3>
 
 	<table class="compact">
 
 		{# fileCount #}
 		<tr>
-			<th>fileCount</th>
-			<td>{{ torrent.attributes.fileCount }}</td>
+			<th>File count</th>
+			<td>{{ torrent.attributes.fileCount|number_format }}</td>
 		</tr>
 
 		{# dataSize #}
 		<tr>
-			<th>dataSize</th>
-			<td>{{ torrent.attributes.dataSize }}</td>
+			<th>Data size</th>
+			<td>{{ torrent.attributes.dataSize|get_size }}</td>
 		</tr>
 
 		{# leecherCount #}
 		<tr>
-			<th>leecherCount</th>
-			<td>{{ torrent.attributes.leecherCount }}</td>
+			<th>Leechers</th>
+			<td>{{ torrent.attributes.leecherCount|number_format }}</td>
 		</tr>
 
 		{# seederCount #}
 		<tr>
-			<th>seederCount</th>
-			<td>{{ torrent.attributes.seederCount }}</td>
+			<th>Seeders</th>
+			<td>{{ torrent.attributes.seederCount|number_format }}</td>
 		</tr>
 
 		{# lastAction #}
 		<tr>
-			<th>fileCount</th>
-			<td>{{ torrent.attributes.lastAction }}</td>
+			<th>Last action</th>
+			<td>{{ torrent.attributes.lastAction|relativeTime }}</td>
 		</tr>
 
 </table>
 
 </section>
 
+
+  	{# fileList #}
+   {% if torrent.attributes.fileList is not empty %}
+	<section>
+		<h3>File list</h3>
+
+    <select class="select" multiple placeholder="Search the file list">
+      {% for file in torrent.attributes.fileList %}
+      <option value="{{ file.name }}">{{ file.name }}</option>
+      {% endfor %}
+    </select>
+  {% endif %}
+
+	</section>
 
 

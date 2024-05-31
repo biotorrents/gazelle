@@ -19,9 +19,14 @@ $torrentGroups = Gazelle\Better::missingCitations($snatchedOnly);
 
 # twig template
 $app->twig->display("better/list.twig", [
-  "title" => "Better",
+  "title" => "Torrent groups with no publications",
   "header" => "Torrent groups with no publications",
   "sidebar" => true,
+
+  "breadcrumbs" => [
+    "/torrents" => "torrents",
+    "/better" => "better",
+  ],
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,

@@ -14,44 +14,14 @@ $limit = intval($get["limit"] ?? Gazelle\Top10::$defaultLimit);
 
 # data
 $dailyTorrents = Gazelle\Top10::dailyTorrents($limit);
-if (!empty($dailyTorrents)) {
-    $dailyTorrents = \Gazelle\Torrents::get_groups(array_column($dailyTorrents, "id"));
-}
-
 $weeklyTorrents = Gazelle\Top10::weeklyTorrents($limit);
-if (!empty($weeklyTorrents)) {
-    $weeklyTorrents = \Gazelle\Torrents::get_groups(array_column($dailyTorreweeklyTorrentsnts, "id"));
-}
-
 $monthlyTorrents = Gazelle\Top10::monthlyTorrents($limit);
-if (!empty($monthlyTorrents)) {
-    $monthlyTorrents = \Gazelle\Torrents::get_groups(array_column($monthlyTorrents, "id"));
-}
-
 $yearlyTorrents = Gazelle\Top10::yearlyTorrents($limit);
-if (!empty($yearlyTorrents)) {
-    $yearlyTorrents = \Gazelle\Torrents::get_groups(array_column($yearlyTorrents, "id"));
-}
-
 $overallTorrents = Gazelle\Top10::overallTorrents($limit);
-if (!empty($overallTorrents)) {
-    $overallTorrents = \Gazelle\Torrents::get_groups(array_column($overallTorrents, "id"));
-}
 
 $torrentSeeders = Gazelle\Top10::torrentSeeders($limit);
-if (!empty($torrentSeeders)) {
-    $torrentSeeders = \Gazelle\Torrents::get_groups(array_column($torrentSeeders, "id"));
-}
-
 $torrentSnatches = Gazelle\Top10::torrentSnatches($limit);
-if (!empty($torrentSnatches)) {
-    $torrentSnatches = \Gazelle\Torrents::get_groups(array_column($torrentSnatches, "id"));
-}
-
 $torrentData = Gazelle\Top10::torrentData($limit);
-if (!empty($torrentData)) {
-    $torrentData = \Gazelle\Torrents::get_groups(array_column($torrentData, "id"));
-}
 
 # template
 $app->twig->display("top10/torrents.twig", [

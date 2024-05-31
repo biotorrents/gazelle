@@ -19,9 +19,14 @@ $torrentGroups = Gazelle\Better::missingPictures($snatchedOnly);
 
 # twig template
 $app->twig->display("better/list.twig", [
-  "title" => "Better",
-  "header" => "Torrent groups with no picture",
+  "title" => "Torrent groups groups with no picture",
+  "header" => "Torrent groups groups with no picture",
   "sidebar" => true,
+
+  "breadcrumbs" => [
+    "/torrents" => "torrents",
+    "/better" => "better",
+  ],
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,

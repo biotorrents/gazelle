@@ -147,11 +147,35 @@ class TorrentGroups extends ObjectCrud
     public function relationships(): ?array
     {
         return [
+            Collages::$type => $this->relatedCollages(),
             Creators::$type => $this->relatedCreators(),
             Literature::$type => $this->relatedLiterature(),
             Tags::$type => $this->relatedTags(),
             Torrents::$type => $this->relatedTorrents(),
         ];
+    }
+
+
+    /**
+     * relatedCollages
+     */
+    private function relatedCollages(): ?array
+    {
+        $app = App::go();
+
+        $query = "select collageId from collages_torrents where groupId = ?";
+        $ref = $app->dbNew->column($query, [$this->id]);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $data = [];
+        foreach ($ref as $row) {
+            $data[] = ["id" => $row, "type" => Collages::$type];
+        }
+
+        return $data;
     }
 
 

@@ -9,7 +9,7 @@
 		<table>
 
 			{# organism #}
-			{% if torrentGroup.attributes.subject %}
+			{% if torrentGroup.attributes.subject is not empty %}
 				<tr>
 					<th><span class="subjectObject nobr">Organism</span></th>
 
@@ -19,31 +19,21 @@
 						{# object #}
 					  {{ (torrentGroup.attributes.object) ? torrentGroup.attributes.object : "" }}
 					</td>
-
-					<td>
-						<a href="/torrents?complexSearch={{ torrentGroup.attributes.subject }} {{ torrentGroup.attributes.object }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# year #}
-			{% if torrentGroup.attributes.year %}
+			{% if torrentGroup.attributes.year is not empty %}
 				<tr>
 					<th><span class="year nobr">Year</span></th>
-
 					<td>{{ torrentGroup.attributes.year }}</td>
-
-					<td>
-						<a href="/torrents.php?year={{ torrentGroup.attributes.year }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# identifier #}
-			{% if torrentGroup.attributes.identifier %}
+			{% if torrentGroup.attributes.identifier is not empty %}
 				<tr>
 					<th><span class="identifier nobr">Identifier</span></th>
-
 					<td>{{ torrentGroup.attributes.identifier }}</td>
 
 					<td/>
@@ -51,44 +41,36 @@
 			{% endif %}
 
 			{# workgroup #}
-			{% if torrentGroup.attributes.workgroup %}
+			{% if torrentGroup.attributes.workgroup is not empty %}
 				<tr>
 					<th><span class="workgroup nobr">Workgroup</span></th>
-
 					<td>{{ torrentGroup.attributes.workgroup|raw }}</td>
-
-					<td>
-						<a href="/torrents.php?location={{ torrentGroup.attributes.workgroup }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# location #}
-			{% if torrentGroup.attributes.location %}
+			{% if torrentGroup.attributes.location is not empty %}
 				<tr>
 					<th><span class="location nobr">Location</span></th>
-
 					<td>{{ torrentGroup.attributes.location|raw }}</td>
-
-					<td>
-						<a href="/torrents.php?location={{ torrentGroup.attributes.location }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 		</table>
 	</section>
 
 	{# description #}
+  {% if torrentGroup.attributes.description is not empty %}
 	<section>
 		<h3>Description</h3>
-		{{ torrentGroup.attributes.description|raw }}
+		{{ torrentGroup.attributes.description|parse }}
 	</section>
+			{% endif %}
 
 
   	{# openai #}
    {% if torrentGroup.attributes.openai is not empty and user.siteOptions.openaiContent %}
-	<section class="faded">
+	<section class="faded small">
 		<h3>tl;dr by {{ torrentGroup.attributes.openai.model }}</h3>
     {{ torrentGroup.attributes.openai.text }}
 	</section>
@@ -96,256 +78,31 @@
 
 
     {# torrent list #}
-    <section style="overflow-x: scroll;">
+  {% if torrentGroup.relationships.torrents is not empty %}
+    <section>
     <h3>Torrents</h3>
-
-    {# individual torrents #}
-{% for item in torrentGroup.relationships.torrents %}
-
-    <table id="torrentId-{{ item.id }}" class="torrentDetails">
-
-    <tr>
-
-    {# permalink #}
-    <th />
-
-	{# torrent info #}
-	<th>Torrent&nbsp;info</th>
-
-	{# timeAdded #}
-	<th>Time&nbsp;added</th>
-
-	{# data size #}
-	<th>Data&nbsp;size</th>
-
-	{# seeders #}
-	<th title="Seeders">↑</th>
-
-	{# leechers #}
-	<th title="Leechers">↓</th>
-
-  {# snatches #}
-	<th title="Snatches">↻</th>
-
-</tr>
-
-
-<tr>
-
-{# permalink #}
-<td class="center" title="Permalink (click to copy)">
-<a class="permalink" href="#torrentId-{{ item.id }}" data-permalink="https://{{ env.siteDomain }}/torrents.php?torrentid={{ item.id }}">🔗</a>
-</td>
-
-	{# title #}
-	<td class="flexRow">
-
-  {# platform #}
-  {% if item.attributes.platform %}
-    <span title="Platform">📦 {{ item.attributes.platform }}</span>
-  {% endif %}
-
-  {# format #}
-  {% if item.attributes.format %}
-    <span title="Format">💾 {{ item.attributes.format }}</span>
-  {% endif %}
-
-  {# version #}
-  {% if item.attributes.version %}
-    <span title="Version"><img src="/images/icons/version.webp" alt="version" class="icon"> {{ item.attributes.version }}</span>
-  {% endif %}
-
-  {# scope #}
-  {% if item.attributes.scope %}
-    <span title="Scope">🔎 {{ item.attributes.scope }}</span>
-  {% endif %}
-
-  {# archive #}
-  {% if item.attributes.archive %}
-    <span title="Archive"><img src="/images/icons/archive.webp" alt="archive" class="icon"> {{ item.attributes.archive }}</span>
-  {% endif %}
-
-  {# license #}
-  {% if item.attributes.license %}
-    <span title="License">📜 {{ item.attributes.license }}</span>
-  {% endif %}
-
-  {# alignment #}
-  {% if item.attributes.isAnnotated %}
-    <span title="Alignment" class="good">Aligned</span>
-  {% else %}
-      <span title="Alignment" class="bad">Not aligned</span>
-  {% endif %}
-
-</td>
-
-	{# createdAt #}
-	<td class="nobr" title="{{ item.attributes.createdAt }}">
-  {{ item.attributes.createdAt|relativeTime }}
-  </td>
-
-
-	{# dataSize #}
-	<td class="nobr">
-  {{ item.attributes.dataSize|get_size }}
-  </td>
-
-	{# seederCount #}
-	<td class="nobr">
-    {{ item.attributes.seederCount|number_format }}
-  </td>
-
-
-	{# leecherCount #}
-	<td class="nobr">
-    {{ item.attributes.leecherCount|number_format }}
-</td>
-
-
-	{# snatchCount #}
-	<td class="nobr">
-    {{ item.attributes.snatchCount|number_format }}
-</td>
-</tr>
-
-{# second row: buttons #}
-<tr>
-
-{# controls #}
-<td colspan="7">
-
-<div class="flexRow">
-{# download #}
-<a class="button button-primary" href="/torrents.php?action=download&torrentId={{ item.id }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
-
-{# freeleech token #}
-{% if canUseToken(item.id) %}
-<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ item.id }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
-{% endif %}
-
-{# update #}
-{% if can({"torrents": "updateAny"}) or item.attributes.userId == user.core.id %}
-<a class="button button-orange" href="/torrents.php?action=edit&id={{ item.id }}">update</a>
-{% endif %}
-
-{# report #}
-<a class="button button-red" href="/reportsv2.php?action=report&id={{ item.id }}">report</a>
-
-{# delete #}
-{% if can({"torrents": "deleteAny"}) or item.UserID == user.core.id %}
-<a class="button button-red" href="/torrents.php?action=delete&torrentid={{ item.id }}">delete</a>
-{% endif %}
-</div>
-</td>
-</tr>
-
-{# third row:description #}
-{% if item.attributes.description is not empty %}
-<tr>
-
-{# description #}
-<td colspan="7">
-<h4>Description</h4>
-{{ item.attributes.description }}
-</td>
-{% endif %}
-</tr>
-
-
-{# citation #}
-<tr>
-
-<td colspan="7">
-
-<span class="flexHeader">
-<h4>Cite this dataset</h4>
-<a class="button toggleBibtex" data-torrentid="{{ item.id }}">biblatex</a>
-</span>
-
-{##
- # https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#biblatex
- # https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf
- #
- # @misc{ enwiki:1116502991,
- #   author = "{Wikipedia contributors}",
- #   title = "Biber (LaTeX) --- {Wikipedia}{,} The Free Encyclopedia",
- #   year = "2022",
- #   howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Biber_(LaTeX)&oldid=1116502991}",
- #   note = "[Online; accessed 10-January-2023]"
- # }
- #
- # important: the weird indentation below is absolutely necessary due to the textarea
- #}
-
-<textarea class="bibtexCitation" id="bibtexCitation-{{ item.id }}" rows="10">
-@dataset{ BioTorrents.de-torrentId-{{ item.id }}
-  title = {{ torrentGroup.attributes.title|curlyBraces }},
-  author = todo,
-{% if torrentGroup.attributes.workgroup %}
-  organization = {{ torrentGroup.attributes.workgroup|curlyBraces }},
-{% endif %}
-{% if torrentGroup.attributes.year %}
-  year = {{ torrentGroup.attributes.year|curlyBraces }},
-{% endif %}
-{% if item.attributes.version %}
-  version = {{ item.attributes.version|curlyBraces }},
-{% endif %}
-  url = \href{https://{{ env.siteDomain }}/torrents/{{ item.id }}},
-  urldate = {{ "now"|date|curlyBraces }},
-  note = {{ "BitTorrent info hash: #{item.attributes.infoHash}"|curlyBraces }}
-}
-</textarea>
-</td>
-
-</tr>
-
-{#}
-                  if (!empty($Description)) {
-                      echo '<blockquote class="torrent_description">'.\Gazelle\Text::parse($Description).'</blockquote>';
-                  }
-
-                  echo "\n<blockquote>"; ?>
-            <div class="spoilerContainer hideContainer">
-              <?php
-                  # Make a BibTeX citation
-                  # todo: Expand this and move HTTP/FTP, IPFS, Dat, etc.
-                  $EntryName = "BioTorrents.de-$TorrentID";
-    $Today = strftime('%Y-%m-%d');
-
-    # Author format handling
-    $ArtistArray = [];
-    foreach ($Artists as $Num => $Artist) {
-        array_push($ArtistArray, $Artist['name']);
-    }
-
-    # Not sure if inline newlines are valid
-    $ArtistString = (count($ArtistArray) > 3)
-        ? implode("\n    and ", $ArtistArray)
-        : implode(' and ', $ArtistArray);
-
-    # DOI number
-    $BibtexDOI = (count($Screenshots) > 0)
-        ? $Screenshots[0]['Image']
-        : null;
-
-
-    ?>
-
-
-#}
-
-</table>
-{% endfor %}
-
+    {{ include("tables/torrents.twig", {"withActions": true}) }}
     </section>
+  {% endif %}
+
+
+      {# collages #}
+  {% if torrentGroup.relationships.collages is not empty %}
+    <section>
+    <h3>Collages</h3>
+   {{ include("tables/collages.twig") }}
+    </section>
+  {% endif %}
+
 
 
     {# literature #}
+  {% if torrentGroup.relationships.literature is not empty %}
     <section>
     <h3>Literature</h3>
    {{ include("tables/literature.twig") }}
     </section>
-
+  {% endif %}
 
 
 {% if enableConversation and conversation %}

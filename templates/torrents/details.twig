@@ -2,123 +2,110 @@
 
 {% block content %}
 
-	<h2>{{ torrent.attributes.infoHash }}</h2>
+	<h2 class="monospace">{{ torrent.attributes.infoHash }}</h2>
 
 	{# essential details table #}
 	<section>
 		<table>
 
 			{# platform #}
-			{% if torrent.attributes.platform %}
+			{% if torrent.attributes.platform is not empty %}
 				<tr>
 					<th><span class="platform nobr">Platform</span></th>
-
 					<td>{{ torrent.attributes.platform }}</td>
-
-					<td>
-						<a href="/torrents?platform={{ torrent.attributes.platform }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# format #}
-			{% if torrent.attributes.format %}
+			{% if torrent.attributes.format is not empty %}
 				<tr>
 					<th><span class="format nobr">Format</span></th>
-
 					<td>{{ torrent.attributes.format }}</td>
-
-					<td>
-						<a href="/torrents?format={{ torrent.attributes.format }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# license #}
-			{% if torrent.attributes.license %}
+			{% if torrent.attributes.license is not empty %}
 				<tr>
 					<th><span class="license nobr">License</span></th>
-
 					<td>{{ torrent.attributes.license }}</td>
-
-					<td/>
 				</tr>
 			{% endif %}
 
 			{# scope #}
-			{% if torrent.attributes.scope %}
+			{% if torrent.attributes.scope is not empty %}
 				<tr>
 					<th><span class="scope nobr">Scope</span></th>
-
 					<td>{{ torrent.attributes.scope }}</td>
-
-					<td>
-						<a href="/torrents.php?scope={{ torrent.attributes.scope }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 			{# version #}
-			{% if torrent.attributes.version %}
+			{% if torrent.attributes.version is not empty %}
 				<tr>
-					<th><span class="version nobr">version</span></th>
-
+					<th><span class="version nobr">Version</span></th>
 					<td>{{ torrent.attributes.version }}</td>
-
-					<td>
-						<a href="/torrents.php?version={{ torrent.attributes.version }}">Search&nbsp;»</a>
-					</td>
-				</tr>
+			</tr>
 			{% endif %}
 
 		</table>
 	</section>
 
+
 	{# description #}
+  {% if torrent.attributes.description is not empty %}
 	<section>
 		<h3>Description</h3>
-
 		{{ torrent.attributes.description|raw }}
 	</section>
+  {% endif %}
 
-  	{# fileList #}
-	<section>
-		<h3>File list</h3>
 
-    <select class="select" multiple>
-      {% for file in torrent.attributes.fileList %}
-      <option value="{{ file.name }}">{{ file.name }}</option>
-      {% endfor %}
-    </select>
-
-{#
-    <table class="compact">
-      <tr>
-        <th>File name</th>
-        <th>Size</th>
-      </tr>
-
-      {% for file in torrent.attributes.fileList %}
-        <tr>
-          <td>{{ file.name }}</td>
-          <td>{{ file.size|get_size }}</td>
-        </tr>
-      {% endfor %}
-    </table>
-#}
-
-	</section>
-
-    	{# torrentGroup #}
+  {# torrentGroup #}
 	<section>
 		<h3>Torrent group</h3>
-
-    {{ include("torrents/tableEntryForObjects.twig", {group: torrentGroup}) }}
-
-
-
+    {{ include("tables/torrentGroupsWithTorrents.twig") }}
 	</section>
 
+
+  {# citation #}
+  	<section>
+		<h3>Cite this dataset</h3>
+
+{##
+ # https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management#biblatex
+ # https://ctan.math.washington.edu/tex-archive/macros/latex/contrib/biblatex/doc/biblatex.pdf
+ #
+ # @misc{ enwiki:1116502991,
+ #   author = "{Wikipedia contributors}",
+ #   title = "Biber (LaTeX) --- {Wikipedia}{,} The Free Encyclopedia",
+ #   year = "2022",
+ #   howpublished = "\url{https://en.wikipedia.org/w/index.php?title=Biber_(LaTeX)&oldid=1116502991}",
+ #   note = "[Online; accessed 10-January-2023]"
+ # }
+ #
+ # important: the weird indentation below is absolutely necessary due to the textarea
+ #}
+
+<textarea class="bibtexCitation" id="bibtexCitation-{{ torrent.id }}" rows="10">
+@dataset{ {{ env.siteName }}-torrentId-{{ torrent.id }}
+  title = {{ torrentGroup.attributes.title|curlyBraces }},
+  author = todo,
+{% if torrentGroup.attributes.workgroup %}
+  organization = {{ torrentGroup.attributes.workgroup|curlyBraces }},
+{% endif %}
+{% if torrentGroup.attributes.year %}
+  year = {{ torrentGroup.attributes.year|curlyBraces }},
+{% endif %}
+{% if torrent.attributes.version %}
+  version = {{ torrent.attributes.version|curlyBraces }},
+{% endif %}
+  url = \href{https://{{ env.siteDomain }}/torrents/{{ torrent.id }}},
+  urldate = {{ "now"|date|curlyBraces }},
+  note = {{ "BitTorrent info hash: #{torrent.attributes.infoHash}"|curlyBraces }}
+}
+</textarea>
+</section>
 
 
 {% if enableConversation and conversation %}

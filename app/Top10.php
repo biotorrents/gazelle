@@ -98,7 +98,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -106,8 +106,14 @@ class Top10
         $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 day) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -128,7 +134,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -136,8 +142,14 @@ class Top10
         $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 week) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -158,7 +170,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -166,8 +178,14 @@ class Top10
         $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 month) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -188,7 +206,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -196,9 +214,16 @@ class Top10
         $query = self::$torrentQuery . "where torrents.created_at > (now() - interval 1 year) order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
+
 
     /**
      * overallTorrents
@@ -217,7 +242,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -225,8 +250,14 @@ class Top10
         $query = self::$torrentQuery . "order by (torrents.seeders + torrents.leechers) desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -247,7 +278,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -255,8 +286,14 @@ class Top10
         $query = self::$torrentQuery . "order by torrents.seeders desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -277,7 +314,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -285,8 +322,14 @@ class Top10
         $query = self::$torrentQuery . "order by torrents.snatched desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 
@@ -307,7 +350,7 @@ class Top10
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
+            #return $cacheHit;
         }
 
         # set limit and query extras
@@ -315,8 +358,14 @@ class Top10
         $query = self::$torrentQuery . "order by dataTransfer desc limit :limit";
         $ref = $app->dbNew->multi($query, ["limit" => $limit]);
 
-        $app->cache->set($cacheKey, $ref, self::$cacheDuration);
-        return $ref;
+        $data = [];
+        foreach ($ref as $key => $row) {
+            $data[] = new TorrentGroups($row["id"]);
+            $data[$key]->attributes->dataTransfer = $row["dataTransfer"];
+        }
+
+        $app->cache->set($cacheKey, $data, self::$cacheDuration);
+        return $data;
     }
 
 

@@ -157,7 +157,7 @@ class Torrents extends ObjectCrud
         parent::read($id);
 
         # explode the fileList
-        $fileList = explode("÷", $this->attributes->fileList);
+        $fileList = explode("÷", $this->attributes->fileList ?? "");
         $fileData = [];
 
         foreach ($fileList as $file) {

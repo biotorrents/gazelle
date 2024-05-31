@@ -1,0 +1,121 @@
+{#
+ # torrents table
+ #}
+
+<table>
+    <thead>
+        <tr>
+            {# torrent info #}
+	        <th>Info</th>
+
+	        {# timeAdded #}
+	        <th>Time&nbsp;added</th>
+
+	        {# data size #}
+	        <th>Data&nbsp;size</th>
+
+	        {# seeders #}
+	        <th title="Seeders">↑</th>
+
+	        {# leechers #}
+	        <th title="Leechers">↓</th>
+
+            {# snatches #}
+	        <th title="Snatches">↻</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for torrent in torrents %}
+            <tr>
+	            {# title #}
+	            <td>
+					<p class="flexRow">
+		                {# title link #}
+		                <a class="torrentTitle monospace" href="/torrents/{{ torrent.id }}">{{ torrent.attributes.infoHash }}</a>
+					</p>
+
+					<p class="flexRow">
+                        {# platform #}
+                        {% if torrent.attributes.platform is not empty %}
+                            <span class="tooltip platform" title="Platform">{{ torrent.attributes.platform }}</span>
+                        {% endif %}
+
+                        {# format #}
+                        {% if torrent.attributes.format is not empty %}
+                            <span class="tooltip format" title="Format">{{ torrent.attributes.format }}</span>
+                        {% endif %}
+
+                        {# version #}
+                        {% if torrent.attributes.version is not empty %}
+                            <span class="tooltip version" title="Version">{{ torrent.attributes.version }}</span>
+                        {% endif %}
+
+                        {# scope #}
+                        {% if torrent.attributes.scope is not empty %}
+                            <span class="tooltip scope" title="Scope">{{ torrent.attributes.scope }}</span>
+                        {% endif %}
+
+                        {# archive #}
+                        {% if torrent.attributes.archive is not empty %}
+                            <span class="tooltip archive" title="Archive">{{ torrent.attributes.archive }}</span>
+                        {% endif %}
+
+                        {# license #}
+                        {% if torrent.attributes.license is not empty %}
+                            <span class="tooltip license" title="License">{{ torrent.attributes.license }}</span>
+                        {% endif %}
+
+                        {# isAnnotated #}
+                        {% if torrent.attributes.isAnnotated is not empty %}
+                            <span title="Alignment" class="tooltip good">Aligned</span>
+                        {% else %}
+                            <span title="Alignment" class="tooltip bad">Not aligned</span>
+                        {% endif %}
+					</p>
+
+                    {# download, freeleech, etc. #}
+                    {% if withActions is defined and withActions == true %}
+                        <p class="flexRow">
+                            {# download #}
+                            <a class="button button-primary" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
+
+                            {# freeleech token #}
+                            {% if canUseToken(torrent.id) %}
+                                <a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
+                            {% endif %}
+
+                            {# report #}
+                            <a class="button button-red" href="/reportsv2.php?action=report&id={{ torrent.id }}">report</a>
+                        </p>
+                    {% endif %}
+                </td>
+
+	            {# createdAt #}
+	            <td class="nobr">
+  		            <span class="tooltip" title="{{ torrent.attributes.createdAt }}">{{ torrent.attributes.createdAt|relativeTime }}</span>
+                </td>
+
+	            {# dataSize #}
+	            <td class="nobr">
+                    {{ torrent.attributes.dataSize|get_size }}
+                </td>
+
+	            {# seederCount #}
+	            <td class="nobr">
+                    {{ torrent.attributes.seederCount|number_format }}
+                </td>
+
+	            {# leecherCount #}
+	            <td class="nobr">
+                    {{ torrent.attributes.leecherCount|number_format }}
+                </td>
+
+	            {# snatchCount #}
+	            <td class="nobr">
+                    {{ torrent.attributes.snatchCount|number_format }}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

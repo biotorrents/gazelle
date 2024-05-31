@@ -14,9 +14,14 @@ $torrentGroups = \Gazelle\Better::singleSeeder();
 
 # twig template
 $app->twig->display("better/list.twig", [
-    "title" => "Better",
-    "header" => "Torrents with only one seeder",
+    "title" => "Torrent groups with only one seeder",
+    "header" => "Torrent groups with only one seeder",
     "sidebar" => true,
+
+    "breadcrumbs" => [
+      "/torrents" => "torrents",
+      "/better" => "better",
+    ],
 
     "torrentGroups" => $torrentGroups,
     "snatchedOnly" => null,

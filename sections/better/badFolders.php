@@ -19,9 +19,14 @@ $torrentGroups = Gazelle\Better::badFolders($snatchedOnly);
 
 # twig template
 $app->twig->display("better/list.twig", [
-  "title" => "Better",
-  "header" => "Torrents with bad folder names",
+  "title" => "Torrent groups with bad folder names",
+  "header" => "Torrent groups with bad folder names",
   "sidebar" => true,
+
+  "breadcrumbs" => [
+    "/torrents" => "torrents",
+    "/better" => "better",
+  ],
 
   "torrentGroups" => $torrentGroups,
   "snatchedOnly" => $snatchedOnly,

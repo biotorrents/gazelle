@@ -17,6 +17,7 @@ try {
         throw new Exception("not found");
     }
 
+    $torrentGroup->loadCollages();
     $torrentGroup->loadCreators();
     $torrentGroup->loadLiterature();
     $torrentGroup->loadTags();
@@ -73,6 +74,8 @@ $app->twig->display("torrentGroups/details.twig", [
     ],
 
     "torrentGroup" => $torrentGroup,
+    "torrents" => $torrentGroup->relationships->torrents,
+    "collages" => $torrentGroup->relationships->collages,
     "literature" => $literature,
     "revisionId" => $revisionId ?? null,
     "officialTags" => $officialTags,

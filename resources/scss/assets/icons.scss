@@ -267,6 +267,13 @@ img.torrent_header {
   }
 }
 
+.referenceCount {
+  &:before {
+    content: "📜";
+    margin-right: 0.5rem;
+  }
+}
+
 .publicationDate {
   &:before {
     content: "📅";

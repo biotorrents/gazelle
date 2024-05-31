@@ -18,9 +18,7 @@ if ($get["search"]) {
     $get["simpleSearch"] = $get["search"];
 }
 
-
 /** torrent search handling */
-
 
 # collect the query
 $searchTerms = [
@@ -79,15 +77,12 @@ $queryString = http_build_query($get);
 $manticore = new Gazelle\Manticore();
 $searchResults = $manticore->search("torrents", $get);
 $resultCount = count($searchResults);
-#!d($searchResults);
-
 
 /** pagination */
 
-
+# resultCount and pageSize
 $pagination = [];
 
-# resultCount and pageSize
 $pagination["resultCount"] = count($searchResults);
 $pagination["pageSize"] = $app->user->extra["siteOptions"]["searchPagination"] ?? 20;
 
@@ -123,31 +118,30 @@ if ($pagination["limit"] > $pagination["resultCount"]) {
     $pagination["limit"] = $pagination["resultCount"];
 }
 
-
 /** torrent group info */
 
-
-# \Gazelle\Torrents::get_groups
 # this is slow, only do the current page
 $app->debug["time"]->startMeasure("browse", "get torrent groups");
+
 $groupIds = array_column($searchResults, "id");
 $groupIds = array_slice($groupIds, $pagination["offset"], $pagination["pageSize"]);
 
-$torrentGroups = \Gazelle\Torrents::get_groups($groupIds);
+$torrentGroups = [];
+foreach ($groupIds as $key => $groupId) {
+    $torrentGroups[] = new Gazelle\TorrentGroups($groupId);
+    $torrentGroups[$key]->loadTorrents();
+}
+
 $app->debug["time"]->stopMeasure("browse", "get torrent groups");
 #!d($torrentGroups);exit;
 
-
 /** tags */
-
 
 $query = "select name from tags where tagType = 'genre' order by name";
 $ref = $app->dbNew->multi($query, []);
 $officialTags = array_column($ref, "name");
 
-
 /** twig template */
-
 
 $app->twig->display("torrents/browse.twig", [
     "title" => "Browse",

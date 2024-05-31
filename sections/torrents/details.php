@@ -9,30 +9,21 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-#try {
-$id ??= null;
-$torrent = new Gazelle\Torrents($id);
-$torrent->loadTorrentGroups();
+try {
+    $id ??= null;
+    $torrent = new Gazelle\Torrents($id);
+    $torrent->loadTorrentGroups();
 
-if (!$torrent->id) {
-    throw new Exception("not found");
+    if (!$torrent->id) {
+        throw new Exception("not found");
+    }
+
+    $torrentGroup = $torrent->relationships->torrentGroups->first();
+    $torrentGroup->loadCreators();
+    $torrentGroup->loadTorrents();
+} catch (Throwable $e) {
+    $app->error(404);
 }
-
-$torrentGroup = $torrent->relationships->torrentGroups->first();
-$torrentGroup->loadLiterature();
-$torrentGroup->loadTorrents();
-
-$literature = $torrentGroup->relationships->literature;
-foreach ($literature as $item) {
-    $item->loadCreators();
-}
-echo "<pre>";
-~d($literature);
-exit;
-#!d($torrentGroup->relationships->literature);exit;
-#} catch (Throwable $e) {
-#    $app->error(404);
-#}
 
 # request variables
 $get = Gazelle\Http::request("get");
@@ -52,12 +43,13 @@ $app->twig->display("torrents/details.twig", [
 
     "breadcrumbs" => [
      "/torrents" => "torrents",
-     "/torrents/{$torrent->id}" => $torrent->attributes->infoHash,
+     "/torrent-groups/{$torrentGroup->id}" => $torrentGroup->attributes->title,
  ],
 
 
     "torrent" => $torrent,
-    "torrentGroup" => $torrentGroup,
+    "torrentGroup" => $torrentGroup, # for the sidebar picture
+    "torrentGroups" => $torrent->relationships->torrentGroups,
     "revisionId" => $revisionId ?? null,
 
     "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrent->id),

@@ -3,14 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Upload form
- *
- * This page relies on the TorrentForm class.
- * All it does is call the necessary functions.
- *
- * $Properties, $Err and $UploadForm are set in takeupload.php,
- * and are only used when the form doesn't validate
- * and this page must be called again.
+ * upload form
  */
 
 $app = \Gazelle\App::go();
@@ -25,8 +18,6 @@ $sourceKey = User::uploadSource();
 # tagList
 $query = "select name from tags where tagType = ? order by name";
 $tagList = $app->dbNew->column($query, ["genre"]);
-
-
 
 # twig template
 $app->twig->display("torrents/upload.twig", [
@@ -73,23 +64,10 @@ $app->twig->display("torrents/upload.twig", [
       "annotated" => null,
       "anonymous" => null,
     ],
-
-
-
 ]);
 
 
 exit;
-
-
-
-
-
-
-
-
-
-
 
 
 View::header(

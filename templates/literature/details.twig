@@ -19,16 +19,6 @@
 				</tr>
 			{% endif %}
 
-      {# sci-hub #}
-			{% if literature.attributes.doi is not empty %}
-				<tr>
-					<th><span class="sci-hub nobr">Sci-Hub</span></th>
-					<td>
-            <a href="{{ sciHubLink(literature.attributes.doi) }}" target="_blank" class="external">{{ sciHubLink(literature.attributes.doi) }}</a>
-          </td>
-				</tr>
-			{% endif %}
-
       {# semanticScholarId #}
 			{% if literature.attributes.semanticScholarId is not empty %}
 				<tr>
@@ -70,34 +60,6 @@
 					<td>{{ literature.attributes.publicationDate }}</td>
 				</tr>
 			{% endif %}
-
-
-      {# influentialCitationCount #}
-			{% if literature.attributes.influentialCitationCount is not empty %}
-				<tr>
-					<th><span class="influentialCitationCount nobr">Influential citations</span></th>
-					<td>{{ literature.attributes.influentialCitationCount|number_format }}</td>
-				</tr>
-			{% endif %}
-
-
-      {# citationCount #}
-			{% if literature.attributes.citationCount is not empty %}
-				<tr>
-					<th><span class="citationCount nobr">Citations</span></th>
-					<td>{{ literature.attributes.citationCount|number_format }}</td>
-				</tr>
-			{% endif %}
-
-
-      {# referenceCount #}
-			{% if literature.attributes.referenceCount is not empty %}
-				<tr>
-					<th><span class="referenceCount nobr">References</span></th>
-					<td>{{ literature.attributes.referenceCount|number_format }}</td>
-				</tr>
-			{% endif %}
-
 		</table>
 	</section>
 
@@ -113,9 +75,18 @@
 
   	{# tl;dr #}
     {% if literature.attributes.tldr is not empty %}
-	<section class="faded">
+	<section class="faded small">
 		<h3>tl;dr by {{ literature.attributes.tldr.model }}</h3>
       {{ literature.attributes.tldr.text|raw }}
+	</section>
+    {% endif %}
+
+
+  	{# torrent groups #}
+    {% if torrentGroups is not empty %}
+	<section>
+		<h3>Torrent groups</h3>
+      {{ include("tables/torrentGroupsWithoutTorrents.twig") }}
 	</section>
     {% endif %}
 
