@@ -1092,16 +1092,6 @@ $Pages = Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PAG
       <div class="linkbox">
         <?=$Pages?>
       </div>
-      <?php
-  View::parse('generic/reply/quickreply.php', array(
-    'InputName' => 'pageid',
-    'InputID' => $GroupID,
-    'Action' => 'comments.php?page=torrents',
-    'InputAction' => 'take_post',
-    'TextareaCols' => 65,
-    'SubscribeBox' => true
-  ));
-?>
     </div>
   </div>
 </div>

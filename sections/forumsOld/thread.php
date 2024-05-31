@@ -622,18 +622,6 @@ foreach ($Thread as $Key => $Post) {
 </div>
 
 <?php
-if (!$ThreadInfo['IsLocked'] || $app->user->can(["messages" => "updateAny"])) {
-    if (Forums::check_forumperm($ForumID, 'Write') && !$app->user->extra['DisablePosting']) {
-        View::parse('generic/reply/quickreply.php', array(
-      'InputTitle' => 'Reply',
-      'InputName' => 'thread',
-      'InputID' => $ThreadID,
-      'ForumID' => $ForumID,
-      'TextareaCols' => 90
-    ));
-    }
-}
-
 if ($app->user->can(["admin" => "moderateForums"])) {
     $app->dbOld->prepared_query("
       SELECT ID, AuthorID, AddedTime, Body

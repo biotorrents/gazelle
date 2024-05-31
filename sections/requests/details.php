@@ -507,14 +507,6 @@ if ($Pages) { ?>
       </div>
       <?php
 }
-
-View::parse('generic/reply/quickreply.php', array(
-  'InputName' => 'pageid',
-  'InputID' => $RequestID,
-  'Action' => 'comments.php?page=requests',
-  'InputAction' => 'take_post',
-  'SubscribeBox' => true
-));
 ?>
     </div>
   </div>

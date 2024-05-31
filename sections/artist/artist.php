@@ -864,15 +864,6 @@ $Pages = \Gazelle\Format::get_pages($Page, $NumComments, TORRENT_COMMENTS_PER_PA
       <div class="linkbox">
         <?=($Pages)?>
       </div>
-      <?php
-  View::parse('generic/reply/quickreply.php', array(
-    'InputName' => 'pageid',
-    'InputID' => $ArtistID,
-    'Action' => 'comments.php?page=artist',
-    'InputAction' => 'take_post',
-    'SubscribeBox' => true
-  ));
-?>
     </div>
   </div>
 </div>
