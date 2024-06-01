@@ -3,13 +3,13 @@
  # NO TORRENTS DISPLAYED
  #}
 
-<table>
+<table id="torrentGroupsWithoutTorrents" class="relationships">
     <thead>
         <tr>
-            {# category icon #}
-	        <th class="categoryColumn" />
+            {# category #}
+	        <th class="category" />
 
-	        {# torrent info #}
+	        {# info #}
 	        <th>Info</th>
         </tr>
     </thead>
@@ -17,14 +17,14 @@
     <tbody>
         {% for torrentGroup in torrentGroups %}
             <tr>
-                {# category icon #}
+                {# category #}
 	            <td class="center">
 		            {{ torrentGroup.attributes.categoryId|categoryIcon }}
 	            </td>
 
 	            {# title #}
 	            <td>
-		            <p class="flexRow">
+		            <p>
 		                {# title link #}
 		                <a class="torrentTitle" href="/torrent-groups/{{ torrentGroup.id }}" {# open tag #}
 
@@ -69,13 +69,13 @@
 
 		            {# tags #}
 		            {% if torrentGroup.attributes.tags is not empty %}
-			            <p class="flexRow tooltip tagList" title="Tags">{{ torrentGroup.attributes.tags|slice(0, 5)|join(", ") }}</p>
+			            <p class="tooltip tagList" title="Tags">{{ torrentGroup.attributes.tags|slice(0, 5)|join(", ") }}</p>
 		            {% endif %}
 
 		            {# creators #}
                     {#
 		            {% if torrentGroup.attributes.Artists is not empty %}
-			            <div class="tooltip creatorList" title="Creators">{{ displayCreators(torrentGroup.attributes.Artists)|raw }}</div>
+			            <p class="tooltip creatorList" title="Creators">{{ displayCreators(torrentGroup.attributes.Artists)|raw }}</p>
 		            {% endif %}
 		            #}
 	            </td>

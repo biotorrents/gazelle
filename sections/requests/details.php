@@ -327,7 +327,7 @@ if (!$ViewerVote) {
     <div class="box">
       <div class="head"><strong>Info</strong></div>
       <div class="pad">
-        <table class="request_form skeletonFix">
+        <table class="request_form">
           <tr>
             <td class="label">Created</td>
             <td>

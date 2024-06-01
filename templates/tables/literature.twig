@@ -2,9 +2,9 @@
  # literature table
  #}
 
-<table>
+<table id="literature" class="relationships">
     <thead>
-	        {# literature info #}
+	        {# info #}
 	        <th>Info</th>
         </tr>
     </thead>
@@ -14,15 +14,15 @@
             <tr>
 	            {# title #}
 	            <td>
-		                {# title link #}
-                        <p class="flexRow">
-		                <a class="torrentTitle" href="/literature/{{ item.id }}">
-                        	{% if item.attributes.title is not empty %}
-			                    {{ item.attributes.title }}
-                            {% else %}
-			                    {{ item.attributes.doi }}
-                            {% endif %}
-		                </a>
+		                {# title #}
+                        <p>
+		                	<a class="torrentTitle" href="/literature/{{ item.id }}">
+                        		{% if item.attributes.title is not empty %}
+			                    	{{ item.attributes.title }}
+                            	{% else %}
+			                    	{{ item.attributes.doi }}
+                            	{% endif %}
+		                	</a>
                         </p>
 
 		                <p class="flexRow">
@@ -55,13 +55,13 @@
 		                {# creators #}
                         {#
 		                {% if item.attributes.Artists is not empty %}
-			                <div class="tooltip creatorList" title="Creators">{{ displayCreators(item.attributes.Artists)|raw }}</div>
+			                <p class="tooltip creatorList" title="Creators">{{ displayCreators(item.attributes.Artists)|raw }}</p>
 		                {% endif %}
 		                #}
 
 						{# tl;dr: no tooltip #}
 		                {% if item.attributes.tldr is not empty %}
-			                <p class="faded flexRow small"><span class="ai">{{ item.attributes.tldr.text }}</span></p>
+			                <p class="faded small"><span class="ai">{{ item.attributes.tldr.text }}</span></p>
 		                {% endif %}
                     </div>
 	            </td>

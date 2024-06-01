@@ -2,13 +2,13 @@
  # collages table
  #}
 
-<table>
+<table id="collages" class="relationships">
     <thead>
 		<tr>
 			{# category #}
-			<th class="categoryColumn" />
+			<th class="category" />
 
-			{# collage title #}
+			{# title #}
 			<th>Title</th>
 
 			{# torrent count #}
@@ -20,7 +20,7 @@
 			{# last update #}
 			<th>Updated at</th>
 
-			{# author #}
+			{# user #}
 			<th>User</th>
         </tr>
     </thead>
@@ -35,13 +35,13 @@
 
 				<td>
 					{# title #}
-					<p class="flexRow">
+					<p>
 	  					<a class="torrentTitle" href="collages/{{ item.id }}">{{ item.attributes.title }}</a>
 					</p>
 
 					{# tags #}
 					{% if item.attributes.tags is not empty %}
-	  					<div class="tooltip tagList" title="Tags">{{ item.attributes.tags|join(", ") }}</div>
+	  					<p class="tooltip tagList" title="Tags">{{ item.attributes.tags|join(", ") }}</p>
 					{% endif %}
 				</td>
 

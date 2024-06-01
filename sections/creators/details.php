@@ -50,6 +50,58 @@ $app->twig->display("creators/details.twig", [
 exit;
 
 
+$app = \Gazelle\App::go();
+
+
+$ArtistID = $_GET['id'];
+if (!is_numeric($ArtistID)) {
+    error(0);
+}
+
+if (!empty($_GET['revisionid'])) { // If they're viewing an old revision
+    $RevisionID = $_GET['revisionid'];
+    if (!is_numeric($RevisionID)) {
+        error(0);
+    }
+    $Data = $app->cache->get("artist_{$ArtistID}_revision_$RevisionID", true);
+} else { // viewing the live version
+    $Data = $app->cache->get("artist_$ArtistID", true);
+    $RevisionID = false;
+}
+
+if ($Data) {
+    list($Name, $Image, $Body) = current($Data);
+} else {
+    if ($RevisionID) {
+        $sql = "
+      SELECT
+        a.Name,
+        wiki.Image,
+        wiki.body
+      FROM wiki_artists AS wiki
+        LEFT JOIN artists_group AS a ON wiki.RevisionID = a.RevisionID
+      WHERE wiki.RevisionID = '$RevisionID' ";
+    } else {
+        $sql = "
+      SELECT
+        a.Name,
+        wiki.Image,
+        wiki.body
+      FROM artists_group AS a
+        LEFT JOIN wiki_artists AS wiki ON wiki.RevisionID = a.RevisionID
+      WHERE a.ArtistID = '$ArtistID' ";
+    }
+    $sql .= "
+      GROUP BY a.ArtistID";
+    $app->dbOld->query($sql);
+
+    if (!$app->dbOld->has_results()) {
+        error(404);
+    }
+
+    list($Name, $Image, $Body) = $app->dbOld->next_record(MYSQLI_NUM, array(0));
+}
+
 //----------------- Build list and get stats
 
 ob_start();

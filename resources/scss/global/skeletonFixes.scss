@@ -23,49 +23,26 @@
 
 h1:not(#logo) {
   @include headingAttributes(2.6rem);
-  /* @include headingAttributes(2.5rem); */
 }
 
 h2 {
   @include headingAttributes(2.3rem);
-  /* @include headingAttributes(2.1rem); */
 }
 
 h3 {
   @include headingAttributes(2.0rem);
-  /* @include headingAttributes(1.8rem); */
 }
 
 h4 {
   @include headingAttributes(1.6rem);
-  /* @include headingAttributes(1.5rem); */
 }
 
 h5 {
   @include headingAttributes(1.3rem);
-  /* @include headingAttributes(1.2rem); */
 }
 
 h6 {
   @include headingAttributes(1.0rem);
-  /* @include headingAttributes(0.75rem); */
-}
-
-/* correct content/sidebar overflow */
-/*
-@media (min-width: 550px) {
-  .column,
-  .columns {
-    margin-left: 0 !important;
-  }
-}
-*/
-
-/* forum list headings */
-table.forum_index {
-  h4 {
-    margin: 0.25rem !important;
-  }
 }
 
 /* checkbox and radio labels */
@@ -79,27 +56,11 @@ legend {
 table {
   tr {
     &:last-child>* {
-      border: none;
+      border: none !important;
     }
   }
 }
 
-table.skeletonFix {
-  /*
-  td {
-    border-bottom: 0 !important;
-    padding: 0.5rem !important;
-  }
-  */
-}
-
-/* easymde button fix */
-div.editor-toolbar {
-  button {
-    font-size: revert;
-    line-height: revert;
-  }
-}
 
 /* nested lists */
 ul ul,
@@ -166,7 +127,6 @@ input[type="submit"].button-logout,
 input[type="reset"].button-logout,
 input[type="button"].button-logout {
   color: #555;
-  /* background-color: rgba(whitesmoke, 0.5); */
   border-color: rgba(red, 0.5);
 }
 
@@ -181,7 +141,6 @@ input[type="submit"].button-logout:focus,
 input[type="reset"].button-logout:focus,
 input[type="button"].button-logout:focus {
   color: #333;
-  /* background-color: rgba(whitesmoke, 0.75); */
   border-color: rgba(red, 0.75);
 }
 
@@ -296,7 +255,6 @@ input[type="submit"].button-invisible,
 input[type="reset"].button-invisible,
 input[type="button"].button-invisible {
   color: #555;
-  /* background-color: rgba(whitesmoke, 0.5); */
   border: none;
   box-shadow: none;
 }
@@ -312,7 +270,6 @@ input[type="submit"].button-invisible:focus,
 input[type="reset"].button-invisible:focus,
 input[type="button"].button-invisible:focus {
   color: #333;
-  /* background-color: rgba(whitesmoke, 0.75); */
   border: none;
   box-shadow: none;
   cursor: default;
@@ -323,6 +280,14 @@ input[type="button"].button-invisible:focus {
  * not technically skeleton
  * fixes for other weird library stuff
  */
+
+/* easymde button fix */
+div.editor-toolbar {
+  button {
+    font-size: revert;
+    line-height: revert;
+  }
+}
 
 /* tom select */
 .ts-dropdown .optgroup-header {

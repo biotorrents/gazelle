@@ -880,7 +880,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       </div>
     </div>
 
-    <table class="box skeletonFix" id="user_info_box">
+    <table class="box" id="user_info_box">
       <tr class="colhead">
         <td colspan="2">
           User Information
@@ -1152,7 +1152,7 @@ if (!$DisablePoints) {
     </table>
 
     <?php if ($app->user->can(["admin" => "warnUsers"])) { ?>
-    <table class="box skeletonFix" id="warn_user_box">
+    <table class="box" id="warn_user_box">
       <tr class="colhead">
         <td colspan="2">
           Warnings
@@ -1214,7 +1214,7 @@ if (!$DisablePoints) {
       <?php } ?>
     </table>
     <?php if ($app->user->can(["admin" => "banUsers"])) { ?>
-    <table class="box skeletonFix" id="user_lock_account">
+    <table class="box" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
           Lock Account
@@ -1240,7 +1240,7 @@ if (!$DisablePoints) {
       </tr>
     </table>
     <?php }  ?>
-    <table class="box skeletonFix" id="user_privs_box">
+    <table class="box" id="user_privs_box">
       <tr class="colhead">
         <td colspan="2">
           User Privileges
@@ -1361,7 +1361,7 @@ if (!$DisablePoints) {
     } ?>
     </table>
     <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
-    <table class="box skeletonFix" id="session_box">
+    <table class="box" id="session_box">
       <tr class="colhead">
         <td colspan="2">
           Session
@@ -1379,7 +1379,7 @@ if (!$DisablePoints) {
     <?php
     }
     ?>
-    <table class="box skeletonFix" id="submit_box">
+    <table class="box" id="submit_box">
       <tr class="colhead">
         <td colspan="2">
           Submit

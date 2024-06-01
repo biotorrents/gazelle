@@ -609,7 +609,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       </div>
     </div>
 
-    <table class="box skeletonFix" id="user_info_box">
+    <table class="box" id="user_info_box">
       <tr class="colhead">
         <td colspan="2">
           User Information
@@ -844,7 +844,7 @@ if (!$DisablePoints) {
 
 
     <?php if ($app->user->can(["admin" => "warnUsers"])) { ?>
-    <table class="box skeletonFix" id="warn_user_box">
+    <table class="box" id="warn_user_box">
       <tr class="colhead">
         <td colspan="2">
           Warnings
@@ -906,7 +906,7 @@ if (!$DisablePoints) {
       <?php } ?>
     </table>
     <?php if ($app->user->can(["admin" => "banUsers"])) { ?>
-    <table class="box skeletonFix" id="user_lock_account">
+    <table class="box" id="user_lock_account">
       <tr class="colhead">
         <td colspan="2">
           Lock Account

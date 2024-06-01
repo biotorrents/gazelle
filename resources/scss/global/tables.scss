@@ -11,9 +11,11 @@ table.alternatingRows {
   }
 }
 
+
 /**
  * every table
  */
+
 table {
   width: 100%;
 
@@ -39,9 +41,26 @@ table {
   }
 }
 
+
+/**
+ * relationship tables
+ */
+
+table.relationships {
+  tr {
+    td {
+      p {
+        margin: 0.5rem 0;
+      }
+    }
+  }
+}
+
+
 /**
  * sidebar, e.g., homepage stats
  */
+
 table.sidebar {
   td {
     text-align: right;

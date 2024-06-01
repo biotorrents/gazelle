@@ -42,7 +42,7 @@ $app->dbOld->prepared_query("SELECT Name, First, Second FROM misc"); ?>
   <h1>Miscellaneous Values</h1>
 </div>
 
-<table class="skeletonFix">
+<table >
   <tr>
     <th>Name</th>
     <th>First</th>
