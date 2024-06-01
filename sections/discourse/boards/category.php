@@ -22,7 +22,6 @@ $topics = array_shift($topics);
 $app->twig->display(
     "discourse/boards/category.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => $category["name"],
         "category" => $category,

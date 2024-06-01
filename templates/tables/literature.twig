@@ -20,7 +20,7 @@
                         		{% if item.attributes.title is not empty %}
 			                    	{{ item.attributes.title }}
                             	{% else %}
-			                    	{{ item.attributes.doi }}
+			                    	<span class="monospace">{{ item.attributes.doi }}</span>
                             	{% endif %}
 		                	</a>
                         </p>
@@ -28,7 +28,7 @@
 		                <p class="flexRow">
 			                {# doi #}
 			                {% if item.attributes.doi is not empty %}
-				                <span class="tooltip doi" title="DOI">{{ item.attributes.doi }}</span>
+				                <span class="tooltip doi monospace" title="DOI">{{ item.attributes.doi }}</span>
 			                {% endif %}
 
 			                {# journal #}

@@ -34,7 +34,6 @@ $outbox = $discourse->getUserSentPrivateMessages();
 $app->twig->display(
     "discourse/messages/index.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => "Messages",
         "inbox" => $inbox,

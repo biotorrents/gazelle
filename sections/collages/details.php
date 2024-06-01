@@ -52,7 +52,7 @@ $app->twig->display("collages/details.twig", [
 
     "breadcrumbs" => [
         "/collages" => "collages",
-        "/collages/{$collage->id}" => $collage->attributes->title,
+        "/collages/{$collage->attributes->slug}" => $collage->attributes->title,
     ],
 
     "css" => [],

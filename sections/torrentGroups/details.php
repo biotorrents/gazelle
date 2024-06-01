@@ -70,7 +70,7 @@ $app->twig->display("torrentGroups/details.twig", [
 
     "breadcrumbs" => [
         "/torrents" => "torrents",
-        "/torrent-groups/{$torrentGroup->id}" => $torrentGroup->attributes->title,
+        "/torrent-groups/{$torrentGroup->attributes->slug}" => $torrentGroup->attributes->title,
     ],
 
     "torrentGroup" => $torrentGroup,

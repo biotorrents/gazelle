@@ -23,7 +23,6 @@ $topics = array_shift($topics);
 $app->twig->display(
     "discourse/boards/newEdit.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => "Manage your topic",
         #"category" => $category,

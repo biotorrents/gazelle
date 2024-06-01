@@ -48,7 +48,6 @@ else {
 $app->twig->display(
     "discourse/wiki/index.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => "{$topic["title"]} {$app->env->separator} Wiki",
         "category" => "wiki",

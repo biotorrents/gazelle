@@ -29,7 +29,7 @@ $app->twig->display("creators/details.twig", [
 
     "breadcrumbs" => [
       "/creators" => "creators",
-      "/creators/{$creator->id}" => $creator->attributes->name,
+      "/creators/{$creator->attributes->name}" => $creator->attributes->name,
     ],
 
     "creator" => $creator,

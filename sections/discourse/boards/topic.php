@@ -31,7 +31,6 @@ $topic = $discourse->getTopic($topicId);
 $app->twig->display(
     "discourse/boards/topic.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => $topic["title"],
         "category" => $categorySlug,

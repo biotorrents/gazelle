@@ -39,7 +39,6 @@ foreach ($latestTopics as $key => $value) {
 $app->twig->display(
     "discourse/boards/index.twig",
     [
-        "breadcrumbs" => true,
         "sidebar" => true,
         "title" => "Boards",
         "categories" => $categories,

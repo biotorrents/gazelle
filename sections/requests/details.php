@@ -67,7 +67,7 @@ $app->twig->display("requests/details.twig", [
 
   "breadcrumbs" => [
     "/requests" => "requests",
-    "/requests/{$request->id}" => $request->attributes->title,
+    "/requests/{$request->attributes->slug}" => $request->attributes->title,
   ],
 
   "successMessage" => $successMessage ?? null,

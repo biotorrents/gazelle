@@ -50,7 +50,7 @@ $app->twig->display("literature/details.twig", [
 
     "breadcrumbs" => [
         "/literature" => "literature",
-        "/literature/{$literature->id}" => $literature->attributes->title,
+        "/literature/{$literature->attributes->doi}" => $literature->attributes->title,
     ],
 
     "literature" => $literature,

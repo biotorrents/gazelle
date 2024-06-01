@@ -12,7 +12,7 @@
 			{% if creator.attributes.semanticScholarId is not empty %}
 				<tr>
 					<th><span class="semanticScholarId nobr">Semantic Scholar</span></th>
-					<td><a href="https://www.semanticscholar.org/author/{{ creator.attributes.semanticScholarId }}" target="_blank" class="external">{{ creator.attributes.semanticScholarId }}</a></td>
+					<td><a href="https://www.semanticscholar.org/author/{{ creator.attributes.semanticScholarId }}" target="_blank" class="external monospace">{{ creator.attributes.semanticScholarId }}</a></td>
 				</tr>
 			{% endif %}
 
@@ -20,7 +20,7 @@
 			{% if creator.attributes.orcid is not empty %}
 				<tr>
 					<th><span class="orcid nobr">ORCiD</span></th>
-					<td><a href="https://orcid.org/{{ creator.attributes.orcid }}" target="_blank" class="external">https://orcid.org/{{ creator.attributes.orcid }}</a></td>
+					<td><a href="https://orcid.org/{{ creator.attributes.orcid }}" target="_blank" class="external monospace">https://orcid.org/{{ creator.attributes.orcid }}</a></td>
 				</tr>
 			{% endif %}
 
@@ -28,7 +28,7 @@
 			{% if creator.attributes.homepage is not empty %}
 				<tr>
 					<th><span class="homepage nobr">Homepage</span></th>
-					<td><a href="" target="_blank" class="external">{{ creator.attributes.homepage }}</a></td>
+					<td><a href="" target="_blank" class="external monospace">{{ creator.attributes.homepage }}</a></td>
 				</tr>
 			{% endif %}
 
