@@ -8,4 +8,4 @@ declare(strict_types=1);
  */
 
 # checkout
-Flight::route("POST /api/store/checkout/@item", ["Gazelle\Api\BonusPoints", "checkout"]);
+Flight::post("/api/store/checkout/@item", ["Gazelle\Api\BonusPoints", "checkout"]);

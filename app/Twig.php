@@ -170,6 +170,9 @@ class Twig extends \Twig\Environment
             [ "is_safe" => ["html"] ]
         ));
 
+        # https://kint-php.github.io/kint/advanced/#twig
+        $twig->addExtension(new \Kint\Twig\TwigExtension());
+
         /*
         # DebugBar
         $profile = new \Twig\Profiler\Profile();

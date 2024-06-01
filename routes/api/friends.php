@@ -8,28 +8,28 @@ declare(strict_types=1);
  */
 
 # create
-Flight::route("POST /api/friends", ["Gazelle\Api\Friends", "create"])->addMiddleware(function () {
+Flight::post("/api/friends", ["Gazelle\Api\Friends", "create"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["userProfiles" => "create"]);
 });
 
 
 # read
-Flight::route("GET /api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"])->addMiddleware(function () {
+Flight::get("/api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["userProfiles" => "read"]);
 });
 
 
 # update
-Flight::route("PATCH /api/friends/@identifier", ["Gazelle\Api\Friends", "update"])->addMiddleware(function () {
+Flight::patch("/api/friends/@identifier", ["Gazelle\Api\Friends", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["userProfiles" => "update"]);
 });
 
 
 # delete
-Flight::route("DELETE /api/friends/@identifier", ["Gazelle\Api\Friends", "delete"])->addMiddleware(function () {
+Flight::delete("/api/friends/@identifier", ["Gazelle\Api\Friends", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["userProfiles" => "delete"]);
 });

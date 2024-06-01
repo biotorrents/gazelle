@@ -8,16 +8,16 @@ declare(strict_types=1);
  */
 
 # manifest
-Flight::route("GET /api/meta/manifest", ["Gazelle\Api\Meta", "manifest"]);
+Flight::get("/api/meta/manifest", ["Gazelle\Api\Meta", "manifest"]);
 
 
 # ontology
-Flight::route("GET /api/meta/ontology", ["Gazelle\Api\Meta", "ontology"]);
+Flight::get("/api/meta/ontology", ["Gazelle\Api\Meta", "ontology"]);
 
 
 # torrentStats
-Flight::route("GET /api/meta/torrentStats", ["Gazelle\Api\Meta", "torrentStats"]);
+Flight::get("/api/meta/torrentStats", ["Gazelle\Api\Meta", "torrentStats"]);
 
 
 # userStats
-Flight::route("GET /api/meta/userStats", ["Gazelle\Api\Meta", "userStats"]);
+Flight::get("/api/meta/userStats", ["Gazelle\Api\Meta", "userStats"]);

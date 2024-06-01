@@ -11,6 +11,12 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 $app->executionContext = "web";
 
+# load the error handler
+# https://github.com/filp/whoops
+$whoops = new \Whoops\Run();
+$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+$whoops->register();
+
 # quick sanity checks
 $app->gotcha();
 

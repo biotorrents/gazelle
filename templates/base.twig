@@ -17,16 +17,6 @@
 {% endif %}
 
 
-{# layout: sidebar? #}
-{% if sidebar is defined %}
-	{% set layoutContent = "two-thirds column" %}
-	{% set layoutSidebar = "one-third column" %}
-{% else %}
-	{% set layoutContent = "column" %}
-	{% set layoutSidebar = "" %}
-{% endif %}
-
-
 {# user variables #}
 {% if authenticated %}
 	{% set userId = user.core.id ?? null %}
