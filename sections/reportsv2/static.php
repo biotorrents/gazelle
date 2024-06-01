@@ -562,7 +562,7 @@ if (count($Reports) === 0) {
                 <?php } ?>
               </select>
               <span id="options<?=$ReportID?>">
-                <?php if ($app->user->can(["torrents" => "deleteAny"])) { ?>
+                <?php if ($app->user->can(["torrents" => "delete"])) { ?>
                 <span class="tooltip" title="Delete torrent?">
                   <label
                     for="delete<?=$ReportID?>"><strong>Delete</strong></label>

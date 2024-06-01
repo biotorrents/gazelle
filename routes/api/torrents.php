@@ -24,12 +24,12 @@ Flight::route("GET /api/torrents/@identifier", ["Gazelle\Api\Torrents", "read"])
 # update
 Flight::route("PATCH /api/torrents/@identifier", ["Gazelle\Api\Torrents", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["torrents" => "updateAny"]);
+    $app->middleware(["torrents" => "update"]);
 });
 
 
 # delete
 Flight::route("DELETE /api/torrents/@identifier", ["Gazelle\Api\Torrents", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["torrents" => "deleteAny"]);
+    $app->middleware(["torrents" => "delete"]);
 });

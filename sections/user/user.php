@@ -886,7 +886,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
           User Information
         </td>
       </tr>
-      <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
+      <?php if ($app->user->can(["userAccounts" => "update"])) { ?>
       <tr>
         <td class="label">Username:</td>
         <td><input type="text" size="20" name="Username"
@@ -894,7 +894,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       </tr>
       <?php
       }
-    if ($app->user->can(["userProfiles" => "updateAny"])) {
+    if ($app->user->can(["userProfiles" => "update"])) {
         ?>
       <tr>
         <td class="label">Custom title:</td>
@@ -904,7 +904,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       <?php
     }
 
-    if ($app->user->can(["userAccounts" => "updateAny"]) || $app->user->can(["userAccounts" => "updateAny"])) {
+    if ($app->user->can(["userAccounts" => "update"]) || $app->user->can(["userAccounts" => "update"])) {
         ?>
       <tr>
         <td class="label">Primary class:</td>
@@ -912,7 +912,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
           <select name="Class">
             <?php
     foreach ($ClassLevels as $CurClass) {
-        if ($app->user->can(["userAccounts" => "updateAny"]) && $CurClass['ID'] >= $user['EffectiveClass']) {
+        if ($app->user->can(["userAccounts" => "update"]) && $CurClass['ID'] >= $user['EffectiveClass']) {
             break;
         }
 
@@ -945,7 +945,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       <?php
     }
 
-    if ($app->user->can(["userAccounts" => "updateAny"])) {
+    if ($app->user->can(["userAccounts" => "update"])) {
         ?>
       <tr>
         <td class="label">Donor:</td>
@@ -955,7 +955,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
       </tr>
       <?php
     }
-    if ($app->user->can(["userAccounts" => "updateAny"]) || $app->user->can(["userAccounts" => "updateAny"])) { ?>
+    if ($app->user->can(["userAccounts" => "update"]) || $app->user->can(["userAccounts" => "update"])) { ?>
       <tr>
         <td class="label">Secondary classes:</td>
         <td>
@@ -981,7 +981,7 @@ if ($app->user->can(["admin" => "moderateUsers"])) { ?>
         </td>
       </tr>
       <?php }
-    if ($app->user->can(["userAccounts" => "updateAny"])) {
+    if ($app->user->can(["userAccounts" => "update"])) {
         ?>
       <tr>
         <td class="label">Visible in peer lists:</td>
@@ -1072,7 +1072,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if ($app->user->can(["userAccounts" => "updateAny"])) {
+    if ($app->user->can(["userAccounts" => "update"])) {
         ?>
       <tr>
         <td class="label tooltip" title="Number of invites">Invites:</td>
@@ -1125,7 +1125,7 @@ if (!$DisablePoints) {
       <?php
     }
 
-    if ($app->user->can(["userProfiles" => "updateAny"])) {
+    if ($app->user->can(["userProfiles" => "update"])) {
         ?>
       <tr id="user_badge_edit_tr">
         <td class="label">Badges Owned:</td>
@@ -1328,7 +1328,7 @@ if (!$DisablePoints) {
               selected="selected"
               <?php } ?>>Disabled
             </option>
-            <?php if ($app->user->can(["userAccounts" => "deleteAny"])) { ?>
+            <?php if ($app->user->can(["userAccounts" => "delete"])) { ?>
             <optgroup label="-- WARNING --">
               <option value="delete">Delete account</option>
             </optgroup>
@@ -1360,7 +1360,7 @@ if (!$DisablePoints) {
       <?php
     } ?>
     </table>
-    <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
+    <?php if ($app->user->can(["userAccounts" => "update"])) { ?>
     <table class="box" id="session_box">
       <tr class="colhead">
         <td colspan="2">

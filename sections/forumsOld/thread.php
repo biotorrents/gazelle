@@ -443,8 +443,8 @@ if ($ThreadInfo['NoPoll'] == 0) {
     </div>
     <?php
     }
-    if ($app->user->can(["polls" => "updateAny"])) {
-        #if ($app->user->can(["polls" => "updateAny"]) && !$RevealVoters) {
+    if ($app->user->can(["polls" => "update"])) {
+        #if ($app->user->can(["polls" => "update"]) && !$RevealVoters) {
         if (!$Featured) {
             ?>
     <form class="manage_form" name="poll" action="forums.php" method="post">
@@ -522,7 +522,7 @@ foreach ($Thread as $Key => $Post) {
         - <a href="#quickpost" id="quote_<?=$PostID?>"
           onclick="Quote('<?=$PostID?>', '<?=$Username?>', true);"
           class="brackets">Quote</a>
-        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || $app->user->can(["messages" => "updateAny"])) { ?>
+        <?php if ((!$ThreadInfo['IsLocked'] && Forums::check_forumperm($ForumID, 'Write') && $AuthorID == $app->user->core['id']) || $app->user->can(["messages" => "update"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>', '<?=$Key?>');"
           class="brackets">Edit</a>
@@ -536,14 +536,14 @@ foreach ($Thread as $Key => $Post) {
     }
     if ($PostID == $ThreadInfo['StickyPostID']) { ?>
         <strong><span class="sticky_post_label brackets">Sticky</span></strong>
-        <?php if ($app->user->can(["conversations" => "updateAny"])) { ?>
+        <?php if ($app->user->can(["conversations" => "update"])) { ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;remove=true&amp;auth=<?=$app->user->extra['AuthKey']?>"
           title="Unsticky this post" class="brackets tooltip">X</a>
         <?php
         }
     } else {
-        if ($app->user->can(["conversations" => "updateAny"])) {
+        if ($app->user->can(["conversations" => "update"])) {
             ?>
         - <a
           href="forums.php?action=sticky_post&amp;threadid=<?=$ThreadID?>&amp;postid=<?=$PostID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"

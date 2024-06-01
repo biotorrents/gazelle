@@ -85,11 +85,11 @@ if (!$app->dbOld->has_results()) {
 // list($UserID, $Remastered, $RemasterYear, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 list($UserID, $CurFreeLeech) = $app->dbOld->next_record(MYSQLI_BOTH, false);
 
-if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "updateAny"])) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["torrents" => "update"])) {
     error(403);
 }
 
-if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && $app->user->cant(["torrents" => "updateAny"])) {
+if ($Properties['UnknownRelease'] && !($Remastered == '1' && !$RemasterYear) && $app->user->cant(["torrents" => "update"])) {
     // It's Unknown now, and it wasn't before
     if ($app->user->core['id'] != $UserID) {
         // Hax
@@ -102,7 +102,7 @@ $Err = $Validate->ValidateForm($_POST); // Validate the form
 
 if ($Properties['Remastered'] && !$Properties['RemasterYear']) {
     //Unknown Edit!
-    if ($app->user->core['id'] == $UserID || $app->user->can(["torrents" => "updateAny"])) {
+    if ($app->user->core['id'] == $UserID || $app->user->can(["torrents" => "update"])) {
         //Fine!
     } else {
         $Err = "You may not edit someone else's upload to unknown release.";

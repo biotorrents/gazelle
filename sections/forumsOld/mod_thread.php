@@ -27,7 +27,7 @@ if ($_POST['title'] === '') {
 }
 // End injection check
 // Make sure they are moderators
-if ($app->user->cant(["conversations" => "updateAny"])) {
+if ($app->user->cant(["conversations" => "update"])) {
     error(403);
 }
 

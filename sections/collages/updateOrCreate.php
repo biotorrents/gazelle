@@ -105,11 +105,11 @@ View::header(
     'vendor/easymde.min'
 );
 
-if ($app->user->cant(["collages" => "updateOwn"])) {
+if ($app->user->cant(["collages" => "update"])) {
     $ChangeJS = " onchange=\"if ( this.options[this.selectedIndex].value == '0') { $('#namebox').ghide(); $('#personal').gshow(); } else { $('#namebox').gshow(); $('#personal').ghide(); }\"";
 }
 
-if ($app->user->cant(["collages" => "updateOwn"]) && $Category === '0') {
+if ($app->user->cant(["collages" => "update"]) && $Category === '0') {
     $NoName = true;
 }
 ?>

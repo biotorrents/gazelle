@@ -8,7 +8,7 @@ if (!$_GET['postid'] || !is_numeric($_GET['postid'])) {
 }
 
 // Make sure they are moderators
-if ($app->user->cant(["messages" => "deleteAny"])) {
+if ($app->user->cant(["messages" => "delete"])) {
     error(403);
 }
 

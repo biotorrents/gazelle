@@ -3,7 +3,7 @@
 $app = Gazelle\App::go();
 
 
-if ($app->user->cant(["polls" => "deleteAny"])) {
+if ($app->user->cant(["polls" => "delete"])) {
     error(404);
 }
 

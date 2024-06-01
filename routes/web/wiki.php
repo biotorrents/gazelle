@@ -49,6 +49,6 @@ Flight::route("/wiki/compare/@id", function ($id = null) {
 # delete
 Flight::route("/wiki/delete/@id", function ($id = null) {
     $app = Gazelle\App::go();
-    $app->middleware(["wiki" => "deleteAny"]);
+    $app->middleware(["wiki" => "delete"]);
     require_once "{$app->env->serverRoot}/sections/wiki/delete.php";
 }, false, "wikiDelete");

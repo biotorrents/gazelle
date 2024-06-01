@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 
 
-if ($app->user->cant(["polls" => "updateAny"])) {
+if ($app->user->cant(["polls" => "update"])) {
     error(403, true);
 }
 if (!isset($_POST['topicid']) || !is_numeric($_POST['topicid'])) {

@@ -19,7 +19,7 @@ list($UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser) = $app->dbOld
 
 if ($CategoryID === 0
 && $UserID !== $app->user->core['id']
-&& $app->user->cant(["collages" => "updateAny"])) {
+&& $app->user->cant(["collages" => "update"])) {
     error(403);
 }
 
@@ -53,10 +53,10 @@ $TagList = implode(' ', $TagList);
 
 $Updates = array("Description='".db_string($_POST['description'])."', TagList='".db_string($TagList)."'");
 
-if ($app->user->cant(["collages" => "updateAny"])
+if ($app->user->cant(["collages" => "update"])
 && ($CategoryID === 0
 && $UserID === $app->user->core['id']
-&& $app->user->can(["collages" => "updateOwn"]))) {
+&& $app->user->can(["collages" => "update"]))) {
     if (!stristr($_POST['name'], $app->user->core['username'])) {
         error("Your personal collage's title must include your username.");
     }
@@ -66,7 +66,7 @@ if (isset($_POST['featured'])
 && $CategoryID === 0
 && (($app->user->core['id'] === $UserID
 && $app->user->can(["collages" => "create"]))
-|| $app->user->can(["collages" => "updateAny"]))) {
+|| $app->user->can(["collages" => "update"]))) {
     $app->dbOld->query("
     UPDATE collages
     SET Featured = 0
@@ -75,10 +75,10 @@ if (isset($_POST['featured'])
     $Updates[] = 'Featured = 1';
 }
 
-if ($app->user->can(["collages" => "updateAny"])
+if ($app->user->can(["collages" => "update"])
 || ($CategoryID === 0
 && $UserID === $app->user->core['id']
-&& $app->user->can(["collages" => "updateOwn"]))) {
+&& $app->user->can(["collages" => "update"]))) {
     $Updates[] = "Name = '".db_string($_POST['name'])."'";
 }
 
@@ -86,11 +86,11 @@ if (isset($_POST['category'])
 && !empty($app->env->collageCategories[$_POST['category']])
 && $_POST['category'] !== $CategoryID
 && ($_POST['category'] !== 0
-|| $app->user->can(["collages" => "updateAny"]))) {
+|| $app->user->can(["collages" => "update"]))) {
     $Updates[] = 'CategoryID = '.$_POST['category'];
 }
 
-if ($app->user->can(["collages" => "updateAny"])) {
+if ($app->user->can(["collages" => "update"])) {
     if (isset($_POST['locked']) !== $Locked) {
         $Updates[] = 'Locked = ' . ($Locked ? "'0'" : "'1'");
     }

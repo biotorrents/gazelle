@@ -129,7 +129,7 @@ class Roles extends ObjectCrud
      *
      * Checks if a user can do something.
      *
-     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "update"]
      * @return bool
      */
     public function can(array $permissions): bool
@@ -188,7 +188,7 @@ class Roles extends ObjectCrud
      *
      * The opposite of can.
      *
-     * @param array $permission e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @param array $permission e.g., ["torrents" => "read", "tags" => "update"]
      * @return bool
      */
     public function cant(array $permissions): bool

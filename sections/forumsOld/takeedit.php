@@ -61,10 +61,10 @@ list($OldBody, $AuthorID, $TopicID, $IsLocked, $ForumID, $MinClassWrite, $Page) 
 
 
 // Make sure they aren't trying to edit posts they shouldn't
-if (!Forums::check_forumperm($ForumID, 'Write') || ($IsLocked && $app->user->cant(["messages" => "updateAny"]))) {
+if (!Forums::check_forumperm($ForumID, 'Write') || ($IsLocked && $app->user->cant(["messages" => "update"]))) {
     error('Either the thread is locked, or you lack the permission to edit this post.', true);
 }
-if ($UserID != $AuthorID && $app->user->cant(["messages" => "updateAny"])) {
+if ($UserID != $AuthorID && $app->user->cant(["messages" => "update"])) {
     error(403, true);
 }
 if ($app->user->extra['DisablePosting']) {

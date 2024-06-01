@@ -598,7 +598,7 @@ class Conversations extends ObjectCrud
         }
         list($OldBody, $AuthorID, $Page, $PageID, $AddedTime) = $app->dbOld->next_record();
 
-        if ($app->user->core["id"] != $AuthorID && $app->user->cant(["messages" => "updateAny"])) {
+        if ($app->user->core["id"] != $AuthorID && $app->user->cant(["messages" => "update"])) {
             return false;
         }
 
@@ -1130,12 +1130,12 @@ class Conversations extends ObjectCrud
         - <a href="#quickpost"
           onclick="Quote('<?=$PostID?>','<?=$UserInfo['Username']?>', true);"
           class="brackets">Quote</a>
-        <?php if ($AuthorID == $app->user->core["id"] || $app->user->can(["messages" => "updateAny"])) { ?>
+        <?php if ($AuthorID == $app->user->core["id"] || $app->user->can(["messages" => "update"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Edit_Form('<?=$PostID?>','');"
           class="brackets">Edit</a>
         <?php }
-        if ($app->user->can(["messages" => "deleteAny"])) { ?>
+        if ($app->user->can(["messages" => "delete"])) { ?>
         - <a href="#post<?=$PostID?>"
           onclick="Delete('<?=$PostID?>');"
           class="brackets">Delete</a>

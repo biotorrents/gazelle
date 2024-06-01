@@ -24,12 +24,12 @@ Flight::route("GET /api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"])
 # update
 Flight::route("PATCH /api/friends/@identifier", ["Gazelle\Api\Friends", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["userProfiles" => "updateOwn"]);
+    $app->middleware(["userProfiles" => "update"]);
 });
 
 
 # delete
 Flight::route("DELETE /api/friends/@identifier", ["Gazelle\Api\Friends", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["userProfiles" => "deleteOwn"]);
+    $app->middleware(["userProfiles" => "delete"]);
 });

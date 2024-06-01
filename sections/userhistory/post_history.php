@@ -267,7 +267,7 @@ if (!$ShowGrouped) {
 <?php if ($EditedUserID) { ?>
           <br>
           <br>
-<?php if ($app->user->can(["messages" => "updateAny"])) { ?>
+<?php if ($app->user->can(["messages" => "update"])) { ?>
           <a href="#content<?=$PostID?>" onclick="LoadEdit(<?=$PostID?>, 1);">&laquo;</a>
 <?php } ?>
           Last edited by

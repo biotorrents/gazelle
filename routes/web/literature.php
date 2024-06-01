@@ -38,7 +38,7 @@ Flight::route("/literature/@identifier", function ($id) {
 # update
 Flight::route("/literature/@identifier/update", function ($id) {
     $app = Gazelle\App::go();
-    $app->middleware(["literature" => "updateAny"]);
+    $app->middleware(["literature" => "update"]);
     require_once "{$app->env->serverRoot}/sections/literature/updateOrCreate.php";
 });
 */
@@ -48,7 +48,7 @@ Flight::route("/literature/@identifier/update", function ($id) {
 # delete
 Flight::route("/literature/@identifier/delete", function ($id) {
     $app = Gazelle\App::go();
-    $app->middleware(["literature" => "deleteAny"]);
+    $app->middleware(["literature" => "delete"]);
     require_once "{$app->env->serverRoot}/sections/literature/delete.php";
 });
 */

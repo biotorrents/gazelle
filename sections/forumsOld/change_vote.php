@@ -10,7 +10,7 @@ $ThreadID = $_GET['threadid'];
 $NewVote = $_GET['vote'];
 
 if (is_numeric($ThreadID) && is_numeric($NewVote)) {
-    if ($app->user->cant(["polls" => "updateAny"])) {
+    if ($app->user->cant(["polls" => "update"])) {
         $app->dbOld->query("
         SELECT
           `ForumID`

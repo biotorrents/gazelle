@@ -13,7 +13,7 @@ if (!is_numeric($ThreadID)) {
     error(404);
 }
 
-if ($app->user->cant(["polls" => "updateAny"])) {
+if ($app->user->cant(["polls" => "update"])) {
     $app->dbOld->query("
     SELECT
       `ForumID`

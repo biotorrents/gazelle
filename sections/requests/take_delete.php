@@ -25,7 +25,7 @@ $app->dbOld->query("
   WHERE ID = $RequestID");
 list($UserID, $Title, $CategoryID, $GroupID) = $app->dbOld->next_record();
 
-if ($app->user->core['id'] != $UserID && $app->user->cant(["requests" => "updateAny"])) {
+if ($app->user->core['id'] != $UserID && $app->user->cant(["requests" => "update"])) {
     error(403);
 }
 

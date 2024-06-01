@@ -15,7 +15,7 @@ if (!$_REQUEST['artistid'] || !is_numeric($_REQUEST['artistid'])) {
     error(404);
 }
 
-if ($app->user->cant(["creators" => "updateAny"])) {
+if ($app->user->cant(["creators" => "update"])) {
     error(403);
 }
 

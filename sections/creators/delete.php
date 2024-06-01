@@ -18,7 +18,7 @@ if (!is_numeric($ArtistID) || empty($ArtistID)) {
   error(0);
 }
 
-if ($app->user->cant(["creators" => "deleteAny"]) || $app->user->cant(["torrents" => "deleteAny"])) {
+if ($app->user->cant(["creators" => "delete"]) || $app->user->cant(["torrents" => "delete"])) {
   error(403);
 }
 

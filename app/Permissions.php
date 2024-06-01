@@ -15,156 +15,141 @@ namespace Gazelle;
 class Permissions
 {
     # simple crud natural language permissions
-    # e.g., $app->user->can(["torrents" => "read", "tags" => "updateAny"])
+    # e.g., $app->user->can(["torrents" => "read", "tags" => "update"])
     public static array $permissions = [
         # torrents
         "torrents" => [
             "create" => "Can create torrents",
             "read" => "Can read torrents",
-            "updateOwn" => "Can update own torrents",
-            "updateAny" => "Can update any torrents",
-            "deleteOwn" => "Can delete own torrents",
-            "deleteAny" => "Can delete any torrents",
+            "update" => "Can update torrents",
+            "delete" => "Can delete torrents",
+            "moderate" => "Can moderate torrents",
         ],
 
         # torrent groups
         "torrentGroups" => [
             "create" => "Can create torrent groups",
             "read" => "Can read torrent groups",
-            "updateOwn" => "Can update own torrent groups",
-            "updateAny" => "Can update any torrent groups",
-            "deleteOwn" => "Can delete own torrent groups",
-            "deleteAny" => "Can delete any torrent groups",
+            "update" => "Can update torrent groups",
+            "delete" => "Can delete torrent groups",
+            "moderate" => "Can moderate torrent groups",
         ],
 
         # tags
         "tags" => [
             "create" => "Can create tags",
             "read" => "Can read tags",
-            "updateOwn" => "Can update own tags",
-            "updateAny" => "Can update any tags",
-            "deleteOwn" => "Can delete own tags",
-            "deleteAny" => "Can delete any tags",
+            "update" => "Can update tags",
+            "delete" => "Can delete tags",
+            "moderate" => "Can moderate tags",
         ],
 
         # collages
         "collages" => [
             "create" => "Can create collages",
             "read" => "Can read collages",
-            "updateOwn" => "Can update own collages",
-            "updateAny" => "Can update any collages",
-            "deleteOwn" => "Can delete own collages",
-            "deleteAny" => "Can delete any collages",
+            "update" => "Can update collages",
+            "delete" => "Can delete collages",
+            "moderate" => "Can moderate collages",
         ],
 
         # creators
         "creators" => [
             "create" => "Can create creators",
             "read" => "Can read creators",
-            "updateOwn" => "Can update own creators",
-            "updateAny" => "Can update any creators",
-            "deleteOwn" => "Can delete own creators",
-            "deleteAny" => "Can delete any creators",
+            "update" => "Can update creators",
+            "delete" => "Can delete creators",
+            "moderate" => "Can moderate creators",
         ],
 
         # literature
         "literature" => [
             "create" => "Can create literature",
             "read" => "Can read literature",
-            "updateOwn" => "Can update own literature",
-            "updateAny" => "Can update any literature",
-            "deleteOwn" => "Can delete own literature",
-            "deleteAny" => "Can delete any literature",
+            "update" => "Can update literature",
+            "delete" => "Can delete literature",
+            "moderate" => "Can moderate literature",
         ],
 
         # requests
         "requests" => [
             "create" => "Can create requests",
             "read" => "Can read requests",
-            "updateOwn" => "Can update own requests",
-            "updateAny" => "Can update any requests",
-            "deleteOwn" => "Can delete own requests",
-            "deleteAny" => "Can delete any requests",
+            "update" => "Can update requests",
+            "delete" => "Can delete requests",
+            "moderate" => "Can moderate requests",
         ],
 
         # conversations
         "conversations" => [
             "create" => "Can create conversations",
             "read" => "Can read conversations",
-            "updateOwn" => "Can update own conversations",
-            "updateAny" => "Can update any conversations",
-            "deleteOwn" => "Can delete own conversations",
-            "deleteAny" => "Can delete any conversations",
+            "update" => "Can update conversations",
+            "delete" => "Can delete conversations",
+            "moderate" => "Can moderate conversations",
         ],
 
         # messages
         "messages" => [
             "create" => "Can create messages",
             "read" => "Can read messages",
-            "updateOwn" => "Can update own messages",
-            "updateAny" => "Can update any messages",
-            "deleteOwn" => "Can delete own messages",
-            "deleteAny" => "Can delete any messages",
+            "update" => "Can update messages",
+            "delete" => "Can delete messages",
+            "moderate" => "Can moderate messages",
         ],
 
         # polls
         "polls" => [
             "create" => "Can create polls",
             "read" => "Can read polls",
-            "updateOwn" => "Can update own polls",
-            "updateAny" => "Can update any polls",
-            "deleteOwn" => "Can delete own polls",
-            "deleteAny" => "Can delete any polls",
+            "update" => "Can update polls",
+            "delete" => "Can delete polls",
+            "moderate" => "Can moderate polls",
         ],
 
         # notifications
         "notifications" => [
             "create" => "Can create notifications",
             "read" => "Can read notifications",
-            "updateOwn" => "Can update own notifications",
-            "updateAny" => "Can update any notifications",
-            "deleteOwn" => "Can delete own notifications",
-            "deleteAny" => "Can delete any notifications",
+            "update" => "Can update notifications",
+            "delete" => "Can delete notifications",
+            "moderate" => "Can moderate notifications",
         ],
 
         # subscriptions
         "subscriptions" => [
             "create" => "Can create subscriptions",
             "read" => "Can read subscriptions",
-            "updateOwn" => "Can update own subscriptions",
-            "updateAny" => "Can update any subscriptions",
-            "deleteOwn" => "Can delete own subscriptions",
-            "deleteAny" => "Can delete any subscriptions",
+            "update" => "Can update subscriptions",
+            "delete" => "Can delete subscriptions",
+            "moderate" => "Can moderate subscriptions",
         ],
 
         # user accounts
         "userAccounts" => [
             "create" => "Can create user accounts",
             "read" => "Can read user accounts",
-            "updateOwn" => "Can update own user accounts",
-            "updateAny" => "Can update any user accounts",
-            "deleteOwn" => "Can delete own user accounts",
-            "deleteAny" => "Can delete any user accounts",
+            "update" => "Can update user accounts",
+            "delete" => "Can delete user accounts",
+            "moderate" => "Can moderate user accounts",
         ],
 
         # user profiles
         "userProfiles" => [
             "create" => "Can create user profiles",
             "read" => "Can read user profiles",
-            "updateOwn" => "Can update own user profiles",
-            "updateAny" => "Can update any user profiles",
-            "deleteOwn" => "Can delete own user profiles",
-            "deleteAny" => "Can delete any user profiles",
+            "update" => "Can update user profiles",
+            "delete" => "Can delete user profiles",
+            "moderate" => "Can moderate user profiles",
         ],
 
         # wiki
         "wiki" => [
             "create" => "Can create wiki articles",
             "read" => "Can read wiki articles",
-            "updateOwn" => "Can update own wiki articles",
-            "updateAny" => "Can update any wiki articles",
-            "deleteOwn" => "Can delete own wiki articles",
-            "deleteAny" => "Can delete any wiki articles",
+            "update" => "Can update wiki articles",
+            "delete" => "Can delete wiki articles",
+            "moderate" => "Can moderate wiki articles",
         ],
 
         # various admin permissions

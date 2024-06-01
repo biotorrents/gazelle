@@ -27,7 +27,7 @@
 		{% endif %}
 
 		{# edit description #}
-		{% if can({"creators": "updateAny"}) %}
+		{% if can({"creators": "update"}) %}
 			<a class="button button-orange" href="/creators/edit/{{ creator.id }}">edit description</a>
 		{% endif %}
 

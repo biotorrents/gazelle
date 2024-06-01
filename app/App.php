@@ -126,7 +126,7 @@ class App
      * Performs a permissions check on a route.
      * Shows an error page if permissions check fails.
      *
-     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "update"]
      * @return void
      */
     public function middleware(array $permissions): void

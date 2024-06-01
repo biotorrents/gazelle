@@ -34,7 +34,7 @@ if (!$UploaderID) {
     $UploaderID = $filledById;
 }
 
-if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $filledById) && $app->user->cant(["requests" => "updateAny"])) || $filledById === '0') {
+if ((($app->user->core['id'] !== $UserID && $app->user->core['id'] !== $filledById) && $app->user->cant(["requests" => "update"])) || $filledById === '0') {
     error(403);
 }
 

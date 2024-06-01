@@ -4,7 +4,7 @@ $app = \Gazelle\App::go();
 
 
 
-if ($app->user->cant(["conversations" => "updateAny"])) {
+if ($app->user->cant(["conversations" => "update"])) {
     error(403);
 }
 

@@ -298,7 +298,7 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "updateAny"])) {
+        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "update"])) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
@@ -460,7 +460,7 @@ foreach ($TorrentList as $Group) {
         }
         */
 
-        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "updateAny"])) {
+        if ($app->user->can(["admin" => "moderateUsers"]) || $app->user->can(["torrentGroups" => "update"])) {
             $DisplayName .= ' <a href="torrents.php?action=fix_group&amp;groupid=' . $GroupID . '&amp;artistid=' . $ArtistID . '&amp;auth=' . $app->user->extra['AuthKey'] . '" class="brackets tooltip" title="Fix ghost DB entry">Fix</a>';
         }
 
@@ -599,7 +599,7 @@ if (Bookmarks::isBookmarked('artist', $ArtistID)) {
         onclick="SubscribeComments('artist', <?=$ArtistID?>);return false;"><?=Subscriptions::has_subscribed_comments('artist', $ArtistID) !== false ? 'Unsubscribe' : 'Subscribe'?></a>
       <!--  <a href="#" id="recommend" class="brackets">Recommend</a> -->
       <?php
-if ($app->user->can(["creators" => "updateAny"])) {
+if ($app->user->can(["creators" => "update"])) {
     ?>
       <a href="artist.php?action=edit&amp;artistid=<?=$ArtistID?>"
         class="brackets">Edit</a>
@@ -607,7 +607,7 @@ if ($app->user->can(["creators" => "updateAny"])) {
 } ?>
       <a href="artist.php?action=history&amp;artistid=<?=$ArtistID?>"
         class="brackets">View history</a>
-      <?php if ($RevisionID && $app->user->can(["creators" => "updateAny"])) { ?>
+      <?php if ($RevisionID && $app->user->can(["creators" => "update"])) { ?>
       <a href="artist.php?action=revert&amp;artistid=<?=$ArtistID?>&amp;revisionid=<?=$RevisionID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Revert to this revision</a>
       <?php } ?>
@@ -615,7 +615,7 @@ if ($app->user->can(["creators" => "updateAny"])) {
         class="brackets">Info</a>
       <a href="artist.php?id=<?=$ArtistID?>#artistcomments"
         class="brackets">Comments</a>
-      <?php if ($app->user->can(["creators" => "deleteAny"]) && $app->user->can(["torrents" => "deleteAny"])) { ?>
+      <?php if ($app->user->can(["creators" => "delete"]) && $app->user->can(["torrents" => "delete"])) { ?>
       <a href="artist.php?action=delete&amp;artistid=<?=$ArtistID?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
         class="brackets">Delete</a>
       <?php } ?>
@@ -873,7 +873,7 @@ if ($NumRequests > 0) {
         </td>
         <td class="nobr">
           <span id="vote_count_<?=$RequestID?>"><?=$Request['Votes']?></span>
-          <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
+          <?php if ($app->user->can(["requests" => "update"])) { ?>
           <input type="hidden" id="auth" name="auth"
             value="<?=$app->user->extra['AuthKey']?>" />
           &nbsp;&nbsp; <a href="javascript:Vote(0, <?=$RequestID?>)"

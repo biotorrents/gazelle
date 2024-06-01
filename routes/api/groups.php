@@ -31,12 +31,12 @@ Flight::route("GET /api/groups/@identifier", ["Gazelle\Api\Groups", "read"])->ad
 # update
 Flight::route("PATCH /api/groups/@identifier", ["Gazelle\Api\Groups", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["torrentGroups" => "updateAny"]);
+    $app->middleware(["torrentGroups" => "update"]);
 });
 
 
 # delete
 Flight::route("DELETE /api/groups/@identifier", ["Gazelle\Api\Groups", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["torrentGroups" => "deleteAny"]);
+    $app->middleware(["torrentGroups" => "delete"]);
 });

@@ -27,7 +27,7 @@ WHERE
 
 
 $Contributed = $app->dbOld->has_results();
-if (!($Contributed || $app->user->can(["torrentGroups" => "updateAny"]))) {
+if (!($Contributed || $app->user->can(["torrentGroups" => "update"]))) {
     error(403);
 }
 

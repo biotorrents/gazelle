@@ -250,7 +250,7 @@ if ($app->dbOld->affected_rows() > 0 || !$Report) {
     }
 
     //Log and delete
-    if (isset($Escaped['delete']) && $app->user->can(["torrents" => "deleteAny"])) {
+    if (isset($Escaped['delete']) && $app->user->can(["torrents" => "delete"])) {
         $app->dbOld->prepared_query("
       SELECT Username
       FROM users_main

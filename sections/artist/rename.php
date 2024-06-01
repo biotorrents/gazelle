@@ -34,7 +34,7 @@ if (!$ArtistID || !is_numeric($ArtistID)) {
     error(404);
 }
 
-if ($app->user->cant(["creators" => "updateAny"])) {
+if ($app->user->cant(["creators" => "update"])) {
     error(403);
 }
 

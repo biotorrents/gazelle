@@ -26,13 +26,13 @@
 		<a href="{{ sciHubLink(literature.attributes.doi) }}" target="_blank" class="button button-green">find on sci-hub</a>
 
 		{# update #}
-		{% if can({"literature": "updateAny"}) or literature.attributes.userId == user.core.id %}
+		{% if can({"literature": "update"}) or literature.attributes.userId == user.core.id %}
 			<a class="button button-orange" href="/literature{{ literature.id }}/update">update this item</a>
 		{% endif %}
 
 
 		{# delete #}
-		{% if can({"literature": "deleteAny"}) or literature.attributes.userId == user.core.id %}
+		{% if can({"literature": "delete"}) or literature.attributes.userId == user.core.id %}
 			<a class="button button-red" href="/literature{{ literature.id }}/delete">delete this item</a>
 		{% endif %}
 	</form>
@@ -85,7 +85,7 @@
 <th><a href="/creators/{{ item.id }}">{{ item.attributes.name }}</a></th>
 
 <td class="right">
-{% if can({"literature": "updateAny", "creators": "deleteAny"}) %}
+{% if can({"literature": "update", "creators": "delete"}) %}
 	<a id="deleteCreatorFromTorrent" class="conversationButton tooltip" title="delete" data-creatorid={{ item.id }}>
 		<i class="fa-thin fa-trash" data-creatorid={{ item.id }}></i>
 	</a>

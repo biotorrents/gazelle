@@ -38,7 +38,7 @@ if ($NewRequest) {
     $IsFilled = !empty($Request['TorrentID']);
     $CategoryName = $Categories[$Request['CategoryID'] - 1];
     $ProjectCanEdit = (!$IsFilled && ($Request['CategoryID'] === '0' || ($CategoryName === 'Music' && $Year === '0')));
-    $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
+    $CanEdit = ((!$IsFilled && $app->user->core['id'] === $Request['UserID'] && $VoteCount < 2) || $ProjectCanEdit || $app->user->can(["requests" => "update"]));
 
     if (!$CanEdit) {
         error(403);

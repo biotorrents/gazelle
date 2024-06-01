@@ -3,7 +3,7 @@
 $app = \Gazelle\App::go();
 
 
-if ($app->user->cant(["torrentGroups" => "updateAny"])) {
+if ($app->user->cant(["torrentGroups" => "update"])) {
     error(403);
 }
 

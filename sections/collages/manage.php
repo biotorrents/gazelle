@@ -17,7 +17,7 @@ WHERE
 ");
 list($Name, $UserID, $CategoryID) = $app->dbOld->next_record();
 
-if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && $app->user->cant(["collages" => "updateAny"])) {
+if ($CategoryID === 0 && $UserID !== $app->user->core['id'] && $app->user->cant(["collages" => "update"])) {
     error(403);
 }
 

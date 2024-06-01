@@ -213,13 +213,13 @@ class Twig extends \Twig\Environment
         }));
 
 
-        # can: {{ can({"torrents": "read", "tags": "updateAny"}) }}
+        # can: {{ can({"torrents": "read", "tags": "update"}) }}
         $twig->addFunction(new \Twig\TwigFunction("can", function ($permissions) {
             $app = App::go();
             return $app->user->can($permissions);
         }));
 
-        # cant: {{ cant({"torrents": "read", "tags": "updateAny"}) }}
+        # cant: {{ cant({"torrents": "read", "tags": "update"}) }}
         $twig->addFunction(new \Twig\TwigFunction("cant", function ($permissions) {
             $app = App::go();
             return $app->user->cant($permissions);

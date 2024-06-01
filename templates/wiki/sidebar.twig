@@ -17,12 +17,12 @@
 
         <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
 
-        {% if can({"wiki": "updateAny"}) and user.extra.Class >= article.attributes.minimumEditClass and isEditorAvailable %}
+        {% if can({"wiki": "update"}) and user.extra.Class >= article.attributes.minimumEditClass and isEditorAvailable %}
             <a id="createUpdateWikiArticle" data-articleid="{{ article.id }}" data-authorid="{{ user.core.id }}" class="button button-orange">save your edits</a>
         {% endif %}
 
         {# todo: the index article id is hardcoded here #}
-        {% if can({"wiki": "deleteAny"}) and article.id != 1 %}
+        {% if can({"wiki": "delete"}) and article.id != 1 %}
             <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
         {% endif %}
     </form>
@@ -64,7 +64,7 @@
     <table class="compact">
         <tr>
             <th>Minimum read class</th>
-            {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
+            {% if can({"wiki": "update"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
                 <td>
                     <select id="minimumReadClass">
                         {% for key, value in roles %}
@@ -79,7 +79,7 @@
 
         <tr>
             <th>Minimum edit class</th>
-            {% if can({"wiki": "updateAny"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
+            {% if can({"wiki": "update"}) and user.extra.PermissionID >= article.attributes.minimumEditClass and isEditorAvailable %}
                 <td>
                     <select id="minimumEditClass">
                         {% for key, value in roles %}
@@ -104,7 +104,7 @@
             <tr>
                 <th>{{ item }}</th>
                 <td class="right">
-                    {% if can({"wiki": "updateAny"}) %}
+                    {% if can({"wiki": "update"}) %}
                         <a class="conversationButton deleteWikiAlias tooltip" title="delete" data-articleid="{{ article.id }}" data-alias="{{ item }}">
                     	    <i class="fa-thin fa-trash" data-articleid="{{ article.id }}" data-alias="{{ item }}"></i>
                         </a>

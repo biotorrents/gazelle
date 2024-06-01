@@ -179,7 +179,7 @@ if (!$app->user->can(["admin" => "moderateUsers"])) {
 }
 
 // If we're deleting the user, we can ignore all the other crap
-if ($_POST['UserStatus'] === 'delete' && $app->user->can(["userAccounts" => "deleteAny"])) {
+if ($_POST['UserStatus'] === 'delete' && $app->user->can(["userAccounts" => "delete"])) {
     Misc::write_log("User account $UserID (" . $Cur['Username'] . ") was deleted by " . $app->user->core['username']);
 
     $app->dbOld->query("
@@ -249,7 +249,7 @@ if ($_POST['ResetDownloadList'] && $app->user->can(["admin" => "sensitiveUserDat
     $EditSummary[] = 'Download list cleared';
 }
 
-if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["userAccounts" => "updateAny"])) {
+if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["userAccounts" => "update"])) {
     $app->cache->delete("user_info_$UserID");
     $app->cache->delete("user_info_heavy_$UserID");
     $app->cache->delete("user_stats_$UserID");
@@ -275,8 +275,8 @@ if (($_POST['ResetSession'] || $_POST['LogOut']) && $app->user->can(["userAccoun
 // Start building SQL query and edit summary
 if ($Classes[$Class]['Level'] != $Cur['Class']
   && (
-      ($Classes[$Class]['Level'] < $app->user->extra['Class'] && $app->user->can(["userAccounts" => "updateAny"]))
-    || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && $app->user->can(["userAccounts" => "updateAny"]))
+      ($Classes[$Class]['Level'] < $app->user->extra['Class'] && $app->user->can(["userAccounts" => "update"]))
+    || ($Classes[$Class]['Level'] <= $app->user->extra['Class'] && $app->user->can(["userAccounts" => "update"]))
   )
 ) {
     $UpdateSet[] = "PermissionID = '$Class'";
@@ -299,7 +299,7 @@ if ($Classes[$Class]['Level'] != $Cur['Class']
     $app->cache->delete("donor_info_$UserID");
 }
 
-if ($Username != $Cur['Username'] && $app->user->can(["userAccounts" => "updateAny"])) {
+if ($Username != $Cur['Username'] && $app->user->can(["userAccounts" => "update"])) {
     $app->dbOld->query("
       SELECT ID
       FROM users_main
@@ -321,7 +321,7 @@ if ($Username != $Cur['Username'] && $app->user->can(["userAccounts" => "updateA
     }
 }
 
-if ($Title != db_string($Cur['Title']) && $app->user->can(["userProfiles" => "updateAny"])) {
+if ($Title != db_string($Cur['Title']) && $app->user->can(["userProfiles" => "update"])) {
     // Using the unescaped value for the test to avoid confusion
     if (strlen($_POST['Title']) > 1024) {
         error("Custom titles have a maximum length of 1,024 characters.");
@@ -334,7 +334,7 @@ if ($Title != db_string($Cur['Title']) && $app->user->can(["userProfiles" => "up
     }
 }
 
-if ($Donor != $Cur['Donor'] && $app->user->can(["userAccounts" => "updateAny"])) {
+if ($Donor != $Cur['Donor'] && $app->user->can(["userAccounts" => "update"])) {
     $UpdateSet[] = "Donor = '$Donor'";
     $EditSummary[] = 'donor status changed';
     $LightUpdates['Donor'] = $Donor;
@@ -386,46 +386,46 @@ if (count($AddedClasses) > 0) {
     $DeleteKeys = true;
 }
 
-if ($Visible != $Cur['Visible'] && $app->user->can(["userAccounts" => "updateAny"])) {
+if ($Visible != $Cur['Visible'] && $app->user->can(["userAccounts" => "update"])) {
     $UpdateSet[] = "Visible = '$Visible'";
     $EditSummary[] = 'visibility changed';
     $LightUpdates['Visible'] = $Visible;
     $TrackerUserUpdates['visible'] = $Visible;
 }
 
-if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["userAccounts" => "updateAny"])
+if ($Uploaded != $Cur['Uploaded'] && $Uploaded != $_POST['OldUploaded'] && ($app->user->can(["userAccounts" => "update"])
   || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Uploaded = '$Uploaded'";
     $EditSummary[] = "uploaded changed from " . Gazelle\Format::get_size($Cur['Uploaded']) . ' to ' . Gazelle\Format::get_size($Uploaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["userAccounts" => "updateAny"])
+if ($Downloaded != $Cur['Downloaded'] && $Downloaded != $_POST['OldDownloaded'] && ($app->user->can(["userAccounts" => "update"])
   || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "Downloaded = '$Downloaded'";
     $EditSummary[] = "downloaded changed from " . Gazelle\Format::get_size($Cur['Downloaded']) . ' to ' . Gazelle\Format::get_size($Downloaded);
     $app->cache->delete("user_stats_$UserID");
 }
 
-if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["userAccounts" => "updateAny"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
+if ($BonusPoints != $Cur['BonusPoints'] && ($app->user->can(["userAccounts" => "update"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "BonusPoints = $BonusPoints";
     $EditSummary[] = "Bonus Points changed from " . $Cur['BonusPoints'] . " to $BonusPoints";
     $HeavyUpdates['BonusPoints'] = $BonusPoints;
 }
 
-if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["userAccounts" => "updateAny"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
+if ($FLTokens != $Cur['FLTokens'] && ($app->user->can(["userAccounts" => "update"]) || ($app->user->can(["admin" => "updateRatios"]) && $UserID == $app->user->core['id']))) {
     $UpdateSet[] = "FLTokens = $FLTokens";
     $EditSummary[] = "Freeleech Tokens changed from " . $Cur['FLTokens'] . " to $FLTokens";
     $HeavyUpdates['FLTokens'] = $FLTokens;
 }
 
-if ($Invites != $Cur['Invites'] && $app->user->can(["userAccounts" => "updateAny"])) {
+if ($Invites != $Cur['Invites'] && $app->user->can(["userAccounts" => "update"])) {
     $UpdateSet[] = "invites = '$Invites'";
     $EditSummary[] = "number of invites changed to $Invites";
     $HeavyUpdates['Invites'] = $Invites;
 }
 
-if ($app->user->can(["userProfiles" => "updateAny"])) {
+if ($app->user->can(["userProfiles" => "update"])) {
     $query = "DELETE FROM users_badges WHERE UserID = $UserID";
     if (!empty($Badges)) {
         $query .= " AND BadgeID NOT IN (" . implode(',', $Badges) . ")";
@@ -724,7 +724,7 @@ if ($SendHackedMail && $app->user->can(["admin" => "banUsers"])) {
     $app->email($HackedEmail, "Your $ENV->siteName account", "Your $ENV->siteName account appears to have been compromised. As a security measure, we have disabled your account. To resolve this, please visit us on Slack.");
 }
 
-if ($MergeStatsFrom && $app->user->can(["userAccounts" => "updateAny"])) {
+if ($MergeStatsFrom && $app->user->can(["userAccounts" => "update"])) {
     $app->dbOld->query("
       SELECT ID, Uploaded, Downloaded
       FROM users_main

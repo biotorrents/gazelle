@@ -145,7 +145,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
 <?php
   if ($Contributed
-    || $app->user->can(["torrentGroups" => "updateAny"])
+    || $app->user->can(["torrentGroups" => "update"])
   ) { ?>
 <h2 id="screenshots_section">
   Publications
@@ -168,7 +168,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
 
         <td id="screenshots">
           <?php
-   if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
+   if ($Contributed || $app->user->can(["torrentGroups" => "update"])) { ?>
           <a class="u-pull-right brackets" onclick="AddScreenshotField()">+</a>
           <?php } ?>
         </td>
@@ -184,7 +184,7 @@ $Contributed = in_array($app->user->core['id'], $app->dbOld->collect('UserID'));
   }
 
 // Users can edit the group info if they've uploaded a torrent to the group or have torrents_edit
-if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
+if ($Contributed || $app->user->can(["torrentGroups" => "update"])) { ?>
 <h2>
   Non-wiki torrent group editing
 </h2>
@@ -300,7 +300,7 @@ for ($i = 1; $i < count($Artists); $i++) {
 <?php
 }
 
-if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
+if ($Contributed || $app->user->can(["torrentGroups" => "update"])) { ?>
 <h2>
   Rename (will not merge)
 </h2>
@@ -357,7 +357,7 @@ if ($Contributed || $app->user->can(["torrentGroups" => "updateAny"])) { ?>
 <?php
 }
 
-if ($app->user->can(["torrentGroups" => "updateAny"])) { ?>
+if ($app->user->can(["torrentGroups" => "update"])) { ?>
 <h2>
   Merge with another group
 </h2>

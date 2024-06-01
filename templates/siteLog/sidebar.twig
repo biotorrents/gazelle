@@ -29,7 +29,7 @@
 
 
     {# add new picture #}
-    {% if can({"torrentGroups": "updateAny"}) %}
+    {% if can({"torrentGroups": "update"}) %}
     <form>
         <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -151,12 +151,12 @@
 		<hr />
 
 		{# edit group #}
-		{% if can({"torrentGroups": "updateAny"}) %}
+		{% if can({"torrentGroups": "update"}) %}
 			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ groupId }}">edit group</a>
 		{% endif %}
 
 		{# use this revision #}
-		{% if revisionId != 0 and can({"torrentGroups": "updateAny"}) %}
+		{% if revisionId != 0 and can({"torrentGroups": "update"}) %}
 			<a class="button button-orange" href="/torrents.php?action=revert&groupid={{ groupId }}&revisionid={{ revisionId }}&auth={{ user.extra.AuthKey }}">use this revision</a>
 		{% endif %}
 
@@ -185,7 +185,7 @@
 <th>{{ displayCreator(item) }}</th>
 
 <td class="right">
-{% if can({"torrentGroups": "updateAny", "creators": "deleteAny"}) %}
+{% if can({"torrentGroups": "update", "creators": "delete"}) %}
 	<a id="deleteCreatorFromTorrent" data-creatorId={{ item.id }} class="button">delete</a>
 {% endif %}
 </td>
@@ -195,7 +195,7 @@
 </table>
 
 {# add new #}
-{% if can({"torrentGroups": "updateAny", "creators": "create"}) %}
+{% if can({"torrentGroups": "update", "creators": "create"}) %}
 <form>
 <input type="hidden" name="groupId" value="{{ groupId }}">
 
@@ -221,7 +221,7 @@
 <th>{{ item.name }}</th>
 
 <td class="right">
-{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
+{% if can({"torrentGroups": "update", "tags": "delete"}) %}
 <a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 
@@ -239,7 +239,7 @@
 <th class="openaiTorrentTag">{{ item.name }}</th>
 
 <td class="right">
-{% if can({"torrentGroups": "updateAny", "tags": "deleteAny"}) %}
+{% if can({"torrentGroups": "update", "tags": "delete"}) %}
 <a class="button deleteGroupTag" data-tagid={{ item.id }} data-groupid={{ groupId }}>delete</a>
 {% endif %}
 

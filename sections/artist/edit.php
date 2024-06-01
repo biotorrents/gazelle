@@ -60,7 +60,7 @@ View::header('Edit artist');
       </div>
     </form>
   </div>
-<?php if ($app->user->can(["creators" => "updateAny"])) { ?>
+<?php if ($app->user->can(["creators" => "update"])) { ?>
   <h2>Rename</h2>
   <div class="box pad">
     <form class="rename_form" name="artist" action="artist.php" method="post">

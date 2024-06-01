@@ -56,7 +56,7 @@ list($UploaderID, $UploadTime, $TorrentCategoryID, $TorrentCatalogueNumber) = $a
 $filledById = $app->user->core['id'];
 $FillerUsername = $app->user->core['username'];
 
-if (!empty($_POST['user']) && $app->user->can(["requests" => "updateAny"])) {
+if (!empty($_POST['user']) && $app->user->can(["requests" => "update"])) {
     $FillerUsername = $_POST['user'];
     $app->dbOld->prepared_query("
     SELECT
@@ -74,7 +74,7 @@ if (!empty($_POST['user']) && $app->user->can(["requests" => "updateAny"])) {
     }
 }
 
-if (time_ago($UploadTime) < 3600 && $UploaderID !== $filledById && $app->user->cant(["requests" => "updateAny"])) {
+if (time_ago($UploadTime) < 3600 && $UploaderID !== $filledById && $app->user->cant(["requests" => "update"])) {
     $Err = "There's a one hour grace period for new uploads to allow the torrent's uploader to fill the request.";
 }
 

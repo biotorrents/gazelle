@@ -662,7 +662,7 @@ class Users extends ObjectCrud
      *
      * Checks if a user can do something.
      *
-     * @param array $permissions e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @param array $permissions e.g., ["torrents" => "read", "tags" => "update"]
      * @return bool
      */
     public function can(array $permissions): bool
@@ -676,7 +676,7 @@ class Users extends ObjectCrud
      *
      * The opposite of can.
      *
-     * @param array $permission e.g., ["torrents" => "read", "tags" => "updateAny"]
+     * @param array $permission e.g., ["torrents" => "read", "tags" => "update"]
      * @return bool
      */
         public function cant(array $permissions): bool
@@ -1097,7 +1097,7 @@ class Users extends ObjectCrud
         # check permissions to update another user
         $moderatorUpdate = false;
         if ($userId !== $this->core["id"]) {
-            $good = $this->can(["userProfiles" => "updateAny"]);
+            $good = $this->can(["userProfiles" => "update"]);
             if (!$good) {
                 throw new Exception("you ain't a killer, you still learnin' how to walk");
             }

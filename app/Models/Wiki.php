@@ -56,7 +56,7 @@ class Wiki extends ObjectCrud
         $app = App::go();
 
         # check permissions
-        if ($app->user->cant(["wiki" => "updateAny"])) {
+        if ($app->user->cant(["wiki" => "update"])) {
             throw new Exception("invalid permissions");
         }
 
@@ -112,7 +112,7 @@ class Wiki extends ObjectCrud
         $app = App::go();
 
         # check permissions
-        if ($app->user->cant(["wiki" => "deleteAny"])) {
+        if ($app->user->cant(["wiki" => "delete"])) {
             throw new Exception("invalid permissions");
         }
 
@@ -299,7 +299,7 @@ class Wiki extends ObjectCrud
         $app = App::go();
 
         # check permissions
-        if ($app->user->cant(["wiki" => "updateAny"])) {
+        if ($app->user->cant(["wiki" => "update"])) {
             throw new Exception("invalid permissions");
         }
 
@@ -337,7 +337,7 @@ class Wiki extends ObjectCrud
         $app = App::go();
 
         # check permissions
-        if ($app->user->cant(["wiki" => "deleteAny"])) {
+        if ($app->user->cant(["wiki" => "delete"])) {
             throw new Exception("invalid permissions");
         }
 

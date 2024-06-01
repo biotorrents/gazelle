@@ -239,7 +239,7 @@
 
 			{# update settings #}
 			{# /user/edit/{{ userId }} #}
-			{% if can({"userProfiles": "updateAny"}) %}
+			{% if can({"userProfiles": "update"}) %}
 				<a href="/user.php?action=edit&userid={{ userId }}" class="button">user settings</a>
 			{% endif %}
 

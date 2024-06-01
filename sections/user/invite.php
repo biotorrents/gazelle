@@ -226,7 +226,7 @@ if (!$Sneaky
           <input type="submit" value="Invite">
         </div>
       </div>
-      <?php if ($app->user->can(["userAccounts" => "updateAny"])) { ?>
+      <?php if ($app->user->can(["userAccounts" => "update"])) { ?>
       <div>
         <div class="label"><strong>Staff Note</strong></div>
         <div class="input">

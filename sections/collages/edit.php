@@ -17,7 +17,7 @@ $app->dbOld->query("
 list($Name, $Description, $TagList, $UserID, $CategoryID, $Locked, $MaxGroups, $MaxGroupsPerUser, $Featured) = $app->dbOld->next_record();
 $TagList = implode(', ', explode(' ', $TagList));
 
-if ($CategoryID == 0 && $UserID != $app->user->core['id'] && $app->user->cant(["collages" => "updateAny"])) {
+if ($CategoryID == 0 && $UserID != $app->user->core['id'] && $app->user->cant(["collages" => "update"])) {
     error(403);
 }
 
@@ -47,7 +47,7 @@ if (!empty($Err)) {
       <input type="hidden" name="collageId"
         value="<?=$CollageID?>">
       <table id="edit_collage" class="layout collage_edit">
-        <?php if ($app->user->can(["collages" => "updateAny"]) || ($CategoryID == 0 && $UserID == $app->user->core['id'] && $app->user->can(["collages" => "updateOwn"]))) { ?>
+        <?php if ($app->user->can(["collages" => "update"]) || ($CategoryID == 0 && $UserID == $app->user->core['id'] && $app->user->can(["collages" => "update"]))) { ?>
         <tr>
           <td class="label">Name</td>
           <td><input type="text" name="name" size="60"
@@ -55,14 +55,14 @@ if (!empty($Err)) {
         </tr>
         <?php
         }
-if ($CategoryID > 0 || $app->user->can(["collages" => "updateAny"])) { ?>
+if ($CategoryID > 0 || $app->user->can(["collages" => "update"])) { ?>
         <tr>
           <td class="label"><strong>Category</strong></td>
           <td>
             <select name="category">
               <?php
         foreach ($app->env->collageCategories as $CatID => $CatName) {
-            if ($app->user->cant(["collages" => "updateAny"]) && $CatID == 0) {
+            if ($app->user->cant(["collages" => "update"]) && $CatID == 0) {
                 // Only mod-type get to make things personal
                 continue;
             } ?>
@@ -99,7 +99,7 @@ if ($CategoryID > 0 || $app->user->can(["collages" => "updateAny"])) { ?>
         </tr>
         <?php
         }
-if ($app->user->can(["collages" => "updateAny"])) { ?>
+if ($app->user->can(["collages" => "update"])) { ?>
         <tr>
           <td class="label">Locked</td>
           <td><input type="checkbox" name="locked" <?=$Locked ? 'checked="checked" ' : ''?>>

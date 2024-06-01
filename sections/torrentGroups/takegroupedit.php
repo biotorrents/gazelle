@@ -11,7 +11,7 @@ $app = Gazelle\App::go();
 # User permissions
 
 
-if ($app->user->cant(["torrentGroups" => "updateAny"])) {
+if ($app->user->cant(["torrentGroups" => "update"])) {
     error(403);
 }
 

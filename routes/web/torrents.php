@@ -30,7 +30,7 @@ Flight::route("/torrents/@id", function ($id) {
 # update
 Flight::route("/torrents/@id/update", function ($id) {
     $app = Gazelle\App::go();
-    $app->middleware(["torrents" => "updateAny"]);
+    $app->middleware(["torrents" => "update"]);
     require_once "{$app->env->serverRoot}/sections/torrents/update.php";
 });
 
@@ -38,6 +38,6 @@ Flight::route("/torrents/@id/update", function ($id) {
 # delete
 Flight::route("/torrents/@id/delete", function ($id) {
     $app = Gazelle\App::go();
-    $app->middleware(["torrents" => "deleteAny"]);
+    $app->middleware(["torrents" => "delete"]);
     require_once "{$app->env->serverRoot}/sections/torrents/delete.php";
 });

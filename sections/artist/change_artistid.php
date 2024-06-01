@@ -5,7 +5,7 @@ $app = Gazelle\App::go();
 
 
 
-if ($app->user->cant(["creators" => "updateAny"])) {
+if ($app->user->cant(["creators" => "update"])) {
     error(403);
 }
 if (!empty($_POST['newartistid']) && !empty($_POST['newartistname'])) {

@@ -30,7 +30,7 @@ $Requestor = User::user_info($Request['UserID']);
 $Filler = $Request['filledById'] ? User::user_info($Request['filledById']) : null;
 //Convenience variables
 $IsFilled = !empty($Request['TorrentID']);
-$CanVote = !$IsFilled && $app->user->can(["requests" => "updateAny"]);
+$CanVote = !$IsFilled && $app->user->can(["requests" => "update"]);
 
 if ($CategoryID == 0) {
     $CategoryName = 'Unknown';
@@ -45,7 +45,7 @@ $RequestVotes = \Gazelle\Requests::get_votes_array($RequestID);
 $VoteCount = count($RequestVotes['Voters']);
 $ProjectCanEdit = (!$IsFilled && (($CategoryID == 0) || ($CategoryName == 'Music' && $Request['Year'] == 0)));
 $UserCanEdit = (!$IsFilled && $app->user->core['id'] == $Request['UserID'] && $VoteCount < 2);
-$CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "updateAny"]));
+$CanEdit = ($UserCanEdit || $ProjectCanEdit || $app->user->can(["requests" => "update"]));
 
 $JsonTopContributors = [];
 $VoteMax = ($VoteCount < 5 ? $VoteCount : 5);

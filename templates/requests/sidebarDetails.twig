@@ -51,7 +51,7 @@
 		{% endif %}
 
 		{# edit request #}
-		{% if can({"requests": "updateAny"}) %}
+		{% if can({"requests": "update"}) %}
 			<a class="button button-orange" href="/requests/edit/{{ request.id }}">edit request</a>
 		{% endif %}
 

@@ -12,7 +12,7 @@ if (!$GroupID || !is_numeric($GroupID)) {
     error(404);
 }
 
-if ($app->user->cant(["torrentGroups" => "updateAny"])) {
+if ($app->user->cant(["torrentGroups" => "update"])) {
     $app->dbOld->query("
     SELECT
       `UserID`
@@ -65,7 +65,7 @@ if (!empty($Old)) {
 
 // Deletion
 if (!empty($Deleted)) {
-    if ($app->user->can(["torrentGroups" => "updateAny"])) {
+    if ($app->user->can(["torrentGroups" => "update"])) {
         $DeleteList = $Deleted;
     } else {
         $DeleteList = [];

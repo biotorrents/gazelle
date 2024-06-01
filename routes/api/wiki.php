@@ -24,12 +24,12 @@ Flight::route("GET /api/wiki/@identifier", ["Gazelle\Api\Wiki", "read"])->addMid
 # update
 Flight::route("PATCH /api/wiki/@identifier", ["Gazelle\Api\Wiki", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["wiki" => "updateAny"]);
+    $app->middleware(["wiki" => "update"]);
 });
 
 
 # delete
 Flight::route("DELETE /api/wiki/@identifier", ["Gazelle\Api\Wiki", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["wiki" => "deleteAny"]);
+    $app->middleware(["wiki" => "delete"]);
 });

@@ -31,12 +31,12 @@ Flight::route("GET /api/collages/@identifier", ["Gazelle\Api\Collages", "read"])
 # update
 Flight::route("PATCH /api/collages/@identifier", ["Gazelle\Api\Collages", "update"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["collages" => "updateAny"]);
+    $app->middleware(["collages" => "update"]);
 });
 
 
 # delete
 Flight::route("DELETE /api/collages/@identifier", ["Gazelle\Api\Collages", "delete"])->addMiddleware(function () {
     $app = Gazelle\App::go();
-    $app->middleware(["collages" => "deleteAny"]);
+    $app->middleware(["collages" => "delete"]);
 });

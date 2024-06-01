@@ -38,7 +38,7 @@ if (!$Properties) {
 
 View::header('Edit torrent', 'upload');
 
-if ($app->user->cant(["requests" => "updateAny"])) {
+if ($app->user->cant(["requests" => "update"])) {
     error(403);
 }
 ?>

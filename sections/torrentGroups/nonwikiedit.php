@@ -9,7 +9,7 @@ $app = Gazelle\App::go();
 $group_id = (int) $_REQUEST['groupid'];
 
 // Usual perm checks
-if ($app->user->cant(["torrents" => "updateAny"])) {
+if ($app->user->cant(["torrents" => "update"])) {
     $app->dbOld->prepared_query("
     SELECT
       `UserID`

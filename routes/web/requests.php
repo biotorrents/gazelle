@@ -26,7 +26,7 @@ Flight::route("/requests/@identifier", function ($identifier = null) {
 # edit
 Flight::route("/requests/edit/@identifier", function ($identifier = null) {
     $app = Gazelle\App::go();
-    $app->middleware(["requests" => "updateAny"]);
+    $app->middleware(["requests" => "update"]);
     require_once "{$app->env->serverRoot}/sections/requests/updateOrCreate.php";
 });
 

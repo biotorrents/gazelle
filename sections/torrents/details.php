@@ -263,13 +263,13 @@ View::header(
   </h2>
 
   <div class="linkbox">
-    <?php if ($app->user->can(["torrents" => "updateAny"])) { ?>
+    <?php if ($app->user->can(["torrents" => "update"])) { ?>
     <a href="torrents.php?action=editgroup&amp;groupid=<?=$GroupID?>"
       class="brackets">Edit group</a>
     <?php } ?>
     <a href="torrents.php?action=history&amp;groupid=<?=$GroupID?>"
       class="brackets">View history</a>
-    <?php if ($RevisionID && $app->user->can(["torrents" => "updateAny"])) { ?>
+    <?php if ($RevisionID && $app->user->can(["torrents" => "update"])) { ?>
     <a href="torrents.php?action=revert&amp;groupid=<?=$GroupID ?>&amp;revisionid=<?=$RevisionID ?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
       class="brackets">Revert to this revision</a>
     <?php
@@ -400,7 +400,7 @@ $Index++;
       </div>
 
       <?php
-    if ($app->user->can(["torrents" => "updateAny"]) && $WikiImage !== '') { ?>
+    if ($app->user->can(["torrents" => "update"]) && $WikiImage !== '') { ?>
       <div id="add_cover_div">
         <div style="padding: 10px;">
           <span class="additional_add_artists u-pull-right">
@@ -425,13 +425,13 @@ $Index++;
 
     <div class="box box_artists">
       <div class="head"><strong>Author(s)</strong>
-        <?=$app->user->can(["creators" => "updateAny"]) ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets u-pull-right">Edit</a></span>' : ''?>
+        <?=$app->user->can(["creators" => "update"]) ? '<span class="edit_artists"><a onclick="ArtistManager(); return false;" href="#" class="brackets u-pull-right">Edit</a></span>' : ''?>
       </div>
 
       <ul class="stats nobullet" id="artist_list">
         <?php foreach ($Artists as $Num => $Artist) { ?>
         <li class="artist"><?=\Gazelle\Creators::display_artist($Artist)?>
-          <?php if ($app->user->can(["creators" => "deleteAny"])) { ?>
+          <?php if ($app->user->can(["creators" => "delete"])) { ?>
           <span class="remove remove_artist u-pull-right"><a href="javascript:void(0);"
               onclick="ajax.get('torrents.php?action=delete_alias&amp;auth=' + authkey + '&amp;groupid=<?=$GroupID?>&amp;artistid=<?=$Artist['id']?>&amp;importance=4'); this.parentNode.parentNode.style.display = 'none';"
               class="brackets tooltip" title="Remove artist">X</a></span>
@@ -476,7 +476,7 @@ if (!empty($DeletedTag)) { ?>
             <a href="user.php?id=<?=$Tag['userid']?>"
               title="View the profile of the user that added this tag" class="brackets tooltip view_tag_user">U</a>
             <?php } ?>
-            <?php if (empty($app->user->extra['DisableTagging']) && $app->user->can(["tags" => "deleteAny"])) { ?>
+            <?php if (empty($app->user->extra['DisableTagging']) && $app->user->can(["tags" => "delete"])) { ?>
             <span class="remove remove_tag"><a
                 href="torrents.php?action=delete_tag&amp;groupid=<?=$GroupID?>&amp;tagid=<?=$Tag['id']?>&amp;auth=<?=$app->user->extra['AuthKey']?>"
                 class="brackets tooltip" title="Remove tag">X</a></span>
@@ -568,7 +568,7 @@ foreach ($TorrentList as $Torrent) {
         $ReportInfo .= "</table>";
     }
 
-    $CanEdit = ($app->user->can(["torrents" => "updateAny"]) || (($UserID == $app->user->core['id'] && !$app->user->extra['DisableWiki']) && !($Remastered && !$RemasterYear)));
+    $CanEdit = ($app->user->can(["torrents" => "update"]) || (($UserID == $app->user->core['id'] && !$app->user->extra['DisableWiki']) && !($Remastered && !$RemasterYear)));
 
     $RegenLink = $app->user->can(["admin" => "moderateUsers"]) ? ' <a href="torrents.php?action=regen_filelist&amp;torrentid=' . $TorrentID . '" class="brackets">Regenerate</a>' : '';
     $FileTable = '
@@ -724,7 +724,7 @@ foreach ($TorrentList as $Torrent) {
                 href="torrents.php?action=edit&amp;id=<?=$TorrentID ?>"
                 class="tooltip" title="Edit release">ED</a>
               <?php }
-              if ($app->user->can(["torrents" => "deleteAny"]) || $UserID == $app->user->core['id']) { ?>
+              if ($app->user->can(["torrents" => "delete"]) || $UserID == $app->user->core['id']) { ?>
               | <a
                 href="torrents.php?action=delete&amp;torrentid=<?=$TorrentID ?>"
                 class="tooltip" title="Remove">RM</a>
@@ -776,7 +776,7 @@ foreach ($TorrentList as $Torrent) {
                 <?php } ?>
               </blockquote>
             </div>
-            <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
+            <?php if ($app->user->can(["requests" => "update"])) { ?>
             <div class="linkbox">
               <a href="torrents.php?action=masspm&amp;id=<?=$GroupID?>&amp;torrentid=<?=$TorrentID?>"
                 class="brackets">Mass PM snatchers</a>
@@ -911,7 +911,7 @@ if (empty($app->user->extra['DisableRequests']) && count($Requests) > 0) {
           <td>
             <span
               id="vote_count_<?=$Request['ID']?>"><?=count($RequestVotes['Voters'])?></span>
-            <?php if ($app->user->can(["requests" => "updateAny"])) { ?>
+            <?php if ($app->user->can(["requests" => "update"])) { ?>
             &nbsp;&nbsp; <a
               href="javascript:Vote(0, <?=$Request['ID']?>)"
               class="brackets">+</a>
@@ -1066,7 +1066,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "updateAny"])) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "update"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#mirrors_section">Add/Remove</a>
@@ -1106,7 +1106,7 @@ $app->dbOld->query("
       FROM torrents
       WHERE GroupID = $GroupID");
 
-if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "updateAny"])) {
+if (in_array($app->user->core['id'], $app->dbOld->collect('UserID')) || $app->user->can(["torrents" => "update"])) {
     ?>
         <a class="brackets"
           href="torrents.php?action=editgroup&groupid=<?=$GroupID?>#screenshots_section">Add/Remove</a>
