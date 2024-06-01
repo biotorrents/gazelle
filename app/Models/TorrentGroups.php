@@ -138,6 +138,43 @@ class TorrentGroups extends ObjectCrud
             "tags" => json_encode($data["tags"] ?? $this->tags),
         ];
 
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
+            # get an array of literatureIds
+            $currentLiteratureIds = array_column($this->relatedLiterature(), "id");
+            $proposedLiteratureIds = $data["literatureIds"] ?? [];
+
+            if (!empty($proposedLiteratureIds)) {
+                # remove the ones that are no longer in the list
+                $removeLiteratureIds = array_diff($currentLiteratureIds, $proposedLiteratureIds);
+                if (!empty($removeLiteratureIds)) {
+                    $placeholders = implode(",", $removeLiteratureIds);
+                    $query = "update literature_groups set deleted_at = now() where groupId = ? and literatureId in ({$placeholders})";
+                    $app->dbNew->run($query, array_merge([$this->id], $removeLiteratureIds));
+                }
+
+                # add the ones that are new
+                $addLiteratureIds = array_diff($proposedLiteratureIds, $currentLiteratureIds);
+                if (!empty($addLiteratureIds)) {
+                    $placeholders = implode(",", $addLiteratureIds);
+                    $values = [];
+                    foreach ($addLiteratureIds as $id) {
+                        $values[] = $this->id;
+                        $values[] = $id;
+                    }
+
+                    $query = "insert into literature_groups (groupId, literatureId) values $placeholders";
+                    $app->dbNew->run($query, $values);
+                }
+            }
+
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+            throw new Exception($e->getMessage());
+        }
+
         # parent update
         parent::update($data);
     }

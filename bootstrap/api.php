@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * API specific auth bootstrap.
- * Loads the app for API requests.
+ * api bootstrap
  */
 
 $app = Gazelle\App::go();

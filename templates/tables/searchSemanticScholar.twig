@@ -1,0 +1,28 @@
+{#
+ # semantic scholar ajax search
+ #}
+
+<section>
+	<h4 class="hidden">Semantic Scholar</h4>
+
+	<form>
+    	<input type="text" id="searchSemanticScholar" placeholder="Find more related literature with Semantic Scholar" autocomplete="off" style="width: 100%;">
+		<input type="text" id="literatureIds" name="literatureIds[]" value="">
+
+		<table id="liveLiteratureSearchResults" class="compact">
+			<thead>
+				<tr>
+					<th />
+					<th />
+					<th />
+				</tr>
+			</thead>
+
+			<tbody id="liveLiteratureResultEntries">
+			</tbody>
+			</table>
+	</form>
+</section>
+
+
+<script src="/js/literature.js"></script>

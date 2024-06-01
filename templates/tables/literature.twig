@@ -67,18 +67,7 @@
 	            </td>
             </tr>
         {% endfor %}
-
-        {# semantic scholar ajax search #}
-        <tr>
-            <td>
-                {#
-                <select id="searchSemanticScholar" placeholder="Find with Semantic Scholar" autocomplete="off">
-		        </select>
-                #}
-                <input type="text" id="searchSemanticScholar" placeholder="Find more with Semantic Scholar" autocomplete="off">
-                  <input type="hidden" id="literatureIds" name="literatureIds" value=""> 
-            </td>
     </tbody>
 </table>
 
-<script src="/js/literature.js"></script>
+{{ include("tables/searchSemanticScholar.twig")}}

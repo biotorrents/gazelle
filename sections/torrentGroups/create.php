@@ -1,7 +1,17 @@
 <?php
-#declare(strict_types = 1);
+
+declare(strict_types=1);
+
+
+/**
+ * create a torrent group
+ */
 
 $app = Gazelle\App::go();
+
+
+exit;
+
 
 /**
  * This page handles the backend of the "new group" function

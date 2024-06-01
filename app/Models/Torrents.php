@@ -129,24 +129,13 @@ class Torrents extends ObjectCrud
     # how long after a torrent download we want to update a user's snatch lists
     public const SNATCHED_UPDATE_AFTERDL = 300;
 
-    // Some constants for self::display_string's $Mode parameter
-    public const DISPLAYSTRING_ARTISTS = 2; // Whether or not to display artists
-    public const DISPLAYSTRING_YEAR = 4; // Whether or not to display the group's year
-    public const DISPLAYSTRING_RELEASETYPE = 16; // Whether or not to display the release type
-    public const DISPLAYSTRING_LINKED = 33; // Whether or not to link artists and the group
-    // The constant for linking is 32, but because linking only works with HTML, this constant is defined as 32|1 = 33, i.e. LINKED also includes HTML
-    // Keep this in mind when defining presets below!
-
-    // Presets to facilitate the use of $Mode
-    public const DISPLAYSTRING_DEFAULT = 63; // HTML|ARTISTS|YEAR|VH|RELEASETYPE|LINKED = 63
-
 
     /** crud */
 
 
     /**
      * read
-     * 
+     *
      * @param int|string $id
      */
     public function read(int|string $id = null): void
@@ -1573,49 +1562,6 @@ class Torrents extends ObjectCrud
 
 
     /**
-     * display_string
-     *
-     * Return the display string for a given torrent group $GroupID.
-     * @param int $GroupID
-     * @return string
-     */
-    public static function display_string($GroupID, $Mode = self::DISPLAYSTRING_DEFAULT)
-    {
-        $GroupInfo = self::get_groups(array($GroupID), true, true, false)[$GroupID];
-        $ExtendedArtists = $GroupInfo['ExtendedArtists'];
-
-        if ($Mode & self::DISPLAYSTRING_ARTISTS) {
-            if (!empty($ExtendedArtists[1])
-        || !empty($ExtendedArtists[4])
-        || !empty($ExtendedArtists[5])
-        || !empty($ExtendedArtists[6])
-            ) {
-                unset($ExtendedArtists[2], $ExtendedArtists[3]);
-                $DisplayName = \Gazelle\Creators::display_artists($ExtendedArtists, ($Mode & self::DISPLAYSTRING_LINKED));
-            } else {
-                $DisplayName = '';
-            }
-        }
-
-        if ($Mode & self::DISPLAYSTRING_LINKED) {
-            $DisplayName .= "<a href=\"torrents.php?id=$GroupID\" class=\"tooltip\" title=\"View torrent group\" dir=\"ltr\">$GroupInfo[Name]</a>";
-        } else {
-            $DisplayName .= $GroupInfo['Name'];
-        }
-
-        if (($Mode & self::DISPLAYSTRING_YEAR) && $GroupInfo['Year'] > 0) {
-            $DisplayName .= " [$GroupInfo[Year]]";
-        }
-
-        if (($Mode & self::DISPLAYSTRING_RELEASETYPE) && $GroupInfo['ReleaseType'] > 0) {
-            $DisplayName .= ' [' . $ReleaseTypes[$GroupInfo['ReleaseType']] . ']';
-        }
-
-        return $DisplayName;
-    }
-
-
-    /**
      * get_reports
      *
      * Used to get reports info on a unison cache in both browsing pages and torrent pages.
@@ -1651,5 +1597,38 @@ class Torrents extends ObjectCrud
             return $Return;
         }
         return $Reports;
+    }
+
+
+    /**
+     * displayPeers
+     *
+     * @see gazelle/sections/torrents/peerlist.php
+     */
+    public static function displayPeers()
+    {
+        # todo
+    }
+
+
+    /**
+     * displaySnatches
+     *
+     * @see gazelle/sections/torrents/snatchlist.php
+     */
+    public static function displaySnatches()
+    {
+        # todo
+    }
+
+
+    /**
+     * displayDownloads
+     *
+     * @see gazelle/sections/torrents/downloadlist.php
+     */
+    public static function displayDownloads()
+    {
+        # todo
     }
 } # class

@@ -24,7 +24,7 @@ if (str_starts_with($server["REQUEST_URI"], "/resend")) {
 }
 
 # where are they trying to go?
-$requestedPage = Gazelle\Http::readCookie("requestedPage") ?? null;
+$requestedPage = Gazelle\Http::readCookie("requestedPage") ?? "/";
 if (empty($post) && !$requestedPage) {
     Gazelle\Http::createCookie(["requestedPage" => $server["REQUEST_URI"] ?? "/"]);
 }

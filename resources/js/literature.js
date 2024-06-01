@@ -2,7 +2,7 @@
     "use strict";
 
     /**
-     * autofill by doi number
+     * search semantic scholar
      */
 
     $("#searchSemanticScholar").on("change", () => {
@@ -15,36 +15,41 @@
         };
 
         // sanity check
-        if (!request.query || request.query.length === 0) {
+        if (!request.query || request.query.length < 5) {
             $("#autofillLoader").hide();
             return false;
         }
 
         // ajax request
-        $.ajax("/api/internal/searchSemanticScholar", {
-            method: "POST",
-            headers: { "Authorization": "Bearer " + frontendHash },
-
-            contentType: "application/vnd.api+json",
-            dataType: "json",
-
-            data: JSON.stringify(request),
+        $.ajax("https://api.semanticscholar.org/graph/v1/paper/autocomplete?query=" + request.query, {
+            method: "GET",
 
             success: (response) => {
                 $("#autofillLoader").hide();
-                console.log(response);
 
                 /*
-                $("#identifierFormField").val($("#doiNumberInput").val());
-
-                $("#title").val(response.data.title);
-                $("#groupDescription").html(response.data.groupDescription);
-                $("#groupDescription").trigger("change", () => { });
-                $("#year").val(response.data.year);
-                $("#literature").val(response.data.literature.join("\n"));
-                $("#creatorList").val(response.data.creatorList.join("\n"));
-                $("#workgroup").val(response.data.workgroup);
+                let children = $("#liveLiteratureResultEntries").children();
+                children.forEach(function(element) {
+                    console.log(
+                        element
+                    );
+                
+                });
                 */
+
+                $("input.liveSearchResult:not(:checked)").each(function () {
+                    console.log(this);
+                    //$(this).parent().remove();
+                });
+
+                response.matches.forEach((match) => {
+                    // oh no
+                    $("#liveLiteratureSearchResults > tbody:last-child")
+                        .append("<tr><td><input type='checkbox' id='" + match.id + "' name='literatureIds[]' class='liveSearchResult'></td><td><label for='" + match.id + "'>" + match.title + "</label></td><td>" + match.authorsYear + "</td></tr>");
+                });
+                $("#liveLiteratureSearchResults").slideDown();
+
+                //console.log($("#liveLiteratureResultEntries").children());
             },
 
             error: (response) => {

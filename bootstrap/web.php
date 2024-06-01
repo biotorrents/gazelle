@@ -11,19 +11,21 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 $app->executionContext = "web";
 
-# load the error handler
-# https://github.com/filp/whoops
-$whoops = new \Whoops\Run();
-$whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
-$whoops->register();
-
 # quick sanity checks
 $app->gotcha();
 
-# query vars
-$get = Gazelle\Http::request("get");
-$post = Gazelle\Http::request("post");
-$server = Gazelle\Http::request("server");
+# load the error handler
+# https://github.com/filp/whoops
+if ($app->env->dev) {
+    $whoops = new \Whoops\Run();
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+    $whoops->register();
+}
+
+# request variables
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
+$server = Gazelle\Http::server();
 
 # start a session
 $activeSession = session_status() === PHP_SESSION_ACTIVE;
