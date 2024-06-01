@@ -126,7 +126,11 @@ $app->debug["time"]->startMeasure("requests", "get request data");
 $requestIds = array_column($searchResults, "id");
 $requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
 
-$requestData = Gazelle\Requests::get_requests($requestIds);
+$requests = [];
+foreach ($requestIds as $requestId) {
+    $requests[$requestId] = new Gazelle\Requests($requestId);
+}
+
 $app->debug["time"]->stopMeasure("requests", "get request data");
 #!d($requestData);
 
@@ -150,7 +154,7 @@ $app->twig->display("requests/browse.twig", [
     "resolutions" => $app->env->metadata->scopes->values()->flatten(),
 
     "searchResults" => $searchResults,
-    "requestData" => $requestData,
+    "requests" => $requests,
 
     #"bookmarks" => Bookmarks::all_bookmarks("torrent"),
     "officialTags" => $officialTags,

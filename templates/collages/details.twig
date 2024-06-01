@@ -130,13 +130,12 @@ if ($CollageCovers != 0) { ?>
 
 <section>
     <h3>Torrent groups</h3>
-    {{ include("tables/torrentGroupsWithTorrents.twig") }}
+    {{ include("tables/torrentGroups.twig", {withTorrents: true}) }}
 </section>
 
 
 {% if enableConversation and conversation %}
-    {% set variables = { "conversation": conversation } %}
-    {% include "_base/conversation.twig" with variables %}
+    {{ include("_base/conversation.twig") }}
 {% endif %}
 
 {% endblock %}

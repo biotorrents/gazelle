@@ -38,53 +38,11 @@
   </div>
 {% endif %}
 
+{# results #}
+<section>
+  <h3 class="hidden">Search results</h3>
+  {{ include("tables/requests.twig") }}
+  </section>
 
-{# start the results table #}
-<table id="requestSearchResults" data-sortable>
-
-{# start results table headings #}
-{# todo: this can be reorganized to suck less #}
-<thead>
-<tr>
-
-	{# category icon #}
-	<th class="categoryColumn" />
-
-	{# title #}
-	<th>Request&nbsp;title</th>
-
-	{# timeAdded #}
-	<th class="center">Time&nbsp;added</th>
-
-	{# last vote #}
-	<th class="center">Last&nbsp;vote</th>
-
-	{# filled #}
-	<th class="center">Filled</th>
-
-</tr>
-</thead>
-{# end results table headings #}
-
-{# start the results themselves #}
-<tbody>
-{% for item in requestData %}
-
-{% include "requests/tableEntry.twig" with item %}
-
-{% endfor %}
-</tbody>
-
-{# end the results table #}
-</table>
-
-{# todo: share search #}
-{# <a id="searchParamsPermalink" class="button">link this search</a> #}
-
-{# todo: download all this page #}
-{# <a id="downloadAllThisPage" class="button">download all this page</a> #}
-
-{# back to top: lazy af #}
-{# <a href="#searchResultsHeader" class="button">back to top</a> #}
 
 {% endblock %}

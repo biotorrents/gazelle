@@ -11,23 +11,22 @@ $app = Gazelle\App::go();
 
 Gazelle\Http::csrf();
 
-$get = Gazelle\Http::get();
-$post = Gazelle\Http::post();
-
-# resolve the id
-$identifier ??= null;
-if (!$identifier) {
-    $app->error(404);
-}
-
 try {
     # load the request
-    $request = new Gazelle\Requests($identifier);
+    $id ??= null;
+    $request = new Gazelle\Requests($id);
+
+    if (!$request->id) {
+        throw new Exception("not found");
+    }
 } catch (Throwable $e) {
     $app->error(404);
 }
 
 # handle a vote
+$get = Gazelle\Http::get();
+$post = Gazelle\Http::post();
+
 $post["submitVote"] ??= null;
 if ($post["submitVote"]) {
     try {

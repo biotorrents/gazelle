@@ -1,9 +1,8 @@
 {#
  # torrent groups table
- # YES TORRENTS DISPLAYED
  #}
 
-<table id="torrentGroupsWithTorrents" class="relationships">
+<table id="torrentGroups" class="relationships">
     <thead>
         <tr>
             {# category #}
@@ -12,25 +11,25 @@
 	        {# info #}
 	        <th>Info</th>
 
-	        {# timeAdded #}
-	        <th>Time&nbsp;added</th>
+            {% if withTorrents is defined and withTorrents == true %}
+	        	{# timeAdded #}
+	        	<th>Time&nbsp;added</th>
 
-	        {# data size #}
-	        <th>Data&nbsp;size</th>
+	        	{# data size #}
+	        	<th>Data&nbsp;size</th>
 
-	        {# file count #}
-	        {#
-	        <th>File&nbsp;count</th>
-	        #}
+	        	{# file count #}
+	        	{# <th>File&nbsp;count</th> #}
 
-	        {# seeders #}
-	        <th class="tooltip" title="Seeders">↑</th>
+	        	{# seeders #}
+	        	<th class="tooltip" title="Seeders">↑</th>
 
-	        {# leechers #}
-	        <th class="tooltip" title="Leechers">↓</th>
+	        	{# leechers #}
+	        	<th class="tooltip" title="Leechers">↓</th>
 
-            {# snatches #}
-	        <th class="tooltip" title="Snatches">↻</th>
+            	{# snatches #}
+	        	<th class="tooltip" title="Snatches">↻</th>
+			{% endif %}
         </tr>
     </thead>
 
@@ -47,7 +46,7 @@
 		            <p>
 
 		                {# title link #}
-		                <a class="torrentTitle" href="/torrent-groups/{{ torrentGroup.id }}" {# open tag #}
+		                <a class="torrentTitle" href="/torrent-groups/{{ torrentGroup.attributes.slug }}" {# open tag #}
 
     	                {% if torrentGroup.attributes.picture is not empty %}
         	                data-cover="{{ torrentGroup.attributes.picture }}" {# open tag #}
@@ -103,7 +102,7 @@
             </tr>
                 
             {# individual torrents #}
-            {% if torrentGroup.relationships.torrents is not empty %}
+            {% if torrentGroup.relationships.torrents is not empty and withTorrents is defined and withTorrents == true %}
                 {% for torrent in torrentGroup.relationships.torrents %}
                     <tr>
 	                    {# category #}

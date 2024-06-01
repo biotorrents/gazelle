@@ -8,7 +8,7 @@
 	{% if dailyTorrents is not empty %}
 	<section>
 		<h3>{{ limit }} most active daily uploads</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": dailyTorrents}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": dailyTorrents}) }}
 	</section>
 	{% endif %}
 
@@ -16,7 +16,7 @@
 	{% if weeklyTorrents is not empty %}
 	<section>
 		<h3>{{ limit }} most active weekly uploads</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": weeklyTorrents}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": weeklyTorrents}) }}
 	</section>
 	{% endif %}
 
@@ -24,7 +24,7 @@
 	{% if monthlyTorrents is not empty %}
 	<section>
 		<h3>{{ limit }} most active monthly uploads</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": monthlyTorrents}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": monthlyTorrents}) }}
 	</section>
 	{% endif %}
 
@@ -32,7 +32,7 @@
 	{% if yearlyTorrents is not empty %}
 	<section>
 		<h3>{{ limit }} most active yearly uploads</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": yearlyTorrents}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": yearlyTorrents}) }}
 	</section>
 	{% endif %}
 
@@ -40,7 +40,7 @@
 	{% if overallTorrents is not empty %}
 	<section>
 		<h3>{{ limit }} most active overall uploads</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": overallTorrents}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": overallTorrents}) }}
 	</section>
 	{% endif %}
 
@@ -48,7 +48,7 @@
 	{% if torrentSeeders is not empty %}
 	<section>
 		<h3>{{ limit }} best seeded torrents</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": torrentSeeders}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": torrentSeeders}) }}
 	</section>
 	{% endif %}
 
@@ -56,7 +56,7 @@
 	{% if torrentSnatches is not empty %}
 	<section>
 		<h3>{{ limit }} most snatched torrents</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": torrentSnatches}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": torrentSnatches}) }}
 	</section>
 	{% endif %}
 
@@ -64,7 +64,7 @@
 	{% if torrentData is not empty %}
 	<section>
 		<h3>{{ limit }} most transferred torrents</h3>
-		{{ include("tables/torrentGroupsWithoutTorrents.twig", {"torrentGroups": torrentData}) }}
+		{{ include("tables/torrentGroups.twig", {"torrentGroups": torrentData}) }}
 	</section>
 	{% endif %}
 

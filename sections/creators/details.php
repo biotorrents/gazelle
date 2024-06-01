@@ -8,22 +8,19 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-# resolve the identifier
-$identifier ??= null;
-if (!$identifier) {
-    $app->error(404);
-}
-
 try {
-    # try to load the creator
-    $creator = new Gazelle\Creators($identifier);
+    $id ??= null;
+    $creator = new Gazelle\Creators($id);
+
+    if (!$creator->id) {
+        throw new Exception("not found");
+    }
+
     $creator->loadLiterature();
     $creator->loadTorrentGroups();
 } catch (Throwable $e) {
     $app->error(404);
 }
-
-#!d($creator->relationships->torrentGroups);exit;
 
 # twig template
 $app->twig->display("creators/details.twig", [
