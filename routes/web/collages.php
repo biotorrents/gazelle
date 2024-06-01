@@ -17,7 +17,7 @@ Flight::route("/collages", function () {
 
 
 # create
-Flight::route("/collages/create", function () {
+Flight::route("/collages/add", function () {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "create"]);
     require_once "{$app->env->serverRoot}/sections/collages/updateOrCreate.php";
@@ -33,7 +33,7 @@ Flight::route("/collages/@identifier", function ($id) {
 
 
 # update
-Flight::route("/collages/@identifier/update", function ($id) {
+Flight::route("/collages/@identifier/edit", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "update"]);
     require_once "{$app->env->serverRoot}/sections/collages/updateOrCreate.php";

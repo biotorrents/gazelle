@@ -11,7 +11,6 @@ declare(strict_types=1);
 Flight::route("/toolbox", function () {
     $app = Gazelle\App::go();
     $app->middleware(["toolbox" => "access"]);
-
     $app->twig->display("admin/tools.twig", [
         "title" => "Admin tools",
         "sidebar" => true,

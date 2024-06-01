@@ -368,3 +368,14 @@ img {
     }
   }
 }
+
+// sidebar: needs to be its own file
+#sidebar {
+  #groupPicture {
+    text-align: center;
+
+    img {
+      max-height: 20rem;
+    }
+  }
+}

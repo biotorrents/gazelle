@@ -14,7 +14,7 @@
 </p>
 
 <p>
-    <a href="/toolbox/permissionsManager/create" class="button button-primary">create a new role</a>
+    <a href="/toolbox/permissions-manager/add" class="button button-primary">create a new role</a>
 </p>
 
 {# roles data #}
@@ -38,7 +38,7 @@
     <tbody>
         {% for role in roles %}
             <tr>
-                <td><a href="/toolbox/permissionsManager/{{ role.id }}">{{ role.friendlyName }}</a></td>
+                <td><a href="/toolbox/permissions-manager/{{ role.id }}">{{ role.friendlyName }}</a></td>
                 <td class="center">{{ role.permissionsLevel|number_format }}</td>
                 <td class="center">{{ role.userCount|number_format }}</td>
 

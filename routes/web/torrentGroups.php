@@ -15,7 +15,11 @@ Flight::route("/torrent-groups", function () {
 });
 
 
-# details: the existing main group page
+# create
+# handled by /upload
+
+
+# read: the existing main group page
 Flight::route("/torrent-groups/@id", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["torrentGroups" => "read"]);
@@ -23,12 +27,8 @@ Flight::route("/torrent-groups/@id", function ($id) {
 });
 
 
-# create
-# handled by /upload
-
-
 # update
-Flight::route("/torrent-groups/@id/update", function ($id) {
+Flight::route("/torrent-groups/@id/edit", function ($id) {
     $app = Gazelle\App::go();
     $app->middleware(["torrentGroups" => "update"]);
     require_once "{$app->env->serverRoot}/sections/torrentGroups/update.php";

@@ -35,6 +35,7 @@ class Requests extends ObjectCrud
         "lastVote" => "lastVote",
         "identifier" => "identifier",
         "title" => "title",
+        "slug" => "slug",
         "subject" => "subject",
         "object" => "object",
         "description" => "description",

@@ -27,6 +27,7 @@ class TorrentGroups extends ObjectCrud
         "revisionId" => "revisionId",
         "identifier" => "identifier",
         "title" => "title",
+        "slug" => "slug",
         "subject" => "subject",
         "object" => "object",
         "workgroup" => "workgroup",
@@ -108,12 +109,34 @@ class TorrentGroups extends ObjectCrud
      */
     public function update(array $data = []): void
     {
-        throw new Exception("not implemented");
+        $app = App::go();
 
-        /** */
+        # can the owner update?
+        if ($this->isOwner && $app->user->cant(["torrents" => "update"])) {
+            throw new Exception("forbidden");
+        }
 
-        # encode the json fields
-        $data["tags"] = json_encode($data["tags"] ?? []);
+        # can someone else moderate?
+        if (!$this->isOwner && $app->user->cant(["torrents" => "moderate"])) {
+            throw new Exception("forbidden");
+        }
+
+        # validate the data
+        $data = [
+            "id" => $this->id,
+            "categoryId" => $this->categoryId,
+            "revisionId" => $this->revisionId + 1,
+            "identifier" => $data["identifier"] ?? $this->identifier,
+            "title" => $data["title"] ?? $this->title,
+            "subject" => $data["subject"] ?? $this->subject,
+            "object" => $data["object"] ?? $this->object,
+            "workgroup" => $data["workgroup"] ?? $this->workgroup,
+            "location" => $data["location"] ?? $this->location,
+            "year" => $data["year"] ?? $this->year,
+            "description" => $data["description"] ?? $this->description,
+            "picture" => $data["picture"] ?? $this->picture,
+            "tags" => json_encode($data["tags"] ?? $this->tags),
+        ];
 
         # parent update
         parent::update($data);

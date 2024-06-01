@@ -151,7 +151,18 @@ class Torrents extends ObjectCrud
      */
     public function read(int|string $id = null): void
     {
-        $app = \Gazelle\App::go();
+        $app = App::go();
+
+        # is it an info hash?
+        $infoHash = ctype_xdigit(strval($id)) && strlen(strval($id)) === 40;
+        if ($infoHash) {
+            $query = "select id from torrents where hex(info_hash) = ?";
+            $id = $app->dbNew->single($query, [$id]);
+
+            if (!$id) {
+                throw new Exception("not found");
+            }
+        }
 
         # parent read
         parent::read($id);

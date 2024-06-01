@@ -34,6 +34,7 @@ class Collages extends ObjectCrud
         "categoryId" => "categoryId",
         "userId" => "userId",
         "title" => "title",
+        "slug" => "slug",
         "description" => "description",
         "tags" => "tags", # json
         "torrentCount" => "torrentCount",

@@ -58,6 +58,19 @@ class Literature extends ObjectCrud
      */
     public function read(int|string $id = null): void
     {
+        $app = App::go();
+
+        # is it a doi?
+        $doi = preg_match("/{$app->env->regexDoi}/i", strval($id));
+        if ($doi) {
+            $query = "select id from literature where doi = ?";
+            $id = $app->dbNew->single($query, [$id]);
+
+            if (!$id) {
+                throw new Exception("not found");
+            }
+        }
+
         # parent read
         parent::read($id);
 

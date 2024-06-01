@@ -61,6 +61,13 @@ abstract class ObjectCrud extends RecursiveCollection
             $transform["id"] = $app->dbNew->shortUuid();
         }
 
+        # convert empty values to null
+        foreach ($transform as $key => $value) {
+            if (empty($value)) {
+                $transform[$key] = null;
+            }
+        }
+
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
 
@@ -165,6 +172,13 @@ abstract class ObjectCrud extends RecursiveCollection
         # add the identifier to the data
         $column = $app->dbNew->determineIdentifier($this->id);
         $transform[$column] = $this->id;
+
+        # convert empty values to null
+        foreach ($transform as $key => $value) {
+            if (empty($value)) {
+                $transform[$key] = null;
+            }
+        }
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);

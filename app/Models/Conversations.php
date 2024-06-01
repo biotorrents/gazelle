@@ -378,7 +378,7 @@ class Conversations extends ObjectCrud
             "id" => $app->dbNew->shortUuid(),
             "contentId" => $contentId,
             "contentType" => $contentType,
-            "userId" => 0, # created by the system
+            "userId" => $app->user->core["id"] ?? 0, # created by the system
             "subject" => "Conversation",
         ];
 

@@ -3,7 +3,7 @@
     <h3>Actions</h3>
 
     <form method="get" action="/wiki/browse">
-        <input type="text" name="search" placeholder="Find wiki articles" required>
+        <input type="text" name="search" placeholder="Find wiki articles">
         <input type="submit" class="button-primary" value="search the wiki">
     </form>
 
@@ -12,7 +12,7 @@
 
     <form>
         {% if can({"wiki": "create"}) %}
-            <a href="/wiki/create" class="button button-primary">create a new article</a>
+            <a href="/wiki/add" class="button button-primary">create a new article</a>
         {% endif %}
 
         <a href="/wiki/compare/{{ article.id }}" class="button button-green">view this article's history</a>
@@ -23,7 +23,7 @@
 
         {# todo: the index article id is hardcoded here #}
         {% if can({"wiki": "delete"}) and article.id != 1 %}
-            <a href="/wiki/delete/{{ article.id }}" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
+            <a href="/wiki/{{ article.id }}/delete" class="button button-red" onclick="return confirm('Are you sure you want to delete this article?')">delete this article</a>
         {% endif %}
     </form>
 </section>

@@ -29,15 +29,15 @@
 
 		{# update #}
 		{% if can({"torrents": "update"}) or torrent.attributes.userId == user.core.id %}
-			<a class="button button-orange" href="/torrents.php?action=edit&id={{ torrent.id }}">update</a>
+			<a class="button button-orange" href="/torrents/{{ torrent.id }}/edit">edit</a>
 		{% endif %}
 
 		{# report #}
 		<a class="button button-red" href="/reportsv2.php?action=report&id={{ torrent.id }}">report</a>
 
 		{# delete #}
-		{% if can({"torrents": "delete"}) or torrent.UserID == user.core.id %}
-			<a class="button button-red" href="/torrents.php?action=delete&torrentid={{ torrent.id }}">delete</a>
+		{% if can({"torrents": "delete"}) or torrent.attributes.userId == user.core.id %}
+			<a class="button button-red" href="/torrents/{{ torrent.id }}/delete">delete</a>
 		{% endif %}
 	</form>
 

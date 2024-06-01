@@ -4,7 +4,26 @@ declare(strict_types=1);
 
 
 /**
+ * web routes
+ *
+ * Other variations of CRUD include:
+ *
+ *   - ABCD (add, browse, change, delete)
+ *   - CRUDL (create, read, update, delete, list)
+ *   - BREAD (browse, read, edit, add, delete)
+ *   - DAVE (delete, add, view, edit)[7]
+ *   - CRAP (create, replicate, append, process)
+ *
+ * So our basic route logic should be:
+ *
+ *   - browse, e.g., /torrents
+ *   - create, e.g., /torrents/add
+ *   - read, e.g., /torrents/666
+ *   - update, e.g., /torrents/666/edit
+ *   - delete, e.g., /torrents/666/delete (no interface)
+ *
  * @see https://flightphp.com/learn
+ * @see https://en.wikipedia.org/wiki/Create,_read,_update_and_delete
  */
 
 # require the route files

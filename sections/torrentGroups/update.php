@@ -9,12 +9,40 @@ declare(strict_types=1);
 
 $app = Gazelle\App::go();
 
-$identifier ??= null;
-$torrentGroup = new Gazelle\TorrentGroup($identifier);
+Gazelle\Http::csrf();
 
-if (!$torrentGroup->id) {
+try {
+    $id ??= null;
+    $torrentGroup = new Gazelle\TorrentGroup($id);
+
+    if (!$torrentGroup->id) {
+        throw new Exception("not found");
+    }
+} catch (Exception $e) {
     $app->error(404);
 }
+
+# request data
+$post = Gazelle\Http::post();
+$data = [
+    "id" => $torrentGroup->id,
+    "categoryId" => $torrentGroup->categoryId,
+    "revisionId" => $torrentGroup->revisionId + 1,
+    "identifier" => $post["identifier"] ?? null,
+    "title" => $post["title"] ?? null,
+    "subject" => $post["subject"] ?? null,
+    "object" => $post["object"] ?? null,
+    "workgroup" => $post["workgroup"] ?? null,
+    "location" => $post["location"] ?? null,
+    "year" => $post["year"] ?? null,
+    "description" => $post["description"] ?? null,
+    "picture" => $post["picture"] ?? null,
+    "tags" => json_encode($post["tags"] ?? null), # json
+];
+
+
+exit;
+
 
 /**
  * Edit torrent group wiki page

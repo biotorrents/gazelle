@@ -16,7 +16,7 @@
 	            <td>
 		                {# title #}
                         <p>
-		                	<a class="torrentTitle" href="/literature/{{ item.id }}">
+		                	<a class="torrentTitle" href="/literature/{{ item.attributes.doi }}">
                         		{% if item.attributes.title is not empty %}
 			                    	{{ item.attributes.title }}
                             	{% else %}

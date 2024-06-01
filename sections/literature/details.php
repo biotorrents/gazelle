@@ -10,8 +10,17 @@ declare(strict_types=1);
 $app = Gazelle\App::go();
 
 try {
+    # is it an id or a doi?
     $id ??= null;
-    $literature = new Gazelle\Literature($id);
+    $prefix ??= null;
+    $suffix ??= null;
+
+    if ($prefix && $suffix) {
+        $doi = "{$prefix}/{$suffix}";
+        $literature = new Gazelle\Literature($doi);
+    } else {
+        $literature = new Gazelle\Literature($id);
+    }
 
     if (!$literature->id) {
         throw new Exception("not found");
@@ -20,7 +29,6 @@ try {
     $literature->loadCreators();
     $literature->loadTorrentGroups();
     $literature->loadRequests();
-    #!d($literature->attributes->journal);exit;
 } catch (Throwable $e) {
     $app->error(404);
 }

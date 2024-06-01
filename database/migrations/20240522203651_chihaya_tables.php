@@ -43,7 +43,7 @@ final class ChihayaTables extends AbstractMigration
 
         foreach ($ref as $row) {
             $query = "insert into approved_clients (peer_id, description) values (?, ?)";
-            $app->dbNew->do($query, [ $row["peer_id"], $row["description"] ]);
+            $app->dbNew->do($query, [ $row["peer_id"], $row["vstring"] ]);
         }
 
         /*
@@ -131,8 +131,8 @@ final class ChihayaTables extends AbstractMigration
         $query = "
             create table transfer_history
             (
-                uid int not null,
-                fid int not null,
+                uid bigint unsigned not null,
+                fid bigint unsigned not null,
                 uploaded bigint default 0 not null,
                 downloaded bigint default 0 not null,
                 seeding tinyint default 0 not null,
@@ -182,8 +182,8 @@ final class ChihayaTables extends AbstractMigration
             (
                 last_announce int unsigned default 0 not null,
                 starttime int unsigned default 0 not null,
-                uid int unsigned not null,
-                fid int unsigned not null,
+                uid bigint unsigned not null,
+                fid bigint unsigned not null,
                 ip int unsigned not null,
                 client_id mediumint unsigned not null,
                 uploaded bigint unsigned default 0 not null,

@@ -33,6 +33,7 @@ class Wiki extends ObjectCrud
         "userId" => "userId",
         "revision" => "revision",
         "title" => "title",
+        "slug" => "slug",
         "body" => "body",
         "minimumReadClass" => "minimumReadClass",
         "minimumEditClass" => "minimumEditClass",

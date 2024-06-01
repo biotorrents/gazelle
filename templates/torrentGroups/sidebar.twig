@@ -40,7 +40,7 @@
 
 		{# edit group #}
 		{% if can({"torrentGroups": "update"}) %}
-			<a class="button button-primary" href="/torrents.php?action=editgroup&groupid={{ torrentGroup.id }}">edit group</a>
+			<a class="button button-primary" href="/torrent-groups/{{ torrentGroup.id }}/edit">edit group</a>
 		{% endif %}
 
 		{# use this revision #}
