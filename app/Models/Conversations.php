@@ -69,45 +69,6 @@ class Conversations extends ObjectCrud
     ];
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return ?array
-     */
-    public function relationships(): ?array
-    {
-        $app = App::go();
-
-        return [
-            Messages::$type => $this->relatedMessages(),
-        ];
-    }
-
-
-    /**
-     * relatedMessages
-     *
-     * @return ?array
-     */
-    private function relatedMessages(): ?array
-    {
-        $app = App::go();
-
-        $query = "select id from conversations_messages where conversationId = ? and deleted_at is null";
-        $ref = $app->dbNew->multi($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row["id"], "type" => Messages::$type];
-        }
-
-        return $data;
-    }
-
-
     /** single message crud */
 
 

@@ -491,16 +491,6 @@ class Auth # extends Delight\Auth\Auth
             return $e->getMessage();
             return $message;
         }
-
-        /*
-        try {
-            # gazelle session
-            $this->createSession($userId, $rememberMe);
-        } catch (Throwable $e) {
-            return $e->getMessage();
-            return $message;
-        }
-        */
     } # login
 
 
@@ -854,9 +844,6 @@ class Auth # extends Delight\Auth\Auth
             # flush all the cookies
             \Gazelle\Http::flushCookies();
 
-            # database: gazelle session
-            $this->flushSessions();
-
             # cache: should be a hash map
             $app->cache->delete("user_info_heavy_{$app->user->core["id"]}");
             $app->cache->delete("user_info_{$app->user->core["id"]}");
@@ -1020,102 +1007,6 @@ class Auth # extends Delight\Auth\Auth
     }
 
 
-    /** session handling */
-
-
-    /**
-     * createSession
-     */
-    public function createSession(int $userId, bool $rememberMe = false)
-    {
-        $app = \Gazelle\App::go();
-
-        $server = \Gazelle\Http::request("server");
-
-        $query = "
-            insert into users_sessions
-                (id, userId, sessionId, expires, ipAddress, userAgent)
-            values
-                (:id, :userId, :sessionId, :expires, :ipAddress, :userAgent)
-        ";
-
-        $uuid = $app->dbNew->shortUuid();
-        $rememberDuration = time() + $this->remember($rememberMe);
-        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
-
-        $data = [
-            "id" => $id,
-            "userId" => $userId,
-            "sessionId" => \Gazelle\Text::random(128),
-            "expires" => $expires,
-            "ipAddress" => $server["REMOTE_ADDR"] ?? null,
-            "userAgent" => $server["HTTP_USER_AGENT"] ?? null,
-        ];
-
-        $app->dbNew->do($query, $data);
-
-        \Gazelle\Http::createCookie([ "sessionId" => $data["sessionId"] ], $expires);
-        \Gazelle\Http::createCookie([ "userId" => $userId ], $expires);
-    }
-
-
-    /**
-     * readSession
-     */
-    public function readSession(string $sessionId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select * from users_sessions where sessionId = ?";
-        $row = $app->dbNew->row($query, [$sessionId]);
-
-        return $row;
-    }
-
-
-    /**
-     * updateSession
-     */
-    public function updateSession(string $sessionId, bool $rememberMe = false)
-    {
-        $app = \Gazelle\App::go();
-
-        $rememberDuration = time() + $this->remember($rememberMe);
-        $expires = Carbon\Carbon::createFromTimestamp($rememberDuration)->toDateString();
-
-        $query = "update users_sessions set expires = ? where sessionId = ?";
-        $app->dbNew->do($query, [$expires, $sessionId]);
-    }
-
-
-    /**
-     * deleteSession
-     */
-    public function deleteSession(string $sessionId)
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "delete from users_sessions where sessionId = ?";
-        $app->dbNew->do($query, [$sessionId]);
-
-        \Gazelle\Http::flushCookies();
-    }
-
-
-    /**
-     * flushSessions
-     */
-    public function flushSessions()
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "delete from users_sessions where userId = ?";
-        $app->dbNew->do($query, [ $app->user->core["id"] ]);
-
-        \Gazelle\Http::flushCookies();
-    }
-
-
     /** bearer tokens */
 
 
@@ -1138,9 +1029,8 @@ class Auth # extends Delight\Auth\Auth
             values (:uuid, :userId, :name, :token, :permissions)
         ";
 
-        $uuid = $app->dbNew->uuid();
         $app->dbNew->do($query, [
-            "uuid" => $uuid,
+            "id" => $app->dbNew->shortUuid(),
             "userId" => $app->user->core["id"],
             "name" => $name,
             "token" => password_hash($token, PASSWORD_DEFAULT),

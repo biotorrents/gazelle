@@ -52,45 +52,6 @@ class Messages extends ObjectCrud
     ];
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return ?array
-     */
-    public function relationships(): ?array
-    {
-        $app = App::go();
-
-        return [
-            Conversations::$type => $this->relatedConversations(),
-        ];
-    }
-
-
-    /**
-     * relatedConversations
-     *
-     * @return ?array
-     */
-    private function relatedConversations(): ?array
-    {
-        $app = App::go();
-
-        $query = "select id from conversations_threads where id = ?";
-        $ref = $app->dbNew->row($query, [$this->conversationId]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => Conversations::$type];
-        }
-
-        return $data;
-    }
-
-
     /** crud */
 
 

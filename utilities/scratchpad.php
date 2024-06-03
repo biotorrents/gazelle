@@ -14,16 +14,23 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
-$tg = new Gazelle\TorrentGroups(1);
-!d($tg);exit;
-
+/*
 $ror = new Gazelle\ResearchOrganizationRegistry();
+$result = $ror->reverseGeocode(41.30815, -72.92816);
+!d($result);
+exit;
+*/
 
-#$match = $ror->match("university boston");
-#!d($match);exit;
+/*
+$org = new Gazelle\Organizations(1);
+$org->id = $app->dbNew->shortUuid();
+$org->attributes->name = "yale university";
+$match = $org->hydrateFromRor();
+!d($org);
+*/
 
 
-
+/*
 $response = $ror->search("boston");
 !d($response);exit;
 
@@ -51,7 +58,7 @@ $data = [
     "wikipedia" => $response["wikipedia_url"] ?? null,
 ];
 #!d($data);
-
+*/
 ?>
 
 <html>
@@ -68,7 +75,7 @@ $data = [
      <div id="map" style="height: 20rem;"></div>
 
      <script>
-        var map = L.map('map').setView([ <?= $data["latitude"] ?>, <?= $data["longitude"] ?> ], 10);
+        var map = L.map('map').setView([ <?= $org->attributes->latitude ?>, <?= $org->attributes->longitude ?> ], 10);
         console.log(map);
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -76,7 +83,7 @@ $data = [
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
 
-var marker = L.marker([ <?= $data["latitude"] ?>, <?= $data["longitude"] ?> ]).addTo(map);
+var marker = L.marker([ <?= $org->attributes->latitude ?>, <?= $org->attributes->longitude ?> ]).addTo(map);
         </script>
 </body>
 </html>

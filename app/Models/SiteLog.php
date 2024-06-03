@@ -37,55 +37,6 @@ class SiteLog extends ObjectCrud
     ];
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return ?array
-     */
-    public function relationships(): ?array
-    {
-        return [
-            # unique because everything can have a log entry
-            Collages::$type => $this->relatedObjects(Collages::$type),
-            Conversations::$type => $this->relatedObjects(Conversations::$type),
-            Creators::$type => $this->relatedObjects(Creators::$type),
-            Literature::$type => $this->relatedObjects(Literature::$type),
-            Messages::$type => $this->relatedObjects(Messages::$type),
-            Requests::$type => $this->relatedObjects(Requests::$type),
-            Roles::$type => $this->relatedObjects(Roles::$type),
-            Tags::$type => $this->relatedObjects(Tags::$type),
-            TorrentGroups::$type => $this->relatedObjects(TorrentGroups::$type),
-            Torrents::$type => $this->relatedObjects(Torrents::$type),
-            Wiki::$type => $this->relatedObjects(Wiki::$type),
-        ];
-    }
-
-
-    /**
-     * relatedObjects
-     *
-     * @param string $type
-     * @return array
-     */
-    private function relatedObjects(string $type): array
-    {
-        $app = App::go();
-
-        $query = "select contentId from site_log where contentType = ? and deleted_at is null";
-        $ref = $app->dbNew->column($query, [$type]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => $type];
-        }
-
-        return $data;
-    }
-
-
     /** methods */
 
 

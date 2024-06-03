@@ -71,6 +71,15 @@ class Permissions
             "moderate" => "Can moderate literature",
         ],
 
+        # organizations
+        "organizations" => [
+            "create" => "Can create organizations",
+            "read" => "Can read organizations",
+            "update" => "Can update organizations",
+            "delete" => "Can delete organizations",
+            "moderate" => "Can moderate organizations",
+        ],
+
         # requests
         "requests" => [
             "create" => "Can create requests",

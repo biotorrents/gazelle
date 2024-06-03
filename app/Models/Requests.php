@@ -209,47 +209,6 @@ class Requests extends ObjectCrud
     }
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return ?array
-     */
-    public function relationships(): ?array
-    {
-        return [
-            Creators::$type => $this->relatedCreators(),
-            "tags" => $this->getTags(),
-            "votes" => $this->getVotes(),
-        ];
-    }
-
-
-    /**
-     * relatedCreators
-     */
-    private function relatedCreators(): ?array
-    {
-        $app = App::go();
-
-        $query = "select creatorId from creators_requests where requestId = ?";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        if (!$ref) {
-            return null;
-        }
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => Creators::$type];
-        }
-
-        return $data;
-    }
-
-
     /** methods */
 
 

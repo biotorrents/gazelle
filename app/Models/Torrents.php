@@ -177,40 +177,6 @@ class Torrents extends ObjectCrud
     }
 
 
-    /**
-     * relationships
-     *
-     * @return ?array
-     */
-    public function relationships(): ?array
-    {
-        return [
-            TorrentGroups::$type => $this->relatedTorrentGroups(),
-        ];
-    }
-
-
-    /**
-     * relatedTorrentGroups
-     *
-     * @return array
-     */
-    private function relatedTorrentGroups(): array
-    {
-        $app = \Gazelle\App::go();
-
-        $query = "select torrents_group.id from torrents_group join torrents on torrents.groupId = torrents_group.id where torrents.id = ?";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => TorrentGroups::$type];
-        }
-
-        return $data;
-    }
-
-
     /** legacy */
 
 

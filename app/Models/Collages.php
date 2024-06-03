@@ -109,43 +109,6 @@ class Collages extends ObjectCrud
     }
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return array
-     */
-    public function relationships(): array
-    {
-        return [
-            TorrentGroups::$type => $this->relatedTorrentGroups(),
-        ];
-    }
-
-
-    /**
-     * relatedTorrentGroups
-     *
-     * @return array
-     */
-    private function relatedTorrentGroups(): array
-    {
-        $app = App::go();
-
-        $query = "select groupId from collages_torrents where collageId = ? and deleted_at is null order by sortOrder asc";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => TorrentGroups::$type];
-        }
-
-        return $data;
-    }
-
-
     /** methods */
 
 

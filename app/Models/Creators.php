@@ -62,65 +62,6 @@ class Creators extends ObjectCrud
     }
 
 
-    /** relationships */
-
-
-    /**
-     * relationships
-     *
-     * @return array
-     */
-    public function relationships(): array
-    {
-        return [
-            TorrentGroups::$type => $this->relatedTorrentGroups(),
-            Requests::$type => $this->relatedRequests(),
-        ];
-    }
-
-
-    /**
-     * relatedTorrentGroups
-     *
-     * @return array
-     */
-    private function relatedTorrentGroups(): array
-    {
-        $app = App::go();
-
-        $query = "select groupId from creators_groups where creatorId = ? and deleted_at is null";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => TorrentGroups::$type];
-        }
-
-        return $data;
-    }
-
-
-    /**
-     * relatedRequests
-     *
-     * @return array
-     */
-    private function relatedRequests(): array
-    {
-        $app = App::go();
-
-        $query = "select requestId from creators_requests where creatorId = ? and deleted_at is null";
-        $ref = $app->dbNew->column($query, [$this->id]);
-
-        $data = [];
-        foreach ($ref as $row) {
-            $data[] = ["id" => $row, "type" => Requests::$type];
-        }
-
-        return $data;
-    }
-
-
     /** methods */
 
 

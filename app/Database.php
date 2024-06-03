@@ -228,7 +228,7 @@ class Database extends \PDO
 
 
     /**
-     * uuid
+     * binaryUuid
      *
      * Generate a unique id suitable for a database key.
      *
@@ -237,23 +237,9 @@ class Database extends \PDO
      * @see https://uuid.ramsey.dev/en/stable/rfc4122/version7.html
      * @see https://uuid.ramsey.dev/en/stable/database.html
      */
-    public function uuid(): string
+    public function binaryUuid(): string
     {
         return \Ramsey\Uuid\Uuid::uuid7()->getBytes();
-    }
-
-
-    /**
-     * binaryUuid
-     *
-     * Gets the binary representation of a string uuid.
-     *
-     * @param string $string uuid v7 string
-     * @return string uuid v7 binary
-    */
-    public function binaryUuid(string $string): string
-    {
-        return \Ramsey\Uuid\Uuid::fromString($string)->getBytes();
     }
 
 
@@ -262,12 +248,11 @@ class Database extends \PDO
      *
      * Get the string representation of a binary uuid.
      *
-     * @param string $binary uuid v7 binary
      * @return string uuid v7 string
     */
-    public function stringUuid(string $binary): string
+    public function stringUuid(): string
     {
-        return \Ramsey\Uuid\Uuid::fromBytes($binary)->toString();
+        return \Ramsey\Uuid\Uuid::uuid7()->getBytes()->toString();
     }
 
 
@@ -276,46 +261,31 @@ class Database extends \PDO
      *
      * Generate a short uuid.
      *
-     * @return int e.g., 100455158982377479
+     * @return string e.g., "100455158982377479"
      *
      * @see https://mariadb.com/kb/en/uuid_short/
      */
-    public function shortUuid(): int
+    public function shortUuid(): string
     {
-        # prevent query caching on production
+        # prevent query caching
         $query = "select uuid_short()";
         $options = [ "preventCache" => bin2hex(random_bytes(16)) ];
 
-        return $this->single($query, [], [$options]);
+        return strval($this->single($query, [], [$options]));
     }
 
 
     /**
      * slug
      *
-     * Generate a hashed slug from a string, e.g.,
-     * $app->db->slug($title) => "my-title-d4dce101"
-     *
      * @param string $string
      * @return string
      *
-     * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_words
      * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_slug
      */
     public function slug(string $string): string
     {
-        $string = \Illuminate\Support\Str::words($string, 10, "");
-        $slug = \Illuminate\Support\Str::slug($string);
-
-        $hash = bin2hex(random_bytes(4));
-        $good = "{$slug}-{$hash}";
-
-        # lazy af
-        if (strlen($good) > 255) {
-            throw new Exception("slug too long");
-        }
-
-        return $good;
+        return \Illuminate\Support\Str::slug($string);
     }
 
 
@@ -336,6 +306,7 @@ class Database extends \PDO
             return "id";
         }
 
+        /*
         # https://ihateregex.io/expr/uuid/
         if (is_string($id) && strlen($id) === 36 && preg_match("/{$app->env->regexUuid}/iD", $id)) {
             return "uuid";
@@ -345,6 +316,7 @@ class Database extends \PDO
         if (Text::isBinary($id) && strlen($id) === 16) {
             return "uuid";
         }
+        */
 
         # default slug
         return "slug";
@@ -361,6 +333,7 @@ class Database extends \PDO
      */
     private function translateBinary(array $row): array
     {
+        /*
         # uuid v7
         $row["uuid"] ??= null;
         if ($row["uuid"]) {
@@ -368,6 +341,7 @@ class Database extends \PDO
         } else {
             unset($row["uuid"]);
         }
+        */
 
         # webauthn
         $row["aaguid"] ??= null;
@@ -377,6 +351,7 @@ class Database extends \PDO
             unset($row["aaguid"]);
         }
 
+        /*
         # peer_id
         $row["peer_id"] ??= null;
         if ($row["peer_id"]) {
@@ -384,6 +359,7 @@ class Database extends \PDO
         } else {
             unset($row["peer_id"]);
         }
+        */
 
         # infoHash
         $row["infoHash"] ??= null;
@@ -449,12 +425,14 @@ class Database extends \PDO
             return $host->query($query);
         }
 
+        /*
         # https://ihateregex.io/expr/uuid/
         foreach ($parameters as $key => $value) {
             if (is_string($value) && strlen($value) === 36 && preg_match("/{$app->env->regexUuid}/iD", $value)) {
                 $parameters[$key] = $this->binaryUuid($value);
             }
         }
+        */
 
         # execute
         $statement->execute($parameters);

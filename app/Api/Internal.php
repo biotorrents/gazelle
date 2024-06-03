@@ -196,7 +196,6 @@ class Internal extends Base
 
             # try to login
             $auth->library->admin()->logInAsUserById($userId);
-            $auth->createSession($userId); # todo: rememberMe?
 
             # return the raw response
             print json_encode($response);

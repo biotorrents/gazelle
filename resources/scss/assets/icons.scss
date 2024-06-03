@@ -365,10 +365,56 @@ img.torrent_header {
   }
 }
 
-
 .homepage {
   &:before {
     content: "🏠";
+    margin-right: 0.5rem;
+  }
+}
+
+
+/**
+ * organizations
+ */
+
+.rorId {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/ror.svg");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.grid {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/grid.webp");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.acronym {
+  &:before {
+    content: "🆔";
+    margin-right: 0.5rem;
+  }
+}
+
+.established {
+  &:before {
+    content: "📅";
     margin-right: 0.5rem;
   }
 }

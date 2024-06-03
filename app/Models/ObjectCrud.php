@@ -79,12 +79,14 @@ abstract class ObjectCrud extends RecursiveCollection
             $transform["id"] = $app->dbNew->shortUuid();
         }
 
+        /*
         # convert empty values to null
         foreach ($transform as $key => $value) {
             if (empty($value)) {
                 $transform[$key] = null;
             }
         }
+        */
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
@@ -102,7 +104,7 @@ abstract class ObjectCrud extends RecursiveCollection
         $this->attributes = new RecursiveCollection($attributes);
 
         # log the action
-        $this->log("create");
+        #$this->log("create");
     }
 
 
@@ -194,12 +196,14 @@ abstract class ObjectCrud extends RecursiveCollection
         $column = $app->dbNew->determineIdentifier($this->id);
         $transform[$column] = $this->id;
 
+        /*
         # convert empty values to null
         foreach ($transform as $key => $value) {
             if (empty($value)) {
                 $transform[$key] = null;
             }
         }
+        */
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
@@ -263,12 +267,12 @@ abstract class ObjectCrud extends RecursiveCollection
 
     /**
      * relationships
-     * 
+     *
      * Loads all the relationships as ["id" => "string, "type" => "string"].
-     * 
+     *
      * @return void
      */
-    public function relationships(): void
+    public function relationshipsTest(): void
     {
         $app = App::go();
 
@@ -283,8 +287,8 @@ abstract class ObjectCrud extends RecursiveCollection
             $linksTable = $object->table . "_links";
 
             # does the table exist?
-            $query = "show tables like ?";
-            $good = $app->dbNew->single($query, [$linksTable]);
+            $query = "show tables like '{$linksTable}'";
+            $good = $app->dbNew->single($query, []);
 
             if (!$good) {
                 continue;
@@ -292,7 +296,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
             # get the relationships
             $query = "select objectId from {$linksTable} where contentId = ? and contentType = ?";
-            $rows = $app->dbNew->rows($query, [$this->id, $this::$type]);
+            $rows = $app->dbNew->multi($query, [$this->id, $this::$type]);
 
             # set the relationships
             $this->relationships->{$object::$type} = [];
@@ -317,6 +321,10 @@ abstract class ObjectCrud extends RecursiveCollection
      */
     public function log(string $action, ?string $description = null): void
     {
+        return;
+
+        /** */
+
         $app = App::go();
 
         if (!in_array($action, SiteLog::$allowedActions)) {

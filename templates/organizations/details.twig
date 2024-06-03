@@ -1,0 +1,163 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>{{ organization.attributes.name }}</h2>
+
+	{# essential details table #}
+	<section>
+		<table>
+
+      {# rorId #}
+			{% if organization.attributes.rorId is not empty %}
+				<tr>
+					<th><span class="rorId nobr">ROR ID</span></th>
+					<td>
+            <a href="{{ organization.attributes.rorId }}" target="_blank" class="external monospace">{{ organization.attributes.rorId }}</a>
+          </td>
+				</tr>
+			{% endif %}
+
+      {# grid #}
+			{% if organization.attributes.grid is not empty %}
+				<tr>
+					<th><span class="grid nobr">GRID</span></th>
+					<td>
+            <span class="monospace">{{ organization.attributes.grid }}</span>
+          </td>
+				</tr>
+			{% endif %}
+
+      {# homepage #}
+      {#
+			{% if organization.attributes.homepage is not empty %}
+				<tr>
+					<th><span class="homepage nobr">homepage</span></th>
+					<td>
+            <a href="{{ organization.attributes.homepage }}" target="_blank" class="external monospace">{{ organization.attributes.homepage }}</a>
+          </td>
+				</tr>
+			{% endif %}
+      #}
+
+      {# wikipedia #}
+      {#
+			{% if organization.attributes.wikipedia is not empty %}
+				<tr>
+					<th><span class="wikipedia nobr">wikipedia</span></th>
+					<td>
+            <a href="{{ organization.attributes.wikipedia }}" target="_blank" class="external monospace">{{ organization.attributes.wikipedia }}</a>
+          </td>
+				</tr>
+			{% endif %}
+      #}
+
+      {# location #}
+			{% if organization.attributes.reverseGeocode is not empty %}
+				<tr>
+					<th><span class="location nobr">Location</span></th>
+					<td>{{ organization.attributes.reverseGeocode }}</td>
+        </tr>
+      {% elseif organization.attributes.country is not empty %}
+				<tr>
+					<th><span class="location nobr">Location</span></th>
+					<td>
+            {% if organization.attributes.city is defined %}
+              {{ organization.attributes.city }}
+            {% endif %}
+
+            {% if organization.attributes.state is defined %}
+              {{ organization.attributes.state }}
+            {% endif %}
+
+            {% if organization.attributes.country is defined %}
+              {{ organization.attributes.country }}
+            {% endif %}
+            
+            {% if organization.attributes.postalCode is defined %}
+              {{ organization.attributes.postalCode }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+
+      {# acronym #}
+			{% if organization.attributes.acronym is not empty %}
+				<tr>
+					<th><span class="acronym nobr">Acronym</span></th>
+					<td>{{ organization.attributes.acronym }}</td>
+				</tr>
+			{% endif %}
+
+			{# established #}
+			{% if organization.attributes.established is not empty %}
+				<tr>
+					<th><span class="established nobr">Established</span></th>
+					<td>{{ organization.attributes.established }}</td>
+				</tr>
+			{% endif %}
+		</table>
+	</section>
+
+
+	{# map #}
+  {% if organization.attributes.latitude is not empty and organization.attributes.longitude is not empty %}
+	<section>
+		<h3>Map</h3>
+     <div id="map" style="height: 50rem;"></div>
+      <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""/>
+
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""></script>
+
+     <script>
+        (() => {
+          "use strict";
+
+          // https://leafletjs.com/reference.html#map-option
+          var map = L.map('map', {
+            center: [ {{ organization.attributes.latitude }}, {{ organization.attributes.longitude }} ],
+            zoom: 10,
+            scrollWheelZoom: false
+          });
+
+          L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            maxZoom: 20,
+            attribution: "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+          }).addTo(map);
+
+          var marker = L.marker([ {{ organization.attributes.latitude }}, {{ organization.attributes.longitude }} ]).addTo(map);
+
+        })();
+    </script>
+</section>
+  {% endif %}
+
+
+  	{# torrent groups #}
+    {#
+    {% if torrentGroups is not empty %}
+	<section>
+		<h3>Torrent groups</h3>
+      {{ include("tables/torrentGroups.twig") }}
+	</section>
+    {% endif %}
+
+
+{% if enableConversation and conversation %}
+    {% set variables = { "conversation": conversation } %}
+    {% include "_base/conversation.twig" with variables %}
+{% endif %}
+#}
+
+{% endblock %}
+
+
+{% block sidebar %}
+
+{% include "organizations/sidebar.twig" %}
+
+{% endblock %}

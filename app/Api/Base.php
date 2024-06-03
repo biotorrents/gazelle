@@ -398,7 +398,7 @@ class Base
             "data" => $data,
 
             "meta" => [
-                "id" => $app->dbNew->stringUuid($app->dbNew->uuid()),
+                "id" => $app->dbNew->shortUuid(),
                 "count" => (is_array($data) ? count($data) : 1),
                 "status" => "success",
                 "version" => self::$version,
@@ -436,7 +436,7 @@ class Base
             "errors" => $data,
 
             "meta" => [
-                "id" => $app->dbNew->stringUuid($app->dbNew->uuid()),
+                "id" => $app->dbNew->shortUuid(),
                 "count" => (is_array($data) ? count($data) : 1),
                 "status" => "failure",
                 "version" => self::$version,

@@ -151,4 +151,53 @@ class ResearchOrganizationRegistry
 
         return json_decode($response->getBody()->getContents() ?? "{}", true);
     }
+
+
+    /**
+     * reverseGeocode
+     *
+     * Reverse geocode a latitude and longitude to a formatted address.
+     *
+     * @param float $latitude
+     * @param float $longitude
+     * @return ?string
+     *
+     * @see https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding
+     */
+    public function reverseGeocode(float $latitude, float $longitude): ?string
+    {
+        $app = App::go();
+
+        $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . __FUNCTION__ . json_encode(func_get_args()));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $response = $this->client->get("https://maps.googleapis.com/maps/api/geocode/json", [
+            "query" => [
+                "latlng" => "{$latitude},{$longitude}",
+                "key" => $app->env->private("googleMapsApiKey"),
+            ],
+        ]);
+
+        $body = $this->validateAndParseResponse($response);
+        $previousLength = 0;
+        $formattedAddress = null;
+
+        foreach ($body["results"] as $result) {
+            # it's shorter than the last address
+            if (strlen($result["formatted_address"]) < $previousLength) {
+                continue;
+            }
+
+            # set the return string to the current longest address
+            $formattedAddress = $result["formatted_address"];
+            $previousLength = strlen($formattedAddress);
+        }
+
+        $app->cache->set($cacheKey, $formattedAddress, $this->cacheDuration);
+        return $formattedAddress;
+    }
 } # class

@@ -86,7 +86,7 @@ class UserEntityRepository # implements PublicKeyCredentialUserEntityRepository
     {
         $app = \Gazelle\App::go();
 
-        return $app->dbNew->uuid();
+        return $app->dbNew->shortUuid();
     }
 
 
