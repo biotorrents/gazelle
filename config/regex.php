@@ -132,3 +132,8 @@ $env->regexUniProt = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[
 # https://github.com/gzuidhof/starboard-notebook/blob/master/docs/format.md
 # flags: none
 $env->regexStarboard = "^(#|\/\/)\s*%{2,}-*";
+
+
+# https://ror.readme.io/v2/docs/identifier
+# flags: none
+$env->regexRor = "^0[a-z|0-9]{6}[0-9]{2}$";

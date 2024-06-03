@@ -16,6 +16,13 @@ class SiteLog extends ObjectCrud
     public static ?string $type = "siteLog"; # resource name
     protected ?string $table = "site_log"; # database table
 
+    # cache settings
+    private string $cachePrefix = "siteLog:";
+    private string $cacheDuration = "1 hour";
+
+    # actions allowed to be written to the database
+    public static array $allowedActions = ["create", "read", "update", "delete"];
+
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
@@ -28,10 +35,6 @@ class SiteLog extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
-
-    # cache settings
-    private string $cachePrefix = "siteLog:";
-    private string $cacheDuration = "1 hour";
 
 
     /** relationships */
@@ -86,7 +89,6 @@ class SiteLog extends ObjectCrud
     /** methods */
 
 
-
     /**
      * search
      *
@@ -97,7 +99,7 @@ class SiteLog extends ObjectCrud
      * @param int $limit
      * @return array
      */
-    public function search(string $search, int $offset = 0, int $limit = 20): array
+    public function searchDatabase(string $search, int $offset = 0, int $limit = 20): array
     {
         $app = App::go();
 

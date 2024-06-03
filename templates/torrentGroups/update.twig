@@ -1,0 +1,125 @@
+{##
+ # update a torrent group
+ #}
+
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>
+		Edit the group
+		<a href="/torrent-groups/{{ torrentGroup.attributes.slug }}">{{ torrentGroup.attributes.title }}</a>
+	</h2>
+
+	{# the upload form itself #}
+	<form id="torrentForm" method="post">
+
+		{# hidden fields #}
+		{{ form_token(http.server.REQUEST_URI) }}
+
+		{% if torrentGroup.id is not empty %}
+			<input type="hidden" name="id" value="{{ torrentGroup.id }}">
+		{% endif %}
+
+		{% if torrentGroup.attributes.categoryId is not empty %}
+			<input type="hidden" name="categoryId" value="{{ torrentGroup.attributes.categoryId }}">
+		{% endif %}
+
+		{#
+		{% if data and data.requestId %}
+			<input type="hidden" name="requestId" value="{{ data.requestId }}">
+		{% endif %}
+
+		{% if data and data.torrentId %}
+			<input type="hidden" name="torrentId" value="{{ data.torrentId }}">
+		{% endif %}
+		#}
+
+		{## #}
+
+		{# torrent group information #}
+		<section>
+			<h3 class="hidden">Update the torrent group</h3>
+
+			<table class="torrentForm">
+				{# title, subject, and object #}
+				{{ include("torrentForm/titles.twig", {
+					"db": env.database,
+					"title": (torrentGroup.attributes.title) ? torrentGroup.attributes.title : "",
+					"subject": (torrentGroup.attributes.subject) ? torrentGroup.attributes.subject : "",
+					"object": (torrentGroup.attributes.object) ? torrentGroup.attributes.object : "",
+				}) }}
+
+				{# year #}
+				{{ include("torrentForm/year.twig", {
+					"db": env.database.year,
+					"value": (torrentGroup.attributes.year) ? torrentGroup.attributes.year : "",
+				}) }}
+
+				{# workgroup #}
+				{{ include("torrentForm/workgroup.twig", {
+					"db": env.database.workgroup,
+					"value": (torrentGroup.attributes.workgroup) ? torrentGroup.attributes.workgroup : "",
+				}) }}
+
+				{# location #}
+				{{ include("torrentForm/location.twig", {
+					"db": env.database.location,
+					"value": (torrentGroup.attributes.location) ? torrentGroup.attributes.location : "",
+				}) }}
+				
+				{# description #}
+				{{ include("torrentForm/groupDescription.twig", {
+					"db": env.database.description,
+					"value": (torrentGroup.attributes.description) ? torrentGroup.attributes.description : "",
+					"required": true,
+				}) }}
+
+				{# creatorList #}
+				{#
+				{{ include("torrentForm/creatorList.twig", {
+					"db": env.database.creatorList,
+					"value": (torrentGroup.attributes.creatorList) ? torrentGroup.attributes.creatorList : "",
+				}) }}
+				#}
+
+				{# tagList #}
+				{#
+				{{ include("torrentForm/tagList.twig", {
+					"db": env.database.tagList,
+					"value": (torrentGroup.attributes.tagList) ? torrentGroup.attributes.tagList : "",
+				}) }}
+				#}
+
+				{# picture #}
+				{{ include("torrentForm/picture.twig", {
+					"db": env.database.picture,
+					"value": (torrentGroup.attributes.picture) ? torrentGroup.attributes.picture : "",
+				}) }}
+
+				{# literature #}
+				{#
+				{{ include("torrentForm/literature.twig", {
+					"db": env.database.literature,
+					"value": (torrentGroup.attributes.literature) ? torrentGroup.attributes.literature : "",
+				}) }}
+				#}
+			</table>
+		</section>
+
+		{## #}
+
+		{# form controls #}
+		<div id="formControls">
+			<input id="submit" name="submit" type="submit" value="update the torrent group" class="button-orange">
+		</div>
+
+	</form>
+{% endblock %}
+
+
+{% block sidebar %}
+
+	{% include "torrentForm/sidebar.twig" %}
+
+{% endblock %}

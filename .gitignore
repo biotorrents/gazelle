@@ -46,3 +46,6 @@ yarn-error.log
 
 # https://marketplace.visualstudio.com/items?itemName=mtxr.sqltools
 *.session.sql
+
+# development test script
+/utilities/scratchpad.php

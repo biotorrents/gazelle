@@ -26,6 +26,24 @@ abstract class ObjectCrud extends RecursiveCollection
     public ?RecursiveCollection $attributes = null;
     public ?RecursiveCollection $relationships = null;
 
+    # all objects are available here
+    public static array $objects = [
+        Collages::class,
+        Conversations::class,
+        Creators::class,
+        Literature::class,
+        Messages::class,
+        Organizations::class,
+        Requests::class,
+        Roles::class,
+        SiteLog::class,
+        Tags::class,
+        TorrentGroups::class,
+        Torrents::class,
+        Users::class,
+        Wiki::class,
+    ];
+
 
     /**
      * __construct
@@ -82,6 +100,9 @@ abstract class ObjectCrud extends RecursiveCollection
         # use a RecursiveCollection not an array
         $this->id = strval($upsert["id"] ?? null);
         $this->attributes = new RecursiveCollection($attributes);
+
+        # log the action
+        $this->log("create");
     }
 
 
@@ -182,6 +203,9 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
+
+        # log the action
+        $this->log("update");
     }
 
 
@@ -205,6 +229,9 @@ abstract class ObjectCrud extends RecursiveCollection
         # perform a soft delete
         $query = "update {$this->table} set deleted_at = now() where {$column} = ?";
         $app->dbNew->do($query, [$this->id]);
+
+        # log the action
+        $this->log("delete");
     }
 
 
@@ -228,6 +255,135 @@ abstract class ObjectCrud extends RecursiveCollection
         # perform a soft restore
         $query = "update {$this->table} set deleted_at = null where {$column} = ?";
         $app->dbNew->do($query, [$this->id]);
+    }
+
+
+    /** relationships */
+
+
+    /**
+     * relationships
+     * 
+     * Loads all the relationships as ["id" => "string, "type" => "string"].
+     * 
+     * @return void
+     */
+    public function relationships(): void
+    {
+        $app = App::go();
+
+        $this->relationships = new RecursiveCollection();
+
+        # loop through all the objects
+        foreach (self::$objects as $object) {
+            # take the hit for a new object here
+            $object = new $object();
+
+            # set the linking table
+            $linksTable = $object->table . "_links";
+
+            # does the table exist?
+            $query = "show tables like ?";
+            $good = $app->dbNew->single($query, [$linksTable]);
+
+            if (!$good) {
+                continue;
+            }
+
+            # get the relationships
+            $query = "select objectId from {$linksTable} where contentId = ? and contentType = ?";
+            $rows = $app->dbNew->rows($query, [$this->id, $this::$type]);
+
+            # set the relationships
+            $this->relationships->{$object::$type} = [];
+            foreach ($rows as $row) {
+                $this->relationships->{$object::$type}[] = [
+                    "id" => $row["objectId"],
+                    "type" => $object::$type,
+                ];
+            }
+        }
+    }
+
+
+    /**
+     * log
+     *
+     * Records a site log entry.
+     *
+     * @param string $action
+     * @param ?string $description
+     * @return void
+     */
+    public function log(string $action, ?string $description = null): void
+    {
+        $app = App::go();
+
+        if (!in_array($action, SiteLog::$allowedActions)) {
+            throw new Exception("invalid action");
+        }
+
+        $data = [
+            "userId" => $app->user->core["id"],
+            "contentId" => $this->id,
+            "contentType" => self::$type,
+            "action" => $action,
+            "description" => $description,
+        ];
+
+        $siteLog = new SiteLog();
+        $siteLog->create($data);
+    }
+
+
+
+
+    /**
+     * linkObjects
+     *
+     * @param array $relationships, e.g., [ "torrentGroups" => [ [ "id" => 1, "type" => torrentGroups" ], [ "id" => 2, "type" => "torrentGroups" ] ] ]
+     */
+    public function linkObjects(array $relationships = []): void
+    {
+        # cast to an array if needed
+        if (!is_array($relationships)) {
+            $relationships = [$relationships];
+        }
+
+        # did they pass anything?
+        if (empty($relationships)) {
+            return;
+        }
+
+        # loop through all the objects
+        foreach (self::$objects as $type => $object) {
+            # loop through all the relationships
+            foreach ($relationships as $relationship) {
+                # no match, continue
+                if ($type !== $relationship["type"]) {
+                    continue;
+                }
+
+                # set the linking table
+                $linksTable = $object::$table . "_links";
+
+                # does the table exist?
+                $query = "show tables like ?";
+                $good = $app->dbNew->single($query, [$linksTable]);
+
+                if (!$good) {
+                    continue;
+                }
+
+                try {
+                    # inset the new link records
+                    $query = "insert ignore into {$linksTable} (objectId, contentId, contentType) values (?, ?, ?)";
+                    $app->dbNew->do($query, [$relationship["id"], $this->id, $this::$type]);
+                } catch (\Throwable $e) {
+                    continue;
+                }
+            }
+        }
     }
 
 

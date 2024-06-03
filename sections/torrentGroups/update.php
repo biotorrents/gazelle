@@ -13,7 +13,7 @@ Gazelle\Http::csrf();
 
 try {
     $id ??= null;
-    $torrentGroup = new Gazelle\TorrentGroup($id);
+    $torrentGroup = new Gazelle\TorrentGroups($id);
 
     if (!$torrentGroup->id) {
         throw new Exception("not found");
@@ -24,22 +24,37 @@ try {
 
 # request data
 $post = Gazelle\Http::post();
-$data = [
-    "id" => $torrentGroup->id,
-    "categoryId" => $torrentGroup->categoryId,
-    "revisionId" => $torrentGroup->revisionId + 1,
-    "identifier" => $post["identifier"] ?? null,
-    "title" => $post["title"] ?? null,
-    "subject" => $post["subject"] ?? null,
-    "object" => $post["object"] ?? null,
-    "workgroup" => $post["workgroup"] ?? null,
-    "location" => $post["location"] ?? null,
-    "year" => $post["year"] ?? null,
-    "description" => $post["description"] ?? null,
-    "picture" => $post["picture"] ?? null,
-    "tags" => json_encode($post["tags"] ?? null), # json
-];
+if (!empty($post)) {
+    $data = [
+        "id" => $torrentGroup->id,
+        "categoryId" => $torrentGroup->categoryId,
+        "revisionId" => $torrentGroup->revisionId + 1,
+        "identifier" => $post["identifier"] ?? null,
+        "title" => $post["title"] ?? null,
+        "subject" => $post["subject"] ?? null,
+        "object" => $post["object"] ?? null,
+        "workgroup" => $post["workgroup"] ?? null,
+        "location" => $post["location"] ?? null,
+        "year" => $post["year"] ?? null,
+        "description" => $post["description"] ?? null,
+        "picture" => $post["picture"] ?? null,
+        "tags" => json_encode($post["tags"] ?? null), # json
+    ];
+}
 
+# twig template
+$app->twig->display("torrentGroups/update.twig", [
+    "title" => $torrentGroup->attributes->title,
+    "sidebar" => true,
+    "js" => ["upload"],
+
+    "breadcrumbs" => [
+        "/torrent-groups" => "torrents",
+        "/torrent-groups/{$torrentGroup->attributes->slug}" => $torrentGroup->attributes->title,
+    ],
+
+    "torrentGroup" => $torrentGroup,
+]);
 
 exit;
 

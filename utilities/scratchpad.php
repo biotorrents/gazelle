@@ -14,7 +14,75 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
-throw new Exception("uncaught");
+$tg = new Gazelle\TorrentGroups(1);
+!d($tg);exit;
+
+$ror = new Gazelle\ResearchOrganizationRegistry();
+
+#$match = $ror->match("university boston");
+#!d($match);exit;
+
+
+
+$response = $ror->search("boston");
+!d($response);exit;
+
+
+$data = [
+    "id" => $app->dbNew->shortUuid(),
+    "rorId" => $response["id"] ?? null,
+    "grid" => $response["external_ids"]["GRID"]["preferred"] ?? null,
+
+    "name" => $response["name"] ?? null,
+    "acronym" => $response["acronyms"][0] ?? null,
+    "established" => $response["established"] ?? null,
+    "status" => $response["status"] ?? null,
+    "relationships" => json_encode($response["relationships"] ?? null),
+
+    "latitude" => $response["addresses"][0]["lat"] ?? null,
+    "longitude" => $response["addresses"][0]["lng"] ?? null,
+    "country" => $response["country"]["country_code"] ?? null,
+    "state" => $response["addresses"][0]["state_code"] ?? null,
+    "city" => $response["addresses"][0]["city"] ?? null,
+    "postalCode" => $response["addresses"][0]["postcode"] ?? null,
+
+    "type" => strtolower($response["types"][0] ?? null),
+    "homepage" => $response["links"][0] ?? null,
+    "wikipedia" => $response["wikipedia_url"] ?? null,
+];
+#!d($data);
+
+?>
+
+<html>
+    <head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+
+     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+</head>
+<body>
+     <div id="map" style="height: 20rem;"></div>
+
+     <script>
+        var map = L.map('map').setView([ <?= $data["latitude"] ?>, <?= $data["longitude"] ?> ], 10);
+        console.log(map);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+var marker = L.marker([ <?= $data["latitude"] ?>, <?= $data["longitude"] ?> ]).addTo(map);
+        </script>
+</body>
+</html>
+<?php
+
+exit;
 
 # public and private keys are expected to be base64 encoded
 # the last non-empty line is used so that keys can be generated with sodium_crypto_sign_keypair()
