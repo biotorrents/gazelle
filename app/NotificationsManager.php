@@ -451,10 +451,10 @@ class NotificationsManager
                 SELECT COUNT(DISTINCT s.CollageID)
                 FROM users_collage_subs AS s
                   JOIN collages AS c ON s.CollageID = c.ID
-                  JOIN collages_torrents AS ct ON ct.CollageID = c.ID
+                  JOIN collages_links AS ct ON ct.objectId = c.ID
                 WHERE s.UserID = " . $app->user->core["id"] . "
-                  AND ct.AddedOn > s.LastVisit
-                  AND c.Deleted = '0'");
+                  AND ct.created_at > s.LastVisit
+                  AND c.deleted_at = '0'");
                 list($NewCollages) = $app->dbOld->next_record();
                 $app->dbOld->set_query_id($QueryID);
                 $app->cache->set('collage_subs_user_new_' . $app->user->core["id"], $NewCollages, 0);

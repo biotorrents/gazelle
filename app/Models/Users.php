@@ -1595,8 +1595,8 @@ class Users extends ObjectCrud
         foreach ($ref as $index => $row) {
             $query = "
                 select picture from torrents_group
-                join collages_torrents on collages_torrents.groupId = torrents_group.id
-                where torrents_group.picture != '' and collages_torrents.collageId = ?
+                join collages_links on collages_links.xicontentId = torrents_group.id
+                where torrents_group.picture != '' and collages_links.objectId = ?
                 order by rand() limit 1
             ";
             $picture = $app->dbNew->single($query, [ $row["id"] ]);
@@ -1609,20 +1609,6 @@ class Users extends ObjectCrud
             $data[$index]["title"] = $row["title"];
             $data[$index]["picture"] = $picture;
         }
-
-        /*
-        # loop through results
-        $data = [];
-        foreach ($ref as $row) {
-            $query = "
-                select collages_torrents.groupId, torrents_group.picture, torrents_group.categoryId
-                from collages_torrents join torrents_group on torrents_group.id = collages_torrents.groupId
-                where collages_torrents.collageId = ?
-                order by collages_torrents.sort limit 5
-            ";
-            $data[] = $app->dbNew->multi($query, [ $row["id"] ]);
-        }
-        */
 
         $app->cache->set($cacheKey, $data, $this->cacheDuration);
         return $data;
@@ -1709,11 +1695,11 @@ class Users extends ObjectCrud
         # collage contributions
         # collages.php?userid={{ userId }}&contrib=1
         $query = "
-            select count(distinct collageId) from collages_torrents
-            join collages on collages.id = collages_torrents.collageId
-            where collages.deleted_at is null and collages_torrents.userId = ?
+            select count(distinct collageId) from collages_links
+            join collages on collages.id = collages_links.objectId
+            where collages.deleted_at is null and collages_links.userId = ? and collages_links.contentType = ?
         ";
-        $data["collageContributions"] = $app->dbNew->single($query, [$userId]) ?? 0;
+        $data["collageContributions"] = $app->dbNew->single($query, [$userId, \Gazelle\Collages::$type]) ?? 0;
 
 
         # requests: filled and the bounty

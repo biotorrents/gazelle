@@ -85,9 +85,11 @@ class Collages extends ObjectCrud
             # start a transaction
             $app->dbNew->beginTransaction();
 
+            /*
             # delete the collage's torrents
-            $query = "update collages_torrents set deleted_at = now() where collageId = ?";
+            $query = "update collages_links set deleted_at = now() where objectId = ?";
             $app->dbNew->do($query, [$this->id]);
+            */
 
             # delete the subscriptions
             $query = "update subscriptions_collages set deleted_at = now() where collageId = ?";
@@ -279,13 +281,12 @@ class Collages extends ObjectCrud
 
         # select [groupId, userId]
         $query = "
-            select collages_torrents.groupId, collages_torrents.userId from collages_torrents
-            inner join torrents_group on torrents_group.id = collages_torrents.groupId
-            where collages_torrents.collageId = ?
-            order by collages_torrents.sortOrder asc
+            select collages_links.contentId, collages_links.userId from collages_links
+            inner join torrents_group on torrents_group.id = collages_links.contentId
+            where collages_links.objectId = ? and collages_links.contentType = ?
         ";
 
-        $ref = $app->dbNew->multi($query, [$this->id]);
+        $ref = $app->dbNew->multi($query, [$this->id, \Gazelle\Collages::$type]);
         $ref ??= [];
 
         # loop through it

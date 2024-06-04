@@ -219,19 +219,6 @@ CREATE TABLE `collages_artists` (
 
 
 -- 2020-03-09
-CREATE TABLE `collages_torrents` (
-  `CollageID` int NOT NULL,
-  `GroupID` int NOT NULL,
-  `UserID` int NOT NULL,
-  `Sort` int NOT NULL DEFAULT '0',
-  `AddedOn` datetime,
-  PRIMARY KEY (`CollageID`,`GroupID`),
-  KEY `UserID` (`UserID`),
-  KEY `Sort` (`Sort`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `comments` (
   `ID` int NOT NULL AUTO_INCREMENT,
   `Page` enum('artist','collages','requests','torrents') NOT NULL,

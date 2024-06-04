@@ -653,6 +653,7 @@ class Torrents extends ObjectCrud
         }
         $app->cache->decrement('stats_group_count');
 
+        /*
         // Collages
         $app->dbOld->query("
         SELECT CollageID
@@ -673,6 +674,7 @@ class Torrents extends ObjectCrud
             }
             $app->cache->delete("torrent_collages_$GroupID");
         }
+        */
 
         // Artists
         // Collect the artist IDs and then wipe the torrents_artist entry

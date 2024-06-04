@@ -33,16 +33,16 @@ try {
     $app->error(404);
 }
 
-$query = "select groupId, picture from collages_torrents join torrents_group on torrents_group.id = collages_torrents.groupId where collageId = ?";
-$ref = $app->dbNew->multi($query, [$collage->id]);
+$query = "select groupId, picture from collages_links join torrents_group on torrents_group.id = collages_links.contentId where collageId = ? and contentType = ?";
+$ref = $app->dbNew->multi($query, [$collage->id, Gazelle\Collages::$type]);
 
 $picturedGroups = [];
 foreach ($ref as $row) {
-  if (empty($row["picture"])) {
-    continue;
-  }
+    if (empty($row["picture"])) {
+        continue;
+    }
 
-  $picturedGroups[] = $row;
+    $picturedGroups[] = $row;
 }
 
 # twig template
