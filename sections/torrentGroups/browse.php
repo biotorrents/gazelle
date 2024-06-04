@@ -24,6 +24,30 @@ if ($get["search"]) {
 $searchTerms = [
     "simpleSearch" => $get["simpleSearch"] ?? null,
     "complexSearch" => $get["complexSearch"] ?? null,
+    "numbers" => $get["numbers"] ?? null,
+    "dates" => $get["dates"] ?? null,
+    "locations" => $get["locations"] ?? null,
+    "creators" => $get["creators"] ?? null,
+    "descriptions" => $get["descriptions"] ?? null,
+    "files" => $get["files"] ?? null,
+    "platforms" => $get["platforms"] ?? null,
+    "formats" => $get["formats"] ?? null,
+    "archives" => $get["archives"] ?? null,
+    "scopes" => $get["scopes"] ?? null,
+    "alignment" => $get["alignment"] ?? null,
+    "leechStatus" => $get["leechStatus"] ?? null,
+    "licenses" => $get["licenses"] ?? null,
+    "sizeMin" => $get["sizeMin"] ?? null,
+    "sizeMax" => $get["sizeMax"] ?? null,
+    "sizeUnit" => $get["sizeUnit"] ?? null,
+    "categories" => $get["categories"] ?? null,
+    "tags" => $get["tags"] ?? null,
+    "orderBy" => $get["orderBy"] ?? "createdAt",
+    "orderWay" => $get["orderWay"] ?? "desc",
+
+    /*
+    "simpleSearch" => $get["simpleSearch"] ?? null,
+    "complexSearch" => $get["complexSearch"] ?? null,
 
     "numbers" => $get["numbers"] ?? null,
     "year" => $get["year"] ?? null,
@@ -58,6 +82,7 @@ $searchTerms = [
     "page" => $get["page"] ?? 1,
 
     "openaiContent" => $get["openaiContent"] ?? $app->user->siteOptions["openaiContent"],
+    */
 ];
 
 # build query string (saving/sharing)
@@ -74,9 +99,12 @@ $queryString = http_build_query($get);
 #!d($queryString);
 
 # search manticore
-$manticore = new Gazelle\Manticore();
-$searchResults = $manticore->search("torrents", $get);
+$manticore = new Gazelle\Manticore("torrentGroups");
+$searchResults = $manticore->search($get);
 $resultCount = count($searchResults);
+
+if (!empty($get)) {
+!d($searchResults);exit;}
 
 /** pagination */
 

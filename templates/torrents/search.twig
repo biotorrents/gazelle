@@ -53,7 +53,7 @@
 					<input type="text" name="numbers" placeholder="Identifier / accession number / version" value="{{ searchTerms.numbers }}">
 
 					{# year #}
-					<input type="text" name="year" placeholder="Year" value="{{ searchTerms.year }}">
+					<input type="text" name="dates" placeholder="Year" value="{{ searchTerms.dates }}">
 				</td>
 			</tr>
 
@@ -62,10 +62,10 @@
 				<th>People</th>
 				<td>
 					{# department or lab / location #}
-					<input type="text" name="location" placeholder="Department or lab / location" value="{{ searchTerms.location }}">
+					<input type="text" name="locations" placeholder="Department or lab / location" value="{{ searchTerms.locations }}">
 
 					{# creator #}
-					<input type="text" name="creator" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creator }}">
+					<input type="text" name="creators" placeholder="Creator (ORCiD pending)" value="{{ searchTerms.creators }}">
 				</td>
 			</tr>
 
@@ -74,10 +74,10 @@
 				<th>Files</th>
 				<td>
 					{# torrent description #}
-					<input type="text" name="description" placeholder="Torrent or group description" value="{{ searchTerms.description }}">
+					<input type="text" name="descriptions" placeholder="Torrent or group description" value="{{ searchTerms.descriptions }}">
 
 					{# file list #}
-					<input type="text" name="fileList" placeholder="File list or info hash" value="{{ searchTerms.fileList }}">
+					<input type="text" name="files" placeholder="File list or info hash" value="{{ searchTerms.files }}">
 				</td>
 			</tr>
 
@@ -313,20 +313,22 @@
 			<tr id="tagFilter">
 				<th>Tags</th>
 				<td>
-					<select id="tagList" name="tagList[]" placeholder="Add or remove tags" multiple>
+					<select id="tags" name="tags[]" placeholder="Add or remove tags" multiple>
 						{% for item in officialTags %}
-							<option value="{{ item }}" {{ (item in searchTerms.tagList) ? "selected" : "" }}>
+							<option value="{{ item }}" {{ (item in searchTerms.tags) ? "selected" : "" }}>
 								{{ item }}
 							</option>
 						{% endfor %}
 					</select>
 
+{#
 					<div class="inlineFlex">
 					<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (searchTerms.tagsType == "includeTags") ? "checked" : "" }}>
 					<label for="includeTags">Include&nbsp;<strong>all</strong></label>
 
 					<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (searchTerms.tagsType == "excludeTags") ? "checked" : "" }}>
 					<label for="excludeTags">Exclude&nbsp;<strong>any</strong></label>
+#}
 
 					{#
 					<span>
@@ -389,6 +391,7 @@
 						</option>
 					</select>
 
+{#
 					<div class="inlineFlex">
 						<input type="checkbox" value="true" name="groupResults" {{ (searchTerms.groupResults) ? "checked" : "" }}>
 						<label for="groupResults">Group&nbsp;torrents</label>
@@ -396,6 +399,7 @@
 						<input type="checkbox" value="true" name="openaiContent" {{ (searchTerms.openaiContent) ? "checked" : "" }}>
 						<label for="openaiContent">OpenAI&nbsp;content</label>
 					</div>
+#}
 
 				</td>
 			</tr>

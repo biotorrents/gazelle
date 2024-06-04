@@ -39,11 +39,15 @@
 {% endif %}
 
 {# grouping options #}
+{% set grouping = "grouping" %}
+
+{#
 {% if searchTerms.groupResults %}
   {% set grouping = "grouping" %}
 {% else %}
   {% set grouping = "no_grouping" %}
 {% endif %}
+#}
 
 
 {# start the results table #}

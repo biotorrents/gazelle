@@ -36,6 +36,9 @@ class Manticore
 
     /** */
 
+    # the current search index
+    public ?string $index = null;
+
     # indices to search
     private array $indices = [
         "universalSearch" => ["torrents_group_main", "requests_main", "collages_main", "creators_main", "literature_main", "organizations_main"],
@@ -49,6 +52,7 @@ class Manticore
 
     # map of search form fields => index fields
     private array $searchFields = [
+        /*
         # torrents search: legacy
         "simpleSearch" => "*",
         "complexSearch" => ["torrentGroups_title", "torrentGroups_subject", "torrentGroups_object"],
@@ -74,9 +78,11 @@ class Manticore
         "orderBy" => null,
         "orderWay" => null,
         "groupResults" => null,
+        */
 
         /** */
 
+        # universalSearch
         "universalSearch" => [
             "torrentGroups_id", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object",
             "requests_id", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object",
@@ -86,10 +92,11 @@ class Manticore
             "organizations_id", "organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym", "organizations_reverseGeocode",
         ],
 
+        # torrentGroups
         "torrentGroups" => [
-            "simpleSearch" => ["torrentGroups_id", "torrentGroups_categoryId", "torrentGroups_revisionId", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object", "torrentGroups_workgroup", "torrentGroups_location", "torrentGroups_year", "torrentGroups_description", "torrentGroups_picture", "torrentGroups_tags", "torrentGroups_createdAt", "torrentGroups_updatedAt", "torrentGroups_deletedAt"],
-            "complexSearch" => ["torrentGroups_id", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object"],
-            "numbers" => ["torrentGroups_id", "torrentGroups_identifier", "torrents_version"],
+            "simpleSearch" => ["id", "torrentGroups_categoryId", "torrentGroups_revisionId", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object", "torrentGroups_workgroup", "torrentGroups_location", "torrentGroups_year", "torrentGroups_description", "torrentGroups_picture", "torrentGroups_tags", "torrentGroups_createdAt", "torrentGroups_updatedAt", "torrentGroups_deletedAt"],
+            "complexSearch" => ["id", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object"],
+            "numbers" => ["id", "torrentGroups_identifier", "torrents_version"],
             "dates" => ["torrentGroups_year", "torrentGroups_createdAt", "torrentGroups_updatedAt", "torrentGroups_deletedAt", "literature_year", "literature_publicationDate", "organizations_established", "requests_filledAt", "requests_lastVote", "torrents_lastAction"],
             "locations" => ["torrentGroups_workgroup", "torrentGroups_location", "creators_affiliations", "organizations_id", "organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode"],
             "creators" => ["torrentGroups_workgroup", "creators_id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_description", "creators_aliases", "creators_affiliations"],
@@ -107,55 +114,72 @@ class Manticore
             "sizeUnit" => ["torrents_dataSize"],
             "categories" => ["torrentGroups_categoryId", "collages_categoryId", "requests_categoryId"],
             "tags" => ["torrentGroups_tags", "collages_tags", "tags_id", "tags_name"],
+            "orderBy" => null,
+            "orderWay" => null,
         ],
 
+        # requests
         "requests" => [
-            "simpleSearch" => ["requests_id", "requests_categoryId", "requests_userId", "requests_groupId", "requests_torrentId", "requests_filledById", "requests_filledAt", "requests_lastVote", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object", "requests_description", "requests_picture", "requests_createdAt", "requests_updatedAt", "requests_deletedAt"],
-            "complexSearch" => ["requests_id", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object"],
+            "simpleSearch" => ["id", "requests_categoryId", "requests_userId", "requests_groupId", "requests_torrentId", "requests_filledById", "requests_filledAt", "requests_lastVote", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object", "requests_description", "requests_picture", "requests_createdAt", "requests_updatedAt", "requests_deletedAt"],
+            "complexSearch" => ["id", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object"],
         ],
 
+        # collages
         "collages" => [
-            "simpleSearch" => ["collages_id", "collages_categoryId", "collages_userId", "collages_title", "collages_slug", "collages_description", "collages_tags", "collages_torrentCount", "collages_subscriberCount", "collages_maximumGroups", "collages_groupsPerUser", "collages_isFeatured", "collages_isLocked", "collages_createdAt", "collages_updatedAt", "collages_deletedAt"],
-            "complexSearch" => ["collages_id", "collages_title", "collages_slug"],
+            "simpleSearch" => ["id", "collages_categoryId", "collages_userId", "collages_title", "collages_slug", "collages_description", "collages_tags", "collages_torrentCount", "collages_subscriberCount", "collages_maximumGroups", "collages_groupsPerUser", "collages_isFeatured", "collages_isLocked", "collages_createdAt", "collages_updatedAt", "collages_deletedAt"],
+            "complexSearch" => ["id", "collages_title", "collages_slug"],
         ],
 
+        # creators
         "creators" => [
-            "simpleSearch" => ["creators_id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_description", "creators_aliases", "creators_affiliations", "creators_homepage", "creators_picture", "creators_hIndex", "creators_paperCount", "creators_citationCount", "creators_failCount", "creators_degreesOfSeparation", "creators_createdAt", "creators_updatedAt", "creators_deletedAt"],
-            "complexSearch" => ["creators_id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
+            "simpleSearch" => ["id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_description", "creators_aliases", "creators_affiliations", "creators_homepage", "creators_picture", "creators_hIndex", "creators_paperCount", "creators_citationCount", "creators_failCount", "creators_degreesOfSeparation", "creators_createdAt", "creators_updatedAt", "creators_deletedAt"],
+            "complexSearch" => ["id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
         ],
 
+        # literature
         "literature" => [
-            "simpleSearch" => ["literature_id", "literature_userId", "literature_doi", "literature_semanticScholarId", "literature_title", "literature_venue", "literature_journal", "literature_year", "literature_publicationDate", "literature_abstract", "literature_tldr", "literature_bibtex", "literature_influentialCitationCount", "literature_citationCount", "literature_referenceCount", "literature_isOpenAccess", "literature_openAccessPdf", "literature_failCount", "literature_degreesOfSeparation", "literature_createdAt", "literature_updatedAt", "literature_deletedAt"],
-            "complexSearch" => ["literature_id", "literature_doi", "literature_semanticScholarId", "literature_title", "literature_bibtex"],
+            "simpleSearch" => ["id", "literature_userId", "literature_doi", "literature_semanticScholarId", "literature_title", "literature_venue", "literature_journal", "literature_year", "literature_publicationDate", "literature_abstract", "literature_tldr", "literature_bibtex", "literature_influentialCitationCount", "literature_citationCount", "literature_referenceCount", "literature_isOpenAccess", "literature_openAccessPdf", "literature_failCount", "literature_degreesOfSeparation", "literature_createdAt", "literature_updatedAt", "literature_deletedAt"],
+            "complexSearch" => ["id", "literature_doi", "literature_semanticScholarId", "literature_title", "literature_bibtex"],
         ],
 
+        # organizations
         "organizations" => [
-            "simpleSearch" => ["organizations_id", "organizations_rorId", "organizations_grid", "organizations_userId", "organizations_name", "organizations_acronym", "organizations_established", "organizations_status", "organizations_relationships", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode", "organizations_type", "organizations_homepage", "organizations_wikipedia", "organizations_failCount", "organizations_degreesOfSeparation", "organizations_createdAt", "organizations_updatedAt", "organizations_deletedAt"],
-            "complexSearch" => ["organizations_id", "organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym"],
+            "simpleSearch" => ["*"],
+            "complexSearch" => ["organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym"],
+
+            /*
+            "simpleSearch" => ["id", "organizations_rorId", "organizations_grid", "organizations_userId", "organizations_name", "organizations_acronym", "organizations_established", "organizations_status", "organizations_relationships", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode", "organizations_type", "organizations_homepage", "organizations_wikipedia", "organizations_failCount", "organizations_degreesOfSeparation", "organizations_createdAt", "organizations_updatedAt", "organizations_deletedAt"],
+            "complexSearch" => ["id", "organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym"],
+            */
         ],
     ];
 
     # map of sort mode => index field for sorting
     private array $sortOrders = [
-        #"identifier" => "cataloguenumber", # todo?
-        "leechers" => "leechers",
+        "leecherCount" => "torrents_leecherCount",
         "random" => "rand()",
-        "seeders" => "seeders",
-        "size" => "size",
-        "snatched" => "snatches",
-        "timeAdded" => "id",
-        "year" => "year",
+        "seederCount" => "torrents_seederCount",
+        "dataSize" => "torrents_dataSize",
+        "snatchCount" => "torrents_snatchCount",
+        "createdAt" => "torrents_createdAt",
+        "year" => "torrentGroups_year",
     ];
 
 
     /**
      * __construct
      */
-    public function __construct()
+    public function __construct(string $index)
     {
         $app = App::go();
 
         try {
+            # sanity check
+            $allowedIndices = array_keys($this->indices);
+            if (!in_array($index, $allowedIndices)) {
+                throw new Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$index}");
+            }
+
             # https://github.com/FoolCode/SphinxQL-Query-Builder#connection
             $this->connection = new \Foolz\SphinxQL\Drivers\Pdo\Connection();
             $this->connection->setParams([
@@ -171,6 +195,9 @@ class Manticore
 
             # https://github.com/FoolCode/SphinxQL-Query-Builder#percolate
             $this->percolate = new \Foolz\SphinxQL\Percolate($this->connection);
+
+            # set the index
+            $this->index = $index ?? null;
         } catch (\Throwable $e) {
             throw new Exception($e->getMessage());
         }
@@ -190,11 +217,10 @@ class Manticore
      *
      * $result = $query->execute();
      *
-     * @param string $what maps to an array of indices
      * @param array $data typically a post request
      * @return array if you're on the dot
      */
-    public function search(string $what, array $data = []): array
+    public function search(array $data): array
     {
         $app = App::go();
 
@@ -202,17 +228,11 @@ class Manticore
         $app->debug["time"]->startMeasure("manticore", "manticore search");
 
         # return cached if available
-        $cacheKey = $this->cachePrefix . "{$what}:" . hash($app->env->cacheAlgorithm, json_encode($data));
+        $cacheKey = $this->cachePrefix . "{$this->index}:" . hash($app->env->cacheAlgorithm, json_encode($data));
         $cacheHit = $app->cache->get($cacheKey);
 
         if ($cacheHit) {
-            return $cacheHit;
-        }
-
-        # sanity check
-        $allowedIndices = array_keys($this->indices);
-        if (!in_array($what, $allowedIndices)) {
-            throw new Exception("expected one of " . implode(", ", $allowedIndices) . ", got {$what}");
+            #return $cacheHit;
         }
 
         # raw search terms
@@ -220,9 +240,9 @@ class Manticore
 
         # start the query
         $this->query = $this->queryLanguage
-            ->select(["id"])
-            #->select("*") # debug
-            ->from($this->indices[$what]);
+            #->select(["id"])
+            ->select("*") # debug
+            ->from($this->indices[$this->index]);
 
         /*
         # pagination
@@ -308,11 +328,11 @@ class Manticore
      * @param array $data array with search terms
      * @return $this->query
      */
-    private function processSearchTerms(array $data = []): \Foolz\SphinxQL\SphinxQL
+    private function processSearchTerms(array $data): \Foolz\SphinxQL\SphinxQL
     {
         foreach ($data as $key => $value) {
-            $this->searchFields[$key] ??= null;
-            if ($this->searchFields[$key] && !empty($value)) {
+            $this->searchFields[$this->index][$key] ??= null;
+            if ($this->searchFields[$this->index][$key] && !empty($value)) {
                 $this->query = $this->processSearchTerm($key, $value);
             }
         }
@@ -501,9 +521,9 @@ class Manticore
         /**
          * normal
          */
-        $this->searchFields[$key] ??= null;
-        if ($this->searchFields[$key]) {
-            $this->query->match($this->searchFields[$key], $value);
+        $this->searchFields[$this->index][$key] ??= null;
+        if ($this->searchFields[$this->index][$key]) {
+            $this->query->match($this->searchFields[$this->index][$key], $value);
             return $this->query;
         } # if ($this->searchFields[$key])
     } # processSearchTerm
@@ -542,7 +562,7 @@ class Manticore
      *
      * @see https://manticoresearch.com/blog/simple-autocomplete-with-manticore/
      */
-    public function autocomplete(string $query, string $index = "torrents_group_main"): array
+    public function autocomplete(string $query): array
     {
         $app = App::go();
 
@@ -551,7 +571,7 @@ class Manticore
 
         #$query = "select id, title FROM torrent_groups_main WHERE match('@torrentGroups_title {$query}*') order by weight() desc";
         #$query = "SELECT HIGHLIGHT() FROM {$index} WHERE MATCH('{$query}');";
-        $query = "call keywords('*{$query}*', '{$index}', 1 as stats, 'docs' as sort_mode)";
+        $query = "call keywords('*{$query}*', '{$this->index}', 1 as stats, 'docs' as sort_mode)";
         $results = $this->raw($query);
 
         # end debug

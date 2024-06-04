@@ -14,9 +14,9 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
-$manticore = new Gazelle\Manticore();
+$manticore = new Gazelle\Manticore("organizations");
 # https://manual.manticoresearch.com/Searching/Autocomplete
-$result = $manticore->autocomplete("alcohol dehydrogenase");
+$result = $manticore->search(["simpleSearch" => "boston"]);
 #$result = $manticore->raw("call keywords('alcohol dehy', 'torrents_main', 1 as stats, 'hits' as sort_mode)");
 !d($result);
 
