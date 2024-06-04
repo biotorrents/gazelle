@@ -79,15 +79,6 @@ abstract class ObjectCrud extends RecursiveCollection
             $transform["id"] = $app->dbNew->shortUuid();
         }
 
-        /*
-        # convert empty values to null
-        foreach ($transform as $key => $value) {
-            if (empty($value)) {
-                $transform[$key] = null;
-            }
-        }
-        */
-
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
 
@@ -168,9 +159,7 @@ abstract class ObjectCrud extends RecursiveCollection
         $this->attributes = new RecursiveCollection($attributes);
 
         # the value of the relationships key MUST be an object
-        if (method_exists($this, "relationships")) {
-            $this->relationships = new RecursiveCollection($this->relationships());
-        }
+        $this->relationships = new RecursiveCollection($this->relationships());
     }
 
 
@@ -195,15 +184,6 @@ abstract class ObjectCrud extends RecursiveCollection
         # add the identifier to the data
         $column = $app->dbNew->determineIdentifier($this->id);
         $transform[$column] = $this->id;
-
-        /*
-        # convert empty values to null
-        foreach ($transform as $key => $value) {
-            if (empty($value)) {
-                $transform[$key] = null;
-            }
-        }
-        */
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
@@ -270,20 +250,17 @@ abstract class ObjectCrud extends RecursiveCollection
      *
      * Loads all the relationships as ["id" => "string, "type" => "string"].
      *
-     * @return void
+     * @return array
      */
-    public function relationshipsTest(): void
+    private function relationships(): array
     {
         $app = App::go();
 
-        $this->relationships = new RecursiveCollection();
-
         # loop through all the objects
+        $relationships = [];
         foreach (self::$objects as $object) {
-            # take the hit for a new object here
-            $object = new $object();
-
             # set the linking table
+            $object = new $object();
             $linksTable = $object->table . "_links";
 
             # does the table exist?
@@ -298,15 +275,16 @@ abstract class ObjectCrud extends RecursiveCollection
             $query = "select objectId from {$linksTable} where contentId = ? and contentType = ?";
             $rows = $app->dbNew->multi($query, [$this->id, $this::$type]);
 
-            # set the relationships
-            $this->relationships->{$object::$type} = [];
+            # collect the data
             foreach ($rows as $row) {
-                $this->relationships->{$object::$type}[] = [
+                $relationships[$object::$type][] = [
                     "id" => $row["objectId"],
                     "type" => $object::$type,
                 ];
             }
         }
+
+        return $relationships;
     }
 
 
@@ -344,229 +322,79 @@ abstract class ObjectCrud extends RecursiveCollection
     }
 
 
-
-
     /**
-     * linkObjects
-     *
-     * @param array $relationships, e.g., [ "torrentGroups" => [ [ "id" => 1, "type" => torrentGroups" ], [ "id" => 2, "type" => "torrentGroups" ] ] ]
+     * syncRelationships
      */
-    public function linkObjects(array $relationships = []): void
-    {
-        # cast to an array if needed
-        if (!is_array($relationships)) {
-            $relationships = [$relationships];
-        }
-
-        # did they pass anything?
-        if (empty($relationships)) {
-            return;
-        }
-
-        # loop through all the objects
-        foreach (self::$objects as $type => $object) {
-            # loop through all the relationships
-            foreach ($relationships as $relationship) {
-                # no match, continue
-                if ($type !== $relationship["type"]) {
-                    continue;
-                }
-
-                # set the linking table
-                $linksTable = $object::$table . "_links";
-
-                # does the table exist?
-                $query = "show tables like ?";
-                $good = $app->dbNew->single($query, [$linksTable]);
-
-                if (!$good) {
-                    continue;
-                }
-
-                try {
-                    # inset the new link records
-                    $query = "insert ignore into {$linksTable} (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$relationship["id"], $this->id, $this::$type]);
-                } catch (\Throwable $e) {
-                    continue;
-                }
-            }
-        }
-    }
-
-
-    /** accessors: returns the relationship as an array of objects */
-
-
-    /**
-     * getRelationships
-     *
-     * Basic function for the helpers below.
-     *
-     * @param $object, e.g., TorrentGroups::class
-     * @return array
-     */
-    private function getRelationships($object): array
+    public function syncRelationships()
     {
         $app = App::go();
 
-        $this->relationships->{$object::$type} ??= null;
-        if (!$this->relationships->{$object::$type}) {
-            return [];
+        # loop through all the objects
+        $relationships = [];
+        foreach (self::$objects as $object) {
+            # set the linking table
+            $object = new $object();
+            $linksTable = $object->table . "_links";
+
+            # does the table exist?
+            $query = "show tables like '{$linksTable}'";
+            $good = $app->dbNew->single($query, []);
+
+            if (!$good) {
+                continue;
+            }
+
+            # get the relationships from the database
+            $query = "select objectId from {$linksTable} where contentId = ? and contentType = ?";
+            $ref = $app->dbNew->column($query, [$this->id, $this::$type]);
+
+            if (empty($ref)) {
+                continue;
+            }
+
+            # get the relationships from the object
+            $relationships = $this->relationships->{$object::$type} ?? [];
+
+            # remove the relationships that don't exist in the object
+            foreach ($ref as $objectId) {
+                $found = false;
+                foreach ($relationships as $relationship) {
+                    if ($relationship["id"] === $objectId) {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $query = "update {$linksTable} set deleted_at = now() where contentId = ? and contentType = ? and objectId = ?";
+                    $app->dbNew->do($query, [$this->id, $this::$type, $objectId]);
+                }
+            }
+
+            # add the relationships that don't exist in the database
+            foreach ($relationships as $relationship) {
+                $found = false;
+                foreach ($ref as $objectId) {
+                    if ($relationship["id"] === $objectId) {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if (!$found) {
+                    $data = [
+                        "contentId" => $this->id,
+                        "contentType" => $this::$type,
+                        "objectId" => $relationship["id"],
+                    ];
+
+                    $app->dbNew->upsert($linksTable, $data);
+                }
+            }
+
         }
 
-        $data = [];
-        foreach ($this->relationships->{$object::$type} as $row) {
-            $data[] = new $object($row["id"]);
-        }
-
-        return $data;
-    }
-
-
-    /**
-     * getCollages
-     *
-     * @return array
-     */
-    public function getCollages(): array
-    {
-        return $this->getRelationships(Collages::class);
-    }
-
-
-    /**
-     * getConversations
-     *
-     * @return array
-     */
-    public function getConversations(): array
-    {
-        return $this->getRelationships(Conversations::class);
-    }
-
-    /**
-     * getCreators
-     *
-     * @return array
-     */
-    public function getCreators(): array
-    {
-        return $this->getRelationships(Creators::class);
-    }
-
-
-    /**
-     * getLiterature
-     *
-     * @return array
-     */
-    public function getLiterature(): array
-    {
-        return $this->getRelationships(Literature::class);
-    }
-
-
-    /**
-     * getMessages
-     *
-     * @return array
-     */
-    public function getMessages(): array
-    {
-        return $this->getRelationships(Messages::class);
-    }
-
-
-    /**
-     * getRequests
-     *
-     * @return array
-     */
-    public function getRequests(): array
-    {
-        return $this->getRelationships(Requests::class);
-    }
-
-
-    /**
-     * getRoles
-     *
-     * @return array
-     */
-    public function getRoles(): array
-    {
-        return $this->getRelationships(Roles::class);
-    }
-
-
-    /**
-     * getSiteLog
-     *
-     * @return array
-     */
-    public function getSiteLog(): array
-    {
-        return $this->getRelationships(SiteLog::class);
-    }
-
-
-    /**
-     * getTags
-     *
-     * @return array
-     */
-    public function getTags(): array
-    {
-        return $this->getRelationships(Tags::class);
-    }
-
-
-    /**
-     * getTorrentGroups
-     *
-     * @return array
-     */
-    public function getTorrentGroups(): array
-    {
-        return $this->getRelationships(TorrentGroups::class);
-    }
-
-
-    /**
-     * getTorrents
-     *
-     * @return array
-     */
-    public function getTorrents(): array
-    {
-        return $this->getRelationships(Torrents::class);
-    }
-
-
-    /**
-     * getUsers
-     *
-     * @return array
-     */
-    public function getUsers(): array
-    {
-        throw new Exception("not implemented");
-
-        /** */
-
-        return $this->getRelationships(Users::class);
-    }
-
-
-    /**
-     * getWiki
-     *
-     * @return array
-     */
-    public function getWiki(): array
-    {
-        return $this->getRelationships(Wiki::class);
+        return $relationships;
     }
 
 
@@ -650,6 +478,17 @@ abstract class ObjectCrud extends RecursiveCollection
     public function loadMessages(): void
     {
         $this->loadRelationships(Messages::class);
+    }
+
+
+    /**
+     * loadOrganizations
+     *
+     * @return void
+     */
+    public function loadOrganizations(): void
+    {
+        $this->loadRelationships(Organizations::class);
     }
 
 

@@ -16,6 +16,7 @@ class Torrents extends ObjectCrud
     public static ?string $type = "torrents"; # resource name
     protected ?string $table = "torrents"; # database table
 
+    /*
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
@@ -48,6 +49,7 @@ class Torrents extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
+    */
 
     /**
      * wishlist database schema
@@ -68,8 +70,7 @@ class Torrents extends ObjectCrud
      *     constraint InfoHash unique (info_hash (20))
      * );
      */
-    /*
-    protected array $wishfulMaps = [
+    protected array $maps = [
         # keys
         "id" => "id", # chihaya
         "groupId" => "groupId", # chihaya
@@ -114,7 +115,6 @@ class Torrents extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
-    */
 
     # cache settings
     private string $cachePrefix = "torrents:";

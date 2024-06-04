@@ -14,6 +14,17 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
+$manticore = new Gazelle\Manticore();
+# https://manual.manticoresearch.com/Searching/Autocomplete
+$result = $manticore->autocomplete("alcohol dehydrogenase");
+#$result = $manticore->raw("call keywords('alcohol dehy', 'torrents_main', 1 as stats, 'hits' as sort_mode)");
+!d($result);
+
+
+
+
+
+exit;
 /*
 $ror = new Gazelle\ResearchOrganizationRegistry();
 $result = $ror->reverseGeocode(41.30815, -72.92816);

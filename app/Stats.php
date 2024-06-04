@@ -948,7 +948,7 @@ class Stats
         $data["groupCount"] = $app->dbNew->single($query, []);
 
         # total data size
-        $query = "select sum(size) from torrents";
+        $query = "select sum(dataSize) from torrents";
         $data["dataSize"] = $app->dbNew->single($query, []);
 
         # creator count
