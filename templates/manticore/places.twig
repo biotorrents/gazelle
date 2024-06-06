@@ -1,0 +1,17 @@
+{##
+ # places
+ #}
+
+{% set placeholder = "Workgroup, institution, or ROR ID" %}
+
+{% if manticore.context == "organizations" %}
+	{% set placeholder = "Torrent workgroup or creator affiliation" %}
+{% endif %}
+
+<tr id="places">
+	<th>Places</th>
+	<td>
+		<input type="text" name="workgroups" placeholder="{{ placeholder }}" value="{{ manticore.terms.workgroups }}">
+		<input type="text" name="locations" placeholder="Address or coordinates" value="{{ manticore.terms.locations }}">
+	</td>
+</tr>

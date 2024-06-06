@@ -2,47 +2,20 @@
 
 {% block content %}
 
-{# include the main search form #}
-{% include "requests/search.twig" %}
+	<h2>Browse requests</h2>
 
-{# no results message #}
-{% if pagination.resultCount == 0 %}
-	<div class="alertbar warning halfwide">
-		<h3>No search results :(</h3>
-		<p>Please ensure you didn't make too many typos or apply too many filters.</p>
-	</div>
-{% else %}
-  {# resultCount and pagination controls #}
-  <div id="searchResultsHeader">
-  <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
+	{# include the main search form #}
+	{{ include("requests/search.twig") }}
 
-<div id="paginationControls">
-
-  {% if pagination.currentPage != pagination.firstPage %}
-  <a href="/torrents.php{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+	{# no results message #}
+	{% if pagination.resultCount == 0 %}
+		<div class="alertbar warning halfwide">
+			<h3>No search results :(</h3>
+			<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+		</div>
+	{% else %}
+		{{ include("manticore/pagination.twig") }}
+    {{ include("tables/requests.twig", {"grouping": "grouping"}) }}
   {% endif %}
-
-  {% if pagination.currentPage > pagination.previousPage %}
-  <a href="/torrents.php{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
-  {% endif %}
-
-  {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
-  <a href="/torrents.php{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
-    {% endif %}
-
-	  {% if pagination.currentPage != pagination.lastPage %}
-  <a href="/torrents.php{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
-     {% endif %}
- 
-  </div>
-  </div>
-{% endif %}
-
-{# results #}
-<section>
-  <h3 class="hidden">Search results</h3>
-  {{ include("tables/requests.twig") }}
-  </section>
-
 
 {% endblock %}

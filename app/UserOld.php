@@ -280,7 +280,7 @@ class User
         $app = Gazelle\App::go();
 
         # allow usernames instead of slugs
-        $column = $app->dbNew->determineIdentifier($id);
+        $column = $app->dbNew->determineId($id);
         if ($column === "slug") {
             $column = "username";
         }

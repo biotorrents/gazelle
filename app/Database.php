@@ -278,19 +278,19 @@ class Database extends \PDO
     /**
      * slug
      *
-     * @param string $string
+     * @param ?string $string
      * @return string
      *
      * @see https://laravel.com/api/master/Illuminate/Support/Str.html#method_slug
      */
-    public function slug(string $string): string
+    public function slug(?string $string): string
     {
         return \Illuminate\Support\Str::slug($string);
     }
 
 
     /**
-     * determineIdentifier
+     * determineId
      *
      * Determine the identifier to use for a query.
      * Used for finding stuff by id, uuid, or slug.
@@ -298,13 +298,50 @@ class Database extends \PDO
      * @param int|string $id
      * @return string
      */
-    public function determineIdentifier(int|string $id): string
+    public function determineId(int|string $id): string
     {
         $app = App::go();
 
+        # cast to string
+        $id = strval($id);
+
+        # openAlex
+        $good = preg_match("/{$app->env->regexOpenAlex}/", $id);
+        if ($good) {
+            return "openAlexId";
+        }
+
+        # doi
+        $good = preg_match("/{$app->env->regexDoi}/i", $id);
+        if ($good) {
+            return "doi";
+        }
+
+        # orcid
+        $good = preg_match("/{$app->env->regexOrcid}/i", $id);
+        if ($good) {
+            return "orcid";
+        }
+
+        # issn
+        $good = preg_match("/{$app->env->regexIssn}/", $id);
+        if ($good) {
+            return "issn";
+        }
+
+        # rorId
+        $good = preg_match("/{$app->env->regexRor}/", $id);
+        if ($good) {
+            return "rorId";
+        }
+
+        # normal numeric id
         if (is_int($id) || is_numeric($id)) {
             return "id";
         }
+
+        # default slug
+        return "slug";
 
         /*
         # https://ihateregex.io/expr/uuid/
@@ -317,9 +354,6 @@ class Database extends \PDO
             return "uuid";
         }
         */
-
-        # default slug
-        return "slug";
     }
 
 
@@ -672,7 +706,7 @@ class Database extends \PDO
         # it was updated, resolve a key from the data
         foreach ($data as $key => $value) {
             if (in_array(strtolower(strval($key)), ["id", "uuid", "slug"])) {
-                $column = $this->determineIdentifier($value);
+                $column = $this->determineId($value);
                 $query = "select * from {$table} where {$column} = ?";
                 return $this->row($query, [$value], ["hostname" => "source"]);
             }

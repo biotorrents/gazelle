@@ -32,10 +32,17 @@ class Tags extends ObjectCrud
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
-        "Name" => "name",
+        "userId" => "userId",
+        "openAlexId" => "openAlexId",
+        "wikidata" => "wikidata",
+        "name" => "name",
+        "id" => "id",
         "tagType" => "tagType",
-        "Uses" => "useCount",
-        "UserID" => "userId",
+        "tagType" => "tagType",
+        "useCount" => "useCount",
+        "score" => "score",
+        "failCount" => "failCount",
+        "degreesOfSeparation" => "degreesOfSeparation",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -340,7 +347,7 @@ class Tags extends ObjectCrud
 
         # sort the array by the "name" key
         usort($ref, function ($a, $b) {
-            return strcmp($a["Name"], $b["Name"]);
+            return strcmp($a["name"], $b["name"]);
         });
 
         return $ref;

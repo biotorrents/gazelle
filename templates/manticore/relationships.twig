@@ -1,0 +1,20 @@
+{##
+ # relationships
+ #}
+
+<tr id="relationships">
+	<th>Relationships</th>
+	<td>
+		{% if manticore.context != "torrentGroups" %}
+			<input type="text" name="torrentGroups" placeholder="Torrent groups" value="{{ manticore.terms.torrentGroups }}">
+		{% endif %}
+
+		{% if manticore.context != "collages" %}
+			<input type="text" name="collages" placeholder="Collages" value="{{ manticore.terms.collages }}">
+		{% endif %}
+
+		{% if manticore.context != "requests" %}
+			<input type="text" name="requests" placeholder="Requests" value="{{ manticore.terms.requests }}">
+		{% endif %}
+    </td>
+</tr>

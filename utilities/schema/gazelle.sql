@@ -631,16 +631,6 @@ CREATE TABLE `requests_artists` (
 
 
 -- 2020-03-09
-CREATE TABLE `requests_tags` (
-  `TagID` int NOT NULL DEFAULT '0',
-  `RequestID` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`TagID`,`RequestID`),
-  KEY `TagID` (`TagID`),
-  KEY `RequestID` (`RequestID`)
-) ENGINE=InnoDB CHARSET=utf8mb4;
-
-
--- 2020-03-09
 CREATE TABLE `requests_votes` (
   `RequestID` int NOT NULL DEFAULT '0',
   `UserID` int NOT NULL DEFAULT '0',

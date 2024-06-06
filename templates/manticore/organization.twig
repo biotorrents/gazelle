@@ -1,0 +1,31 @@
+{##
+ # organization
+ #}
+
+<tr>
+	<th>Organization</th>
+	<td>
+		<select id="categories" name="categories[]" class="select" placeholder="Categories" multiple>
+            {% for key, value in categories %}
+	            {% set categoryId = key + 1 %}
+	            <option value="{{ categoryId }}" {{ (categoryId in manticore.terms.categories) ? "selected" : "" }}>
+	            	{{ value }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		<select id="tags" name="tags[]" class="select" placeholder="Add or remove tags" multiple>
+            {% for item in officialTags %}
+            	<option value="{{ item.id }}" {{ (item.name in manticore.terms.tags) ? "selected" : "" }}>
+            		{{ item.name }}
+            	</option>
+            {% endfor %}
+		</select>
+
+		<input type="radio" name="tagsType" id="includeTags" value="includeTags" {{ (manticore.terms.tagsType == "includeTags") ? "checked" : "" }}>
+		<label for="includeTags">Include&nbsp;<strong>all</strong></label>
+
+		<input type="radio" name="tagsType" id="excludeTags" value="excludeTags" {{ (manticore.terms.tagsType == "excludeTags") ? "checked" : "" }}>
+		<label for="excludeTags">Exclude&nbsp;<strong>any</strong></label>
+	</td>
+</tr>

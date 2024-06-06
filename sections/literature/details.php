@@ -39,6 +39,13 @@ $post = Gazelle\Http::request("post");
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($literature->id, "literature");
+$conversation->loadMessages();
+
+# display the title or doi?
+$displayDoi = false;
+if (empty($literature->attributes->title)) {
+    $displayDoi = true;
+}
 
 # twig template
 $app->twig->display("literature/details.twig", [
@@ -50,11 +57,12 @@ $app->twig->display("literature/details.twig", [
 
     "breadcrumbs" => [
         "/literature" => "literature",
-        "/literature/{$literature->attributes->doi}" => $literature->attributes->title,
+        "/literature/{$literature->attributes->doi}" => ($displayDoi ? $literature->attributes->doi : $literature->attributes->title),
     ],
 
     "literature" => $literature,
     "torrentGroups" => $literature->relationships->torrentGroups,
+    "displayDoi" => $displayDoi,
 
     "enableConversation" => true,
     "conversation" => $conversation,

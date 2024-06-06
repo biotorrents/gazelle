@@ -1,0 +1,35 @@
+{##
+ # misc
+ #}
+
+<tr id="misc">
+	<th>Misc</th>
+	<td>
+		{# scope #}
+		<select name="scopes[]" id="scope" class="select" multiple>
+            <option value="">Scope</option>
+            {% for item in resolutions %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.scopes) ? "selected" : "" }}>
+		            {{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		{# license #}
+		<select name="licenses[]" id="license" class="select" multiple>
+            <option value="">License</option>
+            {% for item in env.metadata.licenses %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.licenses) ? "selected" : "" }}>
+	            	{{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		{# isAnnotated #}
+		<input type="radio" name="isAnnotated" id="isAnnotated" value="1" {{ (manticore.terms.isAnnotated == "1") ? "checked" : "" }}>
+		<label for="yesAlighed">Annotated</label>
+
+		<input type="radio" name="isAnnotated" id="isNotAnnotated" value="0" {{ (manticore.terms.isAnnotated == "0") ? "checked" : "" }}>
+		<label for="noAligned">Not&nbsp;annotated</label>
+	</td>
+</tr>

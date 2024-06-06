@@ -2,6 +2,12 @@
  # literature table
  #}
 
+{% set displayDoi = true %}
+
+{% if item.attributes.title is not empty %}
+	{% set displayDoi = false %}
+{% endif %}
+
 <table id="literature" class="relationships">
     <thead>
 	        {# info #}
@@ -16,8 +22,8 @@
 	            <td>
 		                {# title #}
                         <p>
-		                	<a class="torrentTitle" href="/literature/{{ item.attributes.doi }}">
-                        		{% if item.attributes.title is not empty %}
+		                	<a class="torrentTitle" href="/literature/{{ item.attributes.doi|url_encode }}">
+                        		{% if displayDoi == false %}
 			                    	{{ item.attributes.title }}
                             	{% else %}
 			                    	<span class="monospace">{{ item.attributes.doi }}</span>
@@ -27,7 +33,7 @@
 
 		                <p class="flexRow">
 			                {# doi #}
-			                {% if item.attributes.doi is not empty %}
+			                {% if item.attributes.doi is not empty and displayDoi == true %}
 				                <span class="tooltip doi monospace" title="DOI">{{ item.attributes.doi }}</span>
 			                {% endif %}
 

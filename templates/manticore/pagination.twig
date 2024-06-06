@@ -1,0 +1,25 @@
+{##
+ # result pagination
+ #}
+
+<div id="searchResultsHeader">
+    <h3>{{ pagination.offset + 1 }}&ndash;{{ pagination.limit }} of {{ pagination.resultCount }} results</h3>
+
+    <div id="paginationControls">
+        {% if pagination.currentPage != pagination.firstPage %}
+            <a href="{{ queryString }}?page={{ pagination.firstPage }}" class="button u-pull-right">« first</a>
+        {% endif %}
+
+        {% if pagination.currentPage > pagination.previousPage %}
+            <a href="{{ queryString }}?page={{ pagination.previousPage }}" class="button u-pull-right">‹ previous</a>
+        {% endif %}
+
+        {% if pagination.currentPage < pagination.nextPage and pagination.currentPage < pagination.lastPage %}
+            <a href="{{ queryString }}?page={{ pagination.nextPage }}" class="button u-pull-right">next ›</a>
+        {% endif %}
+
+        {% if pagination.currentPage != pagination.lastPage %}
+            <a href="{{ queryString }}?page={{ pagination.lastPage }}" class="button u-pull-right">last »</a>
+        {% endif %}
+    </div>
+</div>

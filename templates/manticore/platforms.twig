@@ -1,0 +1,44 @@
+{##
+ # platforms
+ #}
+
+<tr id="platforms">
+	<th title="Start typing to filter the lists">Platforms</th>
+	<td>
+		{# sequences #}
+		<select id="sequencePlatforms" name="platforms[]" class="select" placeholder="Sequences" multiple>
+            {% for item in env.metadata.platforms.sequences %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.platforms) ? "selected" : "" }}>
+		            {{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		{# graphs #}
+		<select id="graphPlatforms" name="platforms[]" class="select" placeholder="Graphs" multiple>
+            {% for item in env.metadata.platforms.graphs %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.platforms) ? "selected" : "" }}>
+		            {{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		{# images #}
+		<select id="imagePlatforms" name="platforms[]" class="select" placeholder="Images" multiple>
+            {% for item in env.metadata.platforms.images %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.platforms) ? "selected" : "" }}>
+		            {{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+
+		{# documents #}
+		<select id="documentPlatforms" name="platforms[]" class="select" placeholder="Documents" multiple>
+            {% for item in env.metadata.platforms.documents %}
+	            <option value="{{ item }}" {{ (item in manticore.terms.platforms) ? "selected" : "" }}>
+		            {{ item }}
+	            </option>
+            {% endfor %}
+		</select>
+	</td>
+</tr>

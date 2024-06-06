@@ -1,0 +1,63 @@
+{#
+ # organization table
+ #}
+
+<table id="organizations" class="relationships">
+    <thead>
+	        {# info #}
+	        <th>Info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in organizations %}
+            <tr>
+	            {# title #}
+	            <td>
+		                {# title #}
+                        <p>
+		                	<a class="torrentTitle" href="/organizations/{{ item.id }}">
+			                    <span>{{ item.attributes.name }}</span>
+		                	</a>
+                        </p>
+
+		                <p class="flexRow">
+			                {# location #}
+			                {% if item.attributes.reverseGeocode is not empty %}
+				                <span class="tooltip location" title="Location">{{ item.attributes.reverseGeocode }}</span>
+			                {% endif %}
+
+			                {# established #}
+			                {% if item.attributes.established is not empty %}
+				                <span class="tooltip established" title="Established">{{ item.attributes.established }}</span>
+			                {% endif %}
+
+			                {# acronym #}
+			                {% if item.attributes.acronym is not empty %}
+				                <span class="tooltip acronym" title="Acronym">{{ item.attributes.acronym }}</span>
+			                {% endif %}
+
+			                {# acronym #}
+			                {% if item.attributes.rorId is not empty %}
+							    <a href="{{ item.attributes.rorId }}" target="_blank" class="tooltip rorId external monospace" title="ROR ID">{{ item.attributes.rorId }}</a>
+			                {% endif %}
+		                </p>
+
+		                {# creators #}
+                        {#
+		                {% if item.attributes.Artists is not empty %}
+			                <p class="tooltip creatorList" title="Creators">{{ displayCreators(item.attributes.Artists)|raw }}</p>
+		                {% endif %}
+		                #}
+
+						{# tl;dr: no tooltip # }
+		                {% if item.attributes.tldr is not empty %}
+			                <p class="faded small"><span class="ai">{{ item.attributes.tldr.text }}</span></p>
+		                {% endif %}
+						#}
+                    </div>
+	            </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

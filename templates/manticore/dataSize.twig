@@ -1,0 +1,29 @@
+{##
+ # dataSize
+ #}
+
+{% set id = "dataSize" %}
+{% set header = "Data size" %}
+
+{% if manticore.context == "requests" %}
+	{% set id = "bounty" %}
+	{% set header = "Bounty" %}
+{% endif %}
+
+<tr id="{{ id }}">
+	<th>{{ header }}</th>
+	<td>
+		<input type="number" name="minimumSize" placeholder="Minimum" value="{{ manticore.terms.minimumSize }}">
+		&ndash;
+		<input type="number" name="maximumSize" placeholder="Maximum" value="{{ manticore.terms.maximumSize }}">
+
+		<select id="dataUnit" name="dataUnit" class="select">
+            <option value="">Unit</option>
+            {# <option value="0" {{ (manticore.terms.dataUnit == 0) ? "selected" : "" }}>B</option> #}
+            {# <option value="1" {{ (manticore.terms.dataUnit == 1) ? "selected" : "" }}>KiB</option> #}
+            <option value="2" {{ (manticore.terms.dataUnit == 2) ? "selected" : "" }}>MiB</option>
+            <option value="3" {{ (manticore.terms.dataUnit == 3) ? "selected" : "" }}>GiB</option>
+            <option value="4" {{ (manticore.terms.dataUnit == 4) ? "selected" : "" }}>TiB</option>
+		</select>
+	</td>
+</tr>

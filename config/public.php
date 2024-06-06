@@ -393,10 +393,10 @@ $env->sciHubMirrors = [
     "sci-hub.ru",
 ];
 
+# https://docs.openalex.org
+$env->openAlexEmail = "openalex@torrents.bio";
 
-# REMOVE ME
-define("SCI_HUB", "se");
-# REMOVE ME
+
 
 
 /**

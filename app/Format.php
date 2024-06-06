@@ -575,4 +575,18 @@ class Format
 
         return $crumbs;
     }
+
+
+    /**
+     * tag
+     *
+     * Formats a tag for storage and display.
+     *
+     * @param ?string $string
+     * @return string
+     */
+    public static function tag(?string $string): string
+    {
+        return \Illuminate\Support\Str::slug($string);
+    }
 } # class

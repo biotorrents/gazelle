@@ -1,0 +1,36 @@
+{##
+ # complex search (title and id fields)
+ #}
+
+{% set placeholder = "Title, subject, or object" %}
+
+{% if manticore.context == "collages" %}
+    {% set placeholder = "Title or description" %}
+{% endif %}
+
+{% if manticore.context == "creators" %}
+    {% set placeholder = "Name, aliases, or ORCiD" %}
+{% endif %}
+
+{% if manticore.context == "literature" %}
+    {% set placeholder = "Title, abstract, citation, or DOI" %}
+{% endif %}
+
+{% if manticore.context == "organizations" %}
+    {% set placeholder = "Name, acronym, or ROR ID" %}
+{% endif %}
+
+{% if manticore.context == "requests" %}
+    {% set placeholder = "Title, organism, strain or variety, or identifier" %}
+{% endif %}
+
+{% if manticore.context == "torrentGroups" %}
+    {% set placeholder = "Title, organism, strain or variety, or identifier" %}
+{% endif %}
+
+<tr id="complexSearch">
+    <th>Essentials</th>
+    <td>
+		<input type="text" name="complexSearch" placeholder="{{ placeholder }}" value="{{ manticore.terms.complexSearch }}">
+	</td>
+</tr>

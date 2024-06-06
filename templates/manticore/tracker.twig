@@ -1,0 +1,20 @@
+{##
+ # tracker 
+ #}
+
+<tr id="tracker">
+	<th>Tracker</th>
+	<td>
+		{# leech status #}
+		<select id="leechStatus" name="leechStatus" class="select">
+            <option value="">Leech status</option>
+            <option value="1" {{ (manticore.terms.leechStatus == "1") ? "selected" : "" }}>Freeleech</option>
+            <option value="2" {{ (manticore.terms.leechStatus == "2") ? "selected" : "" }}>Neutral leech</option>
+            <option value="3" {{ (manticore.terms.leechStatus == "3") ? "selected" : "" }}>Either</option>
+		</select>
+
+		<input type="number" name="seederCount" placeholder="Seeders" value="{{ manticore.terms.seederCount }}">
+		<input type="number" name="leecherCount" placeholder="Leechers" value="{{ manticore.terms.leecherCount }}">
+		{# <input type="number" name="snatchCount" placeholder="Snatches" value="{{ manticore.terms.snatchCount }}"> #}
+	</td>
+</tr>

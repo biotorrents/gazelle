@@ -64,7 +64,7 @@ class Organizations extends ObjectCrud
         parent::read($id);
 
         # decode the json fields
-        $this->attributes->relationships = json_decode($this->attributes->relationships ?? "{}");
+        $this->attributes->relationships = json_decode($this->attributes->relationships ?? "[]", true);
     }
 
 

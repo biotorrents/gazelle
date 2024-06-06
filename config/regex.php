@@ -137,3 +137,18 @@ $env->regexStarboard = "^(#|\/\/)\s*%{2,}-*";
 # https://ror.readme.io/v2/docs/identifier
 # flags: none
 $env->regexRor = "^0[a-z|0-9]{6}[0-9]{2}$";
+
+
+# https://www.wikidata.org/wiki/Property:P10283
+# flags: none
+$env->regexOpenAlex = "[ACIVW][1-9]\d{3,9}";
+
+
+# https://en.wikipedia.org/wiki/ISSN
+# flags: none
+$env->regexIssn = "^[0-9]{4}-[0-9]{3}[0-9X]$";
+
+
+# https://www.wikidata.org/wiki/Property:P4011
+# flags: none
+$env->regexSemanticScholar = "[0-9a-fA-F]{40}";

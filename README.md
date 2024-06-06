@@ -18,19 +18,18 @@ If you want to scale horizontally, the software supports both [Redis clusters](a
 Please note that Redis clusters expect at least three nodes.
 This lower limit is inherent to Redis' [cluster implementation](https://redis.io/docs/management/scaling/).
 
-### Universal database id's
-
-BioGazelle is in the process of migrating to [UUID v7 primary keys](https://uuid.ramsey.dev/en/stable/rfc4122/version7.html) to enable useful content-agnostic operations such as tagging and AI integration.
-This will consolidate the database and allow for powerful cross-object association.
-The UUIDs are stored as binary strings for index speed and to minimize disk usage.
-By the way, *all* binary data is transparently converted by the [database wrapper](app/Database.php).
-
-## Full stack search engine rewrite
+## Deeply indexed and programmatically enhanced
 
 Data indexing is important, so BioGazelle has upgraded to [Manticore Search](https://manticoresearch.com), the successor to Sphinx.
 This upgrade also involved a [rewrite of the search configuration](utilities/config/manticore.conf) from scratch, based on AnimeBytes' example.
 The Gazelle frontend itself uses a [rewritten browse.php controller](sections/torrents/browse.php) and a [brand new Twig template](templates/torrents/search.twig).
 Oh yeah, the [PHP backend class](app/Manticore.php) is also completely rewritten, replacing at least four legacy classes.
+
+### Universal database id's
+
+BioGazelle is in the process of migrating to [short UUID primary keys](https://mariadb.com/kb/en/uuid_short/) to enable useful content-agnostic operations such as tagging and AI integration.
+This will consolidate the database and allow for powerful cross-object association.
+
 
 ## Secure authentication system
 
@@ -65,12 +64,6 @@ But we took it up a notch by upgrading this system to use the [modern WebAuthn s
 use a hardware key, a smartphone fingerprint or QR code reader, or just generate a key in the browser.
 The underlying library is the canonical [web-auth/webauthn-lib](https://github.com/web-auth/webauthn-lib).
 
-## OpenAI integration
-
-One of BioGazelle's goals is to place data in context using [OpenAI's completions API](app/OpenAI.php) to generate tl;dr summaries and tags from content descriptions.
-Just paste your abstract into the torrent group description and get a succinct natural language summary with tags.
-It's possible to disable AI content display in the user settings.
-
 ## Twig template system
 
 [BioGazelle's Twig interface](app/Twig.php) takes cues from OPS's extended filters and functions.
@@ -93,6 +86,12 @@ Parsed texts are cached for speed, using both Redis and the Twig disk cache.
 BioGazelle uses [Starboard Notebook](https://starboard.gg) to support [Jupyter Notebooks](https://jupyter.org) in the browser!
 This lets users document technical topics such as data processing workflows complete with executable code examples and Latex expressions.
 Our secure implementation leverages sanboxed iframes on a dedicated subdomain to ensure no cookie or local storage leaks.
+
+### OpenAI integration
+
+One of BioGazelle's goals is to place data in context using [OpenAI's completions API](app/OpenAI.php) to generate tl;dr summaries and tags from content descriptions.
+Just paste your abstract into the torrent group description and get a succinct natural language summary with tags.
+It's possible to disable AI content display in the user settings.
 
 ### Good typography
 

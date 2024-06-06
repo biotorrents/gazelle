@@ -136,7 +136,8 @@ class Better
             from torrents_group
             {$subQuery}
             where torrents_group.id not in
-            (select distinct groupId from literature_groups)
+            (select distinct contentId from literature_links)
+            and literature_links.contentType = 'torrentGroups'
             order by rand() limit {$resultCount}
         ";
 

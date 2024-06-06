@@ -17,11 +17,9 @@ try {
         throw new Exception("not found");
     }
 
-    /*
     $organization->loadCreators();
     $organization->loadTorrentGroups();
     $organization->loadRequests();
-    */
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -32,6 +30,7 @@ $post = Gazelle\Http::request("post");
 
 # create a conversation if it doesn't exist
 #$conversation = Gazelle\Conversations::createIfNotExists($organization->id, "organizations");
+#$conversation->loadMessages();
 
 # twig template
 $app->twig->display("organizations/details.twig", [

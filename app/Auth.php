@@ -782,7 +782,7 @@ class Auth # extends Delight\Auth\Auth
 
         # try to resolve the email address
         $identifier = \Gazelle\Escape::string($identifier);
-        $column = $app->dbNew->determineIdentifier($identifier);
+        $column = $app->dbNew->determineId($identifier);
 
         # todo: maybe change unresolved id or uuid to null
         # and let the backend decide which column to use?

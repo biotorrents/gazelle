@@ -133,12 +133,12 @@ class Creators extends ObjectCrud
         $data = [];
 
         # get the number of requests
-        $query = "select count(*) from creators_requests where creatorId = ?";
-        $data["requestCount"] = $app->dbNew->single($query, [$this->id]);
+        $query = "select count(id) from creators_links where objectId = ? and contentType = ?";
+        $data["requestCount"] = $app->dbNew->single($query, [$this->id, Requests::$type]);
 
         # get the number of torrent groups
-        $query = "select count(*) from creators_groups where creatorId = ?";
-        $data["torrentGroupCount"] = $app->dbNew->single($query, [$this->id]);
+        $query = "select count(id) from creators_links where objectId = ? and contentType = ?";
+        $data["torrentGroupCount"] = $app->dbNew->single($query, [$this->id, TorrentGroups::$type]);
 
         return $data;
     }
@@ -226,19 +226,19 @@ class Creators extends ObjectCrud
             $QueryID = $app->dbOld->get_query_id();
             $app->dbOld->prepared_query("
             SELECT
-              ta.`GroupID`,
-              ta.`creatorId`,
-              ag.`Name`
+              ta.`contentId`,
+              ta.`objectId`,
+              ag.`name`
             FROM
-              `creators_groups` AS ta
+              `creators_links` AS ta
             JOIN `creators` AS ag
             ON
-              ta.`creatorId` = ag.`id`
+              ta.`objectId` = ag.`id`
             WHERE
-              ta.`GroupID` IN($IDs)
+              ta.`contentId` IN($IDs)
             ORDER BY
-              ta.`GroupID` ASC,
-              ag.`Name` ASC;
+              ta.`contentId` ASC,
+              ag.`name` ASC;
             ");
 
             while (list($GroupID, $creatorID, $creatorName) = $app->dbOld->next_record(MYSQLI_BOTH, false)) {
@@ -361,6 +361,10 @@ class Creators extends ObjectCrud
      */
     public static function delete_artist($creatorID)
     {
+        throw new Exception("not implemented");
+
+        /** */
+
         $app = \Gazelle\App::go();
 
         $QueryID = $app->dbOld->get_query_id();

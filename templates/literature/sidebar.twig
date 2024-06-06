@@ -11,7 +11,11 @@
 
 	{% set uri = processImage("/images/noartwork.webp", "thumb") %}
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
-		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ literature.attributes.title }}" title="{{ literature.attributes.title }}">
+		{% if displayDoi == false %}
+			<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ literature.attributes.title }}" title="{{ literature.attributes.title }}">
+		{% else %}
+			<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ literature.attributes.doi }}" title="{{ literature.attributes.doi }}">
+		{% endif %}
 	</figure>
 
 </section>
@@ -27,19 +31,20 @@
 
 		{# update #}
 		{% if can({"literature": "update"}) or literature.attributes.userId == user.core.id %}
-			<a class="button button-orange" href="/literature{{ literature.id }}/update">update this item</a>
+			<a class="button button-orange" href="/literature/{{ literature.id }}/update">update this item</a>
 		{% endif %}
 
 
 		{# delete #}
 		{% if can({"literature": "delete"}) or literature.attributes.userId == user.core.id %}
-			<a class="button button-red" href="/literature{{ literature.id }}/delete">delete this item</a>
+			<a class="button button-red" href="/literature/{{ literature.id }}/delete">delete this item</a>
 		{% endif %}
 	</form>
 </section>
 
 
 {# impact stats #}
+{% if not displayDoi %}
 <section>
 	<h3>Impact stats</h3>
 	
@@ -71,10 +76,11 @@
 			{% endif %}
 	</table>
 </section>
-
+{% endif %}
 
 
 {# creators #}
+{% if literature.relationships.creators is not empty %}
 <section>
 <h3>Creators</h3>
 
@@ -97,3 +103,4 @@
 </table>
 
 </section>
+{% endif %}

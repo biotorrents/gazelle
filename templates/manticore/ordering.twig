@@ -1,0 +1,61 @@
+{##
+ # ordering
+ #}
+
+<tr id="ordering">
+	<th>Order by</th>
+	<td>
+		<select name="orderBy" id="orderBy" class="select" placeholder="Attribute">
+                  <option value="createdAt" {{ (manticore.terms.orderBy == "createdAt") ? "selected" : "" }}>Created at</option>
+                  <option value="alphabetical" {{ (manticore.terms.orderBy == "alphabetical") ? "selected" : "" }}>Alphabetical</option>
+
+                  {% if manticore.context == "collages" %}
+                        <option value="category" {{ (manticore.terms.orderBy == "category") ? "selected" : "" }}>Category</option>
+                        <option value="torrentCount" {{ (manticore.terms.orderBy == "torrentCount") ? "selected" : "" }}>Torrents</option>
+                        <option value="subscriberCount" {{ (manticore.terms.orderBy == "subscriberCount") ? "selected" : "" }}>Subscribers</option>
+                  {% endif %}
+
+                  {% if manticore.context == "creators" %}
+                        <option value="hIndex" {{ (manticore.terms.orderBy == "hIndex") ? "selected" : "" }}>h-index</option>
+                        <option value="paperCount" {{ (manticore.terms.orderBy == "paperCount") ? "selected" : "" }}>Papers</option>
+                        <option value="citationCount" {{ (manticore.terms.orderBy == "citationCount") ? "selected" : "" }}>Citations</option>
+                  {% endif %}
+
+                  {% if manticore.context == "literature" %}
+                        <option value="publicationDate" {{ (manticore.terms.orderBy == "publicationDate") ? "selected" : "" }}>Publication date</option>
+                        <option value="influentialCitationCount" {{ (manticore.terms.orderBy == "influentialCitationCount") ? "selected" : "" }}>Influential citations</option>
+                        <option value="citationCount" {{ (manticore.terms.orderBy == "citationCount") ? "selected" : "" }}>Citations</option>
+                        <option value="referenceCount" {{ (manticore.terms.orderBy == "referenceCount") ? "selected" : "" }}>References</option>
+                  {% endif %}
+
+                  {% if manticore.context == "organizations" %}
+                        <option value="established" {{ (manticore.terms.orderBy == "established") ? "selected" : "" }}>Established</option>
+                        <option value="status" {{ (manticore.terms.orderBy == "status") ? "selected" : "" }}>Status</option>
+                        <option value="type" {{ (manticore.terms.orderBy == "type") ? "selected" : "" }}>Type</option>
+                  {% endif %}
+
+                  {% if manticore.context == "requests" %}
+                        <option value="bounty" {{ (manticore.terms.orderBy == "bounty") ? "selected" : "" }}>Bounty</option>
+                        <option value="voteCount" {{ (manticore.terms.orderBy == "voteCount") ? "selected" : "" }}>Votes</option>
+                        <option value="lastVote" {{ (manticore.terms.orderBy == "lastVote") ? "selected" : "" }}>Last vote</option>
+                        <option value="filledAt" {{ (manticore.terms.orderBy == "filledAt") ? "selected" : "" }}>Filled at</option>
+                  {% endif %}
+
+                  {% if manticore.context == "torrentGroups" %}
+                        <option value="seederCount" {{ (manticore.terms.orderBy == "seederCount") ? "selected" : "" }}>Seeders</option>
+                        <option value="leecherCount" {{ (manticore.terms.orderBy == "leecherCount") ? "selected" : "" }}>Leechers</option>
+                        <option value="snatchCount" {{ (manticore.terms.orderBy == "snatchCount") ? "selected" : "" }}>Snatched</option>
+                        <option value="dataSize" {{ (manticore.terms.orderBy == "dataSize") ? "selected" : "" }}>Data size</option>
+                  {% endif %}
+
+                  {# omg i'm so random XD #}
+                  <option value="random" {{ (manticore.terms.orderBy == "random") ? "selected" : "" }}>Random</option>
+		</select>
+
+		{# order way #}
+		<select name="orderWay" id="orderWay" class="select" placeholder="Direction">
+                  <option value="desc" {{ (manticore.terms.orderWay == "desc") ? "selected" : "" }}>Descending</option>
+                  <option value="asc" {{ (manticore.terms.orderWay == "asc") ? "selected" : "" }}>Ascending</option>
+		</select>
+	</td>
+</tr>

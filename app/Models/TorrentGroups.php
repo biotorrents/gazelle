@@ -151,7 +151,7 @@ class TorrentGroups extends ObjectCrud
                 $removeLiteratureIds = array_diff($currentLiteratureIds, $proposedLiteratureIds);
                 if (!empty($removeLiteratureIds)) {
                     $placeholders = implode(",", $removeLiteratureIds);
-                    $query = "update literature_groups set deleted_at = now() where groupId = ? and literatureId in ({$placeholders})";
+                    $query = "update literature_links set deleted_at = now() where contentId = ? and objectId in ({$placeholders})";
                     $app->dbNew->run($query, array_merge([$this->id], $removeLiteratureIds));
                 }
 
@@ -165,7 +165,7 @@ class TorrentGroups extends ObjectCrud
                         $values[] = $id;
                     }
 
-                    $query = "insert into literature_groups (groupId, literatureId) values $placeholders";
+                    $query = "insert into literature_links (contentId, objectId) values $placeholders";
                     $app->dbNew->run($query, $values);
                 }
             }

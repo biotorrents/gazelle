@@ -6,170 +6,64 @@ declare(strict_types=1);
  * request search page
  */
 
+
 $app = Gazelle\App::go();
 
-$get = Gazelle\Http::request("get");
+$get = Gazelle\Http::get();
+$manticore = new Gazelle\Manticore("requests");
 
-# workaround for main navigation search
-$get["search"] ??= null;
-if ($get["search"]) {
-    $get["simpleSearch"] = $get["search"];
-}
+/** search handling */
 
-$searchTerms = [
-    "simpleSearch" => $get["simpleSearch"] ?? null,
-    "complexSearch" => $get["complexSearch"] ?? null,
+$searchResults = $manticore->search($get);
+$pagination = $manticore->paginate($searchResults);
 
-    "numbers" => $get["numbers"] ?? null,
-    "year" => $get["year"] ?? null,
-
-    "location" => $get["location"] ?? null,
-    "creator" => $get["creator"] ?? null,
-
-    "description" => $get["description"] ?? null,
-    "fileList" => $get["fileList"] ?? null,
-
-    "platforms" => $get["platforms"] ?? [],
-    "formats" => $get["formats"] ?? [],
-    "archives" => $get["archives"] ?? [],
-
-    "scopes" => $get["scopes"] ?? [],
-    "alignment" => $get["alignment"] ?? null,
-    "leechStatus" => $get["leechStatus"] ?? null,
-    "licenses" => $get["licenses"] ?? [],
-
-    "sizeMin" => $get["sizeMin"] ?? null,
-    "sizeMax" => $get["sizeMax"] ?? null,
-    "sizeUnit" => $get["sizeUnit"] ?? null,
-
-    "categories" => $get["categories"] ?? [],
-    "tagList" => $get["tagList"] ?? [],
-    "tagsType" => $get["tagsType"] ?? null,
-
-    "orderBy" => $get["orderBy"] ?? "timeAdded",
-    "orderWay" => $get["orderWay"] ?? "desc",
-    "groupResults" => $get["groupResults"] ?? $app->user->siteOptions["torrentGrouping"],
-
-    "page" => $get["page"] ?? 1,
-
-    "openaiContent" => $get["openaiContent"] ?? $app->user->siteOptions["openaiContent"],
-];
-
-# build query string (saving/sharing)
+# build query string
 foreach ($get as $key => $value) {
     if (empty($value)) {
         unset($get[$key]);
     }
 }
 
-$get["page"] ??= null;
-unset($get["page"]);
-
-$queryString = http_build_query($get);
+$queryString = "/requests" . http_build_query($get);
 #!d($queryString);
 
-# search manticore
-$manticore = new Gazelle\Manticore();
-$searchResults = $manticore->search("requests", $get);
-$resultCount = count($searchResults);
-#!d($searchResults);
+/** info */
 
+$app->debug["time"]->startMeasure("browse", "get requests");
 
-/** pagination */
-
-
-$pagination = [];
-
-# resultCount and pageSize
-$pagination["resultCount"] = count($searchResults);
-$pagination["pageSize"] = $app->user->extra["siteOptions"]["searchPagination"] ?? 20;
-
-# current page
-$pagination["currentPage"] = intval($searchTerms["page"] ?? 1);
-if (empty($pagination["currentPage"]) || $pagination["currentPage"] !== abs($pagination["currentPage"])) {
-    $pagination["currentPage"] = 1;
-}
-
-# last page
-$pagination["lastPage"] = ceil($pagination["resultCount"] / $pagination["pageSize"]);
-if ($pagination["currentPage"] > $pagination["lastPage"]) {
-    $pagination["currentPage"] = $pagination["lastPage"];
-}
-
-# previous page
-$pagination["previousPage"] = $pagination["currentPage"] - 1;
-if (empty($pagination["previousPage"]) || abs($pagination["previousPage"]) !== $pagination["previousPage"]) {
-    $pagination["previousPage"] = 1;
-}
-
-# next page
-$pagination["nextPage"] = $pagination["currentPage"] + 1;
-
-# first page
-$pagination["firstPage"] = 1;
-
-# offset and limit
-$pagination["offset"] = intval(($pagination["currentPage"] - 1) * $pagination["pageSize"]);
-$pagination["limit"] = $pagination["offset"] + $pagination["pageSize"];
-
-if ($pagination["limit"] > $pagination["resultCount"]) {
-    $pagination["limit"] = $pagination["resultCount"];
-}
-
-
-/** request info */
-
-
-# Gazelle\Requests::get_requests
-# this is slow, only do the current page
-$app->debug["time"]->startMeasure("requests", "get request data");
-$requestIds = array_column($searchResults, "id");
-$requestIds = array_slice($requestIds, $pagination["offset"], $pagination["pageSize"]);
+$ids = array_column($searchResults, "id");
+$ids = array_slice($ids, $pagination["offset"], $pagination["pageSize"]);
 
 $requests = [];
-foreach ($requestIds as $requestId) {
-    $requests[$requestId] = new Gazelle\Requests($requestId);
+foreach ($ids as $id) {
+    $requests[] = new Gazelle\Requests($id);
 }
 
-$app->debug["time"]->stopMeasure("requests", "get request data");
-#!d($requestData);
-
-
-/** tags */
-
-
-$query = "select name from tags where tagType = 'genre' order by name";
-$ref = $app->dbNew->multi($query, []);
-$officialTags = array_column($ref, "name");
-
+$app->debug["time"]->stopMeasure("browse", "get requests");
 
 /** twig template */
 
 $app->twig->display("requests/browse.twig", [
-    "title" => "Requests",
-    "js" => ["vendor/tom-select.base.min", "requests"],
-    "css" => ["vendor/tom-select.bootstrap5.min"],
+    "title" => "Browse requests",
+
+    "css" => [],
+    "js" => ["browse", "requests"],
+
+    "manticore" => $manticore,
+    "requests" => $requests,
+
+    "pagination" => $pagination,
+    "queryString" => $queryString,
+
+    /** */
 
     "categories" => $app->env->categories->pluck("title"),
     "resolutions" => $app->env->metadata->scopes->values()->flatten(),
-
-    "searchResults" => $searchResults,
-    "requests" => $requests,
-
-    #"bookmarks" => Bookmarks::all_bookmarks("torrent"),
-    "officialTags" => $officialTags,
-
-    "searchTerms" => $searchTerms,
-    "pagination" => $pagination,
-    "queryString" => $queryString,
+    "officialTags" => Gazelle\Tags::getOfficialTags(),
 ]);
 
 
 exit;
-
-
-/** OLD */
-
 
 
 try {

@@ -440,7 +440,7 @@ class Users extends ObjectCrud
         $app = App::go();
 
         # allow usernames instead of slugs
-        $column = $app->dbNew->determineIdentifier($id);
+        $column = $app->dbNew->determineId($id);
         if ($column === "slug") {
             $column = "username";
         } else {
@@ -1746,7 +1746,7 @@ class Users extends ObjectCrud
 
 
         # creators added
-        $query = "select count(creatorId) from creators_groups where userId = ?";
+        $query = "select count(objectId) from creators_links where userId = ?";
         $data["creatorsAdded"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 

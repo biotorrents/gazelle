@@ -14,7 +14,8 @@ namespace Gazelle;
 class Twig extends \Twig\Environment
 {
     # singleton
-    private static ?\Twig\Environment $instance = null;
+    private static $instance = null;
+    #private static ?\Twig\Environment $instance = null;
 
     # twig instance
     private \Twig\Environment $twig;
@@ -48,27 +49,42 @@ class Twig extends \Twig\Environment
     /**
      * go
      */
-    public static function go(array $options = []): \Twig\Environment
+    public static function go(array $options = [])
     {
-        return (!self::$instance)
-            ? self::$instance = self::factory($options)
-            : self::$instance;
-
-        /*
         if (!self::$instance) {
             self::$instance = new self();
             self::$instance->factory($options);
         }
 
         return self::$instance;
-        */
+    }
+
+
+    /**
+     * display
+     *
+     * Wrapped to display the actual errors in the template.
+     *
+     * https://twig.symfony.com/doc/3.x/recipes.html#validating-the-template-syntax
+     *
+     * @param string $name
+     * @param array $context
+     * @return void
+     */
+    public function display($name, array $context = []): void
+    {
+        try {
+            $this->twig->display($name, $context);
+        } catch (\Throwable $e) {
+            !d($e);
+        }
     }
 
 
     /**
      * factory
      */
-    private static function factory(array $options = []): \Twig\Environment
+    private function factory(array $options = [])
     {
         $app = App::go();
 
@@ -619,6 +635,6 @@ class Twig extends \Twig\Environment
             );
         }));
 
-        return $twig;
+        $this->twig = $twig;
     }
 } # class

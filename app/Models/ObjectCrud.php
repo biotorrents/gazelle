@@ -133,7 +133,7 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # try to find the object
-        $column = $app->dbNew->determineIdentifier($id);
+        $column = $app->dbNew->determineId($id);
         $query = "select * from {$this->table} where {$column} = ? and deleted_at is null";
         $row = $app->dbNew->row($query, [$id]);
 
@@ -182,7 +182,7 @@ abstract class ObjectCrud extends RecursiveCollection
         $transform = $this->displayToDatabase($data);
 
         # add the identifier to the data
-        $column = $app->dbNew->determineIdentifier($this->id);
+        $column = $app->dbNew->determineId($this->id);
         $transform[$column] = $this->id;
 
         # perform an upsert
@@ -208,7 +208,7 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # determine the identifier
-        $column = $app->dbNew->determineIdentifier($this->id);
+        $column = $app->dbNew->determineId($this->id);
 
         # perform a soft delete
         $query = "update {$this->table} set deleted_at = now() where {$column} = ?";
@@ -234,7 +234,7 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # determine the identifier
-        $column = $app->dbNew->determineIdentifier($this->id);
+        $column = $app->dbNew->determineId($this->id);
 
         # perform a soft restore
         $query = "update {$this->table} set deleted_at = null where {$column} = ?";
@@ -603,7 +603,7 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # does the object exist?
-        $column = $app->dbNew->determineIdentifier($id);
+        $column = $app->dbNew->determineId($id);
         $query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
 
         $good = $app->dbNew->single($query, [$id]);
@@ -632,7 +632,7 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # add the identifier to the data
-        $column = $app->dbNew->determineIdentifier($this->id);
+        $column = $app->dbNew->determineId($this->id);
         $data[$column] = $this->id;
 
         $upsert = $app->dbNew->upsert($this->table, $data);

@@ -447,9 +447,9 @@ class Top10
         $limit ??= self::$defaultLimit;
 
         $query = "
-            select tags.id, tags.name, count(requests_tags.requestId) as uses from tags
-            join requests_tags on requests_tags.tagId = tags.id
-            group by requests_tags.tagId
+            select tags.id, tags.name, count(requests_links.contentId) as uses from tags
+            join requests_links on requests_links.contentId = tags.id
+            group by requests_links.contentId
             order by uses desc limit ?
         ";
 

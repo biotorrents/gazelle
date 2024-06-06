@@ -179,25 +179,25 @@ class Requests extends ObjectCrud
 
             # get the tagIds currently associated with the request, if any
             $query = "
-                select tagId from requests_tags
-                join tags on requests_tags.tagId = tags.id
-                where requests_tags.requestId = ?
+                select contentId from requests_links
+                join tags on requests_links.contentId = tags.id
+                where requests_links.objectId = ? and requests_links.contentType = ?
             ";
-            $tagIds = $app->dbNew->multi($query, [$this->id]);
+            $tagIds = $app->dbNew->multi($query, [$this->id, Requests::$type]);
 
             # compare the tagIds to the tags
             $tagIds = array_column($tagIds, "tagId");
             if (!in_array($tag, $tagIds)) {
                 # insert the tag
-                $query = "insert into requests_tags (requestId, tagId) values (?, ?)";
-                $app->dbNew->do($query, [$this->id, $tag]);
+                $query = "insert into requests_links (objectId, contentId, contentType) values (?, ?, ?)";
+                $app->dbNew->do($query, [$this->id, $tag, Requests::$type]);
             }
 
             # delete the tagIds that are not in the tags
             $diff = array_diff($tagIds, $data["tags"]);
             foreach ($diff as $tagId) {
-                $query = "delete from requests_tags where requestId = ? and tagId = ?";
-                $app->dbNew->do($query, [$this->id, $tagId]);
+                $query = "delete from requests_links where objectId = ? and contentId = ? and contentType = ?";
+                $app->dbNew->do($query, [$this->id, $tagId, Requests::$type]);
             }
         }
 
@@ -224,11 +224,11 @@ class Requests extends ObjectCrud
         $app = App::go();
 
         $query = "
-            select requests_tags.tagId, tags.name from requests_tags
-            join tags on requests_tags.tagId = tags.id
-            where requests_tags.requestId = ?
+            select requests_links.contentId, tags.name from requests_links
+            join tags on requests_links.contentId = tags.id
+            where requests_links.objectId = ? and requests_links.contentType = ?
         ";
-        $ref = $app->dbNew->multi($query, [$this->id]);
+        $ref = $app->dbNew->multi($query, [$this->id, Requests::$type]);
 
         $data = [];
         foreach ($ref as $row) {
@@ -508,13 +508,13 @@ class Requests extends ObjectCrud
         $QueryID = $app->dbOld->get_query_id();
         $app->dbOld->query("
         SELECT
-          rt.RequestID,
-          rt.TagID,
+          rt.objectId,
+          rt.ContentId,
           t.Name
-        FROM requests_tags AS rt
-          JOIN tags AS t ON rt.TagID = t.ID
-        WHERE rt.RequestID IN ($RequestIDs)
-          ORDER BY rt.TagID ASC");
+        FROM requests_links AS rt
+          JOIN tags AS t ON rt.contentId = t.ID
+        WHERE rt.objectId IN ($RequestIDs) and rt.contentType = 'tags'
+          ORDER BY rt.contentId ASC");
 
         $Tags = $app->dbOld->to_array(false, MYSQLI_NUM, false);
         $app->dbOld->set_query_id($QueryID);
