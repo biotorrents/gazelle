@@ -385,6 +385,12 @@ $env->defaultSiteOptions = json_encode([
  * not intended for private keys
  */
 
+# how many generations to auto-grow the database with remote data?
+$env->degreesOfSeparation = 6;
+
+# after how many remote lookups should we stop trying?
+$env->failCount = 3;
+
 # current sci-hub domains
 # https://sci-hub.se/mirrors
 $env->sciHubMirrors = [
@@ -396,7 +402,8 @@ $env->sciHubMirrors = [
 # https://docs.openalex.org
 $env->openAlexEmail = "openalex@torrents.bio";
 
-
+# https://api.crossref.org/swagger-ui/index.html
+$env->crossrefEmail = "crossref@torrents.bio";
 
 
 /**

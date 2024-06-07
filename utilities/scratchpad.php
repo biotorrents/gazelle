@@ -14,10 +14,30 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
-$openAlex = new Gazelle\OpenAlex();
-# https://manual.manticoresearch.com/Searching/Autocomplete
-$result = $openAlex->institutions("https://ror.org/0483mr804");
+echo "<pre>";
+
+#$semanticScholar = new Gazelle\SemanticScholar(["paperId" => "DOI:10.1371/journal.pone.0157044"]);
+#$result = $semanticScholar->paper();
+
+#$openAlex = new Gazelle\OpenAlex();
+#$result = $openAlex->sources("1533-4406");
+#$result = $openAlex->match("authors", "Peter Gehler");
+
+
+#$semanticScholar = new Gazelle\SemanticScholar();
+#$encodedName = urlencode("Peter Gehler");
+#$result = $semanticScholar->search($encodedName, "authors");
+
+
+#$result = $openAlex->authors("https://orcid.org/0000-0002-1825-0097");
+#$result = $openAlex->institutions("https://ror.org/03vek6s52");
+#$result = $openAlex->works("10.1371/journal.pone.0157044");
+
+#$result = $openAlex->institutions("https://ror.org/0483mr804");
 #$result = $manticore->raw("call keywords('alcohol dehy', 'torrents_main', 1 as stats, 'hits' as sort_mode)");
+
+$crossref = new Gazelle\Crossref();
+$result = $crossref->journals("0028-4793");
 !d($result);
 
 

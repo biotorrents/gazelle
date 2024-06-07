@@ -2,11 +2,15 @@
 
 {% block content %}
 
-  {% if displayDoi == false %}
-	  <h2>{{ literature.attributes.title }}</h2>
-  {% else %}
-	  <h2 class="monospace">{{ literature.attributes.doi }}</h2>
-  {% endif %}
+	{% if displayDoi == false %}
+		{% if literature.attributes.isOpenAccess == true %}
+			<h2 id="openAccess">{{ literature.attributes.title }}</h2>
+		{% else %}
+			<h2>{{ literature.attributes.title }}</h2>
+		{% endif %}
+	{% else %}
+		<h2 class="monospace">{{ literature.attributes.doi }}</h2>
+	{% endif %}
 
 
 	{# essential details table #}
@@ -18,7 +22,17 @@
 				<tr>
 					<th><span class="doi nobr">DOI</span></th>
 					<td>
-            <a href="https://doi.org/{{ literature.attributes.doi }}" target="_blank" class="external monospace">{{ literature.attributes.doi }}</a>
+            <a href="{{ literature.attributes.doi }}" target="_blank" class="external monospace">{{ literature.attributes.doi }}</a>
+          </td>
+				</tr>
+			{% endif %}
+
+      {# openAlexId #}
+			{% if literature.attributes.openAlexId is not empty %}
+				<tr>
+					<th><span class="openAlexId nobr">OpenAlex</span></th>
+					<td>
+            <a href="{{ literature.attributes.openAlexId }}" target="_blank" class="external monospace">{{ literature.attributes.openAlexId }}</a>
           </td>
 				</tr>
 			{% endif %}
@@ -91,6 +105,12 @@
       {{ include("tables/torrentGroups.twig") }}
 	</section>
     {% endif %}
+
+	  	{# countsByYear #}
+  {% if literature.attributes.countsByYear is not empty %}
+	{{ include("stats/countsByYear.twig", { "data": literature.attributes.countsByYear|json_encode, "key": "cited_by_count" } )}}
+  {% endif %}
+
 
 
 {% if enableConversation and conversation %}

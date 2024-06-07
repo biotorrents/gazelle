@@ -296,9 +296,10 @@ class Database extends \PDO
      * Used for finding stuff by id, uuid, or slug.
      *
      * @param int|string $id
+     * @param bool $insteadExtractId returns the unique part of the id instead of the column name
      * @return string
      */
-    public function determineId(int|string $id): string
+    public function determineId(int|string $id, bool $insteadExtractId = false): string
     {
         $app = App::go();
 
@@ -306,42 +307,42 @@ class Database extends \PDO
         $id = strval($id);
 
         # openAlex
-        $good = preg_match("/{$app->env->regexOpenAlex}/", $id);
+        $good = preg_match("/{$app->env->regexOpenAlex}/", $id, $matches);
         if ($good) {
-            return "openAlexId";
+            return (!$insteadExtractId ? "openAlexId" : $matches[0]);
         }
 
         # doi
-        $good = preg_match("/{$app->env->regexDoi}/i", $id);
+        $good = preg_match("/{$app->env->regexDoi}/i", $id, $matches);
         if ($good) {
-            return "doi";
+            return (!$insteadExtractId ? "doi" : $matches[0]);
         }
 
         # orcid
-        $good = preg_match("/{$app->env->regexOrcid}/i", $id);
+        $good = preg_match("/{$app->env->regexOrcid}/i", $id, $matches);
         if ($good) {
-            return "orcid";
+            return (!$insteadExtractId ? "orcid" : $matches[0]);
         }
 
         # issn
-        $good = preg_match("/{$app->env->regexIssn}/", $id);
+        $good = preg_match("/{$app->env->regexIssn}/", $id, $matches);
         if ($good) {
-            return "issn";
+            return (!$insteadExtractId ? "issn" : $matches[0]);
         }
 
         # rorId
-        $good = preg_match("/{$app->env->regexRor}/", $id);
+        $good = preg_match("/{$app->env->regexRor}/", $id, $matches);
         if ($good) {
-            return "rorId";
+            return (!$insteadExtractId ? "rorId" : $matches[0]);
         }
 
         # normal numeric id
         if (is_int($id) || is_numeric($id)) {
-            return "id";
+            return (!$insteadExtractId ? "id" : $id);
         }
 
         # default slug
-        return "slug";
+        return (!$insteadExtractId ? "slug" : $id);
 
         /*
         # https://ihateregex.io/expr/uuid/
@@ -354,6 +355,43 @@ class Database extends \PDO
             return "uuid";
         }
         */
+    }
+
+
+    /**
+     * extractId
+     *
+     * Extract the unique part of an id.
+     *
+     * @param int|string $id
+     * @return string
+     */
+    public function extractId(int|string $id): string
+    {
+        return $this->determineId($id, true);
+    }
+
+
+    /**
+     * fullId
+     *
+     * Get the full id from a unique part.
+     *
+     * @param int|string $id
+     * @return string
+     */
+    public function fullId(int|string $id): string
+    {
+        $column = $this->determineId($id);
+        $uniqueId = $this->extractId($id);
+
+        return match ($column) {
+            "openAlexId" => "https://openalex.org/{$uniqueId}",
+            "doi" => "https://doi.org/{$uniqueId}",
+            "orcid" => "https://orcid.org/{$uniqueId}",
+            "rorId" => "https://ror.org/{$uniqueId}",
+            default => strval($id),
+        };
     }
 
 

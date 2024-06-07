@@ -239,6 +239,25 @@ img.torrent_header {
  * creators and literature
  */
 
+// open access HEADING (not table entry)
+// https://en.wikipedia.org/wiki/File:Open_Access_logo_PLoS_transparent.svg
+// nominally 640 × 1,000 pixels
+// 1,000 / 640 = 1.5625
+
+#openAccess {
+  &:before {
+    content: "";
+    margin-right: 1rem;
+
+    background-image: url("/images/logos/openAccess.svg");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.472rem;
+    height: 2.3rem;
+  }
+}
+
 .hIndex {
   &:before {
     content: "💥";
@@ -383,6 +402,20 @@ img.torrent_header {
     margin-right: 0.5rem;
 
     background-image: url("/images/logos/ror.svg");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
+.openAlexId {
+  &:before {
+    content: "";
+    margin-right: 0.5rem;
+
+    background-image: url("/images/logos/openAlex.webp");
     background-size: 100% 100%;
     display: inline-block;
 

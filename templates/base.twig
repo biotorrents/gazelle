@@ -40,9 +40,11 @@
 		{{ include("_base/metaTags.twig") }}
 
 		{# DebugBar: header #}
+		{#
 		{% if env.dev %}
 			{{ debugHeader() }}
 		{% endif %}
+		#}
 
 
 		{# start javascript block #}
@@ -332,9 +334,11 @@
 				{{ include("_base/footer.twig") }}
 
 				{# DebugBar: footer #}
+				{#
 				{% if env.dev %}
 					{{ debugFooter() }}
 				{% endif %}
+				#}
 			{% endblock %}
 		</footer>
 		{# end footer block #}

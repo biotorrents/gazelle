@@ -8,6 +8,22 @@
 	<section>
 		<table>
 
+      		{# orcid #}
+			{% if creator.attributes.orcid is not empty %}
+				<tr>
+					<th><span class="orcid nobr">ORCiD</span></th>
+					<td><a href="{{ creator.attributes.orcid }}" target="_blank" class="external monospace">{{ creator.attributes.orcid }}</a></td>
+				</tr>
+			{% endif %}
+
+			{# openAlexId #}
+			{% if creator.attributes.openAlexId is not empty %}
+				<tr>
+					<th><span class="openAlexId nobr">OpenAlex</span></th>
+					<td><a href="{{ creator.attributes.openAlexId }}" target="_blank" class="external monospace">{{ creator.attributes.openAlexId }}</a></td>
+				</tr>
+			{% endif %}
+
       		{# semanticScholarId #}
 			{% if creator.attributes.semanticScholarId is not empty %}
 				<tr>
@@ -16,13 +32,6 @@
 				</tr>
 			{% endif %}
 
-      		{# orcid #}
-			{% if creator.attributes.orcid is not empty %}
-				<tr>
-					<th><span class="orcid nobr">ORCiD</span></th>
-					<td><a href="https://orcid.org/{{ creator.attributes.orcid }}" target="_blank" class="external monospace">https://orcid.org/{{ creator.attributes.orcid }}</a></td>
-				</tr>
-			{% endif %}
 
       		{# homepage #}
 			{% if creator.attributes.homepage is not empty %}
@@ -33,12 +42,14 @@
 			{% endif %}
 
 			{# affiliations #}
+			{#
 			{% if creator.attributes.affiliations is not empty %}
 				<tr>
 					<th><span class="affiliations nobr">Affiliations</span></th>
 					<td>{{ creator.attributes.affiliations|join(", ") }}</td>
 				</tr>
 			{% endif %}
+			#}
 
       		{# aliases #}
 			{#
@@ -80,32 +91,37 @@
 
 	</section>
 
+
+	{# biography #}
+	{% if creator.attributes.biography is not empty %}
+	<section>
+		<h3>Biography</h3>
+		{{ creator.attributes.biography }}
+	</section>
+	{% endif %}
+
+
+	  	{# torrent groups #}
+		{% if creator.relationships.torrentGroups is not empty %}
+		<section>
+		<h3>Torrent groups</h3>
+		{{ include("tables/torrentGroups.twig") }}
+		</section>
+		{% endif %}
+
 		  	{# literature #}
 		{% if creator.relationships.literature is not empty %}
-	<section>
+		<section>
 		<h3>Literature</h3>
 		{{ include("tables/literature.twig") }}
 		</section>
 		{% endif %}
 
 
-	  	{# torrent groups #}
-		{% if creator.relationships.torrentGroups is not empty %}
-	<section>
-		<h3>Torrent groups</h3>
-		{{ include("tables/torrentGroups.twig") }}
-		</section>
-		{% endif %}
-
-
-	{# description #}
-	{% if creator.attributes.description is not empty %}
-	<section>
-		<h3>Biography</h3>
-		{{ creator.attributes.description }}
-	</section>
-	{% endif %}
-
+  	{# countsByYear #}
+  {% if creator.attributes.countsByYear is not empty %}
+	{{ include("stats/countsByYear.twig", { "data": creator.attributes.countsByYear|json_encode, "key": "cited_by_count" } )}}
+  {% endif %}
 
 
 {% if enableConversation and conversation %}

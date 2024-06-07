@@ -24,6 +24,7 @@ class Permissions
             "update" => "Can update torrents",
             "delete" => "Can delete torrents",
             "moderate" => "Can moderate torrents",
+            "download" => "Can download torrents",
         ],
 
         # torrent groups

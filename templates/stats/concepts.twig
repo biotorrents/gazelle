@@ -1,0 +1,32 @@
+{##
+ # get OpenAlex's concepts property
+ #}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<section>
+    <h3>Top subjects</h3>
+    <canvas class="chart" id="concepts"></canvas>
+
+    <script>
+        (() => {
+            "use strict";
+
+            let conceptsCanvas = document.getElementById("concepts").getContext("2d");
+            let conceptsData = JSON.parse('{{ data|raw }}');
+
+            let conceptsChart = new Chart(conceptsCanvas, {
+                type: "doughnut",
+                data: {
+                    labels: conceptsData.map(conceptsData => conceptsData.display_name),
+                    datasets: [
+                        {
+                            data: conceptsData.map(conceptsData => conceptsData.score)
+                        }
+                    ]
+                }
+            });
+
+        })();
+    </script>
+</section>

@@ -29,8 +29,8 @@ $get = Gazelle\Http::request("get");
 $post = Gazelle\Http::request("post");
 
 # create a conversation if it doesn't exist
-#$conversation = Gazelle\Conversations::createIfNotExists($organization->id, "organizations");
-#$conversation->loadMessages();
+$conversation = Gazelle\Conversations::createIfNotExists($organization->id, "organizations");
+$conversation->loadMessages();
 
 # twig template
 $app->twig->display("organizations/details.twig", [
@@ -38,16 +38,16 @@ $app->twig->display("organizations/details.twig", [
     "sidebar" => true,
 
     "css" => ["vendor/leaflet/leaflet"],
-    "js" => ["vendor/leaflet/leaflet", "conversations"],
+    "js" => ["conversations", "vendor/leaflet/leaflet"],
 
     "breadcrumbs" => [
         "/organizations" => "organizations",
-        "/organizations/{$organization->id}" => $organization->attributes->name,
+        "/organizations/{$organization->attributes->rorId}" => $organization->attributes->name,
     ],
 
     "organization" => $organization,
-    #"torrentGroups" => $literature->relationships->torrentGroups,
+    "torrentGroups" => $organization->relationships->torrentGroups,
 
-    #"enableConversation" => true,
-    #"conversation" => $conversation,
+    "enableConversation" => true,
+    "conversation" => $conversation,
 ]);

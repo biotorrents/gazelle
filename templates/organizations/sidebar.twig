@@ -1,15 +1,12 @@
 {# cover art #}
 <section>
 
-	{#
-	{% if user.siteOptions.coverArtTorrents %}
+	{% if organization.attributes.picture is not empty and user.siteOptions.coverArtTorrents == true %}
 		{% set uri = processImage(organization.attributes.picture, "thumb") %}
 	{% else %}
 		{% set uri = processImage("#{env.staticServer}/images/noartwork.webp", "thumb") %}
 	{% endif %}
-	#}
 
-	{% set uri = processImage("/images/noartwork.webp", "thumb") %}
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
 		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ organization.attributes.name }}" title="{{ organization.attributes.name }}">
 	</figure>
@@ -29,7 +26,7 @@
 
 		{# wikipedia #}
 		{% if organization.attributes.wikipedia is not empty %}
-			<a href="{{ organization.attributes.wikipedia }}" target="_blank" class="button button-green">find on wikipedia</a>
+			<a href="{{ organization.attributes.wikipedia }}" target="_blank" class="button button-green-outline">find on wikipedia</a>
 		{% endif %}
 
 		<hr>
@@ -42,7 +39,7 @@
 
 		{# delete #}
 		{% if can({"organizations": "delete"}) or organization.attributes.userId == user.core.id %}
-			<a class="button button-red" href="/organization/{{ organization.id }}/delete">delete this item</a>
+			<a class="button button-red-outline" href="/organization/{{ organization.id }}/delete">delete this item</a>
 		{% endif %}
 
 		{# report #}
@@ -55,18 +52,68 @@
 </section>
 
 
-{# family tree #}
+{# summaryStats #}
+{% if organization.attributes.summaryStats is not empty %}
+<section>
+	<h3>Summary stats</h3>
+
+	<table class="compact">
+		{#
+		<tr>
+			<th>2yr_mean_citedness</th>
+			<td>{{ organization.attributes.summaryStats.2yr_mean_citedness }}</td>
+		</tr>
+		#}
+
+		<tr>
+			<th class="hIndex">h-index</th>
+			<td>{{ organization.attributes.summaryStats.h_index|number_format }}</td>
+		</tr>
+
+		<tr>
+			<th class="i10Index">i10 index</th>
+			<td>{{ organization.attributes.summaryStats.i10_index|number_format }}</td>
+		</tr>
+	</table>
+</section>
+{% endif %}
+
+
+  	{# concepts #}
+  {% if organization.attributes.concepts is not empty %}
+	{{ include("stats/concepts.twig", { "data": organization.attributes.concepts|json_encode }) }}
+  {% endif %}
+
+
+{# repositories #}
+{% if organization.attributes.repositories is not empty %}
+	<section>
+		<h3>Repositories</h3>
+		<ul id="repositories">
+			{% set truncateRrepositories = organization.attributes.repositories|slice(0, 10) %}
+			{% for item in truncateRrepositories %}
+				<li><a href="{{ item.id }}" target="_blank" class="external">{{ item.display_name }}</a></li>
+			{% endfor %}
+		</ul>
+	</section>
+{% endif %}
+
+
+{# relationships #}
 {% if organization.attributes.relationships is not empty %}
 	<section>
 		<h3>Related organizations</h3>
 		<ul id="familyTree">
-			{% set truncatedRelationships = organization.attributes.relationships|slice(0, 20) %}
+			{% set truncatedRelationships = organization.attributes.relationships|slice(0, 10) %}
 			{% for item in truncatedRelationships %}
 				<li class="{{ item.type|lower }}"><a href="{{ item.id }}" target="_blank" class="external">{{ item.label }}</a></li>
 			{% endfor %}
 		</ul>
 	</section>
 {% endif %}
+
+
+
 
 
 {# creators #}
@@ -92,4 +139,3 @@
 
 </table>
 #}
-</section>

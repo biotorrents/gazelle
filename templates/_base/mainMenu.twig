@@ -25,12 +25,18 @@
 			{# select which site area to search #}
 			<select id="searchWhat" name="searchWhat">
 				<option value="torrents" selected>Torrents</option>
-				{# <option value="creators">Creators</option> #}
+				<option value="collages">Collages</option>
 				<option value="requests">Requests</option>
-				{# <option value="forums">Forums</option> #}
+
+				<option value="creators">Creators</option>
+				<option value="literature">Literature</option>
+				<option value="publications">Publications</option>
+				<option value="organizations">Organizations</option>
+
+				{#
 				<option value="wiki">Wiki</option>
-				{# <option value="log">Log</option> #}
-				<option value="users">Users</option>
+				<option value="log">Log</option>
+				#}
 			</select>
 
 			{# submit button, maybe unnecessary #}
@@ -53,22 +59,31 @@
 
 	{# torrents #}
 	<div id="torrents">
-		<span id="torrentsHeader" class="button button-invisible">Torrents</span>
+		<span id="torrentsHeader" class="button button-invisible">torrents</span>
 		<ul>
 			<li><a href="/torrents">Browse</a></li>
 			<li><a href="/collages">Collages</a></li>
 			<li><a href="/requests">Requests</a></li>
-			<li><a href="/top10">Top 10</a></li>
 			<li><a href="/better">Better</a></li>
+			<li><a href="/top10">Top 10</a></li>
+		</ul>
+	</div>
+
+	{# ecosystem #}
+	<div id="ecosystem">
+		<span id="ecosystemHeader" class="button button-invisible">ecosystem</span>
+		<ul>
+			<li><a href="/creators">Creators</a></li>
+			<li><a href="/literature">Literature</a></li>
+			<li><a href="/publications">Publications</a></li>
+			<li><a href="/organizations">Organizations</a></li>
 		</ul>
 	</div>
 
 	{# more #}
 	<div id="more">
-		<span id="moreHeader" class="button button-invisible">More</span>
+		<span id="moreHeader" class="button button-invisible">more</span>
 		<ul>
-			<li><a href="/literature">Literature</a></li>
-			<li><a href="/organizations">Organizations</a></li>
 			<li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li>
 			<li><a href="/user.php?action=notify">Notifications</a></li>
 			<li><a href="/userhistory.php?action=subscriptions">Subscriptions</a></li>
@@ -77,12 +92,11 @@
 
 	{# community #}
 	<div id="community">
-		<span id="communityHeader" class="button button-invisible">Community</span>
+		<span id="communityHeader" class="button button-invisible">community</span>
 		<ul>
-			{# <li><a href="/forums.php">Forums</a></li> #}
 			<li><a href="/rules">Rules</a></li>
 			<li><a href="/wiki">Wiki</a></li>
-			<li><a href="/comments.php">Conversations</a></li>
+			<li><a href="/conversations">Conversations</a></li>
 			<li><a href="/friends">Friends</a></li>
 			<li><a href="https://slack.{{ env.siteDomain }}" target="_blank">Slack</a></li>
 		</ul>
@@ -90,7 +104,7 @@
 
 	{# user #}
 	<div id="user">
-		<span id="userHeader" class="button button-invisible">User</span>
+		<span id="userHeader" class="button button-invisible">user</span>
 		<ul>
 			<li><a href="/user.php?id={{ user.core.id }}">Profile</a></li>
 			{# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}

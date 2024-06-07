@@ -37,6 +37,64 @@ class OpenAlex
 
 
     /**
+     * search
+     *
+     * @param string $item, e.g., "works"
+     * @param string $query
+     * @return array
+     */
+    public function search(string $item, string $query): array
+    {
+        $app = App::go();
+
+        $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . __FUNCTION__ . json_encode(func_get_args()));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $response = $this->client->get("{$item}", ["query" => ["search" => $query, "mailto" => $app->env->openAlexEmail]]);
+
+        $statusCode = $response->getStatusCode();
+        if ($statusCode !== 200) {
+            throw new Exception("http status code {$statusCode}");
+        }
+
+        # decode the api output to an array
+        $body = json_decode($response->getBody()->getContents() ?? "[]", true);
+
+        $app->cache->set($cacheKey, $body, $this->cacheDuration);
+        return $body;
+    }
+
+
+    /**
+     * match
+     */
+    public function match(string $item, string $query): array
+    {
+        $result = $this->search($item, $query);
+        $topRelevanceScore = 0;
+
+        $result["results"] ??= [];
+        $topResult = [];
+
+        foreach ($result["results"] as $result) {
+            $result["relevance_score"] ??= 0;
+
+            if ($result["relevance_score"] < $topRelevanceScore) {
+                continue;
+            }
+
+            $topResult = $result;
+        }
+
+        return $topResult;
+    }
+
+
+    /**
      * request
      *
      * @param string $item, e.g., "works"

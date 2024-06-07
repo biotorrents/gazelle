@@ -2,6 +2,9 @@
 
 {% block content %}
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/vendor/chartjs-chart-wordcloud.js"></script>
+
 	<h2>{{ organization.attributes.name }}</h2>
 
 	{# essential details table #}
@@ -11,20 +14,20 @@
       {# rorId #}
 			{% if organization.attributes.rorId is not empty %}
 				<tr>
-					<th><span class="rorId nobr">ROR ID</span></th>
+					<th><span class="rorId nobr">ROR</span></th>
 					<td>
             <a href="{{ organization.attributes.rorId }}" target="_blank" class="external monospace">{{ organization.attributes.rorId }}</a>
           </td>
 				</tr>
 			{% endif %}
 
-      {# grid #}
-			{% if organization.attributes.grid is not empty %}
+      {# openAlexId #}
+			{% if organization.attributes.openAlexId is not empty %}
 				<tr>
-					<th><span class="grid nobr">GRID</span></th>
+					<th><span class="openAlexId nobr">OpenAlex</span></th>
 					<td>
-            <span class="monospace">{{ organization.attributes.grid }}</span>
-          </td>
+					    <a href="{{ organization.attributes.openAlexId }}" target="_blank" class="external monospace">{{ organization.attributes.openAlexId }}</a>
+          			</td>
 				</tr>
 			{% endif %}
 
@@ -100,6 +103,7 @@
 	</section>
 
 
+
 	{# map #}
   {% if organization.attributes.latitude is not empty and organization.attributes.longitude is not empty %}
 	<section>
@@ -137,8 +141,7 @@
   {% endif %}
 
 
-  	{# torrent groups #}
-    {#
+	  	{# torrent groups #}
     {% if torrentGroups is not empty %}
 	<section>
 		<h3>Torrent groups</h3>
@@ -147,11 +150,17 @@
     {% endif %}
 
 
+  	{# countsByYear #}
+  {% if organization.attributes.countsByYear is not empty %}
+	{{ include("stats/countsByYear.twig", { "data": organization.attributes.countsByYear|json_encode, "key": "works_count" } )}}
+  {% endif %}
+
+
+
 {% if enableConversation and conversation %}
     {% set variables = { "conversation": conversation } %}
     {% include "_base/conversation.twig" with variables %}
 {% endif %}
-#}
 
 {% endblock %}
 

@@ -2,12 +2,6 @@
  # literature table
  #}
 
-{% set displayDoi = true %}
-
-{% if item.attributes.title is not empty %}
-	{% set displayDoi = false %}
-{% endif %}
-
 <table id="literature" class="relationships">
     <thead>
 	        {# info #}
@@ -17,6 +11,12 @@
 
     <tbody>
         {% for item in literature %}
+			{% set displayDoi = true %}
+
+			{% if item.attributes.title is not empty %}
+				{% set displayDoi = false %}
+			{% endif %}
+
             <tr>
 	            {# title #}
 	            <td>
@@ -33,7 +33,7 @@
 
 		                <p class="flexRow">
 			                {# doi #}
-			                {% if item.attributes.doi is not empty and displayDoi == true %}
+			                {% if item.attributes.doi is not empty %}
 				                <span class="tooltip doi monospace" title="DOI">{{ item.attributes.doi }}</span>
 			                {% endif %}
 

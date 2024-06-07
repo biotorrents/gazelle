@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 
 /**
- * update literature with remote data
+ * update organizations with remote data
  */
 
 require_once __DIR__ . "/../../../bootstrap/cli.php";
 
 $app = Gazelle\App::go();
 
-# openalex
+# ror
 $query = "
-    select id from literature
+    select id from organizations
     where failCount < ? and degreesOfSeparation < ?
-    and openAlexId is null and updatedById is null and deleted_at is null
+    and rorId is null and updatedById is null and deleted_at is null
 ";
 $ref = $app->dbNew->column($query, [$app->env->failCount, $app->env->degreesOfSeparation]);
 
 foreach ($ref as $row) {
     try {
-        ~d("processing literature id {$row}");
-        $literature = new Gazelle\Literature($row);
-        $data = $literature->hydrateFromOpenAlex();
+        ~d("processing organization id {$row}");
+        $organization = new Gazelle\Organizations($row);
+        $data = $organization->hydrateFromRor();
         !d($data);
     } catch (Exception $e) {
-        ~d("{$e->getMessage()} for literature id {$row}");
+        ~d("{$e->getMessage()} for organization id {$row}");
         continue;
     }
 
@@ -36,22 +36,22 @@ foreach ($ref as $row) {
 }
 
 
-# semantic scholar
+# openalex
 $query = "
-    select id from literature
+    select id from organizations
     where failCount < ? and degreesOfSeparation < ?
-    and semanticScholarId is null and updatedById is null and deleted_at is null
+    and rorId is not null and openAlexId is null and updatedById is null and deleted_at is null
 ";
 $ref = $app->dbNew->column($query, [$app->env->failCount, $app->env->degreesOfSeparation]);
 
 foreach ($ref as $row) {
     try {
-        ~d("processing literature id {$row}");
-        $literature = new Gazelle\Literature($row);
-        $data = $literature->supplementFromSemanticScholar();
-        ~d($data);
+        ~d("processing organization id {$row}");
+        $organization = new Gazelle\Organizations($row);
+        $data = $organization->supplementFromOpenAlex();
+        !d($data);
     } catch (Exception $e) {
-        ~d("{$e->getMessage()} for literature id {$row}");
+        ~d("{$e->getMessage()} for organization id {$row}");
         continue;
     }
 

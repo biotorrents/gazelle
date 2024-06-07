@@ -17,9 +17,9 @@
         <h3>{{ conversation.attributes.subject }}</h3>
         {# toggle subscription #}
         {% if isSubscribed %}
-            <a class="button button-red" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">remove subscription</a>
+            <a class="button button-red-outline" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">remove subscription</a>
         {% else %}
-            <a class="button button-orange" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">add subscription</a>
+            <a class="button button-default-outline" id="toggleConversationSubscription" data-conversationid="{{ conversation.id }}">add subscription</a>
         {% endif %}
     </span>
 

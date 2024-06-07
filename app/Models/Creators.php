@@ -23,20 +23,30 @@ class Creators extends ObjectCrud
     # ["database" => "display"]
     protected array $maps = [
         "id" => "id",
+        "userId" => "userId",
+        "openAlexId" => "openAlexId",
         "orcid" => "orcid",
+        "scopusId" => "scopusId",
         "semanticScholarId" => "semanticScholarId",
         "name" => "name",
         "slug" => "slug",
-        "description" => "description",
+        "biography" => "biography",
         "aliases" => "aliases", # json
         "affiliations" => "affiliations", # json
         "homepage" => "homepage",
         "picture" => "picture",
+        "wikipedia" => "wikipedia",
         "hIndex" => "hIndex",
         "paperCount" => "paperCount",
         "citationCount" => "citationCount",
-        "failCount" => "failCount",
+        "summaryStats" => "summaryStats", # json
+        "affiliationsOverTime" => "affiliationsOverTime", # json
+        "topics" => "topics", # json
+        "concepts" => "concepts", # json
+        "countsByYear" => "countsByYear", # json
         "degreesOfSeparation" => "degreesOfSeparation",
+        "failCount" => "failCount",
+        "updatedById" => "updatedById",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -57,8 +67,13 @@ class Creators extends ObjectCrud
         parent::read($id);
 
         # decode the json fields
-        $this->attributes->aliases = json_decode($this->attributes->aliases ?? "");
-        $this->attributes->affiliations = json_decode($this->attributes->affiliations ?? "");
+        $this->attributes->aliases = json_decode($this->attributes->aliases ?? "[]");
+        $this->attributes->affiliations = json_decode($this->attributes->affiliations ?? "[]");
+        $this->attributes->summaryStats = json_decode($this->attributes->summaryStats ?? "[]");
+        $this->attributes->affiliationsOverTime = json_decode($this->attributes->affiliationsOverTime ?? "[]");
+        $this->attributes->topics = json_decode($this->attributes->topics ?? "[]");
+        $this->attributes->concepts = json_decode($this->attributes->concepts ?? "[]");
+        $this->attributes->countsByYear = json_decode($this->attributes->countsByYear ?? "[]");
     }
 
 
@@ -66,58 +81,177 @@ class Creators extends ObjectCrud
 
 
     /**
-     * hydrateFromSemanticScholar
+     * hydrateFromOpenAlex
+     *
+     * Searches for a creator in the OpenAlex database and hydrates the object.
+     *
+     * @return array what's written to the database
+     */
+    public function hydrateFromOpenAlex(): array
+    {
+        $app = App::go();
+
+        if (!$this->attributes->name) {
+            return [];
+        }
+
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
+            $openAlex = new OpenAlex();
+            $response = $openAlex->match("authors", $this->attributes->name);
+
+            if (empty($response)) {
+                throw new Exception("no data");
+            }
+
+            $data = [
+              "id" => $this->id,
+              "userId" => $app->user->core["id"] ?? 0,
+              "openAlexId" => $response["id"] ?? null,
+              "orcid" => $response["orcid"] ?? null,
+              "scopusId" => $response["ids"]["scopus"] ?? null,
+              #"semanticScholarId" => $response["semanticScholarId"] ?? null,
+              "name" => $response["display_name"] ?? null,
+              "slug" => $app->dbNew->slug($response["display_name"] ?? null),
+              #"biography" => $response["biography"] ?? null,
+              "aliases" => json_encode($response["display_name_alternatives"] ?? []),
+              "affiliations" => json_encode($response["last_known_institutions"] ?? []),
+              #"homepage" => $response["homepage"] ?? null,
+              #"picture" => $response["picture"] ?? null,
+              #"wikipedia" => $response["wikipedia"] ?? null,
+              "hIndex" => $response["summary_stats"]["h_index"] ?? null,
+              "paperCount" => $response["works_count"] ?? null,
+              "citationCount" => $response["cited_by_count"] ?? null,
+              "summaryStats" => json_encode($response["summary_stats"] ?? []),
+              "affiliationsOverTime" => json_encode($response["affiliations"] ?? []),
+              "topics" => json_encode($response["topics"] ?? []),
+              "concepts" => json_encode($response["x_concepts"] ?? []),
+              "countsByYear" => json_encode($response["counts_by_year"] ?? []),
+          ];
+
+            # now, save it
+            $this->update($data);
+
+            # loop through the institutions
+            $response["last_known_institutions"] ??= [];
+            foreach ($response["last_known_institutions"] as $institution) {
+                if (empty($institution)) {
+                    continue;
+                }
+
+                $query = "select id from organizations where openAlexId = ?";
+                $organizationId = $app->dbNew->single($query, [ $institution["id"] ]);
+
+                if ($organizationId) {
+                    $query = "insert ignore into creators_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$this->id, $organizationId, Organizations::$type, $app->user->core["id"] ?? 0]);
+
+                    $query = "insert ignore into organizations_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$organizationId, $this->id, Creators::$type, $app->user->core["id"] ?? 0]);
+
+                    continue;
+                }
+
+                $data = [
+                    "id" => $app->dbNew->shortUuid(),
+                    "userId" => $app->user->core["id"] ?? 0,
+                    "openAlexId" => $institution["id"] ?? null,
+                    "rorId" => $institution["ror"] ?? null,
+                    "name" => $institution["display_name"] ?? null,
+                    "country" => $institution["country_code"] ?? null,
+                    "type" => $institution["education"] ?? null,
+                    "degreesOfSeparation" => intval($this->attributes->degreesOfSeparation) + 1,
+                ];
+
+                $organization = new Organizations();
+                $organization->updateOrCreate($data);
+            }
+
+            # commit and return
+            $app->dbNew->commit();
+            return $data;
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+
+            $query = "update {$this->table} set failCount = failCount + 1 where id = ?";
+            $app->dbNew->do($query, [$this->id]);
+
+            throw $e;
+        }
+    }
+
+
+    /**
+     * supplementFromSemanticScholar
      *
      * Searches for a creator in the Semantic Scholar database and hydrates the object.
      *
      * @return ?array what's written to the database
      */
-    public function hydrateFromSemanticScholar(): ?array
+    public function supplementFromSemanticScholar(): ?array
     {
+        throw new Exception("not implemented");
+
+        /** */
+
         $app = App::go();
 
-        $semanticScholar = new SemanticScholar();
-        $encodedName = urlencode($this->attributes->name);
-        $response = $semanticScholar->search($encodedName, "authors");
+        if (!$this->attributes->name) {
+            return [];
+        }
 
-        if (empty($response["data"])) {
-            # increment the failCount and return
-            $query = "update creators set failCount = failCount + 1 where id = ?";
+        try {
+            # start a transaction
+            $app->dbNew->beginTransaction();
+
+            $semanticScholar = new SemanticScholar();
+            $encodedName = urlencode($this->attributes->name);
+            $response = $semanticScholar->search($encodedName, "authors");
+
+            if (empty($response["data"])) {
+                throw new Exception("no data");
+            }
+
+            # sort the array by hIndex descending
+            $highestIndex = 0;
+            foreach ($response["data"] as $key => $value) {
+                if ($value["hIndex"] > $response["data"][$highestIndex]["hIndex"]) {
+                    $highestIndex = $key;
+                }
+            }
+
+            # we have the canonical record
+            $canonicalCreator = $response["data"][$highestIndex];
+
+            # prepare the data for the database
+            $data = [
+                "id" => $this->id,
+                "userId" => $app->user->core["id"] ?? 0,
+                "orcid" => $canonicalCreator["externalIds"]["ORCID"] ?? null,
+                "semanticScholarId" => $canonicalCreator["authorId"] ?? null,
+                "name" => $canonicalCreator["name"] ?? null,
+                "slug" => \Illuminate\Support\Str::slug($canonicalCreator["name"] ?? null),
+                "aliases" => json_encode($canonicalCreator["aliases"] ?? []),
+                "affiliations" => json_encode($canonicalCreator["affiliations"] ?? []),
+                "homepage" => $canonicalCreator["homepage"] ?? null,
+                "hIndex" => $canonicalCreator["hIndex"] ?? null,
+                "paperCount" => $canonicalCreator["paperCount"] ?? null,
+                "citationCount" => $canonicalCreator["citationCount"] ?? null,
+            ];
+
+            # now, save it and return
+            $this->update($data);
+            return $data;
+        } catch (\Throwable $e) {
+            $app->dbNew->rollBack();
+
+            $query = "update {$this->table} set failCount = failCount + 1 where id = ?";
             $app->dbNew->do($query, [$this->id]);
 
-            return null;
+            throw $e;
         }
-
-        # sort the array by hIndex descending
-        $highestIndex = 0;
-        foreach ($response["data"] as $key => $value) {
-            if ($value["hIndex"] > $response["data"][$highestIndex]["hIndex"]) {
-                $highestIndex = $key;
-            }
-        }
-
-        # we have the canonical record
-        $canonicalCreator = $response["data"][$highestIndex];
-
-        # prepare the data for the database
-        $data = [
-            "id" => $this->id,
-            "orcid" => $canonicalCreator["externalIds"]["ORCID"] ?? null,
-            "semanticScholarId" => $canonicalCreator["authorId"] ?? null,
-            "name" => $canonicalCreator["name"] ?? null,
-            "slug" => \Illuminate\Support\Str::slug($canonicalCreator["name"] ?? null),
-            "aliases" => json_encode($canonicalCreator["aliases"] ?? []),
-            "affiliations" => json_encode($canonicalCreator["affiliations"] ?? []),
-            "homepage" => $canonicalCreator["homepage"] ?? null,
-            "hIndex" => $canonicalCreator["hIndex"] ?? null,
-            "paperCount" => $canonicalCreator["paperCount"] ?? null,
-            "citationCount" => $canonicalCreator["citationCount"] ?? null,
-        ];
-
-        # now, save it and return
-        $this->update($data);
-
-        return $data;
     }
 
 

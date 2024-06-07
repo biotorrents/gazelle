@@ -77,16 +77,25 @@
                     {# download, freeleech, etc. #}
                     {% if withActions is defined and withActions == true %}
                         <p class="flexRow">
-                            {# download #}
-                            <a class="button button-primary" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
+                            {% if user.can({"torrents": "download"}) %}
+                        	    <a class="conversationButton tooltip" title="download" href="/torrents{{ torrent.id }}/download/{{ user.extra.torrent_pass}}">
+                                    <i class="fa-thin fa-download"></i>
+	                            </a>
+                            {% endif %}
 
                             {# freeleech token #}
                             {% if canUseToken(torrent.id) %}
-                                <a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
+                                <a class="conversationButton tooltip" title="use freeleech token" href="/torrents{{ torrent.id }}/download/{{ user.extra.torrent_pass}}?useFreeleechToken=true">
+		                            <i class="fa-thin fa-ticket-airline"></i>
+                                </a>
                             {% endif %}
 
                             {# report #}
-                            <a class="button button-red" href="/reportsv2.php?action=report&id={{ torrent.id }}">report</a>
+                            {% if authenticated %}
+                                <a class="conversationButton tooltip" title="report" href="/reportsv2.php?action=report&id={{ torrent.id }}">
+		                            <i class="fa-thin fa-flag"></i>
+                                </a>
+                            {% endif %}
                         </p>
                     {% endif %}
                 </td>

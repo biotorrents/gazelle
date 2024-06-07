@@ -35,6 +35,7 @@ if (!$good) {
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($article->id, "wiki");
+$conversation->loadMessages();
 
 # twig template
 $app->twig->display("wiki/article.twig", [

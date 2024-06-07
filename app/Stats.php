@@ -435,13 +435,13 @@ class Stats
 
         # torrents
         $app->dbOld->prepared_query("
-            select count(id), sum(size), sum(fileCount) from torrents
+            select count(id), sum(dataSize), sum(fileCount) from torrents
         ");
 
         $torrents = $app->dbOld->to_array();
         $torrents = [
             "count" => intval($torrents[0]["count(id)"]),
-            "totalDataSize" => intval($torrents[0]["sum(size)"]),
+            "totalDataSize" => intval($torrents[0]["sum(dataSize)"]),
             "totalFileCount" => intval($torrents[0]["sum(fileCount)"]),
         ];
 
@@ -465,37 +465,37 @@ class Stats
 
         # daily
         $app->dbOld->prepared_query("
-            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 1 day)
+            select count(id), sum(dataSize), sum(fileCount) from torrents where created_at > subdate(now(), interval 1 day)
         ");
 
         $daily = $app->dbOld->to_array();
         $daily = [
             "count" => intval($daily[0]["count(id)"]),
-            "totalSize" => intval($daily[0]["sum(size)"]),
+            "totalSize" => intval($daily[0]["sum(dataSize)"]),
             "fileCount" => intval($daily[0]["sum(fileCount)"]),
         ];
 
         # weekly
         $app->dbOld->prepared_query("
-            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 7 day)
+            select count(id), sum(dataSize), sum(fileCount) from torrents where created_at > subdate(now(), interval 7 day)
         ");
 
         $weekly = $app->dbOld->to_array();
         $weekly = [
             "count" => intval($weekly[0]["count(id)"]),
-            "totalSize" => intval($weekly[0]["sum(size)"]),
+            "totalSize" => intval($weekly[0]["sum(dataSize)"]),
             "fileCount" => intval($weekly[0]["sum(fileCount)"]),
         ];
 
         # monthly
         $app->dbOld->prepared_query("
-            select count(id), sum(size), sum(fileCount) from torrents where created_at > subdate(now(), interval 30 day)
+            select count(id), sum(dataSize), sum(fileCount) from torrents where created_at > subdate(now(), interval 30 day)
         ");
 
         $monthly = $app->dbOld->to_array();
         $monthly = [
             "count" => intval($monthly[0]["count(id)"]),
-            "totalSize" => intval($monthly[0]["sum(size)"]),
+            "totalSize" => intval($monthly[0]["sum(dataSize)"]),
             "fileCount" => intval($monthly[0]["sum(fileCount)"]),
         ];
 

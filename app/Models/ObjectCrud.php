@@ -134,8 +134,10 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # try to find the object
         $column = $app->dbNew->determineId($id);
+        $fullId = $app->dbNew->fullId($id);
+
         $query = "select * from {$this->table} where {$column} = ? and deleted_at is null";
-        $row = $app->dbNew->row($query, [$id]);
+        $row = $app->dbNew->row($query, [$fullId]);
 
         # set the id
         $this->id = strval($row["id"]);
@@ -604,9 +606,11 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # does the object exist?
         $column = $app->dbNew->determineId($id);
-        $query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
+        $fullId = $app->dbNew->fullId($id);
 
-        $good = $app->dbNew->single($query, [$id]);
+        $query = "select 1 from {$this->table} where {$column} = ? and deleted_at is null";
+        $good = $app->dbNew->single($query, [$fullId]);
+
         return boolval($good);
     }
 

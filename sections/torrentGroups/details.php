@@ -59,6 +59,7 @@ $officialTags = \Gazelle\Tags::getOfficialTags();
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($torrentGroup->id, "torrentGroups");
+$conversation->loadMessages();
 
 # twig template
 $app->twig->display("torrentGroups/details.twig", [

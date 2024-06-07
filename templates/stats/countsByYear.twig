@@ -1,0 +1,41 @@
+{##
+ # get OpenAlex's timeline property
+ #}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<section>
+    <h3>Productivity over time</h3>
+    <canvas class="chart" id="countsByYear"></canvas>
+
+    <script>
+        (() => {
+            "use strict";
+
+            let countsByYearCanvas = document.getElementById("countsByYear").getContext("2d");
+            let countsByYearData = JSON.parse('{{ data|raw }}');
+
+            console.log(
+                countsByYearData
+            );
+
+            let countsByYearChart = new Chart(countsByYearCanvas, {
+                type: "bar",
+                data: {
+                    labels: countsByYearData.map(countsByYearData => countsByYearData.year).reverse(),
+                    datasets: [
+                        {
+                            label: "{{ key }}",
+                            data: countsByYearData.map(countsByYearData => countsByYearData[ "{{ key }}" ]).reverse(),
+                            // $blue500: #2196f3;
+                            //borderColor: "#2196f3",
+                            //backgroundColor: "#2196f3" + 50
+                        }
+                    ]
+                }
+            });
+
+        })();
+    </script>
+</section>
+ 

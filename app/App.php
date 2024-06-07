@@ -36,6 +36,11 @@ class App
 
     public Users $user;
 
+    # cache settings
+    private string $cachePrefix = "app:";
+    private string $cacheDuration = "1 hour";
+    private string $cacheAlgorithm = "sha3-512";
+
 
     /**
      * __functions
@@ -396,5 +401,74 @@ class App
 
         # end all execution
         exit;
+    }
+
+
+    /**
+     * resolveUriById
+     *
+     * @param int|string $id
+     * @param ?string
+     */
+    public function resolveUriById(int|string $id): ?string
+    {
+        $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . __FUNCTION__ . json_encode(func_get_args()));
+        $cacheHit = $this->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        # determine the column to search
+        $column = $this->dbNew->determineId($id);
+        $extractedId = $this->dbNew->extractId($id);
+        $fullId = $this->dbNew->fullId($id);
+
+        # determine the uri's to use
+        $baseUri = match ($this->executionContext) {
+            "api" => "/api",
+            "cli" => "",
+            "web" => "",
+            default => throw new Exception("bad executionContext value"),
+        };
+
+        # [database table => url path]
+        $tables = [
+            "collages" => "{$baseUri}/collages/{$extractedId}",
+            "conversations_messages" => "{$baseUri}/conversations/{$extractedId}",
+            "conversations_threads" => "{$baseUri}/conversations/{$extractedId}",
+            "creators" => "{$baseUri}/creators/{$extractedId}",
+            "literature" => "{$baseUri}/literature/{$extractedId}",
+            "organizations" => "{$baseUri}/organizations/{$extractedId}",
+            "publications" => "{$baseUri}/publications/{$extractedId}",
+            "requests" => "{$baseUri}/requests/{$extractedId}",
+            "roles_permissions" => "{$baseUri}/roles/{$extractedId}",
+            "site_log" => "{$baseUri}/log/{$extractedId}",
+            "tags" => "{$baseUri}/tags/{$extractedId}",
+            "torrents" => "{$baseUri}/torrents/{$extractedId}",
+            "torrents_group" => "{$baseUri}/torrents/{$extractedId}",
+            "users" => "{$baseUri}/users/{$extractedId}",
+            "wiki_articles" => "{$baseUri}/wiki/{$extractedId}",
+        ];
+
+        foreach ($tables as $table => $redirect) {
+            # does the column exist?
+            $query = "show columns from {$table} like '{$column}'";
+            $good = $this->dbNew->single($query, []);
+
+            if (!$good) {
+                continue;
+            }
+
+            $query = "select id from {$table} where {$column} = ?";
+            $row = $this->dbNew->single($query, [$fullId]);
+
+            if (!$row) {
+                continue;
+            }
+
+            $this->cache->set($cacheKey, $redirect, $this->cacheDuration);
+            return $redirect;
+        }
     }
 } # class

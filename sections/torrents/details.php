@@ -32,6 +32,7 @@ $revisionId = intval($get["revisionId"] ?? 0);
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($torrent->id, "torrents");
+$conversation->loadMessages();
 
 # twig template
 $app->twig->display("torrents/details.twig", [

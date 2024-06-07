@@ -31,13 +31,13 @@
 
 		{# update #}
 		{% if can({"literature": "update"}) or literature.attributes.userId == user.core.id %}
-			<a class="button button-orange" href="/literature/{{ literature.id }}/update">update this item</a>
+			<a class="button button-orange" href="/literature/{{ literature.id }}/edit">edit this item</a>
 		{% endif %}
 
 
 		{# delete #}
 		{% if can({"literature": "delete"}) or literature.attributes.userId == user.core.id %}
-			<a class="button button-red" href="/literature/{{ literature.id }}/delete">delete this item</a>
+			<a class="button button-red-outline" href="/literature/{{ literature.id }}/delete">delete this item</a>
 		{% endif %}
 	</form>
 </section>
@@ -77,6 +77,13 @@
 	</table>
 </section>
 {% endif %}
+
+
+  	{# concepts #}
+  {% if literature.attributes.concepts is not empty %}
+	{{ include("stats/concepts.twig", { "data": literature.attributes.concepts|json_encode }) }}
+  {% endif %}
+
 
 
 {# creators #}

@@ -10,9 +10,6 @@
 	<figure id="groupPicture" class="box_image box_image_albumart box_albumart">
 		<img src="{{ uri }}" lightbox-img="{{ uri }}" alt="{{ creator.attributes.name }}" title="{{ creator.attributes.name }}">
 	</figure>
-
-
-
 </section>
 
 
@@ -51,5 +48,7 @@
 </section>
 
 
-</form>
-</section>
+  	{# concepts #}
+  {% if creator.attributes.concepts is not empty %}
+	{{ include("stats/concepts.twig", { "data": creator.attributes.concepts|json_encode }) }}
+  {% endif %}

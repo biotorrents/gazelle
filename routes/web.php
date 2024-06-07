@@ -63,38 +63,8 @@ if ($app->env->dev) {
 # universally resolve an identifier
 Flight::route("/@id", function (string $id) {
     $app = Gazelle\App::go();
-
-    # determine the column to search
-    $column = $app->dbNew->determineId($id);
-
-    # [database table => url path]
-    $tables = [
-        "collages" => "/collages/{$id}",
-        "conversations_threads" => "/conversations/{$id}",
-        "creators" => "/creators/{$id}",
-        "literature" => "/literature/{$id}",
-        "conversations_messages" => "/conversations/{$id}",
-        "organizations" => "/organizations/{$id}",
-        "requests" => "/requests/{$id}",
-        "roles_permissions" => "/roles/{$id}",
-        "site_log" => "/log/{$id}",
-        "tags" => "/tags/{$id}",
-        "torrents_group" => "/torrents/{$id}",
-        "torrents" => "/torrents/{$id}",
-        "users" => "/users/{$id}",
-        "wiki_articles" => "/wiki/{$id}",
-    ];
-
-    foreach ($tables as $table => $redirect) {
-        $query = "select id from {$table} where {$column} = ?";
-        $row = $app->dbNew->single($query, [$id]);
-
-        if (!$row) {
-            continue;
-        }
-
-        Gazelle\Http::redirect($redirect);
-    }
+    $redirect = $app->resolveUriById($id);
+    ($redirect) ? Gazelle\Http::redirect($redirect) : $app->error(404);
 });
 
 

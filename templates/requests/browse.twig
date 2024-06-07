@@ -15,7 +15,8 @@
 		</div>
 	{% else %}
 		{{ include("manticore/pagination.twig") }}
-    {{ include("tables/requests.twig", {"grouping": "grouping"}) }}
+    	{{ include("tables/requests.twig", {"grouping": "grouping"}) }}
+		{{ include("manticore/pagination.twig") }}
   {% endif %}
 
 {% endblock %}

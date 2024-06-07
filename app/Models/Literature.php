@@ -5,6 +5,8 @@ declare(strict_types=1);
 
 /**
  * Gazelle\Literature
+ *
+ * todo: this concept should really be called "documents"
  */
 
 namespace Gazelle;
@@ -37,6 +39,7 @@ class Literature extends ObjectCrud
         "license" => "license",
         "abstract" => "abstract",
         "tldr" => "tldr", # json
+        "picture" => "picture",
         "primaryTopic" => "primaryTopic", # json
         "concepts" => "concepts", # json
         "countsByYear" => "countsByYear", # json
@@ -46,8 +49,9 @@ class Literature extends ObjectCrud
         "isOpenAccess" => "isOpenAccess", # bool
         "openAccessPdf" => "openAccessPdf",
         "isRetracted" => "isRetracted", # bool
-        "failCount" => "failCount",
         "degreesOfSeparation" => "degreesOfSeparation",
+        "failCount" => "failCount",
+        "updatedById" => "updatedById",
         "created_at" => "createdAt",
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
@@ -119,7 +123,7 @@ class Literature extends ObjectCrud
     /**
      * hydrateFromOpenAlex
      *
-     * Searches for a paper in the OpenAlex database and supplements the object with extra attributes.
+     * Searches for a paper in the OpenAlex database and populates its attributes.
      *
      * @return ?array what's written to the database
      */
@@ -131,18 +135,19 @@ class Literature extends ObjectCrud
             return null;
         }
 
-        $openAlex = new OpenAlex();
-        $response = $openAlex->works($this->attributes->doi);
-
         try {
             # start a transaction
             $app->dbNew->beginTransaction();
 
-            $data = [
+            $openAlex = new OpenAlex();
+            $response = $openAlex->works($this->attributes->doi);
+
+            $literatureData = [
                 "id" => $this->id,
                 "userId" => $app->user->core["id"] ?? 0,
                 "doi" => $response["doi"] ?? null,
                 "openAlexId" => $response["id"] ?? null,
+                "journalIssn" => $response["primary_location"]["source"]["issn_l"] ?? null,
                 #"semanticScholarId" => $response["semanticScholarId"] ?? null,
                 "title" => $response["title"] ?? null,
                 "slug" => $app->dbNew->slug($response["title"] ?? null),
@@ -156,37 +161,41 @@ class Literature extends ObjectCrud
                 #"tldr" => $response["tldr"] ?? null,
                 "primaryTopic" => json_encode($response["primary_topic"] ?? []),
                 "concepts" => json_encode($response["concepts"] ?? []),
-                "countsByYear" => $response["counts_by_year"] ?? null,
+                "countsByYear" => json_encode($response["counts_by_year"] ?? []),
                 #"influentialCitationCount" => $response["influentialCitationCount"] ?? null,
                 #"citationCount" => $response["citationCount"] ?? null,
                 #"referenceCount" => $response["referenceCount"] ?? null,
-                "isOpenAccess" => $response["primary_location"]["is_oa"] ?? null,
+                "isOpenAccess" => intval($response["primary_location"]["is_oa"] ?? null),
                 "openAccessPdf" => $response["primary_location"]["pdf_url"] ?? null,
-                "isRetracted" => $response["is_retracted"] ?? null,
+                "isRetracted" => intval($response["is_retracted"] ?? null),
             ];
 
             # update the Literature object
-            $this->update($data);
+            $this->update($literatureData);
 
             # literature <=> creator relationships
             $response["authorships"] ??= [];
             foreach ($response["authorships"] as $author) {
+                if (empty($author)) {
+                    continue;
+                }
+
                 # try to find it in the database
                 $query = "select id from creators where openAlexId = ?";
                 $creatorId = $app->dbNew->single($query, [ $author["author"]["id"] ]);
 
                 # the creator already exists
                 if ($creatorId) {
-                    $query = "insert ignore into literature_links (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$this->id, $creatorId, Creators::$type]);
+                    $query = "insert ignore into literature_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$this->id, $creatorId, Creators::$type, $app->user->core["id"] ?? 0]);
 
-                    $query = "insert ignore into creators_links (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$creatorId, $this->id, Literature::$type]);
+                    $query = "insert ignore into creators_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$creatorId, $this->id, Literature::$type, $app->user->core["id"] ?? 0]);
 
                     continue;
                 }
 
-                $data = [
+                $authorData = [
                     "id" => $app->dbNew->shortUuid(),
                     "userId" => $app->user->core["id"] ?? 0,
                     "openAlexId" => $author["author"]["id"] ?? null,
@@ -198,54 +207,64 @@ class Literature extends ObjectCrud
                 ];
 
                 $creator = new Creators();
-                $creator->updateOrCreate($data);
+                $creator->updateOrCreate($authorData);
 
                 # creator <=> organization relationships
                 foreach ($author["institutions"] as $institution) {
+                    if (empty($institution)) {
+                        continue;
+                    }
+
                     $query = "select id from organizations where openAlexId = ?";
                     $organizationId = $app->dbNew->single($query, [ $institution["id"] ]);
 
                     if ($organizationId) {
-                        $query = "insert ignore into organizations_links (objectId, contentId, contentType) values (?, ?, ?)";
-                        $app->dbNew->do($query, [$organizationId, $data["id"], Creators::$type]);
+                        $query = "insert ignore into organizations_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                        $app->dbNew->do($query, [$organizationId, $authorData["id"], Creators::$type, $app->user->core["id"] ?? 0]);
 
-                        $query = "insert ignore into creators_links (objectId, contentId, contentType) values (?, ?, ?)";
-                        $app->dbNew->do($query, [$data["id"], $organizationId, Organizations::$type]);
+                        $query = "insert ignore into creators_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                        $app->dbNew->do($query, [$authorData["id"], $organizationId, Organizations::$type, $app->user->core["id"] ?? 0]);
 
                         continue;
                     }
 
-                    $data = [
+                    $institutionData = [
                         "id" => $app->dbNew->shortUuid(),
                         "userId" => $app->user->core["id"] ?? 0,
                         "openAlexId" => $institution["id"] ?? null,
                         "rorId" => $institution["ror"] ?? null,
-                        "name" => $institution["name"] ?? null,
+                        "name" => $institution["display_name"] ?? null,
+                        "country" => $institution["country_code"] ?? null,
+                        "type" => $institution["type"] ?? null,
                         "degreesOfSeparation" => intval($this->attributes->degreesOfSeparation) + 2,
                     ];
 
                     $organization = new Organizations();
-                    $organization->updateOrCreate($data);
+                    $organization->updateOrCreate($institutionData);
                 }
             } # foreach ($response["authorships"] as $author)
 
             # literature <=> tags relationships
             $response["keywords"] ??= [];
             foreach ($response["keywords"] as $keyword) {
+                if (empty($keyword)) {
+                    continue;
+                }
+
                 $query = "select id from tags where openAlexId = ?";
                 $tagId = $app->dbNew->single($query, [ $keyword["id"] ]);
 
                 if ($tagId) {
-                    $query = "insert ignore into literature_links (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$this->id, $tagId, Tags::$type]);
+                    $query = "insert ignore into literature_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$this->id, $tagId, Tags::$type, $app->user->core["id"] ?? 0]);
 
-                    $query = "insert ignore into tags_links (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$tagId, $this->id, Literature::$type]);
+                    $query = "insert ignore into tags_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$tagId, $this->id, Literature::$type, $app->user->core["id"] ?? 0]);
 
                     continue;
                 }
 
-                $data = [
+                $keywordData = [
                     "id" => $app->dbNew->shortUuid(),
                     "userId" => $app->user->core["id"] ?? 0,
                     "openAlexId" => $keyword["id"] ?? null,
@@ -256,7 +275,7 @@ class Literature extends ObjectCrud
                 ];
 
                 $tag = new Tags();
-                $tag->updateOrCreate($data);
+                $tag->updateOrCreate($keywordData);
             } # foreach ($response["keywords"] as $keyword)
 
             # commit and return
@@ -288,20 +307,16 @@ class Literature extends ObjectCrud
             return null;
         }
 
-        $semanticScholar = new SemanticScholar(["paperId" => "DOI:{$this->attributes->doi}"]);
-        $response = $semanticScholar->paper();
-
-        if (!empty($response["error"])) {
-            # increment the failCount and return
-            $query = "update literature set failCount = failCount + 1 where id = ?";
-            $app->dbNew->do($query, [$this->id]);
-
-            return null;
-        }
-
         try {
             # start a transaction
             $app->dbNew->beginTransaction();
+
+            $semanticScholar = new SemanticScholar(["paperId" => "DOI:{$this->attributes->doi}"]);
+            $response = $semanticScholar->paper();
+
+            if (!empty($response["error"])) {
+                throw new Exception("error");
+            }
 
             # assemble the literature data
             $literatureData = [
@@ -342,8 +357,8 @@ class Literature extends ObjectCrud
 
                 # add the existing creator record
                 if ($creatorId) {
-                    $query = "insert ignore into literature_links (objectId, contentId, contentType) values (?, ?, ?)";
-                    $app->dbNew->do($query, [$literatureData["id"], $creatorId, Creators::$type]);
+                    $query = "insert ignore into literature_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                    $app->dbNew->do($query, [$literatureData["id"], $creatorId, Creators::$type, $app->user->core["id"] ?? 0]);
 
                     continue;
                 }
@@ -351,6 +366,7 @@ class Literature extends ObjectCrud
                 # hydrate the data for a new Creators object
                 $creatorData = [
                     "id" => $app->dbNew->shortUuid(),
+                    "userId" => $app->user->core["id"] ?? 0,
                     "orcid" => $creator["externalIds"]["ORCID"] ?? null,
                     "semanticScholarId" => $creator["authorId"] ?? null,
                     "name" => $creator["name"] ?? null,
@@ -368,8 +384,8 @@ class Literature extends ObjectCrud
                 $creator->updateOrCreate($creatorData);
 
                 # add the database link
-                $query = "insert ignore into literature_links (objectId, contentId, contentType) values (?, ?, ?)";
-                $app->dbNew->do($query, [$literatureData["id"], $creatorData["id"], Creators::$type]);
+                $query = "insert ignore into literature_links (objectId, contentId, contentType, userId) values (?, ?, ?, ?)";
+                $app->dbNew->do($query, [$literatureData["id"], $creatorData["id"], Creators::$type, $app->user->core["id"] ?? 0]);
 
             }
             */
@@ -378,11 +394,12 @@ class Literature extends ObjectCrud
             $app->dbNew->commit();
             return $literatureData;
         } catch (\Throwable $e) {
-            # rollback and rethrow
             $app->dbNew->rollBack();
+
+            $query = "update {$this->table} set failCount = failCount + 1 where id = ?";
+            $app->dbNew->do($query, [$this->id]);
+
             throw $e;
         }
     }
-
-
 } # class
