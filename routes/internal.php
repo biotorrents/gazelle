@@ -7,6 +7,10 @@ declare(strict_types=1);
  * internal api routes
  */
 
+# autocomplete
+Flight::get("/api/internal/autocomplete", ["Gazelle\Api\Internal", "autocomplete"]);
+
+
 # 2fa (totp)
 Flight::post("/api/internal/createTwoFactor", ["Gazelle\Api\Internal", "createTwoFactor"]);
 Flight::post("/api/internal/deleteTwoFactor", ["Gazelle\Api\Internal", "deleteTwoFactor"]);

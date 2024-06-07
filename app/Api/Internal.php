@@ -14,6 +14,28 @@ namespace Gazelle\Api;
 
 class Internal extends Base
 {
+    /**
+     * autocomplete
+     */
+    public static function autocomplete(): void
+    {
+        $app = \Gazelle\App::go();
+
+        $get = \Gazelle\Http::get();
+        $get["query"] ??= null;
+        $get["searchContext"] ??= null;
+
+        try {
+            $autocomplete = new \Gazelle\Autocomplete();
+            $response = $autocomplete->fetch($get["query"], $get["searchContext"]);
+
+            self::success(200, $response);
+        } catch (\Throwable $e) {
+            self::failure(400, $e->getMessage());
+        }
+    }
+
+
     /** 2fa */
 
 

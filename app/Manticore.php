@@ -231,6 +231,23 @@ class Manticore
 
 
     /**
+     * setContext
+     *
+     * @param string $context
+     * @return $this
+     */
+    public function setContext(string $context): self
+    {
+        if (!in_array($context, array_keys($this->indexMaps))) {
+            throw new Exception("expected one of " . implode(", ", array_keys($this->indexMaps)) . ", got {$context}");
+        }
+
+        $this->context = $context;
+        return $this;
+    }
+
+
+    /**
      * search
      *
      * Search an index.
@@ -452,22 +469,57 @@ class Manticore
      *
      * @see https://manticoresearch.com/blog/simple-autocomplete-with-manticore/
      */
-    public function autocomplete(string $query): array
+    public function autocomplete(string $query)
     {
         $app = App::go();
 
-        # start debug
-        #$app->debug["time"]->startMeasure("manticore", "manticore autocomplete");
+        /*
+        # return cached if available
+        $cacheKey = $this->cachePrefix . "{$this->context}:" . hash($app->env->cacheAlgorithm, json_encode($data));
+        $cacheHit = $app->cache->get($cacheKey);
 
-        #$query = "select id, title FROM torrent_groups_main WHERE match('@torrentGroups_title {$query}*') order by weight() desc";
-        #$query = "SELECT HIGHLIGHT() FROM {$index} WHERE MATCH('{$query}');";
-        $query = "call keywords('*{$query}*', '{$this->context}', 1 as stats, 'docs' as sort_mode)";
-        $results = $this->raw($query);
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+        */
 
-        # end debug
-        #$app->debug["time"]->stopMeasure("manticore", "manticore autocomplete");
+        # set the properties to match
+        $properties = match ($this->context) {
+            "collages" => ["collages_title"],
+            "creators" => ["creators_name", "creators_openAlexId"],
+            "literature" => ["literature_title", "literature_openAlexId"],
+            "organizations" => ["organizations_name", "organizations_openAlexId"],
+            "requests" => ["requests_title", "requests_identifier"],
+            "torrentGroups" => ["torrentGroups_title", "torrentGroups_identifier"],
+            default => throw new Exception("bad context"),
+        };
 
-        return $results;
+        # start the query
+        $fields = array_merge(["id"], $properties);
+        $this->query = $this->queryLanguage
+            ->select($fields)
+            ->from($this->indexMaps[$this->context])
+            ->match($properties, $query);
+
+        # execute the statement
+        $resultSet = $this->query->execute();
+        $results = $resultSet->fetchAllAssoc();
+
+        $reindexedResults = [];
+        foreach ($results as $result) {
+            # one of the few times list() actually makes sense
+            list($id, $text, $openAlexId) = array_values($result);
+
+            $reindexedResults[] = [
+                "id" => $id ?? null,
+                "text" => $text ?? null,
+                "openAlexId" => $openAlexId ?? null,
+                "isLocal" => true,
+            ];
+        }
+
+        #$app->cache->set($cacheKey, $reindexedResults, $this->cacheDuration);
+        return $reindexedResults;
     }
 
 

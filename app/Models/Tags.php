@@ -34,7 +34,7 @@ class Tags extends ObjectCrud
         "id" => "id",
         "userId" => "userId",
         "openAlexId" => "openAlexId",
-        "wikidata" => "wikidata",
+        "wikidataId" => "wikidataId",
         "name" => "name",
         "id" => "id",
         "tagType" => "tagType",

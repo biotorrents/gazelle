@@ -1,0 +1,98 @@
+{##
+ # link a site object with one of more others
+ #}
+
+<section>
+    <h3>Add related objects</h3>
+
+    <form method="post" action="/link-objects">
+
+        <select id="searchContext" class="select" placeholder="Select an object type">
+            <option value="collages">Collages</option>
+            {# <option value="conversations">Conversations</option> #}
+            <option value="creators">Creators</option>
+            <option value="literature">Literature</option>
+            {# <option value="messages">Messages</option> #}
+            <option value="organizations">Organizations</option>
+            <option value="publications">Publications</option>
+            <option value="requests">Requests</option>
+            {# <option value="roles">Roles</option> #}
+            {# <option value="siteLog">Site log</option> #}
+            <option value="tags">Tags</option>
+            <option value="torrentGroups" selected>Torrent groups</option>
+            {# <option value="torrents">Torrents</option> #}
+            {# <option value="users">Users</option> #}
+            {# <option value="wiki">Wiki</option> #}
+        </select>
+
+        {# the search input #}
+        <input type="text" class="typeahead" style="width: 100%;" placeholder="Search local and remote">
+
+        {# what index to autocomplete on #}
+        <input type="hidden" name="index">
+
+        {# the selected objects #}
+        <input type="hidden" name="collages[]">
+        <input type="hidden" name="conversations[]">
+        <input type="hidden" name="creators[]">
+        <input type="hidden" name="literature[]">
+        <input type="hidden" name="messages[]">
+        <input type="hidden" name="organizations[]">
+        <input type="hidden" name="publications[]">
+        <input type="hidden" name="requests[]">
+        <input type="hidden" name="roles[]">
+        <input type="hidden" name="siteLog[]">
+        <input type="hidden" name="tags[]">
+        <input type="hidden" name="torrentGroups[]">
+        <input type="hidden" name="torrents[]">
+        <input type="hidden" name="users[]">
+        <input type="hidden" name="wiki[]">
+
+        {# submit button #}
+        <input type="submit" class="button-primary" value="link objects">
+    </form>
+
+    <script>
+        (() => {
+            "use strict";
+
+            var bloodhound = new Bloodhound({
+                datumTokenizer: Bloodhound.tokenizers.whitespace,
+                queryTokenizer: Bloodhound.tokenizers.whitespace,
+                remote: {
+                    url: "/api/internal/autocomplete",
+                    prepare: function (query, settings) {
+                        settings.url += "?query=" + query + "&searchContext=" + $("#searchContext").val();
+                        return settings;
+                    },
+                }
+            });
+
+            $(".typeahead").typeahead({
+                hint: true,
+                highlight: true,
+                minLength: 3
+            }, {
+                name: "bloodhound",
+                source: bloodhound,
+                templates: {
+                    suggestion: function (item) {
+                        let localOrRemote = item.isLocal ? "localResult" : "remoteResult";
+                        return "<div class='typeaheadResult "
+                            + localOrRemote
+                            + "' data-id='"
+                            + item.id
+                            + "' data-openalexid='"
+                            + item.openAlexId + "'>"
+                            + item.text + "</div>";
+                    },
+                }
+            });
+
+            $(".typeahead").on("typeahead:select", function(e, selected) {
+                console.log(selected);
+            });
+
+        })();
+        </script>
+</section>

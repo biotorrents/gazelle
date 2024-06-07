@@ -14,110 +14,72 @@ use Firebase\JWT\SignatureInvalidException;
 
 $app = Gazelle\App::go();
 
-echo "<pre>";
-
-#$semanticScholar = new Gazelle\SemanticScholar(["paperId" => "DOI:10.1371/journal.pone.0157044"]);
-#$result = $semanticScholar->paper();
-
-#$openAlex = new Gazelle\OpenAlex();
-#$result = $openAlex->sources("1533-4406");
-#$result = $openAlex->match("authors", "Peter Gehler");
+$autocomplete = new Gazelle\Autocomplete();
+$result = $autocomplete->literature("GeneMania");
+d($result);
 
 
-#$semanticScholar = new Gazelle\SemanticScholar();
-#$encodedName = urlencode("Peter Gehler");
-#$result = $semanticScholar->search($encodedName, "authors");
-
-
-#$result = $openAlex->authors("https://orcid.org/0000-0002-1825-0097");
-#$result = $openAlex->institutions("https://ror.org/03vek6s52");
-#$result = $openAlex->works("10.1371/journal.pone.0157044");
-
-#$result = $openAlex->institutions("https://ror.org/0483mr804");
-#$result = $manticore->raw("call keywords('alcohol dehy', 'torrents_main', 1 as stats, 'hits' as sort_mode)");
-
-$crossref = new Gazelle\Crossref();
-$result = $crossref->journals("0028-4793");
-!d($result);
-
-
-
-
-
-exit;
-/*
-$ror = new Gazelle\ResearchOrganizationRegistry();
-$result = $ror->reverseGeocode(41.30815, -72.92816);
-!d($result);
-exit;
-*/
-
-/*
-$org = new Gazelle\Organizations(1);
-$org->id = $app->dbNew->shortUuid();
-$org->attributes->name = "yale university";
-$match = $org->hydrateFromRor();
-!d($org);
-*/
-
-
-/*
-$response = $ror->search("boston");
-!d($response);exit;
-
-
-$data = [
-    "id" => $app->dbNew->shortUuid(),
-    "rorId" => $response["id"] ?? null,
-    "grid" => $response["external_ids"]["GRID"]["preferred"] ?? null,
-
-    "name" => $response["name"] ?? null,
-    "acronym" => $response["acronyms"][0] ?? null,
-    "established" => $response["established"] ?? null,
-    "status" => $response["status"] ?? null,
-    "relationships" => json_encode($response["relationships"] ?? null),
-
-    "latitude" => $response["addresses"][0]["lat"] ?? null,
-    "longitude" => $response["addresses"][0]["lng"] ?? null,
-    "country" => $response["country"]["country_code"] ?? null,
-    "state" => $response["addresses"][0]["state_code"] ?? null,
-    "city" => $response["addresses"][0]["city"] ?? null,
-    "postalCode" => $response["addresses"][0]["postcode"] ?? null,
-
-    "type" => strtolower($response["types"][0] ?? null),
-    "homepage" => $response["links"][0] ?? null,
-    "wikipedia" => $response["wikipedia_url"] ?? null,
-];
-#!d($data);
-*/
 ?>
 
 <html>
     <head>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js"></script>
 
-     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+     <link rel="stylesheet" type="text/css" href="/css/vendor/skeleton.min.css">
+	<link rel="stylesheet" type="text/css" href="/css/vendor/normalize.min.css">
+
+    <style>
+    </style>
 </head>
 <body>
-     <div id="map" style="height: 20rem;"></div>
+    <form>
+        <input type="text" class="typeahead" style="width: 50rem;">
+        <input type="hidden" name="torrentGroups[]">
+    </form>
+
+    <div>does it cover?</div>
 
      <script>
-        var map = L.map('map').setView([ <?= $org->attributes->latitude ?>, <?= $org->attributes->longitude ?> ], 10);
-        console.log(map);
+        (() => {
+        "use strict";
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+        var bloodhound = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.whitespace,
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote: {
+                url: "/scratchAjax",
+                prepare: function (query, settings) {
+                    settings.url += "?q=" + query;
+                    return settings;
+                },
+            }
+        });
 
-var marker = L.marker([ <?= $org->attributes->latitude ?>, <?= $org->attributes->longitude ?> ]).addTo(map);
+        $(".typeahead").typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 3
+        }, {
+            name: "bloodhound",
+            source: bloodhound,
+            templates: {
+                suggestion: function (item) {
+                    let localOrRemote = item.isLocal ? "local" : "remote";
+                    return "<div class='result " + localOrRemote + "' data-id='" + item.id + "' data-openalexid='" + item.openAlexId + "'>" + item.text + "</div>";
+                },
+            }
+        });
+
+        $(".typeahead").on("typeahead:select", function(e, selected) {
+            console.log(selected);
+        });
+
+        })();
         </script>
-</body>
+    </body>
 </html>
+
 <?php
 
 exit;

@@ -34,6 +34,7 @@ abstract class ObjectCrud extends RecursiveCollection
         Literature::class,
         Messages::class,
         Organizations::class,
+        Publications::class,
         Requests::class,
         Roles::class,
         SiteLog::class,
@@ -491,6 +492,17 @@ abstract class ObjectCrud extends RecursiveCollection
     public function loadOrganizations(): void
     {
         $this->loadRelationships(Organizations::class);
+    }
+
+
+    /**
+     * loadPublications
+     *
+     * @return void
+     */
+    public function loadPublications(): void
+    {
+        $this->loadRelationships(Publications::class);
     }
 
 
