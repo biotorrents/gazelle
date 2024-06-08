@@ -54,6 +54,7 @@ class RecursiveCollection extends \Illuminate\Support\Collection
     public function __get(mixed $key): mixed
     {
         return $this->get($key);
+        #return $this->get($key)->lazy();
     }
 
 

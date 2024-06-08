@@ -178,7 +178,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # does the object exist?
         if (!$this->exists($this->id)) {
-            throw new Exception("can't update on {$this->type} with the id {$this->id}");
+            throw new Exception("can't update {$this->type} with the id {$this->id}");
         }
 
         # map display => database
@@ -207,7 +207,7 @@ abstract class ObjectCrud extends RecursiveCollection
 
         # does the object exist?
         if (!$this->exists($this->id)) {
-            throw new Exception("can't delete from {$this->type} with the id {$this->id}");
+            throw new Exception("can't delete {$this->type} with the id {$this->id}");
         }
 
         # determine the identifier

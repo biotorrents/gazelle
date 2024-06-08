@@ -43,10 +43,10 @@ class Manticore
         "creators" => ["creators_main", "creators_delta"],
         "literature" => ["literature_main", "literature_delta"],
         "organizations" => ["organizations_main", "organizations_delta"],
+        "publications" => ["publications_main", "publications_delta"],
         "requests" => ["requests_main", "requests_delta"],
         "torrentGroups" => ["torrents_group_main", "torrents_group_delta"],
     ];
-
 
     # map of search form fields => index fields
     private array $fieldMaps = [
@@ -66,8 +66,8 @@ class Manticore
 
         # creators
         "creators" => [
-            "simpleSearch" => ["creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_description", "creators_aliases", "creators_affiliations", "creators_homepage", "creators_picture", "creators_hIndex", "creators_paperCount", "creators_citationCount", "creators_failCount", "creators_degreesOfSeparation", "creators_createdAt", "creators_updatedAt", "creators_deletedAt"],
-            "complexSearch" => ["creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
+            "simpleSearch" => ["creators_userId", "creators_openAlexId", "creators_orcid", "creators_scopusId", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_biography", "creators_aliases", "creators_affiliations", "creators_homepage", "creators_picture", "creators_wikipedia", "creators_hIndex", "creators_paperCount", "creators_citationCount", "creators_summaryStats", "creators_affiliationsOverTime", "creators_topics", "creators_concepts", "creators_countsByYear", "creators_degreesOfSeparation", "creators_failCount", "creators_updatedById", "creators_createdAt", "creators_updatedAt", "creators_deletedAt"],
+            "complexSearch" => ["creators_openAlexId", "creators_orcid", "creators_scopusId", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
             "orderBy" => [
                 "random" => "rand()",
                 "createdAt" => "id",
@@ -80,8 +80,8 @@ class Manticore
 
         # literature
         "literature" => [
-            "simpleSearch" => ["literature_userId", "literature_doi", "literature_semanticScholarId", "literature_title", "literature_venue", "literature_journal", "literature_year", "literature_publicationDate", "literature_abstract", "literature_tldr", "literature_bibtex", "literature_influentialCitationCount", "literature_citationCount", "literature_referenceCount", "literature_isOpenAccess", "literature_openAccessPdf", "literature_failCount", "literature_degreesOfSeparation", "literature_createdAt", "literature_updatedAt", "literature_deletedAt"],
-            "complexSearch" => ["literature_doi", "literature_semanticScholarId", "literature_title", "literature_abstract", "literature_bibtex"],
+            "simpleSearch" => ["literature_userId", "literature_doi", "literature_openAlexId", "literature_semanticScholarId", "literature_title", "literature_slug", "literature_language", "literature_type", "literature_journal", "literature_bibtex", "literature_publicationDate", "literature_license", "literature_abstract", "literature_tldr", "literature_picture", "literature_primaryTopic", "literature_concepts", "literature_countsByYear", "literature_influentialCitationCount", "literature_citationCount", "literature_referenceCount", "literature_isOpenAccess", "literature_openAccessPdf", "literature_isRetracted", "literature_degreesOfSeparation", "literature_failCount", "literature_updatedById", "literature_createdAt", "literature_updatedAt", "literature_deletedAt"],
+            "complexSearch" => ["literature_doi", "literature_openAlexId", "literature_semanticScholarId", "literature_title", "literature_slug", "literature_bibtex", "literature_abstract"],
             "orderBy" => [
                 "random" => "rand()",
                 "createdAt" => "id",
@@ -95,8 +95,8 @@ class Manticore
 
         # organizations
         "organizations" => [
-            "simpleSearch" => ["organizations_rorId", "organizations_grid", "organizations_userId", "organizations_name", "organizations_acronym", "organizations_established", "organizations_status", "organizations_relationships", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode", "organizations_type", "organizations_homepage", "organizations_wikipedia", "organizations_failCount", "organizations_degreesOfSeparation", "organizations_createdAt", "organizations_updatedAt", "organizations_deletedAt"],
-            "complexSearch" => ["organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym"],
+            "simpleSearch" => ["organizations_userId", "organizations_grid", "organizations_openAlexId", "organizations_rorId", "organizations_wikidataId", "organizations_name", "organizations_slug", "organizations_acronym", "organizations_established", "organizations_status", "organizations_relationships", "organizations_repositories", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode", "organizations_type", "organizations_homepage", "organizations_picture", "organizations_wikipedia", "organizations_summaryStats", "organizations_countsByYear", "organizations_topics", "organizations_concepts", "organizations_degreesOfSeparation", "organizations_failCount", "organizations_updatedById", "organizations_createdAt", "organizations_updatedAt", "organizations_deletedAt"],
+            "complexSearch" => ["organizations_grid", "organizations_openAlexId", "organizations_rorId", "organizations_wikidataId", "organizations_name", "organizations_slug", "organizations_acronym", "organizations_reverseGeocode"],
             "orderBy" => [
                 "random" => "rand()",
                 "createdAt" => "id",
@@ -107,10 +107,25 @@ class Manticore
            ],
         ],
 
+        # publications
+        "publications" => [
+            "simpleSearch" => ["publications_userId", "publications_issn", "publications_openAlexId", "publications_wikidataId", "publications_title", "publications_slug", "publications_homepage", "publications_picture", "publications_isOpenAccess", "publications_currentDoiCount", "publications_backfileDoiCount", "publications_totalDoiCount", "publications_summaryStats", "publications_topics", "publications_concepts", "publications_coverage", "publications_flags", "publications_countsByYear", "publications_doisIssuedByYear", "publications_degreesOfSeparation", "publications_failCount", "publications_updatedById", "publications_createdAt", "publications_updatedAt", "publications_deletedAt"],
+            "complexSearch" => ["publications_issn", "publications_openAlexId", "publications_wikidataId", "publications_title", "publications_slug"],
+            "orderBy" => [
+                "random" => "rand()",
+                "createdAt" => "id",
+                "alphabetical" => "organizations_name",
+                "established" => "organizations_established",
+                "status" => "organizations_status",
+                "type" => "organizations_type",
+                   ],
+                ],
+
+
         # requests
         "requests" => [
             "simpleSearch" => ["requests_categoryId", "requests_userId", "requests_groupId", "requests_torrentId", "requests_filledById", "requests_filledAt", "requests_lastVote", "requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object", "requests_description", "requests_picture", "requests_createdAt", "requests_updatedAt", "requests_deletedAt"],
-            "complexSearch" => ["requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object"],
+            "complexSearch" => ["requests_identifier", "requests_title", "requests_slug", "requests_subject", "requests_object", "requests_description"],
             "orderBy" => [
                 "random" => "rand()",
                 "createdAt" => "id",
@@ -124,8 +139,8 @@ class Manticore
 
         # torrentGroups
         "torrentGroups" => [
-            "simpleSearch" => ["torrentGroups_categoryId", "torrentGroups_revisionId", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object", "torrentGroups_workgroup", "torrentGroups_location", "torrentGroups_year", "torrentGroups_description", "torrentGroups_picture", "torrentGroups_tags", "torrentGroups_createdAt", "torrentGroups_updatedAt", "torrentGroups_deletedAt"],
-            "complexSearch" => ["torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object"],
+            "simpleSearch" => ["torrentGroups_id", "torrentGroups_categoryId", "torrentGroups_revisionId", "torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object", "torrentGroups_workgroup", "torrentGroups_location", "torrentGroups_year", "torrentGroups_description", "torrentGroups_picture", "torrentGroups_tags", "torrentGroups_createdAt", "torrentGroups_updatedAt", "torrentGroups_deletedAt"],
+            "complexSearch" => ["torrentGroups_identifier", "torrentGroups_title", "torrentGroups_slug", "torrentGroups_subject", "torrentGroups_object", "torrentGroups_description"],
             "orderBy" => [
                 "random" => "rand()",
                 "createdAt" => "id",
@@ -139,14 +154,14 @@ class Manticore
 
         # shared
         "shared" => [
-            "creators" => ["creators_id", "creators_orcid", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
-            "literature" => ["literature_id", "literature_doi", "literature_semanticscholarid", "literature_title", "literature_journal", "literature_bibtex"],
+            "creators" => ["creators_openAlexId", "creators_orcid", "creators_scopusId", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
+            "literature" => ["literature_doi", "literature_openAlexId", "literature_semanticScholarId", "literature_title", "literature_slug", "literature_bibtex", "literature_abstract"],
 
-            "workgroups" => ["torrentGroups_workgroup", "creators_affiliations", "organizations_id", "organizations_rorId", "organizations_grid", "organizations_name", "organizations_acronym"],
+            "workgroups" => ["torrentGroups_workgroup", "creators_affiliations", "creators_affiliationsOverTime", "organizations_grid", "organizations_openAlexId", "organizations_rorId", "organizations_wikidataId", "organizations_name", "organizations_slug", "organizations_acronym", "organizations_reverseGeocode"],
             "locations" => ["torrentGroups_location", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode"],
 
             "descriptions" => ["torrentGroups_description", "collages_description", "creators_description", "literature_abstract", "requests_description", "torrents_description"],
-            "files" => ["torrents_id", "torrents_infoHash", "torrents_filePath", "torrents_fileList"],
+            "files" => ["torrents_infoHash", "torrents_filePath", "torrents_fileList"],
             "leechStatus" => ["torrents_upMultiplier", "torrents_downMultiplier", "torrents_freeleechStatus", "torrents_freeleechType"],
 
             "numbers" => ["torrentGroups_identifier", "torrents_version"],
@@ -238,9 +253,11 @@ class Manticore
      */
     public function setContext(string $context): self
     {
+        /*
         if (!in_array($context, array_keys($this->indexMaps))) {
             throw new Exception("expected one of " . implode(", ", array_keys($this->indexMaps)) . ", got {$context}");
         }
+        */
 
         $this->context = $context;
         return $this;
@@ -485,12 +502,13 @@ class Manticore
 
         # set the properties to match
         $properties = match ($this->context) {
-            "collages" => ["collages_title"],
+            "collages" => ["collages_title", "collages_deletedAt"],
             "creators" => ["creators_name", "creators_openAlexId"],
             "literature" => ["literature_title", "literature_openAlexId"],
             "organizations" => ["organizations_name", "organizations_openAlexId"],
-            "requests" => ["requests_title", "requests_identifier"],
-            "torrentGroups" => ["torrentGroups_title", "torrentGroups_identifier"],
+            "publications" => ["publications_title", "publications_openAlexId"],
+            "requests" => ["requests_title", "requests_deletedAt"],
+            "torrentGroups" => ["torrentGroups_title", "torrentGroups_deletedAt"],
             default => throw new Exception("bad context"),
         };
 

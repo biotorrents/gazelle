@@ -8,7 +8,7 @@ declare(strict_types=1);
  */
 
 # autocomplete
-Flight::get("/api/internal/autocomplete", ["Gazelle\Api\Internal", "autocomplete"]);
+Flight::route("/api/internal/autocomplete", ["Gazelle\Api\Internal", "autocomplete"]);
 
 
 # 2fa (totp)
@@ -17,17 +17,17 @@ Flight::post("/api/internal/deleteTwoFactor", ["Gazelle\Api\Internal", "deleteTw
 
 
 # webauthn (fido2)
-Flight::get("/api/internal/webAuthn/creationRequest", ["Gazelle\Api\Internal", "webAuthnCreationRequest"]);
+Flight::route("/api/internal/webAuthn/creationRequest", ["Gazelle\Api\Internal", "webAuthnCreationRequest"]);
 Flight::post("/api/internal/webAuthn/creationResponse", ["Gazelle\Api\Internal", "webAuthnCreationResponse"]);
 
-Flight::get("/api/internal/webAuthn/assertionRequest/@username", ["Gazelle\Api\Internal", "webAuthnAssertionRequest"]);
+Flight::route("/api/internal/webAuthn/assertionRequest/@username", ["Gazelle\Api\Internal", "webAuthnAssertionRequest"]);
 Flight::post("/api/internal/webAuthn/assertionResponse", ["Gazelle\Api\Internal", "webAuthnAssertionResponse"]);
 
 Flight::post("/api/internal/webAuthn/delete", ["Gazelle\Api\Internal", "deleteWebAuthn"]);
 
 
 # suggest a passphrase
-Flight::get("/api/internal/createPassphrase", ["Gazelle\Api\Internal", "createPassphrase"]);
+Flight::route("/api/internal/createPassphrase", ["Gazelle\Api\Internal", "createPassphrase"]);
 
 
 # manage bookmarks

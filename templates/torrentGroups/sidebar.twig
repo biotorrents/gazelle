@@ -55,8 +55,11 @@
 		<a class="button" href="/torrents.php?action=grouplog&groupid={{ torrentGroup.id }}">view log</a>
 
 	</form>
-
 </section>
+
+
+{# add related items #}
+{{ include("_base/linkObjects.twig") }}
 
 
 {# creators #}
@@ -160,6 +163,3 @@
 
 </form>
 </section>
-
-
-{{ include("_base/linkObjects.twig") }}

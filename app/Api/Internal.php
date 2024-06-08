@@ -23,11 +23,11 @@ class Internal extends Base
 
         $get = \Gazelle\Http::get();
         $get["query"] ??= null;
-        $get["searchContext"] ??= null;
+        $get["context"] ??= null;
 
         try {
             $autocomplete = new \Gazelle\Autocomplete();
-            $response = $autocomplete->fetch($get["query"], $get["searchContext"]);
+            $response = $autocomplete->fetch($get["query"], $get["context"]);
 
             self::success(200, $response);
         } catch (\Throwable $e) {

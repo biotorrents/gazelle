@@ -52,6 +52,10 @@
 </section>
 
 
+{# add related items #}
+{{ include("_base/linkObjects.twig") }}
+
+
 {# summaryStats #}
 {% if organization.attributes.summaryStats is not empty %}
 <section>

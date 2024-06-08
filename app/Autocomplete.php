@@ -17,7 +17,7 @@ class Autocomplete
 
     # cache settings
     private string $cachePrefix = "autocomplete:";
-    private string $cacheDuration = "1 hour";
+    private string $cacheDuration = "5 minutes";
     private string $cacheAlgorithm = "sha3-512";
 
 
@@ -89,7 +89,28 @@ class Autocomplete
      */
     public function fetch(string $query, string $context, bool $fetchRemote = true): array
     {
-        return $this->$context($query, $fetchRemote);
+        $app = App::go();
+
+        $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . __FUNCTION__ . json_encode(func_get_args()));
+        $cacheHit = $app->cache->get($cacheKey);
+
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
+        $data =  match ($context) {
+            "collages" => $this->collages($query, $fetchRemote),
+            "creators" => $this->creators($query, $fetchRemote),
+            "literature" => $this->literature($query, $fetchRemote),
+            "organizations" => $this->organizations($query, $fetchRemote),
+            "publications" => $this->publications($query, $fetchRemote),
+            "requests" => $this->requests($query, $fetchRemote),
+            "torrentGroups" => $this->torrentGroups($query, $fetchRemote),
+            default => [],
+        };
+
+        $app->cache->set($cacheKey, $data, $this->cacheDuration);
+        return $data;
     }
 
 
@@ -163,6 +184,27 @@ class Autocomplete
         }
 
         $remoteResults = $this->openAlex->search("institutions", $query);
+        $formattedResults = $this->formatOpenAlexResponse($remoteResults);
+
+        return array_merge($localResults, $formattedResults);
+    }
+
+
+    /**
+     * publications
+     *
+     * @param string $query
+     * @param bool $fetchRemote
+     * @return array
+     */
+    public function publications(string $query, bool $fetchRemote = true): array
+    {
+        $localResults = $this->callManticore("publications", $query);
+        if (!$fetchRemote) {
+            return $localResults;
+        }
+
+        $remoteResults = $this->openAlex->search("sources", $query);
         $formattedResults = $this->formatOpenAlexResponse($remoteResults);
 
         return array_merge($localResults, $formattedResults);

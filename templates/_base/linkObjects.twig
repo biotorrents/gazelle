@@ -1,74 +1,66 @@
 {##
- # link a site object with one of more others
+ # link a site object with one or more others
  #}
 
 <section>
-    <h3>Add related objects</h3>
+    <h3>Add related items</h3>
 
     <form method="post" action="/link-objects">
+        {{ form_token("link-objects") }}
 
-        <select id="searchContext" class="select" placeholder="Select an object type">
+        {# the object to link to #}
+        <select id="searchContext" class="select" placeholder="Select a content type">
+            <option value="">Select a content type</option>
             <option value="collages">Collages</option>
-            {# <option value="conversations">Conversations</option> #}
             <option value="creators">Creators</option>
             <option value="literature">Literature</option>
-            {# <option value="messages">Messages</option> #}
             <option value="organizations">Organizations</option>
             <option value="publications">Publications</option>
             <option value="requests">Requests</option>
-            {# <option value="roles">Roles</option> #}
-            {# <option value="siteLog">Site log</option> #}
-            <option value="tags">Tags</option>
-            <option value="torrentGroups" selected>Torrent groups</option>
-            {# <option value="torrents">Torrents</option> #}
-            {# <option value="users">Users</option> #}
-            {# <option value="wiki">Wiki</option> #}
+            <option value="torrentGroups">Torrent groups</option>
         </select>
 
         {# the search input #}
-        <input type="text" class="typeahead" style="width: 100%;" placeholder="Search local and remote">
+        <input type="text" id="linkObjects" class="typeahead" style="width: 100%;" placeholder="Search local and remote">
 
         {# what index to autocomplete on #}
         <input type="hidden" name="index">
 
         {# the selected objects #}
         <input type="hidden" name="collages[]">
-        <input type="hidden" name="conversations[]">
         <input type="hidden" name="creators[]">
         <input type="hidden" name="literature[]">
-        <input type="hidden" name="messages[]">
         <input type="hidden" name="organizations[]">
         <input type="hidden" name="publications[]">
         <input type="hidden" name="requests[]">
-        <input type="hidden" name="roles[]">
-        <input type="hidden" name="siteLog[]">
-        <input type="hidden" name="tags[]">
         <input type="hidden" name="torrentGroups[]">
-        <input type="hidden" name="torrents[]">
-        <input type="hidden" name="users[]">
-        <input type="hidden" name="wiki[]">
 
         {# submit button #}
-        <input type="submit" class="button-primary" value="link objects">
+        <input type="submit" class="button-primary" value="link items">
     </form>
 
     <script>
         (() => {
             "use strict";
 
+            // create the data source
             var bloodhound = new Bloodhound({
                 datumTokenizer: Bloodhound.tokenizers.whitespace,
                 queryTokenizer: Bloodhound.tokenizers.whitespace,
                 remote: {
                     url: "/api/internal/autocomplete",
                     prepare: function (query, settings) {
-                        settings.url += "?query=" + query + "&searchContext=" + $("#searchContext").val();
+                        settings.url += "?query=" + query + "&context=" + $("#searchContext").val();
                         return settings;
+                    },
+                    transform: function (response) {
+                        return response.data;
                     },
                 }
             });
 
-            $(".typeahead").typeahead({
+            // create the typeahead
+            $("#linkObjects").typeahead({
                 hint: true,
                 highlight: true,
                 minLength: 3
@@ -89,7 +81,8 @@
                 }
             });
 
-            $(".typeahead").on("typeahead:select", function(e, selected) {
+            // handle the user clicking a suggestion
+            $("#linkObjects").on("typeahead:select", function(e, selected) {
                 console.log(selected);
             });
 

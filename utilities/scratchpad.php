@@ -12,6 +12,9 @@ use Firebase\JWT\SignatureInvalidException;
  * scratchpad
  */
 
+ $lazy = new \Illuminate\Support\Collection();
+ !d($lazy);exit;
+
 $app = Gazelle\App::go();
 
 $autocomplete = new Gazelle\Autocomplete();
