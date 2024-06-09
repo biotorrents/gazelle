@@ -4,16 +4,8 @@ Thanks for your interest in improving BioGazelle's codebase.
 
 ## General application layout
 
-The application as a whole is object-oriented at a rather low level where objects *do stuff.*
-The custom model system has a sensible amount of helpers but you're responsible for many things:
-
-- custom CRUD operations, e.g., transparently handling JSON and arrays
-- defining relationships to active, e.g., `$collage->torrentGroups()`
-- all database logic, especially fors linking tables and API integrations
-
 The core objects all follow the [JSON:API specification format](https://jsonapi.org/format/1.2/) from instantiation.
-Relationships can be loaded one at a time, with `["id" => "string", "type" => "string"]` pairs the default.
-These objects are available to supported clients (e.g., `$app->env->executionContext`) to use as needed.
+Relationships can be loaded by type and made available to supported clients (e.g., `$app->env->executionContext`).
 
 ### Request timeline breakdown
 
