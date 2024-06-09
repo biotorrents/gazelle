@@ -16,20 +16,6 @@ try {
     if (!$torrentGroup->id) {
         throw new Exception("not found");
     }
-
-    $torrentGroup->loadCollages();
-    $torrentGroup->loadCreators();
-    $torrentGroup->loadLiterature();
-    $torrentGroup->loadTags();
-    $torrentGroup->loadTorrents();
-
-    $literature = $torrentGroup->relationships->literature;
-    foreach ($literature as $item) {
-        $item->loadCreators();
-    }
-
-    # debug
-    #echo "<pre>"; ~d($literature); echo "</pre>"; exit;
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -59,7 +45,6 @@ $officialTags = \Gazelle\Tags::getOfficialTags();
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($torrentGroup->id, "torrentGroups");
-$conversation->loadMessages();
 
 # twig template
 $app->twig->display("torrentGroups/details.twig", [
@@ -75,9 +60,6 @@ $app->twig->display("torrentGroups/details.twig", [
     ],
 
     "torrentGroup" => $torrentGroup,
-    "torrents" => $torrentGroup->relationships->torrents,
-    "collages" => $torrentGroup->relationships->collages,
-    "literature" => $literature,
     "revisionId" => $revisionId ?? null,
     "officialTags" => $officialTags,
 

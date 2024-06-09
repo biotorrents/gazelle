@@ -4,45 +4,19 @@ declare(strict_types=1);
 
 
 /**
- * RecursiveCollection
+ * LazyCollection
  *
- * Laravel Collections that support recursive access.
+ * Laravel LazyCollection wrapper intended for site objects.
+ * This makes all objects immutable, something to remember.
  *
  * @see https://laravel.com/docs/master/collections
  * @see https://github.com/spatie/laravel-collection-macros
- *
- *
- * The underlying objects used to be native ArrayObject instances.
- *
- * @author: etconsilium@github
- * @license: BSDLv2
- *
- * @see https://github.com/etconsilium/php-recursive-array-object
  */
 
 namespace Gazelle;
 
-class RecursiveCollection extends \Illuminate\Support\Collection
+class LazyCollection extends \Illuminate\Support\LazyCollection
 {
-    /**
-     * __construct
-     *
-     * @param mixed $input the input to construct
-     *
-     * @see https://laravel.com/docs/master/collections#creating-collections
-     */
-    public function __construct(mixed $input = [])
-    {
-        if (!is_iterable($input)) {
-            $input = [$input];
-        }
-
-        foreach ($input as $key => $value) {
-            $this->$key = $value;
-        }
-    }
-
-
     /**
      * __get
      *
@@ -53,26 +27,33 @@ class RecursiveCollection extends \Illuminate\Support\Collection
      */
     public function __get(mixed $key): mixed
     {
-        return $this->get($key);
+        # native laravel function
+        $value = $this->get($key);
+
+        # try to decode any json fields that might be present
+        # (because custom reading is tedious and no longer works)
+        if (is_string($value)) {
+            $good = json_decode($value, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                return $good;
+            }
+        }
+
+        return $value;
     }
 
 
     /**
-     * __set
+     * raw
      *
-     * @param mixed $key the key to set
-     * @param mixed $value the value to set
-     * @return void
+     * @param mixed $key the key to get
+     * @return mixed the value of the key
      *
-     * @see https://laravel.com/docs/master/collections#method-put
+     * @see https://laravel.com/docs/master/collections#method-get
      */
-    public function __set(mixed $key, mixed $value): void
+    public function raw(mixed $key): mixed
     {
-        if (is_iterable($value)) {
-            $this->put($key, new self($value));
-        } else {
-            $this->put($key, $value);
-        }
+        return $this->get($key);
     }
 
 

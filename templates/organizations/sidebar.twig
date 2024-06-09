@@ -53,7 +53,9 @@
 
 
 {# add related items #}
+{% if can({"organizations": "update"}) %}
 {{ include("_base/linkObjects.twig") }}
+{% endif %}
 
 
 {# summaryStats #}
@@ -115,9 +117,6 @@
 		</ul>
 	</section>
 {% endif %}
-
-
-
 
 
 {# creators #}

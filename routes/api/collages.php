@@ -22,7 +22,7 @@ Flight::post("/api/collages", ["Gazelle\Api\Collages", "create"])->addMiddleware
 
 
 # read
-Flight::get("/api/collages/@identifier", ["Gazelle\Api\Collages", "read"])->addMiddleware(function () {
+Flight::route("/api/collages/@identifier", ["Gazelle\Api\Collages", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["collages" => "read"]);
 });

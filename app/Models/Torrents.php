@@ -12,44 +12,20 @@ namespace Gazelle;
 class Torrents extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "torrents"; # resource name
     protected ?string $table = "torrents"; # database table
 
-    /*
-    # ["database" => "display"]
-    protected array $maps = [
-        "id" => "id",
-        "GroupID" => "groupId",
-        "UserID" => "userId",
-        "media" => "platform",
-        "container" => "format",
-        "codec" => "license",
-        "resolution" => "scope",
-        "version" => "version",
-        "Censored" => "isAnnotated",
-        "Anonymous" => "isAnonymous",
-        "info_hash" => "infoHash",
-        "FileCount" => "fileCount",
-        "FileList" => "fileList",
-        "FilePath" => "filePath",
-        "Size" => "dataSize",
-        "Leechers" => "leecherCount",
-        "Seeders" => "seederCount",
-        "last_action" => "lastAction",
-        "FreeTorrent" => "freeleech",
-        "FreeLeechType" => "freeleechType",
-        #"Time" => "createdAt",
-        "Description" => "description",
-        "Snatched" => "snatchCount",
-        "balance" => "balance",
-        "LastReseedRequest" => "lastReseedRequest",
-        "archive" => "archive",
-        "created_at" => "createdAt",
-        "updated_at" => "updatedAt",
-        "deleted_at" => "deletedAt",
-    ];
-    */
+    # cache settings
+    protected ?string $cachePrefix = "siteLog:";
+
+    # hex for ÷, must be the same as phrase_boundary in manticore.conf
+    public const FILELIST_DELIM = 0xF7;
+
+    # how often we want to update users' snatch lists
+    public const SNATCHED_UPDATE_INTERVAL = 3600;
+
+    # how long after a torrent download we want to update a user's snatch lists
+    public const SNATCHED_UPDATE_AFTERDL = 300;
 
     /**
      * wishlist database schema
@@ -64,8 +40,8 @@ class Torrents extends ObjectCrud
      *     Seeders        int(6)                  default 0       not null,
      *     last_action    int                     default 0       not null,
      *     Snatched       int unsigned            default 0       not null,
-     *     DownMultiplier float                   default 1       not null,
-     *     UpMultiplier   float                   default 1       not null,
+     *     DownMultiplier float                    default 1       not null,
+     *     UpMultiplier   float                    default 1       not null,
      *     Status         int                     default 0       not null,
      *     constraint InfoHash unique (info_hash (20))
      * );
@@ -116,19 +92,6 @@ class Torrents extends ObjectCrud
         "deleted_at" => "deletedAt",
     ];
 
-    # cache settings
-    private string $cachePrefix = "torrents:";
-    private string $cacheDuration = "1 hour";
-
-    # hex for ÷, must be the same as phrase_boundary in manticore.conf
-    public const FILELIST_DELIM = 0xF7;
-
-    # how often we want to update users' snatch lists
-    public const SNATCHED_UPDATE_INTERVAL = 3600;
-
-    # how long after a torrent download we want to update a user's snatch lists
-    public const SNATCHED_UPDATE_AFTERDL = 300;
-
 
     /** crud */
 
@@ -143,37 +106,58 @@ class Torrents extends ObjectCrud
         $app = App::go();
 
         # is it an info hash?
-        $infoHash = ctype_xdigit(strval($id)) && strlen(strval($id)) === 40;
-        if ($infoHash) {
+        $good = preg_match("/{$app->env->regexInfoHash}/", strval($id));
+        if ($good) {
             $query = "select id from torrents where hex(info_hash) = ?";
             $id = $app->dbNew->single($query, [$id]);
-
-            if (!$id) {
-                throw new Exception("not found");
-            }
         }
 
         # parent read
         parent::read($id);
+    }
 
-        # explode the fileList
-        $fileList = explode("÷", $this->attributes->fileList ?? "");
-        $fileData = [];
 
-        foreach ($fileList as $file) {
-            if (empty($file)) {
-                continue;
-            }
+    /** methods */
 
-            $fileArray = explode(" ", $file);
-            $fileData[] = [
-                "ext" => trim($fileArray[0]),
-                "size" => str_replace("s", "", trim($fileArray[1])),
-                "name" => trim($fileArray[2]),
-            ];
+
+    /**
+     * canUseToken
+     *
+     * Check if the logged in user can use a freeleech token on this torrent.
+     *
+     * @return boolen true if user is allowed to use a token
+     */
+    public function canUseToken(): bool
+    {
+        $app = App::go();
+
+        # not logged in
+        if (!$app->user->isLoggedIn()) {
+            return false;
         }
 
-        $this->attributes->fileList = $fileData;
+        # can't download
+        if (!$app->user->cant(["torrents" => "download"])) {
+            return false;
+        }
+
+        # no tokens
+        if (empty($app->user->extra["FLTokens"])) {
+            return false;
+        }
+
+        # too big
+        $limit = 10 * 1024 * 1024 * 1024; # 10 GiB
+        if ($this->attributes->dataSize > $limit) {
+            return false;
+        }
+
+        # freeleech business logic (?)
+        if (!empty($this->attributes->freeleechStatus)) {
+            return false;
+        }
+
+        return true;
     }
 
 

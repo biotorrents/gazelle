@@ -11,11 +11,22 @@ use Firebase\JWT\SignatureInvalidException;
 /**
  * scratchpad
  */
-
- $lazy = new \Illuminate\Support\Collection();
- !d($lazy);exit;
-
 $app = Gazelle\App::go();
+!d($app->user);exit;
+
+$id = "https%3A%2F%2Fdoi.org%2F10.1109%2Ftmi.2015.2433900";
+
+
+$column = $app->dbNew->determineId($id);
+$extract = $app->dbNew->extractId($id);
+$full = $app->dbNew->fullId($id);
+!d($id,$column,$extract,$full);
+exit;
+
+ $torrentGroup = new Gazelle\TorrentGroups(1);
+ $lit = $torrentGroup->literature();
+ !d($lit);exit;
+
 
 $autocomplete = new Gazelle\Autocomplete();
 $result = $autocomplete->literature("GeneMania");

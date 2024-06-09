@@ -16,15 +16,20 @@ declare(strict_types=1);
 
 namespace Gazelle;
 
-abstract class ObjectCrud extends RecursiveCollection
+abstract class ObjectCrud extends LazyCollection
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
     public ?string $id = null; # primary key
     public static ?string $type = null; # resource name
     protected ?string $table = null; # database table
 
-    public ?RecursiveCollection $attributes = null;
-    public ?RecursiveCollection $relationships = null;
+    public ?LazyCollection $attributes = null;
+    public ?LazyCollection $relationships = null;
+
+    # cache settings
+    protected ?string $cachePrefix = null;
+    protected ?string $cacheDuration = "1 hour";
+    private ?string $cacheAlgorithm = "sha3-512";
 
     # all objects are available here
     public static array $objects = [
@@ -71,14 +76,11 @@ abstract class ObjectCrud extends RecursiveCollection
     {
         $app = App::go();
 
+        # create an id if none exists
+        $data["id"] ??= $app->dbNew->shortUuid();
+
         # map display => database
         $transform = $this->displayToDatabase($data);
-
-        # create an id if none exists
-        $transform["id"] ??= null;
-        if (!$transform["id"]) {
-            $transform["id"] = $app->dbNew->shortUuid();
-        }
 
         # perform an upsert
         $upsert = $app->dbNew->upsert($this->table, $transform);
@@ -91,9 +93,8 @@ abstract class ObjectCrud extends RecursiveCollection
             $attributes[$key] = $value;
         }
 
-        # use a RecursiveCollection not an array
-        $this->id = strval($upsert["id"] ?? null);
-        $this->attributes = new RecursiveCollection($attributes);
+        # read the new object
+        $this->read($data["id"]);
 
         # log the action
         #$this->log("create");
@@ -129,7 +130,23 @@ abstract class ObjectCrud extends RecursiveCollection
                 $nullAttributes[$key] = null;
             }
 
-            $this->attributes = new RecursiveCollection($nullAttributes);
+            $this->attributes = new LazyCollection($nullAttributes);
+            return;
+        }
+
+        # try to get the data from the cache
+        if ($this->cachePrefix) {
+            $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . $this . __FUNCTION__ . json_encode(func_get_args()));
+            $cacheHit = $app->cache->get($cacheKey);
+        }
+
+        $cacheHit ??= null;
+        if ($cacheHit) {
+            $this->id = $cacheHit["id"];
+
+            $this->attributes = new LazyCollection($cacheHit["attributes"]);
+            $this->relationships = new LazyCollection($cacheHit["relationships"]);
+
             return;
         }
 
@@ -159,10 +176,17 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         # the value of the attributes key MUST be an object
-        $this->attributes = new RecursiveCollection($attributes);
+        $this->attributes = new LazyCollection($attributes);
 
         # the value of the relationships key MUST be an object
-        $this->relationships = new RecursiveCollection($this->relationships());
+        $relationships = $this->relationships();
+        $this->relationships = new LazyCollection($relationships);
+
+        # cache the data
+        if ($this->cachePrefix) {
+            $data = ["id" => $this->id, "attributes" => $attributes, "relationships" => $relationships];
+            $app->cache->set($cacheKey, $data, $this->cacheDuration);
+        }
     }
 
 
@@ -259,6 +283,17 @@ abstract class ObjectCrud extends RecursiveCollection
     {
         $app = App::go();
 
+        # try to get the data from the cache
+        if ($this->cachePrefix) {
+            $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . $this . __FUNCTION__ . json_encode(func_get_args()));
+            $cacheHit = $app->cache->get($cacheKey);
+        }
+
+        $cacheHit ??= null;
+        if ($cacheHit) {
+            return $cacheHit;
+        }
+
         # loop through all the objects
         $relationships = [];
         foreach (self::$objects as $object) {
@@ -285,6 +320,11 @@ abstract class ObjectCrud extends RecursiveCollection
                     "type" => $object::$type,
                 ];
             }
+        }
+
+        # cache the data
+        if ($this->cachePrefix) {
+            $app->cache->set($cacheKey, $relationships, $this->cacheDuration);
         }
 
         return $relationships;
@@ -401,203 +441,6 @@ abstract class ObjectCrud extends RecursiveCollection
     }
 
 
-    /** mutators: updates $this->relationships with an array of objects */
-
-
-    /**
-     * loadRelationships
-     *
-     * Basic function for the helpers below.
-     *
-     * @param $object, e.g., TorrentGroups::class
-     * @return void
-     */
-    private function loadRelationships($object): void
-    {
-        $app = App::go();
-
-        $this->relationships->{$object::$type} ??= null;
-        if (!$this->relationships->{$object::$type}) {
-            $this->relationships->{$object::$type} = [];
-            return;
-        }
-
-        foreach ($this->relationships->{$object::$type} as $key => $row) {
-            $this->relationships->{$object::$type}[$key] = new $object($row["id"]);
-        }
-
-        return;
-    }
-
-
-    /**
-     * loadCollages
-     *
-     * @return void
-     */
-    public function loadCollages(): void
-    {
-        $this->loadRelationships(Collages::class);
-    }
-
-
-    /**
-     * loadConversations
-     *
-     * @return void
-     */
-    public function loadConversations(): void
-    {
-        $this->loadRelationships(Conversations::class);
-    }
-
-    /**
-     * loadCreators
-     *
-     * @return void
-     */
-    public function loadCreators(): void
-    {
-        $this->loadRelationships(Creators::class);
-    }
-
-
-    /**
-     * loadLiterature
-     *
-     * @return void
-     */
-    public function loadLiterature(): void
-    {
-        $this->loadRelationships(Literature::class);
-    }
-
-
-    /**
-     * loadMessages
-     *
-     * @return void
-     */
-    public function loadMessages(): void
-    {
-        $this->loadRelationships(Messages::class);
-    }
-
-
-    /**
-     * loadOrganizations
-     *
-     * @return void
-     */
-    public function loadOrganizations(): void
-    {
-        $this->loadRelationships(Organizations::class);
-    }
-
-
-    /**
-     * loadPublications
-     *
-     * @return void
-     */
-    public function loadPublications(): void
-    {
-        $this->loadRelationships(Publications::class);
-    }
-
-
-    /**
-     * loadRequests
-     *
-     * @return void
-     */
-    public function loadRequests(): void
-    {
-        $this->loadRelationships(Requests::class);
-    }
-
-
-    /**
-     * loadRoles
-     *
-     * @return void
-     */
-    public function loadRoles(): void
-    {
-        $this->loadRelationships(Roles::class);
-    }
-
-
-    /**
-     * loadSiteLog
-     *
-     * @return void
-     */
-    public function loadSiteLog(): void
-    {
-        $this->loadRelationships(SiteLog::class);
-    }
-
-
-    /**
-     * loadTags
-     *
-     * @return void
-     */
-    public function loadTags(): void
-    {
-        $this->loadRelationships(Tags::class);
-    }
-
-
-    /**
-     * loadTorrentGroups
-     *
-     * @return void
-     */
-    public function loadTorrentGroups(): void
-    {
-        $this->loadRelationships(TorrentGroups::class);
-    }
-
-
-    /**
-     * loadTorrents
-     *
-     * @return void
-     */
-    public function loadTorrents(): void
-    {
-        $this->loadRelationships(Torrents::class);
-    }
-
-
-    /**
-     * loadUsers
-     *
-     * @return void
-     */
-    public function loadUsers(): void
-    {
-        throw new Exception("not implemented");
-
-        /** */
-
-        $this->loadRelationships(Users::class);
-    }
-
-
-    /**
-     * loadWiki
-     *
-     * @return void
-     */
-    public function loadWiki(): void
-    {
-        $this->loadRelationships(Wiki::class);
-    }
-
-
     /** helpers */
 
 
@@ -634,6 +477,7 @@ abstract class ObjectCrud extends RecursiveCollection
      *
      * @return bool true on success, false on failure
      */
+    /*
     public function save(): bool
     {
         $app = App::go();
@@ -654,6 +498,7 @@ abstract class ObjectCrud extends RecursiveCollection
         $upsert = $app->dbNew->upsert($this->table, $data);
         return boolval($upsert);
     }
+    */
 
 
     /** */
@@ -702,5 +547,202 @@ abstract class ObjectCrud extends RecursiveCollection
         }
 
         return $output;
+    }
+
+
+    /** loading relationships */
+
+
+    /**
+     * getRelationships
+     *
+     * Basic function for the helpers below.
+     * Can't cache objects, apparently.
+     *
+     * @param $object, e.g., TorrentGroups::class
+     * @return array
+     */
+    private function getRelationships($object): array
+    {
+        $app = App::go();
+
+        if (empty($this->relationships->{$object::$type})) {
+            return [];
+        }
+
+        $data = [];
+        foreach ($this->relationships->{$object::$type} as $key => $row) {
+            $data[] = new $object($row["id"]);
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * collages
+     *
+     * @return array
+     */
+    public function collages(): array
+    {
+        return $this->getRelationships(Collages::class);
+    }
+
+
+    /**
+     * conversations
+     *
+     * @return array
+     */
+    public function conversations(): array
+    {
+        return $this->getRelationships(Conversations::class);
+    }
+
+    /**
+     * creators
+     *
+     * @return array
+     */
+    public function creators(): array
+    {
+        return $this->getRelationships(Creators::class);
+    }
+
+
+    /**
+     * literature
+     *
+     * @return array
+     */
+    public function literature(): array
+    {
+        return $this->getRelationships(Literature::class);
+    }
+
+
+    /**
+     * messages
+     *
+     * @return array
+     */
+    public function messages(): array
+    {
+        return $this->getRelationships(Messages::class);
+    }
+
+
+    /**
+     * organizations
+     *
+     * @return array
+     */
+    public function organizations(): array
+    {
+        return $this->getRelationships(Organizations::class);
+    }
+
+
+    /**
+     * publications
+     *
+     * @return array
+     */
+    public function publications(): array
+    {
+        return $this->getRelationships(Publications::class);
+    }
+
+
+    /**
+     * requests
+     *
+     * @return array
+     */
+    public function requests(): array
+    {
+        return $this->getRelationships(Requests::class);
+    }
+
+
+    /**
+     * roles
+     *
+     * @return array
+     */
+    public function roles(): array
+    {
+        return $this->getRelationships(Roles::class);
+    }
+
+
+    /**
+     * siteLog
+     *
+     * @return array
+     */
+    public function siteLog(): array
+    {
+        return $this->getRelationships(SiteLog::class);
+    }
+
+
+    /**
+     * tags
+     *
+     * @return array
+     */
+    public function tags(): array
+    {
+        return $this->getRelationships(Tags::class);
+    }
+
+
+    /**
+     * torrentGroups
+     *
+     * @return array
+     */
+    public function torrentGroups(): array
+    {
+        return $this->getRelationships(TorrentGroups::class);
+    }
+
+
+    /**
+     * torrents
+     *
+     * @return array
+     */
+    public function torrents(): array
+    {
+        return $this->getRelationships(Torrents::class);
+    }
+
+
+    /**
+     * users
+     *
+     * @return array
+     */
+    public function users(): array
+    {
+        throw new Exception("not implemented");
+
+        /** */
+
+        return $this->getRelationships(Users::class);
+    }
+
+
+    /**
+     * wiki
+     *
+     * @return array
+     */
+    public function wiki(): array
+    {
+        return $this->getRelationships(Wiki::class);
     }
 } # class

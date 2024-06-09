@@ -12,13 +12,11 @@ namespace Gazelle;
 class Creators extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "creators"; # resource name
     protected ?string $table = "creators"; # database table
 
     # cache settings
-    private string $cachePrefix = "creators:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "creators:";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -51,30 +49,6 @@ class Creators extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
-
-
-    /** crud */
-
-
-    /**
-     * read
-     */
-    public function read(int|string $id = null): void
-    {
-        $app = App::go();
-
-        # parent read
-        parent::read($id);
-
-        # decode the json fields
-        $this->attributes->aliases = json_decode($this->attributes->aliases ?? "[]");
-        $this->attributes->affiliations = json_decode($this->attributes->affiliations ?? "[]");
-        $this->attributes->summaryStats = json_decode($this->attributes->summaryStats ?? "[]");
-        $this->attributes->affiliationsOverTime = json_decode($this->attributes->affiliationsOverTime ?? "[]");
-        $this->attributes->topics = json_decode($this->attributes->topics ?? "[]");
-        $this->attributes->concepts = json_decode($this->attributes->concepts ?? "[]");
-        $this->attributes->countsByYear = json_decode($this->attributes->countsByYear ?? "[]");
-    }
 
 
     /** methods */

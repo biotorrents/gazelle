@@ -15,7 +15,7 @@ Flight::post("/api/wiki", ["Gazelle\Api\Wiki", "create"])->addMiddleware(functio
 
 
 # read
-Flight::get("/api/wiki/@identifier", ["Gazelle\Api\Wiki", "read"])->addMiddleware(function () {
+Flight::route("/api/wiki/@identifier", ["Gazelle\Api\Wiki", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["wiki" => "read"]);
 });

@@ -40,7 +40,7 @@
 		<a class="button button-primary" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}">download</a>
 
 		{# freeleech token #}
-		{% if canUseToken(torrent.id) %}
+		{% if torrent.canUseToken %}
 			<a class="button button-purple useFreeleechToken" href="/torrents.php?action=download&torrentId={{ torrent.id }}&torrent_pass={{ user.extra.torrent_pass}}&usetoken=1">freeleech</a>
 		{% endif %}
 

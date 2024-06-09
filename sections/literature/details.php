@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 
 /**
- * academic paper details page
+ * literature details page
  */
 
 $app = Gazelle\App::go();
@@ -12,23 +12,11 @@ $app = Gazelle\App::go();
 try {
     # is it an id or a doi?
     $id ??= null;
-    $prefix ??= null;
-    $suffix ??= null;
-
-    if ($prefix && $suffix) {
-        $doi = "{$prefix}/{$suffix}";
-        $literature = new Gazelle\Literature($doi);
-    } else {
-        $literature = new Gazelle\Literature($id);
-    }
+    $literature = new Gazelle\Literature($id);
 
     if (!$literature->id) {
         throw new Exception("not found");
     }
-
-    $literature->loadCreators();
-    $literature->loadTorrentGroups();
-    $literature->loadRequests();
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -39,7 +27,6 @@ $post = Gazelle\Http::request("post");
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($literature->id, "literature");
-$conversation->loadMessages();
 
 # display the title or doi?
 $displayDoi = false;
@@ -57,11 +44,10 @@ $app->twig->display("literature/details.twig", [
 
     "breadcrumbs" => [
         "/literature" => "literature",
-        "/literature/{$literature->attributes->doi}" => ($displayDoi ? $literature->attributes->doi : $literature->attributes->title),
+        "/literature/{$literature->id}" => ($displayDoi ? $literature->attributes->doi : $literature->attributes->title),
     ],
 
     "literature" => $literature,
-    "torrentGroups" => $literature->relationships->torrentGroups,
     "displayDoi" => $displayDoi,
 
     "enableConversation" => true,

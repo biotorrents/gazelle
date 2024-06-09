@@ -103,7 +103,6 @@
 	</section>
 
 
-
 	{# map #}
   {% if organization.attributes.latitude is not empty and organization.attributes.longitude is not empty %}
 	<section>
@@ -142,10 +141,10 @@
 
 
 	  	{# torrent groups #}
-    {% if torrentGroups is not empty %}
+    {% if organization.torrentGroups is not empty %}
 	<section>
 		<h3>Torrent groups</h3>
-      {{ include("tables/torrentGroups.twig") }}
+      {{ include("tables/torrentGroups.twig", {"torrentGroups": organization.torrentGroups}) }}
 	</section>
     {% endif %}
 
@@ -154,7 +153,6 @@
   {% if organization.attributes.countsByYear is not empty %}
 	{{ include("stats/countsByYear.twig", { "data": organization.attributes.countsByYear|json_encode, "key": "works_count" } )}}
   {% endif %}
-
 
 
 {% if enableConversation and conversation %}

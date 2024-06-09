@@ -12,13 +12,11 @@ namespace Gazelle;
 class Collages extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "collages"; # resource name
     protected ?string $table = "collages"; # database table
 
     # cache settings
-    private string $cachePrefix = "collages:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "collages:";
 
     # categories
     public static array $categories = [
@@ -50,26 +48,6 @@ class Collages extends ObjectCrud
 
 
     /** crud */
-
-
-    /**
-     * read
-     *
-     * @param int|string $id
-     * @return void
-     */
-    public function read(int|string $id = null): void
-    {
-        # parent method
-        parent::read($id);
-
-        # decode the boolean fields
-        $this->attributes->isFeatured = boolval($this->attributes->isFeatured);
-        $this->attributes->isLocked = boolval($this->attributes->isLocked);
-
-        # decode the json fields
-        $this->attributes->tags = json_decode($this->attributes->tags ?? "{}");
-    }
 
 
     /**

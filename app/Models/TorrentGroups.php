@@ -12,13 +12,11 @@ namespace Gazelle;
 class TorrentGroups extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "torrentGroups"; # resource name
     protected ?string $table = "torrents_group"; # database table
 
     # cache settings
-    private string $cachePrefix = "torrentGroups:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "torrentGroups:";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -62,42 +60,6 @@ class TorrentGroups extends ObjectCrud
 
         # parent create
         parent::create($data);
-    }
-
-
-    /**
-     * read
-     */
-    public function read(int|string $id = null): void
-    {
-        $app = App::go();
-
-        # parent method
-        parent::read($id);
-
-        # decode the json fields
-        $this->attributes->tags = json_decode($this->attributes->tags ?? "{}");
-
-        # add openai content if it exists
-        $fields = [
-            "jobId",
-            "object",
-            "model",
-            "text",
-            #"index",
-            "logprobs",
-            "finishReason",
-            "promptTokens",
-            "completionTokens",
-            "totalTokens",
-            "failCount",
-            "type",
-        ];
-
-        $query = "select " . implode(", ", $fields) . " from openai where groupId = ? and type = ?";
-        $ref = $app->dbNew->row($query, [$this->id, "summary"]);
-
-        $this->attributes->openai = $ref;
     }
 
 
@@ -197,6 +159,36 @@ class TorrentGroups extends ObjectCrud
 
 
     /** methods */
+
+
+    /**
+     * openAi
+     */
+    public function openAi(): array
+    {
+        $app = App::go();
+
+        # add openai content if it exists
+        $fields = [
+            "jobId",
+            "object",
+            "model",
+            "text",
+            #"index",
+            "logprobs",
+            "finishReason",
+            "promptTokens",
+            "completionTokens",
+            "totalTokens",
+            "failCount",
+            "type",
+        ];
+
+        $query = "select " . implode(", ", $fields) . " from openai where groupId = ? and type = ?";
+        $ref = $app->dbNew->row($query, [$this->id, "summary"]);
+
+        return $ref;
+    }
 
 
     /**

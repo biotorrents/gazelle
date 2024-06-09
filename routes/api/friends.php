@@ -15,7 +15,7 @@ Flight::post("/api/friends", ["Gazelle\Api\Friends", "create"])->addMiddleware(f
 
 
 # read
-Flight::get("/api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"])->addMiddleware(function () {
+Flight::route("/api/friends(/@identifier)", ["Gazelle\Api\Friends", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["userProfiles" => "read"]);
 });

@@ -12,13 +12,11 @@ namespace Gazelle;
 class Organizations extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "organizations"; # resource name
     protected ?string $table = "organizations"; # database table
 
     # cache settings
-    private string $cachePrefix = "organizations:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "organizations:";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -59,37 +57,11 @@ class Organizations extends ObjectCrud
     ];
 
 
-    /** crud */
-
-
-    /**
-     * read
-     *
-     * @param int|string $id
-     * @return void
-     */
-    public function read(int|string $id = null): void
-    {
-        # parent read
-        parent::read($id);
-
-        # decode the json fields
-        $this->attributes->relationships = json_decode($this->attributes->relationships ?? "[]", true);
-        $this->attributes->repositories = json_decode($this->attributes->repositories ?? "[]", true);
-        $this->attributes->summaryStats = json_decode($this->attributes->summaryStats ?? "[]", true);
-        $this->attributes->countsByYear = json_decode($this->attributes->countsByYear ?? "[]", true);
-        $this->attributes->topics = json_decode($this->attributes->topics ?? "[]", true);
-        $this->attributes->concepts = json_decode($this->attributes->concepts ?? "[]", true);
-    }
-
-
     /** methods */
 
 
     /**
      * hydrateFromOpenAlex
-     *
-     *
      */
 
 

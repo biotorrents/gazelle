@@ -56,17 +56,18 @@
   {% if torrent.attributes.description is not empty %}
 	<section>
 		<h3>Description</h3>
-		{{ torrent.attributes.description|raw }}
+		{{ torrent.attributes.description|parse }}
 	</section>
   {% endif %}
 
 
   {# torrentGroup #}
+  {% if torrent.torrentGroups is not empty %}
 	<section>
 		<h3>Torrent group</h3>
-    {{ include("tables/torrentGroups.twig", {withTorrents: true}) }}
+    {{ include("tables/torrentGroups.twig", {"torrentGroups": torrent.torrentGroups, "withTorrents": true}) }}
 	</section>
-
+{% endif %}
 
   {# citation #}
   	<section>

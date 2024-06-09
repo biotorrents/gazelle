@@ -22,7 +22,7 @@
 	            <td>
 		                {# title #}
                         <p>
-		                	<a class="torrentTitle" href="/literature/{{ item.attributes.doi|url_encode }}">
+		                	<a class="torrentTitle" href="/literature/{{ item.id }}">
                         		{% if displayDoi == false %}
 			                    	{{ item.attributes.title }}
                             	{% else %}

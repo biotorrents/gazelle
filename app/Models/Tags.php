@@ -25,9 +25,11 @@ namespace Gazelle;
 class Tags extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "tags"; # resource name
     protected ?string $table = "tags"; # database table
+
+    # cache settings
+    protected ?string $cachePrefix = "tags:";
 
     # ["database" => "display"]
     protected array $maps = [

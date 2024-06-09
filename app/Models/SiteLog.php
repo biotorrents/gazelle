@@ -12,13 +12,11 @@ namespace Gazelle;
 class SiteLog extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "siteLog"; # resource name
     protected ?string $table = "site_log"; # database table
 
     # cache settings
-    private string $cachePrefix = "siteLog:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "siteLog:";
 
     # actions allowed to be written to the database
     public static array $allowedActions = ["create", "read", "update", "delete"];

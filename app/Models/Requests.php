@@ -12,13 +12,11 @@ namespace Gazelle;
 class Requests extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "requests"; # resource name
     protected ?string $table = "requests"; # database table
 
     # cache settings
-    private string $cachePrefix = "requests:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "requests:";
 
     # request tax
     private float $requestTax = 0.2;
@@ -47,29 +45,6 @@ class Requests extends ObjectCrud
 
 
     /** crud */
-
-
-    /**
-     * read
-     *
-     * @param int|string $id
-     * @return void
-     */
-    public function read(string|int $id = null): void
-    {
-        $app = App::go();
-
-        # default read
-        parent::read($id);
-
-        # get the voteCount
-        $query = "select count(*) from requests_votes where requestId = ?";
-        $this->attributes->voteCount = $app->dbNew->single($query, [$this->id]);
-
-        # get the bounty
-        $query = "select sum(bounty) from requests_votes where requestId = ?";
-        $this->attributes->bounty = $app->dbNew->single($query, [$this->id]);
-    }
 
 
     /**
@@ -210,6 +185,30 @@ class Requests extends ObjectCrud
 
 
     /** methods */
+
+
+    /**
+     * voteCount
+     */
+    public function voteCount(): int
+    {
+        $app = App::go();
+
+        $query = "select count(*) from requests_votes where requestId = ?";
+        return $app->dbNew->single($query, [$this->id]);
+    }
+
+
+    /**
+     * bounty
+     */
+    public function bounty(): int
+    {
+        $app = App::go();
+
+        $query = "select sum(bounty) from requests_votes where requestId = ?";
+        return $app->dbNew->single($query, [$this->id]);
+    }
 
 
     /**

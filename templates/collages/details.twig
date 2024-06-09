@@ -25,7 +25,6 @@
   </section>
 
 
-
   {# description #}
   <section>
     <h3>Description</h3>
@@ -128,10 +127,20 @@ if ($CollageCovers != 0) { ?>
     #}
 
 
-<section>
+  {# torrent groups #}
+  {% if collage.torrentGroups is not empty %}
+  <section>
     <h3>Torrent groups</h3>
-    {{ include("tables/torrentGroups.twig", {withTorrents: true}) }}
-</section>
+    {{ include("tables/torrentGroups.twig", {"torrentGroups": collage.torrentGroups, "withTorrents": true}) }}
+  </section>
+  {% endif %}
+
+  {# conversation #}
+  {% if enableConversation and conversation %}
+    {{ include("_base/conversation.twig") }}
+{% endif %}
+
+{% endblock %
 
 
 {% if enableConversation and conversation %}

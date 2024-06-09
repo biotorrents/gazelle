@@ -36,7 +36,7 @@
 			<a class="button button-orange" id="toggleGroupBookmark" data-userid="{{ user.core.id }}" data-groupid="{{ torrentGroup.id }}">add bookmark</a>
 		{% endif %}
 
-		<hr />
+		<hr>
 
 		{# edit group #}
 		{% if can({"torrentGroups": "update"}) %}
@@ -59,7 +59,9 @@
 
 
 {# add related items #}
+{% if can({"torrentGroups": "update"}) %}
 {{ include("_base/linkObjects.twig") }}
+{% endif %}
 
 
 {# creators #}
@@ -71,7 +73,7 @@
 
 <table class="compact">
 
-{% for item in torrentGroup.relationships.creators %}
+{% for item in torrentGroup.creators %}
 <tr>
 <th><a href="/creators/{{ item.id }}">{{ item.attributes.name }}</a></th>
 
@@ -106,8 +108,9 @@
 
 <table class="compact">
 
+{% for item in torrentGroup.tags %}
+
 {# normal tags #}
-{% for item in torrentGroup.relationships.tags %}
 {% if item.attributes.tagType != "openai" %}
 <tr>
 
@@ -123,12 +126,10 @@
 </td>
 </tr>
 {% endif %}
-{% endfor %}
+
 
 {# openai tags #}
-{% for item in torrentGroup.relationships.tags %}
 {% if item.attributes.tagType == "openai" and user.siteOptions.openaiContent %}
-
 <tr>
 
 <th class="openaiTorrentTag">{{ item.attributes.name }}</th>
@@ -145,6 +146,8 @@
 {% endif %}
 
 {% endfor %}
+
+
 
 </table>
 

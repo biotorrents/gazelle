@@ -10,8 +10,7 @@ declare(strict_types=1);
 $app = \Gazelle\App::go();
 
 # get the news
-# todo: use discourse
-$query = "select * from news order by time desc";
+$query = "select * from news order by created_at desc";
 $news = $app->dbNew->row($query);
 
 /*
@@ -66,37 +65,22 @@ if (!$freeleeches) {
     $app->cache->set("shop_freeleech_list", $freeleeches, 3600 * 24 * 30);
 }
 
-/*
 # sidebar stats
 $stats = new \Gazelle\Stats();
 $activeUsers = $stats->activeUsers();
 $torrentAggregates = $stats->torrentAggregates();
 $trackerAggregates = $stats->trackerAggregates();
-*/
 
 /** twig template */
-
 
 $app->twig->display("index/private.twig", [
     "sidebar" => true,
     "news" => $news,
 
-    /*
     # stats
     "activeUsers" => $activeUsers,
     "torrentAggregates" => $torrentAggregates,
     "trackerAggregates" => $trackerAggregates,
-    */
-
-
-
-    /*
-      "breadcrumbs" => true,
-      "sidebar" => true,
-      "title" => $category["name"],
-      "category" => $category,
-      "topics" => $topics,
-      */
 ]);
 
 

@@ -69,10 +69,10 @@ Flight::route("/@id", function (string $id) {
 
 
 # not found
-Flight::route("*", function () {
+Flight::route("*", function (\flight\net\Route $route) {
     $app = Gazelle\App::go();
-    $app->error(404);
-});
+    ($app->env->dev) ? !d($route) : $app->error(404);
+}, true);
 
 
 # start the router

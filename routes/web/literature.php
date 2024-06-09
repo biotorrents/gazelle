@@ -31,12 +31,14 @@ Flight::route("/literature/@id", function ($id) {
 });
 
 
+/*
 # read: doi
 Flight::route("/literature(/@prefix/@suffix)", function ($prefix, $suffix) {
     $app = Gazelle\App::go();
     $app->middleware(["literature" => "read"]);
     require_once "{$app->env->serverRoot}/sections/literature/details.php";
 });
+*/
 
 
 # update

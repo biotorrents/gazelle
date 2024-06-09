@@ -48,8 +48,9 @@
 
 
 {# add related items #}
+{% if can({"creators": "update"}) %}
 {{ include("_base/linkObjects.twig") }}
-
+{% endif %}
 
   	{# concepts #}
   {% if creator.attributes.concepts is not empty %}

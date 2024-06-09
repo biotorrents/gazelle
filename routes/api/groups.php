@@ -22,7 +22,7 @@ Flight::post("/api/groups", ["Gazelle\Api\Groups", "create"])->addMiddleware(fun
 
 
 # read
-Flight::get("/api/groups/@identifier", ["Gazelle\Api\Groups", "read"])->addMiddleware(function () {
+Flight::route("/api/groups/@identifier", ["Gazelle\Api\Groups", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrentGroups" => "read"]);
 });

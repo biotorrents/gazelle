@@ -37,14 +37,13 @@ $ids = array_slice($ids, $pagination["offset"], $pagination["pageSize"]);
 $torrentGroups = [];
 foreach ($ids as $key => $id) {
     $torrentGroups[] = new Gazelle\TorrentGroups($id);
-    $torrentGroups[$key]->loadTorrents();
 }
 
 $app->debug["time"]->stopMeasure("browse", "get torrent groups");
 
 /** twig template */
 
-$app->twig->display("torrents/browse.twig", [
+$app->twig->display("torrentGroups/browse.twig", [
     "title" => "Browse torrents",
 
     "css" => [],

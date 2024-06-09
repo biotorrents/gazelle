@@ -15,9 +15,6 @@ try {
     if (!$creator->id) {
         throw new Exception("not found");
     }
-
-    $creator->loadLiterature();
-    $creator->loadTorrentGroups();
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -33,8 +30,6 @@ $app->twig->display("creators/details.twig", [
     ],
 
     "creator" => $creator,
-    "literature" => $creator->relationships->literature,
-    "torrentGroups" => $creator->relationships->torrentGroups,
 
     "isBookmarked" => false,
     "isSubscribed" => false,

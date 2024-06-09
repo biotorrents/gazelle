@@ -4,16 +4,6 @@
 
 <h2>{{ request.attributes.title }}</h2>
 
-{# success and error messages #}
-{% if successMessage %}
-    <div class="alertbar success">{{ successMessage }}</div>
-{% endif %}
-
-{% if errorMessage %}
-    <div class="alertbar failure">{{ errorMessage }}</div>
-{% endif %}
-
-
 {# essential details table #}
 <section>
 
@@ -31,13 +21,13 @@
         {# bounty #}
 		<tr>
 			<th><span class="nobr">Bounty</span></th>
-            <td>{{ request.attributes.bounty|get_size }}</td>
+            <td>{{ request.bounty|get_size }}</td>
 		</tr>
 
 		{# votes #}
 		<tr>
 			<th><span class="nobr">Votes</span></th>
-            <td>{{ request.attributes.voteCount|number_format }}</td>
+            <td>{{ request.voteCount|number_format }}</td>
 		</tr>
 
 		{# last voted #}

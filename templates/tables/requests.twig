@@ -35,7 +35,7 @@
 				<td>
 					<p>
 						{# title #}
-						<a class="torrentTitle" href="/requests/{{ item.attributes.slug }}" {# open tag #}
+						<a class="torrentTitle" href="/requests/{{ item.id }}" {# open tag #}
     						{% if item.attributes.picture is not empty %}
       		  					data-cover="{{ item.attributes.picture }}" {# open tag #}
     						{% endif %}

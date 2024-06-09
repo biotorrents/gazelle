@@ -17,55 +17,56 @@
 	<section>
 		<table>
 
-      {# doi #}
+      		{# doi #}
 			{% if literature.attributes.doi is not empty %}
 				<tr>
 					<th><span class="doi nobr">DOI</span></th>
 					<td>
-            <a href="{{ literature.attributes.doi }}" target="_blank" class="external monospace">{{ literature.attributes.doi }}</a>
-          </td>
+            			<a href="{{ literature.attributes.doi }}" target="_blank" class="external monospace">{{ literature.attributes.doi }}</a>
+          			</td>
 				</tr>
 			{% endif %}
 
-      {# openAlexId #}
+      		{# openAlexId #}
 			{% if literature.attributes.openAlexId is not empty %}
 				<tr>
 					<th><span class="openAlexId nobr">OpenAlex</span></th>
 					<td>
-            <a href="{{ literature.attributes.openAlexId }}" target="_blank" class="external monospace">{{ literature.attributes.openAlexId }}</a>
-          </td>
+            			<a href="{{ literature.attributes.openAlexId }}" target="_blank" class="external monospace">{{ literature.attributes.openAlexId }}</a>
+          			</td>
 				</tr>
 			{% endif %}
 
-      {# semanticScholarId #}
+      		{# semanticScholarId #}
 			{% if literature.attributes.semanticScholarId is not empty %}
 				<tr>
 					<th><span class="semanticScholarId nobr">Semantic Scholar</span></th>
 					<td>
-            <a href="https://www.semanticscholar.org/paper/{{ literature.attributes.semanticScholarId }}" target="_blank" class="external monospace">{{ literature.attributes.semanticScholarId }}</a>
-          </td>
+            			<a href="https://www.semanticscholar.org/paper/{{ literature.attributes.semanticScholarId }}" target="_blank" class="external monospace">{{ literature.attributes.semanticScholarId }}</a>
+          			</td>
 				</tr>
 			{% endif %}
 
-      {# journal #}
+      		{# journal #}
 			{% if literature.attributes.journal is not empty %}
 				<tr>
 					<th><span class="journal nobr">Journal</span></th>
 
 					<td>
-            {% if literature.attributes.journal.name is defined %}
-              <em>{{ literature.attributes.journal.name|trim }}</em>
-            {% endif %}
+            			{% if literature.attributes.journal.name is defined %}
+              				<em>{{ literature.attributes.journal.name|trim }}</em>
+            			{% endif %}
 
-            {#
-            {% if literature.attributes.journal.volume is defined %}
-              {{ literature.attributes.journal.volume|trim }}
-            {% endif %}
+            			{#
+            			{% if literature.attributes.journal.volume is defined %}
+              				{{ literature.attributes.journal.volume|trim }}
+            			{% endif %}
 
-            {% if literature.attributes.journal.pages is defined %}
-              {{ literature.attributes.journal.pages|trim }}
-            {% endif %}
-            #}
+            			{% if literature.attributes.journal.pages is defined %}
+              				{{ literature.attributes.journal.pages|trim }}
+            			{% endif %}
+            			#}
+					</td>
 				</tr>
 			{% endif %}
 
@@ -76,47 +77,48 @@
 					<td>{{ literature.attributes.publicationDate }}</td>
 				</tr>
 			{% endif %}
+
 		</table>
 	</section>
 
 
 	{# abstract #}
-  {% if literature.attributes.abstract is not empty %}
-	<section>
-		<h3>Abstract</h3>
-		{{ literature.attributes.abstract }}
-	</section>
-  {% endif %}
+  	{% if literature.attributes.abstract is not empty %}
+		<section>
+			<h3>Abstract</h3>
+			{{ literature.attributes.abstract|parse }}
+		</section>
+  	{% endif %}
 
 
   	{# tl;dr #}
     {% if literature.attributes.tldr is not empty %}
-	<section class="faded small">
-		<h3>tl;dr by {{ literature.attributes.tldr.model }}</h3>
-      {{ literature.attributes.tldr.text }}
-	</section>
+		<section class="faded small">
+			<h3>tl;dr by {{ literature.attributes.tldr.model }}</h3>
+      		{{ literature.attributes.tldr.text|parse }}
+		</section>
     {% endif %}
 
 
   	{# torrent groups #}
-    {% if torrentGroups is not empty %}
-	<section>
+    {% if literature.torrentGroups is not empty %}
+		<section>
 		<h3>Torrent groups</h3>
-      {{ include("tables/torrentGroups.twig") }}
-	</section>
+      		{{ include("tables/torrentGroups.twig", {"torrentGroups": literature.torrentGroups}) }}
+		</section>
     {% endif %}
 
-	  	{# countsByYear #}
-  {% if literature.attributes.countsByYear is not empty %}
-	{{ include("stats/countsByYear.twig", { "data": literature.attributes.countsByYear|json_encode, "key": "cited_by_count" } )}}
-  {% endif %}
+
+	{# countsByYear #}
+  	{% if literature.attributes.countsByYear is not empty %}
+		{{ include("stats/countsByYear.twig", { "data": literature.attributes.countsByYear|json_encode, "key": "cited_by_count" } )}}
+  	{% endif %}
 
 
-
-{% if enableConversation and conversation %}
-    {% set variables = { "conversation": conversation } %}
-    {% include "_base/conversation.twig" with variables %}
-{% endif %}
+	{# conversation #}
+	{% if enableConversation and conversation %}
+    	{{ include("_base/conversation.twig") }}
+	{% endif %}
 
 {% endblock %}
 

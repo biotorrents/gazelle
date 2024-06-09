@@ -44,7 +44,9 @@
 
 
 {# add related items #}
+{% if can({"literature": "update"}) %}
 {{ include("_base/linkObjects.twig") }}
+{% endif %}
 
 
 {# impact stats #}
@@ -91,13 +93,13 @@
 
 
 {# creators #}
-{% if literature.relationships.creators is not empty %}
+{% if literature.creators is not empty %}
 <section>
 <h3>Creators</h3>
 
 <table class="compact">
 
-{% for item in literature.relationships.creators %}
+{% for item in literature.creators %}
 <tr>
 <th><a href="/creators/{{ item.id }}">{{ item.attributes.name }}</a></th>
 

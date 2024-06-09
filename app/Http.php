@@ -15,7 +15,8 @@ namespace Gazelle;
 class Http
 {
     # cookie params
-    private static string $cookiePrefix = "__Secure-";
+    private static string $cookiePrefix = "";
+    #private static string $cookiePrefix = "__Secure-";
     private static string $cookieDuration = "tomorrow";
 
 

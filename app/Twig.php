@@ -15,7 +15,6 @@ class Twig extends \Twig\Environment
 {
     # singleton
     private static $instance = null;
-    #private static ?\Twig\Environment $instance = null;
 
     # twig instance
     private \Twig\Environment $twig;
@@ -150,7 +149,7 @@ class Twig extends \Twig\Environment
 
         # session internal api key
         $frontendKey = implode(".", [
-            Http::readCookie("sessionId"),
+            Http::readCookie("gazelle"),
             $app->env->private("siteApiSecret"),
         ]);
 
@@ -161,11 +160,13 @@ class Twig extends \Twig\Environment
         $http = Http::request();
         $twig->addGlobal("http", $http);
 
+        /*
         # sidebar stats
         $stats = new \Gazelle\Stats();
         $twig->addGlobal("activeUsers", $stats->activeUsers());
         $twig->addGlobal("torrentAggregates", $stats->torrentAggregates());
         $twig->addGlobal("trackerAggregates", $stats->trackerAggregates());
+        */
 
         # https://github.com/paragonie/anti-csrf
         $twig->addFunction(new \Twig\TwigFunction(
@@ -201,6 +202,7 @@ class Twig extends \Twig\Environment
         );
         */
 
+        /*
         # DebugBar: header
         $twig->addFunction(new \Twig\TwigFunction("debugHeader", function () {
             $app = App::go();
@@ -211,7 +213,9 @@ class Twig extends \Twig\Environment
                 "UTF-8"
             );
         }));
+        */
 
+        /*
         # DebugBar: footer
         $twig->addFunction(new \Twig\TwigFunction("debugFooter", function () {
             $app = App::go();
@@ -222,6 +226,7 @@ class Twig extends \Twig\Environment
                 "UTF-8"
             );
         }));
+        */
 
         # route: {{ route("readTorrentGroups", {"id": torrentGroup.id}) }}
         $twig->addFunction(new \Twig\TwigFunction("route", function ($route, $variables = []) {
@@ -248,14 +253,6 @@ class Twig extends \Twig\Environment
         $twig->addFunction(new \Twig\TwigFunction("processImage", function ($uri, $thumbnail) {
             return new \Twig\Markup(
                 Images::process($uri, $thumbnail),
-                "UTF-8"
-            );
-        }));
-
-        # \Gazelle\Torrents::can_use_token
-        $twig->addFunction(new \Twig\TwigFunction("canUseToken", function ($torrentId) {
-            return new \Twig\Markup(
-                \Gazelle\Torrents::can_use_token($torrentId),
                 "UTF-8"
             );
         }));
@@ -620,13 +617,6 @@ class Twig extends \Twig\Environment
             }
         ));
 
-        $twig->addFilter(new \Twig\TwigFilter(
-            "toArray",
-            function ($collection) {
-                return $collection->toArray();
-            }
-        ));
-
         # Format::get_ratio_html
         $twig->addFunction(new \Twig\TwigFunction("ratio", function ($up, $down) {
             return new \Twig\Markup(
@@ -635,6 +625,7 @@ class Twig extends \Twig\Environment
             );
         }));
 
+        # set $this
         $this->twig = $twig;
     }
 } # class

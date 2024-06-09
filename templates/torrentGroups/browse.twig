@@ -1,0 +1,64 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Browse torrents</h2>
+
+	{# include the main search form #}
+	{{ include("torrentGroups/search.twig") }}
+
+	{# no results message #}
+	{% if pagination.resultCount == 0 %}
+		<div class="alertbar warning halfwide">
+			<h3>No search results :(</h3>
+			<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+		</div>
+	{% else %}
+		{{ include("manticore/pagination.twig") }}
+		{{ include("tables/torrentGroups.twig", {
+			"withTorrents": true,
+			"grouping": "grouping",
+		}) }}
+		{{ include("manticore/pagination.twig") }}
+	{% endif %}
+
+{% endblock %}
+
+
+{#
+old stuff to possibly use
+
+
+		      if ($GroupResults) {
+		          $Torrents = $GroupInfo['Torrents'];
+		          $GroupTime = $MaxSize = $TotalLeechers = $TotalSeeders = $TotalSnatched = 0;
+		          foreach ($Torrents as $T) {
+		              $GroupTime = max($GroupTime, strtotime($T['Time']));
+		              $MaxSize = max($MaxSize, $T['Size']);
+		              $TotalLeechers += $T['Leechers'];
+		              $TotalSeeders += $T['Seeders'];
+		              $TotalSnatched += $T['Snatched'];
+		          }
+		      }
+
+
+		      $SnatchedGroupClass = $GroupInfo['Flags']['IsSnatched'] ? ' snatched_group' : '';
+		        $SnatchedTorrentClass = $Data['IsSnatched'] ? ' snatched_torrent' : '';
+		        $TorrentDL = "torrents.php?action=download&amp;id=".$TorrentID."&amp;authkey=".$app->userNew->extra['AuthKey']."&amp;torrent_pass=".$app->userNew->extra['torrent_pass'];
+		
+
+		        if (!($TorrentFileName = $app->cache->get('torrent_file_name_'.$TorrentID))) {
+		            $TorrentFile = file_get_contents(torrentStore.'/'.$TorrentID.'.torrent');
+		            $Tor = new BencodeTorrent($TorrentFile, false, false);
+		            $TorrentFileName = $Tor->Dec['info']['name'];
+		            $app->cache->set('torrent_file_name_'.$TorrentID, $TorrentFileName);
+		        }
+
+
+		        if (\Gazelle\Torrents::can_use_token($Data)) { ?>
+		        | <a
+		          href="torrents.php?action=download&amp;id=<?=$TorrentID?>&amp;authkey=<?=$app->userNew->extra['AuthKey']?>&amp;torrent_pass=<?=$app->userNew->extra['torrent_pass']?>&amp;usetoken=1"
+		          class="tooltip" title="Use a FL Token"
+		          onclick="return confirm('Are you sure you want to use a freeleech token here?');">FL</a>
+		        <?php } ?>
+#}

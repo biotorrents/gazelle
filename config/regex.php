@@ -10,9 +10,58 @@ declare(strict_types=1);
  * formerly in classes/regex.php
  */
 
+/** id's */
+
+# short uuid: 18 digits
+# flags: none
+$env->regexShortUuid = "^\d{18}$";
+
 # https://ihateregex.io/expr/uuid/
 # flags: iD
 $env->regexUuid = "^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$";
+
+
+# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
+# flags: i
+$env->regexDoi = "10.\d{4,9}\/[-._;()\/:A-Z0-9]+";
+
+
+# torrent info hash; collides with semantic scholar paper!
+# flags: none
+$env->regexInfoHash = "[0-9a-fA-F]{40}";
+
+
+# https://en.wikipedia.org/wiki/ISSN
+# flags: none
+$env->regexIssn = "^[0-9]{4}-[0-9]{3}[0-9X]$";
+
+
+# https://www.wikidata.org/wiki/Property:P10283
+# flags: none
+$env->regexOpenAlex = "[ACIVW][1-9]\d{3,9}";
+
+
+# https://www.wikidata.org/wiki/Property:P496
+# flags: none
+$env->regexOrcid = "0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]";
+
+
+# https://ror.readme.io/v2/docs/identifier
+# flags: none
+$env->regexRor = "0[a-z|0-9]{6}[0-9]{2}";
+
+
+# https://www.wikidata.org/wiki/Property:P4012
+# flags: none
+$env->regexSemanticScholarAuthor = "[1-9]\d*";
+
+
+# https://www.wikidata.org/wiki/Property:P4011
+# flags: none
+$env->regexSemanticScholarPaper = "[0-9a-fA-F]{40}";
+
+
+/** gazelle */
 
 
 # https://ihateregex.io/expr/semver/
@@ -104,19 +153,12 @@ $env->regexHtml = "<([\w]+)([^>]*?)(([\s]*\/>)|(>((([^<]*?|<\!\-\-.*?\-\->)|(?R)
 $env->regexBBCode = "\[([\w]+)([^\]]*?)(([\s]*\/\])|(\]((([^\[]*?|\[\!\-\-.*?\-\-\])|(?R))*)\[\/\\1[\s]*\]))";
 
 
-# https://www.crossref.org/blog/dois-and-matching-regular-expressions/
-# flags: i
-$env->regexDoi = "^10.\d{4,9}\/[-._;()\/:A-Z0-9]+$";
+/** bioinformatics */
 
 
 # https://www.biostars.org/p/13753/
 # flags: none
 $env->regexEntrez = "\d*";
-
-
-# https://www.wikidata.org/wiki/Property:P496
-# flags: none
-$env->regexOrcid = "0000-000(1-[5-9]|2-[0-9]|3-[0-4])\d{3}-\d{3}[\dX]";
 
 
 # https://www.biostars.org/p/13753/
@@ -132,23 +174,3 @@ $env->regexUniProt = "[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[
 # https://github.com/gzuidhof/starboard-notebook/blob/master/docs/format.md
 # flags: none
 $env->regexStarboard = "^(#|\/\/)\s*%{2,}-*";
-
-
-# https://ror.readme.io/v2/docs/identifier
-# flags: none
-$env->regexRor = "^0[a-z|0-9]{6}[0-9]{2}$";
-
-
-# https://www.wikidata.org/wiki/Property:P10283
-# flags: none
-$env->regexOpenAlex = "[ACIVW][1-9]\d{3,9}";
-
-
-# https://en.wikipedia.org/wiki/ISSN
-# flags: none
-$env->regexIssn = "^[0-9]{4}-[0-9]{3}[0-9X]$";
-
-
-# https://www.wikidata.org/wiki/Property:P4011
-# flags: none
-$env->regexSemanticScholar = "[0-9a-fA-F]{40}";

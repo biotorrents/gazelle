@@ -79,7 +79,9 @@
 
 
 {# add related items #}
+{% if can({"requests": "update"}) %}
 {{ include("_base/linkObjects.twig") }}
+{% endif %}
 
 
 {# creators # }

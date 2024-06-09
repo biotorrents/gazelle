@@ -18,6 +18,13 @@ namespace Gazelle;
 
 class Users extends ObjectCrud
 {
+    # https://jsonapi.org/format/1.2/#document-resource-objects
+    public static ?string $type = "users"; # resource name
+    protected ?string $table = "users"; # database table
+    
+    # cache settings
+    protected ?string $cachePrefix = "users:";
+
     # singleton
     private static ?self $instance = null;
 
@@ -43,12 +50,7 @@ class Users extends ObjectCrud
     public const BANNED = 2;
     public const LOCKED = 3;
     public const PENDING_REVIEW = 4;
-    public const SUSPENDED = 5;
-
-    # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
-    public static ?string $type = "users"; # resource name
-    protected ?string $table = "users"; # database table
+    public const SUSPENDED = 5;    
     
     /*
      * [ "table" => ["database" => "display"] ]
@@ -165,10 +167,6 @@ class Users extends ObjectCrud
             "deleted_at" => "deletedAt",
         ],
     ];
-
-    # cache settings
-    private string $cachePrefix = "users:";
-    private string $cacheDuration = "5 minutes";
 
 
     /** singleton stuff */

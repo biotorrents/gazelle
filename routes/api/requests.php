@@ -22,7 +22,7 @@ Flight::post("/api/requests", ["Gazelle\Api\Requests", "create"])->addMiddleware
 
 
 # read
-Flight::get("/api/requests/@identifier", ["Gazelle\Api\Requests", "read"])->addMiddleware(function () {
+Flight::route("/api/requests/@identifier", ["Gazelle\Api\Requests", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["requests" => "read"]);
 });

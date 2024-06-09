@@ -15,9 +15,11 @@ namespace Gazelle;
 class Roles extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "roles"; # resource name
     protected ?string $table = "roles_permissions"; # database table
+
+    # cache settings
+    protected ?string $cachePrefix = "roles:";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -36,10 +38,6 @@ class Roles extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
-
-    # cache settings
-    private string $cachePrefix = "roles:";
-    private string $cacheDuration = "1 hour";
 
     # default role map
     public array $roles = [
@@ -71,33 +69,18 @@ class Roles extends ObjectCrud
     ];
 
 
+    /** crud */
+
+
     /**
-     * read
-     *
-     * Decodes the permissions JSON and adds extra attributes.
-     *
-     * @param int|string $id
-     * @return void
+     * userCount
      */
-    public function read(int|string $id = null): void
+    public function userCount(): int
     {
         $app = App::go();
 
-        # normal read
-        parent::read($id);
-
-        # decode the boolean fields
-        $this->attributes->isPrimaryRole = boolval($this->attributes->isPrimaryRole);
-        $this->attributes->isSecondaryRole = boolval($this->attributes->isSecondaryRole);
-        $this->attributes->isDefaultRole = boolval($this->attributes->isDefaultRole);
-        $this->attributes->isStaffRole = boolval($this->attributes->isStaffRole);
-
-        # decode the json fields
-        $this->attributes->permissionsList = json_decode($this->attributes->permissionsList ?? "{}");
-
-        # get the user count
         $query = "select count(userId) from users_main where permissionId = ?";
-        $this->attributes->userCount = $app->dbNew->single($query, [$this->id]);
+        return $app->dbNew->single($query, [$this->id]);
     }
 
 

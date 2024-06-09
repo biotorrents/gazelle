@@ -69,38 +69,38 @@
 
 
   	{# openai #}
-   {% if torrentGroup.attributes.openai is not empty and user.siteOptions.openaiContent %}
+   {% if torrentGroup.openai is not empty and user.siteOptions.openaiContent %}
 	<section class="faded small">
-		<h3>tl;dr by {{ torrentGroup.attributes.openai.model }}</h3>
-    {{ torrentGroup.attributes.openai.text }}
+		<h3>tl;dr by {{ torrentGroup.openai.model }}</h3>
+    {{ torrentGroup.openai.text|parse }}
 	</section>
   {% endif %}
 
 
     {# torrent list #}
-  {% if torrentGroup.relationships.torrents is not empty %}
+  {% if torrentGroup.torrents is not empty %}
     <section>
     <h3>Torrents</h3>
-    {{ include("tables/torrents.twig", {"withActions": true}) }}
+    {{ include("tables/torrents.twig", {"torrents": torrentGroup.torrents, "withActions": true}) }}
     </section>
   {% endif %}
 
 
       {# collages #}
-  {% if torrentGroup.relationships.collages is not empty %}
+  {% if torrentGroup.collages is not empty %}
     <section>
     <h3>Collages</h3>
-   {{ include("tables/collages.twig") }}
+   {{ include("tables/collages.twig", {"collages": torrentGroup.collages}) }}
     </section>
   {% endif %}
 
 
 
     {# literature #}
-  {% if torrentGroup.relationships.literature is not empty %}
+  {% if torrentGroup.literature is not empty %}
     <section>
     <h3>Literature</h3>
-   {{ include("tables/literature.twig") }}
+   {{ include("tables/literature.twig", {"literature": torrentGroup.literature }) }}
     </section>
   {% endif %}
 

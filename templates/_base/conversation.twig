@@ -25,7 +25,7 @@
 
     {# thread display #}
     <table>
-        {% for message in conversation.relationships.messages %}
+        {% for message in conversation.messages %}
             <tr id="conversation-{{ message.id }}">
                 <td width="120" style="vertical-align: top;">
                     {{ getAvatarByUserId(message.attributes.userId) }}

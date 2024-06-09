@@ -15,13 +15,11 @@ namespace Gazelle;
 class Conversations extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "conversations"; # resource name
     protected ?string $table = "conversations_threads"; # database table
 
     # cache settings
-    private string $cachePrefix = "conversations:";
-    private string $cacheDuration = "1 minute";
+    protected ?string $cachePrefix = "conversations:";
 
     # pagination
     private int $perPage = 20;

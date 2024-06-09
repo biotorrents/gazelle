@@ -84,7 +84,7 @@
                             {% endif %}
 
                             {# freeleech token #}
-                            {% if canUseToken(torrent.id) %}
+                            {% if torrent.canUseToken %}
                                 <a class="conversationButton tooltip" title="use freeleech token" href="/torrents{{ torrent.id }}/download/{{ user.extra.torrent_pass}}?useFreeleechToken=true">
 		                            <i class="fa-thin fa-ticket-airline"></i>
                                 </a>

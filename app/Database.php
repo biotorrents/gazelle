@@ -304,18 +304,30 @@ class Database extends \PDO
         $app = App::go();
 
         # cast to string
-        $id = strval($id);
-
-        # openAlex
-        $good = preg_match("/{$app->env->regexOpenAlex}/", $id, $matches);
-        if ($good) {
-            return (!$insteadExtractId ? "openAlexId" : $matches[0]);
-        }
+        $id = urldecode(strval($id));
 
         # doi
         $good = preg_match("/{$app->env->regexDoi}/i", $id, $matches);
         if ($good) {
             return (!$insteadExtractId ? "doi" : $matches[0]);
+        }
+
+        # info hash
+        $good = preg_match("/{$app->env->regexInfoHash}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "info_hash" : $matches[0]);
+        }
+
+        # issn
+        $good = preg_match("/{$app->env->regexIssn}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "issn" : $matches[0]);
+        }
+
+        # openAlex
+        $good = preg_match("/{$app->env->regexOpenAlex}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "openAlexId" : $matches[0]);
         }
 
         # orcid
@@ -324,27 +336,22 @@ class Database extends \PDO
             return (!$insteadExtractId ? "orcid" : $matches[0]);
         }
 
-        # issn
-        $good = preg_match("/{$app->env->regexIssn}/", $id, $matches);
-        if ($good) {
-            return (!$insteadExtractId ? "issn" : $matches[0]);
-        }
-
-        # rorId
-        $good = preg_match("/{$app->env->regexRor}/", $id, $matches);
-        if ($good) {
+        # rorId: collides with id
+        $good = preg_match("/{$app->env->regexRor}/i", $id, $matches);
+        if ($good && strlen($id) !== 18) {
             return (!$insteadExtractId ? "rorId" : $matches[0]);
         }
 
+        # default id
+        return (!$insteadExtractId ? "id" : $id);
+
+        /*
         # normal numeric id
-        if (is_int($id) || is_numeric($id)) {
+        $good = preg_match("/{$app->env->regexShortUuid}/i", $id, $matches);
+        if ($good) {
             return (!$insteadExtractId ? "id" : $id);
         }
 
-        # default slug
-        return (!$insteadExtractId ? "slug" : $id);
-
-        /*
         # https://ihateregex.io/expr/uuid/
         if (is_string($id) && strlen($id) === 36 && preg_match("/{$app->env->regexUuid}/iD", $id)) {
             return "uuid";
@@ -353,6 +360,18 @@ class Database extends \PDO
         # is it binary?
         if (Text::isBinary($id) && strlen($id) === 16) {
             return "uuid";
+        }
+
+        # semantic scholar author
+        $good = preg_match("/{$app->env->regexSemanticScholarAuthor}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "semanticScholarId" : $matches[0]);
+        }
+
+        # semantic scholar paper
+        $good = preg_match("/{$app->env->regexSemanticScholarPaper}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "semanticScholarId" : $matches[0]);
         }
         */
     }
@@ -386,8 +405,8 @@ class Database extends \PDO
         $uniqueId = $this->extractId($id);
 
         return match ($column) {
-            "openAlexId" => "https://openalex.org/{$uniqueId}",
             "doi" => "https://doi.org/{$uniqueId}",
+            "openAlexId" => "https://openalex.org/{$uniqueId}",
             "orcid" => "https://orcid.org/{$uniqueId}",
             "rorId" => "https://ror.org/{$uniqueId}",
             default => strval($id),
@@ -743,7 +762,7 @@ class Database extends \PDO
 
         # it was updated, resolve a key from the data
         foreach ($data as $key => $value) {
-            if (in_array(strtolower(strval($key)), ["id", "uuid", "slug"])) {
+            if (in_array(strtolower(strval($key)), ["id"])) {
                 $column = $this->determineId($value);
                 $query = "select * from {$table} where {$column} = ?";
                 return $this->row($query, [$value], ["hostname" => "source"]);

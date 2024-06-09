@@ -12,15 +12,13 @@ $app = Gazelle\App::go();
 try {
     $id ??= null;
     $torrent = new Gazelle\Torrents($id);
-    $torrent->loadTorrentGroups();
 
     if (!$torrent->id) {
         throw new Exception("not found");
     }
 
-    $torrentGroup = $torrent->relationships->torrentGroups->first();
-    $torrentGroup->loadCreators();
-    $torrentGroup->loadTorrents();
+    $torrentGroups = $torrent->torrentGroups();
+    $torrentGroup = array_shift($torrentGroups);
 } catch (Throwable $e) {
     $app->error(404);
 }
@@ -32,7 +30,6 @@ $revisionId = intval($get["revisionId"] ?? 0);
 
 # create a conversation if it doesn't exist
 $conversation = Gazelle\Conversations::createIfNotExists($torrent->id, "torrents");
-$conversation->loadMessages();
 
 # twig template
 $app->twig->display("torrents/details.twig", [
@@ -50,7 +47,7 @@ $app->twig->display("torrents/details.twig", [
 
     "torrent" => $torrent,
     "torrentGroup" => $torrentGroup, # for the sidebar picture
-    "torrentGroups" => $torrent->relationships->torrentGroups,
+    "torrentGroups" => $torrentGroups,
     "revisionId" => $revisionId ?? null,
 
     "isBookmarked" => Bookmarks::isBookmarked("torrent", $torrent->id),

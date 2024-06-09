@@ -16,13 +16,11 @@ namespace Gazelle;
 class Wiki extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "wikiArticles"; # resource name
     protected ?string $table = "wiki_articles"; # database table
 
     # cache settings
-    private string $cachePrefix = "wiki:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "wiki:";
 
     # index article
     public static int $indexArticleId = 1;

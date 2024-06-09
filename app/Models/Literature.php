@@ -14,13 +14,11 @@ namespace Gazelle;
 class Literature extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public ?string $id = null; # primary key
     public static ?string $type = "literature"; # resource name
     protected ?string $table = "literature"; # database table
 
     # cache settings
-    private string $cachePrefix = "literature:";
-    private string $cacheDuration = "1 hour";
+    protected ?string $cachePrefix = "literature:";
 
     # ["database" => "display"]
     protected array $maps = [
@@ -71,30 +69,15 @@ class Literature extends ObjectCrud
     {
         $app = App::go();
 
-        # is it a doi?
-        $doi = preg_match("/{$app->env->regexDoi}/i", strval($id));
-        if ($doi) {
-            $query = "select id from literature where doi = ?";
+        # is it a semantic scholar id?
+        $good = preg_match("/{$app->env->regexSemanticScholarPaper}/", strval($id));
+        if ($good) {
+            $query = "select id from literature where semanticScholarId = ?";
             $id = $app->dbNew->single($query, [$id]);
-
-            if (!$id) {
-                throw new Exception("not found");
-            }
         }
 
         # parent read
         parent::read($id);
-
-        # decode the boolean fields
-        $this->attributes->isOpenAccess = boolval($this->attributes->isOpenAccess ?? false);
-        $this->attributes->isRetracted = boolval($this->attributes->isRetracted ?? false);
-
-        # decode the json fields
-        $this->attributes->journal = json_decode($this->attributes->journal ?? "[]");
-        $this->attributes->tldr = json_decode($this->attributes->tldr ?? "[]");
-        $this->attributes->primaryTopic = json_decode($this->attributes->primaryTopic ?? "[]");
-        $this->attributes->concepts = json_decode($this->attributes->concepts ?? "[]");
-        $this->attributes->countsByYear = json_decode($this->attributes->countsByYear ?? "[]");
     }
 
 

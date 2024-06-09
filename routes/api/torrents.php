@@ -15,7 +15,7 @@ Flight::post("/api/torrents", ["Gazelle\Api\Torrents", "create"])->addMiddleware
 
 
 # read
-Flight::get("/api/torrents/@identifier", ["Gazelle\Api\Torrents", "read"])->addMiddleware(function () {
+Flight::route("/api/torrents/@identifier", ["Gazelle\Api\Torrents", "read"])->addMiddleware(function () {
     $app = Gazelle\App::go();
     $app->middleware(["torrents" => "read"]);
 });
