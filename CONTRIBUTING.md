@@ -5,15 +5,15 @@ Thanks for your interest in improving BioGazelle's codebase.
 ## General application layout
 
 The core objects all follow the [JSON:API specification format](https://jsonapi.org/format/1.2/) from instantiation.
-Relationships can be loaded by type and made available to supported clients (e.g., `$app->env->executionContext`).
+Relationships can be loaded by type, e.g., `torrentGroups`, and made available to supported clients (e.g., `$app->env->executionContext`).
 
 ### Request timeline breakdown
 
 A typical request starts in `/public/index.php` to bootstrap the correct client.
 Web and API requests each have their own bootstrap logic (so does the CLI).
 In either case, the application makes more checks and starts the Flight router.
-This maps routes to `require` statements, e.g., `/sections/torrentGroups/browse.php`.
-These files call methods, e.g., `Gazelle\TorrentGroups->torrents()` to query data.
+This maps routes to `require_once` statements, e.g., `/sections/torrentGroups/browse.php`.
+These files call methods, e.g., `Gazelle\TorrentGroups->torrents()`, to query data.
 This data goes to either a Twig template or a JSON response; both use JSON:API objects.
 
 ## Object API
@@ -44,6 +44,10 @@ $data = [
 # get the new object back
 $newTorrentGroup = $torrentGroup->updateOrCreate($data);
 !d($newTorrentGroup);
+
+# soft and hard delete
+$torrentGroup->delete();
+$torrentGroup->forceDelete();
 
 # use any laravel method on the instance
 # https://laravel.com/docs/master/collections#the-enumerable-contract
@@ -110,7 +114,7 @@ Automated queries for remote metadata cease once either threshold is crossed for
 
 ### Typeahead search
 
-Typeahead search (autocomplete) is implemented with `corejavascript/typeahead.js`](https://github.com/corejavascript/typeahead.js).
+Typeahead search (autocomplete) is implemented with [`corejavascript/typeahead.js`](https://github.com/corejavascript/typeahead.js).
 Bloodhound uses a single remote data source that's an internal API endpoint.
 It calls `Gazelle\Autocomplete->fetch()` and returns `[ ["id" => string, "text" => string, "openAlexId" => string, "isLocal" => bool] ]`.
 Remote data is fetched by default, but this can be disabled with a flag.
