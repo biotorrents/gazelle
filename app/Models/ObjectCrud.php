@@ -136,17 +136,15 @@ abstract class ObjectCrud extends LazyCollection
 
         # try to get the data from the cache
         if ($this->cachePrefix) {
-            $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . $this . __FUNCTION__ . json_encode(func_get_args()));
+            $cacheKey = hash($this->cacheAlgorithm, json_encode([$this->cachePrefix, $this, __FUNCTION__, func_get_args()]));
             $cacheHit = $app->cache->get($cacheKey);
         }
 
         $cacheHit ??= null;
         if ($cacheHit) {
             $this->id = $cacheHit["id"];
-
             $this->attributes = new LazyCollection($cacheHit["attributes"]);
             $this->relationships = new LazyCollection($cacheHit["relationships"]);
-
             return;
         }
 
@@ -285,7 +283,7 @@ abstract class ObjectCrud extends LazyCollection
 
         # try to get the data from the cache
         if ($this->cachePrefix) {
-            $cacheKey = hash($this->cacheAlgorithm, $this->cachePrefix . $this . __FUNCTION__ . json_encode(func_get_args()));
+            $cacheKey = hash($this->cacheAlgorithm, json_encode([$this->cachePrefix, $this, __FUNCTION__, func_get_args()]));
             $cacheHit = $app->cache->get($cacheKey);
         }
 
