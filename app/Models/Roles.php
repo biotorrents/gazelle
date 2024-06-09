@@ -136,29 +136,14 @@ class Roles extends ObjectCrud
             }
 
             # user has no permissions on the resource
-            $userRole->attributes->permissionsList->$resource ??= [];
-            if (empty($userRole->attributes->permissionsList->$resource)) {
+            if (empty($userRole->attributes->permissionsList[$resource])) {
                 return false;
             }
 
             # permission not in user's role
-            # todo: fix inconsistent RecursiveCollection vs. array type casting
-            if (is_array($userRole->attributes->permissionsList->$resource)) {
-                $good = in_array($action, $userRole->attributes->permissionsList->$resource);
-            } else {
-                $good = $userRole->attributes->permissionsList->$resource->contains($action);
-            }
-
-            if (!$good) {
+            if (!in_array($action, $userRole->attributes->permissionsList[$resource])) {
                 return false;
             }
-
-            /*
-            # permission not in user's role
-            if (!in_array($action, $userRole->attributes->permissionsList->$resource)) {
-                return false;
-            }
-            */
         }
 
         # checks passed, allow the action

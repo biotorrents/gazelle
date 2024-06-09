@@ -5,7 +5,7 @@ Thanks for your interest in improving BioGazelle's codebase.
 ## General application layout
 
 The core objects all follow the [JSON:API specification format](https://jsonapi.org/format/1.2/) from instantiation.
-Relationships can be loaded by type, e.g., `torrentGroups`, and made available to supported clients (e.g., `$app->env->executionContext`).
+Relationships can be loaded by type, e.g., `torrentGroups`, and made available to supported clients, e.g., `$app->env->executionContext`.
 
 ### Request timeline breakdown
 
