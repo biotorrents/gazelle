@@ -60,18 +60,15 @@ if ($app->env->dev) {
 }
 
 
-# universally resolve an identifier
-Flight::route("/@id", function (string $id) {
+# universal id finder or not found
+Flight::route("*", function () {
     $app = Gazelle\App::go();
+
+    $request = Flight::request();
+    $id = $request->url ?? null;
+
     $redirect = $app->resolveUriById($id);
     ($redirect) ? Gazelle\Http::redirect($redirect) : $app->error(404);
-});
-
-
-# not found
-Flight::route("*", function (\flight\net\Route $route) {
-    $app = Gazelle\App::go();
-    ($app->env->dev) ? !d($route) : $app->error(404);
 }, true);
 
 

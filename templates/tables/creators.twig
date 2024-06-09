@@ -1,0 +1,53 @@
+{#
+ # creators table
+ #}
+
+<table id="creators" class="relationships">
+    <thead>
+	        {# info #}
+	        <th>Info</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for item in creators %}
+            <tr>
+	            <td>
+		            {# name #}
+		            <p><a class="torrentTitle" href="/creators/{{ item.id }}">{{ item.attributes.name }}</a></p>
+
+		            <p class="flexRow">
+						{# affiliations #}
+						{% if item.attributes.affiliations is not empty %}
+						    <span class="tooltip affiliations" title="Affiliations">
+								{% for entry in item.attributes.affiliations %}
+									{{ entry.display_name }}{% if not loop.last %}, {% endif %}
+								{% endfor %}
+							</span>
+						{% endif %}
+
+						{# hIndex #}
+						{% if item.attributes.hIndex is not empty %}
+						    <span class="tooltip hIndex" title="h-index">{{ item.attributes.hIndex|number_format }}</span>
+						{% endif %}
+
+      					{# paperCount #}
+						{% if item.attributes.paperCount is not empty %}
+						    <span class="tooltip paperCount" title="Publications">{{ item.attributes.paperCount|number_format }}</span>
+						{% endif %}
+
+      					{# citationCount #}
+						{% if item.attributes.citationCount is not empty %}
+						    <span class="tooltip citationCount" title="Citations">{{ item.attributes.citationCount|number_format }}</span>
+						{% endif %}
+
+						{# orcid #}
+						{% if item.attributes.orcid is not empty %}
+							<a href="{{ item.attributes.orcid }}" target="_blank" class="external monospace tooltip orcid" title="ORCiD">{{ item.attributes.orcid }}</a>
+						{% endif %}
+		            </p>
+	            </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -12,6 +12,13 @@ use Firebase\JWT\SignatureInvalidException;
  * scratchpad
  */
 $app = Gazelle\App::go();
+
+$creator = new Gazelle\Creators(72);
+!d($creator);exit;
+
+
+
+
 !d($app->user);exit;
 
 $id = "https%3A%2F%2Fdoi.org%2F10.1109%2Ftmi.2015.2433900";

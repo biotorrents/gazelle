@@ -11,6 +11,13 @@ $app = Gazelle\App::go();
 
 try {
     # is it an id or a doi?
+    $prefix ??= null;
+    $suffix ??= null;
+
+    if ($prefix && $suffix) {
+        $id = "{$prefix}/{$suffix}";
+    }
+
     $id ??= null;
     $literature = new Gazelle\Literature($id);
 

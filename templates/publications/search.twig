@@ -1,0 +1,45 @@
+{##
+ #cations literature search form
+ #}
+
+<form id="torrentSearch" name="torrentSearch" method="get">
+	{# simpleSearch #}
+	<section id="simpleSearch">
+		<div id="searchFormHeader">
+			<h3>Simple search</h3>
+			<a id="showComplexSearch" class="button button-orange u-pull-right">show complex search</a>
+		</div>
+
+		<table class="torrentSearch">
+			{{ include("manticore/simpleSearch.twig") }}
+		</table>
+	</section>
+
+
+	{# complexSearch #}
+	<section id="complexSearch">
+		<div id="searchFormHeader">
+			<h3>Complex search</h3>
+			<a id="showSimpleSearch" class="button button-orange u-pull-right">show simple search</a>
+		</div>
+
+		<table class="torrentSearch">
+			{{ include("manticore/complexSearch.twig") }}
+			{{ include("manticore/people.twig") }}
+			{{ include("manticore/places.twig") }}
+			{{ include("manticore/relationships.twig") }}
+			</table>
+	</section>
+
+
+	{# sortOptions #}
+	<section id="sortOptions">
+		<h3>Sorting options</h3>
+
+		<table class="torrentSearch">
+			{{ include("manticore/organization.twig") }}
+			{{ include("manticore/ordering.twig") }}
+			{{ include("manticore/formControls.twig") }}
+		</table>
+	</section>
+</form>

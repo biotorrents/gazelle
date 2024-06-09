@@ -27,8 +27,15 @@ class LazyCollection extends \Illuminate\Support\LazyCollection
      */
     public function __get(mixed $key): mixed
     {
+        $app = App::go();
+
         # native laravel function
         $value = $this->get($key);
+
+        # do we need to express a canonical id as a uri?
+        if ($app->executionContext === "api" && $key === "id") {
+            return "https://{$app->env->siteDomain}/{$value}";
+        }
 
         # try to decode any json fields that might be present
         # (because custom reading is tedious and no longer works)

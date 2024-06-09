@@ -1,0 +1,22 @@
+{% extends "base.twig" %}
+
+{% block content %}
+
+	<h2>Browse publications</h2>
+
+	{# include the main search form #}
+	{{ include("publications/search.twig") }}
+
+	{# no results message #}
+	{% if pagination.resultCount == 0 %}
+		<div class="alertbar warning halfwide">
+			<h3>No search results :(</h3>
+			<p>Please ensure you didn't make too many typos or apply too many filters.</p>
+		</div>
+	{% else %}
+		{{ include("manticore/pagination.twig") }}
+    	{{ include("tables/publications.twig", {"grouping": "grouping"}) }}
+		{{ include("manticore/pagination.twig") }}
+  {% endif %}
+
+{% endblock %}

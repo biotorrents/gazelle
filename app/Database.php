@@ -306,6 +306,12 @@ class Database extends \PDO
         # cast to string
         $id = urldecode(strval($id));
 
+        # normal numeric id
+        $good = preg_match("/{$app->env->regexShortUuid}/i", $id, $matches);
+        if ($good) {
+            return (!$insteadExtractId ? "id" : $id);
+        }
+
         # doi
         $good = preg_match("/{$app->env->regexDoi}/i", $id, $matches);
         if ($good) {
