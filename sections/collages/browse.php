@@ -18,6 +18,7 @@ $searchResults = $manticore->search($get);
 $pagination = $manticore->paginate($searchResults);
 
 # build query string
+unset($get["page"]);
 foreach ($get as $key => $value) {
     if (empty($value)) {
         unset($get[$key]);

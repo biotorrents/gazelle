@@ -3,10 +3,34 @@
  */
 
 /* desktop */
-@media (orientation: landscape) {}
+@media (orientation: landscape) {
+  #subMenu {
+    .subMenuHeader {
+      &:before {
+        margin-right: 1rem;
+      }
+    }
+  }
+}
 
 /* mobile */
-@media (orientation: portrait) {}
+@media (orientation: portrait) {
+  #subMenu {
+    .subMenuElement {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 0 5rem;
+    }
+
+    ul {
+      li {
+        display: inline;
+      }
+    }
+  }
+}
 
 #mainMenu {
   display: flex;
@@ -61,35 +85,30 @@
   #torrentsHeader {
     &:before {
       content: "🌊";
-      margin-right: 1rem;
     }
   }
 
   #ecosystemHeader {
     &:before {
       content: "🏕️";
-      margin-right: 1rem;
     }
   }
 
   #moreHeader {
     &:before {
       content: "🔔";
-      margin-right: 1rem;
     }
   }
 
   #communityHeader {
     &:before {
       content: "📣";
-      margin-right: 1rem;
     }
   }
 
   #userHeader {
     &:before {
       content: "👤";
-      margin-right: 1rem;
     }
   }
 

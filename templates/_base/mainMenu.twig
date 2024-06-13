@@ -58,8 +58,8 @@
 <nav id="subMenu">
 
 	{# torrents #}
-	<div id="torrents">
-		<span id="torrentsHeader" class="button button-invisible">torrents</span>
+	<div id="torrents" class="subMenuElement">
+		<span id="torrentsHeader" class="subMenuHeader button button-invisible">torrents</span>
 		<ul>
 			<li><a href="/torrents">Browse</a></li>
 			<li><a href="/collages">Collages</a></li>
@@ -70,8 +70,8 @@
 	</div>
 
 	{# ecosystem #}
-	<div id="ecosystem">
-		<span id="ecosystemHeader" class="button button-invisible">ecosystem</span>
+	<div id="ecosystem" class="subMenuElement">
+		<span id="ecosystemHeader" class="subMenuHeader button button-invisible">ecosystem</span>
 		<ul>
 			<li><a href="/creators">Creators</a></li>
 			<li><a href="/literature">Literature</a></li>
@@ -81,8 +81,8 @@
 	</div>
 
 	{# more #}
-	<div id="more">
-		<span id="moreHeader" class="button button-invisible">more</span>
+	<div id="more" class="subMenuElement">
+		<span id="moreHeader" class="subMenuHeader button button-invisible">more</span>
 		<ul>
 			<li><a href="/torrents.php?type=uploaded&userid={{ user.core.id }}">Uploads</a></li>
 			<li><a href="/user.php?action=notify">Notifications</a></li>
@@ -91,8 +91,8 @@
 	</div>
 
 	{# community #}
-	<div id="community">
-		<span id="communityHeader" class="button button-invisible">community</span>
+	<div id="community" class="subMenuElement">
+		<span id="communityHeader" class="subMenuHeader button button-invisible">community</span>
 		<ul>
 			<li><a href="/rules">Rules</a></li>
 			<li><a href="/wiki">Wiki</a></li>
@@ -103,8 +103,8 @@
 	</div>
 
 	{# user #}
-	<div id="user">
-		<span id="userHeader" class="button button-invisible">user</span>
+	<div id="user" class="subMenuElement">
+		<span id="userHeader" class="subMenuHeader button button-invisible">user</span>
 		<ul>
 			<li><a href="/user.php?id={{ user.core.id }}">Profile</a></li>
 			{# <li><a href="/user.php?id={{ user.core.id }}">{{ user.core.username }}</a></li> #}
