@@ -53,6 +53,34 @@ $torrentGroup->forceDelete();
 # https://laravel.com/docs/master/collections#the-enumerable-contract
 ```
 
+### Brief overview
+
+The taxonomy of the site's metadata can be classified into two main groups:
+
+- original, intrinsic data for BioGazelle (e.g., torrents, collages, etc.)
+- external "ecosystem" data from APIs (e.g., creators, organizations, etc.)
+
+The full bill of objects and how they map to the UI is simple.
+The goal is to keep the database descriptive and the UI casual.
+
+```php
+# map of ["internal object name" => "displayed UI concept"]
+$maps = [
+    # original data
+    "torrentGroups" => "torrent groups",
+    "torrents" => "torrents",
+    "collages" => "collages", # reverted from OT's "collections"
+    "requests" => "requests",
+    "tags" => "tags",
+
+    # external data
+    "creators" => "people",
+    "organizations" => "places",
+    "literature" => "articles",
+    "publications" => "journals",
+];
+```
+
 ### Attributes
 
 Attributes hold the main metadata of the object, a `LazyCollection` based on the JSON:API specification.
@@ -90,10 +118,8 @@ At the cost of some boilerplate in code, it allows for searches like this:
 # map of search form fields => index fields
 private array $fieldMaps = [
     "shared" => [
-        "creators" => ["creators_openAlexId", "creators_orcid", "creators_scopusId", "creators_semanticScholarId", "creators_name", "creators_slug", "creators_aliases"],
-        "literature" => ["literature_doi", "literature_openAlexId", "literature_semanticScholarId", "literature_title", "literature_slug", "literature_bibtex", "literature_abstract"],
-
         "workgroups" => ["torrentGroups_workgroup", "creators_affiliations", "creators_affiliationsOverTime", "organizations_grid", "organizations_openAlexId", "organizations_rorId", "organizations_wikidataId", "organizations_name", "organizations_slug", "organizations_acronym", "organizations_reverseGeocode"],
+
         "locations" => ["torrentGroups_location", "organizations_latitude", "organizations_longitude", "organizations_reverseGeocode", "organizations_country", "organizations_state", "organizations_city", "organizations_postalCode"],
 
         # etc., as broad or granular as desired, for any attribute

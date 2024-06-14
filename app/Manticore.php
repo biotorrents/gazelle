@@ -118,8 +118,8 @@ class Manticore
                 "established" => "organizations_established",
                 "status" => "organizations_status",
                 "type" => "organizations_type",
-                   ],
-                ],
+            ],
+        ],
 
 
         # requests

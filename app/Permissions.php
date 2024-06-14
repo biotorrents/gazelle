@@ -17,15 +17,8 @@ class Permissions
     # simple crud natural language permissions
     # e.g., $app->user->can(["torrents" => "read", "tags" => "update"])
     public static array $permissions = [
-        # torrents
-        "torrents" => [
-            "create" => "Can create torrents",
-            "read" => "Can read torrents",
-            "update" => "Can update torrents",
-            "delete" => "Can delete torrents",
-            "moderate" => "Can moderate torrents",
-            "download" => "Can download torrents",
-        ],
+
+        /** intrinsic */
 
         # torrent groups
         "torrentGroups" => [
@@ -36,13 +29,14 @@ class Permissions
             "moderate" => "Can moderate torrent groups",
         ],
 
-        # tags
-        "tags" => [
-            "create" => "Can create tags",
-            "read" => "Can read tags",
-            "update" => "Can update tags",
-            "delete" => "Can delete tags",
-            "moderate" => "Can moderate tags",
+        # torrents
+        "torrents" => [
+            "create" => "Can create torrents",
+            "read" => "Can read torrents",
+            "update" => "Can update torrents",
+            "delete" => "Can delete torrents",
+            "moderate" => "Can moderate torrents",
+            "download" => "Can download torrents",
         ],
 
         # collages
@@ -53,6 +47,27 @@ class Permissions
             "delete" => "Can delete collages",
             "moderate" => "Can moderate collages",
         ],
+
+        # requests
+        "requests" => [
+            "create" => "Can create requests",
+            "read" => "Can read requests",
+            "update" => "Can update requests",
+            "delete" => "Can delete requests",
+            "moderate" => "Can moderate requests",
+        ],
+
+
+        # tags
+        "tags" => [
+            "create" => "Can create tags",
+            "read" => "Can read tags",
+            "update" => "Can update tags",
+            "delete" => "Can delete tags",
+            "moderate" => "Can moderate tags",
+        ],
+
+        /** ecosystem */
 
         # creators
         "creators" => [
@@ -72,6 +87,15 @@ class Permissions
             "moderate" => "Can moderate literature",
         ],
 
+        # publications
+        "publications" => [
+            "create" => "Can create publications",
+            "read" => "Can read publications",
+            "update" => "Can update publications",
+            "delete" => "Can delete publications",
+            "moderate" => "Can moderate publications",
+        ],
+
         # organizations
         "organizations" => [
             "create" => "Can create organizations",
@@ -81,14 +105,7 @@ class Permissions
             "moderate" => "Can moderate organizations",
         ],
 
-        # requests
-        "requests" => [
-            "create" => "Can create requests",
-            "read" => "Can read requests",
-            "update" => "Can update requests",
-            "delete" => "Can delete requests",
-            "moderate" => "Can moderate requests",
-        ],
+        /** social */
 
         # conversations
         "conversations" => [
@@ -135,6 +152,8 @@ class Permissions
             "moderate" => "Can moderate subscriptions",
         ],
 
+        /** other */
+
         # user accounts
         "userAccounts" => [
             "create" => "Can create user accounts",
@@ -161,6 +180,8 @@ class Permissions
             "delete" => "Can delete wiki articles",
             "moderate" => "Can moderate wiki articles",
         ],
+
+        /** admin */
 
         # various admin permissions
         "admin" => [

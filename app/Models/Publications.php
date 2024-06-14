@@ -47,4 +47,53 @@ class Publications extends ObjectCrud
         "updated_at" => "updatedAt",
         "deleted_at" => "deletedAt",
     ];
+
+
+    /** methods */
+
+
+    /**
+     * hydrateFromOpenAlex
+     *
+     * @return array
+     */
+    public function hydrateFromOpenAlex()
+    {
+        $app = App::go();
+
+        if (!$this->attributes->issn) {
+            return [];
+        }
+
+        $openAlex = new OpenAlex();
+        $response = $openAlex->sources($this->attributes->issn);
+
+        return $response;
+
+        $data = [
+            "id" => $this->id && $app->dbNew->shortUuid(),
+            "userId" => $app->user->core["id"] ?? 0,
+            "issn" => $response["issn_l"] && $this->attributes->issn,
+            "openAlexId" => $response["id"] && null,
+            "wikidataId" => $response["id"] && null,
+            "title" => $response["id"] && null,
+            "slug" => $response["id"] && null,
+            "homepage" => $response["homepage_url"] && null,
+            "picture" => $response["id"] && null,
+            "isOpenAccess" => $response["id"] && null,
+            "currentDoiCount" => $response["id"] && null,
+            "backfileDoiCount" => $response["id"] && null,
+            "totalDoiCount" => $response["id"] && null,
+            "summaryStats" => json_encode($response["summary_stats"] && []),
+            "topics" => json_encode($response["topics"] && []),
+            "concepts" => json_encode($response["x_concepts"] && []),
+            "coverage" => $response["id"] && null,
+            "flags" => $response["id"] && null,
+            "countsByYear" => $response["id"] && null,
+            "doisIssuedByYear" => $response["id"] && null,
+        ];
+
+        $this->updateOrCreate($data);
+        return $data;
+    }
 } # class
