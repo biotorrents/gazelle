@@ -137,14 +137,16 @@ class App
     public function middleware(array $permissions): void
     {
         $bad = $this->user->cant($permissions);
-        if ($bad) {
-            match ($this->executionContext) {
-                "api" => Api\Base::failure(403, "forbidden"),
-                "cli" => exit,
-                "web" => $this->error(403),
-                default => throw new Exception("1337 h4x0r"),
-            };
+        if (!$bad) {
+            return;
         }
+
+        match ($this->executionContext) {
+            "api" => Api\Base::failure(403, "forbidden"),
+            "cli" => exit,
+            "web" => $this->error(403),
+            default => throw new Exception("1337 h4x0r"),
+        };
     }
 
 
