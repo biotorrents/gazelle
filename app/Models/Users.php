@@ -1498,8 +1498,8 @@ class Users extends ObjectCrud
             select torrents_group.id, torrents_group.title, torrents_group.subject, torrents_group.object, torrents_group.picture
             from torrents_group inner join torrents on torrents.groupId = torrents_group.id
             where torrents.userId = ? and torrents_group.picture != ''
-            group by torrents_group.id, torrents.time
-            order by torrents.time desc limit 5
+            group by torrents_group.id, torrents.created_at
+            order by torrents.created_at desc limit 5
         ";
         $ref = $app->dbNew->multi($query, [$userId]);
 
@@ -1690,6 +1690,7 @@ class Users extends ObjectCrud
         $data["collagesCreated"] = $app->dbNew->single($query, [$userId]) ?? 0;
 
 
+        /*
         # collage contributions
         # collages.php?userid={{ userId }}&contrib=1
         $query = "
@@ -1698,6 +1699,10 @@ class Users extends ObjectCrud
             where collages.deleted_at is null and collages_links.userId = ? and collages_links.contentType = ?
         ";
         $data["collageContributions"] = $app->dbNew->single($query, [$userId, \Gazelle\Collages::$type]) ?? 0;
+        */
+
+        # Table 'gazelle_development.collages_links' doesn't exist
+        $data["collageContributions"] = 0;
 
 
         # requests: filled and the bounty

@@ -153,6 +153,10 @@ class Twig extends \Twig\Environment
             $app->env->private("siteApiSecret"),
         ]);
 
+        # remove null bytes from the key
+        $frontendKey = str_replace("\0", "", $frontendKey);
+
+        # hash the key and add the global
         $frontendHash = password_hash($frontendKey, PASSWORD_DEFAULT);
         $twig->addGlobal("frontendHash", $frontendHash);
 

@@ -184,7 +184,7 @@ class BonusPoints
             select
                 users_main.bonusPoints,
                 count(distinct xbt_files_users.fid) as torrentCount,
-                sum(torrents.size) as dataSize,
+                sum(torrents.dataSize) as dataSize,
                 sum(xbt_snatched.seedTime) as seedTime,
                 sum(torrents.seeders) as seederCount
             from users_main
