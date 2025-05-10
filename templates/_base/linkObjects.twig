@@ -27,6 +27,12 @@
         <input type="hidden" name="index">
 
         {# the selected objects #}
+        <select id="selectedLinks" name="selectedLinks" class="select" multiple>
+            <option value="">Your linked item suggestions</option>
+        </select>
+
+        {# hidden fields for the different types of objects #}
+        {#
         <input type="hidden" name="collages[]">
         <input type="hidden" name="creators[]">
         <input type="hidden" name="literature[]">
@@ -34,6 +40,7 @@
         <input type="hidden" name="publications[]">
         <input type="hidden" name="requests[]">
         <input type="hidden" name="torrentGroups[]">
+        #}
 
         {# submit button #}
         <input type="submit" class="button-primary" value="link items">
@@ -83,7 +90,19 @@
 
             // handle the user clicking a suggestion
             $("#linkObjects").on("typeahead:select", function(e, selected) {
-                console.log(selected);
+                // https://tom-select.js.org/docs/api/
+                let select = document.getElementById("selectedLinks");
+                let control = select.tomselect;
+                let optionId = JSON.stringify(selected);
+
+                control.addOption({
+                    value: optionId,
+                    text: selected.text
+                }, true); // user_created
+                control.addItem(optionId);
+
+                // https://github.com/twitter/typeahead.js/issues/233
+                $("#linkObjects").typeahead("val", "");
             });
 
         })();

@@ -28,11 +28,11 @@ abstract class ObjectCrud extends LazyCollection
 
     # cache settings
     protected ?string $cachePrefix = null;
-    protected ?string $cacheDuration = "1 hour";
-    private ?string $cacheAlgorithm = "sha3-512";
+    protected ?string $cacheDuration = "5 minutes";
+    protected ?string $cacheAlgorithm = "sha3-512";
 
     # all objects are available here
-    public static array $objects = [
+    protected static array $objects = [
         Collages::class,
         Conversations::class,
         Creators::class,
@@ -48,6 +48,42 @@ abstract class ObjectCrud extends LazyCollection
         Torrents::class,
         Users::class,
         Wiki::class,
+    ];
+
+    # boolean database fields
+    protected array $booleanFields = [
+        "isAnnotated",
+        "isAnonymous",
+        "isDefaultRole",
+        "isFeatured",
+        "isLocked",
+        "isOpenAccess",
+        "isPrimaryRole",
+        "isReported",
+        "isRetracted",
+        "isSecondaryRole",
+        "isStaffRole",
+    ];
+
+    # json database fields
+    protected array $jsonFields = [
+        "affiliations",
+        "affiliationsOverTime",
+        "aliases",
+        "concepts",
+        "countsByYear",
+        "coverage",
+        "doisIssuedByYear",
+        "flags",
+        "journal",
+        "permissionsList",
+        "primaryTopic",
+        "relationships",
+        "repositories",
+        "summaryStats",
+        "tags",
+        "tldr",
+        "topics",
     ];
 
 
@@ -364,9 +400,73 @@ abstract class ObjectCrud extends LazyCollection
 
 
     /**
-     * syncRelationships
+     * linkObjects
+     *
+     * Links this object with one or more others.
+     *
+     * @param object $objects
+     * @return void
      */
-    public function syncRelationships()
+    public function linkObjects(...$objects): void
+    {
+        $app = App::go();
+
+        # loop through all the objects
+        foreach ($objects as $object) {
+            # skip new objects
+            if (!$object->id) {
+                continue;
+            }
+
+            # data for our linking table
+            $data = [
+                "id" => $app->dbNew->shortUuid(),
+                "objectId" => $this->id,
+                "userId" => $app->user->core["id"] ?? 0,
+                "contentId" => $object->id,
+                "contentType" => $object::$type,
+            ];
+
+            # upsert into our linking table
+            $app->dbNew->upsert($linksTable, $data);
+
+            # set their linking table
+            $linksTable = $object->table . "_links";
+
+            # does the table exist?
+            $query = "show tables like '{$linksTable}'";
+            $good = $app->dbNew->single($query, []);
+
+            if (!$good) {
+                continue;
+            }
+
+            # data for their linking table
+            $data = [
+                "id" => $app->dbNew->shortUuid(),
+                "objectId" => $object->id,
+                "userId" => $app->user->core["id"] ?? 0,
+                "contentId" => $this->id,
+                "contentType" => $this::$type,
+            ];
+
+            # upsert into their linking table
+            $app->dbNew->upsert($linksTable, $data);
+
+            # log the action
+            #$this->log("link", $object->id);
+        }
+    }
+
+
+    /**
+     * syncRelationships
+     *
+     * Syncs the relationships between this object and all others.
+     *
+     * @return array
+     */
+    public function syncRelationships(): array
     {
         $app = App::go();
 
@@ -385,7 +485,7 @@ abstract class ObjectCrud extends LazyCollection
                 continue;
             }
 
-            # get the relationships from the database
+            # get external relationships from the database
             $query = "select objectId from {$linksTable} where contentId = ? and contentType = ?";
             $ref = $app->dbNew->column($query, [$this->id, $this::$type]);
 
@@ -424,18 +524,22 @@ abstract class ObjectCrud extends LazyCollection
 
                 if (!$found) {
                     $data = [
+                        "id" => $app->dbNew->shortUuid(),
+                        "objectId" => $relationship["id"],
+                        "userId" => $app->user->core["id"] ?? 0,
                         "contentId" => $this->id,
                         "contentType" => $this::$type,
-                        "objectId" => $relationship["id"],
                     ];
 
+                    # upsert the new links record
                     $app->dbNew->upsert($linksTable, $data);
                 }
             }
 
         }
 
-        return $relationships;
+        # return new relationships
+        return $this->relationships();
     }
 
 
@@ -516,6 +620,17 @@ abstract class ObjectCrud extends LazyCollection
 
         foreach ($data as $key => $value) {
             if (isset($this->maps[$key])) {
+
+                # handle booleans
+                if (in_array($key, $this->booleanFields)) {
+                    $value = boolval($value);
+                }
+
+                # handle json
+                if (in_array($key, $this->jsonFields)) {
+                    $value = json_decode($value, true);
+                }
+
                 $output[$this->maps[$key]] = $value;
             }
         }
@@ -539,6 +654,22 @@ abstract class ObjectCrud extends LazyCollection
 
         foreach ($data as $key => $value) {
             if (isset($reversed[$key])) {
+
+                # handle booleans
+                if (in_array($key, $this->booleanFields)) {
+                    $value = intval($value);
+                }
+
+                # handle json
+                if (in_array($key, $this->jsonFields)) {
+                    $value = json_encode($value, true);
+                }
+
+                # this lets us pass an escaped $post from a form
+                if ($key === "groupDescription" || $key === "torrentDescription") {
+                    $key = "description";
+                }
+
                 $column = $reversed[$key];
                 $output[$column] = $value;
             }

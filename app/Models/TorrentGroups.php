@@ -51,6 +51,15 @@ class TorrentGroups extends ObjectCrud
      */
     public function create(array $data = []): void
     {
+        $app = App::go();
+
+        $jsonFields = ["tags"];
+        foreach ($jsonFields as $field) {
+            if (!empty($data[$field])) {
+                $data[$field] = json_encode($data[$field]);
+            }
+        }
+
         throw new Exception("not implemented");
 
         /** */
@@ -69,6 +78,7 @@ class TorrentGroups extends ObjectCrud
      * @param array $data
      * @return void
      */
+    /*
     public function update(array $data = []): void
     {
         $app = App::go();
@@ -105,7 +115,7 @@ class TorrentGroups extends ObjectCrud
             $app->dbNew->beginTransaction();
 
             # get an array of literatureIds
-            $currentLiteratureIds = array_column($this->relatedLiterature(), "id");
+            $currentLiteratureIds = array_column($this->relationships->literature, "id");
             $proposedLiteratureIds = $data["literatureIds"] ?? [];
 
             if (!empty($proposedLiteratureIds)) {
@@ -140,6 +150,7 @@ class TorrentGroups extends ObjectCrud
         # parent update
         parent::update($data);
     }
+    */
 
 
     /**

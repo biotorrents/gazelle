@@ -25,21 +25,12 @@ try {
 # request data
 $post = Gazelle\Http::post();
 if (!empty($post)) {
-    $data = [
-        "id" => $torrentGroup->id,
-        "categoryId" => $torrentGroup->categoryId,
-        "revisionId" => $torrentGroup->revisionId + 1,
-        "identifier" => $post["identifier"] ?? null,
-        "title" => $post["title"] ?? null,
-        "subject" => $post["subject"] ?? null,
-        "object" => $post["object"] ?? null,
-        "workgroup" => $post["workgroup"] ?? null,
-        "location" => $post["location"] ?? null,
-        "year" => $post["year"] ?? null,
-        "description" => $post["description"] ?? null,
-        "picture" => $post["picture"] ?? null,
-        "tags" => json_encode($post["tags"] ?? null), # json
-    ];
+    try {
+        $torrentGroup->update($post);
+        $successMessage = "Successfully updated the torrent group";
+    } catch (Exception $e) {
+        $errorMessage = $e->getMessage();
+    }
 }
 
 # twig template
@@ -50,10 +41,13 @@ $app->twig->display("torrentGroups/update.twig", [
 
     "breadcrumbs" => [
         "/torrent-groups" => "torrents",
-        "/torrent-groups/{$torrentGroup->attributes->slug}" => $torrentGroup->attributes->title,
+        "/torrent-groups/{$torrentGroup->id}" => $torrentGroup->attributes->title,
     ],
 
     "torrentGroup" => $torrentGroup,
+
+    "successMessage" => $successMessage ?? null,
+    "errorMessage" => $errorMessage ?? null,
 ]);
 
 exit;

@@ -60,8 +60,8 @@ class Torrents extends ObjectCrud
         "license" => "license",
         "archive" => "archive",
         "description" => "description",
-        "isAnnotated" => "isAnnotated",
-        "isAnonymous" => "isAnonymous",
+        "isAnnotated" => "isAnnotated", # bool
+        "isAnonymous" => "isAnonymous", # bool
 
         # files
         "info_hash" => "infoHash", # chihaya

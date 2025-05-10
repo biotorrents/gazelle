@@ -81,7 +81,7 @@
   {% if torrentGroup.torrents is not empty %}
     <section>
     <h3>Torrents</h3>
-    {{ include("tables/torrents.twig", {"torrents": torrentGroup.torrents, "withActions": true}) }}
+    {{ include("tables/torrents.twig", {"torrents": torrentGroup.torrents, "withTorrents": true, "withActions": true}) }}
     </section>
   {% endif %}
 

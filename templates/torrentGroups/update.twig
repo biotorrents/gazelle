@@ -8,7 +8,7 @@
 
 	<h2>
 		Edit the group
-		<a href="/torrent-groups/{{ torrentGroup.attributes.slug }}">{{ torrentGroup.attributes.title }}</a>
+		<a href="/torrent-groups/{{ torrentGroup.id }}">{{ torrentGroup.attributes.title }}</a>
 	</h2>
 
 	{# the upload form itself #}
@@ -25,15 +25,9 @@
 			<input type="hidden" name="categoryId" value="{{ torrentGroup.attributes.categoryId }}">
 		{% endif %}
 
-		{#
-		{% if data and data.requestId %}
-			<input type="hidden" name="requestId" value="{{ data.requestId }}">
+		{% if torrentGroup.attributes.revisionId is not empty %}
+			<input type="hidden" name="revisionId" value="{{ torrentGroup.attributes.revisionId + 1 }}">
 		{% endif %}
-
-		{% if data and data.torrentId %}
-			<input type="hidden" name="torrentId" value="{{ data.torrentId }}">
-		{% endif %}
-		#}
 
 		{## #}
 
@@ -42,18 +36,18 @@
 			<h3 class="hidden">Update the torrent group</h3>
 
 			<table class="torrentForm">
+				{# identifier #}
+				{{ include("torrentForm/identifier.twig", {
+					"db": env.database.identifier,
+					"value": (torrentGroup.attributes.identifier) ? torrentGroup.attributes.identifier : "",
+				}) }}
+
 				{# title, subject, and object #}
 				{{ include("torrentForm/titles.twig", {
 					"db": env.database,
 					"title": (torrentGroup.attributes.title) ? torrentGroup.attributes.title : "",
 					"subject": (torrentGroup.attributes.subject) ? torrentGroup.attributes.subject : "",
 					"object": (torrentGroup.attributes.object) ? torrentGroup.attributes.object : "",
-				}) }}
-
-				{# year #}
-				{{ include("torrentForm/year.twig", {
-					"db": env.database.year,
-					"value": (torrentGroup.attributes.year) ? torrentGroup.attributes.year : "",
 				}) }}
 
 				{# workgroup #}
@@ -67,6 +61,12 @@
 					"db": env.database.location,
 					"value": (torrentGroup.attributes.location) ? torrentGroup.attributes.location : "",
 				}) }}
+
+				{# year #}
+				{{ include("torrentForm/year.twig", {
+					"db": env.database.year,
+					"value": (torrentGroup.attributes.year) ? torrentGroup.attributes.year : "",
+				}) }}
 				
 				{# description #}
 				{{ include("torrentForm/groupDescription.twig", {
@@ -75,33 +75,17 @@
 					"required": true,
 				}) }}
 
-				{# creatorList #}
-				{#
-				{{ include("torrentForm/creatorList.twig", {
-					"db": env.database.creatorList,
-					"value": (torrentGroup.attributes.creatorList) ? torrentGroup.attributes.creatorList : "",
-				}) }}
-				#}
-
-				{# tagList #}
-				{#
-				{{ include("torrentForm/tagList.twig", {
-					"db": env.database.tagList,
-					"value": (torrentGroup.attributes.tagList) ? torrentGroup.attributes.tagList : "",
-				}) }}
-				#}
-
 				{# picture #}
 				{{ include("torrentForm/picture.twig", {
 					"db": env.database.picture,
 					"value": (torrentGroup.attributes.picture) ? torrentGroup.attributes.picture : "",
 				}) }}
 
-				{# literature #}
+				{# tags #}
 				{#
-				{{ include("torrentForm/literature.twig", {
-					"db": env.database.literature,
-					"value": (torrentGroup.attributes.literature) ? torrentGroup.attributes.literature : "",
+				{{ include("torrentForm/tags.twig", {
+					"db": env.database.tags,
+					"value": (torrentGroup.attributes.tags) ? torrentGroup.attributes.tags : "",
 				}) }}
 				#}
 			</table>

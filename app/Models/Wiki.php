@@ -16,7 +16,7 @@ namespace Gazelle;
 class Wiki extends ObjectCrud
 {
     # https://jsonapi.org/format/1.2/#document-resource-objects
-    public static ?string $type = "wikiArticles"; # resource name
+    public static ?string $type = "wiki"; # resource name
     protected ?string $table = "wiki_articles"; # database table
 
     # cache settings
