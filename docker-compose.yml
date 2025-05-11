@@ -1,73 +1,104 @@
+##
+# https://docs.docker.com/reference/compose-file/
+#
+
+# https://docs.docker.com/reference/compose-file/services/
 services:
-  web:
+
+  # https://github.com/biotorrents/gazelle
+  gazelle:
     build: .
-    ports:
-      - 127.0.0.1:7001:80
     depends_on:
-      - memcached
-      - mysql
-      - pg
+      - nginx
+      - postgres
+      - manticore
+      - redis
+      - plausible
     volumes:
-      - .:/var/www
-      - ./misc/docker/web/nginx.conf:/etc/nginx/sites-available/gazelle.conf
-    environment:
-      - ENV=dev
-      # These should match what you set for your mysql container below
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
+      - .:/gazelle
 
-  memcached:
-    image: memcached:1.6.32-alpine
-
-  pg:
-    image: postgres:orpheus
-    build:
-      context: .
-      dockerfile: misc/pg.Dockerfile
+  # https://hub.docker.com/_/nginx
+  nginx:
+    image: nginx:stable-alpine
+    volumes:
+      - ./utilities/docker/nginx:/etc/nginx/templates
     ports:
-      - 127.0.0.1:54321:5432
+      - 127.0.0.1:8080:80
+    environment:
+      # https://www.rfc-editor.org/rfc/rfc2606.txt
+      - NGINX_HOST=gazelle.test
+      - NGINX_PORT=80
+
+  # https://hub.docker.com/_/postgres
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - 127.0.0.1:5432:5432
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - ./utilities/docker/postgres/data:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=nyala
       - POSTGRES_PASSWORD=nyalapw
       - POSTGRES_DB=gz
 
-  mysql:
-    image: percona:ps-8.0
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      - POSTGRES_USER=gazelle-development
+      - POSTGRES_PASSWORD=gazelle-development
+      - POSTGRES_DB=gazelle-development
+
+  adminer:
+    image: adminer:standalone
+    restart: always
     ports:
-      - 127.0.0.1:36000:3306
-    volumes:
-      - mysql-data:/var/lib/mysql
-    environment:
-      - MYSQL_DATABASE=gazelle
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
-      - MYSQL_ROOT_PASSWORD=sc5tlc9JSCC6
-    command:
-      - mysqld
-      - --group-concat-max-len=1048576
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_0900_ai_ci
-      - --log-bin-trust-function-creators=ON
-      - --userstat=on
-      - --sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
-      # neither sphinxsearch or ocelot are compatible with the mysql8 caching_sha2_password plugin
-      - --default-authentication-plugin=mysql_native_password
+      - 127.0.0.1:8080:8080
 
-  sphinxsearch:
-    build: misc/docker/sphinxsearch
-    depends_on:
-      - mysql
-      - web
+  # https://hub.docker.com/r/manticoresearch/manticore
+  manticore:
+    image: manticoresearch/manticore
+    restart: always
+    ports:
+      - 127.0.0.1:9306:9306
+      - 127.0.0.1:9308:9308
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65535
+        hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
     volumes:
-      - sphinx-data:/var/lib/sphinxsearch/data/
-      - ./misc/docker/sphinxsearch/sphinx.conf:/var/lib/sphinxsearch/conf/sphinx.conf
+      - ./utilities/docker/manticore/data:/var/lib/manticore
+      - ./utilities/docker/manticore/manticore.conf:/etc/manticoresearch/manticore.conf
     environment:
-      # These should match what you set for your mysql container above
-      - MYSQL_USER=gazelle
-      - MYSQL_PASSWORD=password
+      - MYSQL_USER=gazelle-development
+      - MYSQL_PASSWORD=gazelle-development
 
+  # https://hub.docker.com/_/redis
+  redis:
+    image: redis:latest
+
+  # https://hub.docker.com/r/plausible/analytics
+  plausible:
+    image: plausible/analytics:latest
+
+# https://docs.docker.com/reference/compose-file/networks/
+networks:
+  front-tier:
+  back-tier:
+
+    # https://docs.docker.com/reference/compose-file/volumes/
 volumes:
   mysql-data:
   pg-data:
