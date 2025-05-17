@@ -37,9 +37,9 @@ services:
     volumes:
       - ./utilities/docker/postgres/data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=nyala
-      - POSTGRES_PASSWORD=nyalapw
-      - POSTGRES_DB=gz
+      - POSTGRES_USER=gazelle_development
+      - POSTGRES_PASSWORD=gazelle_development
+      - POSTGRES_DB=gazelle_development
 
   db:
     image: postgres
