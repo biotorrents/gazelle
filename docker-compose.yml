@@ -20,7 +20,7 @@ services:
   # https://hub.docker.com/_/nginx
   nginx:
     image: nginx:stable-alpine
-    restart: always
+    #restart: always
     volumes:
       - ./utilities/docker/nginx:/etc/nginx/templates
       - .:/var/www/html
@@ -30,7 +30,7 @@ services:
   # https://hub.docker.com/_/postgres
   postgres:
     image: postgres:17-alpine
-    restart: always
+    #restart: always
     ports:
       - 5432:5432
     volumes:
@@ -42,7 +42,7 @@ services:
 
   db:
     image: postgres
-    restart: always
+    #restart: always
     # set shared memory limit when using docker compose
     shm_size: 128mb
     # or set shared memory limit when deploy via swarm stack
@@ -58,14 +58,15 @@ services:
 
   adminer:
     image: adminer:standalone
-    restart: always
+    #restart: always
     ports:
       - 8080:8080
 
   # https://hub.docker.com/r/manticoresearch/manticore
+  # this requires a php installation for the config file
   manticore:
-    image: manticoresearch/manticore
-    restart: always
+    build: ./utilities/docker/manticore
+    #restart: always
     ports:
       - 9306:9306
       - 9308:9308
@@ -86,16 +87,16 @@ services:
       - POSTGRES_PASSWORD=gazelle_development
 
   # https://hub.docker.com/_/redis
-  redis-cluster-1:
+  redis:
     image: redis:latest
-    restart: always
+    #restart: always
 
-  # https://hub.docker.com/r/plausible/analytics
+    # https://hub.docker.com/r/plausible/analytics
   plausible:
     image: plausible/analytics:latest
-    restart: always
+    #restart: always
 
-# https://docs.docker.com/reference/compose-file/networks/
+    # https://docs.docker.com/reference/compose-file/networks/
 networks:
   front-tier:
   back-tier:
