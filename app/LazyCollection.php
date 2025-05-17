@@ -51,6 +51,21 @@ class LazyCollection extends \Illuminate\Support\LazyCollection
 
 
     /**
+     * __set
+     *
+     * Prevent setting values (immutability).
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return void
+     */
+    public function __set(mixed $key, mixed $value): void
+    {
+        throw new \LogicException("LazyCollection is immutable");
+    }
+
+
+    /**
      * raw
      *
      * @param mixed $key the key to get
