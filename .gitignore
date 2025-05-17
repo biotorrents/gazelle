@@ -49,3 +49,6 @@ yarn-error.log
 
 # development test script
 /utilities/scratchpad.php
+
+# docker
+/utilities/docker/postgres/data/*

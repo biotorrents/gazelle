@@ -20,26 +20,25 @@ services:
   # https://hub.docker.com/_/nginx
   nginx:
     image: nginx:stable-alpine
+    restart: always
     volumes:
       - ./utilities/docker/nginx:/etc/nginx/templates
+      - .:/var/www/html
     ports:
-      - 127.0.0.1:8080:80
-    environment:
-      # https://www.rfc-editor.org/rfc/rfc2606.txt
-      - NGINX_HOST=gazelle.test
-      - NGINX_PORT=80
+      - 80:80
 
   # https://hub.docker.com/_/postgres
   postgres:
     image: postgres:17-alpine
+    restart: always
     ports:
-      - 127.0.0.1:5432:5432
+      - 5432:5432
     volumes:
       - ./utilities/docker/postgres/data:/var/lib/postgresql/data
     environment:
+      - POSTGRES_DB=gazelle_development
       - POSTGRES_USER=gazelle_development
       - POSTGRES_PASSWORD=gazelle_development
-      - POSTGRES_DB=gazelle_development
 
   db:
     image: postgres
@@ -53,23 +52,23 @@ services:
     #    tmpfs:
     #      size: 134217728 # 128*2^20 bytes = 128Mb
     environment:
-      - POSTGRES_USER=gazelle-development
-      - POSTGRES_PASSWORD=gazelle-development
-      - POSTGRES_DB=gazelle-development
+      - POSTGRES_DB=gazelle_development
+      - POSTGRES_USER=gazelle_development
+      - POSTGRES_PASSWORD=gazelle_development
 
   adminer:
     image: adminer:standalone
     restart: always
     ports:
-      - 127.0.0.1:8080:8080
+      - 8080:8080
 
   # https://hub.docker.com/r/manticoresearch/manticore
   manticore:
     image: manticoresearch/manticore
     restart: always
     ports:
-      - 127.0.0.1:9306:9306
-      - 127.0.0.1:9308:9308
+      - 9306:9306
+      - 9308:9308
     ulimits:
       nproc: 65535
       nofile:
@@ -82,16 +81,19 @@ services:
       - ./utilities/docker/manticore/data:/var/lib/manticore
       - ./utilities/docker/manticore/manticore.conf:/etc/manticoresearch/manticore.conf
     environment:
-      - MYSQL_USER=gazelle-development
-      - MYSQL_PASSWORD=gazelle-development
+      - POSTGRES_DB=gazelle_development
+      - POSTGRES_USER=gazelle_development
+      - POSTGRES_PASSWORD=gazelle_development
 
   # https://hub.docker.com/_/redis
-  redis:
+  redis-cluster-1:
     image: redis:latest
+    restart: always
 
   # https://hub.docker.com/r/plausible/analytics
   plausible:
     image: plausible/analytics:latest
+    restart: always
 
 # https://docs.docker.com/reference/compose-file/networks/
 networks:
