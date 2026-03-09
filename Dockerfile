@@ -3,7 +3,7 @@
 #
 
 # https://hub.docker.com/_/php
-FROM php:8.4-alpine
+FROM php:8.4.8RC1-alpine
 
 
 # copy the source code
